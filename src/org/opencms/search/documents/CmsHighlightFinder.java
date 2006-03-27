@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightFinder.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/03/27 14:53:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -139,8 +139,8 @@ public final class CmsHighlightFinder {
         int i;
 
         for (i = 0; i < queryClauses.length; i++) {
-            if (prohibited || !queryClauses[i].prohibited) {
-                getTerms(queryClauses[i].query, terms, prohibited);
+            if (prohibited || !queryClauses[i].isProhibited()) {
+                getTerms(queryClauses[i].getQuery(), terms, prohibited);
             }
         }
     }
@@ -356,7 +356,7 @@ public final class CmsHighlightFinder {
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */

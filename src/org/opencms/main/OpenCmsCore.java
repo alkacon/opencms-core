@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/10/09 09:08:26 $
- * Version: $Revision: 1.217 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.218 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.217 $ 
+ * @version $Revision: 1.218 $ 
  * 
  * @since 6.0.0 
  */
@@ -270,7 +270,7 @@ public final class OpenCmsCore {
         if (m_instance == null) {
             try {
                 // create a new core object with runlevel 1
-                new OpenCmsCore();
+                m_instance = new OpenCmsCore();
             } catch (CmsInitException e) {
                 // already initialized, this is all we need
             }
@@ -291,13 +291,15 @@ public final class OpenCmsCore {
                 // if wizard is still enabled allow retry of initialization (for setup wizard)
                 m_errorCondition = errorCondition;
                 // output an error message to the console
-                System.err.println(Messages.get().key(Messages.LOG_INIT_FAILURE_MESSAGE_1, errorCondition.key()));
+                System.err.println(Messages.get().getBundle().key(
+                    Messages.LOG_INIT_FAILURE_MESSAGE_1,
+                    errorCondition.key()));
             }
             LOG.error(errorCondition.key());
             m_instance = null;
         } else if (m_instance != null) {
             // OpenCms already was successfull initialized
-            LOG.warn(Messages.get().key(
+            LOG.warn(Messages.get().getBundle().key(
                 Messages.LOG_INIT_INVALID_ERROR_2,
                 new Integer(m_instance.getRunLevel()),
                 errorCondition.key()));
@@ -324,16 +326,21 @@ public final class OpenCmsCore {
 
         synchronized (m_eventListeners) {
             if (eventTypes == null) {
+                // no event types given - register the listener for all event types
                 eventTypes = new int[] {I_CmsEventListener.LISTENERS_FOR_ALL_EVENTS.intValue()};
             }
             for (int i = 0; i < eventTypes.length; i++) {
+                // register the listener for all configured event types
                 Integer eventType = new Integer(eventTypes[i]);
                 List listeners = (List)m_eventListeners.get(eventType);
                 if (listeners == null) {
                     listeners = new ArrayList();
                     m_eventListeners.put(eventType, listeners);
                 }
-                listeners.add(listener);
+                if (!listeners.contains(listener)) {
+                    // add listerner only if it is not already registered
+                    listeners.add(listener);
+                }
             }
         }
     }
@@ -352,12 +359,12 @@ public final class OpenCmsCore {
         for (int i = 0; i < names.length; i++) {
             String name = names[i];
             if (m_requestHandlers.get(name) != null) {
-                CmsLog.INIT.error(Messages.get().key(Messages.LOG_DUPLICATE_REQUEST_HANDLER_1, name));
+                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.LOG_DUPLICATE_REQUEST_HANDLER_1, name));
                 continue;
             }
             m_requestHandlers.put(name, handler);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(
+                CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_ADDED_REQUEST_HANDLER_2,
                     name,
                     handler.getClass().getName()));
@@ -385,6 +392,16 @@ public final class OpenCmsCore {
     protected void fireCmsEvent(int type, Map data) {
 
         fireCmsEvent(new CmsEvent(type, data));
+    }
+
+    /**
+     * Returns the initialized OpenCms configuration manager.<p>
+     * 
+     * @return the initialized OpenCms configuration manager
+     */
+    protected CmsConfigurationManager getConfigurationManager() {
+
+        return m_configurationManager;
     }
 
     /**
@@ -581,16 +598,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Returns the initialized OpenCms configuration manager.<p>
-     * 
-     * @return the initialized OpenCms configuration manager
-     */
-    protected CmsConfigurationManager getConfigurationManager() {
-
-        return m_configurationManager;
-    }
-
-    /**
      * Returns the session manager.<p>
      * 
      * @return the session manager
@@ -701,7 +708,7 @@ public final class OpenCmsCore {
         CmsContextInfo contextInfo = new CmsContextInfo(cms.getRequestContext());
         return initCmsObject(contextInfo);
     }
-    
+
     /**
      * Returns an initialized CmsObject with the user and context initialized as provided.<p>
      * 
@@ -795,13 +802,13 @@ public final class OpenCmsCore {
             // security manager is active, but we will try other options before giving up
         }
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_FILE_ENCODING_1, systemEncoding));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_FILE_ENCODING_1, systemEncoding));
         }
 
         // read server ethernet address (MAC) and init UUID generator
         String ethernetAddress = configuration.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ETHERNET_ADDRESS_1, ethernetAddress));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ETHERNET_ADDRESS_1, ethernetAddress));
         }
         CmsUUID.init(ethernetAddress);
 
@@ -819,11 +826,11 @@ public final class OpenCmsCore {
                 jdkinfo += System.getProperty("java.vm.version") + " ";
                 jdkinfo += System.getProperty("java.vm.info") + " ";
                 jdkinfo += System.getProperty("java.vm.vendor") + " ";
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_JAVA_VM_1, jdkinfo));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_JAVA_VM_1, jdkinfo));
                 String osinfo = System.getProperty("os.name") + " ";
                 osinfo += System.getProperty("os.version") + " ";
                 osinfo += System.getProperty("os.arch") + " ";
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_OPERATING_SYSTEM_1, osinfo));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_OPERATING_SYSTEM_1, osinfo));
             }
         } catch (Exception e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_PROP_0), e);
@@ -834,7 +841,7 @@ public final class OpenCmsCore {
 
         // create the configuration manager instance    
         m_configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            "config/"));
+            CmsSystemInfo.FOLDER_CONFIG));
         // store the configuration read from "opencms.properties" in the configuration manager 
         m_configurationManager.setConfiguration(configuration);
 
@@ -856,7 +863,7 @@ public final class OpenCmsCore {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ENCODING_1, setEncoding));
         }
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_OPENCMS_ENCODING_1, defaultEncoding));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_OPENCMS_ENCODING_1, defaultEncoding));
         }
         getSystemInfo().setDefaultEncoding(defaultEncoding);
 
@@ -872,6 +879,10 @@ public final class OpenCmsCore {
         getSystemInfo().setMailSettings(systemConfiguration.getMailSettings());
         // set HTTP authentication settings
         getSystemInfo().setHttpAuthenticationSettings(systemConfiguration.getHttpAuthenticationSettings());
+
+        // set content notification settings
+        getSystemInfo().setNotificationTime(systemConfiguration.getNotificationTime());
+        getSystemInfo().setNotificationProject(systemConfiguration.getNotificationProject());
         // set the scheduler manager
         m_scheduleManager = systemConfiguration.getScheduleManager();
         // set resource init classes
@@ -882,7 +893,9 @@ public final class OpenCmsCore {
             I_CmsRequestHandler handler = (I_CmsRequestHandler)it.next();
             addRequestHandler(handler);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.warn(Messages.get().key(Messages.INIT_REQUEST_HANDLER_CLASS_1, handler.getClass().getName()));
+                CmsLog.INIT.warn(Messages.get().getBundle().key(
+                    Messages.INIT_REQUEST_HANDLER_CLASS_1,
+                    handler.getClass().getName()));
             }
         }
 
@@ -915,18 +928,18 @@ public final class OpenCmsCore {
         CmsFlexCache flexCache = null;
         try {
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_FLEX_CACHE_STARTING_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_FLEX_CACHE_STARTING_0));
             }
             // get the flex cache configuration from the SystemConfiguration
             CmsFlexCacheConfiguration flexCacheConfiguration = systemConfiguration.getCmsFlexCacheConfiguration();
             // pass configuration to flex cache for initialization
             flexCache = new CmsFlexCache(flexCacheConfiguration);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_FLEX_CACHE_FINISHED_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_FLEX_CACHE_FINISHED_0));
             }
         } catch (Exception e) {
             if (CmsLog.INIT.isWarnEnabled()) {
-                CmsLog.INIT.warn(Messages.get().key(Messages.INIT_FLEX_CACHE_ERROR_1, e.getMessage()));
+                CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.INIT_FLEX_CACHE_ERROR_1, e.getMessage()));
             }
         }
 
@@ -1015,7 +1028,7 @@ public final class OpenCmsCore {
 
             // initialize the search manager
             m_searchManager.initialize(initCmsObject(adminCms));
-            
+
             // initialize the workplace manager
             m_workplaceManager.initialize(initCmsObject(adminCms));
         } catch (CmsException e) {
@@ -1080,7 +1093,7 @@ public final class OpenCmsCore {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_WIZARD_0));
         }
         // output startup message and copyright to STDERR
-        System.err.println(Messages.get().key(
+        System.err.println(Messages.get().getBundle().key(
             Messages.LOG_STARTUP_CONSOLE_NOTE_2,
             OpenCms.getSystemInfo().getVersionName(),
             getSystemInfo().getWebApplicationName()));
@@ -1091,27 +1104,39 @@ public final class OpenCmsCore {
 
         // output startup message to logfile
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             for (int i = 0; i < Messages.COPYRIGHT_BY_ALKACON.length; i++) {
                 CmsLog.INIT.info(". " + Messages.COPYRIGHT_BY_ALKACON[i]);
             }
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LINE_0));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_STARTUP_TIME_1, new Date(System.currentTimeMillis())));
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LINE_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_STARTUP_TIME_1,
+                new Date(System.currentTimeMillis())));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_OPENCMS_VERSION_1,
                 OpenCms.getSystemInfo().getVersionName()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SERVLET_CONTAINER_1, context.getServerInfo()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WEBAPP_NAME_1, getSystemInfo().getWebApplicationName()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SERVLET_PATH_1, getSystemInfo().getServletPath()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_OPENCMS_CONTEXT_1, getSystemInfo().getOpenCmsContext()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WEBINF_PATH_1, getSystemInfo().getWebInfRfsPath()));
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SERVLET_CONTAINER_1, context.getServerInfo()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_WEBAPP_NAME_1,
+                getSystemInfo().getWebApplicationName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_SERVLET_PATH_1,
+                getSystemInfo().getServletPath()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_OPENCMS_CONTEXT_1,
+                getSystemInfo().getOpenCmsContext()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_WEBINF_PATH_1,
+                getSystemInfo().getWebInfRfsPath()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_PROPERTY_FILE_1,
                 getSystemInfo().getConfigurationFileRfsPath()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOG_FILE_1, getSystemInfo().getLogFileRfsPath()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_LOG_FILE_1,
+                getSystemInfo().getLogFileRfsPath()));
         }
 
         // initialize the configuration
@@ -1270,11 +1295,11 @@ public final class OpenCmsCore {
             addRequestHandler(servlet);
             // output the final 'startup is finished' message
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(
+                CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_SYSTEM_RUNNING_1,
                     CmsStringUtil.formatRuntime(getSystemInfo().getRuntime())));
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_LINE_0));
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LINE_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             }
         }
     }
@@ -1351,19 +1376,21 @@ public final class OpenCmsCore {
         synchronized (LOCK) {
             if (getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE) {
 
-                System.err.println(Messages.get().key(
+                System.err.println(Messages.get().getBundle().key(
                     Messages.LOG_SHUTDOWN_CONSOLE_NOTE_2,
                     getSystemInfo().getVersionName(),
                     getSystemInfo().getWebApplicationName()));
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_LINE_0));
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LINE_0));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_SHUTDOWN_START_1,
                         getSystemInfo().getVersionName()));
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_CURRENT_RUNLEVEL_1, new Integer(getRunLevel())));
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
+                        Messages.INIT_CURRENT_RUNLEVEL_1,
+                        new Integer(getRunLevel())));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_SHUTDOWN_TIME_1,
                         new Date(System.currentTimeMillis())));
                 }
@@ -1373,7 +1400,7 @@ public final class OpenCmsCore {
 
                 if (LOG.isDebugEnabled()) {
                     // log exception to see which method did call the shutdown
-                    LOG.debug(Messages.get().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
                 }
 
                 try {
@@ -1381,51 +1408,63 @@ public final class OpenCmsCore {
                         m_staticExportManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_EXPORT_SHUTDOWN_1, e.getMessage()), e);
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_EXPORT_SHUTDOWN_1,
+                        e.getMessage()), e);
                 }
                 try {
                     if (m_moduleManager != null) {
                         m_moduleManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_MODULE_SHUTDOWN_1, e.getMessage()), e);
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_MODULE_SHUTDOWN_1,
+                        e.getMessage()), e);
                 }
                 try {
                     if (m_scheduleManager != null) {
                         m_scheduleManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_SCHEDULE_SHUTDOWN_1, e.getMessage()), e);
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_SCHEDULE_SHUTDOWN_1,
+                        e.getMessage()), e);
                 }
                 try {
                     if (m_resourceManager != null) {
                         m_resourceManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_RESOURCE_SHUTDOWN_1, e.getMessage()), e);
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_RESOURCE_SHUTDOWN_1,
+                        e.getMessage()), e);
                 }
                 try {
                     if (m_securityManager != null) {
                         m_securityManager.destroy();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_SECURITY_SHUTDOWN_1, e.getMessage()), e);
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_SECURITY_SHUTDOWN_1,
+                        e.getMessage()), e);
                 }
                 try {
                     if (m_threadStore != null) {
                         m_threadStore.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_THREAD_SHUTDOWN_1, e.getMessage()), e);
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_THREAD_SHUTDOWN_1,
+                        e.getMessage()), e);
                 }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_OPENCMS_STOPPED_1, runtime));
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_LINE_0));
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_OPENCMS_STOPPED_1, runtime));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LINE_0));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
                 }
-                System.err.println(Messages.get().key(Messages.LOG_CONSOLE_TOTAL_RUNTIME_1, runtime));
+                System.err.println(Messages.get().getBundle().key(Messages.LOG_CONSOLE_TOTAL_RUNTIME_1, runtime));
 
             }
             m_instance = null;
@@ -1451,7 +1490,7 @@ public final class OpenCmsCore {
                 return m_instance;
             }
             if (getRunLevel() != OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-                CmsLog.INIT.error(Messages.get().key(
+                CmsLog.INIT.error(Messages.get().getBundle().key(
                     Messages.LOG_WRONG_INIT_SEQUENCE_2,
                     new Integer(3),
                     new Integer(getRunLevel())));
@@ -1488,7 +1527,7 @@ public final class OpenCmsCore {
                 return m_instance;
             }
             if (getRunLevel() != OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-                CmsLog.INIT.error(Messages.get().key(
+                CmsLog.INIT.error(Messages.get().getBundle().key(
                     Messages.LOG_WRONG_INIT_SEQUENCE_2,
                     new Integer(4),
                     new Integer(getRunLevel())));
@@ -1519,11 +1558,11 @@ public final class OpenCmsCore {
             m_configurationManager.writeConfiguration(clazz);
         } catch (IOException e) {
             CmsLog.getLog(CmsConfigurationManager.class).error(
-                Messages.get().key(Messages.LOG_ERROR_WRITING_CONFIG_1, clazz.getName()),
+                Messages.get().getBundle().key(Messages.LOG_ERROR_WRITING_CONFIG_1, clazz.getName()),
                 e);
         } catch (CmsConfigurationException e) {
             CmsLog.getLog(CmsConfigurationManager.class).error(
-                Messages.get().key(Messages.LOG_ERROR_WRITING_CONFIG_1, clazz.getName()),
+                Messages.get().getBundle().key(Messages.LOG_ERROR_WRITING_CONFIG_1, clazz.getName()),
                 e);
         }
     }
@@ -1717,15 +1756,66 @@ public final class OpenCmsCore {
      */
     private void fireCmsEventHandler(List listeners, CmsEvent event) {
 
-        if ((listeners != null) && (listeners.size() > 0)) {
-            // handle all event listeners that listen only to this event type
-            I_CmsEventListener[] list;
-            synchronized (listeners) {
-                list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
+        if (!LOG.isDebugEnabled()) {
+            // no logging required            
+            if ((listeners != null) && (listeners.size() > 0)) {
+                // handle all event listeners that listen to this event type
+                I_CmsEventListener[] list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
+                // loop through all registered event listeners
+                for (int i = 0; i < list.length; i++) {
+                    // fire the event
+                    list[i].cmsEvent(event);
+                }
             }
-            for (int i = 0; i < list.length; i++) {
-                list[i].cmsEvent(event);
+        } else {
+            // add lots of event debug output (this should usually be disabled)
+            // repeat event handling code to avoid multiple "is log enabled" checks in normal operation
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_EVENT_1, event.toString()));
+            if ((listeners != null) && (listeners.size() > 0)) {
+                // handle all event listeners that listen to this event type
+                I_CmsEventListener[] list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
+                // log the event data
+                if (event.getData() != null) {
+                    Iterator i = event.getData().keySet().iterator();
+                    while (i.hasNext()) {
+                        String key = (String)i.next();
+                        Object value = event.getData().get(key);
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_EVENT_VALUE_3,
+                            key,
+                            value,
+                            event.toString()));
+                    }
+                } else {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_NO_EVENT_VALUE_1, event.toString()));
+                }
+                // log all the registered event listeners
+                for (int j = 0; j < list.length; j++) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_EVENT_LISTENERS_3,
+                        list[j],
+                        new Integer(j),
+                        event.toString()));
+                }
+                // loop through all registered event listeners
+                for (int i = 0; i < list.length; i++) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_EVENT_START_LISTENER_3,
+                        list[i],
+                        new Integer(i),
+                        event.toString()));
+                    // fire the event
+                    list[i].cmsEvent(event);
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_EVENT_END_LISTENER_3,
+                        list[i],
+                        new Integer(i),
+                        event.toString()));
+                }
+            } else {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_EVENT_NO_LISTENER_1, event.toString()));
             }
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_EVENT_COMPLETE_1, event.toString()));
         }
     }
 
@@ -1977,7 +2067,7 @@ public final class OpenCmsCore {
             adminCms = initCmsObject(req, res, getDefaultUsers().getUserAdmin(), null);
         } catch (CmsException e) {
             // this should never happen, if it does we can't continue
-            throw new IOException(Messages.get().key(
+            throw new IOException(Messages.get().getBundle().key(
                 Messages.ERR_INVALID_INIT_USER_2,
                 getDefaultUsers().getUserAdmin(),
                 null));
@@ -1990,7 +2080,7 @@ public final class OpenCmsCore {
             propertyLoginForm = adminCms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true);
         } catch (Throwable t) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(
+                LOG.warn(Messages.get().getBundle().key(
                     Messages.LOG_ERROR_READING_AUTH_PROP_2,
                     CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
                     path), t);
@@ -2032,7 +2122,7 @@ public final class OpenCmsCore {
             // resolve the login form link using the link manager
             redirectURL = m_linkManager.substituteLink(adminCms, redirectURL);
             if (LOG.isDebugEnabled()) {
-                Messages.get().key(Messages.LOG_AUTHENTICATE_PROPERTY_2, redirectURL, path);
+                Messages.get().getBundle().key(Messages.LOG_AUTHENTICATE_PROPERTY_2, redirectURL, path);
             }
             // finally redirect to the login form
             res.sendRedirect(redirectURL);
@@ -2053,7 +2143,7 @@ public final class OpenCmsCore {
             if (m_instance.m_runLevel >= OpenCms.RUNLEVEL_1_CORE_OBJECT) {
                 // otherwise the log is not available
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_RUNLEVEL_CHANGE_2,
                         new Integer(m_instance.m_runLevel),
                         new Integer(level)));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2005/10/12 10:00:06 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/03/27 14:52:46 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class TestProperty extends OpenCmsTestCase {
             

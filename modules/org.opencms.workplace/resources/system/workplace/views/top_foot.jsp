@@ -24,9 +24,9 @@ function doReloadFoot() {
 <body class="buttons-foot" unselectable="on" onload="setTimeout('doReloadFoot()', 300000);">
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 0) %>
-<%= wp.buttonBarLabel("label.user") %><td><%= wp.getSettings().getUser().getName() %></td>
-<%= wp.buttonBarLabel("label.logintime") %><td><%= wp.getLoginTime() %></td>
-<%= wp.buttonBarLabel("label.loginaddress") %><td><%= wp.getLoginAddress() %></td>
+<%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_USER_0) %><td><%= wp.getSettings().getUser().getName() %></td>
+<%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_LOGINTIME_0) %><td><%= wp.getLoginTime() %></td>
+<%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_LOGINADDRESS_0) %><td><%= wp.getLoginAddress() %></td>
 <%= wp.buttonBar(wp.HTML_END) %>
 </body>
 </html>

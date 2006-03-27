@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/06/29 13:06:54 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,13 @@ import org.opencms.file.CmsProperty;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -77,7 +79,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -200,6 +202,20 @@ public class CmsJspActionElement extends CmsJspBean {
      * convenient access to localized resource bundles.<p>
      * 
      * @param bundleName the name of the ResourceBundle to use
+     * @param locale the locale to use for localization
+     * 
+     * @return CmsMessages a message bundle initialized with the provided values
+     */
+    public CmsMessages getMessages(String bundleName, Locale locale) {
+
+        return new CmsMessages(bundleName, locale);
+    }
+
+    /**
+     * Generates an initialized instance of {@link CmsMessages} for 
+     * convenient access to localized resource bundles.<p>
+     * 
+     * @param bundleName the name of the ResourceBundle to use
      * @param language language indentificator for the locale of the bundle
      * @return CmsMessages a message bundle initialized with the provided values
      */
@@ -246,7 +262,7 @@ public class CmsJspActionElement extends CmsJspBean {
         String defaultLanguage) {
 
         try {
-            if ((defaultLanguage != null) && ((language == null) || ("".equals(language)))) {
+            if ((defaultLanguage != null) && CmsStringUtil.isEmpty(language)) {
                 language = defaultLanguage;
             }
             if (language == null) {
@@ -258,7 +274,7 @@ public class CmsJspActionElement extends CmsJspBean {
             if (variant == null) {
                 variant = "";
             }
-            return new CmsMessages(bundleName, language, country, variant);
+            return getMessages(bundleName, new Locale(language, country, variant));
         } catch (Throwable t) {
             handleException(t);
         }
@@ -284,6 +300,44 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
+     * Returns the HTML for an <code>&lt;img src="..." /&gt;</code> tag that includes the given image scaling parameters.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS
+     * @param scaler the image scaler to use for scaling the image
+     * @param attributes a map of additional HTML attributes that are added to the output
+     * 
+     * @return the HTML for an <code>&lt;img src&gt;</code> tag that includes the given image scaling parameters
+     */
+    public String img(String target, CmsImageScaler scaler, Map attributes) {
+
+        return img(target, scaler, attributes, false);
+    }
+
+    /**
+     * Returns the HTML for an <code>&lt;img src="..." /&gt;</code> tag that includes the given image scaling parameters.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS
+     * @param scaler the image scaler to use for scaling the image
+     * @param attributes a map of additional HTML attributes that are added to the output
+     * @param partialTag if <code>true</code>, the opening <code>&lt;img</code> and closing <code> /&gt;</code> is omitted
+     * 
+     * @return the HTML for an <code>&lt;img src&gt;</code> tag that includes the given image scaling parameters
+     */
+    public String img(String target, CmsImageScaler scaler, Map attributes, boolean partialTag) {
+
+        try {
+            return CmsJspTagImage.imageTagAction(target, scaler, attributes, partialTag, getRequest());
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        CmsMessageContainer msgContainer = Messages.get().container(
+            Messages.GUI_ERR_IMG_SCALE_2,
+            target,
+            scaler == null ? "null" : scaler.toString());
+        return getMessage(msgContainer);
+    }
+
+    /**
      * Include a sub-element without paramters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="***" /&gt;</code> tag.<p>
      * 
@@ -294,7 +348,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public void include(String target) throws JspException {
 
-        this.include(target, null, null);
+        include(target, null, null);
     }
 
     /**
@@ -309,7 +363,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public void include(String target, String element) throws JspException {
 
-        this.include(target, element, null);
+        include(target, element, null);
     }
 
     /**
@@ -325,7 +379,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public void include(String target, String element, boolean editable) throws JspException {
 
-        this.include(target, element, editable, null);
+        include(target, element, editable, null);
     }
 
     /**
@@ -405,7 +459,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public void include(String target, String element, Map parameterMap) throws JspException {
 
-        this.include(target, element, false, parameterMap);
+        include(target, element, false, parameterMap);
     }
 
     /**
@@ -511,7 +565,7 @@ public class CmsJspActionElement extends CmsJspBean {
             handleException(t);
         }
         CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_INFO_PROP_READ_1, property);
-        return this.getMessage(msgContainer);
+        return getMessage(msgContainer);
     }
 
     /**
@@ -537,7 +591,7 @@ public class CmsJspActionElement extends CmsJspBean {
             handleException(t);
         }
         CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_WORKPL_LABEL_READ_1, label);
-        return this.getMessage(msgContainer);
+        return getMessage(msgContainer);
     }
 
     /**
@@ -563,7 +617,7 @@ public class CmsJspActionElement extends CmsJspBean {
             handleException(t);
         }
         CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_GEN_LINK_1, link);
-        return this.getMessage(msgContainer);
+        return getMessage(msgContainer);
     }
 
     /**
@@ -573,7 +627,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public Map properties() {
 
-        return this.properties(null);
+        return properties(null);
     }
 
     /**
@@ -645,7 +699,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public String property(String name) {
 
-        return this.property(name, null, null, false);
+        return property(name, null, null, false);
     }
 
     /**
@@ -662,7 +716,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public String property(String name, String file) {
 
-        return this.property(name, file, null, false);
+        return property(name, file, null, false);
     }
 
     /**
@@ -681,7 +735,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public String property(String name, String file, String defaultValue) {
 
-        return this.property(name, file, defaultValue, false);
+        return property(name, file, defaultValue, false);
     }
 
     /**
@@ -723,7 +777,7 @@ public class CmsJspActionElement extends CmsJspBean {
                 Messages.GUI_ERR_FILE_PROP_MISSING_2,
                 name,
                 file);
-            return this.getMessage(msgContainer);
+            return getMessage(msgContainer);
         } else {
             return defaultValue;
         }
@@ -818,6 +872,6 @@ public class CmsJspActionElement extends CmsJspBean {
             handleException(t);
         }
         CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_USER_PROP_READ_1, property);
-        return this.getMessage(msgContainer);
+        return getMessage(msgContainer);
     }
 }

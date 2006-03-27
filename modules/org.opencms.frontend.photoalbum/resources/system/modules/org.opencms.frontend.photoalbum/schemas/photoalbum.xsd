@@ -1,0 +1,42 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.photoalbum/schemas/detail.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.photoalbum/schemas/overview.xsd"/>
+		
+	<xsd:element name="PhotoAlbumConfigurations" type="OpenCmsPhotoAlbumConfigurations"/>
+	
+	<xsd:complexType name="OpenCmsPhotoAlbumConfigurations">
+		<xsd:sequence>
+			<xsd:element name="PhotoAlbumConfiguration" type="OpenCmsPhotoAlbumConfiguration" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsPhotoAlbumConfiguration">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="VfsFolder" type="OpenCmsVfsFile" />
+			<xsd:element name="AlignNavigation" type="OpenCmsString" />
+			<xsd:element name="NavigationPosition" type="OpenCmsString" />
+			<xsd:element name="ShowResourceNameAsTitle" type="OpenCmsBoolean" />	
+			<xsd:element name="Thumbs" type="OpenCmsPhotoAlbumThumb" />
+			<xsd:element name="Details" type="OpenCmsPhotoAlbumDetail" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.photoalbum.workplace"/>
+			<preview uri="${previewtempfile}" />
+			<layouts>
+				<layout element="AlignNavigation" widget="SelectorWidget" configuration="left:${key.photoalbum.text.align.left}|center:${key.photoalbum.text.align.center}|right:${key.photoalbum.text.align.right}" />
+				<layout element="NavigationPosition" widget="SelectorWidget" configuration="t_a:${key.photoalbum.navpos.top.above}|t_b:${key.photoalbum.navpos.top.below}|b_a:${key.photoalbum.navpos.bottom.above}|b_b*:${key.photoalbum.navpos.bottom.below}|t_a,b_b*:${key.photoalbum.navpos.combi.top.bottom.1}" />
+			</layouts>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+			</mappings>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

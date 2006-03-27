@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/CmsProjectSettingsDialog.java,v $
- * Date   : $Date: 2005/07/12 17:21:12 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.projects;
 import org.opencms.db.CmsProjectResourcesDisplayMode;
 import org.opencms.db.CmsUserProjectSettings;
 import org.opencms.db.CmsUserSettings;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -55,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -261,22 +262,23 @@ public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
     private List getSelectModes() {
 
         List retVal = new ArrayList();
+        CmsMessages messages = Messages.get().getBundle(getLocale());
         retVal.add(new CmsSelectWidgetOption(
             CmsProjectResourcesDisplayMode.ALL_CHANGES.getMode(),
             true,
-            Messages.get().key(getLocale(), Messages.GUI_PROJECT_MODE_ALLCHANGES_0, null)));
+            messages.key(Messages.GUI_PROJECT_MODE_ALLCHANGES_0)));
         retVal.add(new CmsSelectWidgetOption(
             CmsProjectResourcesDisplayMode.NEW_FILES.getMode(),
             false,
-            Messages.get().key(getLocale(), Messages.GUI_PROJECT_MODE_NEWFILES_0, null)));
+            messages.key(Messages.GUI_PROJECT_MODE_NEWFILES_0)));
         retVal.add(new CmsSelectWidgetOption(
             CmsProjectResourcesDisplayMode.MODIFIED_FILES.getMode(),
             false,
-            Messages.get().key(getLocale(), Messages.GUI_PROJECT_MODE_MODFILES_0, null)));
+            messages.key(Messages.GUI_PROJECT_MODE_MODFILES_0)));
         retVal.add(new CmsSelectWidgetOption(
             CmsProjectResourcesDisplayMode.DELETED_FILES.getMode(),
             false,
-            Messages.get().key(getLocale(), Messages.GUI_PROJECT_MODE_DELFILES_0, null)));
+            messages.key(Messages.GUI_PROJECT_MODE_DELFILES_0)));
         return retVal;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2005/10/10 16:11:11 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -341,10 +341,7 @@ public class CmsSessionsList extends A_CmsListDialog {
         CmsListColumnDefinition creationCol = new CmsListColumnDefinition(LIST_COLUMN_CREATION);
         creationCol.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_COLS_CREATION_0));
         creationCol.setWidth("16%");
-        CmsListDateMacroFormatter creationDateFormatter = new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_SESSIONS_LIST_COLS_CREATION_FORMAT_1), Messages.get().container(
-            Messages.GUI_SESSIONS_LIST_COLS_CREATION_NEVER_0));
-        creationCol.setFormatter(creationDateFormatter);
+        creationCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(creationCol);
 
         // add column for inactive time

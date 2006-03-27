@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportRequest.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,6 +64,19 @@ public class CmsStaticExportRequest extends HttpServletRequestWrapper {
 
         super(req);
         m_parameters = CmsRequestUtil.createParameterMap(data.getParameters());
+    }
+
+    /**
+     * @see javax.servlet.http.HttpServletRequest#getDateHeader(java.lang.String)
+     */
+    public long getDateHeader(String name) {
+
+        // make sue "last modified since" optimization is NOT used for export requests
+        if (CmsRequestUtil.HEADER_IF_MODIFIED_SINCE.equals(name)) {
+            // return -1, this means "no header has been set" in servlet standard
+            return -1;
+        }
+        return super.getDateHeader(name);
     }
 
     /**

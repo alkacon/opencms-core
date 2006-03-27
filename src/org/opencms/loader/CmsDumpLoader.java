@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2006/03/27 14:52:37 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.64 $ 
+ * @version $Revision: 1.65 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,7 +173,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public String getResourceLoaderInfo() {
 
-        return Messages.get().key(Messages.GUI_LOADER_DUMB_DEFAULT_DESC_0);
+        return Messages.get().getBundle().key(Messages.GUI_LOADER_DUMB_DEFAULT_DESC_0);
     }
 
     /**
@@ -193,9 +193,11 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             if (maxAge != null) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_CLIENT_CACHE_MAX_AGE_1, maxAge));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_CLIENT_CACHE_MAX_AGE_1, maxAge));
             }
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_LOADER_INITIALIZED_1,
+                this.getClass().getName()));
         }
     }
 
@@ -237,24 +239,9 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
 
-        // check if the current request was done by a workplace user
-        boolean isWorkplaceUser = CmsWorkplaceManager.isWorkplaceUser(req);
-
-        if (!isWorkplaceUser) {
-            // check if the request contains a last modified header
-            long lastModifiedHeader = req.getDateHeader(CmsRequestUtil.HEADER_IF_MODIFIED_SINCE);
-            if (lastModifiedHeader > -1) {
-                // last modified header is set, compare it to the requested resource 
-                if ((resource.getState() == CmsResource.STATE_UNCHANGED)
-                    && (resource.getDateLastModified() == lastModifiedHeader)) {
-                    long now = System.currentTimeMillis();
-                    if ((resource.getDateReleased() < now) && (resource.getDateExpired() > now)) {
-                        CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired(), m_clientCacheMaxAge);
-                        res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                        return;
-                    }
-                }
-            }
+        if (canSendLastModifiedHeader(resource, req, res)) {
+            // no further processing required
+            return;
         }
 
         // make sure we have the file contents available
@@ -265,7 +252,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         // set content length header
         res.setContentLength(file.getContents().length);
 
-        if (isWorkplaceUser) {
+        if (CmsWorkplaceManager.isWorkplaceUser(req)) {
             // prevent caching for Workplace users
             res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, System.currentTimeMillis());
             CmsRequestUtil.setNoCacheHeaders(res);
@@ -295,5 +282,41 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     throws CmsException, IOException {
 
         res.getOutputStream().write(CmsFile.upgrade(resource, cms).getContents());
+    }
+
+    /**
+     * Checks id the requested resource must be send to the client by checking the "If-Modified-Since" http header.<p>
+     * 
+     * If the resource has not been modified, the header is send to the client and <code>true</code>
+     * is returned, otherwise nothing is send and <code>false</code> is returned.<p>
+     * 
+     * @param resource the resource to check
+     * @param req the current request
+     * @param res the current response
+     * 
+     * @return <code>true</code> if the last modified header has been send to the client
+     */
+    protected boolean canSendLastModifiedHeader(CmsResource resource, HttpServletRequest req, HttpServletResponse res) {
+
+        // check if the current request was done by a workplace user
+        boolean isWorkplaceUser = CmsWorkplaceManager.isWorkplaceUser(req);
+
+        if (!isWorkplaceUser) {
+            // check if the request contains a last modified header
+            long lastModifiedHeader = req.getDateHeader(CmsRequestUtil.HEADER_IF_MODIFIED_SINCE);
+            if (lastModifiedHeader > -1) {
+                // last modified header is set, compare it to the requested resource 
+                if ((resource.getState() == CmsResource.STATE_UNCHANGED)
+                    && (resource.getDateLastModified() == lastModifiedHeader)) {
+                    long now = System.currentTimeMillis();
+                    if ((resource.getDateReleased() < now) && (resource.getDateExpired() > now)) {
+                        CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired(), m_clientCacheMaxAge);
+                        res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2005/10/10 16:11:12 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2006/03/27 14:52:53 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.86 $ 
+ * @version $Revision: 1.87 $ 
  * 
  * @since 6.0.0 
  * 
@@ -102,7 +102,7 @@ public class CmsImportVersion4 extends A_CmsImport {
     /**
      * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
      */
-    public synchronized void importResources(
+    public void importResources(
         CmsObject cms,
         String importPath,
         I_CmsReport report,
@@ -359,7 +359,7 @@ public class CmsImportVersion4 extends A_CmsImport {
             immutableResources = Collections.EMPTY_LIST;
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
                 Integer.toString(immutableResources.size())));
         }
@@ -405,9 +405,10 @@ public class CmsImportVersion4 extends A_CmsImport {
                 }
 
                 // <datelastmodified>
-                if ((timestamp = CmsImport.getChildElementTextValue(
+                timestamp = CmsImport.getChildElementTextValue(
                     currentElement,
-                    CmsImportExportManager.N_DATELASTMODIFIED)) != null) {
+                    CmsImportExportManager.N_DATELASTMODIFIED);
+                if (timestamp != null) {
                     datelastmodified = convertTimestamp(timestamp);
                 } else {
                     datelastmodified = System.currentTimeMillis();
@@ -420,9 +421,8 @@ public class CmsImportVersion4 extends A_CmsImport {
                 userlastmodified = OpenCms.getImportExportManager().translateUser(userlastmodified);
 
                 // <datecreated>
-                if ((timestamp = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DATECREATED)) != null) {
+                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DATECREATED);
+                if (timestamp != null) {
                     datecreated = convertTimestamp(timestamp);
                 } else {
                     datecreated = System.currentTimeMillis();
@@ -433,18 +433,16 @@ public class CmsImportVersion4 extends A_CmsImport {
                 usercreated = OpenCms.getImportExportManager().translateUser(usercreated);
 
                 // <datereleased>
-                if ((timestamp = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DATERELEASED)) != null) {
+                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DATERELEASED);
+                if (timestamp != null) {
                     datereleased = convertTimestamp(timestamp);
                 } else {
                     datereleased = CmsResource.DATE_RELEASED_DEFAULT;
                 }
 
                 // <dateexpired>
-                if ((timestamp = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DATEEXPIRED)) != null) {
+                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DATEEXPIRED);
+                if (timestamp != null) {
                     dateexpired = convertTimestamp(timestamp);
                 } else {
                     dateexpired = CmsResource.DATE_EXPIRED_DEFAULT;
@@ -540,7 +538,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                             } catch (CmsException e) {
                                 // user or group of ACE might not exist in target system, ignore ACE
                                 if (LOG.isWarnEnabled()) {
-                                    LOG.warn(Messages.get().key(
+                                    LOG.warn(Messages.get().getBundle().key(
                                         Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1,
                                         translatedName), e);
                                 }
@@ -551,7 +549,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         importAccessControlEntries(res, aceList);
 
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().key(
+                            LOG.info(Messages.get().getBundle().key(
                                 Messages.LOG_IMPORTING_4,
                                 new Object[] {
                                     String.valueOf(i + 1),
@@ -567,7 +565,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                             translatedName));
 
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().key(
+                            LOG.info(Messages.get().getBundle().key(
                                 Messages.LOG_SKIPPING_3,
                                 String.valueOf(i + 1),
                                 String.valueOf(importSize),
@@ -584,7 +582,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         translatedName));
 
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(Messages.get().key(
+                        LOG.info(Messages.get().getBundle().key(
                             Messages.LOG_SKIPPING_3,
                             String.valueOf(i + 1),
                             String.valueOf(importSize),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateThread.java,v $
- * Date   : $Date: 2005/10/13 08:34:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.PrintStream;
  *
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,7 +82,7 @@ public class CmsUpdateThread extends Thread {
         m_updateBean = updateBean;
         // init stream and logging thread
         m_pipedOut = new PipedOutputStream();
-        m_loggingThread = new CmsSetupLoggingThread(m_pipedOut, m_updateBean.getUpdateLogName());
+        m_loggingThread = new CmsSetupLoggingThread(m_pipedOut, m_updateBean.getLogName());
     }
 
     /**
@@ -159,29 +159,36 @@ public class CmsUpdateThread extends Thread {
                     if (CmsLog.INIT.isInfoEnabled()) {
                         // log welcome message, the full package name is required because
                         // two different Message classes are used
-                        CmsLog.INIT.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
-                        CmsLog.INIT.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
-                        CmsLog.INIT.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
-                        CmsLog.INIT.info(org.opencms.setup.Messages.get().key(
+                        CmsLog.INIT.info(org.opencms.main.Messages.get().getBundle().key(
+                            org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.INIT.info(org.opencms.main.Messages.get().getBundle().key(
+                            org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.INIT.info(org.opencms.main.Messages.get().getBundle().key(
+                            org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.INIT.info(org.opencms.setup.Messages.get().getBundle().key(
                             org.opencms.setup.Messages.INIT_WELCOME_UPDATE_0));
-                        CmsLog.INIT.info(org.opencms.setup.Messages.get().key(
+                        CmsLog.INIT.info(org.opencms.setup.Messages.get().getBundle().key(
                             org.opencms.setup.Messages.INIT_UPDATE_WORKPLACE_START_0));
-                        CmsLog.INIT.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
-                        CmsLog.INIT.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.INIT.info(org.opencms.main.Messages.get().getBundle().key(
+                            org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.INIT.info(org.opencms.main.Messages.get().getBundle().key(
+                            org.opencms.main.Messages.INIT_DOT_0));
                         for (int i = 0; i < org.opencms.main.Messages.COPYRIGHT_BY_ALKACON.length; i++) {
                             CmsLog.INIT.info(". " + org.opencms.main.Messages.COPYRIGHT_BY_ALKACON[i]);
                         }
-                        CmsLog.INIT.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
-                        CmsLog.INIT.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
-                        CmsLog.INIT.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_LINE_0));
+                        CmsLog.INIT.info(org.opencms.main.Messages.get().getBundle().key(
+                            org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.INIT.info(org.opencms.main.Messages.get().getBundle().key(
+                            org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.INIT.info(org.opencms.main.Messages.get().getBundle().key(
+                            org.opencms.main.Messages.INIT_LINE_0));
 
                     }
                     m_shell.start(new FileInputStream(new File(m_updateBean.getWebAppRfsPath()
-                        + CmsUpdateBean.UPDATE_FOLDER
-                        + File.separatorChar
+                        + CmsUpdateBean.FOLDER_UPDATE
                         + "cmsupdate.txt")));
                     if (CmsLog.INIT.isInfoEnabled()) {
-                        CmsLog.INIT.info(org.opencms.setup.Messages.get().key(
+                        CmsLog.INIT.info(org.opencms.setup.Messages.get().getBundle().key(
                             org.opencms.setup.Messages.INIT_UPDATE_WORKPLACE_FINISHED_0));
                     }
                 } catch (FileNotFoundException e) {

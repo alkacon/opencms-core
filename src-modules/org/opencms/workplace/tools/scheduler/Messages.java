@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/03/27 14:52:59 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,6 +68,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITJOB_ADMIN_TOOL_NAME_0 = "GUI_EDITJOB_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONCLASS_CONTENTNOTIFICATION_0 = "GUI_EDITOR_CRONCLASS_CONTENTNOTIFICATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONCLASS_IMAGE_CACHECLEAN_0 = "GUI_EDITOR_CRONCLASS_IMAGE_CACHECLEAN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONCLASS_IMAGESIZE_0 = "GUI_EDITOR_CRONCLASS_IMAGESIZE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CRONCLASS_MEMORYMONITOR_0 = "GUI_EDITOR_CRONCLASS_MEMORYMONITOR_0";
@@ -274,22 +283,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_JOBS_LIST_COL_LASTEXE_0 = "GUI_JOBS_LIST_COL_LASTEXE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_JOBS_LIST_COL_LASTEXE_FORMAT_1 = "GUI_JOBS_LIST_COL_LASTEXE_FORMAT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_JOBS_LIST_COL_LASTEXE_NEVER_0 = "GUI_JOBS_LIST_COL_LASTEXE_NEVER_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_NAME_0 = "GUI_JOBS_LIST_COL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_NEXTEXE_0 = "GUI_JOBS_LIST_COL_NEXTEXE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_JOBS_LIST_COL_NEXTEXE_FORMAT_1 = "GUI_JOBS_LIST_COL_NEXTEXE_FORMAT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_JOBS_LIST_COL_NEXTEXE_NEVER_0 = "GUI_JOBS_LIST_COL_NEXTEXE_NEVER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_NAME_0 = "GUI_JOBS_LIST_NAME_0";

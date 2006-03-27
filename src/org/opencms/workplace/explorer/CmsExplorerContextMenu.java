@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2005/08/02 10:29:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/27 14:52:30 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -58,28 +57,31 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExplorerContextMenu {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsExplorerContextMenu.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsExplorerContextMenu.class);
+
     /** All context menu entries. */
     private List m_allEntries;
     /** Stores already generated javascript menu outputs with a Locale object as key. */
     private HashMap m_generatedScripts;
-    
+    /** Indicated if this is a multi context menu. */
+    private boolean m_multiMenu;
+
     /**
      * Default constructor.<p>
      */
     public CmsExplorerContextMenu() {
+
         m_allEntries = new ArrayList();
         m_generatedScripts = new HashMap();
     }
-    
+
     /**
      * Adds a list of CmsContextMenuItem objects to the context menu list.<p>
      * 
@@ -88,28 +90,104 @@ public class CmsExplorerContextMenu {
      * @param entries a list of initialized context menu items
      */
     public void addEntries(List entries) {
+
         m_allEntries.addAll(entries);
         sortEntries();
     }
-    
+
+    /**
+     * Adds a single CmsContextMenuItem object to the context menu list.<p>
+     * 
+     * The list is sorted by their order after that operation.<p>
+     * 
+     * @param entry a single context menu item
+     */
+    public void addEntry(CmsExplorerContextMenuItem entry) {
+
+        m_allEntries.add(entry);
+        sortEntries();
+    }
+
+    /**
+     * Adds a single context menu entry to the list of context menu items.<p>
+     * 
+     * @param key the key of the current entry 
+     * @param uri the dialog URI to call with the current entry
+     * @param rules the display rules
+     * @param target the frame target of the menu entry
+     * @param order the sort order of the current entry
+     */
+    public void addMenuEntry(String key, String uri, String rules, String target, String order) {
+
+        Integer orderValue = new Integer(0);
+        try {
+            orderValue = Integer.valueOf(order);
+        } catch (Exception e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_WRONG_ORDER_CONTEXT_MENU_1, key));
+            }
+        }
+        CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
+            CmsExplorerContextMenuItem.TYPE_ENTRY,
+            key,
+            uri,
+            rules,
+            target,
+            orderValue);
+
+        addEntry(item);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MENU_ENTRY_2, key, order));
+        }
+    }
+
+    /**
+     * Adds a menu separator to the list of context menu items.<p>
+     * 
+     * @param order the sort order of the separator
+     */
+    public void addMenuSeparator(String order) {
+
+        Integer orderValue = new Integer(0);
+        try {
+            orderValue = Integer.valueOf(order);
+        } catch (Exception e) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
+        }
+        CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
+            CmsExplorerContextMenuItem.TYPE_SEPARATOR,
+            null,
+            null,
+            null,
+            null,
+            orderValue);
+        addEntry(item);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
+        }
+    }
+
     /**
      * @see java.lang.Object#clone()
      */
     public Object clone() {
+
         CmsExplorerContextMenu objectClone = new CmsExplorerContextMenu();
+        objectClone.setMultiMenu(m_multiMenu);
         objectClone.setAllEntries(m_allEntries);
         return objectClone;
     }
-      
+
     /**
      * Returns all entries of the context menu.<p>
      * 
      * @return all entries of the context menu
      */
     public List getAllEntries() {
+
         return m_allEntries;
     }
-    
+
     /**
      * Builds the Javascript to create the context menu.<p>
      * 
@@ -120,30 +198,40 @@ public class CmsExplorerContextMenu {
      * @return the JavaScript output to create the context menu
      */
     public String getJSEntries(CmsObject cms, CmsExplorerTypeSettings settings, int resTypeId, Locale locale) {
+
         // try to get the stored entries from the Map
         String entries = (String)m_generatedScripts.get(locale);
-        if (entries == null) { 
-            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
+        CmsMessages messages = Messages.get().getBundle(locale);
+        if (entries == null) {
+            //CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
+
             // entries not yet in Map, so generate them
             StringBuffer result = new StringBuffer(4096);
-            String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplace.PATH_WORKPLACE);  
+            String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplace.PATH_WORKPLACE);
 
-            // create the JS for the resource object
-            result.append("\nvi.resource[").append(resTypeId).append("]=new res(\"").append(settings.getName()).append("\", ");
-            result.append("\"");
-            result.append(messages.key(settings.getKey()));
-            result.append("\", vi.skinPath + \"filetypes/");
-            result.append(settings.getIcon());
-            result.append("\", \"");
-            result.append(settings.getNewResourceUri());
-            result.append("\", true);\n");
-            
+            if (!isMultiMenu()) {
+                // create the JS for the resource object
+                result.append("\nvi.resource[").append(resTypeId).append("]=new res(\"").append(settings.getName()).append(
+                    "\", ");
+                result.append("\"");
+                result.append(messages.key(settings.getKey()));
+                result.append("\", vi.skinPath + \"filetypes/");
+                result.append(settings.getIcon());
+                result.append("\", \"");
+                result.append(settings.getNewResourceUri());
+                result.append("\", true);\n");
+            }
+
             Iterator i = getAllEntries().iterator();
             while (i.hasNext()) {
                 // create the context menu items
                 CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)i.next();
                 result.append("addMenuEntry(");
-                result.append(resTypeId);
+                if (isMultiMenu()) {
+                    result.append("'multi'");
+                } else {
+                    result.append(resTypeId);
+                }
                 result.append(", ");
                 if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
                     // create a menu entry
@@ -155,7 +243,7 @@ public class CmsExplorerContextMenu {
                         result.append(jspWorkplaceUri);
                         result.append(item.getUri());
                     }
-                    
+
                     result.append("\", ");
                     // check the item target
                     String target = item.getTarget();
@@ -177,42 +265,47 @@ public class CmsExplorerContextMenu {
                     // create a separator entry
                     result.append("\"-\", \" \", \"''\", \"\");\n");
                     // result: addMenuEntry([id], "-", " ", "''", "ddaaaaaaaaaaaaddddddddddddaaaadddd");
-                }         
+                }
             }
             entries = result.toString();
             // store the generated entries
             m_generatedScripts.put(locale, entries);
         }
-        
-        // determine if this resource type is editable for the current user
-        CmsPermissionSet permissions;
-        try {
-            // get permissions of the current user
-            permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
-        } catch (CmsException e) {
-            // error reading the groups of the current user
-            permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
-            LOG.error(e);
+
+        if (!isMultiMenu()) {
+            // determine if this resource type is editable for the current user
+            CmsPermissionSet permissions = settings.getAccess().getPermissions(cms);
+            if (!permissions.requiresWritePermission()) {
+                // the type is not editable, set editable to false
+                entries += "vi.resource[" + resTypeId + "].editable = false;\n";
+            }
         }
-        if (permissions.getPermissionString().indexOf("+w") == -1) {
-            // the type is not editable, set editable to false
-            entries += "vi.resource[" + resTypeId + "].editable = false;\n";
-        }
-        
+
         return entries;
     }
-    
+
     /**
      * Tests if the context menu is empty.<p>
      * 
      * @return true or false
      */
     public boolean isEmpty() {
+
         boolean empty = true;
         if (m_allEntries.size() > 0) {
             empty = false;
         }
         return empty;
+    }
+
+    /**
+     * Returns true if the menu is a multi context menu for more than one selected file.<p>
+     * 
+     * @return if the menu is a multi context menu for more than one selected file
+     */
+    public boolean isMultiMenu() {
+
+        return m_multiMenu;
     }
 
     /**
@@ -223,17 +316,29 @@ public class CmsExplorerContextMenu {
      * @param entries all entries of the context menu
      */
     public void setAllEntries(List entries) {
+
         m_allEntries = entries;
         sortEntries();
     }
-    
+
+    /**
+     * Sets if the menu is a multi context menu for more than one selected file.<p>
+     * 
+     * @param multiMenu true, if the menu is a multi context menu for more than one selected file, otherwise false
+     */
+    public void setMultiMenu(boolean multiMenu) {
+
+        m_multiMenu = multiMenu;
+    }
+
     /**
      * Sorts the list of entries according to the value of the "order" attribute in the configuration.<p>
      */
     public void sortEntries() {
+
         Collections.sort(m_allEntries);
     }
-    
+
     /**
      * Parses the rules and adds a column for the autolock feature of resources.<p>
      * 
@@ -242,18 +347,21 @@ public class CmsExplorerContextMenu {
      * @return the rules with added autlock rules column
      */
     private String parseRules(String rules, String key) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(rules)) {
+            return "";
+        }
         StringBuffer newRules = new StringBuffer(rules.length() + 4);
         newRules.append(rules.substring(0, 6));
-        if ("explorer.context.lock".equalsIgnoreCase(key) || "explorer.context.unlock".equalsIgnoreCase(key)) {
+        if (Messages.GUI_EXPLORER_CONTEXT_LOCK_0.equalsIgnoreCase(key)
+            || Messages.GUI_EXPLORER_CONTEXT_UNLOCK_0.equalsIgnoreCase(key)) {
             // for "lock" and "unlock" item, use same rules as "unlocked" column
             newRules.append(rules.substring(2, 6));
         } else {
             // for all other items, use same rules as "locked exclusively by current user" column
             newRules.append(rules.substring(6, 10));
-        }       
+        }
         newRules.append(rules.substring(6));
         return newRules.toString();
     }
-    
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2006/01/23 14:19:49 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2006/03/27 14:53:03 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsImport;
 import org.opencms.importexport.CmsImportExportException;
+import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -74,14 +75,11 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
-
-    /** The name of the module import project. */
-    public static final String IMPORT_MODULE_PROJECT_NAME = "ImportModule";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleImportExportHandler.class);
@@ -107,7 +105,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
     public CmsModuleImportExportHandler() {
 
         super();
-        m_description = org.opencms.importexport.Messages.get().key(
+        m_description = org.opencms.importexport.Messages.get().getBundle().key(
             org.opencms.importexport.Messages.GUI_CMSIMPORTHANDLER_DEFAULT_DESC_0);
     }
 
@@ -141,10 +139,18 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             File file = new File(importResource);
             if (file.isFile()) {
                 importZip = new ZipFile(importResource);
-                ZipEntry entry = importZip.getEntry("manifest.xml");
-                stream = importZip.getInputStream(entry);
+                ZipEntry entry = importZip.getEntry(CmsImportExportManager.EXPORT_MANIFEST);
+                if (entry != null) {
+                    stream = importZip.getInputStream(entry);
+                } else {
+                    CmsMessageContainer message = Messages.get().container(
+                        Messages.ERR_NO_MANIFEST_MODULE_IMPORT_1,
+                        importResource);
+                    LOG.error(message.key());
+                    throw new CmsConfigurationException(message);
+                }
             } else if (file.isDirectory()) {
-                file = new File(file, "manifest.xml");
+                file = new File(file, CmsImportExportManager.EXPORT_MANIFEST);
                 stream = new FileInputStream(file);
             }
 
@@ -152,11 +158,11 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             digester.parse(stream);
 
         } catch (IOException e) {
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IO_MODULE_IMPORT_0);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_IO_MODULE_IMPORT_1, importResource);
             LOG.error(message.key(), e);
             throw new CmsConfigurationException(message, e);
         } catch (SAXException e) {
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_SAX_MODULE_IMPORT_0);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_SAX_MODULE_IMPORT_1, importResource);
             LOG.error(message.key(), e);
             throw new CmsConfigurationException(message, e);
         } finally {
@@ -236,9 +242,9 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @return the VFS resources to be exported additionally with the module
      */
-    public String[] getAdditionalResources() {
+    public List getAdditionalResources() {
 
-        return (String[])m_additionalResources.toArray();
+        return m_additionalResources;
     }
 
     /**
@@ -310,14 +316,17 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
                 try {
                     // try to read a (leftover) module import project
-                    importProject = cms.readProject(IMPORT_MODULE_PROJECT_NAME);
+                    importProject = cms.readProject(Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
+                        Messages.GUI_IMPORT_MODULE_PROJECT_NAME_1,
+                        new Object[] {modulePackageName}));
                 } catch (CmsException e) {
                     // create a Project to import the module
                     importProject = cms.createProject(
-                        IMPORT_MODULE_PROJECT_NAME,
-                        Messages.get().key(
-                            cms.getRequestContext().getLocale(),
-                            Messages.GUI_PROJECT_NAME_IMPORT_MODULE_1,
+                        Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
+                            Messages.GUI_IMPORT_MODULE_PROJECT_NAME_1,
+                            new Object[] {modulePackageName}),
+                        Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
+                            Messages.GUI_IMPORT_MODULE_PROJECT_DESC_1,
                             new Object[] {modulePackageName}),
                         OpenCms.getDefaultUsers().getGroupAdministrators(),
                         OpenCms.getDefaultUsers().getGroupAdministrators(),

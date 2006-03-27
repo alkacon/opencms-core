@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2005/06/29 10:50:05 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsFrameset;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,10 +101,10 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         params.append(CmsDialog.DIALOG_CONFIRMED);
         params.append("&directpublish=true&publishsiblings=true");
         params.append("&title=");
-        params.append(CmsEncoder.escapeWBlanks(editor.key("messagebox.title.publishresource")
+        params.append(CmsEncoder.escapeWBlanks(editor.key(Messages.GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0)
             + ": "
             + editor.getParamResource(), CmsEncoder.ENCODING_UTF_8));
-        params.append("&").append(CmsDialog.PARAM_REDIRECT).append("=").append(String.valueOf(true));
+        params.append("&").append(CmsDialog.PARAM_REDIRECT).append("=").append(CmsStringUtil.TRUE);
         params.append("&closelink=");
         if (Boolean.valueOf(editor.getParamDirectedit()).booleanValue()) {
             String linkTarget;
@@ -129,7 +130,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
      */
     public String getButtonName() {
 
-        return "explorer.context.publish";
+        return Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0;
     }
 
     /**
@@ -209,7 +210,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
 
         } catch (CmsException e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_CALC_EDIT_MODE_FAILED_1, filename), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_CALC_EDIT_MODE_FAILED_1, filename), e);
             }
             // something went wrong - so the resource seems not to be editable
             return DIRECT_EDIT_MODE_INACTIVE;

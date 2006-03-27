@@ -1,0 +1,19 @@
+table.pgThumbTable {
+	empty-cells: show;
+}
+
+td.pgThumbImageTitle, td.pgNavigation, td.pgDetailImageDescription, td.pgDetailImageTitle {
+	vertical-align: top;
+	padding-bottom: 5px;
+	padding-right: 8px;
+}
+
+span.pgThumbImageTitle {
+	display: block;
+	padding-top: 2px;
+}
+
+td.pgThumbText {
+	padding-bottom: 5px;
+	padding-right: 8px;
+}

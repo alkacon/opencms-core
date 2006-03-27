@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/10/13 12:05:58 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2006/03/27 14:52:48 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,7 +151,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public void addCopyResource(String source, String target, String type) throws CmsConfigurationException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_COPY_RESOURCE_4, new Object[] {this, source, target, type}));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_ADD_COPY_RESOURCE_4,
+                new Object[] {this, source, target, type}));
         }
 
         if (m_frozen) {
@@ -179,7 +181,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public void addDefaultProperty(CmsProperty property) throws CmsConfigurationException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_DFLT_PROP_2, this, property));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_DFLT_PROP_2, this, property));
         }
 
         if (m_frozen) {
@@ -201,7 +203,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         // this configuration does not support parameters 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_MAPPING_TYPE_2, mapping, this));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MAPPING_TYPE_2, mapping, this));
         }
         if (m_mappings == null) {
             m_mappings = new ArrayList();
@@ -350,7 +352,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public Map getConfiguration() {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_GET_CONFIGURATION_1, this));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_GET_CONFIGURATION_1, this));
         }
         return null;
     }
@@ -436,7 +438,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         // final since subclassed should NOT implement this, but rather the version with 3 String parameters (see below)
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIGURATION_1, this));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIGURATION_1, this));
         }
     }
 
@@ -449,7 +451,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * 
      * @throws CmsConfigurationException if the configuration is invalid
      * 
-     * @deprecated unse <code>{@link #initConfiguration(String, String, String)}</code> instead
+     * @deprecated use <code>{@link #initConfiguration(String, String, String)}</code> instead
      * 
      * @see I_CmsResourceType#initConfiguration(String, String, String)
      */
@@ -465,7 +467,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIGURATION_3, this, name, id));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIGURATION_3, this, name, id));
 
         }
 
@@ -513,7 +515,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         // most resource type do not require any runtime information
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_INITIALIZE_1, this));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_INITIALIZE_1, this));
         }
     }
 
@@ -594,6 +596,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             // if source existed, destination must "steal" the lock 
             securityManager.changeLock(cms.getRequestContext(), destinationResource);
         }
+    }
+
+    public void removeResourceFromProject(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
+    throws CmsException {
+
+        securityManager.removeResourceFromProject(cms.getRequestContext(), resource);
     }
 
     /**
@@ -811,13 +819,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 // log the error and continue with the other copy resources
                 if (LOG.isDebugEnabled()) {
                     // log stack trace in debug level only
-                    LOG.debug(Messages.get().key(
+                    LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_PROCESS_COPY_RESOURCES_3,
                         resourcename,
                         copyResource,
                         target), e);
                 } else {
-                    LOG.error(Messages.get().key(
+                    LOG.error(Messages.get().getBundle().key(
                         Messages.LOG_PROCESS_COPY_RESOURCES_3,
                         resourcename,
                         copyResource,

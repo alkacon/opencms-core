@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2005/07/11 15:55:07 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/03/27 14:52:18 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -206,7 +206,7 @@ public class CmsChnav extends CmsDialog {
             values.add("-1");
         }
 
-        if (attributes != null && !"".equals(attributes.trim())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(attributes)) {
             attributes = " " + attributes;
         } else {
             attributes = "";
@@ -336,9 +336,7 @@ public class CmsChnav extends CmsDialog {
      */
     public String buildNavPosSelector() {
 
-        synchronized (this) {
-            return buildNavPosSelector(getCms(), getParamResource(), null, getMessages());
-        }
+        return buildNavPosSelector(getCms(), getParamResource(), null, getMessages());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorFrameset.java,v $
- * Date   : $Date: 2005/10/10 16:11:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,7 +87,7 @@ public class CmsEditorFrameset extends CmsEditor {
 
         // delete the temporary file        
         deleteTempFile();
-        if ("true".equals(getParamDirectedit()) || forceUnlock) {
+        if (Boolean.valueOf(getParamDirectedit()).booleanValue() || forceUnlock) {
             // unlock the resource when in direct edit mode or force unlock is true
             try {
                 getCms().unlockResource(getParamResource());
@@ -133,7 +133,7 @@ public class CmsEditorFrameset extends CmsEditor {
     public String getParamEditorTitle() {
 
         if (CmsStringUtil.isEmpty(m_paramEditorTitle)) {
-            return key("editor.title.prefix") + " " + getParamResource();
+            return key(Messages.GUI_EDITOR_TITLE_PREFIX_0);
         }
         return m_paramEditorTitle;
     }
@@ -164,7 +164,7 @@ public class CmsEditorFrameset extends CmsEditor {
         // fill the parameter values in the get/set methods
         fillParamValues(settings, request);
 
-        if (getDialogUri().endsWith("editor.jsp")) {
+        if (getDialogRealUri().endsWith("editor.jsp")) {
             // check the required permissions to edit the resource only in the main frame
             if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, true)) {
                 // not write permissions in the folder, close editor

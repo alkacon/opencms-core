@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsModuleReplaceThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,10 +73,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
      */
     public CmsModuleReplaceThread(CmsObject cms, String moduleName, String zipName, boolean old) {
 
-        super(cms, Messages.get().key(
-            cms.getRequestContext().getLocale(),
-            Messages.GUI_DELETE_MODULE_THREAD_NAME_1,
-            new Object[] {moduleName}));
+        super(cms, Messages.get().getBundle().key(Messages.GUI_REPLACE_MODULE_THREAD_NAME_1, moduleName));
         m_moduleName = moduleName;
         m_zipName = zipName;
 
@@ -85,7 +82,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
         m_deleteThread = new CmsModuleDeleteThread(getCms(), modules, true, old);
         m_importThread = new CmsDatabaseImportThread(getCms(), m_zipName, old);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_REPLACE_THREAD_CONSTRUCTED_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_CONSTRUCTED_0));
         }
         m_phase = 0;
     }
@@ -132,7 +129,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
     public void run() {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_REPLACE_THREAD_START_DELETE_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_START_DELETE_0));
         }
         // phase 1: delete the existing module  
         m_phase = 1;
@@ -140,13 +137,13 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
         // get remaining report contents
         m_reportContent = m_deleteThread.getReportUpdate();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_REPLACE_THREAD_START_IMPORT_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_START_IMPORT_0));
         }
         // phase 2: import the new module 
         m_phase = 2;
         m_importThread.run();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_REPLACE_THREAD_FINISHED_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_FINISHED_0));
         }
     }
 }

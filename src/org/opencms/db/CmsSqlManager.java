@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSqlManager.java,v $
- * Date   : $Date: 2005/12/12 09:49:38 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -112,27 +112,27 @@ public class CmsSqlManager {
         return CmsDbPool.getDefaultDbPoolName();
     }
     
-    /**
-     * Returns the number of active connections managed by a pool.<p>
+    /** 
+     * Returns the number of active connections managed by a pool.<p> 
      * 
-     * @param dbPoolUrl the url of a pool
-     * @return the number of active connections
-     * @throws CmsDbException if something goes wrong
-     */
-    public int getActiveConnections (String dbPoolUrl) throws CmsDbException {
-        
+     * @param dbPoolUrl the url of a pool 
+     * @return the number of active connections 
+     * @throws CmsDbException if something goes wrong 
+     */ 
+    public int getActiveConnections (String dbPoolUrl) throws CmsDbException { 
+ 
         return m_driverManager.getActiveConnections(dbPoolUrl); 
-    }
-    
-    /**
-     * Returns the number of idle connections managed by a pool.<p>
+    } 
+ 
+    /** 
+     * Returns the number of idle connections managed by a pool.<p> 
      * 
-     * @param dbPoolUrl the url of a pool
-     * @return the number of idle connections
-     * @throws CmsDbException if something goes wrong
-     */
-    public int getIdleConnections (String dbPoolUrl) throws CmsDbException {
-        
-        return m_driverManager.getIdleConnections(dbPoolUrl);
-    }
+     * @param dbPoolUrl the url of a pool 
+     * @return the number of idle connections 
+     * @throws CmsDbException if something goes wrong 
+     */ 
+    public int getIdleConnections (String dbPoolUrl) throws CmsDbException { 
+ 
+        return m_driverManager.getIdleConnections(dbPoolUrl); 
+    } 
 }

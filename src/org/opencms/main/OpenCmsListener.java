@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsListener.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,7 +73,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             }
         } catch (Throwable t) {
             // make sure all other errors are displayed in the OpenCms log
-            LOG.error(Messages.get().key(Messages.LOG_ERROR_GENERIC_0), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_GENERIC_0), t);
         }
     }
 
@@ -92,7 +92,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             }
         } catch (Throwable t) {
             // make sure all other errors are displayed in the OpenCms log
-            LOG.error(Messages.get().key(Messages.LOG_ERROR_GENERIC_0), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_GENERIC_0), t);
             // throw a new init Exception to make sure a "context destroyed" event is triggered
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_GENERIC_1, t.getMessage()));
         }
@@ -112,7 +112,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             }
         } catch (Throwable t) {
             // make sure all other errors are displayed in the OpenCms log
-            LOG.error(Messages.get().key(Messages.LOG_ERROR_GENERIC_0), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_GENERIC_0), t);
         }
     }
 
@@ -130,7 +130,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             }
         } catch (Throwable t) {
             // make sure all other errors are displayed in the OpenCms log
-            LOG.error(Messages.get().key(Messages.LOG_ERROR_GENERIC_0), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_GENERIC_0), t);
         }
     }
 }

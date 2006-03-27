@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2006/03/27 14:52:35 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,8 +52,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 
 /** 
- * Implementation of the javax.servlet.RequestDispatcher interface to allow JSPs to be loaded
- * from OpenCms.<p>
+ * Implementation of the <code>{@link javax.servlet.RequestDispatcher}</code> interface to allow JSPs to be loaded
+ * from the OpenCms VFS.<p>
  * 
  * This dispatcher will load data from 3 different data sources:
  * <ol>
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,7 +142,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
     public void include(ServletRequest req, ServletResponse res) throws ServletException, IOException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDING_TARGET_2,
                 m_vfsTarget,
                 m_extTarget));
@@ -161,9 +161,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 m_extTarget = m_vfsTarget;
             } catch (CmsException e) {
                 // if other OpenCms exception occured we are in trouble              
-                throw new ServletException(
-                    Messages.get().key(Messages.ERR_FLEXREQUESTDISPATCHER_VFS_ACCESS_EXCEPTION_0),
-                    e);
+                throw new ServletException(Messages.get().getBundle().key(
+                    Messages.ERR_FLEXREQUESTDISPATCHER_VFS_ACCESS_EXCEPTION_0), e);
             }
         }
 
@@ -188,7 +187,9 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
         // This is an external include, probably to a JSP page, dispatch with system dispatcher
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDING_EXTERNAL_TARGET_1, m_extTarget));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDING_EXTERNAL_TARGET_1,
+                m_extTarget));
         }
         m_rd.include(req, res);
     }
@@ -220,7 +221,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 resource = cms.readResource(m_vfsTarget);
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(
+                LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_FLEXREQUESTDISPATCHER_LOADING_RESOURCE_TYPE_1,
                     new Integer(resource.getTypeId())));
             }
@@ -228,13 +229,13 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         } catch (CmsException e) {
             // file might not exist or no read permissions
             controller.setThrowable(e, m_vfsTarget);
-            throw new ServletException(Messages.get().key(
+            throw new ServletException(Messages.get().getBundle().key(
                 Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_READING_RESOURCE_1,
                 m_vfsTarget), e);
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDE_RESOURCE_1, m_vfsTarget));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDE_RESOURCE_1, m_vfsTarget));
         }
         try {
             loader.service(cms, resource, req, res);
@@ -246,11 +247,12 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
     }
 
     /**
-     * Includes the requested resouce, using the Flex cache to cache the results.<p>
+     * Includes the requested resouce, ignoring the Flex cache.<p>
+     * 
      * @param req the servlet request
      * @param res the servlet response
-     * @param controller TODO:
-     * @param cms TODO:
+     * @param controller the Flex controller
+     * @param cms the current users OpenCms context
      * @param resource the requested resource (may be <code>null</code>)
      * 
      * @throws ServletException in case something goes wrong
@@ -271,7 +273,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
         if (f_req.containsIncludeCall(m_vfsTarget)) {
             // this resource was already included earlier, so we have a (probably endless) inclusion loop
-            throw new ServletException(Messages.get().key(
+            throw new ServletException(Messages.get().getBundle().key(
                 Messages.ERR_FLEXREQUESTDISPATCHER_INCLUSION_LOOP_1,
                 m_vfsTarget));
         } else {
@@ -307,7 +309,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                     // the target is already in the cache
                     try {
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().key(
+                            LOG.debug(Messages.get().getBundle().key(
                                 Messages.LOG_FLEXREQUESTDISPATCHER_LOADING_RESOURCE_FROM_CACHE_1,
                                 m_vfsTarget));
                         }
@@ -321,7 +323,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                             t = e;
                         }
                         t = controller.setThrowable(e, m_vfsTarget);
-                        throw new ServletException(Messages.get().key(
+                        throw new ServletException(Messages.get().getBundle().key(
                             Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_RESOURCE_FROM_CACHE_1,
                             m_vfsTarget), t);
                     }
@@ -352,7 +354,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
                             // invalid key is ignored but logged, used key is cache=never
                             if (LOG.isWarnEnabled()) {
-                                LOG.warn(Messages.get().key(
+                                LOG.warn(Messages.get().getBundle().key(
                                     Messages.LOG_FLEXREQUESTDISPATCHER_INVALID_CACHE_KEY_2,
                                     m_vfsTarget,
                                     cacheProperty));
@@ -363,12 +365,12 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
                             // all other errors are not handled here
                             controller.setThrowable(e, m_vfsTarget);
-                            throw new ServletException(Messages.get().key(
+                            throw new ServletException(Messages.get().getBundle().key(
                                 Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_CACHE_PROPERTIES_1,
                                 m_vfsTarget), e);
                         }
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().key(
+                            LOG.debug(Messages.get().getBundle().key(
                                 Messages.LOG_FLEXREQUESTDISPATCHER_ADDING_CACHE_PROPERTIES_2,
                                 m_vfsTarget,
                                 cacheProperty));
@@ -394,26 +396,28 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         resource = cms.readResource(m_vfsTarget);
                     }
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(
+                        LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_FLEXREQUESTDISPATCHER_LOADING_RESOURCE_TYPE_1,
                             new Integer(resource.getTypeId())));
                     }
                     loader = OpenCms.getResourceManager().getLoader(resource);
                 } catch (ClassCastException e) {
                     controller.setThrowable(e, m_vfsTarget);
-                    throw new ServletException(Messages.get().key(
+                    throw new ServletException(Messages.get().getBundle().key(
                         Messages.ERR_FLEXREQUESTDISPATCHER_CLASSCAST_EXCEPTION_1,
                         m_vfsTarget), e);
                 } catch (CmsException e) {
                     // file might not exist or no read permissions
                     controller.setThrowable(e, m_vfsTarget);
-                    throw new ServletException(Messages.get().key(
+                    throw new ServletException(Messages.get().getBundle().key(
                         Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_READING_RESOURCE_1,
                         m_vfsTarget), e);
                 }
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDE_RESOURCE_1, m_vfsTarget));
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDE_RESOURCE_1,
+                        m_vfsTarget));
                 }
                 try {
                     loader.service(cms, resource, w_req, w_res);
@@ -444,11 +448,13 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
             }
 
             if (f_res.hasIncludeList()) {
-                // Special case: This indicates that the output was not yet displayed
+                // special case: this indicates that the output was not yet displayed
                 java.util.Map headers = w_res.getHeaders();
                 byte[] result = w_res.getWriterBytes();
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUESTDISPATCHER_RESULT_1, new String(result)));
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_FLEXREQUESTDISPATCHER_RESULT_1,
+                        new String(result)));
                 }
                 CmsFlexResponse.processHeaders(headers, f_res);
                 f_res.addToIncludeResults(result);

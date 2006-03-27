@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestLoginAndPasswordHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/03/27 14:53:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Tests login and password related functions.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0
  */
@@ -64,7 +64,6 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
     
     /**
      * Test suite for this test class.<p>
-     * Setup is done without importing vfs data.
      * 
      * @return the test suite
      */
@@ -220,12 +219,12 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         
         // disable the test1 user
         CmsUser test1 = cms.readUser(test1User);
-        test1.setDisabled();
+        test1.setEnabled(false);
         cms.writeUser(test1);
         
         error = null;
         try {
-            // try to login with an invlaid username
+            // try to login with an invalid username
             cms.loginUser(test1User, "test1");
         } catch (CmsAuthentificationException e) {
             error = e;
@@ -234,7 +233,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         assertSame(Messages.ERR_LOGIN_FAILED_DISABLED_3, error.getMessageContainer().getKey());
         
         // enable the test1 user again
-        test1.setEnabled();
+        test1.setEnabled(true);
         cms.writeUser(test1);
         
         // try again to login

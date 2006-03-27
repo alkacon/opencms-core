@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsMacroResolver.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:52:42 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsMessages;
-import org.opencms.workplace.CmsWorkplaceMessages;
 
 import java.util.Locale;
 
@@ -42,7 +41,7 @@ import junit.framework.TestCase;
  * Test cases for {@link org.opencms.util.CmsMacroResolver}.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestCmsMacroResolver extends TestCase {
       
@@ -63,7 +62,7 @@ public class TestCmsMacroResolver extends TestCase {
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         
         // add the messages to the resolver
-        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);        
+        CmsMessages messages = new CmsMessages(org.opencms.xml.content.Messages.get().getBundleName(), Locale.ENGLISH);       
         resolver.setMessages(messages);
         
         // resgister some macros for the validation
@@ -74,7 +73,7 @@ public class TestCmsMacroResolver extends TestCase {
         String value1, value2;
         String keyName;
         
-        keyName = "editor.xmlcontent.validation.error";
+        keyName = org.opencms.xml.content.Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_2;
         value1 = messages.key(keyName);
         value2 = resolver.resolveMacros("${key." + keyName + "}");
         assertEquals("Invalid value \"{0}\" according to rule {1}", value1);
@@ -90,7 +89,7 @@ public class TestCmsMacroResolver extends TestCase {
         assertEquals("Invalid value \"This is the final result\" according to rule second", value1);
         assertEquals(value1, value2);    
         
-        keyName = "editor.xmlcontent.validation.warning";
+        keyName = org.opencms.xml.content.Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2;
         value1 = messages.key(keyName);
         value2 = resolver.resolveMacros("${key." + keyName + "}");
         assertEquals("Bad value \"{0}\" according to rule {1}", value1);

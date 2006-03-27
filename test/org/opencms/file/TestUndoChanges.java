@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/03/27 14:52:46 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
 
@@ -82,6 +82,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         suite.addTest(new TestUndoChanges("testUndoChangesAfterCopyNewOverDeleted"));
         suite.addTest(new TestUndoChanges("testUndoChangesAfterCopySiblingOverDeleted"));
         suite.addTest(new TestUndoChanges("testUndoChangesWithAce"));
+        suite.addTest(new TestUndoChanges("testUndoChangesSharedProperty"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -401,6 +402,62 @@ public class TestUndoChanges extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing undoChanges on a resource with an ACE");
         undoChanges(this, cms, "/folder2/index.html");
+    }
+
+    /**
+     * Test undoChanges method to a resource with an ace.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testUndoChangesSharedProperty() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing undoChanges on shared property");
+        
+        // create the files
+        String file = "/a";
+        cms.createResource(file, CmsResourceTypePlain.getStaticTypeId());
+        // publish the project
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();    
+
+        String sibling = "/b";
+        TestSiblings.createSibling(this, cms, file, sibling);
+        // write a persistent no-shared property to test with
+        CmsProperty property = new CmsProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT, "undoChanges navText", null);
+        cms.writePropertyObject(sibling, property);
+        // write a persistent shared property to test with
+        CmsProperty property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, null, "undoChanges description");
+        cms.writePropertyObject(sibling, property1);
+        // publish the project
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();    
+
+        // create a global storage and store the resource
+        createStorage("undoChanges");
+        switchStorage("undoChanges");
+        storeResources(cms, file);
+        storeResources(cms, sibling);
+        switchStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
+
+        // change a shared property
+        CmsProperty property2 = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, "undoChanges title");
+        cms.lockResource(file);
+        cms.writePropertyObject(file, property2);
+        cms.unlockResource(file);
+        //TestProperty.writeProperty(this, cms, file1, property);
+
+        // now undo everything
+        cms.lockResource(file);
+        cms.undoChanges(file, false);
+        cms.unlockResource(file);
+
+        switchStorage("undoChanges");
+
+        // now evaluate the result
+        assertFilter(cms, file, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
+        // project must be current project
+        assertProject(cms, file, cms.getRequestContext().currentProject());
     }
 
 }

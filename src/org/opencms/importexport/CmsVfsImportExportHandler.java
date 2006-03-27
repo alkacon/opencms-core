@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2006/01/23 14:19:49 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/03/27 14:52:54 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,6 +66,9 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
     /** Boolean flag to decide whether user/group data should be exported or not.<p> */
     private boolean m_exportUserdata;
+
+    /** Boolean flag to decide whether webuser data should be exported or not.<p> */
+    private boolean m_exportWebusers;
 
     /** The name of the export file in the real file system.<p> */
     private String m_fileName;
@@ -85,10 +88,11 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public CmsVfsImportExportHandler() {
 
         super();
-        m_description = Messages.get().key(Messages.GUI_CMSIMPORTHANDLER_DEFAULT_DESC_0);
+        m_description = Messages.get().getBundle().key(Messages.GUI_CMSIMPORTHANDLER_DEFAULT_DESC_0);
         m_includeSystem = false;
         m_includeUnchanged = true;
         m_exportUserdata = true;
+        m_exportWebusers = false;
         m_exportPaths = Collections.EMPTY_LIST;
         m_recursive = true;
     }
@@ -100,15 +104,15 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     throws CmsImportExportException, CmsRoleViolationException {
 
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
-        String[] exportPaths = (String[])getExportPaths().toArray(new String[getExportPaths().size()]);
         new CmsExport(
             cms,
             getFileName(),
-            exportPaths,
+            getExportPaths(),
             isIncludeSystem(),
             isIncludeUnchanged(),
             null,
             isExportUserdata(),
+            isExportWebusers(),
             getContentAge(),
             report,
             isRecursive());
@@ -175,6 +179,16 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public boolean isExportUserdata() {
 
         return m_exportUserdata;
+    }
+
+    /**
+     * Returns the boolean flag to decide whether webusers should be exported or not.<p>
+     * 
+     * @return true, if webusers should be exported
+     */
+    public boolean isExportWebusers() {
+
+        return m_exportWebusers;
     }
 
     /**
@@ -262,6 +276,16 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public void setExportUserdata(boolean exportUserdata) {
 
         m_exportUserdata = exportUserdata;
+    }
+
+    /**
+     * Sets the boolean flag to decide whether webusers should be exported or not.<p>
+     * 
+     * @param exportWebusers true, if webusers should not be exported
+     */
+    public void setExportWebusers(boolean exportWebusers) {
+
+        m_exportWebusers = exportWebusers;
     }
 
     /**

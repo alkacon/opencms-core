@@ -17,15 +17,21 @@
   <script type='text/javascript' src='<%=wp.getSkinUri()%>admin/javascript/adminmenu.js'></script>
   <script type='text/javascript'>
     function bodyLoad() {
-      if (navigator.appName == 'Microsoft Internet Explorer' && document.documentElement && navigator.userAgent.indexOf ('Opera') == -1) {
-        setScrollInIE();
-      }
+      checkSize();
       setContextHelp();
       loadingOff();
-      document.getElementById('loaderContainerH').height = document.getElementById('navArea').offsetHeight;
+      document.getElementById('loaderContainerH').height = pHeight();
+      //window.onresize=checkSize;
     }
     function bodyUnload() {
       loadingOn();
+    }
+    function checkSize() {
+      if (wHeight() <= pHeight() && wWidth() < 213) {
+    	parent.location.href='admin-fs.html?scroll=true';
+      } else if (wHeight() > pHeight() && wWidth() > 212) {
+        parent.location.href='admin-fs.html?scroll=false';
+      }
     }
     var activeItem = '/';
   </script>

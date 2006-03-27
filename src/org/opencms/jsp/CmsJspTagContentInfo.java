@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/07/08 12:50:00 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,12 +97,22 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
     private String m_variable;
 
     /**
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     */
+    public int doEndTag() {
+
+        // need to release manually, JSP container may not call release as required (happens with Tomcat)
+        release();
+        return EVAL_PAGE;
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content container" class
-        Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
+        Tag ancestor = findAncestorWithClass(this, I_CmsXmlContentContainer.class);
         if (ancestor == null) {
             // build a container
             CmsMessageContainer container = Messages.get().container(Messages.ERR_PARENTLESS_TAG_1, "contentinfo");
@@ -110,7 +120,7 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
             throw new JspTagException(msg);
         }
 
-        I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;
+        I_CmsXmlContentContainer contentContainer = (I_CmsXmlContentContainer)ancestor;
 
         String tagContent = "";
 
@@ -236,6 +246,17 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
     public boolean isKeepEmptyMacros() {
 
         return true;
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#release()
+     */
+    public void release() {
+
+        m_scope = null;
+        m_value = null;
+        m_variable = null;
+        super.release();
     }
 
     /**

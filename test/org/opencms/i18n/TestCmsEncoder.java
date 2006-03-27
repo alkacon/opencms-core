@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsEncoder.java,v $
- * Date   : $Date: 2005/10/10 16:11:12 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -51,7 +51,7 @@ public class TestCmsEncoder extends TestCase {
     private static final String ENC_ISO_8859_1 = "ISO-8859-1";
     private static final String ENC_ISO_8859_15 = "ISO-8859-15";
     private static final String ENC_US_ASCII = "US-ASCII";
-    private static final String ENC_UTF_8 = "UTF-8";
+    private static final String ENC_UTF_8 = CmsEncoder.ENCODING_UTF_8;
     private static final String ENC_WINDOWS_1252 = "Cp1252";
 
     // working around encoding issues (e.g. of CVS) by using unicode values 
@@ -138,6 +138,19 @@ public class TestCmsEncoder extends TestCase {
             assertEquals(result, dest);
         }
     }
+    
+    /**
+     * Tests the encoding of a single parameter.<p>
+     */
+    public void testParamEncoding() {
+        
+        String term = "Test ‰ˆ¸ƒ÷‹ﬂÄ +-";
+        String encoded = CmsEncoder.encodeParameter(term);
+        String result = CmsEncoder.decodeParameter(encoded);
+        
+        System.out.print(encoded);
+        assertEquals(term, result);     
+    }
 
     /**
      * Encodes a single '%' and ensures that it is transformed. Encodes 
@@ -160,10 +173,10 @@ public class TestCmsEncoder extends TestCase {
      */
     public void testLookupEncoding() {
 
-        assertEquals(CmsEncoder.lookupEncoding("UTF-8", null), "UTF-8");
-        assertEquals(CmsEncoder.lookupEncoding("utf-8", null), "UTF-8");
-        assertEquals(CmsEncoder.lookupEncoding("UTF8", null), "UTF-8");
-        assertEquals(CmsEncoder.lookupEncoding("utf8", null), "UTF-8");
+        assertEquals(CmsEncoder.lookupEncoding("UTF-8", null), CmsEncoder.ENCODING_UTF_8);
+        assertEquals(CmsEncoder.lookupEncoding("utf-8", null), CmsEncoder.ENCODING_UTF_8);
+        assertEquals(CmsEncoder.lookupEncoding("UTF8", null), CmsEncoder.ENCODING_UTF_8);
+        assertEquals(CmsEncoder.lookupEncoding("utf8", null), CmsEncoder.ENCODING_UTF_8);
         assertEquals(CmsEncoder.lookupEncoding("ISO-8859-1", null), "ISO-8859-1");
         assertEquals(CmsEncoder.lookupEncoding("iso-8859-1", null), "ISO-8859-1");
         assertEquals(CmsEncoder.lookupEncoding("ISO8859-1", null), "ISO-8859-1");

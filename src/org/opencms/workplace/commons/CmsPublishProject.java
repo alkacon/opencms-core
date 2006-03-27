@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/07/13 14:30:36 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2006/03/27 14:52:18 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,10 @@ import org.opencms.workplace.threads.CmsPublishThread;
 import org.opencms.workplace.threads.CmsXmlDocumentLinkValidatorThread;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,20 +93,24 @@ public class CmsPublishProject extends CmsReport {
 
     /** Request parameter value for the action: unlock confirmed. */
     public static final String DIALOG_UNLOCK_CONFIRMED = "unlockconfirmed";
+    
+    /** Request parameter name for the publishsiblings parameter. */
+    public static final String PARAM_PUBLISHSIBLINGS = "publishsiblings";
+    
+    /** Request parameter name for the subresources parameter. */
+    public static final String PARAM_SUBRESOURCES = "subresources";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishProject.class);
 
-    // member variables for direct publishing
     private String m_paramDirectpublish;
     private String m_paramModifieddate;
     private String m_paramModifieduser;
-
-    // member variables for publishing a project
     private String m_paramProjectid;
     private String m_paramProjectname;
     private String m_paramPublishsiblings;
     private String m_paramResourcename;
+    private String m_paramSubresources;
 
     /**
      * Public constructor.<p>
@@ -149,52 +156,87 @@ public class CmsPublishProject extends CmsReport {
             case ACTION_CONFIRMED:
             default:
                 try {
-                    CmsResource publishResource = null;
+                    List publishResources = null;
                     boolean directPublish = Boolean.valueOf(getParamDirectpublish()).booleanValue();
 
                     if (directPublish) {
-                        // get the offline resource in direct publish mode
-                        publishResource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-                        // check if the resource is locked in direct publish mode                     
-                        CmsLock lock = getCms().getLock(publishResource);
-                        if (!lock.isNullLock()) {
-                            // resource is locked, so unlock it
-                            getCms().unlockResource(getParamResource());
+                        // get the offline resource(s) in direct publish mode
+                        publishResources = new ArrayList(getResourceList().size());
+                        Iterator i = getResourceList().iterator();
+                        while (i.hasNext()) {
+                            String resName = (String)i.next();
+                            try {
+                                CmsResource res = getCms().readResource(resName, CmsResourceFilter.ALL);
+                                publishResources.add(res);
+                                // check if the resource is locked                   
+                                CmsLock lock = getCms().getLock(resName);
+                                if (! lock.isNullLock()) {
+                                    // resource is locked, so unlock it
+                                    getCms().unlockResource(resName);
+                                }
+                            } catch (CmsException e) {
+                                addMultiOperationException(e);
+                            }
                         }
+                        // for error(s) unlocking resource(s), throw exception
+                        checkMultiOperationException(Messages.get(), Messages.ERR_PUBLISH_MULTI_UNLOCK_0);
                     } else {
                         if (getCms().getRequestContext().currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
                             // set the flag that this is a temporary project
-                            setParamRefreshWorkplace("true");
+                            setParamRefreshWorkplace(CmsStringUtil.TRUE);
                         }
                     }
 
                     if (showUnlockConfirmation()) {
-                        // some resources are locked, unlock them before publishing                                 
+                        // some subresources are locked, unlock them before publishing                                 
                         if (directPublish) {
                             // unlock subresources of a folder
-                            String folderName = getParamResource();
-                            if (!folderName.endsWith("/")) {
-                                folderName += "/";
+                            Iterator i = getResourceList().iterator();
+                            while (i.hasNext()) {
+                                String resName = (String)i.next();
+                                try {
+                                    CmsResource res = getCms().readResource(resName, CmsResourceFilter.ALL);
+                                    if (res.isFolder()) {
+                                        String folderName = resName;
+                                        if (!folderName.endsWith("/")) {
+                                            folderName += "/";
+                                        }
+                                        getCms().lockResource(folderName);
+                                        getCms().unlockResource(folderName);
+                                    }
+                                } catch (CmsException e) {
+                                    addMultiOperationException(e);
+                                }
                             }
-                            getCms().lockResource(folderName);
-                            getCms().unlockResource(folderName);
+                            // for error(s) unlocking resource(s), throw exception
+                            checkMultiOperationException(Messages.get(), Messages.ERR_PUBLISH_MULTI_UNLOCK_0);
                         } else {
                             // unlock all project resources
                             getCms().unlockProject(Integer.parseInt(getParamProjectid()));
                         }
                     }
-
+                    
+                    CmsPublishList publishList = null;
+                    if (directPublish) {
+                        // create publish list for direct publish
+                        boolean publishSubResources = Boolean.valueOf(getParamSubresources()).booleanValue();
+                        publishList = getCms().getPublishList(
+                            publishResources,
+                            Boolean.valueOf(getParamPublishsiblings()).booleanValue(),
+                            publishSubResources);
+                        getCms().checkPublishPermissions(publishList);
+                    }
+                    
                     // start the link validation thread before publishing
                     CmsXmlDocumentLinkValidatorThread thread = new CmsXmlDocumentLinkValidatorThread(
                         getCms(),
-                        publishResource,
-                        "true".equals(getParamPublishsiblings()),
+                        publishList,
                         getSettings());
                     setParamAction(REPORT_BEGIN);
                     setParamThread(thread.getUUID().toString());
 
                     // set the flag that another thread is following
-                    setParamThreadHasNext("true");
+                    setParamThreadHasNext(CmsStringUtil.TRUE);
                     // set the key name for the continue checkbox
                     setParamReportContinueKey(Messages.GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0);
                     getJsp().include(FILE_REPORT_OUTPUT);
@@ -207,42 +249,61 @@ public class CmsPublishProject extends CmsReport {
     }
 
     /**
-     * Builds the HTML for the "publish siblings" checkbox when direct publishing a file.<p>
+     * Builds the HTML for the "publish siblings" and "publish sub resources" checkboxes when direct publishing a file.<p>
      * 
-     * @return the HTMl for the "publish siblings" checkbox  
+     * @return the HTMl for the "publish siblings" and "publish sub resources" checkboxes  
      */
     public String buildCheckSiblings() {
 
         CmsResource res = null;
-        try {
-            res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-        } catch (CmsException e) {
-            // res will be null
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
+        if (! isMultiOperation()) {
+            try {
+                res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+            } catch (CmsException e) {
+                // res will be null
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
             }
         }
-        if ((res != null && res.isFile() && res.getSiblingCount() > 1) || (res != null && res.isFolder())) {
+        StringBuffer result = new StringBuffer(128);
+        boolean showSiblingCheckBox = false;
+        if (isMultiOperation() || (res != null && res.isFile() && res.getSiblingCount() > 1) || (res != null && res.isFolder())) {
             // resource is file and has siblings, so create checkbox
-            StringBuffer retValue = new StringBuffer(128);
-            retValue.append("<tr>\n\t<td>");
-            retValue.append("<input type=\"checkbox\" name=\"publishsiblings\" value=\"true\"");
+            
+            result.append(dialogSpacer());
+            result.append("<input type=\"checkbox\" name=\"");
+            result.append(PARAM_PUBLISHSIBLINGS);
+            result.append("\" value=\"true\"");
             // set the checkbox state to the default value defined in the opencms.properties
             if (getSettings().getUserSettings().getDialogPublishSiblings()) {
-                retValue.append(" checked=\"checked\"");
+                result.append(" checked=\"checked\"");
             }
-            retValue.append(">&nbsp;");
-            retValue.append(key(Messages.GUI_PUBLISH_ALLSIBLINGS_0));
-            retValue.append("</td>\n</tr>\n");
-            return retValue.toString();
+            result.append(">&nbsp;");
+            result.append(key(Messages.GUI_PUBLISH_ALLSIBLINGS_0));
+            showSiblingCheckBox = true;
         }
-        return "";
+        if (isOperationOnFolder()) {
+            // at least one folder is selected, show "publish subresources" checkbox
+            if (showSiblingCheckBox) {
+                result.append("<br>");
+            }
+            result.append("<input type=\"checkbox\" name=\"");
+            result.append(PARAM_SUBRESOURCES);
+            result.append("\" value=\"true\" checked=\"checked\">&nbsp;");
+            if (isMultiOperation()) {
+                result.append(key(Messages.GUI_PUBLISH_MULTI_SUBRESOURCES_0));
+            } else {
+                result.append(key(Messages.GUI_PUBLISH_SUBRESOURCES_0));
+            }
+        }
+        return result.toString();
     }
 
     /**
      * Returns if a resource will be directly published.<p>
      * 
-     * @return "true" if a resource will be directly published
+     * @return <code>"true"</code> if a resource will be directly published
      */
     public String getParamDirectpublish() {
 
@@ -292,7 +353,7 @@ public class CmsPublishProject extends CmsReport {
     /**
      * Returns if siblings of the resource should be published.<p>
      * 
-     * @return "true" (String) if siblings of the resource should be published
+     * @return <code>"true"</code> (String) if siblings of the resource should be published
      */
     public String getParamPublishsiblings() {
 
@@ -310,9 +371,19 @@ public class CmsPublishProject extends CmsReport {
     }
 
     /**
+     * Returns the value of the subresources parameter.<p>
+     * 
+     * @return the value of the subresources parameter
+     */
+    public String getParamSubresources() {
+    
+        return m_paramSubresources;
+    }
+
+    /**
      * Sets if a resource will be directly published.<p>
      * 
-     * @param value "true" (String) if a resource will be directly published
+     * @param value <code>"true"</code> (String) if a resource will be directly published
      */
     public void setParamDirectpublish(String value) {
 
@@ -362,7 +433,7 @@ public class CmsPublishProject extends CmsReport {
     /**
      * Sets if siblings of the resource should be published.<p> 
      * 
-     * @param value "true" (String) if siblings of the resource should be published
+     * @param value <code>"true"</code> (String) if siblings of the resource should be published
      */
     public void setParamPublishsiblings(String value) {
 
@@ -380,6 +451,16 @@ public class CmsPublishProject extends CmsReport {
     }
 
     /**
+     * Sets the value of the subresources parameter.<p>
+     * 
+     * @param paramSubresources the value of the subresources parameter
+     */
+    public void setParamSubresources(String paramSubresources) {
+    
+        m_paramSubresources = paramSubresources;
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
@@ -390,8 +471,8 @@ public class CmsPublishProject extends CmsReport {
         setParamDialogtype(DIALOG_TYPE);
         // set the publishing type: publish project or direct publish
        
-        if (CmsStringUtil.isNotEmpty(getParamResource())) {
-            setParamDirectpublish(String.valueOf(true));
+        if (CmsStringUtil.isNotEmpty(getParamResource()) || isMultiOperation()) {
+            setParamDirectpublish(CmsStringUtil.TRUE);
         }
         // set the action for the JSP switch 
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
@@ -428,14 +509,14 @@ public class CmsPublishProject extends CmsReport {
                 // check the required permissions to publish the resource directly
                 if (!getCms().isManagerOfProject()
                     && !checkResourcePermissions(CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false)) {
-                    // no publish permissions for the resource, set cancel action to close dialog
+                    // no publish permissions for the single resource, set cancel action to close dialog
                     setAction(ACTION_CANCEL);
                     return;
                 }
                 // determine resource name, last modified date and last modified user of resource
                 computePublishResource();
                 // add the title for the direct publish dialog 
-                setParamTitle(key(Messages.GUI_PUBLISH_RESOURCE_1, new Object[] {getParamResourcename()}));
+                setDialogTitle(Messages.GUI_PUBLISH_RESOURCE_1, Messages.GUI_PUBLISH_MULTI_2);
             } else {
                 // add the title for the publish project dialog 
                 setParamTitle(key(Messages.GUI_PUBLISH_PROJECT_0));
@@ -453,7 +534,7 @@ public class CmsPublishProject extends CmsReport {
 
         String projectId = getParamProjectid();
         int id;
-        if (projectId == null || "".equals(projectId.trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(projectId)) {
             // projectid not found in request parameter,
             id = getCms().getRequestContext().currentProject().getId();
             setParamProjectname(getCms().getRequestContext().currentProject().getName());
@@ -463,7 +544,7 @@ public class CmsPublishProject extends CmsReport {
             try {
                 setParamProjectname(getCms().readProject(id).getName());
             } catch (CmsException e) {
-                LOG.error(Messages.get().key(Messages.LOG_SET_PROJECT_NAME_FAILED_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_SET_PROJECT_NAME_FAILED_0), e);
             }
         }
     }
@@ -473,16 +554,18 @@ public class CmsPublishProject extends CmsReport {
      */
     private void computePublishResource() {
 
-        try {
-            CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-            setParamResourcename(res.getName());
-            setParamModifieddate(CmsDateUtil.getDateTime(
-                new Date(res.getDateLastModified()),
-                DateFormat.SHORT,
-                getLocale()));
-            setParamModifieduser(getCms().readUser(res.getUserLastModified()).getName());
-        } catch (CmsException e) {
-            LOG.error(Messages.get().key(Messages.LOG_COMPUTING_PUBRES_FAILED_0), e);
+        if (! isMultiOperation()) {
+            try {
+                CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+                setParamResourcename(res.getName());
+                setParamModifieddate(CmsDateUtil.getDateTime(
+                    new Date(res.getDateLastModified()),
+                    DateFormat.SHORT,
+                    getLocale()));
+                setParamModifieduser(getCms().readUser(res.getUserLastModified()).getName());
+            } catch (CmsException e) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_COMPUTING_PUBRES_FAILED_0), e);
+            }
         }
     }
 
@@ -496,9 +579,17 @@ public class CmsPublishProject extends CmsReport {
         try {
             if (Boolean.valueOf(getParamDirectpublish()).booleanValue()) {
                 // direct publish: check sub resources of a folder
-                CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-                if ((res.getState() != CmsResource.STATE_DELETED) && res.isFolder()) {
-                    return (getCms().countLockedResources(getParamResource()) > 0);
+                if (isOperationOnFolder()) {
+                    int count = 0;
+                    Iterator i = getResourceList().iterator();
+                    while (i.hasNext()) {
+                        String resName = (String)i.next();
+                        CmsResource res = getCms().readResource(resName, CmsResourceFilter.ALL);
+                        if ((res.getState() != CmsResource.STATE_DELETED) && res.isFolder()) {
+                            count += getCms().countLockedResources(resName);
+                        }
+                    }
+                    return (count > 0);
                 }
             } else {
                 // publish project: check all project resources
@@ -506,7 +597,7 @@ public class CmsPublishProject extends CmsReport {
                 return (getCms().countLockedResources(id) > 0);
             }
         } catch (CmsException e) {
-            LOG.error(Messages.get().key(Messages.LOG_DISPLAY_UNLOCK_INF_FAILED_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_DISPLAY_UNLOCK_INF_FAILED_0), e);
         }
         return false;
     }
@@ -526,7 +617,7 @@ public class CmsPublishProject extends CmsReport {
 
         // set the new thread id and flag that no thread is following
         setParamThread(thread.getUUID().toString());
-        setParamThreadHasNext("false");
+        setParamThreadHasNext(CmsStringUtil.FALSE);
 
         // start the publish thread
         thread.start();

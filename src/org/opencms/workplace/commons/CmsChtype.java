@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2005/07/13 14:30:36 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/03/27 14:52:18 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,6 +143,11 @@ public class CmsChtype extends CmsDialog {
                 }
 
                 if (isResourceType) {
+                    if (CmsStringUtil.isEmpty(settings.getNewResourceUri())) {
+                        // skip resource types without valid "new" resource URI
+                        continue;
+                    }
+                    
                     int resTypeId = OpenCms.getResourceManager().getResourceType(settings.getName()).getTypeId();
                     // determine if this resTypeId is changeable by currentResTypeId
 
@@ -155,28 +161,12 @@ public class CmsChtype extends CmsDialog {
 
                     if (changeable) {
                         // determine if this resource type is editable for the current user
-                        CmsPermissionSet permissions;
-                        try {
-                            // get permissions of the current user
-                            permissions = settings.getAccess().getAccessControlList().getPermissions(
-                                cms.getRequestContext().currentUser(),
-                                cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
-                        } catch (CmsException e) {
-                            // error reading the groups of the current user
-                            permissions = settings.getAccess().getAccessControlList().getPermissions(
-                                cms.getRequestContext().currentUser());
-                            if (LOG.isErrorEnabled()) {
-                                LOG.error(org.opencms.workplace.explorer.Messages.get().key(
-                                    org.opencms.workplace.explorer.Messages.LOG_READ_GROUPS_OF_USER_FAILED_1,
-                                    cms.getRequestContext().currentUser().getName()));
-                            }
-                        }
-
-                        String permString = permissions.getPermissionString();
-                        if (permString.indexOf("+w") == -1 || permString.indexOf("+c") == -1) {
-                            // skip resource types without needed write or create permissions
+                        CmsPermissionSet permissions = settings.getAccess().getPermissions(cms);
+                        if (!permissions.requiresWritePermission() || !permissions.requiresControlPermission()) {
+                            // skip resource types without required write or create permissions
                             continue;
                         }
+
                         // create table row with input radio button
                         result.append("<tr><td>");
                         result.append("<input type=\"radio\" name=\"");
@@ -209,7 +199,7 @@ public class CmsChtype extends CmsDialog {
             }
         } catch (CmsException e) {
             // error reading the VFS resource, log error
-            LOG.error(Messages.get().key(Messages.ERR_BUILDING_RESTYPE_LIST_1, dialog.getParamResource()));
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_BUILDING_RESTYPE_LIST_1, dialog.getParamResource()));
         }
         return result.toString();
     }
@@ -278,13 +268,13 @@ public class CmsChtype extends CmsDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         // check the required permissions to change the resource type      
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+        if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
         }
-        
+
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
@@ -298,9 +288,7 @@ public class CmsChtype extends CmsDialog {
             // first call of dialog
             setAction(ACTION_DEFAULT);
             // build title for change file type dialog     
-            setParamTitle(key(Messages.GUI_CHTYPE_1, 
-                new Object[] {CmsResource.getName(getParamResource())}));
+            setParamTitle(key(Messages.GUI_CHTYPE_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
-
 }

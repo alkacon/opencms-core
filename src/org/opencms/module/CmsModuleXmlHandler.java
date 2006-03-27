@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/03/27 14:53:03 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,68 +64,68 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsModuleXmlHandler {
 
     /** The "name" attribute. */
-    protected static final String A_NAME = "name";
+    public static final String A_NAME = "name";
 
     /** The "version" attribute. */
-    protected static final String A_VERSION = "version";
+    public static final String A_VERSION = "version";
 
     /** The node name for the authoremail node. */
-    protected static final String N_AUTHOREMAIL = "authoremail";
+    public static final String N_AUTHOREMAIL = "authoremail";
 
     /** The node name for the authorname node. */
-    protected static final String N_AUTHORNAME = "authorname";
+    public static final String N_AUTHORNAME = "authorname";
 
     /** The node name for the class node. */
-    protected static final String N_CLASS = "class";
+    public static final String N_CLASS = "class";
 
     /** The node name for the datecreated node. */
-    protected static final String N_DATECREATED = "datecreated";
+    public static final String N_DATECREATED = "datecreated";
 
     /** The node name for the date installed node. */
-    protected static final String N_DATEINSTALLED = "dateinstalled";
+    public static final String N_DATEINSTALLED = "dateinstalled";
 
     /** The node name for the dependencies node. */
-    protected static final String N_DEPENDENCIES = "dependencies";
+    public static final String N_DEPENDENCIES = "dependencies";
 
     /** The node name for the dependency node. */
-    protected static final String N_DEPENDENCY = "dependency";
+    public static final String N_DEPENDENCY = "dependency";
 
     /** The node name for the description node. */
-    protected static final String N_DESCRIPTION = "description";
+    public static final String N_DESCRIPTION = "description";
 
     /** The node name for the group node. */
-    protected static final String N_GROUP = "group";
+    public static final String N_GROUP = "group";
 
     /** The node name for a module. */
-    protected static final String N_MODULE = "module";
+    public static final String N_MODULE = "module";
 
     /** The node name for the name node. */
-    protected static final String N_NAME = "name";
+    public static final String N_NAME = "name";
 
     /** The node name for the nicename node. */
-    protected static final String N_NICENAME = "nicename";
+    public static final String N_NICENAME = "nicename";
 
     /** The "param" node name for generic parameters. */
-    protected static final String N_PARAM = "param";
+    public static final String N_PARAM = "param";
 
     /** The node name for the parameters node. */
-    protected static final String N_PARAMETERS = "parameters";
+    public static final String N_PARAMETERS = "parameters";
 
     /** The node name for the resources node. */
-    protected static final String N_RESOURCES = "resources";
+    public static final String N_RESOURCES = "resources";
 
     /** The node name for the user installed node. */
-    protected static final String N_USERINSTALLED = "userinstalled";
+    public static final String N_USERINSTALLED = "userinstalled";
 
     /** The node name for the version node. */
-    protected static final String N_VERSION = "version";
+    public static final String N_VERSION = "version";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleXmlHandler.class);
@@ -456,7 +456,7 @@ public class CmsModuleXmlHandler {
         m_dependencies.add(dependency);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_MOD_DEPENDENCY_2, name, version));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MOD_DEPENDENCY_2, name, version));
         }
     }
 
@@ -484,7 +484,7 @@ public class CmsModuleXmlHandler {
         CmsExportPoint point = new CmsExportPoint(uri, destination);
         m_exportPoints.add(point);
         if (CmsLog.INIT.isInfoEnabled() && (point.getDestinationPath() != null)) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_ADD_EXPORT_POINT_2,
                 point.getUri(),
                 point.getDestinationPath()));
@@ -499,9 +499,15 @@ public class CmsModuleXmlHandler {
      */
     public void addParameter(String key, String value) {
 
+        if (CmsStringUtil.isNotEmpty(key)) {
+            key = key.trim();
+        }
+        if (CmsStringUtil.isNotEmpty(value)) {
+            value = value.trim();
+        }
         m_parameters.put(key, value);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_MOD_PARAM_KEY_2, key, value));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MOD_PARAM_KEY_2, key, value));
         }
     }
 
@@ -513,7 +519,7 @@ public class CmsModuleXmlHandler {
     public void addResource(String resource) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_MOD_RESOURCE_1, resource));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MOD_RESOURCE_1, resource));
         }
         m_resources.add(resource);
     }
@@ -563,9 +569,9 @@ public class CmsModuleXmlHandler {
 
         if (!CmsStringUtil.isValidJavaClassName(name)) {
             // ensure backward compatibility with old (5.0) module names
-            LOG.error(Messages.get().key(Messages.LOG_INVALID_MOD_NAME_IMPORTED_1, name));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_MOD_NAME_IMPORTED_1, name));
             moduleName = makeValidJavaClassName(name);
-            LOG.error(Messages.get().key(Messages.LOG_CORRECTED_MOD_NAME_1, moduleName));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_CORRECTED_MOD_NAME_1, moduleName));
         } else {
             moduleName = name;
         }
@@ -641,8 +647,7 @@ public class CmsModuleXmlHandler {
 
         m_oldModule = true;
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_OLD_MODULE_IMPORTED_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_OLD_MODULE_IMPORTED_0));
         }
     }
-
 }

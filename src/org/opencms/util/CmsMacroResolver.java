@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.util;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -61,7 +60,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,6 +92,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Key used to specify the zip code of the current user as macro value. */
     public static final String KEY_CURRENT_USER_ZIP = "currentuser.zip";
+
+    /** Key used to specify the country of the current user as macro value. */
+    public static final String KEY_CURRENT_USER_COUNTRY = "currentuser.country";
 
     /** Key prefix used to specify the value of a localized key as macro value. */
     public static final String KEY_LOCALIZED_PREFIX = "key.";
@@ -170,7 +172,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      */
     public static String formatMacro(String input) {
 
-        StringBuffer result = new StringBuffer(32);
+        StringBuffer result = new StringBuffer(input.length() + 4);
         result.append(I_CmsMacroResolver.MACRO_DELIMITER);
         result.append(I_CmsMacroResolver.MACRO_START);
         result.append(input);
@@ -250,8 +252,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      */
     public static String resolveMacros(final String input, I_CmsMacroResolver resolver) {
 
-        int len;
-        if ((input == null) || ((len = input.length()) < 3)) {
+        if ((input == null) || (input.length() < 3)) {
             // macro must have at last 3 chars "${}"
             return input;
         }
@@ -262,7 +263,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return input;
         }
 
-        StringBuffer result = new StringBuffer(input.length() * 2);
+        int len = input.length();
+        StringBuffer result = new StringBuffer(len << 1);
         int np, pp1, pp2, e;
         String macro, value;
         boolean keep = resolver.isKeepEmptyMacros();
@@ -383,7 +385,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                     }
                 } catch (CmsException e) {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(
+                        LOG.warn(Messages.get().getBundle().key(
                             Messages.LOG_PROPERTY_READING_FAILED_2,
                             macro,
                             controller.getCurrentRequest().getElementUri()), e);
@@ -481,14 +483,17 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
             if (CmsMacroResolver.KEY_CURRENT_USER_ZIP.equals(macro)) {
                 // the key is the current users zip code
-                return (String)m_cms.getRequestContext().currentUser().getAdditionalInfo(
-                    CmsUserSettings.ADDITIONAL_INFO_ZIPCODE);
+                return m_cms.getRequestContext().currentUser().getZipcode();
+            }
+
+            if (CmsMacroResolver.KEY_CURRENT_USER_COUNTRY.equals(macro)) {
+                // the key is the current users country
+                return m_cms.getRequestContext().currentUser().getCountry();
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_CITY.equals(macro)) {
                 // the key is the current users city
-                return (String)m_cms.getRequestContext().currentUser().getAdditionalInfo(
-                    CmsUserSettings.ADDITIONAL_INFO_TOWN);
+                return m_cms.getRequestContext().currentUser().getCity();
             }
 
             if (CmsMacroResolver.KEY_REQUEST_URI.equals(macro)) {

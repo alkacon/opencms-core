@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/03/27 14:52:53 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.modules;
 
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -69,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -228,6 +229,7 @@ public class CmsModulesList extends A_CmsListDialog {
         // get content
         List moduleNames = getList().getAllContent();
         Iterator i = moduleNames.iterator();
+        CmsMessages messages = Messages.get().getBundle(getLocale());
         while (i.hasNext()) {
             CmsListItem item = (CmsListItem)i.next();
             String moduleName = item.getId();
@@ -265,7 +267,7 @@ public class CmsModulesList extends A_CmsListDialog {
                 while (l.hasNext()) {
                     addRestypes = true;
                     I_CmsResourceType resourceType = (I_CmsResourceType)l.next();
-                    restypes.append(Messages.get().key(Messages.GUI_MODULES_LABEL_RESTYPES_DETAIL_0));
+                    restypes.append(messages.key(Messages.GUI_MODULES_LABEL_RESTYPES_DETAIL_0));
                     restypes.append(":&nbsp;");
                     restypes.append(resourceType.getTypeName());
                     restypes.append("&nbsp;ID:");
@@ -278,7 +280,7 @@ public class CmsModulesList extends A_CmsListDialog {
                 while (m.hasNext()) {
                     addExplorersettings = true;
                     CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)m.next();
-                    explorersettings.append(Messages.get().key(Messages.GUI_MODULES_LABEL_EXPLORERSETTINGSS_DETAIL_0));
+                    explorersettings.append(messages.key(Messages.GUI_MODULES_LABEL_EXPLORERSETTINGSS_DETAIL_0));
                     explorersettings.append(":&nbsp;");
                     explorersettings.append(settings.getName());
                     explorersettings.append("&nbsp;(");

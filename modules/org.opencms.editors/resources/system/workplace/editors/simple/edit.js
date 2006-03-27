@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/simple/edit.js,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/27 14:53:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System

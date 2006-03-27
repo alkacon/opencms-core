@@ -1,0 +1,42 @@
+div.df-add {
+	font-family: monospace;
+	font-size: 12px;
+	background-color: #ccffcc;
+	border-left: 4px solid darkgreen;
+	display: inline;
+}
+div.df-rem {
+	font-family: monospace;
+	font-size: 12px;
+	background-color: #fdc6c6;
+	border-left: 4px solid darkred;
+	display: inline;
+}
+div.df-skp {
+	font-family: monospace;
+	font-size: 12px;
+	background-color: #fdfdc6;
+	border-left: 4px solid olive;
+	display: inline;
+}
+div.df-unc {
+	font-family: monospace;
+	font-size: 12px;
+	border-left: 4px solid lightgrey;
+	display: inline;
+}
+span.df-add {
+	font-family: monospace;
+	font-size: 12px;
+	background-color: #58ff87;
+}
+span.df-rem {
+	font-family: monospace;
+	font-size: 12px;
+	background-color: #ff8686;
+	text-decoration: line-through;
+}
+span.df-unc {
+	font-family: monospace;
+	font-size: 12px;
+}

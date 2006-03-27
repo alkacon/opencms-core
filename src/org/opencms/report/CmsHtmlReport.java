@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2005/12/05 14:22:38 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2006/03/27 14:53:05 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -234,9 +234,9 @@ public class CmsHtmlReport extends A_CmsReport {
     /**
      * @see org.opencms.report.I_CmsReport#println()
      */
-    public synchronized void println() {
+    public void println() {
 
-        this.print(getLineBreak());
+        print(getLineBreak());
     }
 
     /**
@@ -277,7 +277,7 @@ public class CmsHtmlReport extends A_CmsReport {
         if (!m_writeHtml) {
             if (m_showExceptionStackTracke) {
                 buf.append("aT('");
-                buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
+                buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
                 exception = CmsStringUtil.escapeJavaScript(exception);
                 StringTokenizer tok = new StringTokenizer(exception, "\r\n");
@@ -289,7 +289,7 @@ public class CmsHtmlReport extends A_CmsReport {
                 m_content.add(buf);
             } else {
                 buf.append("aT('");
-                buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
+                buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
                 buf.append(CmsStringUtil.escapeJavaScript(throwable.toString()));
                 buf.append("'); ");
                 m_content.add(buf);
@@ -297,7 +297,7 @@ public class CmsHtmlReport extends A_CmsReport {
         } else {
             if (m_showExceptionStackTracke) {
                 buf.append("<span class='throw'>");
-                buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
+                buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
                 exception = CmsStringUtil.escapeJavaScript(exception);
                 StringTokenizer tok = new StringTokenizer(exception, "\r\n");
@@ -308,7 +308,7 @@ public class CmsHtmlReport extends A_CmsReport {
                 buf.append("</span>");
             } else {
                 buf.append("<span class='throw'>");
-                buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
+                buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
                 buf.append(CmsStringUtil.escapeJavaScript(throwable.toString()));
                 buf.append("</span>");
                 buf.append(getLineBreak());
@@ -317,5 +317,4 @@ public class CmsHtmlReport extends A_CmsReport {
 
         return buf;
     }
-
 }

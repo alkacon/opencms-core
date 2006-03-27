@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/12/12 10:45:56 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 6.0.0 
  */
@@ -56,7 +56,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCESSING_POOL_1 = "ERR_ACCESSING_POOL_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_GROUP_FAILED_2 = "ERR_ADD_USER_GROUP_FAILED_2";
 
@@ -194,6 +194,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_USER_1 = "ERR_DELETE_USER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DIRECT_PUBLISH_NO_PERMISSIONS_1 = "ERR_DIRECT_PUBLISH_NO_PERMISSIONS_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_DIRECT_PUBLISH_PARENT_DELETED_2 = "ERR_DIRECT_PUBLISH_PARENT_DELETED_2";
@@ -557,7 +560,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_POOL_URL_1 = "ERR_UNKNOWN_POOL_URL_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_ALL_PROJECT_LOCKED_1 = "ERR_UNLOCK_ALL_PROJECT_LOCKED_1";
 
@@ -632,7 +635,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_WEB_USER_CONSTRAINT_0 = "ERR_WRITE_WEB_USER_CONSTRAINT_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0 = "GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0";
 

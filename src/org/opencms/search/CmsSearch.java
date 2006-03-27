@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2006/03/17 15:26:40 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2006/03/27 14:52:54 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,20 +34,22 @@ package org.opencms.search;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
 
 /**
  * Helper class to access the search facility within a jsp.<p>
@@ -68,38 +70,14 @@ import org.apache.lucene.search.SortField;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearch implements Cloneable {
 
-    /** Sort result documents by date of last modification, then score. */
-    public static final Sort SORT_DATE_CREATED = new Sort(new SortField[] {
-        new SortField(I_CmsDocumentFactory.DOC_DATE_CREATED, true),
-        SortField.FIELD_SCORE});
-
-    /** Sort result documents by date of last modification, then score. */
-    public static final Sort SORT_DATE_LASTMODIFIED = new Sort(new SortField[] {
-        new SortField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, true),
-        SortField.FIELD_SCORE});
-
-    /** Default sort order (by document score - for this <code>null</code> gave best performance). */
-    public static final Sort SORT_DEFAULT = null;
-
-    /** Sort result documents by title, then score. */
-    public static final Sort SORT_TITLE = new Sort(new SortField[] {
-        new SortField(I_CmsDocumentFactory.DOC_TITLE_KEY),
-        SortField.FIELD_SCORE});
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearch.class);
-
-    /** Indicates if a category count should be calculated for the result list. */
-    protected boolean m_calculateCategories;
-
-    /** Contains the list of categories that the search is limited to. */
-    protected String[] m_categories;
 
     /** The result categories of a search. */
     protected Map m_categoriesFound;
@@ -110,15 +88,6 @@ public class CmsSearch implements Cloneable {
     /** The number of displayed pages returned by getPageLinks(). */
     protected int m_displayPages;
 
-    /** The list of fields to search. */
-    protected String[] m_fields;
-
-    /** The index to search. */
-    protected CmsSearchIndex m_index;
-
-    /** The name of the search index. */
-    protected String m_indexName;
-
     /** The latest exception. */
     protected Exception m_lastException;
 
@@ -127,9 +96,6 @@ public class CmsSearch implements Cloneable {
 
     /** The URL which leads to the next result page. */
     protected String m_nextUrl;
-
-    /** The current result page. */
-    protected int m_page;
 
     /** The number of pages for the result list. */
     protected int m_pageCount;
@@ -143,12 +109,6 @@ public class CmsSearch implements Cloneable {
     /** The URL which leads to the previous result page. */
     protected String m_prevUrl;
 
-    /** The current query. */
-    protected String m_query;
-
-    /** The minimum length of the search query. */
-    protected int m_queryLength;
-
     /** The current search result. */
     protected List m_result;
 
@@ -158,12 +118,6 @@ public class CmsSearch implements Cloneable {
     /** The total number of search results matching the query. */
     protected int m_searchResultCount;
 
-    /** Contains the list of search root paths. */
-    protected String[] m_searchRoots;
-
-    /** The search sort order. */
-    protected Sort m_sortOrder;
-
     /**
      * Default constructor, used to instanciate the search facility as a bean.<p>
      */
@@ -171,14 +125,17 @@ public class CmsSearch implements Cloneable {
 
         super();
 
-        m_searchRoots = new String[] {""};
-        m_page = 1;
+        m_parameters = new CmsSearchParameters();
+        m_parameters.setSearchRoots("");
+        m_parameters.setSearchPage(1);
         m_searchResultCount = 0;
         m_matchesPerPage = 10;
         m_displayPages = 10;
-        m_queryLength = -1;
-        m_sortOrder = CmsSearch.SORT_DEFAULT;
-        m_fields = CmsSearchIndex.DOC_META_FIELDS;
+        m_parameters.setSort(CmsSearchParameters.SORT_DEFAULT);
+        List fields = new ArrayList(2);
+        fields.add(CmsSearchIndex.DOC_META_FIELDS[0]);
+        fields.add(CmsSearchIndex.DOC_META_FIELDS[1]);
+        m_parameters.setFields(fields);
     }
 
     /**
@@ -193,7 +150,7 @@ public class CmsSearch implements Cloneable {
      */
     public boolean getCalculateCategories() {
 
-        return m_calculateCategories;
+        return m_parameters.getCalculateCategories();
     }
 
     /**
@@ -203,7 +160,8 @@ public class CmsSearch implements Cloneable {
      */
     public String[] getCategories() {
 
-        return m_categories;
+        List l = m_parameters.getCategories();
+        return (String[])l.toArray(new String[l.size()]);
     }
 
     /**
@@ -223,12 +181,13 @@ public class CmsSearch implements Cloneable {
      */
     public String getFields() {
 
-        if (m_fields == null) {
+        if (m_parameters.getFields() == null) {
             return "";
         }
         StringBuffer result = new StringBuffer();
-        for (int i = 0; i < m_fields.length; i++) {
-            result.append(m_fields[i]);
+        Iterator it = m_parameters.getFields().iterator();
+        while (it.hasNext()) {
+            result.append(it.next());
             result.append(" ");
         }
         return result.toString();
@@ -241,7 +200,7 @@ public class CmsSearch implements Cloneable {
      */
     public String getIndex() {
 
-        return m_indexName;
+        return m_parameters.getSearchIndex().getName();
     }
 
     /**
@@ -275,16 +234,6 @@ public class CmsSearch implements Cloneable {
     }
 
     /**
-     * Gets the current result page.<p>
-     * 
-     * @return the current result page
-     */
-    public int getPage() {
-
-        return m_page;
-    }
-
-    /**
      * Creates a sorted map of URLs to link to other search result pages.<p>
      * 
      * The key values are Integers representing the page number, the entry 
@@ -299,14 +248,14 @@ public class CmsSearch implements Cloneable {
             return links;
         }
         int startIndex, endIndex;
-        String link = m_cms.getRequestContext().getUri() + this.getSearchParameters() + "&page=";
+        String link = m_cms.getRequestContext().getUri() + getSearchParameters() + "&searchPage=";
         if (getDisplayPages() < 1) {
             // number of displayed pages not limited, build a map with all available page links 
             startIndex = 1;
             endIndex = m_pageCount;
         } else {
             // limited number of displayed pages, calculate page range
-            int currentPage = getPage();
+            int currentPage = getSearchPage();
             int countBeforeCurrent = getDisplayPages() / 2;
             int countAfterCurrent;
             if ((currentPage - countBeforeCurrent) < 1) {
@@ -345,21 +294,11 @@ public class CmsSearch implements Cloneable {
      */
     public CmsSearchParameters getParameters() {
 
-        if (m_parameters == null) {
-            m_parameters = new CmsSearchParameters(
-                m_query,
-                m_fields != null ? Arrays.asList(m_fields) : null,
-                m_searchRoots != null ? Arrays.asList(m_searchRoots) : null,
-                m_categories != null ? Arrays.asList(m_categories) : null,
-                m_calculateCategories,
-                m_sortOrder);
-
-            if (m_parameterRestriction != null) {
-                m_parameters = m_parameters.restrict(m_parameterRestriction);
-            }
+        if (m_parameterRestriction != null) {
+            m_parameters = m_parameters.restrict(m_parameterRestriction);
         }
-
         return m_parameters;
+
     }
 
     /**
@@ -379,7 +318,7 @@ public class CmsSearch implements Cloneable {
      */
     public String getQuery() {
 
-        return m_query;
+        return m_parameters.getQuery();
     }
 
     /**
@@ -389,9 +328,19 @@ public class CmsSearch implements Cloneable {
      */
     public int getQueryLength() {
 
-        return m_queryLength;
+        return m_parameters.getQueryLength();
     }
-    
+
+    /**
+     * Gets the current result page.<p>
+     * 
+     * @return the current result page
+     */
+    public int getSearchPage() {
+
+        return m_parameters.getSearchPage();
+    }
+
     /**
      * Creates a String with the necessary search parameters for page links.<p>
      * 
@@ -399,46 +348,50 @@ public class CmsSearch implements Cloneable {
      */
     public String getSearchParameters() {
 
+        // if (m_searchParameters == null) {
         StringBuffer params = new StringBuffer(128);
         params.append("?action=search&query=");
-        params.append(CmsEncoder.encode(m_query));
-        
-        params.append("&matchesPerPage=");
-        params.append(this.getMatchesPerPage());
-        params.append("&displayPages=");
-        params.append(this.getDisplayPages());
-        params.append("&index=");
-        params.append(CmsEncoder.encode(m_indexName));
+        params.append(CmsEncoder.encodeParameter(m_parameters.getQuery()));
 
-        if (m_sortOrder != SORT_DEFAULT) {
+        params.append("&matchesPerPage=");
+        params.append(getMatchesPerPage());
+        params.append("&displayPages=");
+        params.append(getDisplayPages());
+        params.append("&index=");
+        params.append(CmsEncoder.encodeParameter(m_parameters.getIndex()));
+
+        Sort sort = m_parameters.getSort();
+        if (sort != CmsSearchParameters.SORT_DEFAULT) {
             params.append("&sort=");
             // TODO: find a better way to name sort
-            if (m_sortOrder == CmsSearch.SORT_TITLE) {
+            if (sort == CmsSearchParameters.SORT_TITLE) {
                 params.append("title");
-            } else if (m_sortOrder == CmsSearch.SORT_DATE_CREATED) {
+            } else if (sort == CmsSearchParameters.SORT_DATE_CREATED) {
                 params.append("date-created");
-            } else if (m_sortOrder == CmsSearch.SORT_DATE_LASTMODIFIED) {
+            } else if (sort == CmsSearchParameters.SORT_DATE_LASTMODIFIED) {
                 params.append("date-lastmodified");
             }
         }
 
-        if (m_categories != null) {
+        if (m_parameters.getCategories() != null) {
             params.append("&category=");
-            for (int c = 0; c < m_categories.length; c++) {
-                if (c > 0) {
-                    params.append(",");
+            Iterator it = m_parameters.getCategories().iterator();
+            while (it.hasNext()) {
+                params.append(it.next());
+                if (it.hasNext()) {
+                    params.append(',');
                 }
-                params.append(m_categories[c]);
             }
         }
 
-        if (m_searchRoots != null) {
-            params.append("&searchRoot=");
-            for (int c = 0; c < m_searchRoots.length; c++) {
-                if (c > 0) {
-                    params.append(",");
+        if (m_parameters.getRoots() != null) {
+            params.append("&searchRoots=");
+            Iterator it = m_parameters.getRoots().iterator();
+            while (it.hasNext()) {
+                params.append(CmsEncoder.encode((String)it.next()));
+                if (it.hasNext()) {
+                    params.append(',');
                 }
-                params.append(CmsEncoder.encode(m_searchRoots[c]));
             }
         }
 
@@ -466,20 +419,26 @@ public class CmsSearch implements Cloneable {
      */
     public List getSearchResult() {
 
-        if (m_cms != null && m_result == null && m_index != null && CmsStringUtil.isNotEmpty(m_query)) {
+        if (m_cms != null
+            && m_result == null
+            && m_parameters.getIndex() != null
+            && CmsStringUtil.isNotEmpty(m_parameters.getQuery())) {
 
-            if ((this.getQueryLength() > 0) && (m_query.trim().length() < this.getQueryLength())) {
+            if ((getQueryLength() > 0) && (m_parameters.getQuery().trim().length() < getQueryLength())) {
 
                 m_lastException = new CmsSearchException(Messages.get().container(
                     Messages.ERR_QUERY_TOO_SHORT_1,
-                    new Integer(this.getQueryLength())));
+                    new Integer(getQueryLength())));
 
                 return m_result;
             }
 
             try {
 
-                CmsSearchResultList result = m_index.search(m_cms, getParameters(), m_page, m_matchesPerPage);
+                CmsSearchResultList result = m_parameters.getSearchIndex().search(
+                    m_cms,
+                    getParameters(),
+                    m_matchesPerPage);
 
                 if (result.size() > 0) {
 
@@ -494,12 +453,12 @@ public class CmsSearch implements Cloneable {
                     }
 
                     // re-calculate the URLs to browse forward and backward in the search result
-                    String url = m_cms.getRequestContext().getUri() + getSearchParameters() + "&page=";
-                    if (m_page > 1) {
-                        m_prevUrl = url + (m_page - 1);
+                    String url = m_cms.getRequestContext().getUri() + getSearchParameters() + "&searchPage=";
+                    if (m_parameters.getSearchPage() > 1) {
+                        m_prevUrl = url + (m_parameters.getSearchPage() - 1);
                     }
-                    if (m_page < m_pageCount) {
-                        m_nextUrl = url + (m_page + 1);
+                    if (m_parameters.getSearchPage() < m_pageCount) {
+                        m_nextUrl = url + (m_parameters.getSearchPage() + 1);
                     }
                 } else {
                     m_result = Collections.EMPTY_LIST;
@@ -512,7 +471,7 @@ public class CmsSearch implements Cloneable {
             } catch (Exception exc) {
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_SEARCHING_FAILED_0), exc);
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_SEARCHING_FAILED_0), exc);
                 }
 
                 m_result = null;
@@ -565,7 +524,8 @@ public class CmsSearch implements Cloneable {
      */
     public String[] getSearchRoots() {
 
-        return m_searchRoots;
+        List l = m_parameters.getRoots();
+        return (String[])l.toArray(new String[l.size()]);
     }
 
     /**
@@ -575,7 +535,7 @@ public class CmsSearch implements Cloneable {
      */
     public Sort getSortOrder() {
 
-        return m_sortOrder;
+        return m_parameters.getSort();
     }
 
     /**
@@ -591,11 +551,6 @@ public class CmsSearch implements Cloneable {
         m_pageCount = 0;
         m_nextUrl = null;
         m_prevUrl = null;
-        m_searchParameters = null;
-
-        if (m_indexName != null) {
-            setIndex(m_indexName);
-        }
     }
 
     /**
@@ -611,7 +566,7 @@ public class CmsSearch implements Cloneable {
      */
     public void setCalculateCategories(boolean calculateCategories) {
 
-        m_calculateCategories = calculateCategories;
+        m_parameters.setCalculateCategories(calculateCategories);
     }
 
     /**
@@ -625,27 +580,23 @@ public class CmsSearch implements Cloneable {
      */
     public void setCategories(String[] categories) {
 
-        String[] setCategories = null;
+        List setCategories = new LinkedList();
         if (categories != null) {
             if (categories.length != 0) {
                 // ensure all categories are not null, trimmed, not-empty and lowercased
-                int count = 0;
-                String[] setCat = new String[categories.length];
+                String cat;
                 for (int i = 0; i < categories.length; i++) {
-                    String cat = categories[i];
+                    cat = categories[i];
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cat)) {
                         // all categories must internally be lower case, 
                         // since the index keywords are lowercased as well
                         cat = cat.trim().toLowerCase();
-                        setCat[count] = cat;
-                        count++;
+                        setCategories.add(cat);
                     }
                 }
-                setCategories = new String[count];
-                System.arraycopy(setCat, 0, setCategories, 0, count);
             }
         }
-        m_categories = setCategories;
+        m_parameters.setCategories(setCategories);
         resetLastResult();
     }
 
@@ -674,7 +625,8 @@ public class CmsSearch implements Cloneable {
      */
     public void setField(String[] fields) {
 
-        m_fields = fields;
+        List l = new LinkedList(Arrays.asList(fields));
+        m_parameters.setFields(l);
         resetLastResult();
     }
 
@@ -687,19 +639,18 @@ public class CmsSearch implements Cloneable {
      */
     public void setIndex(String indexName) {
 
-        m_indexName = indexName;
-        m_index = null;
         resetLastResult();
-
-        if (m_cms != null && CmsStringUtil.isNotEmpty(indexName)) {
+        CmsSearchIndex index;
+        if (CmsStringUtil.isNotEmpty(indexName)) {
             try {
-                m_index = OpenCms.getSearchManager().getIndex(indexName);
-                if (m_index == null) {
+                index = OpenCms.getSearchManager().getIndex(indexName);
+                if (index == null) {
                     throw new CmsException(Messages.get().container(Messages.ERR_INDEX_NOT_FOUND_1, indexName));
                 }
+                m_parameters.setSearchIndex(index);
             } catch (Exception exc) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_INDEX_ACCESS_FAILED_1, indexName), exc);
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_INDEX_ACCESS_FAILED_1, indexName), exc);
                 }
                 m_lastException = exc;
             }
@@ -718,14 +669,16 @@ public class CmsSearch implements Cloneable {
     }
 
     /**
-     * Sets the current result page.<p>
+     * Set the parameters to use if a non null instance is provided. <p>
      * 
-     * @param page the current result page
+     * @param parameters the parameters to use for the search if a non null instance is provided 
+     * 
      */
-    public void setPage(int page) {
+    public void setParameters(CmsSearchParameters parameters) {
 
-        m_page = page;
-        resetLastResult();
+        if (parameters != null) {
+            m_parameters = parameters;
+        }
     }
 
     /**
@@ -738,7 +691,11 @@ public class CmsSearch implements Cloneable {
      */
     public void setQuery(String query) {
 
-        m_query = query;
+        try {
+            m_parameters.setQuery(CmsEncoder.decodeParameter(query));
+        } catch (CmsIllegalArgumentException iae) {
+            m_lastException = iae;
+        }
         resetLastResult();
     }
 
@@ -749,7 +706,7 @@ public class CmsSearch implements Cloneable {
      */
     public void setQueryLength(int length) {
 
-        m_queryLength = length;
+        m_parameters.setQueryLength(length);
     }
 
     /**
@@ -766,6 +723,20 @@ public class CmsSearch implements Cloneable {
 
         resetLastResult();
         m_parameterRestriction = restriction;
+    }
+
+    /**
+     * Sets the current result page.<p>
+     * 
+     * Works with jsp bean mechanism for request parameter "searchPage" 
+     * that is generated here for page links.<p>
+     * 
+     * @param page the current result page
+     */
+    public void setSearchPage(int page) {
+
+        m_parameters.setSearchPage(page);
+        resetLastResult();
     }
 
     /**
@@ -795,7 +766,8 @@ public class CmsSearch implements Cloneable {
      */
     public void setSearchRoots(String[] searchRoots) {
 
-        m_searchRoots = searchRoots;
+        List l = new LinkedList(Arrays.asList(searchRoots));
+        m_parameters.setRoots(l);
         resetLastResult();
     }
 
@@ -806,7 +778,7 @@ public class CmsSearch implements Cloneable {
      */
     public void setSortOrder(Sort sortOrder) {
 
-        m_sortOrder = sortOrder;
+        m_parameters.setSort(sortOrder);
         resetLastResult();
     }
 
@@ -818,7 +790,6 @@ public class CmsSearch implements Cloneable {
         m_result = null;
         m_lastException = null;
         m_categoriesFound = null;
-        m_parameters = null;
         m_parameterRestriction = null;
     }
 

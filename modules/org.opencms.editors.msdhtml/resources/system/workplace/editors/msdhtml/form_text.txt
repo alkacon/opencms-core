@@ -1,4 +1,4 @@
-<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
 <%
 if (options.showElement("button.customized", displayOptions)) {
@@ -22,7 +22,7 @@ if (wp.isHelpEnabled()) {%>
 <td class="maxwidth">&nbsp;</td>
 <%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
-<%= wp.buttonBar(wp.HTML_END) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_END) %>
 
 </td>
 <tr>

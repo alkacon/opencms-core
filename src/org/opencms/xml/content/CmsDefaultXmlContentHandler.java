@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/10/10 16:11:09 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2006/03/27 14:52:36 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,18 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -57,6 +61,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 /**
@@ -65,11 +71,14 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
+
+    /** Constant for the "appinfo" element name itself. */
+    public static final String APPINFO_APPINFO = "appinfo";
 
     /** Constant for the "configuration" appinfo attribute name. */
     public static final String APPINFO_ATTR_CONFIGURATION = "configuration";
@@ -131,6 +140,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "rule" appinfo element name. */
     public static final String APPINFO_RULE = "rule";
 
+    /** The file where the appinfo schema is located. */
+    public static final String APPINFO_SCHEMA_FILE = "org/opencms/xml/content/DefaultAppinfo.xsd";
+
+    /** The XML system is for the appinfo schema. */
+    public static final String APPINFO_SCHEMA_SYSTEM_ID = CmsConfigurationManager.DEFAULT_DTD_PREFIX
+        + APPINFO_SCHEMA_FILE;
+
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
 
@@ -139,11 +155,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Default message for validation errors. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation.path}: "
-        + "${key.editor.xmlcontent.validation.error|${validation.value}|[${validation.regex}]}";
+        + "${key." + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_2 + "|${validation.value}|[${validation.regex}]}";
 
     /** Default message for validation warnings. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_WARNING = "${validation.path}: "
-        + "${key.editor.xmlcontent.validation.warning|${validation.value}|[${validation.regex}]}";
+        + "${key." + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2 + "|${validation.value}|[${validation.regex}]}";
 
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map m_configurationValues;
@@ -181,6 +197,23 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public CmsDefaultXmlContentHandler() {
 
         init();
+    }
+
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in a separate file for easier editing
+        byte[] appinfoSchema;
+        try {
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(Messages.get().container(
+                org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                APPINFO_SCHEMA_FILE), e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -284,9 +317,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     throws CmsXmlException {
 
         if (appInfoElement == null) {
-            // no appinfo provided, so no mapping is required
+            // no appinfo provided, so no initialization is required
             return;
         }
+
+        // validate the appinfo element XML content with the default appinfo handler schema
+        validateAppinfoElement(appInfoElement);
 
         // re-initialize the local variables
         init();
@@ -322,6 +358,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         content.validateXmlStructure(new CmsXmlEntityResolver(cms));
         // read the content-conversion property
         String contentConversion = CmsHtmlConverter.getConversionSettings(cms, file);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(contentConversion)) {
+            // enable pretty printing and XHTML conversion of XML content html fields by default
+            contentConversion = CmsHtmlConverter.PARAM_XHTML;
+        }
         content.setConversion(contentConversion);
         // correct the HTML structure 
         file = content.correctXmlStructure(cms);
@@ -372,7 +412,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 // a) all siblings are handled
                 // b) only the "right" locale is mapped to a sibling
 
-                for (int i = 0; i < siblings.size(); i++) {
+                for (int i = (siblings.size() - 1); i >= 0; i--) {
                     // get filename
                     String filename = ((CmsResource)siblings.get(i)).getRootPath();
                     Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, filename);
@@ -386,8 +426,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     String stringValue = value.getStringValue(cms);
                     if (mapping.startsWith(MAPTO_PROPERTY_LIST) && (value.getIndex() == 0)) {
 
+                        boolean mapToShared;
+                        int prefixLength;
+                        // check which mapping is used (shared or individual)
+                        if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
+                            mapToShared = true;
+                            prefixLength = MAPTO_PROPERTY_LIST_SHARED.length();
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY_LIST_INDIVIDUAL.length();
+                        } else {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY_LIST.length();
+                        }
+
                         // this is a property list mapping
-                        String property = mapping.substring(MAPTO_PROPERTY_LIST.length());
+                        String property = mapping.substring(prefixLength);
 
                         String path = CmsXmlUtils.removeXpathIndex(value.getPath());
                         List values = content.getValues(path, locale);
@@ -401,15 +455,54 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                             }
                         }
 
+                        CmsProperty p;
+                        if (mapToShared) {
+                            // map to shared value
+                            p = new CmsProperty(property, null, result.toString());
+                        } else {
+                            // map to individual value
+                            p = new CmsProperty(property, result.toString(), null);
+                        }
                         // write the created list string value in the selected property
-                        cms.writePropertyObject(filename, new CmsProperty(property, result.toString(), null));
+                        cms.writePropertyObject(filename, p);
+                        if (mapToShared) {
+                            // special case: shared mappings must be written only to one sibling, end loop
+                            i = 0;
+                        }
 
                     } else if (mapping.startsWith(MAPTO_PROPERTY)) {
 
+                        boolean mapToShared;
+                        int prefixLength;
+                        // check which mapping is used (shared or individual)                        
+                        if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
+                            mapToShared = true;
+                            prefixLength = MAPTO_PROPERTY_SHARED.length();
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY_INDIVIDUAL.length();
+                        } else {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY.length();
+                        }
+
                         // this is a property mapping
-                        String property = mapping.substring(MAPTO_PROPERTY.length());
+                        String property = mapping.substring(prefixLength);
+
+                        CmsProperty p;
+                        if (mapToShared) {
+                            // map to shared value
+                            p = new CmsProperty(property, null, stringValue);
+                        } else {
+                            // map to individual value
+                            p = new CmsProperty(property, stringValue, null);
+                        }
                         // just store the string value in the selected property
-                        cms.writePropertyObject(filename, new CmsProperty(property, stringValue, null));
+                        cms.writePropertyObject(filename, p);
+                        if (mapToShared) {
+                            // special case: shared mappings must be written only to one sibling, end loop
+                            i = 0;
+                        }
 
                     } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
 
@@ -432,7 +525,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                                 file.setDateExpired(date);
                                 break;
                             default:
-                        // TODO: handle invalid / other mappings                                
+                        // ignore invalid / other mappings                                
                         }
                     }
                 }
@@ -697,7 +790,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * attribute.<p> 
      * 
      * @param root the "defaults" element from the appinfo node of the XML content definition
-     * @param contentDefinition the content definition the validation rules belong to
+     * @param contentDefinition the content definition the default values belong to
      * @throws CmsXmlException if something goes wrong
      */
     protected void initDefaultValues(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
@@ -709,7 +802,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String defaultValue = element.attributeValue(APPINFO_ATTR_VALUE);
             if ((elementName != null) && (defaultValue != null)) {
-                // add a widget mapping for the element
+                // add a default value mapping for the element
                 addDefault(contentDefinition, elementName, defaultValue);
             }
         }
@@ -723,7 +816,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * the default widget is the {@link org.opencms.widgets.CmsInputWidget}.
      * However, certain values can also use more then one widget, for example you may 
      * also use a {@link org.opencms.widgets.CmsCheckboxWidget} for a String value,
-     * and as a result the Strings possible values would be eithe "false" or "true",
+     * and as a result the Strings possible values would be eithe <code>"false"</code> or <code>"true"</code>,
      * but nevertheless be a String.<p>
      *
      * The widget to use can further be controlled using the <code>widget</code> attribute.
@@ -952,6 +1045,28 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 }
             }
         }
+    }
+
+    /**
+     * Validates if the given <code>appinfo</code> element node from the XML content definition schema
+     * is valid according the the capabilities of this content handler.<p> 
+     * 
+     * @param appinfoElement the <code>appinfo</code> element node to validate
+     *  
+     * @throws CmsXmlException in case the element validation fails
+     */
+    protected void validateAppinfoElement(Element appinfoElement) throws CmsXmlException {
+
+        // create a document to validate
+        Document doc = DocumentHelper.createDocument();
+        Element root = doc.addElement(APPINFO_APPINFO);
+        // attach the default appinfo schema
+        root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
+        root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, APPINFO_SCHEMA_SYSTEM_ID);
+        // append the content from the appinfo node in the content definition 
+        root.appendContent(appinfoElement);
+        // now validate the document with the default appinfo schema
+        CmsXmlUtils.validateXmlStructure(doc, CmsEncoder.ENCODING_UTF_8, new CmsXmlEntityResolver(null));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,7 +121,11 @@ public class CmsDisplayWidget extends A_CmsWidget {
             result.append("\" src=\"");
             result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.png"));
             result.append("\" alt=\"\" border=\"0\"");
-            result.append(getJsHelpMouseHandler(widgetDialog, locKey));
+            if (widgetDialog.useNewStyle()) {
+                result.append(getJsHelpMouseHandler(widgetDialog, locKey, null));
+            } else {
+                result.append(getJsHelpMouseHandler(widgetDialog, locKey, CmsEncoder.escape(locValue, cms.getRequestContext().getEncoding())));
+            }
             result.append("></td>");
             return result.toString();
         }
@@ -139,21 +143,26 @@ public class CmsDisplayWidget extends A_CmsWidget {
             return "";
         }
         helpIdsShown.add(helpId);
-        StringBuffer result = new StringBuffer(128);
+        
         // calculate the key        
         String locValue = widgetDialog.getMessages().key(helpId, true);
         if (locValue == null) {
             // there was no help message found for this key, so return an empty string
             return "";
         } else {
-            result.append("<div class=\"help\" id=\"help");
-            result.append(helpId);
-            result.append("\"");
-            result.append(getJsHelpMouseHandler(widgetDialog, helpId));
-            result.append(">");
-            result.append(locValue);
-            result.append("</div>\n");
-            return result.toString();
+            if (widgetDialog.useNewStyle()) {
+                StringBuffer result = new StringBuffer(128);
+                result.append("<div class=\"help\" id=\"help");
+                result.append(helpId);
+                result.append("\"");
+                result.append(getJsHelpMouseHandler(widgetDialog, helpId, helpId));
+                result.append(">");
+                result.append(locValue);
+                result.append("</div>\n");
+                return result.toString();
+            } else {
+                return "";
+            }
         }
     }
 

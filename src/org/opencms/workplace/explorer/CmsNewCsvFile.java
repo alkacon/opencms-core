@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2006/01/25 16:57:54 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2006/03/27 14:52:30 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,12 +112,12 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     /** The delimiter to separate the text. */
     public static final char TEXT_DELIMITER = '"';
 
-    /** The delimiter to start a tag */
+    /** The delimiter to start a tag. */
     public static final String TAG_START_DELIMITER = "<";
-    
-    /** The delimiter to end a tag */
-    public static final String TAG_END_DELIMITER = ">";    
-    
+
+    /** The delimiter to end a tag. */
+    public static final String TAG_END_DELIMITER = ">";
+
     /** the delimiters, the csv data can be separated with.*/
     static final String[] DELIMITERS = {";", ",", "\t"};
 
@@ -371,10 +371,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     public String buildDelimiterSelect() {
 
         Object[] optionStrings = new Object[] {
-            key("input.bestmatching"),
-            key("input.semicolon"),
-            key("input.comma"),
-            key("input.tab")};
+            key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_BEST_0),
+            key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_SEMICOLON_0),
+            key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_COMMA_0),
+            key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_TAB_0)};
         List options = new ArrayList(Arrays.asList(optionStrings));
         List values = new ArrayList(Arrays.asList(new Object[] {"best", ";", ",", "tab"}));
         String parameters = "name=\"" + PARAM_DELIMITER + "\" class=\"maxwidth\"";
@@ -394,7 +394,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             List options = new ArrayList();
             List values = new ArrayList();
 
-            options.add(key("input.nostyle"));
+            options.add(key(Messages.GUI_NEWRESOURCE_CONVERSION_NOSTYLE_0));
             values.add("");
 
             CmsResource resource;
@@ -426,7 +426,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             StringBuffer result = new StringBuffer(512);
             // build a select box and a table row around
             result.append("<tr><td style=\"white-space: nowrap;\" unselectable=\"on\">");
-            result.append(key("input.xsltfile"));
+            result.append(key(Messages.GUI_NEWRESOURCE_CONVERSION_XSLTFILE_0));
             result.append("</td><td class=\"maxwidth\">");
             String parameters = "class=\"maxwidth\" name=\"" + PARAM_XSLTFILE + "\"";
             result.append(buildSelect(parameters, options, values, 0));
@@ -554,7 +554,8 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         List result = new ArrayList();
         try {
             // find all files of generic xmlcontent in the modules folder
-            Iterator xmlFiles = getCms().readResources(CmsWorkplace.VFS_PATH_MODULES,
+            Iterator xmlFiles = getCms().readResources(
+                CmsWorkplace.VFS_PATH_MODULES,
                 CmsResourceFilter.DEFAULT_FILES.addRequireType(CmsResourceTypePlain.getStaticTypeId()),
                 true).iterator();
             while (xmlFiles.hasNext()) {
@@ -616,7 +617,14 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
         String csvData = getParamCsvContent();
         String lineSeparator = System.getProperty("line.separator");
-        String formatString = csvData.substring(0, csvData.indexOf(lineSeparator));
+        int index = csvData.indexOf(lineSeparator);
+        if (index == -1) {
+            // e.g. on Windows machines, the line separator is \r\n, but the lines of
+            // pasted data are separated by \n
+            lineSeparator = "\n";
+            index = csvData.indexOf("\n");
+        }
+        String formatString = csvData.substring(0, index);
         String delimiter = getParamDelimiter();
 
         StringBuffer xml = new StringBuffer("<table>");
@@ -631,9 +639,9 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         BufferedReader br = new BufferedReader(new StringReader(csvData));
         while ((line = br.readLine()) != null) {
             xml.append("<tr>\n");
-            
+
             // must use tokenizer with delimiters include in order to handle empty cells appropriately
-            StringTokenizer t = new StringTokenizer(line, delimiter, true); 
+            StringTokenizer t = new StringTokenizer(line, delimiter, true);
             boolean hasValue = false;
             while (t.hasMoreElements()) {
                 String item = (String)t.nextElement();
@@ -642,10 +650,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                     hasValue = true;
                 }
                 if (!item.equals(delimiter)) {
-                    
+
                     // remove enclosing delimiters
                     item = removeStringDelimiters(item);
-                    
+
                     // in order to allow links, lines starting and ending with tag delimiters (< ...>) remains unescaped
                     if (item.startsWith(TAG_START_DELIMITER) && item.endsWith(TAG_END_DELIMITER)) {
                         xml.append(item);
@@ -662,7 +670,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             } else {
                 xml.append("<td></td>\n");
             }
-            
+
             xml.append("</tr>\n");
         }
 

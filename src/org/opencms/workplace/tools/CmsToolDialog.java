@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/10/13 11:06:32 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,13 +49,16 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsToolDialog extends CmsWorkplace {
 
-    /** Request parameter name for the tool path. */
+    /** Request parameter name for the base tool path in the navegation, should be a parent tool of path. */
+    public static final String PARAM_BASE = "base";
+
+    /** Request parameter name for the tool path, should be an accesible tool under the given root. */
     public static final String PARAM_PATH = "path";
 
     /** Request parameter name for the root tool path. */
@@ -66,6 +69,9 @@ public class CmsToolDialog extends CmsWorkplace {
 
     /** Request parameter value for the 'new' dialog style. */
     public static final String STYLE_NEW = "new";
+
+    /** Base parameter value. */
+    private String m_paramBase;
 
     /** Path parameter value. */
     private String m_paramPath;
@@ -124,12 +130,13 @@ public class CmsToolDialog extends CmsWorkplace {
         StringBuffer html = new StringBuffer(512);
         String toolPath = getCurrentToolPath();
         String parentPath = getParentPath();
-        CmsTool parentTool = getToolManager().resolveAdminTool(parentPath);
+        String rootKey = getToolManager().getCurrentRoot(this).getKey();
+        CmsTool parentTool = getToolManager().resolveAdminTool(rootKey, parentPath);
         String upLevelLink = CmsToolManager.linkForToolPath(
             getJsp(),
             parentPath,
             parentTool.getHandler().getParameters(this));
-        String parentName = getToolManager().resolveAdminTool(parentPath).getHandler().getName();
+        String parentName = getToolManager().resolveAdminTool(rootKey, parentPath).getHandler().getName();
 
         html.append(getToolManager().generateNavBar(toolPath, this));
         // build title
@@ -142,17 +149,16 @@ public class CmsToolDialog extends CmsWorkplace {
         // uplevel button only if needed
         if (getParentPath() != toolPath) {
             html.append("\t\t\t<td class='uplevel'>\n\t\t\t\t");
-            String onClic = "openPage('" + upLevelLink + "');";
             html.append(A_CmsHtmlIconButton.defaultButtonHtml(
                 getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 "id-up-level",
-                Messages.get().key(getLocale(), Messages.GUI_ADMIN_VIEW_UPLEVEL_0, null),
+                Messages.get().getBundle(getLocale()).key(Messages.GUI_ADMIN_VIEW_UPLEVEL_0),
                 parentName,
                 true,
                 "admin/images/up.png",
                 null,
-                onClic));
+                "openPage('" + upLevelLink + "');"));
             html.append("\n\t\t\t</td>\n");
         }
         html.append("\t\t</tr>\n");
@@ -168,8 +174,7 @@ public class CmsToolDialog extends CmsWorkplace {
      */
     public CmsTool getAdminTool() {
 
-        CmsTool ret = getToolManager().getCurrentTool(this);
-        return ret;
+        return getToolManager().getCurrentTool(this);
     }
 
     /**
@@ -180,6 +185,16 @@ public class CmsToolDialog extends CmsWorkplace {
     public String getCurrentToolPath() {
 
         return getToolManager().getCurrentToolPath(this);
+    }
+
+    /**
+     * Returns the value for the base parameter.<p>
+     *
+     * @return the value for the base parameter
+     */
+    public String getParamBase() {
+
+        return m_paramBase;
     }
 
     /**
@@ -300,7 +315,7 @@ public class CmsToolDialog extends CmsWorkplace {
 
         Map params = new HashMap(getParameterMap());
         // initialize
-        getToolManager().initParams(this, getParamPath(), getParamRoot());
+        getToolManager().initParams(this);
 
         // adjust params if called as default
         if (!useNewStyle()) {
@@ -313,8 +328,9 @@ public class CmsToolDialog extends CmsWorkplace {
             CmsDialog wp = (CmsDialog)this;
             // set close link
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(wp.getParamCloseLink())) {
-                if (!getToolManager().getRootToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
-                    Map args = getToolManager().resolveAdminTool(getParentPath()).getHandler().getParameters(wp);
+                if (!getToolManager().getBaseToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
+                    Map args = getToolManager().resolveAdminTool(getParamRoot(), getParentPath()).getHandler().getParameters(
+                        wp);
                     wp.setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getParentPath(), args));
                     params.put(CmsDialog.PARAM_CLOSELINK, new String[] {wp.getParamCloseLink()});
                 }
@@ -357,7 +373,7 @@ public class CmsToolDialog extends CmsWorkplace {
                 html.append("commons/wait.gif");
                 html.append("' height='32' width='32' alt=''/>\n");
                 html.append("\t\t\t\t<strong>");
-                html.append(Messages.get().key(getLocale(), Messages.GUI_ADMIN_VIEW_LOADING_0, null));
+                html.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_ADMIN_VIEW_LOADING_0));
                 html.append("</strong></p>\n");
                 html.append("\t\t\t</td></tr></table>\n");
                 html.append("\t\t</div></td></tr>\n");
@@ -408,24 +424,32 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("editors/xmlcontent/help.js'></script>\n\n");
         html.append("<script type='text/javascript'>\n");
         html.append("\tfunction bodyLoad() {\n");
-        html.append("\t\t\tsetContext(\"");
+        html.append("\t\tsetContext(\"");
         html.append(CmsStringUtil.escapeJavaScript(resolveMacros(getAdminTool().getHandler().getHelpText())));
         html.append("\");\n");
-        html.append("\t\t\tsetActiveItemByName(\"");
+        html.append("\t\tsetActiveItemByName(\"");
         html.append(getCurrentToolPath());
         html.append("\");\n");
-        html.append("\t\t\tloadingOff();\n");
+        html.append("\t\tloadingOff();\n");
         html.append("\t\ttry {\n");
-        html.append("\t\t\tdocument.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;\n");
-        html.append("\t\t} catch(e) {\n");
-        html.append("\t\t\t// ignore\n");
-        html.append("\t\t}\n");
+        html.append("\t\t\tdocument.getElementById('loaderContainerH').height = wHeight();\n");
+        html.append("\t\t} catch (e) {}\n");
         html.append("\t}\n");
         html.append("\tfunction bodyUnload() {\n");
         html.append("\t\tloadingOn();\n");
         html.append("\t}\n");
         html.append("</script>\n");
         return html.toString();
+    }
+
+    /**
+     * Sets the value of the base parameter.<p>
+     *
+     * @param paramBase the value of the base parameter to set
+     */
+    public void setParamBase(String paramBase) {
+
+        m_paramBase = paramBase;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessages.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.i18n;
 
-import org.opencms.workplace.CmsWorkplaceMessages;
 
 import java.util.Locale;
 
@@ -42,7 +41,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -57,18 +56,12 @@ public class TestCmsMessages extends TestCase {
 
         String value;
 
-        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);
+        CmsMessages messages = new CmsMessages(org.opencms.xml.content.Messages.get().getBundleName(), Locale.ENGLISH);
 
-        value = messages.key("editor.xmlcontent.validation.error");
-        assertEquals("Invalid value \"{0}\" according to rule {1}", value);
-
-        value = messages.key("editor.xmlcontent.validation.error", new Object[] {"'value'", "'rule'"});
-        assertEquals("Invalid value \"'value'\" according to rule 'rule'", value);
-
-        value = messages.key("editor.xmlcontent.validation.warning");
+        value = messages.key("GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2");
         assertEquals("Bad value \"{0}\" according to rule {1}", value);
 
-        value = messages.key("editor.xmlcontent.validation.warning", new Object[] {"some value", "the rule"});
+        value = messages.key("GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2", new Object[] {"some value", "the rule"});
         assertEquals("Bad value \"some value\" according to rule the rule", value);
     }
 
@@ -96,13 +89,13 @@ public class TestCmsMessages extends TestCase {
         value = "";
         assertFalse(CmsMessages.isUnknownKey(value));
 
-        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);
-        value = messages.key("name");
+        CmsMessages messages = new CmsMessages(org.opencms.workplace.Messages.get().getBundleName(), Locale.ENGLISH);
+        value = messages.key("GUI_LOGIN_BUTTON_0");
         assertFalse(CmsMessages.isUnknownKey(value));
-        assertEquals("English", value);
+        assertEquals("Login", value);
 
         String defaultValue = "This value does not exist!";
-        value = messages.key("idontexist", defaultValue);
+        value = messages.keyDefault("idontexist", defaultValue);
         assertFalse(CmsMessages.isUnknownKey(defaultValue));
         assertEquals(defaultValue, value);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/10/13 11:06:32 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -201,12 +201,11 @@ public class CmsTool {
      */
     public String groupHtml(CmsWorkplace wp) {
 
-        List subTools = OpenCms.getWorkplaceManager().getToolManager().getToolsForPath(getHandler().getPath(), false);
+        List subTools = OpenCms.getWorkplaceManager().getToolManager().getToolsForPath(wp, getHandler().getPath(), false);
         Iterator itSubTools = subTools.iterator();
         m_container.clear();
         while (itSubTools.hasNext()) {
-            String subToolPath = (String)itSubTools.next();
-            CmsTool subTool = OpenCms.getWorkplaceManager().getToolManager().resolveAdminTool(subToolPath);
+            CmsTool subTool = (CmsTool)itSubTools.next();
             // locate group
             CmsToolGroup group = null;
             String groupName = CmsToolMacroResolver.resolveMacros(subTool.getHandler().getGroup(), wp);

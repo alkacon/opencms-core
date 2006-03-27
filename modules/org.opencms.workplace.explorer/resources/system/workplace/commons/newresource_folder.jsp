@@ -32,8 +32,8 @@ default:
 %><%= wp.htmlStart("help.explorer.new.file") %>
 <script type="text/javascript">
 <!--
-	var labelFinish = "<%= wp.key("button.endwizard") %>";
-	var labelNext = "<%= wp.key("button.nextscreen") %>";
+	var labelFinish = "<%= wp.key(Messages.GUI_BUTTON_ENDWIZARD_0) %>";
+	var labelNext = "<%= wp.key(Messages.GUI_BUTTON_CONTINUE_0) %>";
 
 	function checkValue() {
 		var resName = document.getElementById("newresfield").value;
@@ -70,16 +70,16 @@ default:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.name") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_RESOURCE_NAME_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>" id="newresfield" type="text" value="" class="maxwidth" onkeyup="checkValue();"></td>
 </tr> 
 <tr>
 	<td>&nbsp;</td>
-	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key("input.newfolder.editproperties") %></td>    
+	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key(Messages.GUI_NEWFILE_EDITPROPERTIES_0) %></td>    
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_CREATEINDEX %>" id="<%= wp.PARAM_CREATEINDEX %>" type="checkbox" value="true" checked="checked">&nbsp;<%= wp.key("input.newfolder.createindex") %></td>    
+	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_CREATEINDEX %>" id="<%= wp.PARAM_CREATEINDEX %>" type="checkbox" value="true" checked="checked">&nbsp;<%= wp.key(Messages.GUI_NEWFOLDER_CREATEINDEX_0) %></td>    
 </tr>
 </table>
 

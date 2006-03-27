@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2005/10/10 16:11:08 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ package org.opencms.file;
  * @author Carsten Weinholz 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 6.0.0 
  */
@@ -135,11 +135,23 @@ public final class CmsResourceFilter {
     /** The cache id for this filter. */
     private String m_cacheId;
 
+    /** The required start date for the timerange of the expire date. */
+    private long m_expireAfter;
+
+    /** The required end data for the timerange of the expire date. */
+    private long m_expireBefore;
+
+    /** Indicates if the expire date is used (true) or ignored (false). */
+    private boolean m_filterExpire;
+
     /** Indicates if the resource flag is filtered (true) or not (false). */
     private int m_filterFlags;
 
     /** Indicates if the date of the last modification is used (true) or ignored (false). */
     private boolean m_filterLastModified;
+
+    /** Indicates if the release date is used (true) or ignored (false). */
+    private boolean m_filterRelease;
 
     /** Indicates if the resource state (unchanged/new/deleted/modified) is filtered (true) or not (false). */
     private int m_filterState;
@@ -150,12 +162,6 @@ public final class CmsResourceFilter {
     /** Indicates if the resource type is filtered (true) or not (false). */
     private int m_filterType;
 
-    /** Indicates if the expire date is used (true) or ignored (false). */
-    private boolean m_filterExpire;
-
-    /** Indicates if the release date is used (true) or ignored (false). */
-    private boolean m_filterRelease;
-    
     /** Indicates if the visible permission is used (true) or ignored (false). */
     private boolean m_filterVisible;
 
@@ -168,20 +174,14 @@ public final class CmsResourceFilter {
     /** The required end data for the timerange of the last modification date. */
     private long m_modifiedBefore;
 
-    /** The required start date for the timerange of the expire date. */
-    private long m_expireAfter;
-
-    /** The required end data for the timerange of the expire date. */
-    private long m_expireBefore;
+    /** Indicates if the filter should return only folders. */
+    private Boolean m_onlyFolders;
 
     /** The required start date for the timerange of the release date. */
     private long m_releaseAfter;
 
     /** The required end data for the timerange of the release date. */
     private long m_releaseBefore;
-    
-    /** Indicates if the filter should return only folders. */
-    private Boolean m_onlyFolders;
 
     /** The required/excluded state for filtering resources. */
     private int m_state;
@@ -282,6 +282,40 @@ public final class CmsResourceFilter {
     }
 
     /**
+     * Returns an extended filter to restrict the results to resources that expire in the given timerange.<p>
+     * 
+     * @param time the required time 
+     * @return a filter to restrict the results to resources that expire in the given timerange
+     */
+    public CmsResourceFilter addRequireExpireAfter(long time) {
+
+        CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
+
+        extendedFilter.m_filterExpire = true;
+        extendedFilter.m_expireAfter = time;
+        extendedFilter.updateCacheId();
+
+        return extendedFilter;
+    }
+
+    /**
+     * Returns an extended filter to restrict the results to resources that expire in the given timerange.<p>
+     * 
+     * @param time the required time 
+     * @return a filter to restrict the results to resources that expire in the given timerange
+     */
+    public CmsResourceFilter addRequireExpireBefore(long time) {
+
+        CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
+
+        extendedFilter.m_filterExpire = true;
+        extendedFilter.m_expireBefore = time;
+        extendedFilter.updateCacheId();
+
+        return extendedFilter;
+    }
+
+    /**
      * Returns an extended filter that requires all returned resources to be files.<p> 
      *  
      * @return an extended filter that requires all returned resources to be files
@@ -363,39 +397,22 @@ public final class CmsResourceFilter {
     }
 
     /**
-     * Returns an extended filter to restrict the results to resources that expire in the given timerange.<p>
+     * Returns an extended filter to restrict the results to resources that are released in the given timerange.<p>
      * 
      * @param time the required time 
-     * @return a filter to restrict the results to resources that expire in the given timerange
+     * @return a filter to restrict the results to resources that are released in the given timerange
      */
-    public CmsResourceFilter addRequireExpireBefore(long time) {
+    public CmsResourceFilter addRequireReleaseAfter(long time) {
 
         CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
 
-        extendedFilter.m_filterExpire = true;
-        extendedFilter.m_expireBefore = time;
+        extendedFilter.m_filterRelease = true;
+        extendedFilter.m_releaseAfter = time;
         extendedFilter.updateCacheId();
 
         return extendedFilter;
     }
-    
-    /**
-     * Returns an extended filter to restrict the results to resources that expire in the given timerange.<p>
-     * 
-     * @param time the required time 
-     * @return a filter to restrict the results to resources that expire in the given timerange
-     */
-    public CmsResourceFilter addRequireExpireAfter(long time) {
 
-        CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
-
-        extendedFilter.m_filterExpire = true;
-        extendedFilter.m_expireAfter = time;
-        extendedFilter.updateCacheId();
-
-        return extendedFilter;
-    }
-    
     /**
      * Returns an extended filter to restrict the results to resources that are released in the given timerange.<p>
      * 
@@ -412,24 +429,7 @@ public final class CmsResourceFilter {
 
         return extendedFilter;
     }
-    
-    /**
-     * Returns an extended filter to restrict the results to resources that are released in the given timerange.<p>
-     * 
-     * @param time the required time 
-     * @return a filter to restrict the results to resources that are released in the given timerange
-     */
-    public CmsResourceFilter addRequireReleaseAfter(long time) {
 
-        CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
-
-        extendedFilter.m_filterRelease = true;
-        extendedFilter.m_releaseAfter = time;
-        extendedFilter.updateCacheId();
-
-        return extendedFilter;
-    }
-    
     /**
      * Returns an extended filter to guarantee a distinct resource state of the filtered resources.<p>
      * 
@@ -501,25 +501,25 @@ public final class CmsResourceFilter {
 
         CmsResourceFilter filter = new CmsResourceFilter();
 
-        filter.m_filterState = m_filterState;
+        filter.m_cacheId = m_cacheId;
+        filter.m_expireAfter = m_expireAfter;
+        filter.m_expireBefore = m_expireBefore;
+        filter.m_filterExpire = m_filterExpire;
         filter.m_filterFlags = m_filterFlags;
+        filter.m_filterLastModified = m_filterLastModified;
+        filter.m_filterRelease = m_filterRelease;
+        filter.m_filterState = m_filterState;
+        filter.m_filterTimerange = m_filterTimerange;
         filter.m_filterType = m_filterType;
         filter.m_filterVisible = m_filterVisible;
-        filter.m_filterTimerange = m_filterTimerange;
-        filter.m_filterLastModified = m_filterLastModified;
-        filter.m_filterExpire = m_filterExpire;
-        filter.m_filterRelease = m_filterRelease;
-        
-        filter.m_type = m_type;
-        filter.m_state = m_state;
         filter.m_flags = m_flags;
         filter.m_modifiedAfter = m_modifiedAfter;
         filter.m_modifiedBefore = m_modifiedBefore;
+        filter.m_onlyFolders = m_onlyFolders;
         filter.m_releaseAfter = m_releaseAfter;
         filter.m_releaseBefore = m_releaseBefore;
-        filter.m_expireAfter = m_expireAfter;
-        filter.m_expireBefore = m_expireBefore;
-        filter.m_cacheId = m_cacheId;
+        filter.m_state = m_state;
+        filter.m_type = m_type;
 
         return filter;
     }
@@ -565,6 +565,26 @@ public final class CmsResourceFilter {
     }
 
     /**
+     * Returns the start of the expire time range for this filter.<p>
+     * 
+     * @return start of the expire time range for this filter
+     */
+    public long getExpireAfter() {
+
+        return m_expireAfter;
+    }
+
+    /**
+     * Returns the end of the expire time range for this filter.<p>
+     * 
+     * @return the end of the expire time range for this filter
+     */
+    public long getExpireBefore() {
+
+        return m_expireBefore;
+    }
+
+    /**
      * Returns the flags for this filter.<p>
      * 
      * @return the flags for this filter
@@ -595,24 +615,17 @@ public final class CmsResourceFilter {
     }
 
     /**
-     * Returns the start of the expire time range for this filter.<p>
+     * Returns the state of the "only folders" flag.<p>
      * 
-     * @return start of the expire time range for this filter
+     * If the result is <code>null</code>, then this flag is not set.<p>
+     * 
+     * @return the state of the "only folders" flag
      */
-    public long getExpireAfter() {
+    public Boolean getOnlyFolders() {
 
-        return m_expireAfter;
+        return m_onlyFolders;
     }
 
-    /**
-     * Returns the end of the expire time range for this filter.<p>
-     * 
-     * @return the end of the expire time range for this filter
-     */
-    public long getExpireBefore() {
-
-        return m_expireBefore;
-    }
     /**
      * Returns the start of the release time range for this filter.<p>
      * 
@@ -631,17 +644,6 @@ public final class CmsResourceFilter {
     public long getReleaseBefore() {
 
         return m_releaseBefore;
-    }
-    /**
-     * Returns the state of the "only folders" flag.<p>
-     * 
-     * If the result is <code>null</code>, then this flag is not set.<p>
-     * 
-     * @return the state of the "only folders" flag
-     */
-    public Boolean getOnlyFolders() {
-
-        return m_onlyFolders;
     }
 
     /**
@@ -776,7 +778,7 @@ public final class CmsResourceFilter {
                 return false;
             }
         }
-        
+
         // check if the resource is released within the given time range
         if (m_filterRelease) {
             if (m_releaseAfter > 0L && resource.getDateReleased() < m_releaseAfter) {
@@ -786,7 +788,7 @@ public final class CmsResourceFilter {
                 return false;
             }
         }
-        
+
         // check if the resource is currently released and not expired
         if (m_filterTimerange
             && ((resource.getDateReleased() > context.getRequestTime()) || (resource.getDateExpired() < context.getRequestTime()))) {

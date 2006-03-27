@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/10/10 16:11:04 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2006/03/27 14:52:37 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,7 +198,7 @@ public class CmsResourceManager {
     public CmsResourceManager() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_STARTING_LOADER_CONFIG_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STARTING_LOADER_CONFIG_0));
         }
 
         m_resourceTypesFromXml = new ArrayList();
@@ -216,7 +216,7 @@ public class CmsResourceManager {
                 mimeTypes.load(getClass().getClassLoader().getResourceAsStream(
                     "org/opencms/loader/mimetypes.properties"));
             } catch (Throwable t2) {
-                LOG.error(Messages.get().key(Messages.LOG_READ_MIMETYPES_FAILED_0), t);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_MIMETYPES_FAILED_0), t);
             }
         }
         // initalize the Map with all available mimetypes
@@ -230,7 +230,9 @@ public class CmsResourceManager {
             m_mimeTypes.put(key, value);
         }
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_NUM_MIMETYPES_1, new Integer(m_mimeTypes.size())));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_NUM_MIMETYPES_1,
+                new Integer(m_mimeTypes.size())));
         }
     }
 
@@ -252,7 +254,7 @@ public class CmsResourceManager {
         try {
             classClazz = Class.forName(className);
         } catch (ClassNotFoundException e) {
-            LOG.error(Messages.get().key(Messages.LOG_CONTENT_COLLECTOR_CLASS_NOT_FOUND_1, className), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_CONTENT_COLLECTOR_CLASS_NOT_FOUND_1, className), e);
             return null;
         }
 
@@ -278,12 +280,12 @@ public class CmsResourceManager {
         try {
             ord = Integer.valueOf(order).intValue();
         } catch (NumberFormatException e) {
-            LOG.error(Messages.get().key(Messages.LOG_COLLECTOR_BAD_ORDER_NUMBER_1, className), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_COLLECTOR_BAD_ORDER_NUMBER_1, className), e);
         }
         collector.setOrder(ord);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_COLLECTOR_CLASS_2, className, order));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_COLLECTOR_CLASS_2, className, order));
         }
 
         // extend or init the current list of configured collectors
@@ -309,17 +311,19 @@ public class CmsResourceManager {
                         // new collector has a greater order than the old collector in the Map
                         m_collectorNameMappings.put(name, collector);
                         if (CmsLog.INIT.isInfoEnabled()) {
-                            CmsLog.INIT.info(Messages.get().key(Messages.INIT_COLLECTOR_REPLACED_1, name));
+                            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_COLLECTOR_REPLACED_1, name));
                         }
                     } else {
                         if (CmsLog.INIT.isInfoEnabled()) {
-                            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DUPLICATE_COLLECTOR_SKIPPED_1, name));
+                            CmsLog.INIT.info(Messages.get().getBundle().key(
+                                Messages.INIT_DUPLICATE_COLLECTOR_SKIPPED_1,
+                                name));
                         }
                     }
                 } else {
                     m_collectorNameMappings.put(name, collector);
                     if (CmsLog.INIT.isInfoEnabled()) {
-                        CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_COLLECTOR_1, name));
+                        CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_COLLECTOR_1, name));
                     }
                 }
             }
@@ -361,7 +365,7 @@ public class CmsResourceManager {
         }
         m_loaderList.add(loader);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_ADD_LOADER_2,
                 loader.getClass().getName(),
                 new Integer(pos)));
@@ -439,7 +443,7 @@ public class CmsResourceManager {
         }
 
         if (CmsLog.INIT.isDebugEnabled()) {
-            CmsLog.INIT.debug(Messages.get().key(Messages.INIT_GET_RESTYPE_2, typeName, suffix));
+            CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_GET_RESTYPE_2, typeName, suffix));
         }
         // look up and return the resource type
         return getResourceType(typeName);
@@ -552,6 +556,10 @@ public class CmsResourceManager {
         }
         if (mimetype == null) {
             mimetype = defaultMimeType;
+            if (mimetype == null) {
+                // no default mime type was provided
+                return null;
+            }
         }
         StringBuffer result = new StringBuffer(mimetype);
         if ((encoding != null) && mimetype.startsWith("text") && (mimetype.indexOf("charset") == -1)) {
@@ -653,7 +661,7 @@ public class CmsResourceManager {
     public void initConfiguration() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_CONFIG_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LOADER_CONFIG_FINISHED_0));
         }
 
         m_resourceTypesFromXml = Collections.unmodifiableList(m_resourceTypesFromXml);
@@ -688,7 +696,7 @@ public class CmsResourceManager {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_CONFIG_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LOADER_CONFIG_FINISHED_0));
         }
     }
 
@@ -779,7 +787,7 @@ public class CmsResourceManager {
         m_mimeTypes = null;
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
         }
     }
 
@@ -805,7 +813,7 @@ public class CmsResourceManager {
         configuration.getResourceTypeList().add(resourceType);
         configuration.getResourceTypeMap().put(resourceType.getTypeName(), resourceType);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_ADD_RESTYPE_3,
                 resourceType.getTypeName(),
                 new Integer(resourceType.getTypeId()),
@@ -822,7 +830,7 @@ public class CmsResourceManager {
             if (!configuration.getMappings().containsKey(mapping)) {
                 configuration.getMappings().put(mapping, resourceType.getTypeName());
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_MAP_RESTYPE_2,
                         mapping,
                         resourceType.getTypeName()));
@@ -837,13 +845,13 @@ public class CmsResourceManager {
     private synchronized void initResourceTypes() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_STARTING_LOADER_CONFIG_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STARTING_LOADER_CONFIG_0));
         }
 
         CmsResourceManagerConfiguration newConfiguration = new CmsResourceManagerConfiguration();
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_ADD_RESTYPE_FROM_FILE_2,
                 new Integer(m_resourceTypesFromXml.size()),
                 CmsVfsConfiguration.DEFAULT_XML_FILE_NAME));
@@ -866,7 +874,7 @@ public class CmsResourceManager {
                 if (module != null && module.getResourceTypes().size() > 0) {
                     // module contains resource types                
                     if (CmsLog.INIT.isInfoEnabled()) {
-                        CmsLog.INIT.info(Messages.get().key(
+                        CmsLog.INIT.info(Messages.get().getBundle().key(
                             Messages.INIT_ADD_NUM_RESTYPES_FROM_MOD_2,
                             new Integer(module.getResourceTypes().size()),
                             module.getName()));
@@ -887,7 +895,7 @@ public class CmsResourceManager {
         m_frozen = true;
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_RESOURCE_TYPE_INITIALIZED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_RESOURCE_TYPE_INITIALIZED_0));
         }
     }
 }

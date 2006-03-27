@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsExplorerDialog.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.workplace.CmsWidgetDialog;
+import org.opencms.workplace.CmsDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +47,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
-public class CmsExplorerDialog extends CmsWidgetDialog {
+public class CmsExplorerDialog extends CmsDialog {
 
     /** List of explorer tools. */
     public static final List EXPLORER_TOOLS = new ArrayList();
@@ -64,6 +64,7 @@ public class CmsExplorerDialog extends CmsWidgetDialog {
     public CmsExplorerDialog(CmsJspActionElement jsp) {
 
         super(jsp);
+        setParamStyle(CmsToolDialog.STYLE_NEW);
     }
 
     /**
@@ -88,14 +89,6 @@ public class CmsExplorerDialog extends CmsWidgetDialog {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
-     */
-    public void actionCommit() {
-
-        // not used
-    }
-
-    /**
      * Generates the html code for the title frame.<p>
      * 
      * @throws Exception if writing to the JSP out fails
@@ -114,24 +107,7 @@ public class CmsExplorerDialog extends CmsWidgetDialog {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
-     */
-    protected void defineWidgets() {
-
-        // not used
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
-     */
-    protected String[] getPageArray() {
-
-        // not used
-        return new String[] {"page1"};
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#initMessages()
+     * @see org.opencms.workplace.CmsDialog#initMessages()
      */
     protected void initMessages() {
 

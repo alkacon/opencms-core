@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2005/07/25 21:14:52 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
@@ -56,7 +57,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,7 +68,7 @@ public class CmsSetupDb extends Object {
 
     /** The folder where the setup wizard is located. */
     public static final String SETUP_FOLDER = "setup/";
-    
+
     private String m_basePath;
     private Connection m_con;
     private boolean m_errorLogging;
@@ -265,12 +266,67 @@ public class CmsSetupDb extends Object {
             Class.forName(DbDriver).newInstance();
             m_con = DriverManager.getConnection(jdbcUrl, DbUser, DbPwd);
         } catch (ClassNotFoundException e) {
-            m_errors.addElement(Messages.get().key(Messages.ERR_LOAD_JDBC_DRIVER_1, DbDriver));
+            m_errors.addElement(Messages.get().getBundle().key(Messages.ERR_LOAD_JDBC_DRIVER_1, DbDriver));
             m_errors.addElement(CmsException.getStackTraceAsString(e));
         } catch (Exception e) {
-            m_errors.addElement(Messages.get().key(Messages.ERR_DB_CONNECT_1, DbConStr));
+            m_errors.addElement(Messages.get().getBundle().key(Messages.ERR_DB_CONNECT_1, DbConStr));
             m_errors.addElement(CmsException.getStackTraceAsString(e));
         }
+    }
+
+    /**
+     * Returns an optional warning message if needed, <code>null</code> if not.<p> 
+     * 
+     * @param db the selected database key
+     * 
+     * @return html warning, or <code>null</code> if no warning
+     */
+    public String checkVariables(String db) {
+
+        StringBuffer html = new StringBuffer(512);
+        if (db.startsWith("mysql") && !db.startsWith("mysql_41")) {
+            String statement = "SELECT @@max_allowed_packet;";
+            Statement stmt = null;
+            ResultSet rs = null;
+            long map = 0;
+            if (m_con != null) {
+                try {
+                    stmt = m_con.createStatement();
+                    rs = stmt.executeQuery(statement);
+                    if (rs.next()) {
+                        map = rs.getLong(1);
+                    }
+                } catch (SQLException e) {
+                    if (m_errorLogging) {
+                        m_errors.addElement("Error executing SQL statement: " + statement);
+                        m_errors.addElement(CmsException.getStackTraceAsString(e));
+                    }
+                } finally {
+                    if (stmt != null) {
+                        try {
+                            stmt.close();
+                        } catch (SQLException e) {
+                            // ignore
+                        }
+                    }
+                }
+            }
+            if (map > 0) {
+                html.append("MySQL system variable <code>'max_allowed_packet'</code> is set to ");
+                html.append(map);
+                html.append(" Bytes.<p>\n");
+            } else {
+                html.append("<i>OpenCms was not able to detect the value of your <code>'max_allowed_packet'</code> variable.</i><p>\n");
+            }
+            html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
+            if (map < 15 * 1024 * 1024) {
+                html.append("<b>The recommended value for running OpenCms is 16Mb, please change your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).</b>\n");
+            }
+        }
+        if (html.length() == 0) {
+            return null;
+        }
+        return html.toString();
     }
 
     /**

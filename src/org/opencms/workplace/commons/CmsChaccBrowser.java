@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/27 14:52:18 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -223,11 +223,13 @@ public class CmsChaccBrowser extends CmsDialog {
     private StringBuffer buildEntryGroup(CmsGroup group) {
 
         StringBuffer retValue = new StringBuffer(256);
-        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\""
-            + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('0','"
-            + group.getName()
-            + "');\">");
-        retValue.append("<img src=\"" + getSkinUri() + "commons/group.png\">&nbsp;");
+        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\"");
+        retValue.append(" onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('0','");
+        retValue.append(group.getName());
+        retValue.append("');\">");
+        retValue.append("<img src=\"");
+        retValue.append(getSkinUri());
+        retValue.append("commons/group.png\">&nbsp;");
         retValue.append(group.getName());
         retValue.append("</span>");
         return retValue;
@@ -242,14 +244,18 @@ public class CmsChaccBrowser extends CmsDialog {
     private StringBuffer buildEntryUser(CmsUser user) {
 
         StringBuffer retValue = new StringBuffer(384);
-        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\""
-            + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('1','"
-            + user.getName()
-            + "');\">");
+        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\"");
+        retValue.append(" onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('1','");
+        retValue.append(user.getName());
+        retValue.append("');\">");
         retValue.append("<img src=\"" + getSkinUri() + "commons/user.png\">&nbsp;");
         retValue.append(user.getName());
         if (!"".equals(user.getFirstname()) || !"".equals(user.getLastname())) {
-            retValue.append(" (" + user.getFirstname() + " " + user.getLastname() + ")");
+            retValue.append(" (");
+            retValue.append(user.getFirstname());
+            retValue.append(" ");
+            retValue.append(user.getLastname());
+            retValue.append(")");
         }
         retValue.append("</span>");
         return retValue;

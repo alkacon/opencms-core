@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2006/03/27 14:52:35 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -547,13 +547,13 @@ public class CmsFlexController {
      */
     public void pop() {
 
-        if (m_flexRequestList.size() > 0) {
+        if ((m_flexRequestList != null) && !m_flexRequestList.isEmpty()) {
             m_flexRequestList.remove(m_flexRequestList.size() - 1);
         }
-        if (m_flexResponseList.size() > 0) {
+        if ((m_flexResponseList != null) && !m_flexRequestList.isEmpty()) {
             m_flexResponseList.remove(m_flexResponseList.size() - 1);
         }
-        if (m_flexContextInfoList.size() > 0) {
+        if ((m_flexContextInfoList != null) && !m_flexContextInfoList.isEmpty()) {
             CmsFlexRequestContextInfo info = (CmsFlexRequestContextInfo)m_flexContextInfoList.remove(m_flexContextInfoList.size() - 1);
             if (m_flexContextInfoList.size() > 0) {
                 ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(0)).merge(info);
@@ -604,9 +604,9 @@ public class CmsFlexController {
         } else {
             if (LOG.isDebugEnabled()) {
                 if (resource != null) {
-                    LOG.debug(Messages.get().key(Messages.LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_1, resource));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_1, resource));
                 } else {
-                    LOG.debug(Messages.get().key(Messages.LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_0));
                 }
             }
         }
@@ -654,7 +654,7 @@ public class CmsFlexController {
      */
     private void updateRequestContextInfo() {
 
-        if (m_flexContextInfoList.size() > 0) {
+        if ((m_flexContextInfoList != null) && !m_flexContextInfoList.isEmpty()) {
             m_cmsObject.getRequestContext().setAttribute(
                 CmsRequestUtil.HEADER_LAST_MODIFIED,
                 m_flexContextInfoList.get(m_flexContextInfoList.size() - 1));

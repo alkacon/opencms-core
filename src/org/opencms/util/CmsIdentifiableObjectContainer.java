@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2005/07/26 13:13:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,18 +45,21 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectContainer {
 
+    // TODO: This class should really be in a workplace package!
+    int todo = 0;
+    
     /**
      * Internal class just for taking care of the positions in the container.<p>
      * 
      * @author Michael Moossen  
      * 
-     * @version $Revision: 1.8 $
+     * @version $Revision: 1.9 $
      * 
      * @since 6.0.0
      */
@@ -251,24 +254,41 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     /**
      * Removes an object with the given id.<p>
      * 
-     * Only works if the <code>{@link #m_uniqueIds}</code> is set.<p>
+     * if {@link #m_uniqueIds} is set, it will remove at most one object.
+     * otherwise it will remove all elements with the given id.<p>
      * 
      * @param id the id of the object to remove
      */
-    private void removeObject(String id) {
+    public synchronized void removeObject(String id) {
 
         m_cache = null;
         if (m_relativeOrdered) {
-            Object o = getObject(id);
-            Iterator itObjs = m_objectList.iterator();
-            while (itObjs.hasNext()) {
-                CmsIdObjectElement object = (CmsIdObjectElement)itObjs.next();
-                if (object.getObject() == o) {
-                    itObjs.remove();
-                    break;
+            if (m_uniqueIds) {
+                Object o = getObject(id);
+                Iterator itObjs = m_objectList.iterator();
+                while (itObjs.hasNext()) {
+                    CmsIdObjectElement object = (CmsIdObjectElement)itObjs.next();
+                    if (object.getObject() == o) {
+                        itObjs.remove();
+                        break;
+                    }
                 }
+                m_objectsById.remove(id);
+            } else {
+                Iterator itRemove = ((List)getObject(id)).iterator();
+                while (itRemove.hasNext()) {
+                    Object o = itRemove.next();
+                    Iterator itObjs = m_objectList.iterator();
+                    while (itObjs.hasNext()) {
+                        CmsIdObjectElement object = (CmsIdObjectElement)itObjs.next();
+                        if (object.getObject() == o) {
+                            itObjs.remove();
+                            break;
+                        }
+                    }
+                }
+                m_objectsById.remove(id);
             }
-            m_objectsById.remove(id);
         } else {
             Object o = getObject(id);
             m_objectList.remove(o);

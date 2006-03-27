@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewSettingsDialog.java,v $
- * Date   : $Date: 2005/07/12 12:33:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/27 14:52:59 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsComboWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,7 +153,8 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
 
         setKeyPrefix(KEY_PREFIX);
         super.defineWidgets();
-        addWidget(new CmsWidgetDialogParameter(m_logView, "isLogfile", "page1", new CmsCheckboxWidget("true")));
+        addWidget(new CmsWidgetDialogParameter(m_logView, "isLogfile", "page1", new CmsCheckboxWidget(
+            CmsStringUtil.TRUE)));
         addWidget(new CmsWidgetDialogParameter(m_logView, "filePath", "page1", new CmsComboWidget(
             createComboConfigurationFileChoice())));
 
@@ -195,16 +197,18 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
             cs = (Charset)it.next();
             // default? no equals required: safety by design!
             if (cs == defaultCs) {
-                result.add(new CmsSelectWidgetOption(cs.name(), true, null, Messages.get().key(
-                    getLocale(),
-                    Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_DEF_HELP_0,
-                    null)));
+                result.add(new CmsSelectWidgetOption(
+                    cs.name(),
+                    true,
+                    null,
+                    key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_DEF_HELP_0)));
             } else {
                 if (!cs.name().startsWith("x")) {
-                    result.add(new CmsSelectWidgetOption(cs.name(), false, null, Messages.get().key(
-                        getLocale(),
-                        Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_HELP_0,
-                        null)));
+                    result.add(new CmsSelectWidgetOption(
+                        cs.name(),
+                        false,
+                        null,
+                        key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_HELP_0)));
                 }
             }
         }
@@ -226,17 +230,19 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
         List result = new LinkedList();
         CmsSystemInfo sysInfo = OpenCms.getSystemInfo();
         // log file, default
-        result.add(new CmsSelectWidgetOption(sysInfo.getLogFileRfsPath(), true, null, Messages.get().key(
-            getLocale(),
-            Messages.GUI_WORKPLACE_LOGVIEW_FILE_LOG_HELP_0,
-            null)));
+        result.add(new CmsSelectWidgetOption(
+            sysInfo.getLogFileRfsPath(),
+            true,
+            null,
+            key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_LOG_HELP_0)));
         // opencms.properties
-        result.add(new CmsSelectWidgetOption(sysInfo.getConfigurationFileRfsPath(), false, null, Messages.get().key(
-            getLocale(),
-            Messages.GUI_WORKPLACE_LOGVIEW_FILE_CONF_HELP_0,
-            null)));
+        result.add(new CmsSelectWidgetOption(
+            sysInfo.getConfigurationFileRfsPath(),
+            false,
+            null,
+            key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CONF_HELP_0)));
         // config xml 
-        String configPath = sysInfo.getAbsoluteRfsPathRelativeToWebInf("config");
+        String configPath = sysInfo.getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_CONFIG);
         if (configPath != null) {
             File configFolder = new File(configPath);
             File[] configFiles = configFolder.listFiles();
@@ -249,7 +255,7 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
                             configFile.getAbsolutePath(),
                             false,
                             null,
-                            Messages.get().key(getLocale(), Messages.GUI_WORKPLACE_LOGVIEW_FILE_XMLCONF_HELP_0, null)));
+                            key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_XMLCONF_HELP_0)));
                     }
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/Messages.java,v $
- * Date   : $Date: 2005/10/13 09:08:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,6 +54,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_DB_SETUP_SCRIPT_1 = "ERR_MISSING_DB_SETUP_SCRIPT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WARNING_ALL_MODULES_UPTODATE_0 = "GUI_WARNING_ALL_MODULES_UPTODATE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_IMPORT_WORKPLACE_FINISHED_0 = "INIT_IMPORT_WORKPLACE_FINISHED_0";
@@ -98,6 +101,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_DELETE_JAR_FILE_FAILED_3 = "RPT_DELETE_JAR_FILE_FAILED_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_JAR_PERMISSIONS_3 = "RPT_DELETE_JAR_PERMISSIONS_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_DELETE_JAR_SKIPPED_FILE_3 = "RPT_DELETE_JAR_SKIPPED_FILE_3";
 
     /** Message constant for key in the resource bundle. */
@@ -119,16 +125,25 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_END_UPDATE_MODULE_1 = "RPT_END_UPDATE_MODULE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_MODULE_UPTODATE_1 = "RPT_MODULE_UPTODATE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_UPDATE_JAR_FILE_3 = "RPT_UPDATE_JAR_FILE_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_UPDATE_JAR_FILE_FAILED_3 = "RPT_UPDATE_JAR_FILE_FAILED_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_UPDATE_JAR_PERMISSIONS_3 = "RPT_UPDATE_JAR_PERMISSIONS_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_UPDATE_JAR_SKIPPED_FILE_3 = "RPT_UPDATE_JAR_SKIPPED_FILE_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_UPDATE_JARS_FAILED_1 = "RPT_UPDATE_JARS_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_UPDATE_JARS_PERMISSIONS_1 = "RPT_UPDATE_JARS_PERMISSIONS_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.setup.messages";

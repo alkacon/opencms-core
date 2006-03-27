@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/07/08 19:14:11 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2006/03/27 14:52:54 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.74 $ 
+ * @version $Revision: 1.75 $ 
  * 
  * @since 6.0.0 
  * 
@@ -108,7 +108,7 @@ public class CmsImportVersion3 extends A_CmsImport {
     /**
      * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
      */
-    public synchronized void importResources(
+    public void importResources(
         CmsObject cms,
         String importPath,
         I_CmsReport report,
@@ -224,7 +224,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             immutableResources = Collections.EMPTY_LIST;
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
                 Integer.toString(immutableResources.size())));
         }
@@ -257,9 +257,10 @@ public class CmsImportVersion3 extends A_CmsImport {
                 // <uuidresource>
                 uuidresource = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_UUIDRESOURCE);
                 // <datelastmodified>
-                if ((timestamp = CmsImport.getChildElementTextValue(
+                timestamp = CmsImport.getChildElementTextValue(
                     currentElement,
-                    CmsImportExportManager.N_DATELASTMODIFIED)) != null) {
+                    CmsImportExportManager.N_DATELASTMODIFIED);
+                if (timestamp != null) {
                     datelastmodified = Long.parseLong(timestamp);
                 } else {
                     datelastmodified = System.currentTimeMillis();
@@ -269,9 +270,8 @@ public class CmsImportVersion3 extends A_CmsImport {
                     currentElement,
                     CmsImportExportManager.N_USERLASTMODIFIED);
                 // <datecreated>
-                if ((timestamp = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DATECREATED)) != null) {
+                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DATECREATED);
+                if (timestamp != null) {
                     datecreated = Long.parseLong(timestamp);
                 } else {
                     datecreated = System.currentTimeMillis();
@@ -331,16 +331,20 @@ public class CmsImportVersion3 extends A_CmsImport {
                                 CmsImportExportManager.N_FLAGS);
                             String allowed = CmsImport.getChildElementTextValue(
                                 currentEntry,
-                                CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET +"/"+ CmsImportExportManager.N_ACCESSCONTROL_ALLOWEDPERMISSIONS);
+                                CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET
+                                    + "/"
+                                    + CmsImportExportManager.N_ACCESSCONTROL_ALLOWEDPERMISSIONS);
                             String denied = CmsImport.getChildElementTextValue(
                                 currentEntry,
-                                CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET +"/"+ CmsImportExportManager.N_ACCESSCONTROL_DENIEDPERMISSIONS);
-                            
+                                CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET
+                                    + "/"
+                                    + CmsImportExportManager.N_ACCESSCONTROL_DENIEDPERMISSIONS);
+
                             // get the correct principal
                             try {
                                 String principalId = new CmsUUID().toString();
                                 String principal = id.substring(id.indexOf('.') + 1, id.length());
-    
+
                                 if (id.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
                                     principal = OpenCms.getImportExportManager().translateGroup(principal);
                                     principalId = m_cms.readGroup(principal).getId().toString();
@@ -348,10 +352,10 @@ public class CmsImportVersion3 extends A_CmsImport {
                                     principal = OpenCms.getImportExportManager().translateUser(principal);
                                     principalId = m_cms.readUser(principal).getId().toString();
                                 }
-                                                       
+
                                 // add the entry to the list
                                 aceList.add(getImportAccessControlEntry(res, principalId, allowed, denied, acflags));
-                            } catch (CmsDataAccessException  e) {
+                            } catch (CmsDataAccessException e) {
                                 // user or group not found, so do not import the ace                                
                             }
                         }
@@ -436,7 +440,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
             // get all required information to create a CmsResource
             I_CmsResourceType resType;
-            
+
             // get UUIDs for the user   
             CmsUUID newUserlastmodified;
             CmsUUID newUsercreated;
@@ -457,8 +461,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             }
 
             // convert to xml page if wanted
-            if (m_convertToXmlPage
-                && (type.equals(RESOURCE_TYPE_NEWPAGE_NAME))) {
+            if (m_convertToXmlPage && (type.equals(RESOURCE_TYPE_NEWPAGE_NAME))) {
 
                 if (content != null) {
 
@@ -483,7 +486,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             } else {
                 resType = OpenCms.getResourceManager().getResourceType(type);
             }
- 
+
             // get UUIDs for the resource and content        
             CmsUUID newUuidresource = null;
             if ((uuidresource != null) && (!resType.isFolder())) {
@@ -513,7 +516,6 @@ public class CmsImportVersion3 extends A_CmsImport {
                 1,
                 size);
 
-            
             if (type.equals(RESOURCE_TYPE_LINK_NAME)) {
                 // store links for later conversion
                 m_report.print(Messages.get().container(Messages.RPT_STORING_LINK_0), I_CmsReport.FORMAT_NOTE);
@@ -540,7 +542,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 // 
             }
         }
- 
+
         return result;
     }
 }

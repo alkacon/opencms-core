@@ -38,7 +38,7 @@
 
 			/* check if database exists */
 			if(!dropDb)	{
-				db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
+				db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
 				dbExists = db.noErrors();
 				if(dbExists)	{
 					db.closeConnection();
@@ -65,12 +65,12 @@
 	}
 
 %><%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Create database & tables
+Alkacon OpenCms Setup Wizard - Create database &amp; tables
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized())	{ %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
@@ -86,7 +86,7 @@ OpenCms Setup Wizard - Create database & tables
 							<tr>
 								<td><img src="resources/warning.png" border="0"></td>
 								<td>&nbsp;&nbsp;</td>
-								<td>You have not created the OpenCms database.<br>
+								<td>You have not created the Alkacon OpenCms database.<br>
 									You cannot import the modules successfully without the database and tables!
 								</td>
 							</tr>
@@ -228,6 +228,7 @@ OpenCms Setup Wizard - Create database & tables
 
 								// reopen the connection in order to display errors
 								db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
+				
 								//Create Tables %>
 								
 								<%= Bean.getHtmlPart("C_BLOCK_START", "Creating tables ...") %>
@@ -297,9 +298,7 @@ OpenCms Setup Wizard - Create database & tables
 } %>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <% } else	{ %>
-
-<%@ include file="error.jsp" %>
-
+<%= Bean.displayError("")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

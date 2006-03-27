@@ -1,0 +1,42 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="PhotoAlbumThumbs" type="OpenCmsPhotoAlbumThumbs"/>
+	
+	<xsd:complexType name="OpenCmsPhotoAlbumThumbs">
+		<xsd:sequence>
+			<xsd:element name="PhotoAlbumThumb" type="OpenCmsPhotoAlbumThumb" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsPhotoAlbumThumb">
+		<xsd:sequence>
+			<xsd:element name="ShowTitle" type="OpenCmsBoolean" />
+			<xsd:element name="AlignTitle" type="OpenCmsString" />
+			<xsd:element name="Cols" type="OpenCmsString" />
+			<xsd:element name="Rows" type="OpenCmsString" />
+			<xsd:element name="HighQuality" type="OpenCmsBoolean" />
+			<xsd:element name="Size" type="OpenCmsString" />
+			<xsd:element name="Filter" type="OpenCmsString" />
+			<xsd:element name="Background" type="OpenCmsColor" />
+			<xsd:element name="TextTop" type="OpenCmsHtml" minOccurs="0" />
+			<xsd:element name="TextBottom" type="OpenCmsHtml" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.photoalbum.workplace"/>
+			<layouts>
+				<layout element="AlignTitle" widget="SelectorWidget" configuration="left:${key.photoalbum.text.align.left}|center:${key.photoalbum.text.align.center}|right:${key.photoalbum.text.align.right}" />
+				<layout element="Cols" widget="SelectorWidget" configuration="1|2|3*|4|5|6" />
+				<layout element="Rows" widget="SelectorWidget" configuration="-1:${key.photoalbum.thumbs.rows.unlimited}|2|3*|4|5|6|7|8|9|10|15|20|30|50" />
+				<layout element="Size" widget="SelectorWidget" configuration="150x113*:150 x 113 ${key.photoalbum.thumbs.size.pixel}|200x150*:200 x 150 ${key.photoalbum.thumbs.size.pixel}|300x225:300 x 225 ${key.photoalbum.thumbs.size.pixel}|400x300:400 x 300 ${key.photoalbum.thumbs.size.pixel}|600x450:600 x 450 ${key.photoalbum.thumbs.size.pixel}" />
+				<layout element="Filter" widget="SelectorWidget" configuration="none:${key.photoalbum.filter.none}|shadow:${key.photoalbum.filter.shadow}|grayscale:${key.photoalbum.filter.grayscale}|grayscale.shadow:${key.photoalbum.filter.both}" />
+			</layouts>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

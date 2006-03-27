@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2006/03/27 14:53:05 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsShell;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -88,7 +89,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.89 $
+ * @version $Revision: 1.90 $
  * 
  * @since 6.0.0
  */
@@ -502,7 +503,7 @@ public class OpenCmsTestCase extends TestCase {
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
-        path = getTestDataPath("WEB-INF/config/backup/");
+        path = getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG + "backup/");
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
@@ -1022,7 +1023,7 @@ public class OpenCmsTestCase extends TestCase {
      */
     private static void copyConfiguration(String newConfig) {
 
-        File configDir = new File(getTestDataPath("WEB-INF/config/"));
+        File configDir = new File(getTestDataPath("WEB-INF" + File.separatorChar + CmsSystemInfo.FOLDER_CONFIG));
         File configOriDir = new File(newConfig);
 
         if (configOriDir.exists()) {

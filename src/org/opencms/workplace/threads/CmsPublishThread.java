@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,7 +86,7 @@ public class CmsPublishThread extends A_CmsReportThread {
      */
     public CmsPublishThread(CmsObject cms, CmsPublishList publishList, CmsWorkplaceSettings settings) {
 
-        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_PUBLISH_TRHEAD_NAME_0, null));
+        super(cms, Messages.get().getBundle().key(Messages.GUI_PUBLISH_TRHEAD_NAME_0));
         m_cms = cms;
         m_publishList = publishList;
         m_settings = settings;
@@ -128,7 +128,7 @@ public class CmsPublishThread extends A_CmsReportThread {
                 I_CmsReport.FORMAT_HEADLINE);
         } catch (Exception e) {
             getReport().println(e);
-            LOG.error(Messages.get().key(Messages.LOG_PUBLISH_PROJECT_FAILED_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_PUBLISH_PROJECT_FAILED_0), e);
         }
     }
 
@@ -166,5 +166,4 @@ public class CmsPublishThread extends A_CmsReportThread {
             }
         }
     }
-
 }

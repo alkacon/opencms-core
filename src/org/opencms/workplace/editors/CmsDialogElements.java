@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/10/10 16:11:09 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -227,7 +227,7 @@ public class CmsDialogElements extends CmsDialog {
             CmsFile pageFile = cms.readFile(xmlPageUri, CmsResourceFilter.IGNORE_EXPIRATION);
             page = CmsXmlPageFactory.unmarshal(cms, pageFile);
         } catch (CmsException e) {
-            LOG.warn(Messages.get().key(Messages.LOG_READ_XMLPAGE_FAILED_1, xmlPageUri), e);
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_XMLPAGE_FAILED_1, xmlPageUri), e);
             // xmlpage will be null, only "template-elements" property on template will be checked
         }
         return computeElements(cms, page, xmlPageUri, locale);
@@ -252,7 +252,7 @@ public class CmsDialogElements extends CmsDialog {
                 CmsDialogElement element = (CmsDialogElement)i.next();
                 if (element.isMandantory()
                     || element.getName().equals(getParamElementname())
-                    || "true".equals(getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + element.getName()))) {
+                    || Boolean.valueOf(getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + element.getName())).booleanValue()) {
                     if (!element.isExisting()) {
                         // create element in order to enable it properly 
                         page.addValue(element.getName(), getElementLocale());
@@ -298,10 +298,10 @@ public class CmsDialogElements extends CmsDialog {
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
         retValue.append("\t<td class=\"textbold\" unselectable=\"on\">"
-            + key("editor.dialog.elements.pageelement")
+            + key(Messages.GUI_EDITOR_DIALOG_ELEMENTS_PAGEELEMENT_0)
             + "</td>\n");
         retValue.append("\t<td class=\"textbold\" unselectable=\"on\">&nbsp;&nbsp;"
-            + key("editor.dialog.elements.enabled")
+            + key(Messages.GUI_EDITOR_DIALOG_ELEMENTS_ENABLED_0)
             + "&nbsp;&nbsp;</td>\n");
         retValue.append("</tr>\n");
         retValue.append("<tr><td colspan=\"2\"><span style=\"height: 6px;\"></span></td></tr>\n");
@@ -338,13 +338,12 @@ public class CmsDialogElements extends CmsDialog {
                 }
                 retValue.append(">");
                 retValue.append("<script type=\"text/javascript\">registerElement(\"");
-                
+
                 retValue.append(element.getName());
                 retValue.append("\", ");
                 retValue.append(page.isEnabled(element.getName(), getElementLocale()));
                 retValue.append(");</script>");
-                
-                
+
                 retValue.append("</td>\n");
                 retValue.append("</tr>\n");
             }
@@ -471,8 +470,9 @@ public class CmsDialogElements extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(key("editor.dialog.elements.title") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(
+                Messages.GUI_EDITOR_DIALOG_ELEMENTS_TITLE_1,
+                new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
-
 }

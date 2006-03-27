@@ -2,22 +2,24 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="6.0.4" />    
+    <property name="version.number"             		value="6.1.13" />    
     
 	<property name="app.name" 							value="opencms" />
     
     <property name="opencms.input" 						location="${basedir}" />
     <property name="opencms.output"						location="${basedir}/../" />    	
 
+    <property name="opencms.build"			            location="${opencms.output}/build" />
     <property name="opencms.output.classes"             location="${opencms.output}/build/classes-core" />
     <property name="opencms.output.tests"               location="${opencms.output}/build/test" />
     <property name="opencms.output.jars"                location="${opencms.output}/build/jars-core" />
     <property name="opencms.output.warfiles"            location="${opencms.output}/build/${app.name}" />
     <property name="opencms.output.distfiles"           location="${opencms.output}/zip" />    
 
-    <property name="opencms.input.warfiles"            	location="${opencms.input}/webapp" />
     <property name="opencms.input.updater"            	location="${opencms.input}/modules/org.opencms.updater/resources" />
-    <property name="opencms.input.libs" 				location="${opencms.input.warfiles}/WEB-INF/lib" />
+    <property name="opencms.input.warfiles"            	location="${opencms.input}/webapp" />
+    <property name="opencms.input.webinf" 				location="${opencms.input.warfiles}/WEB-INF" />
+    <property name="opencms.input.libs" 				location="${opencms.input.webinf}/lib" />
     <property name="opencms.input.externlibs" 			location="${opencms.output}/lib" />
     <property name="opencms.input.defaultconfiguration" location="${opencms.input.warfiles}/WEB-INF/config/opencms.properties" />
     <property name="opencms.input.default.registry"		location="${opencms.input.warfiles}/WEB-INF/config/registry.xml" />
@@ -29,11 +31,11 @@
     <property name="opencms.inputlib.mail"        		location="${opencms.input.libs}/mail.jar" />
     <property name="opencms.inputlib.xerces"      		location="${opencms.input.libs}/xercesImpl-2.6.2.jar" />
     <property name="opencms.inputlib.xml-apis"      	location="${opencms.input.libs}/xml-apis-2.6.2.jar" />
-    <property name="opencms.inputlib.mysql"       		location="${opencms.input.libs}/mysql-connector-java-3.0.15-ga-bin.jar" />
-    <property name="opencms.inputlib.postgresql"       	location="${opencms.input.libs}/pg74.215.jdbc3.jar" />
     <property name="opencms.inputlib.oro"         		location="${opencms.input.libs}/jakarta-oro-2.0.8.jar" />
     <property name="opencms.inputlib.tidy"        		location="${opencms.input.libs}/jtidy-r8-05102004.jar" />
     <property name="opencms.inputlib.uuid"        		location="${opencms.input.libs}/jug-1.1.2.jar" />   
+    <property name="opencms.inputlib.simapi"        	location="${opencms.input.libs}/alkacon-simapi-0.9.3.jar" />
+    <property name="opencms.inputlib.diff"        	    location="${opencms.input.libs}/alkacon-diff-0.9.1.jar" />
     <property name="opencms.inputlib.codec"        		location="${opencms.input.libs}/commons-codec-1.3.jar" />
     <property name="opencms.inputlib.email"        		location="${opencms.input.libs}/commons-email-1.0-mod.jar" />
     <property name="opencms.inputlib.dbcp"        		location="${opencms.input.libs}/commons-dbcp-1.2.1.jar" />
@@ -45,25 +47,26 @@
     <property name="opencms.inputlib.fileupload"   		location="${opencms.input.libs}/commons-fileupload-1.0.jar" />
     <property name="opencms.inputlib.httpclient"   		location="${opencms.input.libs}/commons-httpclient-2.0.2.jar" />
     <property name="opencms.inputlib.log4j"     		location="${opencms.input.libs}/log4j-1.2.9.jar" /> 
-    <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j-1.5.2.jar" />
+    <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j-1.6.1.jar" />
     <property name="opencms.inputlib.quartz"     		location="${opencms.input.libs}/quartz-1.4.5.jar" />
     <property name="opencms.inputlib.jaxen"     		location="${opencms.input.libs}/jaxen-1.1-beta-4.jar" />
-    <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.5-20050313.jar" />
-    <property name="opencms.inputlib.lucene"			location="${opencms.input.libs}/lucene-1.4.3.jar" />
-    <property name="opencms.inputlib.poi"				location="${opencms.input.libs}/poi-2.5.1-final-20040804.jar" />
-    <property name="opencms.inputlib.snowball"			location="${opencms.input.libs}/snowball-1.0.jar" />
+    <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.5-20050925.jar" />
+    <property name="opencms.inputlib.lucene.core"		location="${opencms.input.libs}/lucene-core-1.9.1.jar" />
+    <property name="opencms.inputlib.lucene.analyzers"	location="${opencms.input.libs}/lucene-analyzers-1.9.1.jar" />
+    <property name="opencms.inputlib.lucene.snowball"	location="${opencms.input.libs}/lucene-snowball-1.9.1.jar" />
+	<property name="opencms.inputlib.poi"				location="${opencms.input.libs}/poi-2.5.1-final-20040804.jar" />
     <property name="opencms.inputlib.pdfbox"			location="${opencms.input.libs}/PDFBox-0.7.0.jar" />
     <property name="opencms.inputlib.textextraction"	location="${opencms.input.libs}/tm-extractors-0.4.jar" />
     <property name="opencms.inputlib.junit"      		location="${opencms.input.libs}/junit-3-8-1.jar" /> 
     <property name="opencms.inputlib.jstl"	            location="${opencms.input.libs}/jstl-1.0.6.jar" />
     <property name="opencms.inputlib.standard"          location="${opencms.input.libs}/standard-1.0.6.jar" /> 	
     <property name="opencms.inputlib.oracle"      		location="${opencms.input.externlibs}/ojdbc14.jar" /> 
- 
 	<property name="drivers.vfs"						value="db" />
 	<property name="drivers.project"					value="db" />
 	<property name="drivers.user"						value="db" />
 	<property name="drivers.workflow"					value="db" />
 	<property name="drivers.backup"						value="db" />
+	<property name="db.additional.pools" 				value="" />
 	<property name="drivers.configuration"				value="" />
 	<property name="registry.configuration"				value="" />
 	<property name="opencms.configuration"				value="" />
@@ -72,6 +75,11 @@
     <property name="excludes"                   		value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath" />
     
     <property environment="env" />
+	
+	<!-- comma separated list of jar archives to be removed during update -->
+	<property name="updater.jars.remove"				value="ant-opencms-1.0.jar,dom4j-1.5.2.jar,htmlparser-1.5-20050313.jar,jstl-1.1.2.jar,lucene-1.4.3.jar,snowball-1.0.jar,standard-1.1.2.jar" />
+	<!-- comma separated list of files in WEB-INF/ to be updated -->
+	<property name="updater.webinf.files"				value="opencms.tld,web.xml,cmsshell.sh" />
 
  	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 	  <classpath>
@@ -81,10 +89,10 @@
 	
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms"> 
 	  <classpath>
-	    <pathelement location="${opencms.input.libs}/ant-opencms-1.0.jar"/>
+	    <pathelement location="${opencms.input.libs}/ant-opencms-1.1.jar"/>
 	  </classpath>
 	</taskdef>
-	
+
 	<!-- 
 	  -	Checks if all required libraries are available
 	  -->
@@ -97,12 +105,12 @@
                 <available file="${opencms.inputlib.mail}"/>
                 <available file="${opencms.inputlib.xerces}"/>
                 <available file="${opencms.inputlib.xml-apis}"/>
-                <available file="${opencms.inputlib.mysql}"/>
-                <available file="${opencms.inputlib.postgresql}"/>
                 <available file="${opencms.inputlib.oro}"/>
                 <available file="${opencms.inputlib.tidy}"/>
                 <available file="${opencms.inputlib.uuid}"/>                
                 <available file="${opencms.inputlib.pool}"/> 
+                <available file="${opencms.inputlib.simapi}"/>
+            	<available file="${opencms.inputlib.diff}"/>
                 <available file="${opencms.inputlib.codec}"/>
                 <available file="${opencms.inputlib.email}"/>
                 <available file="${opencms.inputlib.dbcp}"/>
@@ -116,9 +124,10 @@
                 <available file="${opencms.inputlib.quartz}"/> 
                 <available file="${opencms.inputlib.log4j}"/> 
                 <available file="${opencms.inputlib.htmlparser}"/>
-                <available file="${opencms.inputlib.lucene}"/>
+                <available file="${opencms.inputlib.lucene.core}"/>
+				<available file="${opencms.inputlib.lucene.analyzers}"/>
+    			<available file="${opencms.inputlib.lucene.snowball}"/>
                 <available file="${opencms.inputlib.poi}"/>
-                <available file="${opencms.inputlib.snowball}"/>
                 <available file="${opencms.inputlib.pdfbox}"/> 
                 <available file="${opencms.inputlib.jstl}"/>
                 <available file="${opencms.inputlib.standard}"/>             	
@@ -178,12 +187,12 @@ ${opencms.inputlib.activation}
 ${opencms.inputlib.mail}
 ${opencms.inputlib.xerces}
 ${opencms.inputlib.xml-apis}
-${opencms.inputlib.mysql}
-${opencms.inputlib.postgresql}
 ${opencms.inputlib.oro}
 ${opencms.inputlib.tidy}
 ${opencms.inputlib.uuid}
 ${opencms.inputlib.pool}
+${opencms.inputlib.simapi}
+${opencms.inputlib.diff}
 ${opencms.inputlib.codec}
 ${opencms.inputlib.email}
 ${opencms.inputlib.dbcp}
@@ -197,9 +206,10 @@ ${opencms.inputlib.dom4j}
 ${opencms.inputlib.quartz}
 ${opencms.inputlib.log4j}
 ${opencms.inputlib.htmlparser}
-${opencms.inputlib.lucene}
+${opencms.inputlib.lucene.core}
+${opencms.inputlib.lucene.analyzers}
+${opencms.inputlib.lucene.snowball}
 ${opencms.inputlib.poi}
-${opencms.inputlib.snowball}
 ${opencms.inputlib.pdfbox}
 ${opencms.inputlib.jstl}
 ${opencms.inputlib.standard}
@@ -226,7 +236,7 @@ ${opencms.inputlib.textextraction}
     	
         <uptodate property="classesUpToDate" targetfile="${opencms.output.jars}/opencms.jar">
         	<srcfiles dir= "${opencms.input}/src" includes="**/*.java" excludes="${build.excludes},${excludes}"/>
-        	<srcfiles dir= "${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd" excludes="${excludes}" />
+        	<srcfiles dir= "${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
         </uptodate>
             	
        	<javac
@@ -243,6 +253,8 @@ ${opencms.inputlib.textextraction}
                        ${opencms.inputlib.postgresql}:
                        ${opencms.inputlib.oro}:
                        ${opencms.inputlib.tidy}:
+                       ${opencms.inputlib.simapi}:
+       		           ${opencms.inputlib.diff}:
                        ${opencms.inputlib.codec}:
                        ${opencms.inputlib.email}:
                        ${opencms.inputlib.dbcp}:
@@ -258,9 +270,10 @@ ${opencms.inputlib.textextraction}
                        ${opencms.inputlib.log4j}:
                        ${opencms.inputlib.htmlparser}:
                        ${opencms.inputlib.uuid}:
-                       ${opencms.inputlib.lucene}:
+                       ${opencms.inputlib.lucene.core}:
+    				   ${opencms.inputlib.lucene.analyzers}:
+    				   ${opencms.inputlib.lucene.snowball}:
                        ${opencms.inputlib.poi}:
-                       ${opencms.inputlib.snowball}:
                        ${opencms.inputlib.jstl}:
                        ${opencms.inputlib.standard}:       		
                        ${opencms.inputlib.textextraction}:
@@ -274,7 +287,7 @@ ${opencms.inputlib.textextraction}
        	</javac>
 		
         <copy todir="${opencms.output.classes}">
-            <fileset dir="${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd" excludes="${excludes}"/>
+            <fileset dir="${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}"/>
         </copy>              
                 
         <antcall target="versioninfo" />        
@@ -320,9 +333,10 @@ ${opencms.inputlib.textextraction}
       			<filter token="DRIVERS_PROJECT" value="${drivers.project}"/>
       			<filter token="DRIVERS_USER" value="${drivers.user}"/>
       			<filter token="DRIVERS_WORKFLOW" value="${drivers.workflow}"/>
-      			<filter token="DRIVERS_BACKUP" value="${drivers.backup}"/>
+      			<filter token="DRIVERS_BACKUP" value="${drivers.backup}"/>    			
       			<filter token="DRIVERS_CONFIGURATION" value="${drivers.configuration}"/>
-    		</filterset>	   		
+    			<filter token="ADDITIONAL_DB_POOLS" value="${db.additional.pools}"/>
+    		</filterset>
 	   	</copy>       	  
     	
 	   	<copy 
@@ -376,26 +390,10 @@ ${opencms.inputlib.textextraction}
     			property modules.common.all undefined.
     		</fail>
     	  </then>
-    	  <else>
-    	  	<echo message="all: ${modules.common.all}"/>
-    	  </else>
     	</if>
         <sortlist property="modules.all.sort" value="${modules.common.all}" override="true" />
-	  	<selectionprompt 
-	  	  	property="modules.common.interactive"
-	  	    defaultvalue=""
-	  		allvalues="${modules.all.sort}"
-	  		prompt="Please select the modules to include in the update wizard:"
-	  		title="Module Selection"
-	  	/>
-	    <if>
-	      <equals arg1="${modules.common.interactive}" arg2="__ABORT__" />
-	      <then>
-	    	<fail>aborted by User</fail>
-	      </then>
-	    </if>
-		<property name="modules.var" value="${modules.common.interactive}" />
-        <sortlist property="modules.var" value="${modules.var}" override="true" />
+	  	<echo message="all: ${modules.all.sort}"/>
+		<property name="modules.var" value="${modules.all.sort}" />
 	  	<ant antfile="${basedir}/modules/build.xml" target="dist" inheritAll="false" >
 	  		<property name="modules.selection.mode" value="selection" />
 	  		<property name="modules.common.selection" value="${modules.var}" />
@@ -405,173 +403,62 @@ ${opencms.inputlib.textextraction}
     	<zip
             zipfile="${opencms.output.distfiles}/opencms-updater.zip"
             basedir="${opencms.input.updater}"
-            includes="**" >
-        	<zipfileset dir="${opencms.output.jars}" prefix="WEB-INF/lib" includes="opencms.jar" />
+            includes="**" excludes="empty.jar">
     	</zip>
 
-    	<var name="modules.jar.list" value="" />
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
-    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
-            	<zipfileset dir="${opencms.output.distfiles}" prefix="update/modules" includes="@{module}_*.zip" />
-    	  	</zip>
         	<if>
-	    		<available file="${opencms.output}/build/jars-@{module}" />
+        		<not>
+        			<or>
+			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos" />
+			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos.list" />
+			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos.widget" />
+        			</or>
+        		</not>
 				<then>
 		    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
-		            	<zipfileset dir="${opencms.output}/build/jars-@{module}" prefix="update/jars" includes="@{module}.jar" />
+		            	<zipfileset dir="${opencms.output.distfiles}" prefix="update/modules" includes="@{module}_*.zip" />
 		    	  	</zip>
-		    	  	<if>
-		    	  		<not>
-			    	  		<equals arg1="${modules.jar.list}" arg2="" />
-		    	  		</not>
-		    	  		<then>
-		    	        	<var name="modules.jar.list" value="${modules.jar.list}," />
-		    	  		</then>
-		    	  	</if>
-		        	<var name="modules.jar.list" value="${modules.jar.list}@{module}.jar" />
+		        	<if>
+			    		<available file="${opencms.output}/build/jars-@{module}" />
+						<then>
+				    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+				            	<zipfileset dir="${opencms.output}/build/jars-@{module}" prefix="WEB-INF/lib" includes="@{module}.jar" />
+				    	  	</zip>
+						</then>
+					</if>
+		        	<if>
+			    		<available file="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" />
+						<then>
+				    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+				            	<zipfileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" prefix="WEB-INF/lib" includes="*.jar" />
+				    	  	</zip>
+						</then>
+					</if>
 				</then>
-			</if>
-        	<if>
-	    		<available file="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" />
-				<then>
-		    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
-		            	<zipfileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" prefix="update/jars" includes="*.jar" />
-		    	  	</zip>
-			        <var name="input.lib.regex" value="" /> 
-			    	<for list="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" param="path" delimiter="/\\" trim="yes">
-			    	  <sequential>
-			            <var name="input.lib.regex" value="${input.lib.regex}@{path}/" /> 
-			      	  </sequential>
-					</for>
-			    	<!--echo message="${input.lib.regex}"/-->
-					<for param="archive">
-						<path>
-							<fileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" includes="*.jar"/>
-						</path>
-	                    <sequential>
-	    		    	  	<if>
-	    		    	  		<not>
-		    		    	  		<equals arg1="${modules.jar.list}" arg2="" />
-	    		    	  		</not>
-	    		    	  		<then>
-	    		    	        	<var name="modules.jar.list" value="${modules.jar.list}," />
-	    		    	  		</then>
-	    		    	  	</if>
-	    			        <var name="archive.regex" value="" /> 
-	    			    	<for list="@{archive}" param="path" delimiter="/\\" trim="yes">
-	    			    	  <sequential>
-	    			    	  	<if>
-	    			    	  	    <not>
-	    			    	  		  <equals arg1="${archive.regex}" arg2="" />
-	    			    	  	    </not>
-	    			    	  		<then>
-	    	    			            <var name="archive.regex" value="${archive.regex}/" /> 	    			    	  			
-	    			    	  		</then>
-	    			    	  	</if>
-	    			            <var name="archive.regex" value="${archive.regex}@{path}" /> 
-	    			      	  </sequential>
-	    					</for>
-	                    	<!--echo message="${archive.regex}"/-->
-	                        <propertyregex property="archive.name" override="true"
-	                                  input="${archive.regex}"
-	                                  regexp="${input.lib.regex}([^\.]*)"
-	                                  replace="\1"
-	                                  casesensitive="false" />
-	                    	<!--echo message="${archive.name}"/-->
-	    		        	<var name="modules.jar.list" value="${modules.jar.list}${archive.name}" />
-	                    </sequential>
-	                </for>
-				</then>
-			</if>
+			</if>    	  	
     	  </sequential>
     	</for>
     	
-        <var name="input.lib.regex" value="" /> 
-    	<for list="${opencms.input.libs}" param="path" delimiter="/\\" trim="yes">
+	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+        	<zipfileset dir="${opencms.input.libs}" prefix="WEB-INF/lib" includes="*.jar" />
+	  	</zip>
+    	
+    	<for list="${updater.jars.remove}" param="jarfile" delimiter="," trim="yes">
     	  <sequential>
-            <var name="input.lib.regex" value="${input.lib.regex}@{path}/" /> 
+            <copy file="${opencms.input.updater}/empty.jar" tofile="${opencms.output}/build/jars-core/@{jarfile}"/>
       	  </sequential>
 		</for>
-    	<echo message="${input.lib.regex}"/>
-    	<var name="libs.common.all" value="" />
-    	<for param="archive">
-			<path>
-				<fileset dir="${opencms.input.libs}" includes="*.jar"/>
-			</path>
-            <sequential>
-        	  	<if>
-        	  		<not>
-	        	  		<equals arg1="${libs.common.all}" arg2="" />
-        	  		</not>
-        	  		<then>
-        	        	<var name="libs.common.all" value="${libs.common.all}," />
-        	  		</then>
-        	  	</if>
-		        <var name="archive.regex" value="" /> 
-		    	<for list="@{archive}" param="path" delimiter="/\\" trim="yes">
-		    	  <sequential>
-		    	  	<if>
-		    	  	    <not>
-		    	  		  <equals arg1="${archive.regex}" arg2="" />
-		    	  	    </not>
-		    	  		<then>
-    			            <var name="archive.regex" value="${archive.regex}/" /> 	    			    	  			
-		    	  		</then>
-		    	  	</if>
-		            <var name="archive.regex" value="${archive.regex}@{path}" /> 
-		      	  </sequential>
-				</for>
-            	<!--echo message="${archive.regex}"/-->
-                <propertyregex property="archive.name" override="true"
-                          input="${archive.regex}"
-                          regexp="${input.lib.regex}([^\.]*)"
-                          replace="\1"
-                          casesensitive="false" />
-            	<!--echo message="${archive.name}"/-->
-            	<var name="libs.common.all" value="${libs.common.all},${archive.name}" />
-            </sequential>
-        </for>
-        <sortlist property="libs.all.sort" value="${libs.common.all}" override="true" />
-	  	<selectionprompt 
-	  	  	property="libs.common.interactive"
-	  	    defaultvalue=""
-	  		allvalues="${libs.all.sort}"
-	  		prompt="Please select the libs to include in the update wizard:"
-	  		title="Library Selection"
-	  	/>
-	    <if>
-	      <equals arg1="${libs.common.interactive}" arg2="__ABORT__" />
-	      <then>
-	    	<fail>aborted by User</fail>
-	      </then>
-	    </if>
-		<property name="libs.var" value="${libs.common.interactive}" />
-        <sortlist property="libs.var" value="${libs.var}" override="true" />
-
-	  	<if>
-	  		<not>
-    	  		<equals arg1="${modules.jar.list}" arg2="" />
-	  		</not>
-	  		<then>
-	        	<var name="libs.var" value=",${libs.var}" />
-	  		</then>
-	  	</if>
-    	<echo message="${modules.jar.list}" />
-    	<echo message="${libs.var}" />
-    	<copy 
-			file="${opencms.input.updater}/update/jars/removejars.properties" 
-			tofile="${opencms.output}/build/removejars.properties" overwrite="true">			
-    		<filterset>
-      			<filter token="JARS_TO_REMOVE_FOR_MODULES" value="${modules.jar.list}"/>
-      			<filter token="JARS_TO_REMOVE_FOR_LIBS" value="${libs.var}"/>
-    		</filterset>			
-		</copy>
-
+    	
 	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
-        	<zipfileset dir="${opencms.input.libs}" prefix="update/jars" includes="${libs.var}" />
-        	<zipfileset dir="${opencms.output}/build" prefix="update/jars" includes="removejars.properties" />
+        	<zipfileset dir="${opencms.output}/build/jars-core/" prefix="WEB-INF/lib" includes="*.jar" />
 	  	</zip>
+    	
+	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+        	<zipfileset dir="${opencms.input.webinf}" prefix="WEB-INF" includes="${updater.webinf.files}" />
+	  	</zip>
+    	
     </target>
 
     <target name="war" 
@@ -750,6 +637,8 @@ ${opencms.inputlib.textextraction}
                        ${opencms.inputlib.postgresql}:
                        ${opencms.inputlib.oro}:
                        ${opencms.inputlib.tidy}:
+                       ${opencms.inputlib.simapi}:
+       		           ${opencms.inputlib.diff}:
                        ${opencms.inputlib.codec}:
                        ${opencms.inputlib.email}:
                        ${opencms.inputlib.dbcp}:
@@ -765,9 +654,10 @@ ${opencms.inputlib.textextraction}
                        ${opencms.inputlib.log4j}:
                        ${opencms.inputlib.htmlparser}:
                        ${opencms.inputlib.uuid}:
-                       ${opencms.inputlib.lucene}:
+                       ${opencms.inputlib.lucene.core}:
+    				   ${opencms.inputlib.lucene.analyzers}:
+					   ${opencms.inputlib.lucene.snowball}:
                        ${opencms.inputlib.poi}:
-                       ${opencms.inputlib.snowball}:
        		           ${opencms.inputlib.jstl}:
        		           ${opencms.inputlib.standard}:
                        ${opencms.inputlib.textextraction}:
@@ -811,6 +701,8 @@ ${opencms.inputlib.textextraction}
 				<pathelement location="${opencms.inputlib.postgresql}"/>
 				<pathelement location="${opencms.inputlib.oro}"/>
 				<pathelement location="${opencms.inputlib.tidy}"/>
+				<pathelement location="${opencms.inputlib.simapi}"/>
+				<pathelement location="${opencms.inputlib.diff}"/>
 				<pathelement location="${opencms.inputlib.codec}"/>
 				<pathelement location="${opencms.inputlib.email}"/>
 				<pathelement location="${opencms.inputlib.dbcp}"/>
@@ -826,9 +718,10 @@ ${opencms.inputlib.textextraction}
 				<pathelement location="${opencms.inputlib.log4j}"/>
 				<pathelement location="${opencms.inputlib.htmlparser}"/>
 				<pathelement location="${opencms.inputlib.uuid}"/>
-				<pathelement location="${opencms.inputlib.lucene}"/>
+				<pathelement location="${opencms.inputlib.lucene.core}"/>
+				<pathelement location="${opencms.inputlib.lucene.analyzers}"/>
+				<pathelement location="${opencms.inputlib.lucene.snowball}"/>
 				<pathelement location="${opencms.inputlib.poi}"/>
-				<pathelement location="${opencms.inputlib.snowball}"/>
 				<pathelement location="${opencms.inputlib.jaxen}"/>
 				<pathelement location="${opencms.inputlib.pdfbox}"/>
 				<pathelement location="${opencms.inputlib.standard}"/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/03/27 14:52:30 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,6 +84,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     /** Request parameter name for the selected body. */
     public static final String PARAM_BODYFILE = "bodyfile";
 
+    /** Request parameter name for the suffix check. */
+    public static final String PARAM_SUFFIXCHECK = "suffixcheck";
+
     /** Request parameter name for the selected template. */
     public static final String PARAM_TEMPLATE = "template";
 
@@ -91,7 +94,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     private static final Log LOG = CmsLog.getLog(CmsNewResourceXmlPage.class);
     private String m_paramBodyFile;
     private String m_paramDialogMode;
-
+    private String m_paramSuffixCheck;
     private String m_paramTemplate;
 
     /**
@@ -120,24 +123,54 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * Returns a sorted Map of all available body files of the OpenCms modules.<p>
      * 
      * @param cms the current cms object
+     * @param currWpPath the current path in the OpenCms workplace
      * @return a sorted map with the body file title as key and absolute path to the body file as value
      * @throws CmsException if reading a folder or file fails
      */
-    public static TreeMap getBodies(CmsObject cms) throws CmsException {
+    public static TreeMap getBodies(CmsObject cms, String currWpPath) throws CmsException {
 
-        return getElements(cms, CmsWorkplace.VFS_DIR_DEFAULTBODIES);
+        return getElements(cms, CmsWorkplace.VFS_DIR_DEFAULTBODIES, currWpPath, true);
+    }
+
+    /**
+     * Returns a sorted Map of all available body files of the OpenCms modules.<p>
+     * 
+     * @param cms the current cms object
+     * @param currWpPath the current path in the OpenCms workplace
+     * @param emptyMap flag indicating if it is OK to return a filtered empty Map
+     * @return a sorted map with the body file title as key and absolute path to the body file as value
+     * @throws CmsException if reading a folder or file fails
+     */
+    public static TreeMap getBodies(CmsObject cms, String currWpPath, boolean emptyMap) throws CmsException {
+
+        return getElements(cms, CmsWorkplace.VFS_DIR_DEFAULTBODIES, currWpPath, emptyMap);
     }
 
     /**
      * Returns a sorted Map of all available templates of the OpenCms modules.<p>
      * 
      * @param cms the current cms object
+     * @param currWpPath the current path in the OpenCms workplace
      * @return a sorted map with the template title as key and absolute path to the template as value
      * @throws CmsException if reading a folder or file fails
      */
-    public static TreeMap getTemplates(CmsObject cms) throws CmsException {
+    public static TreeMap getTemplates(CmsObject cms, String currWpPath) throws CmsException {
 
-        return getElements(cms, CmsWorkplace.VFS_DIR_TEMPLATES);
+        return getElements(cms, CmsWorkplace.VFS_DIR_TEMPLATES, currWpPath, true);
+    }
+
+    /**
+     * Returns a sorted Map of all available templates of the OpenCms modules.<p>
+     * 
+     * @param cms the current cms object
+     * @param currWpPath the current path in the OpenCms workplace
+     * @param emptyMap flag indicating if it is OK to return a filtered empty Map
+     * @return a sorted map with the template title as key and absolute path to the template as value
+     * @throws CmsException if reading a folder or file fails
+     */
+    public static TreeMap getTemplates(CmsObject cms, String currWpPath, boolean emptyMap) throws CmsException {
+
+        return getElements(cms, CmsWorkplace.VFS_DIR_TEMPLATES, currWpPath, emptyMap);
     }
 
     /**
@@ -145,12 +178,21 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * 
      * @param cms the current cms object
      * @param elementFolder the module subfolder to serach for elements
+     * @param currWpPath the current path in the OpenCms workplace
+     * @param emptyMap flag indicating if it is OK to return a filtered empty Map
      * @return a sorted map with the element title as key and absolute path to the element as value
      * @throws CmsException if reading a folder or file fails
      */
-    protected static TreeMap getElements(CmsObject cms, String elementFolder) throws CmsException {
+    protected static TreeMap getElements(CmsObject cms, String elementFolder, String currWpPath, boolean emptyMap)
+    throws CmsException {
 
         TreeMap elements = new TreeMap();
+        TreeMap allElements = new TreeMap();
+
+        if (CmsStringUtil.isNotEmpty(currWpPath)) {
+            // add site root to current workplace path
+            currWpPath = cms.getRequestContext().addSiteRoot(currWpPath);
+        }
 
         // get all visible template elements in the module folders
         List modules = cms.getSubFolders(CmsWorkplace.VFS_PATH_MODULES, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -158,21 +200,28 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             List moduleTemplateFiles = new ArrayList();
             String folder = cms.getSitePath((CmsFolder)modules.get(i));
             try {
-                moduleTemplateFiles = cms.getFilesInFolder(folder + elementFolder);
+                moduleTemplateFiles = cms.getFilesInFolder(
+                    folder + elementFolder,
+                    CmsResourceFilter.DEFAULT.addRequireVisible());
             } catch (CmsException e) {
                 // folder not available, list will be empty
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(e);
+                    LOG.debug(e.getMessage(), e);
                 }
             }
             for (int j = 0; j < moduleTemplateFiles.size(); j++) {
                 // get the current template file
                 CmsFile templateFile = (CmsFile)moduleTemplateFiles.get(j);
                 String title = null;
+                String folderProp = null;
                 try {
                     title = cms.readPropertyObject(
                         cms.getSitePath(templateFile),
                         CmsPropertyDefinition.PROPERTY_TITLE,
+                        false).getValue();
+                    folderProp = cms.readPropertyObject(
+                        templateFile,
+                        CmsPropertyDefinition.PROPERTY_FOLDERS_AVAILABLE,
                         false).getValue();
                 } catch (CmsException e) {
                     // property not available, will be null
@@ -180,15 +229,41 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
                         LOG.info(e);
                     }
                 }
+
+                boolean isInFolder = false;
+                // check template folders property value
+                if (CmsStringUtil.isNotEmpty(currWpPath) && CmsStringUtil.isNotEmpty(folderProp)) {
+                    // property value set on template, check if current workplace path fits
+                    List folders = CmsStringUtil.splitAsList(folderProp, DELIM_PROPERTYVALUES);
+                    for (int k = 0; k < folders.size(); k++) {
+                        String checkFolder = (String)folders.get(k);
+                        if (currWpPath.startsWith(checkFolder)) {
+                            isInFolder = true;
+                            break;
+                        }
+                    }
+                } else {
+                    isInFolder = true;
+                }
+
                 if (title == null) {
                     // no title property found, display the file name
                     title = templateFile.getName();
                 }
                 String path = cms.getSitePath(templateFile);
-                elements.put(title, path);
+                if (isInFolder) {
+                    // element is valid, add it to result
+                    elements.put(title, path);
+                }
+                // also put element to overall result
+                allElements.put(title, path);
             }
         }
-        // return the templates sorted by title
+        if (!emptyMap && elements.size() < 1) {
+            // empty Map should not be returned, return all collected elements
+            return allElements;
+        }
+        // return the filtered elements sorted by title
         return elements;
     }
 
@@ -232,10 +307,13 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             // create the full resource name
             String fullResourceName = computeFullResourceName();
 
-            // append ".html" suffix to new file if not present
-            if (fullResourceName.indexOf('.') < 0) {
-                fullResourceName += ".html";
+            // eventually append ".html" suffix to new file if not present
+            boolean forceSuffix = false;
+            if (CmsStringUtil.isEmpty(getParamSuffixCheck())) {
+                // backward compatibility: append suffix every time
+                forceSuffix = true;
             }
+            fullResourceName = appendSuffixHtml(fullResourceName, forceSuffix);
 
             // get the body file content
             byte[] bodyFileBytes = null;
@@ -311,7 +389,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         TreeMap bodies = null;
         try {
             // get all available body files
-            bodies = getBodies(getCms());
+            bodies = getBodies(getCms(), getParamCurrentFolder(), false);
         } catch (CmsException e) {
             // can usually be ignored
             if (LOG.isInfoEnabled()) {
@@ -350,7 +428,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         TreeMap templates = null;
         try {
             // get all available templates
-            templates = getTemplates(getCms());
+            templates = getTemplates(getCms(), getParamCurrentFolder(), false);
         } catch (CmsException e) {
             // can usually be ignored
             if (LOG.isInfoEnabled()) {
@@ -398,6 +476,16 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     public String getParamDialogmode() {
 
         return m_paramDialogMode;
+    }
+
+    /**
+     * Returns the request parameter flag inidicating if the suffix field is present or not.<p>
+     * 
+     * @return the request parameter flag inidicating if the suffix field is present or not
+     */
+    public String getParamSuffixCheck() {
+
+        return m_paramSuffixCheck;
     }
 
     /**
@@ -457,6 +545,16 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     }
 
     /**
+     * Sets the request parameter flag inidicating if the suffix field is present or not.<p>
+     * 
+     * @param paramSuffixCheck he request parameter flag inidicating if the suffix field is present or not
+     */
+    public void setParamSuffixCheck(String paramSuffixCheck) {
+
+        m_paramSuffixCheck = paramSuffixCheck;
+    }
+
+    /**
      * Sets the template parameter value.<p>
      * 
      * @param template the template parameter value
@@ -485,7 +583,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             setInitialResourceName();
             setAction(ACTION_DEFAULT);
             // build title for new resource dialog     
-            setParamTitle(key("title.newpage"));
+            setParamTitle(key(Messages.GUI_NEWRESOURCE_XMLPAGE_0));
         }
     }
 

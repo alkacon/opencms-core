@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2005/09/06 15:25:20 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,16 @@ package org.opencms.util;
 
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsInitException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
+
+import org.apache.commons.logging.Log;
 
 import org.doomdark.uuid.EthernetAddress;
 import org.doomdark.uuid.UUID;
@@ -59,14 +66,11 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
-public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable {
-
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = 1726324354709298575L;
+public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable, Externalizable {
 
     /** Ethernet addess of the server machine. */
     private static EthernetAddress m_ethernetAddress;
@@ -82,6 +86,12 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     /** Constant for the null UUID. */
     private static final CmsUUID NULL_UUID = new CmsUUID(UUID.getNullUUID());
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsUUID.class);
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 1736324454709298676L;
+
     /** Internal UUID implementation. */
     private UUID m_uuid;
 
@@ -93,12 +103,10 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      */
     public CmsUUID() {
 
-        synchronized (this) {
-            if (m_isNotInitialized) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INVALID_ETHERNET_ADDRESS_0));
-            }
-            m_uuid = UUIDGenerator.getInstance().generateTimeBasedUUID(m_ethernetAddress);
+        if (m_isNotInitialized) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INVALID_ETHERNET_ADDRESS_0));
         }
+        m_uuid = UUIDGenerator.getInstance().generateTimeBasedUUID(m_ethernetAddress);
     }
 
     /**
@@ -217,6 +225,23 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     }
 
     /**
+     * Returns <code>true</code> if the given UUID is valid.<p>
+     * 
+     * @param uuid the UUID to check
+     * 
+     * @return <code>true</code> if the given UUID is valid
+     */
+    public static boolean isValidUUID(String uuid) {
+
+        try {
+            return (null != uuid) && (null != UUID.valueOf(uuid));
+        } catch (NumberFormatException e) {
+            // return false
+        }
+        return false;
+    }
+
+    /**
      * Creates a clone of this CmsUUID.<p>
      * 
      * @return a clone of this CmsUUID
@@ -245,6 +270,9 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      */
     public boolean equals(Object obj) {
 
+        if (obj == this) {
+            return true;
+        }
         if (obj instanceof CmsUUID) {
             return ((CmsUUID)obj).m_uuid.equals(m_uuid);
         }
@@ -292,4 +320,42 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
         return m_uuid.toString();
     }
 
+    /**
+     * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
+     */
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+        Object o = in.readObject();
+        if (o instanceof String) {
+            // this UUID has been serialized using the new method
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_UUID_1, o));
+            }
+            m_uuid = new UUID((String)o);
+        } else if (o instanceof UUID) {
+            // this UUID has been serialized using the old method
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_UUID_OLD_1, o));
+            }
+            m_uuid = (UUID)o;
+        } else {
+            // UUID cannot be deserialized
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_ERR_READ_UUID_0));
+            }
+            throw new IOException("Cannot read externalized UUID.");
+        }
+    }
+
+    /**
+     * 
+     * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
+     */
+    public void writeExternal(ObjectOutput out) throws IOException {
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRITE_UUID_1, m_uuid.toString()));
+        }
+        out.writeObject(m_uuid.toString());
+    }
 }

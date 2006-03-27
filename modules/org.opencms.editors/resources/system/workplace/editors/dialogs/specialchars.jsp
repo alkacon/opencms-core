@@ -3,9 +3,8 @@
 	// initialize the workplace class
 	CmsDialog wp = new CmsDialog(pageContext, request, response);
 	wp.setParamIsPopup("true");
-	int buttonStyle = 0;
 	
-	String dialogTitle = wp.key("label.specialchar");
+	String dialogTitle = wp.key(org.opencms.workplace.editors.Messages.GUI_LABEL_SPECIALCHAR_0);
 	
 %><%= wp.htmlStart(null, dialogTitle) %>
 

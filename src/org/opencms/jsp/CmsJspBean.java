@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2005/06/29 13:06:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsRequestUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -196,6 +197,44 @@ public class CmsJspBean {
     }
 
     /**
+     * Sets the content type for the HTTP response.<p>
+     * 
+     * This method is required since JSP's are handled in a special way for included template elements, 
+     * so {@link javax.servlet.ServletResponse#setContentType(java.lang.String)} won't work.<p>
+     * 
+     * Please note that the content type set this way is never cached in the Flex cache,
+     * so you must make sure to not cache the element when you use this method.<p>
+     * 
+     * @param type the type to set
+     * 
+     * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
+     */
+    public void setContentType(String type) {
+
+        // set the content type on the top level response
+        m_controller.getTopResponse().setContentType(type);
+    }
+
+    /**
+     * Sets the status code for the HTTP response.<p>
+     * 
+     * This method is required since JSP's are handled in a special way for included template elements, 
+     * so {@link javax.servlet.http.HttpServletResponseWrapper#setStatus(int)} won't work.<p>
+     * 
+     * Please note that the status code set this way is never cached in the Flex cache,
+     * so you must make sure to not cache the element when you use this method.<p>
+     * 
+     * @param status the status code to set
+     * 
+     * @see javax.servlet.http.HttpServletResponseWrapper#setStatus(int)
+     */
+    public void setStatus(int status) {
+
+        // use the request attribute to store the status
+        m_request.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, new Integer(status));
+    }
+
+    /**
      * Controls if Exceptions that occur in methods of this class are supressed (true)
      * or not (false).<p>
      * 
@@ -256,11 +295,14 @@ public class CmsJspBean {
     protected void handleException(Throwable t) {
 
         if (LOG.isErrorEnabled()) {
-            LOG.error(Messages.get().key(Messages.LOG_ERR_JSP_BEAN_0), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_JSP_BEAN_0), t);
         }
         if (!(m_isSupressingExceptions || getRequestContext().currentProject().isOnlineProject())) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_DEBUG_INTERRUPTED_EXCEPTION_1, this.getClass().getName()), t);
+                // no stack trace needed since it was already logged with the "error" log message above  
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_DEBUG_INTERRUPTED_EXCEPTION_1,
+                    getClass().getName()));
             }
             String uri = null;
             Throwable u = getController().getThrowable();
@@ -271,7 +313,7 @@ public class CmsJspBean {
             }
             throw new CmsRuntimeException(Messages.get().container(
                 Messages.ERR_RUNTIME_1,
-                (uri != null) ? uri : this.getClass().getName()), t);
+                (uri != null) ? uri : getClass().getName()), t);
         }
     }
 

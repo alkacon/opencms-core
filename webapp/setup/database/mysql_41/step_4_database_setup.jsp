@@ -3,7 +3,7 @@
 --%><jsp:setProperty name="Bean" property="*" /><%
 
 	// next page
-	String nextPage = "../../step_5_database_creation.jsp";		
+	String nextPage = "../../step_4a_database_validation.jsp";		
 	// previous page
 	String prevPage = "../../step_2_check_components.jsp";
 	
@@ -11,7 +11,7 @@
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -44,7 +44,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 
 <% if (Bean.isInitialized()) { %>
-OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
+Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <form method="post" onSubmit="return checkSubmit()" class="nomargin">
 
@@ -80,7 +80,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 			<!-- --------------------------------------------------------- -->
 			</select>
 		</td>
-		<td><td><%= Bean.getHtmlHelpIcon("6", "../../") %></td></td>
+		<td><%= Bean.getHtmlHelpIcon("6", "../../") %></td>
 	</tr>
 </table>
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
@@ -152,7 +152,7 @@ This user information is not stored after the setup is finished.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "2") %>
-The <b>OpenCms Connection</b> is used when running OpenCms after the installation.<br>&nbsp;<br>
+The <b>OpenCms Connection</b> is used when running Alkacon OpenCms after the installation.<br>&nbsp;<br>
 For security reasons, the specified user should <i>not</i> have database administration permissions.
 This user information is stored in the <code>opencms.properties</code> file after the setup.
 <%= Bean.getHtmlPart("C_HELP_END") %>
@@ -162,11 +162,11 @@ Enter the JDBC <b>Connection String</b> to your database.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "4") %>
-Enter the name of the MySQL <b>Database</b> which should be used by OpenCms.
+Enter the name of the MySQL <b>Database</b> which should be used by Alkacon OpenCms.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "5") %>
-The setup wizard <b>creates</b> the MySQL database and the tables for OpenCms.<br>&nbsp;<br>
+The setup wizard <b>creates</b> the MySQL database and the tables for Alkacon OpenCms.<br>&nbsp;<br>
 <b>Attention</b>: Existing databases will be overwritten!<br>&nbsp;<br>
 Uncheck this option if an already existing database should be used.
 <%= Bean.getHtmlPart("C_HELP_END") %>
@@ -174,7 +174,7 @@ Uncheck this option if an already existing database should be used.
 <%= Bean.getHtmlPart("C_HELP_START", "6") %>
 <b>MySQL 4.1 configuration notes:</b><br>&nbsp;<br>
 MySQL limits the size of packets which can be stored in the database. 
-In order to increase the maximum file size for OpenCms, 
+In order to increase the maximum file size for Alkacon OpenCms, 
 you have to adjust this setting for MySQL.<br>&nbsp;<br>
 Locate the file <code>mysql.ini</code> (Windows systems) respectively <code>mysql.conf</code> (Unix systems) and add the line<br>
 <code>set-variable=<br>max_allowed_packet=16M</code><br>
@@ -185,12 +185,9 @@ All tables are created using the <code>utf8</code> charset.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <% } else	{ %>
-OpenCms Setup Wizard - Database setup
+Alkacon OpenCms Setup Wizard - Database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-
-<% request.setAttribute("pathPrefix", "../../"); %>
-<%@ include file="../../error.jsp" %>
-
+<%= Bean.displayError("../../")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

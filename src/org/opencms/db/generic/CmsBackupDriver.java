@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.140 $
+ * Date   : $Date: 2006/03/27 14:52:54 $
+ * Version: $Revision: 1.141 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
@@ -76,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.140 $
+ * @version $Revision: 1.141 $
  * 
  * @since 6.0.0 
  */
@@ -341,7 +342,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         finalize();
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
     }
 
@@ -371,12 +372,12 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         m_driverManager = driverManager;
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().getName()));
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().getName()));
             }
         }
     }
@@ -715,7 +716,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 propertyValue = res.getString(2);
                 mappingType = res.getInt(3);
 
-                if ((property = (CmsProperty)propertyMap.get(propertyKey)) != null) {
+                property = (CmsProperty)propertyMap.get(propertyKey);
+                if (property != null) {
                     // there exists already a property for this key in the result
 
                     switch (mappingType) {
@@ -1005,7 +1007,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                         mappingType = CmsProperty.STRUCTURE_RECORD_MAPPING;
                         id = resource.getStructureId();
 
-                        if (value == null || "".equals(value)) {
+                        if (CmsStringUtil.isEmpty(value)) {
                             continue;
                         }
                     } else {
@@ -1014,7 +1016,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                         mappingType = CmsProperty.RESOURCE_RECORD_MAPPING;
                         id = resource.getResourceId();
 
-                        if (value == null || "".equals(value)) {
+                        if (CmsStringUtil.isEmpty(value)) {
                             break;
                         }
                     }

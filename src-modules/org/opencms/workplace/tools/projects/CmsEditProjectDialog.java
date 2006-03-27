@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2005/10/10 16:11:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,13 @@ package org.opencms.workplace.tools.projects;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.widgets.CmsGroupWidget;
 import org.opencms.widgets.CmsInputWidget;
-import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsTextareaWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsDialog;
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,37 +135,44 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
                     this.getManagerGroup(),
                     m_project.getType());
                 m_project = newProject;
-                // write the edited project
-                CmsProject currentProject = getCms().getRequestContext().currentProject();
-                // change the current project
-                getCms().getRequestContext().setCurrentProject(m_project);
-                // store the current site root
-                String currentSite = getCms().getRequestContext().getSiteRoot();
-                // copy the resources to the current project               
-                try {
-                    // switch to the root site
-                    getCms().getRequestContext().setSiteRoot("");
-                    // start copying
-                    Iterator it = this.getResources().iterator();
-                    while (it.hasNext()) {
-                        getCms().copyResourceToProject(it.next().toString());
-                    }
-                } catch (CmsException e) {
-                    // if there are no projectresources in the project delete the project
-                    List projectResources = getCms().readProjectResources(m_project);
-                    if (projectResources == null || projectResources.isEmpty()) {
-                        getCms().deleteProject(m_project.getId());
-                    }
-                    throw e;
-                } finally {
-                    // switch back to current site and project
-                    getCms().getRequestContext().setSiteRoot(currentSite);
-                    getCms().getRequestContext().setCurrentProject(currentProject);
-                }
             } else {
                 m_project.setGroupId(getCms().readGroup(getUserGroup()).getId());
                 m_project.setManagerGroupId(getCms().readGroup(getManagerGroup()).getId());
                 getCms().writeProject(m_project);
+            }
+            // write the edited project
+            CmsProject currentProject = getCms().getRequestContext().currentProject();
+            // change the current project
+            getCms().getRequestContext().setCurrentProject(m_project);
+            // store the current site root
+            String currentSite = getCms().getRequestContext().getSiteRoot();
+            // copy the resources to the current project
+            try {
+                // switch to the root site
+                getCms().getRequestContext().setSiteRoot("");
+                
+                // remove deleted resources
+                Iterator itDel = getCms().readProjectResources(m_project).iterator();
+                while (itDel.hasNext()) {
+                    String resName = itDel.next().toString();
+                    if (!getResources().contains(resName)) {
+                        getCms().removeResourceFromProject(resName);
+                    }
+                }
+                // read project resources again!
+                List currentResNames = getCms().readProjectResources(m_project);
+                // copy missing resources
+                Iterator itAdd = getResources().iterator();
+                while (itAdd.hasNext()) {
+                    String resName = itAdd.next().toString();
+                    if (!currentResNames.contains(resName)) {
+                        getCms().copyResourceToProject(resName);
+                    }
+                }
+            } finally {
+                // switch back to current site and project
+                getCms().getRequestContext().setSiteRoot(currentSite);
+                getCms().getRequestContext().setCurrentProject(currentProject);
             }
             // refresh the list
             Map objects = (Map)getSettings().getListObject();
@@ -241,13 +248,11 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             result.append(createDialogRowsHtml(0, 4));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            if (isNewProject()) {
-                result.append(dialogBlockStart(key(Messages.GUI_PROJECT_EDITOR_LABEL_CONTENT_BLOCK_0)));
-                result.append(createWidgetTableStart());
-                result.append(createDialogRowsHtml(5, 5));
-                result.append(createWidgetTableEnd());
-                result.append(dialogBlockEnd());
-            }
+            result.append(dialogBlockStart(key(Messages.GUI_PROJECT_EDITOR_LABEL_CONTENT_BLOCK_0)));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(5, 5));
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
         }
 
         result.append(createWidgetTableEnd());
@@ -271,13 +276,10 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             addWidget(new CmsWidgetDialogParameter(m_project, "name", PAGES[0], new CmsDisplayWidget()));
         }
         addWidget(new CmsWidgetDialogParameter(m_project, "description", "", PAGES[0], new CmsTextareaWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(this, "managerGroup", PAGES[0], new CmsSelectWidget(
-            getSelectGroups(true))));
-        addWidget(new CmsWidgetDialogParameter(this, "userGroup", PAGES[0], new CmsSelectWidget(getSelectGroups(false))));
+        addWidget(new CmsWidgetDialogParameter(this, "managerGroup", PAGES[0], new CmsGroupWidget(new Integer(I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER), null)));
+        addWidget(new CmsWidgetDialogParameter(this, "userGroup", PAGES[0], new CmsGroupWidget(null, null)));
         addWidget(new CmsWidgetDialogParameter(m_project, "deleteAfterPublishing", PAGES[0], new CmsCheckboxWidget()));
-        if (isNewProject()) {
-            addWidget(new CmsWidgetDialogParameter(this, "resources", PAGES[0], new CmsVfsFileWidget(false, "")));
-        }
+        addWidget(new CmsWidgetDialogParameter(this, "resources", PAGES[0], new CmsVfsFileWidget(false, "")));
     }
 
     /**

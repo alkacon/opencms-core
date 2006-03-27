@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/CmsTemplateModules.java,v $
- * Date   : $Date: 2005/10/10 16:11:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/27 14:52:59 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert  
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,16 +72,16 @@ public class CmsTemplateModules extends CmsTemplateBase {
 
     /** Request parameter name for the category folder. */
     public static final String PARAM_CATEGORYFOLDER = "categoryfolder";
-    
+
     /** Request parameter name for the collector. */
     public static final String PARAM_COLLECTOR = "collector";
-    
+
     /** Request parameter name for the list count. */
     public static final String PARAM_COUNT = "count";
-    
+
     /** Request parameter name maximum number of elements to show. */
     public static final String PARAM_ELEMENTCOUNT = "elementcount";
-    
+
     /** Request parameter name for the xmlcontent folder. */
     public static final String PARAM_FOLDER = "folder";
 
@@ -125,7 +125,7 @@ public class CmsTemplateModules extends CmsTemplateBase {
             String title = navElement.getTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_ERR_MISSING_PROP_2,
                         navElement.getResourceName(),
                         CmsPropertyDefinition.PROPERTY_TITLE));
@@ -171,7 +171,7 @@ public class CmsTemplateModules extends CmsTemplateBase {
         String startfolder = getCategoryFolder();
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_DEBUG_BUILD_HTML_NAVLIST_2,
                 startfolder,
                 new Integer(resourceTypeId)));
@@ -254,7 +254,7 @@ public class CmsTemplateModules extends CmsTemplateBase {
 
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(
+                        LOG.warn(Messages.get().getBundle().key(
                             Messages.LOG_ERR_MISSING_PROP_2,
                             resourceName,
                             CmsPropertyDefinition.PROPERTY_TITLE));
@@ -293,7 +293,7 @@ public class CmsTemplateModules extends CmsTemplateBase {
 
         return result.toString();
     }
-    
+
     /**
      * Creates a html &lt;li&gt; list of all folders inside the current folder.<p>
      * 
@@ -393,7 +393,7 @@ public class CmsTemplateModules extends CmsTemplateBase {
         } catch (CmsException e) {
             // error reading the resources
             if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().key(
+                LOG.error(org.opencms.db.Messages.get().getBundle().key(
                     org.opencms.db.Messages.ERR_READ_RESOURCES_WITH_TYPE_2,
                     new Integer(resourceTypeId),
                     foldername), e);
@@ -403,7 +403,7 @@ public class CmsTemplateModules extends CmsTemplateBase {
 
         return result;
     }
-    
+
     /**
      * Returns the number of resources with a given resource type inside a folder.<p>
      * 
@@ -413,18 +413,18 @@ public class CmsTemplateModules extends CmsTemplateBase {
      * @return the number of resources
      */
     public int getResourceCount(String foldername, String resourceTypeName) {
-        
+
         try {
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resourceTypeName);
             return getResourceCount(foldername, resType.getTypeId());
         } catch (CmsException e) {
             // error getting resource type ID
             if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().key(
+                LOG.error(org.opencms.db.Messages.get().getBundle().key(
                     org.opencms.loader.Messages.ERR_UNKNOWN_RESTYPE_NAME_REQ_1,
                     resourceTypeName), e);
             }
-            return -1;    
+            return -1;
         }
     }
 
@@ -439,7 +439,7 @@ public class CmsTemplateModules extends CmsTemplateBase {
 
         return m_hasCategoryFolders;
     }
-    
+
     /**
      * Checks if two dates in the page context attributes have the same date and differ only from their time.<p>
      * 
@@ -448,19 +448,18 @@ public class CmsTemplateModules extends CmsTemplateBase {
      * @return true if the two dates differ only in time, otherwise false
      */
     public boolean isSameDate(String startDateAttrib, String endDateAttrib) {
-        
+
         String timeString = (String)getJspContext().getAttribute(startDateAttrib);
         long timestamp = (new Long(timeString)).longValue();
         Calendar calStart = new GregorianCalendar();
         calStart.setTimeInMillis(timestamp);
-        
+
         timeString = (String)getJspContext().getAttribute(endDateAttrib);
         timestamp = (new Long(timeString)).longValue();
         Calendar calEnd = new GregorianCalendar();
         calEnd.setTimeInMillis(timestamp);
-        
-        return ((calStart.get(Calendar.DAY_OF_YEAR) == calEnd.get(Calendar.DAY_OF_YEAR)) 
-            && (calStart.get(Calendar.YEAR) == calEnd.get(Calendar.YEAR)));
+
+        return ((calStart.get(Calendar.DAY_OF_YEAR) == calEnd.get(Calendar.DAY_OF_YEAR)) && (calStart.get(Calendar.YEAR) == calEnd.get(Calendar.YEAR)));
     }
 
     /**

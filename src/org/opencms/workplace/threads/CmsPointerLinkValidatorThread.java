@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,7 +65,7 @@ public class CmsPointerLinkValidatorThread extends A_CmsReportThread {
      */
     public CmsPointerLinkValidatorThread(CmsObject cms) {
 
-        super(cms, "test test");
+        super(cms, Messages.get().getBundle().key(Messages.GUI_POINTER_VALIDATION_THREAD_NAME_0));
         initHtmlReport(cms.getRequestContext().getLocale());
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);

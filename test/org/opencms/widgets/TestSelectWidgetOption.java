@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/widgets/TestSelectWidgetOption.java,v $
- * Date   : $Date: 2005/06/26 11:23:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/03/27 14:52:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * Test cases for the parsing of select widget options.<p>
  * 
  * @author Alexander Kandzior
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestSelectWidgetOption extends TestCase {
 
@@ -80,7 +80,7 @@ public class TestSelectWidgetOption extends TestCase {
         assertNull(opt.getHelp());
         assertSame(opt.getValue(), opt.getOption());
 
-        // some checks where no valid value is present - these are silently ignored
+        // some checks with malformed option values - these are silently ignored
         assertEquals(Collections.EMPTY_LIST, CmsSelectWidgetOption.parseOptions("default='true'"));
         assertEquals(Collections.EMPTY_LIST, CmsSelectWidgetOption.parseOptions("option='some'"));
         assertEquals(Collections.EMPTY_LIST, CmsSelectWidgetOption.parseOptions("help='many'"));

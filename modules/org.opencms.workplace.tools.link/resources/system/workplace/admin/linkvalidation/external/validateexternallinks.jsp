@@ -1,7 +1,6 @@
 <%@ page import="
 
-	org.opencms.workplace.*, 
-	org.opencms.workplace.commons.*,
+	org.opencms.workplace.*,
     org.opencms.workplace.tools.link.*
 
 "%><%	
@@ -51,9 +50,9 @@ function init() {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <%= wp.key("GUI_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0") %>
 

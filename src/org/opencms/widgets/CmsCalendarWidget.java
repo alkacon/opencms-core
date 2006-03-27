@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCalendarWidget.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,6 +81,21 @@ public class CmsCalendarWidget extends A_CmsWidget {
         return widgetDialog.calendarIncludes();
     }
 
+    public String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+
+        String result = param.getStringValue(cms);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result) && !"0".equals(result)) {
+            try {
+                result = widgetDialog.getCalendarLocalizedTime(Long.parseLong(result));
+            } catch (NumberFormatException e) {
+                result = "";
+            }
+        } else {
+            result = "";
+        }
+        return result;
+    }
+
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
@@ -94,20 +109,9 @@ public class CmsCalendarWidget extends A_CmsWidget {
             result.append(" xmlInputError");
         }
         result.append("\" value=\"");
-        String dateTimeValue = param.getStringValue(cms);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(dateTimeValue) && !"0".equals(dateTimeValue)) {
-            try {
-                dateTimeValue = widgetDialog.getCalendarLocalizedTime(Long.parseLong(dateTimeValue));
-            } catch (NumberFormatException e) {
-                dateTimeValue = "";
-            }
-        } else {
-            dateTimeValue = "";
-        }
-
-        String id = param.getId();
-
+        String dateTimeValue = getWidgetStringValue(cms, widgetDialog, param);
         result.append(dateTimeValue);
+        String id = param.getId();
         result.append("\" name=\"");
         result.append(id);
         result.append("\" id=\"");
@@ -166,7 +170,7 @@ public class CmsCalendarWidget extends A_CmsWidget {
                 } catch (ParseException e) {
                     // TODO: Better exception handling
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(Messages.ERR_PARSE_DATETIME_1, dateTimeValue), e);
+                        LOG.warn(Messages.get().getBundle().key(Messages.ERR_PARSE_DATETIME_1, dateTimeValue), e);
                     }
                 }
             } else {

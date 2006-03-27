@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2005/10/12 14:03:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:53:03 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,12 +86,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_COLS_CREATION_0 = "GUI_SESSIONS_LIST_COLS_CREATION_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_SESSIONS_LIST_COLS_CREATION_FORMAT_1 = "GUI_SESSIONS_LIST_COLS_CREATION_FORMAT_1";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_SESSIONS_LIST_COLS_CREATION_NEVER_0 = "GUI_SESSIONS_LIST_COLS_CREATION_NEVER_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_COLS_EMAIL_0 = "GUI_SESSIONS_LIST_COLS_EMAIL_0";

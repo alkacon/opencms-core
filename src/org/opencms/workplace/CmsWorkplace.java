@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/10/19 07:29:41 $
- * Version: $Revision: 1.151 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.152 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,6 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.workplace.explorer.CmsTree;
 import org.opencms.workplace.help.CmsHelpTemplateBean;
 
 import java.io.IOException;
@@ -89,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.151 $ 
+ * @version $Revision: 1.152 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,7 +99,7 @@ public abstract class CmsWorkplace {
 
     /** Parameter for the default locale. */
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-    
+
     /** Parameter for the default language. */
     public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
 
@@ -125,10 +124,10 @@ public abstract class CmsWorkplace {
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
-    
+
     /** Path to the workplace. */
     public static final String VFS_PATH_WORKPLACE = VFS_PATH_SYSTEM + "workplace/";
-    
+
     /** Constant for the JSP dialogs path. */
     public static final String PATH_DIALOGS = VFS_PATH_WORKPLACE + "commons/";
 
@@ -143,7 +142,7 @@ public abstract class CmsWorkplace {
 
     /** Directory name of content default_bodies folder. */
     public static final String VFS_DIR_DEFAULTBODIES = "default_bodies/";
-    
+
     /** Directory name of content templates folder. */
     public static final String VFS_DIR_TEMPLATES = "templates/";
 
@@ -210,34 +209,23 @@ public abstract class CmsWorkplace {
     /** The URI to the stylesheet resources (cached for performance reasons). */
     private static String m_styleUri;
 
-    /** 
-     * Temporary variable for easily adding new resource bundles.<p>    
-     *   
-     * @see #initMessages()
-     * @see #addMessages(String)
-     */
-    private List m_bundles = new ArrayList();
-
     /** The current users OpenCms context. */
     private CmsObject m_cms;
 
     /** Helper variable to store the id of the current project. */
     private int m_currentProjectId = -1;
-    
+
     /** Flag for indicating that request forwarded was. */
     private boolean m_forwarded;
 
     /** The current JSP action element. */
     private CmsJspActionElement m_jsp;
-    
+
     /** The macro resolver, this is cached to avoid multiple instance generation. */
     private CmsMacroResolver m_macroResolver;
 
-    /** 
-     * The current used message bundle. 
-     * @see #initMessages()
-     */
-    private CmsMessages m_messages;
+    /**  The currently used message bundle. */
+    private CmsMultiMessages m_messages;
 
     /** The list of multi part file items (if available). */
     private List m_multiPartFileItems;
@@ -570,7 +558,7 @@ public abstract class CmsWorkplace {
      * @param session the session to store the settings in
      * @param settings the settings
      */
-    static synchronized void storeSettings(HttpSession session, CmsWorkplaceSettings settings) {
+    static void storeSettings(HttpSession session, CmsWorkplaceSettings settings) {
 
         // save the workplace settings in the session
         session.setAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS, settings);
@@ -590,29 +578,11 @@ public abstract class CmsWorkplace {
             // loop through all types and check which types can be displayed and edited for the user
             I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
             // get the settings for the resource type
-            CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                type.getTypeName());
-            if (typeSettings != null) {
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+            if (settings != null) {
                 // determine if this resource type is editable for the current user
-                CmsPermissionSet permissions;
-                try {
-                    // get permissions of the current user
-                    permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
-                        cms.getRequestContext().currentUser(),
-                        cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
-                } catch (CmsException e) {
-                    // error reading the groups of the current user
-                    permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
-                        cms.getRequestContext().currentUser());
-                    if (LOG.isWarnEnabled()) {
-                        CmsLog.getLog(CmsTree.class).warn(
-                            org.opencms.workplace.explorer.Messages.get().key(
-                                org.opencms.workplace.explorer.Messages.LOG_READ_GROUPS_OF_USER_FAILED_1,
-                                cms.getRequestContext().currentUser().getName()),
-                            e);
-                    }
-                }
-                if (permissions.getPermissionString().indexOf("+w") != -1) {
+                CmsPermissionSet permissions = settings.getAccess().getPermissions(cms);
+                if (permissions.requiresWritePermission()) {
                     // user is allowed to edit this resource type
                     resourceTypes.put(new Integer(type.getTypeId()), type);
                 }
@@ -1050,7 +1020,7 @@ public abstract class CmsWorkplace {
 
         StringBuffer result = new StringBuffer(512);
         String calendarPath = getSkinUri() + "components/js_calendar/";
-        if (style == null || "".equals(style)) {
+        if (CmsStringUtil.isEmpty(style)) {
             style = "system";
         }
         result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
@@ -1132,7 +1102,7 @@ public abstract class CmsWorkplace {
         boolean showTime) {
 
         StringBuffer result = new StringBuffer(512);
-        if (align == null || "".equals(align)) {
+        if (CmsStringUtil.isEmpty(align)) {
             align = "Bc";
         }
         result.append("<script type=\"text/javascript\">\n");
@@ -1164,10 +1134,10 @@ public abstract class CmsWorkplace {
         result.append(mondayFirst);
         result.append(",\n");
         result.append("\t\tshowsTime      :    " + showTime);
-        if (showTime && key("calendar.timeformat").toLowerCase().indexOf("p") != -1) {
+        if (showTime && key(Messages.GUI_CALENDAR_TIMEFORMAT_0).toLowerCase().indexOf("p") != -1) {
             result.append(",\n\t\ttimeFormat     :    \"12\"");
         }
-        if (dateStatusFunc != null && !"".equals(dateStatusFunc)) {
+        if (CmsStringUtil.isNotEmpty(dateStatusFunc)) {
             result.append(",\n\t\tdateStatusFunc :    ");
             result.append(dateStatusFunc);
         }
@@ -1177,7 +1147,7 @@ public abstract class CmsWorkplace {
         result.append("</script>\n");
         return result.toString();
     }
-    
+
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
      * 
@@ -1188,7 +1158,7 @@ public abstract class CmsWorkplace {
 
         checkLock(resource, org.opencms.lock.CmsLock.COMMON);
     }
-    
+
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
      * 
@@ -1206,8 +1176,8 @@ public abstract class CmsWorkplace {
                 getCms().lockResource(resource, mode);
             }
         }
-    }    
-    
+    }
+
     /**
      * First sets site and project in the workplace settings, then fills all class parameter values from the data 
      * provided in the current request.<p>
@@ -1216,7 +1186,7 @@ public abstract class CmsWorkplace {
      * @param request the current request
      */
     public void fillParamValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        
+
         initSettings(settings, request);
         fillParamValues(request);
     }
@@ -1269,7 +1239,7 @@ public abstract class CmsWorkplace {
             value = decodeParamValue(name, value);
             try {
                 if (LOG.isDebugEnabled() && (value != null)) {
-                    LOG.debug(Messages.get().key(Messages.LOG_SET_PARAM_2, m.getName(), value));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_PARAM_2, m.getName(), value));
                 }
                 m.invoke(this, new Object[] {value});
             } catch (InvocationTargetException ite) {
@@ -1429,17 +1399,13 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns the current users locale setting.<p>
+     * Returns the current users workplace locale settings.<p>
      * 
-     * This is a convenience method that just 
-     * executes the following code: 
-     * <code>getCms().getRequestContext().getLocale()</code>.<p>
-     * 
-     * @return the current users locale setting
+     * @return the current users workplace locale setting
      */
     public Locale getLocale() {
 
-        return getCms().getRequestContext().getLocale();
+        return m_settings.getUserSettings().getLocale();
     }
 
     /**
@@ -1562,6 +1528,7 @@ public abstract class CmsWorkplace {
      * @return true, if a reload of the main body frame is required
      */
     public boolean initSettings(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
         // check if the user requested a project change
         String project = request.getParameter(PARAM_WP_PROJECT);
         boolean reloadRequired = false;
@@ -1579,7 +1546,7 @@ public abstract class CmsWorkplace {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e);
                 }
-            }   
+            }
             settings.setProject(Integer.parseInt(project));
         }
 
@@ -1597,7 +1564,7 @@ public abstract class CmsWorkplace {
             reloadRequired = true;
             settings.setExplorerResource(explorerResource);
         }
-        
+
         return reloadRequired;
     }
 
@@ -1686,11 +1653,11 @@ public abstract class CmsWorkplace {
      * @param defaultValue the default value in case the key does not exist in the bundle
      * @return the resource string for the given key it it exists, or the given default if not 
      * 
-     * @see CmsMessages#key(String, String)
+     * @see CmsMessages#keyDefault(String, String)
      */
-    public String key(String keyName, String defaultValue) {
+    public String keyDefault(String keyName, String defaultValue) {
 
-        return getMessages().key(keyName, defaultValue);
+        return getMessages().keyDefault(keyName, defaultValue);
     }
 
     /**
@@ -1731,8 +1698,7 @@ public abstract class CmsWorkplace {
                 }
                 if (parameters == null) {
                     result.append(" onLoad=\"window.top.body.admin_head.location.href='");
-                    result.append(getJsp().link(
-                        CmsWorkplace.VFS_PATH_WORKPLACE + "action/administration_head.html"));
+                    result.append(getJsp().link(CmsWorkplace.VFS_PATH_WORKPLACE + "action/administration_head.html"));
                     result.append("';\"");
                 }
             }
@@ -1850,7 +1816,7 @@ public abstract class CmsWorkplace {
 
         return CmsRequestUtil.createParameterMap(paramValues());
     }
-    
+
     /**
      * Returns all initialized parameters of the current workplace class 
      * as request parameters, i.e. in the form <code>key1=value1&key2=value2</code> etc.
@@ -1859,7 +1825,7 @@ public abstract class CmsWorkplace {
      * as request parameters
      */
     public String paramsAsRequest() {
-        
+
         StringBuffer result = new StringBuffer(512);
         Map params = paramValues();
         Iterator i = params.keySet().iterator();
@@ -1944,12 +1910,26 @@ public abstract class CmsWorkplace {
      */
     public String shortKey(String keyName) {
 
-        String value = key(keyName + CmsMessages.KEY_SHORT_SUFFIX, (String)null);
+        String value = keyDefault(keyName + CmsMessages.KEY_SHORT_SUFFIX, (String)null);
         if (value == null) {
             // short key value not found, return "long" key value
             return key(keyName);
         }
         return value;
+    }
+
+    /**
+     * Auxiliary method for initialization of messages.<p>
+     * 
+     * @param messages the messages to add
+     * 
+     * @see #initMessages()
+     */
+    protected void addMessages(CmsMessages messages) {
+
+        if (messages != null) {
+            m_messages.addMessages(messages);
+        }
     }
 
     /**
@@ -1961,7 +1941,7 @@ public abstract class CmsWorkplace {
      */
     protected void addMessages(String bundleName) {
 
-        m_bundles.add(new CmsMessages(bundleName, getLocale()));
+        addMessages(new CmsMessages(bundleName, getLocale()));
     }
 
     /**
@@ -2039,12 +2019,11 @@ public abstract class CmsWorkplace {
      * By default the workplace messages object is used.<p>
      * 
      * You SHOULD override this method for setting the bundles you really need,
-     * using the <code>{@link #addMessages(String)}</code> method.<p>
+     * using the <code>{@link #addMessages(CmsMessages)}</code> or <code>{@link #addMessages(String)}</code> method.<p>
      */
     protected void initMessages() {
 
-        // manually add the initialized workplace messages for the current user
-        m_bundles.add(m_messages);
+        // manually add the default workplace messages for the current user
         addMessages(Messages.get().getBundleName());
     }
 
@@ -2073,19 +2052,17 @@ public abstract class CmsWorkplace {
                 storeSettings(m_session, m_settings);
             }
 
-            // initialize messages and also store them in settings
-            m_messages = OpenCms.getWorkplaceManager().getMessages(m_settings.getUserSettings().getLocale());
+            // initialize messages            
+            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getLocale());
+            m_messages = new CmsMultiMessages(getLocale());
+            m_messages.addMessages(messages);
             initMessages();
-            if (!m_bundles.isEmpty()) {
-                m_messages = new CmsMultiMessages(m_bundles);
-            }
 
             // check request for changes in the workplace settings
             initWorkplaceRequestValues(m_settings, m_jsp.getRequest());
 
             // set cms context accordingly
             initWorkplaceCmsContext(m_settings, m_cms);
-
         }
     }
 
@@ -2201,7 +2178,7 @@ public abstract class CmsWorkplace {
             // removed setting explorer resource to "/" to get the stored folder
         }
     }
-    
+
     /**
      * Returns a list of all methods of the current class instance that 
      * start with "getParam" and have no parameters.<p> 

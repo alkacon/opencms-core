@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -343,7 +343,7 @@ import org.quartz.Trigger;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -443,7 +443,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         // add the configured parameter
         m_parameters.put(paramName, paramValue);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(org.opencms.configuration.Messages.get().key(
+            LOG.debug(org.opencms.configuration.Messages.get().getBundle().key(
                 org.opencms.configuration.Messages.LOG_ADD_CONFIG_PARAM_3,
                 paramName,
                 paramValue,
@@ -486,6 +486,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         if (isReuseInstance()) {
             result.m_jobInstance = m_jobInstance;
         }
+        result.m_reuseInstance = m_reuseInstance;
         result.m_context = (CmsContextInfo)m_context.clone();
         result.m_cronExpression = m_cronExpression;
         result.m_jobName = m_jobName;
@@ -512,7 +513,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
         // this configuration does not support parameters
         if (LOG.isDebugEnabled()) {
-            LOG.debug(org.opencms.configuration.Messages.get().key(
+            LOG.debug(org.opencms.configuration.Messages.get().getBundle().key(
                 org.opencms.configuration.Messages.LOG_GET_CONFIGURATION_1,
                 this));
         }
@@ -617,7 +618,9 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         if (m_jobInstance != null) {
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_REUSING_INSTANCE_1, m_jobInstance.getClass().getName()));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_REUSING_INSTANCE_1,
+                    m_jobInstance.getClass().getName()));
             }
 
             // job instance already initialized
@@ -630,13 +633,13 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
             // create an instance of the OpenCms job class
             job = (I_CmsScheduledJob)Class.forName(getClassName()).newInstance();
         } catch (ClassNotFoundException e) {
-            LOG.error(Messages.get().key(Messages.LOG_CLASS_NOT_FOUND_1, getClassName()), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_CLASS_NOT_FOUND_1, getClassName()), e);
         } catch (IllegalAccessException e) {
-            LOG.error(Messages.get().key(Messages.LOG_ILLEGAL_ACCESS_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_ILLEGAL_ACCESS_0), e);
         } catch (InstantiationException e) {
-            LOG.error(Messages.get().key(Messages.LOG_INSTANCE_GENERATION_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INSTANCE_GENERATION_0), e);
         } catch (ClassCastException e) {
-            LOG.error(Messages.get().key(Messages.LOG_BAD_INTERFACE_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_BAD_INTERFACE_0), e);
         }
 
         if (m_reuseInstance) {
@@ -645,7 +648,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_JOB_CREATED_1, getClassName()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_JOB_CREATED_1, getClassName()));
         }
 
         return job;
@@ -684,7 +687,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
         // simple default configuration does not need to be initialized
         if (LOG.isDebugEnabled()) {
-            LOG.debug(org.opencms.configuration.Messages.get().key(
+            LOG.debug(org.opencms.configuration.Messages.get().getBundle().key(
                 org.opencms.configuration.Messages.LOG_INIT_CONFIGURATION_1,
                 this));
         }

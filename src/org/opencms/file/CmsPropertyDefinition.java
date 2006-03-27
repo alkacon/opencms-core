@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2005/08/05 15:53:03 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property for the description. */
     public static final String PROPERTY_DESCRIPTION = "Description";
 
+    /** Property for the resource title. */
+    public static final String PROPERTY_ENABLE_NOTIFICATION = "enable-notification";
+
     /** Property for the static export. */
     public static final String PROPERTY_EXPORT = "export";
 
@@ -80,6 +83,12 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property for JSP additional suffix during static export, default is "html". */
     public static final String PROPERTY_EXPORTSUFFIX = "exportsuffix";
 
+    /** Property to control the folders where templatea or default bodies should be available. */
+    public static final String PROPERTY_FOLDERS_AVAILABLE = "folders.available";
+
+    /** Property constant for <code>"image.size"</code>. */
+    public static final String PROPERTY_IMAGE_SIZE = "image.size";
+
     /** Property for internal use (e.g. delete). */
     public static final String PROPERTY_INTERNAL = "internal";
 
@@ -87,11 +96,11 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     public static final String PROPERTY_KEYWORDS = "Keywords";
 
     /** Property for the current locale. */
-    public static final String PROPERTY_LOCALE_DEFAULT = "locale-default";
+    public static final String PROPERTY_LOCALE = "locale";
 
     /** Property for the current locale. */
-    public static final String PROPERTY_LOCALE = "locale";
-    
+    public static final String PROPERTY_LOCALE_DEFAULT = "locale-default";
+
     /** Property for the login form. */
     public static final String PROPERTY_LOGIN_FORM = "login-form";
 
@@ -107,8 +116,14 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property for the navigation text. */
     public static final String PROPERTY_NAVTEXT = "NavText";
 
+    /** Property for the resource title. */
+    public static final String PROPERTY_NOTIFICATION_INTERVAL = "notification-interval";
+    
     /** Property for the relative root link substitution. */
     public static final String PROPERTY_RELATIVEROOT = "relativeroot";
+
+    /** Property name that defines the available resource types for the "new" dialog. */
+    public static final String PROPERTY_RESTYPES_AVAILABLE = "restypes.available";
 
     /** Property to sort search results in categories. */
     public static final String PROPERTY_SEARCH_CATEGORY = "category";
@@ -127,8 +142,8 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property to control the template. */
     public static final String PROPERTY_TEMPLATE = "template";
-
-    /** Property to control the template. */
+    
+    /** Property to control the template elements. */
     public static final String PROPERTY_TEMPLATE_ELEMENTS = "template-elements";
 
     /** Property for the resource title. */

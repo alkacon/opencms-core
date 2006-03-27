@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlLocaleValue.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/03/27 14:53:03 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,7 +53,7 @@ public class CmsXmlLocaleValue extends A_CmsXmlValueTextBase {
     public static final String TYPE_NAME = "OpenCmsLocale";
 
     /** The validation rule used for this schema type. */
-    public static final String TYPE_RULE = "[a-z]{2}(_[A-Z]{2}(_[a-zA-Z0-9]+){0,1}){0,1}";
+    public static final String TYPE_RULE = "[a-z]{2,3}(_[A-Z]{2}(_[a-zA-Z0-9]+){0,1}){0,1}";
 
     /** Pre-compiled regular expression pattern for this rule. */
     private static final Pattern TYPE_PATTERN = Pattern.compile(TYPE_RULE);

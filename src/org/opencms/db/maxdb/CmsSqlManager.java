@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/maxdb/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/03/27 14:52:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,14 +38,14 @@ package org.opencms.db.maxdb;
  * @author Clovis Wichoski
  * @author Fabiano Rech  
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0.0 
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
 
     /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -4644765734741432392L;
+    private static final long serialVersionUID = -8129796616932138798L;
 
     /** The filename/path of the SQL query properties. */
     private static final String QUERY_PROPERTIES = "org/opencms/db/maxdb/query.properties";

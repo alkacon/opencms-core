@@ -1,4 +1,6 @@
-<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+<%@ page import="
+	java.util.*
+" session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
@@ -12,8 +14,8 @@
 	boolean hasUserAccepted = (request.getParameter("accept") != null) && (request.getParameter("accept").equals("true"));
 
 	String descriptions = "";
-	CmsSetupTests setupTests = null;
-	CmsSetupTestResult testResult = null;
+	org.opencms.setup.comptest.CmsSetupTests setupTests = null;
+	org.opencms.setup.comptest.CmsSetupTestResult testResult = null;
 	String resultIcon = null;
 	String helpIcon = null;
 	String violatedConditions = "";
@@ -21,15 +23,15 @@
 
 	if (Bean.isInitialized()) {
 		if(!isSubmitted) {
-			setupTests = new CmsSetupTests();
-			setupTests.runTests(pageContext, Bean);
+			setupTests = new org.opencms.setup.comptest.CmsSetupTests();
+			setupTests.runTests(Bean);
 		} else {
 			response.sendRedirect(nextPage);
 		}
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard - Component tests
+Alkacon OpenCms Setup Wizard - Component tests
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -45,7 +47,7 @@ function toggleContinueButton() {
 //-->
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Component tests
+Alkacon OpenCms Setup Wizard - Component tests
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized()) { %>
 <form action="<%= nextPage %>" method="post" class="nomargin" name="components">
@@ -55,7 +57,7 @@ OpenCms Setup Wizard - Component tests
 <%  
 	if (isSubmitted) {
 		if (hasSystemInfo && !hasUserAccepted) {
-			out.print("<b>To continue the OpenCms setup you have to recognize that your system may not work with OpenCms!");
+			out.print("<b>To continue the Alkacon OpenCms setup you have to recognize that your system may not work with OpenCms!");
 		}
 	} else { 	
 %>	
@@ -68,7 +70,7 @@ OpenCms Setup Wizard - Component tests
 <%
 		List testResults = setupTests.getTestResults();
 		for (int i=0;i<testResults.size();i++) {
-			testResult = (CmsSetupTestResult) testResults.get(i);
+			testResult = (org.opencms.setup.comptest.CmsSetupTestResult) testResults.get(i);
 			
 			if (testResult.isRed()) {
 				resultIcon = "cross";
@@ -91,7 +93,7 @@ OpenCms Setup Wizard - Component tests
 			<tr>
 				<td style="text-align: left; white-space: nowrap;"><%= testResult.getName() %>:</td>
 				<td style="text-align: left; font-weight:bold; width: 100%;"><%= testResult.getResult() %></td>
-				<td style="text-align: right; width: 40px; height: 16px;"><%= helpIcon %>&nbsp;<img src="resources/<%= resultIcon %>.png" border="0"></td>
+				<td style="text-align: right; width: 40px; height: 16px; white-space: nowrap;"><%= helpIcon %>&nbsp;<img src="resources/<%= resultIcon %>.png" border="0"></td>
 			</tr>
 <%
 		}	
@@ -119,13 +121,13 @@ OpenCms Setup Wizard - Component tests
 			<td colspan="2" valign="middle">
 			<%
 				if (setupTests.isRed()) {
-					out.println("<p>Your system does not have the necessary components to use OpenCms. It is assumed that OpenCms will not run on your system.</p>");
+					out.println("<p>Your system does not have the necessary components to use Alkacon OpenCms. It is assumed that OpenCms will not run on your system.</p>");
 					out.println(violatedConditions);
 				} else if (setupTests.isYellow()) {
-					out.print("Your system uses components which have not been tested to work with OpenCms. It is possible that OpenCms will not run on your system.");
+					out.print("Your system uses components which have not been tested to work with Alkacon OpenCms. It is possible that OpenCms will not run on your system.");
 					out.println(questionableConditions);
 				} else {
-					out.print("<b>Your system uses components which have been tested to work properly with OpenCms.</b>");
+					out.print("<b>Your system uses components which have been tested to work properly with Alkacon OpenCms.</b>");
 				}
 			%></td>
 			</tr>
@@ -135,11 +137,13 @@ OpenCms Setup Wizard - Component tests
 		<div class="dialogspacer" unselectable="on">&nbsp;</div>
 		
 		<table border="0" cellpadding="2" cellspacing="0">
-			<% if (!setupTests.isGreen()) { %>
+			<% if (!setupTests.isGreen()) { 
+			    // show table
+			%>
 				<tr><td>
 				<table border="0"><tr>
 					<td style="vertical-align: top;"><input type="checkbox" name="accept" value="true" onClick="toggleContinueButton()"> </td>
-					<td style="padding-top: 5px;">I have noticed that my system may not have the necessary components to use OpenCms. Continue anyway.</td>
+					<td style="padding-top: 5px;">I have noticed that my system may not have the necessary components to use Alkacon OpenCms. Continue anyway.</td>
 				</tr></table>
 				</td></tr>
 			<% } %>
@@ -168,9 +172,7 @@ if (!setupTests.isGreen() && !hasUserAccepted) {
 <%= descriptions %>
 
 <% } else	{ %>
-
-<%@ include file="error.jsp" %>
-
+<%= Bean.displayError("")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <% } %>

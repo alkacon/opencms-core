@@ -85,8 +85,8 @@
 	/**
 	 * Pastes an Image to the current position of the editor 
 	 */
-	function pasteImage(uri, title, desc) {
-	<% 	
+	function pasteImage(uri, title, desc, width, height) {
+		<% 	
 		if (wp.MODE_WIDGET.equals(wp.getParamDialogMode())) {
 	%>
 		var fieldId = top.gallery_fs.gallery_head.document.forms["main"].<%= wp.PARAM_FIELDID %>.value;
@@ -100,11 +100,17 @@
 	%>
 			var result = "<img src=\"";
 			result += uri;
-			result += "\" title=\"";
-			result += escapeBrackets(title);
 			result += "\" alt=\"";
 			result += escapeBrackets(title);
-			result += "\" border=\"0\">";
+			result += "\"";
+			if (width != null && height != null) {
+				result += " width=\"";
+				result += width;
+				result += "\" height=\"";
+				result += height
+				result += "\"";
+			}
+			result += " border=\"0\">";
 			top.window.opener.insertHtml(result);
 	<%
 		}

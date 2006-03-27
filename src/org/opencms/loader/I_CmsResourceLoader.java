@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2006/03/27 14:52:37 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  * 
@@ -81,7 +81,7 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
     void destroy();
 
     /**
-     * Dumps the processed content of the the requested file (and it's sub-elements) to a String.<p>
+     * Dumps the processed content of the the requested file (and it's sub-elements) to a byte array.<p>
      * 
      * Dumping the content is like calling "load" where the result is 
      * not written to the response stream, but to the returned byte array.

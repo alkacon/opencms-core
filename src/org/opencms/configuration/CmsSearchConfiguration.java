@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/03/27 14:52:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,47 +54,103 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
     /** The name of the DTD for this configuration. */
-    private static final String CONFIGURATION_DTD_NAME = "opencms-search.dtd";
+    public static final String CONFIGURATION_DTD_NAME = "opencms-search.dtd";
 
     /** The name of the default XML file for this configuration. */
-    private static final String DEFAULT_XML_FILE_NAME = "opencms-search.xml";
-    
-    private static final String N_ANALYZER = "analyzer";
-    private static final String N_ANALYZERS = "analyzers";
-    private static final String N_CACHE = "cache";
-    private static final String N_CLASS = "class";
-    private static final String N_DIRECTORY = "directory";
-    private static final String N_DOCUMENTTYPE = "documenttype";
-    private static final String N_DOCUMENTTYPES = "documenttypes";
-    private static final String N_DOCUMENTTYPES_INDEXED = "documenttypes-indexed";
-    private static final String N_EXCERPT = "excerpt";
-    private static final String N_HIGHLIGHTER = "highlighter";
-    private static final String N_INDEX = "index";
-    private static final String N_INDEXER = "indexer";
-    private static final String N_INDEXES = "indexes";
-    private static final String N_INDEXSOURCE = "indexsource";
-    private static final String N_INDEXSOURCES = "indexsources";
-    private static final String N_LOCALE = "locale";
-    private static final String N_MIMETYPE = "mimetype";
-    private static final String N_MIMETYPES = "mimetypes";
-    private static final String N_PROJECT = "project";
-    private static final String N_REBUILD = "rebuild";
-    private static final String N_RESOURCES = "resources";
-    private static final String N_RESOURCETYPE = "resourcetype";
-    private static final String N_RESOURCETYPES = "resourcetypes";
-    private static final String N_SEARCH = "search";
-    private static final String N_SOURCE = "source";
-    private static final String N_SOURCES = "sources";
-    private static final String N_STEMMER = "stemmer";
-    private static final String N_TIMEOUT = "timeout";
-    
+    public static final String DEFAULT_XML_FILE_NAME = "opencms-search.xml";
+
+    /** Node name constant. */
+    public static final String N_ANALYZER = "analyzer";
+
+    /** Node name constant. */
+    public static final String N_ANALYZERS = "analyzers";
+
+    /** Node name constant. */
+    public static final String N_CACHE = "cache";
+
+    /** Node name constant. */
+    public static final String N_CLASS = "class";
+
+    /** Node name constant. */
+    public static final String N_DIRECTORY = "directory";
+
+    /** Node name constant. */
+    public static final String N_DOCUMENTTYPE = "documenttype";
+
+    /** Node name constant. */
+    public static final String N_DOCUMENTTYPES = "documenttypes";
+
+    /** Node name constant. */
+    public static final String N_DOCUMENTTYPES_INDEXED = "documenttypes-indexed";
+
+    /** Node name constant. */
+    public static final String N_EXCERPT = "excerpt";
+
+    /** Node name constant. */
+    public static final String N_HIGHLIGHTER = "highlighter";
+
+    /** Node name constant. */
+    public static final String N_INDEX = "index";
+
+    /** Node name constant. */
+    public static final String N_INDEXER = "indexer";
+
+    /** Node name constant. */
+    public static final String N_INDEXES = "indexes";
+
+    /** Node name constant. */
+    public static final String N_INDEXSOURCE = "indexsource";
+
+    /** Node name constant. */
+    public static final String N_INDEXSOURCES = "indexsources";
+
+    /** Node name constant. */
+    public static final String N_LOCALE = "locale";
+
+    /** Node name constant. */
+    public static final String N_MIMETYPE = "mimetype";
+
+    /** Node name constant. */
+    public static final String N_MIMETYPES = "mimetypes";
+
+    /** Node name constant. */
+    public static final String N_PROJECT = "project";
+
+    /** Node name constant. */
+    public static final String N_REBUILD = "rebuild";
+
+    /** Node name constant. */
+    public static final String N_RESOURCES = "resources";
+
+    /** Node name constant. */
+    public static final String N_RESOURCETYPE = "resourcetype";
+
+    /** Node name constant. */
+    public static final String N_RESOURCETYPES = "resourcetypes";
+
+    /** Node name constant. */
+    public static final String N_SEARCH = "search";
+
+    /** Node name constant. */
+    public static final String N_SOURCE = "source";
+
+    /** Node name constant. */
+    public static final String N_SOURCES = "sources";
+
+    /** Node name constant. */
+    public static final String N_STEMMER = "stemmer";
+
+    /** Node name constant. */
+    public static final String N_TIMEOUT = "timeout";
+
+    /** Node name constant. */
     private static final String XPATH_SEARCH = "*/" + N_SEARCH;
 
     /** The configured search manager. */
@@ -107,7 +163,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         setXmlFileName(DEFAULT_XML_FILE_NAME);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_CONFIG_INIT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SEARCH_CONFIG_INIT_0));
         }
     }
 
@@ -375,7 +431,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
     public void initializeFinished() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_CONFIG_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SEARCH_CONFIG_FINISHED_0));
         }
     }
 
@@ -388,7 +444,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         m_searchManager = manager;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_MANAGER_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SEARCH_MANAGER_FINISHED_0));
         }
     }
 

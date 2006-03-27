@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.util;
 
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
@@ -45,8 +46,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
@@ -59,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -430,6 +433,25 @@ public final class CmsRequestUtil {
     }
 
     /**
+     * Returns the value of the cookie with the given name.<p/>
+     * 
+     * @param jsp the CmsJspActionElement to use
+     * @param name the name of the cookie
+     * 
+     * @return the value of the cookie with the given name or null, if no cookie exists with the name
+     */
+    public static String getCookieValue(CmsJspActionElement jsp, String name) {
+
+        Cookie[] cookies = jsp.getRequest().getCookies();
+        for (int i = 0; cookies != null && i < cookies.length; i++) {
+            if (name.equalsIgnoreCase(cookies[i].getName())) {
+                return cookies[i].getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
      * Reads value from the request parameters,
      * will return <code>null</code> if the value is not available or only white space.<p>
      * 
@@ -469,6 +491,24 @@ public final class CmsRequestUtil {
     }
 
     /**
+     * Reads an object from the session of the given http request.<p>
+     * 
+     * A session will be initilaized if the request does not currently have a session.
+     * As a result, the request will always have a session after this method has been called.<p> 
+     * 
+     * Will return <code>null</code> if no corresponding object is found in the session.<p>
+     * 
+     * @param request the request to get the session from
+     * @param key the key of the object to read from the session
+     * @return the object received form the session, or <code>null</code>
+     */
+    public static Object getSessionValue(HttpServletRequest request, String key) {
+
+        HttpSession session = request.getSession(true);
+        return session.getAttribute(key);
+    }
+
+    /**
      * Parses a request of the form <code>multipart/form-data</code>.
      * 
      * The result list will contain items of type <code>{@link FileItem}</code>.
@@ -496,7 +536,7 @@ public final class CmsRequestUtil {
                 result = items;
             }
         } catch (FileUploadException e) {
-            LOG.error(Messages.get().key(Messages.LOG_PARSE_MULIPART_REQ_FAILED_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSE_MULIPART_REQ_FAILED_0), e);
         }
         return result;
     }
@@ -525,13 +565,49 @@ public final class CmsRequestUtil {
                 try {
                     value = item.getString(encoding);
                 } catch (UnsupportedEncodingException e) {
-                    LOG.error(Messages.get().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
                     value = item.getString();
                 }
                 parameterMap.put(name, new String[] {value});
             }
         }
         return parameterMap;
+    }
+
+    /** 
+     * Removes an object from the session of the given http request.<p>
+     * 
+     * A session will be initilaized if the request does not currently have a session.
+     * As a result, the request will always have a session after this method has been called.<p> 
+     * 
+     * @param request the request to get the session from
+     * @param key the key of the object to be removed from the session
+     */
+    public static void removeSessionValue(HttpServletRequest request, String key) {
+
+        HttpSession session = request.getSession(true);
+        session.removeAttribute(key);
+    }
+
+    /** 
+     * Sets the value of a specific cookie.<p>
+     * If no cookie exists with the value, a new cookie will be created.
+     * 
+     * @param jsp the CmsJspActionElement to use
+     * @param name the name of the cookie
+     * @param value the value of the cookie
+     */
+    public static void setCookieValue(CmsJspActionElement jsp, String name, String value) {
+
+        Cookie[] cookies = jsp.getRequest().getCookies();
+        for (int i = 0; cookies != null && i < cookies.length; i++) {
+            if (name.equalsIgnoreCase(cookies[i].getName())) {
+                cookies[i].setValue(value);
+                return;
+            }
+        }
+        Cookie cookie = new Cookie(name, value);
+        jsp.getResponse().addCookie(cookie);
     }
 
     /**
@@ -551,5 +627,21 @@ public final class CmsRequestUtil {
         res.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, CmsRequestUtil.HEADER_VALUE_MAX_AGE + "0");
         res.addHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, CmsRequestUtil.HEADER_VALUE_MUST_REVALIDATE);
         res.setHeader(CmsRequestUtil.HEADER_PRAGMA, CmsRequestUtil.HEADER_VALUE_NO_CACHE);
+    }
+
+    /**
+     * Adds an object to the session of the given http request.<p>
+     * 
+     * A session will be initilaized if the request does not currently have a session.
+     * As a result, the request will always have a session after this method has been called.<p> 
+     * 
+     * @param request the request to get the session from
+     * @param key the key of the object to be stored in the session
+     * @param value the object to be stored in the session
+     */
+    public static void setSessionValue(HttpServletRequest request, String key, Object value) {
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute(key, value);
     }
 }

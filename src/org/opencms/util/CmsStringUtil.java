@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/01/06 16:59:54 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.util;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 
@@ -38,6 +39,7 @@ import java.awt.Color;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -54,7 +56,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -363,6 +365,43 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Formats a resource name that it is displayed with the maximum length and path information is adjusted.<p>
+     * 
+     * Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns <code>/.../subfolder/index.html</code>.<p>
+     * @param name the resource name to format
+     * @param maxLength the maximum length of the resource name (without leading <code>/...</code>)
+     * @return the formatted resource name
+     */
+    public static String formatResourceName(String name, int maxLength) {
+
+        if (name == null) {
+            return null;
+        }
+        if (name.length() <= maxLength) {
+            return name;
+        }
+
+        String result = CmsResource.getName(name);
+        name = CmsResource.getParentFolder(name);
+        while (name != null) {
+            String part = CmsResource.getName(name);
+
+            if ((part.length() + result.length()) <= maxLength) {
+                result = part + result;
+            } else {
+                result = "/" + result;
+                if (!part.equals("/")) {
+                    result = "/..." + result;
+                }
+                break;
+            }
+            name = CmsResource.getParentFolder(name);
+        }
+
+        return result;
+    }
+
+    /**
      * Formats a runtime in the format hh:mm:ss, to be used e.g. in reports.<p>
      * 
      * If the runtime is greater then 24 hours, the format dd:hh:mm:ss is used.<p> 
@@ -421,10 +460,14 @@ public final class CmsStringUtil {
 
         Color result;
         try {
+            char pre = value.charAt(0);
+            if (pre != '#') {
+                value = "#" + value;
+            }
             result = Color.decode(value);
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_PARSE_COLOR_2, value, key));
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_PARSE_COLOR_2, value, key));
             }
             result = defaultValue;
         }
@@ -449,7 +492,7 @@ public final class CmsStringUtil {
             result = Integer.valueOf(value).intValue();
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_PARSE_INT_2, value, key));
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_PARSE_INT_2, value, key));
             }
             result = defaultValue;
         }
@@ -699,6 +742,28 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Replaces a set of <code>searchString</code> and <code>replaceString</code> pairs, 
+     * given by the <code>substitutions</code> Map parameter.<p>
+     * 
+     * @param source the constent which is scanned
+     * @param substitions the map of substitutions
+     * 
+     * @return the substituted String
+     * 
+     * @see #substitute(String, String, String)
+     */
+    public static String substitute(String source, Map substitions) {
+
+        String result = source;
+        Iterator it = substitions.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next().toString();
+            result = substitute(result, key, substitions.get(key).toString());
+        }
+        return result;
+    }
+
+    /**
      * Substitutes <code>searchString</code> in the given source String with <code>replaceString</code>.<p>
      * 
      * This is a high-performance implementation which should be used as a replacement for 
@@ -709,16 +774,15 @@ public final class CmsStringUtil {
      * @param searchString the String which is searched in content
      * @param replaceString the String which replaces <code>searchString</code>
      * 
-     * @return String the substituted String
+     * @return the substituted String
      */
     public static String substitute(String source, String searchString, String replaceString) {
 
-        int sl;
         if (source == null) {
             return null;
         }
 
-        if (searchString == null || (sl = searchString.length()) == 0) {
+        if (isEmpty(searchString)) {
             return source;
         }
 
@@ -726,6 +790,7 @@ public final class CmsStringUtil {
             replaceString = "";
         }
         int len = source.length();
+        int sl = searchString.length();
         int rl = replaceString.length();
         int length;
         if (sl == rl) {
@@ -795,7 +860,7 @@ public final class CmsStringUtil {
             return perlUtil.substitute(translationRule, content);
         } catch (MalformedPerl5PatternException e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, translationRule), e);
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, translationRule), e);
             }
         }
         return content;
@@ -829,6 +894,34 @@ public final class CmsStringUtil {
             result.append(unicode);
         }
         return result.toString();
+    }
+
+    /**
+     * Returns a substring of string source, which is at most length characters long.<p>
+     * 
+     * @param source the string to trim
+     * @param length the maximum length of the string to be returned
+     * 
+     * @return a substring of string source, which is at most length characters long
+     */
+    public static String trimToSize(String source, int length) {
+
+        int end = 0;
+        int newend;
+        while (true) {
+            newend = source.indexOf(" ", end);
+            if (newend > length && end > 0) {
+                return source.substring(0, length - 3) + "...";
+            } else if (newend == -1) {
+                if (length < source.length()) {
+                    return source.substring(0, length - 3) + "...";
+                } else {
+                    return source;
+                }
+            } else {
+                end = newend + 1;
+            }
+        }
     }
 
     /**

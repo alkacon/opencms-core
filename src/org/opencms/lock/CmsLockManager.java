@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2005/08/10 14:44:25 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  * 
@@ -68,7 +68,7 @@ import java.util.Map;
 public final class CmsLockManager {
 
     /** The shared lock manager instance. */
-    private static CmsLockManager sharedInstance = null;
+    private static CmsLockManager sharedInstance;
 
     /** A map holding the exclusive CmsLocks. */
     private Map m_exclusiveLocks;
@@ -81,19 +81,18 @@ public final class CmsLockManager {
         super();
         m_exclusiveLocks = Collections.synchronizedMap(new HashMap());
     }
-
+    
     /**
      * Returns the shared instance of the lock manager.<p>
      * 
      * @return the shared instance of the lock manager
      */
-    public static synchronized CmsLockManager getInstance() {
+    public static CmsLockManager getInstance() {
 
-        // synchronized to avoid "Double Checked Locking"
-        if (sharedInstance == null) {
+        if (sharedInstance == null) {            
+            // initialize the shared instance 
             sharedInstance = new CmsLockManager();
         }
-
         return sharedInstance;
     }
 
@@ -207,9 +206,6 @@ public final class CmsLockManager {
      */
     public CmsLock getLock(CmsDriverManager driverManager, CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        CmsLock parentFolderLock = null;
-        CmsLock siblingLock = null;
-        CmsResource sibling = null;
         String resourcename = resource.getRootPath();
 
         // check some abort conditions first
@@ -236,7 +232,11 @@ public final class CmsLockManager {
         // fetch all siblings of the resource to the same content record
         List siblings = internalReadSiblings(driverManager, dbc, resource);
 
-        if ((parentFolderLock = getParentFolderLock(resourcename)) == null) {
+        CmsLock siblingLock;
+        CmsResource sibling;
+
+        CmsLock parentFolderLock = getParentFolderLock(resourcename);
+        if (parentFolderLock == null) {
             // all parent folders are unlocked
 
             for (int i = 0; i < siblings.size(); i++) {
@@ -298,6 +298,34 @@ public final class CmsLockManager {
 
         CmsLock lock = getLock(driverManager, dbc, resource);
         return !lock.isNullLock();
+    }
+
+    /**
+     * Removes a resource after it has been deleted by the driver manager.<p>
+     * 
+     * @param driverManager the driver manager
+     * @param dbc the current database context
+     * @param resourceName the root path of the deleted resource
+     * @throws CmsException if something goes wrong
+     */
+    public void removeDeletedResource(CmsDriverManager driverManager, CmsDbContext dbc, String resourceName)
+    throws CmsException {
+
+        boolean resourceExists;
+        try {
+            driverManager.getVfsDriver().readResource(dbc, dbc.currentProject().getId(), resourceName, false);
+            resourceExists = true;
+        } catch (CmsVfsResourceNotFoundException e) {
+            resourceExists = false;
+        }
+
+        if (resourceExists) {
+            throw new CmsLockException(Messages.get().container(
+                Messages.ERR_REMOVING_UNDELETED_RESOURCE_1,
+                dbc.getRequestContext().removeSiteRoot(resourceName)));
+        }
+
+        m_exclusiveLocks.remove(resourceName);
     }
 
     /**
@@ -387,33 +415,6 @@ public final class CmsLockManager {
         }
 
         return lock;
-    }
-    
-    /**
-     * Removes a resource after it has been deleted by the driver manager.<p>
-     * 
-     * @param driverManager the driver manager
-     * @param dbc the current database context
-     * @param resourceName the root path of the deleted resource
-     * @throws CmsException if something goes wrong
-     */
-    public void removeDeletedResource(CmsDriverManager driverManager, CmsDbContext dbc, String resourceName) throws CmsException {
-        
-        boolean resourceExists;
-        try {
-            driverManager.getVfsDriver().readResource(dbc, dbc.currentProject().getId(), resourceName, false);
-            resourceExists = true;
-        } catch (CmsVfsResourceNotFoundException e) {
-            resourceExists = false;
-        }
-        
-        if (resourceExists) {            
-            throw new CmsLockException(Messages.get().container(
-                Messages.ERR_REMOVING_UNDELETED_RESOURCE_1,
-                dbc.getRequestContext().removeSiteRoot(resourceName)));
-        }
-
-        m_exclusiveLocks.remove(resourceName);
     }
 
     /**
@@ -557,5 +558,4 @@ public final class CmsLockManager {
 
         return driverManager.updateContextDates(dbc, siblings);
     }
-
 }

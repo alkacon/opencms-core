@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsErrorBean.java,v $
- * Date   : $Date: 2005/06/28 19:28:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/03/27 14:52:59 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,10 @@
 package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsMultiException;
 import org.opencms.main.I_CmsThrowable;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
@@ -47,7 +49,7 @@ import java.util.Properties;
  *
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,6 +73,9 @@ public class CmsErrorBean {
     /** The locale for the errorpage. */
     private Locale m_locale;
 
+    /** Messages container. */
+    private CmsMessages m_messages;
+
     /** The html code for the buttons. */
     private String m_paramAction;
 
@@ -91,6 +96,7 @@ public class CmsErrorBean {
         m_cms = cms;
         m_locale = cms.getRequestContext().getLocale();
         m_throwable = throwable;
+        m_messages = Messages.get().getBundle(m_locale);
     }
 
     /**
@@ -101,8 +107,8 @@ public class CmsErrorBean {
     public String getDefaultButtonsHtml() {
 
         StringBuffer result = new StringBuffer();
-        String closeLabel = Messages.get().key(m_locale, Messages.GUI_CLOSE_0, new Object[] {});
-        String detailsLabel = Messages.get().key(m_locale, Messages.GUI_DETAILS_0, new Object[] {});
+        String closeLabel = m_messages.key(Messages.GUI_CLOSE_0, new Object[] {});
+        String detailsLabel = m_messages.key(Messages.GUI_DETAILS_0, new Object[] {});
         result.append("<div class=\"dialogbuttons\" unselectable=\"on\">");
         result.append("<input name=\"close\" type=\"button\" value=\"").append(closeLabel).append(
             "\" onclick=\"closeDialog();\" class=\"dialogbutton\">");
@@ -121,7 +127,7 @@ public class CmsErrorBean {
 
         StringBuffer result = new StringBuffer(512);
 
-        String reason = Messages.get().key(m_locale, Messages.GUI_REASON_0, new Object[] {});
+        String reason = m_messages.key(Messages.GUI_REASON_0, new Object[] {});
 
         if (CmsStringUtil.isNotEmpty(m_errorMessage)) {
             result.append(m_errorMessage);
@@ -150,10 +156,27 @@ public class CmsErrorBean {
     public String getMessage(Throwable t) {
 
         if (t instanceof I_CmsThrowable && ((I_CmsThrowable)t).getMessageContainer() != null) {
+            StringBuffer result = new StringBuffer(256);
+            if (m_throwable instanceof CmsMultiException) {
+                CmsMultiException exc = (CmsMultiException)m_throwable;
+                String message = exc.getMessage(m_locale);
+                if (CmsStringUtil.isNotEmpty(message)) {
+                    result.append(message);
+                    result.append('\n');
+                }
+
+            }
+
             I_CmsThrowable cmsThrowable = (I_CmsThrowable)t;
-            return cmsThrowable.getLocalizedMessage(m_locale);
+            result.append(cmsThrowable.getLocalizedMessage(m_locale));
+            return result.toString();
         } else {
-            return t.getMessage();
+            String message = t.getMessage();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
+                // no error message found (e.g. for NPE), provide default message text
+                message = m_messages.key(Messages.GUI_ERROR_UNKNOWN_0);
+            }
+            return message;
         }
     }
 
@@ -216,10 +239,10 @@ public class CmsErrorBean {
 
         CmsMacroResolver resolver = new CmsMacroResolver();
         if (CmsStringUtil.isEmpty(m_title)) {
-            m_title = Messages.get().key(m_locale, Messages.GUI_ERROR_0, new Object[] {});
+            m_title = m_messages.key(Messages.GUI_ERROR_0, new Object[] {});
         }
         resolver.addMacro("title", m_title);
-        resolver.addMacro("label_error", Messages.get().key(m_locale, Messages.GUI_ERROR_0, new Object[] {}));
+        resolver.addMacro("label_error", m_messages.key(Messages.GUI_ERROR_0, new Object[] {}));
         resolver.addMacro("errorstack", CmsException.getFormattedErrorstack(m_throwable));
         resolver.addMacro("message", CmsStringUtil.escapeHtml(getErrorMessage()));
         resolver.addMacro("styleuri", OpenCms.getLinkManager().substituteLink(
@@ -242,7 +265,7 @@ public class CmsErrorBean {
         try {
             errorpage.load(CmsErrorBean.class.getClassLoader().getResourceAsStream(ERRORPAGE));
         } catch (Throwable th) {
-            CmsLog.INIT.error(org.opencms.main.Messages.get().key(
+            CmsLog.INIT.error(org.opencms.main.Messages.get().getBundle().key(
                 org.opencms.main.Messages.INIT_ERR_LOAD_HTML_PROPERTY_FILE_1,
                 ERRORPAGE), th);
         }

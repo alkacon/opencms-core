@@ -21,7 +21,7 @@
 	function confirmExit()
 	{
 		if (EDITOR.edit1.IsModified(2)) {
-			if (confirm("<%= wp.key("editor.message.exit") %>")) {
+			if (confirm("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0) %>")) {
 				buttonAction(1);
 			}
 		} else {
@@ -57,29 +57,29 @@
 
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
-<%= wp.button("javascript:buttonAction(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
-<%= wp.button("javascript:buttonAction(3);", null, "save", "button.save", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(2);", null, "save_exit", org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0, buttonStyle) %>
+<%= wp.button("javascript:buttonAction(3);", null, "save", org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0, buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:buttonAction(4);", null, "undo", "button.undo", buttonStyle) %>
-<%= wp.button("javascript:buttonAction(5);", null, "redo", "button.redo", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(4);", null, "undo", org.opencms.workplace.editors.Messages.GUI_BUTTON_UNDO_0, buttonStyle) %>
+<%= wp.button("javascript:buttonAction(5);", null, "redo", org.opencms.workplace.editors.Messages.GUI_BUTTON_REDO_0, buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:buttonAction(6);", null, "editorsearch", "button.search", buttonStyle) %>
-<%= wp.button("javascript:buttonAction(7);", null, "replace", "button.replace", buttonStyle) %>
-<%= wp.button("javascript:buttonAction(8);", null, "goto", "button.goto", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(6);", null, "editorsearch",org.opencms.workplace.editors.Messages.GUI_BUTTON_SEARCH_0, buttonStyle) %>
+<%= wp.button("javascript:buttonAction(7);", null, "replace",org.opencms.workplace.editors.Messages.GUI_BUTTON_REPLACE_0, buttonStyle) %>
+<%= wp.button("javascript:buttonAction(8);", null, "goto",org.opencms.workplace.editors.Messages.GUI_BUTTON_GOTO_0, buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:buttonAction(9);", null, "cut", "button.cut", buttonStyle) %>
-<%= wp.button("javascript:buttonAction(10);", null, "copy", "button.copy", buttonStyle) %>
-<%= wp.button("javascript:buttonAction(11);", null, "paste", "button.paste", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(9);", null, "cut", org.opencms.workplace.editors.Messages.GUI_BUTTON_CUT_0, buttonStyle) %>
+<%= wp.button("javascript:buttonAction(10);", null, "copy",org.opencms.workplace.editors.Messages.GUI_BUTTON_COPY_0, buttonStyle) %>
+<%= wp.button("javascript:buttonAction(11);", null, "paste", org.opencms.workplace.editors.Messages.GUI_BUTTON_PASTE_0, buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:buttonAction(12);", null, "print", "button.print", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(12);", null, "print", org.opencms.workplace.editors.Messages.GUI_BUTTON_PRINT_0, buttonStyle) %>
 <%
 
 if (wp.isHelpEnabled()) {%>
 	<%= wp.buttonBarSeparator(5, 5) %>
-	<%= wp.button("javascript:openOnlineHelp('/editors/ledit');", null, "help.png", "button.help", buttonStyle) %><%
+	<%= wp.button("javascript:openOnlineHelp('/editors/ledit');", null, "help.png", org.opencms.workplace.editors.Messages.GUI_BUTTON_HELP_0, buttonStyle) %><%
 } %>
 <td class="maxwidth">&nbsp;</td>
-<%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
+<%= wp.button("javascript:confirmExit();", null, "exit",  org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0, buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 <%= wp.buttonBar(wp.HTML_END) %>
 </td>

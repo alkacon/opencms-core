@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2005/10/10 16:11:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -247,11 +247,13 @@ public class CmsProjectsList extends A_CmsListDialog {
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
         if (getParamListAction().equals(LIST_DEFACTION_FILES)) {
-            // forward to the edit user screen
+            // forward to the project files dialog
+            params.put(CmsProjectFilesDialog.PARAM_SHOW_EXPLORER, Boolean.TRUE.toString());
             getToolManager().jspForwardTool(this, "/projects/files", params);
         } else if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             getToolManager().jspForwardTool(this, "/projects/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_FILES)) {
+            getSettings().setCollector(new CmsProjectFilesCollector());
             getToolManager().jspForwardTool(this, "/projects/files", params);
         } else if (getParamListAction().equals(LIST_ACTION_PUBLISH_ENABLED)) {
             getToolManager().jspForwardTool(this, "/projects/publish", params);
@@ -578,10 +580,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         CmsListColumnDefinition creationCol = new CmsListColumnDefinition(LIST_COLUMN_CREATION);
         creationCol.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_CREATION_0));
         creationCol.setWidth("14%");
-        CmsListDateMacroFormatter creationDateFormatter = new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_COLS_CREATION_FORMAT_1), Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_COLS_CREATION_NEVER_0));
-        creationCol.setFormatter(creationDateFormatter);
+        creationCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(creationCol);
     }
 

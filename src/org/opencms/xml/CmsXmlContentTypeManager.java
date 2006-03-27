@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/10/09 09:08:26 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,7 +105,7 @@ public class CmsXmlContentTypeManager {
         m_contentHandlers = fastMap;
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_START_CONTENT_CONFIG_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_CONTENT_CONFIG_0));
         }
     }
 
@@ -119,11 +119,11 @@ public class CmsXmlContentTypeManager {
         CmsXmlContentTypeManager typeManager = new CmsXmlContentTypeManager();
 
         typeManager.addWidget("org.opencms.widgets.CmsCalendarWidget", null);
-        typeManager.addWidget("org.opencms.widgets.CmsHtmlAreaWidget", null);
+        typeManager.addWidget("org.opencms.widgets.CmsHtmlWidget", null);
         typeManager.addWidget("org.opencms.widgets.CmsInputWidget", null);
 
         typeManager.addSchemaType("org.opencms.xml.types.CmsXmlDateTimeValue", "org.opencms.widgets.CmsCalendarWidget");
-        typeManager.addSchemaType("org.opencms.xml.types.CmsXmlHtmlValue", "org.opencms.widgets.CmsHtmlAreaWidget");
+        typeManager.addSchemaType("org.opencms.xml.types.CmsXmlHtmlValue", "org.opencms.widgets.CmsHtmlWidget");
         typeManager.addSchemaType("org.opencms.xml.types.CmsXmlLocaleValue", "org.opencms.widgets.CmsInputWidget");
         typeManager.addSchemaType("org.opencms.xml.types.CmsXmlStringValue", "org.opencms.widgets.CmsInputWidget");
 
@@ -174,7 +174,9 @@ public class CmsXmlContentTypeManager {
         try {
             classClazz = Class.forName(className);
         } catch (ClassNotFoundException e) {
-            LOG.error(Messages.get().key(Messages.LOG_XML_CONTENT_SCHEMA_TYPE_CLASS_NOT_FOUND_1, className), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_XML_CONTENT_SCHEMA_TYPE_CLASS_NOT_FOUND_1, className),
+                e);
             return;
         }
 
@@ -183,16 +185,16 @@ public class CmsXmlContentTypeManager {
         try {
             type = addContentType(classClazz);
         } catch (Exception e) {
-            LOG.error(
-                Messages.get().key(Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1, classClazz.getName()),
-                e);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1,
+                classClazz.getName()), e);
             return;
         }
 
         // add the editor widget for the schema type        
         I_CmsWidget widget = getWidget(defaultWidget);
         if (widget == null) {
-            LOG.error(Messages.get().key(
+            LOG.error(Messages.get().getBundle().key(
                 Messages.LOG_INIT_DEFAULT_WIDGET_FOR_CONTENT_TYPE_2,
                 defaultWidget,
                 type.getTypeName()));
@@ -203,7 +205,7 @@ public class CmsXmlContentTypeManager {
         m_defaultWidgets.put(type.getTypeName(), widget);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_ADD_ST_USING_WIDGET_2,
                 type.getTypeName(),
                 widget.getClass().getName()));
@@ -224,7 +226,7 @@ public class CmsXmlContentTypeManager {
             widgetClazz = Class.forName(className);
             widget = (I_CmsWidget)widgetClazz.newInstance();
         } catch (Exception e) {
-            LOG.error(Messages.get().key(Messages.LOG_XML_WIDGET_INITIALIZING_ERROR_1, className), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_XML_WIDGET_INITIALIZING_ERROR_1, className), e);
             return;
         }
 
@@ -236,9 +238,12 @@ public class CmsXmlContentTypeManager {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             if (aliasName != null) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_WIDGET_1, widgetClazz.getName()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_WIDGET_1, widgetClazz.getName()));
             } else {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_WIDGET_ALIAS_2, widgetClazz.getName(), aliasName));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_ADD_WIDGET_ALIAS_2,
+                    widgetClazz.getName(),
+                    aliasName));
             }
         }
     }
@@ -469,7 +474,7 @@ public class CmsXmlContentTypeManager {
         CmsXmlEntityResolver.initialize(cms, getSchemaBytes());
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_NUM_ST_INITIALIZED_1,
                 new Integer(m_registeredTypes.size())));
         }
@@ -501,14 +506,19 @@ public class CmsXmlContentTypeManager {
             schemaStr = CmsXmlUtils.marshal(doc, CmsEncoder.ENCODING_UTF_8);
         } catch (CmsXmlException e) {
             // should not ever happen
-            LOG.error(Messages.get().key(Messages.LOG_PRETTY_PRINT_SCHEMA_BYTES_ERROR_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_PRETTY_PRINT_SCHEMA_BYTES_ERROR_0), e);
         }
-
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().getBundle().key(
+                Messages.LOG_XML_TYPE_DEFINITION_XSD_2,
+                CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS,
+                schemaStr));
+        }
         try {
             return schemaStr.getBytes(CmsEncoder.ENCODING_UTF_8);
         } catch (UnsupportedEncodingException e) {
             // should not happen since the default encoding of UTF-8 is always valid
-            LOG.error(Messages.get().key(Messages.LOG_CONVERTING_SCHEMA_BYTES_ERROR_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_CONVERTING_SCHEMA_BYTES_ERROR_0), e);
         }
         return null;
     }

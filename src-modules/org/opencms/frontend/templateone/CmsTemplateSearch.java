@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateSearch.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -206,7 +206,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
             int pageNumber = ((Integer)i.next()).intValue();
             String pageLink = link((String)pageLinks.get(new Integer(pageNumber)));
             result.append("&nbsp;&nbsp;");
-            if (pageNumber != search.getPage()) {
+            if (pageNumber != search.getSearchPage()) {
                 // create a link to the page
                 result.append("<a href=\"");
                 result.append(pageLink);
@@ -378,7 +378,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
         }
         String queryString = search.getQuery();
         try {
-            if (queryString == null || "".equals(queryString.trim())) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(queryString)) {
                 // no query String found, return empty list
                 queryString = "";
                 search.setQuery("");

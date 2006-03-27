@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReleaseExpire.java,v $
- * Date   : $Date: 2005/10/10 16:11:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/27 14:52:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import junit.framework.TestSuite;
  * Unit test for the "setDateExpired" and "setDateReleased" method of the CmsObject.<p>
  * 
  * @author Jan Baudisch
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestReleaseExpire extends OpenCmsTestCase {
 

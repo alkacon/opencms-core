@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/12/12 09:51:24 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2006/03/27 14:53:04 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,14 +87,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Set interval for clearing the caches to 10 minutes. */
     private static final int INTERVAL_CLEAR = 1000 * 60 * 10;
 
-    /** Maximum depth for object size recursion. */
-    private static final int MAX_DEPTH = 5;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMemoryMonitor.class);
 
     /** Flag indicating if monitor is currently running. */
     private static boolean m_currentlyRunning;
+
+    /** Maximum depth for object size recursion. */
+    private static final int MAX_DEPTH = 5;
 
     /** The memory monitor configuration. */
     private CmsMemoryMonitorConfiguration m_configuration;
@@ -143,7 +143,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Flag for memory warning mail send. */
     private boolean m_warningSendSinceLastStatus;
-    
+
     /**
      * Empty constructor, required by OpenCms scheduler.<p>
      */
@@ -310,23 +310,32 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         if (CmsLog.INIT.isInfoEnabled()) {
 
-            CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_INTERVAL_LOG_1, new Integer(m_intervalLog / 1000)));
-            CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_INTERVAL_EMAIL_1, new Integer(m_intervalEmail / 1000)));
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.LOG_MM_INTERVAL_LOG_1,
+                new Integer(m_intervalLog / 1000)));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.LOG_MM_INTERVAL_EMAIL_1,
+                new Integer(m_intervalEmail / 1000)));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.LOG_MM_INTERVAL_WARNING_1,
                 new Integer(m_intervalWarning / 1000)));
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.LOG_MM_INTERVAL_MAX_USAGE_1,
                 new Integer(m_intervalWarning / 1000)));
 
             if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
-                CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_EMAIL_DISABLED_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_MM_EMAIL_DISABLED_0));
             } else {
-                CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_EMAIL_SENDER_1, m_configuration.getEmailSender()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.LOG_MM_EMAIL_SENDER_1,
+                    m_configuration.getEmailSender()));
                 Iterator i = m_configuration.getEmailReceiver().iterator();
                 int n = 0;
                 while (i.hasNext()) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_EMAIL_RECEIVER_2, new Integer(n + 1), i.next()));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
+                        Messages.LOG_MM_EMAIL_RECEIVER_2,
+                        new Integer(n + 1),
+                        i.next()));
                     n++;
                 }
             }
@@ -335,7 +344,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (LOG.isDebugEnabled()) {
             // this will happen only once during system startup
 
-            LOG.debug(Messages.get().key(Messages.LOG_MM_CREATED_1, new Date(System.currentTimeMillis())));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_MM_CREATED_1, new Date(System.currentTimeMillis())));
         }
 
     }
@@ -420,7 +429,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
         m_lastClearCache = System.currentTimeMillis();
         if (LOG.isWarnEnabled()) {
-            LOG.warn(Messages.get().key(Messages.LOG_CLEAR_CACHE_MEM_CONS_0));
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_CLEAR_CACHE_MEM_CONS_0));
         }
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
         System.gc();
@@ -503,7 +512,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
             }
         }
 
@@ -586,7 +595,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
             }
         }
 
@@ -634,7 +643,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
             }
         }
 
@@ -796,9 +805,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             }
             if (LOG.isInfoEnabled()) {
                 if (warning) {
-                    LOG.info(Messages.get().key(Messages.LOG_MM_WARNING_EMAIL_SENT_0));
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_MM_WARNING_EMAIL_SENT_0));
                 } else {
-                    LOG.info(Messages.get().key(Messages.LOG_MM_STATUS_EMAIL_SENT_0));
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_MM_STATUS_EMAIL_SENT_0));
                 }
             }
         } catch (Exception e) {
@@ -832,7 +841,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (warning) {
             m_lastLogWarning = System.currentTimeMillis();
             m_warningLoggedSinceLastStatus = true;
-            LOG.warn(Messages.get().key(
+            LOG.warn(Messages.get().getBundle().key(
                 Messages.LOG_MM_WARNING_MEM_CONSUME_2,
                 new Long(m_memoryCurrent.getUsage()),
                 new Integer(m_maxUsagePercent)));
@@ -842,7 +851,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
 
         if (warning) {
-            LOG.warn(Messages.get().key(
+            LOG.warn(Messages.get().getBundle().key(
                 Messages.LOG_MM_WARNING_MEM_STATUS_6,
                 new Object[] {
                     new Long(m_memoryCurrent.getMaxMemory()),
@@ -854,7 +863,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         } else {
 
             m_logCount++;
-            LOG.info(Messages.get().key(
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_MM_LOG_INFO_2,
                 OpenCms.getSystemInfo().getServerName().toUpperCase(),
                 String.valueOf(m_logCount)));
@@ -873,7 +882,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 PrintfFormat name1 = new PrintfFormat("%-80s");
                 PrintfFormat name2 = new PrintfFormat("%-50s");
                 PrintfFormat form = new PrintfFormat("%9s");
-                LOG.info(Messages.get().key(
+                LOG.info(Messages.get().getBundle().key(
                     Messages.LOG_MM_NOWARN_STATUS_5,
                     new Object[] {
                         name1.sprintf(key),
@@ -883,7 +892,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                         form.sprintf(Long.toString(size))}));
             }
 
-            LOG.info(Messages.get().key(
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_MM_WARNING_MEM_STATUS_6,
                 new Object[] {
                     new Long(m_memoryCurrent.getMaxMemory()),
@@ -896,7 +905,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     new Long(totalSize / 1048576)})
 
             );
-            LOG.info(Messages.get().key(
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_MM_WARNING_MEM_STATUS_AVG_6,
                 new Object[] {
                     new Long(m_memoryAverage.getMaxMemory()),
@@ -909,7 +918,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             CmsSessionManager sm = OpenCms.getSessionManager();
 
             if (sm != null) {
-                LOG.info(Messages.get().key(
+                LOG.info(Messages.get().getBundle().key(
                     Messages.LOG_MM_SESSION_STAT_3,
                     String.valueOf(sm.getSessionCountAuthenticated()),
                     String.valueOf(sm.getSessionCountCurrent()),
@@ -920,21 +929,21 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             for (Iterator i = OpenCms.getSqlManager().getDbPoolNames().iterator(); i.hasNext();) {
                 String poolname = (String)i.next();
                 try {
-                    LOG.info(Messages.get().key(
+                    LOG.info(Messages.get().getBundle().key(
                         Messages.LOG_MM_CONNECTIONS_3,
                         poolname,
                         Integer.toString(OpenCms.getSqlManager().getActiveConnections(poolname)),
                         Integer.toString(OpenCms.getSqlManager().getIdleConnections(poolname))));
                 } catch (Exception exc) {
-                    LOG.info(Messages.get().key(
+                    LOG.info(Messages.get().getBundle().key(
                         Messages.LOG_MM_CONNECTIONS_3,
                         poolname,
                         Integer.toString(-1),
-                        Integer.toString(-1)));                    
+                        Integer.toString(-1)));
                 }
             }
-            
-            LOG.info(Messages.get().key(
+
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_MM_STARTUP_TIME_2,
                 CmsDateUtil.getDateTimeShort(OpenCms.getSystemInfo().getStartupTime()),
                 CmsStringUtil.formatRuntime(OpenCms.getSystemInfo().getRuntime())));

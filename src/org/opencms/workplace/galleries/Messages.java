@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/03/27 14:52:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,6 +47,99 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_OPEN_GALLERY_1 = "ERR_OPEN_GALLERY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REASON_NO_DOWNLOADGALLERY_0 = "ERR_REASON_NO_DOWNLOADGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REASON_NO_HTMLGALLERY_0 = "ERR_REASON_NO_HTMLGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REASON_NO_IMAGEGALLERY_0 = "ERR_REASON_NO_IMAGEGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REASON_NO_LINKGALLERY_0 = "ERR_REASON_NO_LINKGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REASON_NO_TABLEGALLERY_0 = "ERR_REASON_NO_TABLEGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_PASTE_0 = "GUI_BUTTON_PASTE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_PREVIEW_0 = "GUI_BUTTON_PREVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_DATELASTMODIFIED_0 = "GUI_INPUT_DATELASTMODIFIED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_DESCRIPTION_0 = "GUI_INPUT_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_EDITPROPERTYINFO_0 = "GUI_INPUT_EDITPROPERTYINFO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_KEYWORDS_0 = "GUI_INPUT_KEYWORDS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_LINKTARGET_0 = "GUI_INPUT_LINKTARGET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_LINKTARGETBLANK_0 = "GUI_INPUT_LINKTARGETBLANK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_LINKTARGETSELF_0 = "GUI_INPUT_LINKTARGETSELF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_LINKTARGETTOP_0 = "GUI_INPUT_LINKTARGETTOP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_LINKTO_0 = "GUI_INPUT_LINKTO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_SEARCH_0 = "GUI_INPUT_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_TITLE_0 = "GUI_INPUT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_KILOBYTES_0 = "GUI_LABEL_KILOBYTES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_NAME_0 = "GUI_LABEL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_PIXELS_0 = "GUI_LABEL_PIXELS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_SIZE_0 = "GUI_LABEL_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_TITLE_0 = "GUI_LABEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0 = "GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_DELETE_0 = "GUI_TITLE_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_DOWNLOADGALLERY_0 = "GUI_TITLE_DOWNLOADGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_HTMLGALLERY_0 = "GUI_TITLE_HTMLGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_IMAGEGALLERY_0 = "GUI_TITLE_IMAGEGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_LINKGALLERY_0 = "GUI_TITLE_LINKGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_NEW_0 = "GUI_TITLE_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_TABLEGALLERY_0 = "GUI_TITLE_TABLEGALLERY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_GALLERY_INSTANCE_FAILED_2 = "LOG_CREATE_GALLERY_INSTANCE_FAILED_2";
@@ -62,6 +155,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.galleries.messages";
+
+    /**Prefix to create gallery not found key. */
+    private static final String ERROR_REASON_NO_PREFIX = "ERR_REASON_NO_";
+
+    /**Postfix to create gallery title key. */
+    private static final String GUI_TITLE_POSTFIX = "_0";
+
+    /**Prefix to create gallery title key. */
+    private static final String GUI_TITLE_PREFIX = "GUI_TITLE_";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
@@ -82,6 +184,32 @@ public final class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
+    }
+
+    /**
+     * Convert gallery name to not found error  key.
+     * @param gallery gallery name for example "htmlgallery"
+     * @return key as string "ERR_REASON_NO_HTMLGALLERY_0"
+     */
+    public static String getGalleryNotFoundKey(String gallery) {
+
+        StringBuffer sb = new StringBuffer(ERROR_REASON_NO_PREFIX);
+        sb.append(gallery.toUpperCase());
+        sb.append(GUI_TITLE_POSTFIX);
+        return sb.toString();
+    }
+
+    /**
+     * Convert gallery name to title key.
+     * @param gallery gallery name for example "htmlgallery"
+     * @return key as string "GUI_TITLE_HTMLGALLERY_0"
+     */
+    public static String getTitleGalleryKey(String gallery) {
+
+        StringBuffer sb = new StringBuffer(GUI_TITLE_PREFIX);
+        sb.append(gallery.toUpperCase());
+        sb.append(GUI_TITLE_POSTFIX);
+        return sb.toString();
     }
 
     /**

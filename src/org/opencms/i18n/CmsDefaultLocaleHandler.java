@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/03/27 14:53:01 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.i18n;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -53,7 +54,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior  
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,26 +80,70 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
     public CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resourceName) {
 
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
+        List defaultLocales = null;
+        String encoding = null;
 
-        String encoding;
-        List defaultLocales;
-        synchronized (m_adminCmsObject) {
+        CmsObject adminCms = null;
+        try {
+            // create a copy of the Admin context to avoid concurrent modification
+            adminCms = OpenCms.initCmsObject(m_adminCmsObject);
+        } catch (CmsException e) {
+            // unable to copy Admin context - this should never happen
+        }
+
+        if (adminCms != null) {
+
             // must switch project id in stored Admin context to match current project
-            m_adminCmsObject.getRequestContext().setCurrentProject(project);
+            adminCms.getRequestContext().setCurrentProject(project);
+            adminCms.getRequestContext().setUri(resourceName);
+
             // now get default m_locale names
-            defaultLocales = localeManager.getDefaultLocales(m_adminCmsObject, resourceName);
-            // get the encoding
+            CmsResource res = null;
             try {
-                encoding = m_adminCmsObject.readPropertyObject(
-                    resourceName,
-                    CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
-                    true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
+                res = adminCms.readResource(resourceName);
             } catch (CmsException e) {
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
-                }
-                encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                // unable to read the resource - maybe we need the init handlers                
             }
+            if (res == null) {
+                try {
+                    res = OpenCms.initResource(adminCms, resourceName, req, null);
+                } catch (CmsException e) {
+                    // unable to resolve the resource, use default locale
+                }
+            }
+
+            String defaultNames = null;
+
+            if (res != null) {
+                // the resource may not exist at all (e.g. if an unknown resource was requested by the user in the browser)
+                try {
+                    defaultNames = adminCms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
+                } catch (CmsException e) {
+                    LOG.warn(Messages.get().getBundle().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
+                }
+                if (defaultNames != null) {
+                    defaultLocales = localeManager.getAvailableLocales(defaultNames);
+                }
+
+                // get the encoding
+                try {
+                    encoding = adminCms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(
+                        OpenCms.getSystemInfo().getDefaultEncoding());
+                } catch (CmsException e) {
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(Messages.get().getBundle().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
+                    }
+                }
+            }
+        }
+
+        if ((defaultLocales == null) || (defaultLocales.isEmpty())) {
+            // no default locales could be determined
+            defaultLocales = localeManager.getDefaultLocales();
+        }
+        if (encoding == null) {
+            // no special encoding could be determined
+            encoding = OpenCms.getSystemInfo().getDefaultEncoding();
         }
 
         // set the request character encoding
@@ -106,7 +151,7 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
             try {
                 req.setCharacterEncoding(encoding);
             } catch (UnsupportedEncodingException e) {
-                LOG.error(Messages.get().key(Messages.ERR_UNSUPPORTED_REQUEST_ENCODING_1, encoding), e);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_UNSUPPORTED_REQUEST_ENCODING_1, encoding), e);
             }
         }
 

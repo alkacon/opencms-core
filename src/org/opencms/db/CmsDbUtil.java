@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/03/27 14:52:26 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 6.0.0
  */
@@ -108,7 +108,7 @@ public final class CmsDbUtil {
                     throw exc;
                 } else {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(Messages.LOG_GET_TIMESTAMP_2, column, new Integer(i)));
+                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_GET_TIMESTAMP_2, column, new Integer(i)));
                     }
                 }
             }
@@ -132,7 +132,7 @@ public final class CmsDbUtil {
      * @return a new primary key ID for the given table
      * @throws CmsException if something goes wrong
      */
-    public static synchronized int nextId(String tableName) throws CmsException {
+    public static int nextId(String tableName) throws CmsException {
 
         return nextId(c_dbPoolUrl, tableName);
     }

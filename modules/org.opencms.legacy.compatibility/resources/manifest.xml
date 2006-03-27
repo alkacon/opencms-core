@@ -10,20 +10,20 @@
 	</info>
 	<module>
 		<name>org.opencms.legacy.compatibility</name>
-		<nicename><![CDATA[OpenCms 6.0 Compatibility settings for old modules]]></nicename>
+		<nicename><![CDATA[OpenCms 6 Compatibility settings for old modules]]></nicename>
 		<group>OpenCms Legacy Support</group>
 		<class>com.opencms.legacy.CmsLegacyModuleAction</class>
 		<description><![CDATA[
-<p>This module contains OpenCms compatibility settings to use version 5.0 modules with OpenCms 6.0.</p>
+<p>This module contains OpenCms compatibility settings to use version 5.0 modules with OpenCms 6.</p>
 <p>Install this module only if you have to use older modules built for OpenCms 5.0.</p>
 <p><strong>Note:</strong> This module will create additional tables in your database, so the OpenCms database user must have appropriate permissions for DDL operations.</p>
 <p><strong>Note:</strong> For Oracle setup, please specify the index tablespace as module parameter if you are not using the default "users" tablespace.</p>
-<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.2</version>
+		<version>1.2.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
-		<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies/>
@@ -32,7 +32,6 @@
 			<resource uri="/system/modules/org.opencms.legacy.compatibility/"/>
 		</resources>
 		<parameters>
-			<param name="additionalresources">/system/modules/org.opencms.legacy.compatibility/</param>
 			<param name="${indexTablespace}">users</param>
 		</parameters>
 	</module>
@@ -40,9 +39,9 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -51,9 +50,9 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -62,9 +61,9 @@
 		<file>
 			<destination>system/modules/org.opencms.legacy.compatibility</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -78,9 +77,9 @@
 		<file>
 			<destination>system/modules/org.opencms.legacy.compatibility/setup</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -91,9 +90,9 @@
 			<destination>system/modules/org.opencms.legacy.compatibility/setup/generic.sql</destination>
 			<type>plain</type>
 			<uuidresource>db250378-e614-11d8-a7a0-b55a670cf783</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -104,9 +103,9 @@
 			<destination>system/modules/org.opencms.legacy.compatibility/setup/mysql.sql</destination>
 			<type>plain</type>
 			<uuidresource>cf1824e2-e614-11d8-a7a0-b55a670cf783</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -117,9 +116,9 @@
 			<destination>system/modules/org.opencms.legacy.compatibility/setup/oracle.sql</destination>
 			<type>plain</type>
 			<uuidresource>d4f15625-e614-11d8-a7a0-b55a670cf783</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

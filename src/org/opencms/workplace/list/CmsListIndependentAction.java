@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListIndependentAction.java,v $
- * Date   : $Date: 2005/10/13 11:06:32 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/03/27 14:52:28 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,14 +41,14 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListIndependentAction extends A_CmsListAction {
 
-    /** list action id constant. */
-    public static final String LIST_ACTION_PRINT = "print";
+    /** List independent action id constant. */
+    public static final String ACTION_EXPLORER_SWITCH_ID = "iaes";
 
     /**
      * Default Constructor.<p>
@@ -59,21 +59,23 @@ public class CmsListIndependentAction extends A_CmsListAction {
 
         super(id);
     }
-
+    
     /**
-     * Creates a new list print action.<p>
+     * Help method to resolve the on clic text to use.<p>
      * 
-     * @return a new list print action
+     * @param wp the workplace context
+     * 
+     * @return the on clic text
      */
-    public static final CmsListIndependentAction getDefaultPrintListAction() {
-
-        CmsListIndependentAction action = new CmsListIndependentAction(LIST_ACTION_PRINT);
-        action.setName(Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_NAME_0));
-        action.setHelpText(Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_HELP_0));
-        action.setIconPath("list/print.gif");
-        action.setEnabled(true);
-        action.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_CONF_0));
-        return action;
+    protected String resolveOnClic(CmsWorkplace wp) {
+        
+        return "listIndepAction('"
+            + getListId()
+            + "','"
+            + getId()
+            + "', '"
+            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
+            + "');";
     }
 
     /**
@@ -84,13 +86,6 @@ public class CmsListIndependentAction extends A_CmsListAction {
         if (!isVisible()) {
             return "";
         } 
-        String onClic = "listIndepAction('"
-            + getListId()
-            + "','"
-            + getId()
-            + "', '"
-            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
-            + "');";
         return A_CmsHtmlIconButton.defaultButtonHtml(
             wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
@@ -100,6 +95,23 @@ public class CmsListIndependentAction extends A_CmsListAction {
             isEnabled(),
             getIconPath(),
             null,
-            onClic);
+            resolveOnClic(wp));
+    }
+    
+    /**
+     * Returns the default explorer switch action for explorer list dialogs.<p>
+     * 
+     * @return the default explorer switch action
+     */
+    public static CmsListIndependentAction getDefaultExplorerSwitchAction() {
+        
+        CmsListIndependentAction defAction = new CmsListIndependentAction(ACTION_EXPLORER_SWITCH_ID);
+        defAction.setName(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_NAME_0));
+        defAction.setHelpText(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_HELP_0));
+        defAction.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_CONF_0));
+        defAction.setIconPath("list/explorer.png");
+        defAction.setEnabled(true);
+        defAction.setVisible(true);
+        return defAction;
     }
 }

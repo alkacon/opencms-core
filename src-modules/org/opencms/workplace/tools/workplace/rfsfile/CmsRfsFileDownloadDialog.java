@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
- * Date   : $Date: 2005/06/29 14:41:40 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/27 14:52:59 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,10 +99,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
 
         StringBuffer result = new StringBuffer(512);
 
-        result.append(dialogBlock(HTML_START, Messages.get().key(
-            getLocale(),
-            Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_MSG_0,
-            null), false));
+        result.append(dialogBlock(HTML_START, key(Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_MSG_0), false));
 
         result.append("\r\n");
         result.append("<!-- start buildDownloadFileView -->\r\n");
@@ -110,7 +107,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
 
         result.append("  <tr>\r\n");
         result.append("    <td>");
-        result.append(Messages.get().key(getLocale(), Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FNAME_0, null));
+        result.append(key(Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FNAME_0));
         result.append(":</td>\r\n");
         result.append("    <td >");
         result.append(" ").append(m_downloadFile.getName());
@@ -119,7 +116,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
 
         result.append("  <tr>\r\n");
         result.append("    <td>");
-        result.append(Messages.get().key(getLocale(), Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FSIZE_0, null));
+        result.append(key(Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FSIZE_0));
         result.append(":</td>\n");
         result.append("    <td>");
         result.append(CmsFileUtil.formatFilesize(m_downloadFile.length(), getLocale()));
@@ -128,7 +125,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
 
         result.append("  <tr>\r\n");
         result.append("    <td>");
-        result.append(Messages.get().key(getLocale(), Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FPATH_0, null));
+        result.append(key(Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FPATH_0));
         result.append(":</td>\n");
         result.append("    <td>");
         result.append(m_downloadFile.getAbsolutePath());
@@ -137,7 +134,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
 
         result.append("  <tr>\r\n");
         result.append("    <td>");
-        result.append(Messages.get().key(getLocale(), Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FLMOD_0, null));
+        result.append(key(Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FLMOD_0));
         result.append(":</td>\n");
         result.append("    <td>");
         result.append(CmsDateUtil.getDateTime(new Date(m_downloadFile.lastModified()), DateFormat.MEDIUM, getLocale()));
@@ -189,16 +186,11 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
         result.append("<div class=\"dialogbuttons\" unselectable=\"on\">\r\n");
         result.append("  <p>\r\n    ");
         result.append("<input type=\"button\" value=\"").append(
-            org.opencms.workplace.Messages.get().key(
-                getLocale(),
-                org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_DOWNLOAD_0,
-                null)).append("\" onclick=\"doDownload();\" class=\"dialogbutton\">");
+            key(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_DOWNLOAD_0)).append(
+            "\" onclick=\"doDownload();\" class=\"dialogbutton\">");
 
         result.append("<input name=\"back\" type=\"button\" value=\"");
-        result.append(org.opencms.workplace.Messages.get().key(
-            getLocale(),
-            org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_BACK_0,
-            null));
+        result.append(key(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_BACK_0));
         result.append("\" onclick=\"submitAction(\'");
         result.append(CmsDialog.DIALOG_CANCEL);
         result.append("\', null, 'main');\" class=\"dialogbutton\">\r\n");
@@ -227,7 +219,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
 
         // triggered by the super-constructor so cannot be 
         // placed in the constructor here or nullpointer exception occurs.
-        this.m_downloadFile = getDownloadFileInternal();
+        m_downloadFile = getDownloadFileInternal();
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
@@ -241,8 +233,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
         } else {
             // set the default action               
             setAction(ACTION_DEFAULT);
-            setParamTitle(Messages.get().key(
-                getLocale(),
+            setParamTitle(key(
                 Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_TITLE_0,
                 new Object[] {getDownloadFile().getName()}));
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/10/12 15:37:13 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2006/03/27 14:52:35 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,14 +55,14 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import org.apache.commons.logging.Log;
 
 /**
- * Wrapper class for a HttpServletResponse.<p>
+ * Wrapper class for a HttpServletResponse, required in order to process JSPs from the OpenCms VFS.<p>
  *
  * This class wrapps the standard HttpServletResponse so that it's output can be delivered to
  * the CmsFlexCache.<p>
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,7 +89,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
          */
         public CmsServletOutputStream() {
 
-            this.m_servletStream = null;
+            m_servletStream = null;
             clear();
         }
 
@@ -101,7 +101,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
          */
         public CmsServletOutputStream(ServletOutputStream servletStream) {
 
-            this.m_servletStream = servletStream;
+            m_servletStream = servletStream;
             clear();
         }
 
@@ -133,7 +133,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         public void flush() throws IOException {
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_FLUSHED_1, m_servletStream));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_FLUSHED_1, m_servletStream));
             }
             if (m_servletStream != null) {
                 m_servletStream.flush();
@@ -250,7 +250,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /** Indicates if this response is suspended (probably because of a redirect). */
     private boolean m_suspended;
 
-    /** State bit indicating whether content type has been set, type may only be set once according to spec. */    
+    /** State bit indicating whether content type has been set, type may only be set once according to spec. */
     private boolean m_typeSet;
 
     /** Indicates that the OutputStream m_out should write ONLY in the buffer. */
@@ -317,7 +317,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             Iterator i = headers.keySet().iterator();
             while (i.hasNext()) {
                 String key = (String)i.next();
-                ArrayList l = (ArrayList)headers.get(key);
+                List l = (List)headers.get(key);
                 for (int j = 0; j < l.size(); j++) {
                     if ((j == 0) && (((String)l.get(0)).startsWith(SET_HEADER))) {
                         String s = (String)l.get(0);
@@ -430,18 +430,27 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (m_cachingRequired && !m_includeMode) {
             addHeaderList(m_bufferHeaders, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_ELEMENT_BUFFER_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_ELEMENT_BUFFER_2,
+                    name,
+                    value));
             }
         }
 
         if (m_writeOnlyToBuffer) {
             addHeaderList(m_headers, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_HEADERS_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_HEADERS_2,
+                    name,
+                    value));
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_PARENT_RESPONSE_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_PARENT_RESPONSE_2,
+                    name,
+                    value));
             }
             m_res.addHeader(name, value);
         }
@@ -589,7 +598,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             return;
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SENDREDIRECT_1, location));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_SENDREDIRECT_1, location));
         }
         if (m_cachingRequired && !m_includeMode) {
             m_bufferRedirect = location;
@@ -599,19 +608,23 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             // If caching is required a cached entry will be constructed first and redirect will
             // be called after this is completed and stored in the cache
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1, location));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1, location));
             }
             if (LOG.isWarnEnabled()) {
                 if (m_controller.getResponseStackSize() > 2) {
                     // sendRedirect in a stacked response scenario, this may cause issues in some appservers
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_FLEXRESPONSE_REDIRECTWARNING_3,
                         m_controller.getCmsResource().getRootPath(),
                         m_controller.getCurrentRequest().getElementUri(),
                         location));
                 }
             }
-            m_controller.getTopResponse().sendRedirect(location);
+            // use top response for redirect
+            HttpServletResponse topRes = m_controller.getTopResponse();
+            // add all headers found to make sure cookies can be set before redirect
+            processHeaders(getHeaders(), topRes);
+            topRes.sendRedirect(location);
         }
 
         m_controller.suspendFlexResponse();
@@ -625,13 +638,12 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     public void setContentType(String type) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SETTING_CONTENTTYPE_1, type));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_SETTING_CONTENTTYPE_1, type));
         }
         // only if this is the "Top-Level" element, do set the content type    
         // otherwise an included JSP could reset the type with some unwanted defaults  
         if (!m_typeSet && m_isTopElement) {
-            int todo = 0;
-            // TODO: check if the typeSet fix does not introduce unwanted side-effects on main target platfroms
+            // type must be set only once, otherwise some Servlet containers (not Tomcat) generate errors
             m_typeSet = true;
             super.setContentType(type);
             return;
@@ -667,18 +679,27 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (m_cachingRequired && !m_includeMode) {
             setHeaderList(m_bufferHeaders, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_ELEMENT_BUFFER_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_ELEMENT_BUFFER_2,
+                    name,
+                    value));
             }
         }
 
         if (m_writeOnlyToBuffer) {
             setHeaderList(m_headers, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_HEADERS_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_HEADERS_2,
+                    name,
+                    value));
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_PARENT_RESPONSE_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_PARENT_RESPONSE_2,
+                    name,
+                    value));
             }
             m_res.setHeader(name, value);
         }
@@ -768,62 +789,63 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     CmsFlexCacheEntry processCacheEntry() throws IOException {
 
         if (isSuspended() && (m_bufferRedirect == null)) {
-            // An included element redirected this response, no cache entry must be produced
+            // an included element redirected this response, no cache entry must be produced
             return null;
         }
         if (m_cachingRequired) {
-            // Cache entry must only be calculated if it's actually needed (always true if we write only to buffer)
+            // cache entry must only be calculated if it's actually needed (always true if we write only to buffer)
             m_cachedEntry = new CmsFlexCacheEntry();
             if (m_bufferRedirect != null) {
-                // Only set et cached redirect target
+                // only set et cached redirect target
                 m_cachedEntry.setRedirect(m_bufferRedirect);
             } else {
-                // Add cached headers
+                // add cached headers
                 m_cachedEntry.addHeaders(m_bufferHeaders);
-                // Add cached output 
+                // add cached output 
                 if (m_includeList != null) {
-                    // Probably JSP: We must analyze out stream for includes calls
-                    // Also, m_writeOnlyToBuffer must be "true" or m_includeList can not be != null
+                    // probably JSP: we must analyze out stream for includes calls
+                    // also, m_writeOnlyToBuffer must be "true" or m_includeList can not be != null
                     processIncludeList();
                 } else {
-                    // Output is delivered directly, no include call parsing required
+                    // output is delivered directly, no include call parsing required
                     m_cachedEntry.add(getWriterBytes());
                 }
             }
             // update the "last modified" date for the cache entry
             m_cachedEntry.complete();
         }
-        // In case the output was only bufferd we have to re-write it to the "right" stream       
+        // in case the output was only bufferd we have to re-write it to the "right" stream       
         if (m_writeOnlyToBuffer) {
 
-            // Since we are processing a cache entry caching is not required
+            // since we are processing a cache entry caching is not required
             m_cachingRequired = false;
 
             if (m_bufferRedirect != null) {
-                // Send buffered redirect, will trigger redirect of top response
+                // send buffered redirect, will trigger redirect of top response
                 sendRedirect(m_bufferRedirect);
             } else {
-                // Process the output               
+                // process the output               
                 if (m_parentWritesOnlyToBuffer) {
-                    // Write results back to own stream, headers are already in buffer
+                    // write results back to own stream, headers are already in buffer
                     if (m_out != null) {
                         try {
                             m_out.clear();
                         } catch (Exception e) {
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug(Messages.get().key(
+                                LOG.debug(Messages.get().getBundle().key(
                                     Messages.LOG_FLEXRESPONSE_ERROR_FLUSHING_OUTPUT_STREAM_1,
                                     e));
                             }
                         }
                     } else {
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ERROR_OUTPUT_STREAM_NULL_0));
+                            LOG.debug(Messages.get().getBundle().key(
+                                Messages.LOG_FLEXRESPONSE_ERROR_OUTPUT_STREAM_NULL_0));
                         }
                     }
                     writeCachedResultToStream(this);
                 } else {
-                    // We can use the parent stream
+                    // we can use the parent stream
                     processHeaders(m_headers, m_res);
                     writeCachedResultToStream(m_res);
                 }
@@ -871,7 +893,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Set caching status for this reponse.<p>
      * 
-     * Will always be set to "true" if setOnlyBuffering() is set to "true".
+     * Will always be set to <code>"true"</code> if setOnlyBuffering() is set to <code>"true"</code>.
      * Currently this is an optimization for non - JSP elements that 
      * are known not to be cachable.<p>
      *
@@ -936,7 +958,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ERROR_WRITING_TO_OUTPUT_STREAM_0));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_ERROR_WRITING_TO_OUTPUT_STREAM_0));
             }
             // The request is not buffered, so we can write directly to it's parents output stream 
             m_res.getOutputStream().write(bytes);
@@ -971,16 +993,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
         if (m_out == null) {
             if (!m_writeOnlyToBuffer) {
-                // We can use the parents output stream
+                // we can use the parents output stream
                 if (m_cachingRequired || (m_controller.getResponseStackSize() > 1)) {
-                    // We are allowed to cache our results (probably to contruct a new cache entry)
+                    // we are allowed to cache our results (probably to contruct a new cache entry)
                     m_out = new CmsFlexResponse.CmsServletOutputStream(m_res.getOutputStream());
                 } else {
-                    // We are not allowed to cache so we just use the parents output stream
+                    // we are not allowed to cache so we just use the parents output stream
                     m_out = (CmsFlexResponse.CmsServletOutputStream)m_res.getOutputStream();
                 }
             } else {
-                // Construct a "buffer only" output stream
+                // construct a "buffer only" output stream
                 m_out = new CmsFlexResponse.CmsServletOutputStream();
             }
         }
@@ -995,17 +1017,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * directly during delivering (like JSP) because they write to 
      * their own buffer.<p>
      *
-     * So in this case, we don't actually write output of
-     * include calls to the stream.
-     * Where there are include calls we write a FLEX_CACHE_DELIMITER char on the stream to indicate
-     * that at this point the output of the include must be placed later.
+     * In this case, we don't actually write output of include calls to the stream.
+     * Where there are include calls we write a <code>{@link #FLEX_CACHE_DELIMITER}</code> char on the stream 
+     * to indicate that at this point the output of the include must be placed later.
      * The include targets (resource names) are then saved in the m_includeList.<p>
      *
      * This method must be called after the complete page has been processed.
      * It will contain the output of the page only (no includes), 
-     * with FLEX_CACHE_DELIMITER chars where the include calls should be placed. 
+     * with <code>{@link #FLEX_CACHE_DELIMITER}</code> chars were the include calls should be placed. 
      * What we do here is analyze the output and cut it in parts 
-     * of byte[] arrays which then are saved in the resulting cache entry.
+     * of <code>byte[]</code> arrays which then are saved in the resulting cache entry.
      * For the includes, we just save the name of the resource in
      * the cache entry.<p>
      *  
@@ -1015,46 +1036,45 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
         byte[] result = getWriterBytes();
         if (!hasIncludeList()) {
-            // No include list, so no includes and we just use the bytes as they are in one block
+            // no include list, so no includes and we just use the bytes as they are in one block
             m_cachedEntry.add(result);
             result = null;
         } else {
-            // Process the include list
+            // process the include list
             int max = result.length;
             int pos = 0;
             int last = 0;
             int size = 0;
             int count = 0;
 
-            // Work through result and split this with include list calls            
+            // work through result and split this with include list calls            
             int i = 0;
             int j = 0;
             while (i < m_includeList.size() && (pos < max)) {
-                // Look for the first C_FLEX_CACHE_DELIMITER char
+                // look for the first FLEX_CACHE_DELIMITER char
                 while ((pos < max) && (result[pos] != FLEX_CACHE_DELIMITER)) {
                     pos++;
                 }
                 if ((pos < max) && (result[pos] == FLEX_CACHE_DELIMITER)) {
                     count++;
-                    // A byte value of C_FLEX_CACHE_DELIMITER in our (string) output list indicates that the next include call
-                    // must be placed here
+                    // a byte value of C_FLEX_CACHE_DELIMITER in our (String) output list indicates 
+                    // that the next include call must be placed here
                     size = pos - last;
                     if (size > 0) {
-                        // If not (it might be 0) there would be 2 include calls back 2 back
+                        // if not (it might be 0) there would be 2 include calls back 2 back
                         byte[] piece = new byte[size];
                         System.arraycopy(result, last, piece, 0, size);
-                        // Add the byte array to the cache entry
+                        // add the byte array to the cache entry
                         m_cachedEntry.add(piece);
                         piece = null;
                     }
                     last = ++pos;
-                    // Add an include call to the cache entry
+                    // add an include call to the cache entry
                     m_cachedEntry.add((String)m_includeList.get(i++), (Map)m_includeListParameters.get(j++));
                 }
             }
-            // Is there something behind the last include call?
             if (pos < max) {
-                // Yes!
+                // there is content behind the last include call
                 size = max - pos;
                 byte[] piece = new byte[size];
                 System.arraycopy(result, pos, piece, 0, size);
@@ -1063,11 +1083,11 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             }
             result = null;
             if (i >= m_includeList.size()) {
-                // Delete the include list if all include calls are handled
+                // clear the include list if all include calls are handled
                 m_includeList = null;
                 m_includeListParameters = null;
             } else {
-                // If something is left, remove the processed entries
+                // if something is left, remove the processed entries
                 m_includeList = m_includeList.subList(count, m_includeList.size());
                 m_includeListParameters = m_includeListParameters.subList(count, m_includeListParameters.size());
             }

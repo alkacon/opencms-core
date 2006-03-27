@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/03/27 14:53:05 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,7 +54,7 @@ public class CmsLogReport extends A_CmsReport {
 
     /** The class name to use for the logger. */
     private Class m_clazz;
-    
+
     /**
      * Constructs a new report using the provided locale for the output language, 
      * using the provided Java class for the log channel.<p>
@@ -75,7 +75,7 @@ public class CmsLogReport extends A_CmsReport {
     /**
      * @see org.opencms.report.I_CmsReport#getReportUpdate()
      */
-    public synchronized String getReportUpdate() {
+    public String getReportUpdate() {
 
         return "";
     }
@@ -127,7 +127,7 @@ public class CmsLogReport extends A_CmsReport {
     public synchronized void println(Throwable t) {
 
         if (CmsLog.getLog(m_clazz).isInfoEnabled()) {
-            m_buffer.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
+            m_buffer.append(getMessages().key(Messages.RPT_EXCEPTION_0));
             m_buffer.append(t.getMessage());
             CmsLog.getLog(m_clazz).info(m_buffer.toString(), t);
         }

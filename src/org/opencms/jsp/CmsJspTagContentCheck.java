@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentCheck.java,v $
- * Date   : $Date: 2006/03/21 16:33:31 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.jsp;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
 
@@ -49,7 +49,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,7 +87,7 @@ public class CmsJspTagContentCheck extends TagSupport {
         String prefix,
         boolean checkall,
         boolean checknone,
-        A_CmsXmlDocument content,
+        I_CmsXmlDocument content,
         Locale locale) {
 
         boolean found = false;
@@ -116,31 +116,41 @@ public class CmsJspTagContentCheck extends TagSupport {
     }
 
     /**
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     */
+    public int doEndTag() {
+
+        // need to release manually, JSP container may not call release as required (happens with Tomcat)
+        release();
+        return EVAL_PAGE;
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content load" class
-        Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
+        Tag ancestor = findAncestorWithClass(this, I_CmsXmlContentContainer.class);
         if (ancestor == null) {
             CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_TAG_CONTENTCHECK_WRONG_PARENT_0);
             String msg = Messages.getLocalizedMessage(errMsgContainer, pageContext);
             throw new JspTagException(msg);
         }
-        I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;
+        I_CmsXmlContentContainer contentContainer = (I_CmsXmlContentContainer)ancestor;
         String prefix = contentContainer.getXmlDocumentElement();
 
         // get loaded content from parent <contentload> tag
-        A_CmsXmlDocument xmlContent = contentContainer.getXmlDocument();
+        I_CmsXmlDocument content = contentContainer.getXmlDocument();
 
-        // determine the locale to display
-        Locale locale = m_locale;
-        if (locale == null) {
-            // no locale was set, use default from parent tag (usually "contentload")
-            locale = contentContainer.getXmlDocumentLocale();
+        if (m_locale == null) {
+            m_locale = contentContainer.getXmlDocumentLocale();
         }
 
-        if (contentCheckTagAction(m_elementList, prefix, m_checkall, m_checknone, xmlContent, locale)) {
+        // calculate the result
+        boolean result = contentCheckTagAction(m_elementList, prefix, m_checkall, m_checknone, content, m_locale);
+
+        if (result) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;

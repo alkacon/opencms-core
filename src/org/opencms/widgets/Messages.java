@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,14 +37,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_MALFORMED_SELECT_OPTIONS_0 = "ERR_MALFORMED_SELECT_OPTIONS_0";
+    public static final String ERR_EDITOR_MESSAGE_NOSELECTION_0 = "ERR_EDITOR_MESSAGE_NOSELECTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MALFORMED_SELECT_OPTIONS_1 = "ERR_MALFORMED_SELECT_OPTIONS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MAP_DUPLICATE_KEY_3 = "ERR_MAP_DUPLICATE_KEY_3";
@@ -71,10 +74,52 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_WIDGETCOLLECTOR_ADD_1 = "ERR_WIDGETCOLLECTOR_ADD_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_ANCHOR_0 = "GUI_BUTTON_ANCHOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_COLOR_0 = "GUI_BUTTON_COLOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_ERASE_0 = "GUI_BUTTON_ERASE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_LINKTO_0 = "GUI_BUTTON_LINKTO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_PREVIEW_0 = "GUI_BUTTON_PREVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_COLOR_TITLE_0 = "GUI_DIALOG_COLOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_BUTTON_DOWNLOADLIST_0 = "GUI_EDITOR_BUTTON_DOWNLOADLIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_BUTTON_HTMLLIST_0 = "GUI_EDITOR_BUTTON_HTMLLIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_BUTTON_IMAGELIST_0 = "GUI_EDITOR_BUTTON_IMAGELIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_BUTTON_LINKLIST_0 = "GUI_EDITOR_BUTTON_LINKLIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_BUTTON_TABLELIST_0 = "GUI_EDITOR_BUTTON_TABLELIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1 = "LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_WIDGETCOLLECTOR_ADD_1 = "LOG_DEBUG_WIDGETCOLLECTOR_ADD_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.widgets.messages";
+
+    /**Prefix to create button message key. */
+    private static final String GUI_BUTTON_PREF = "GUI_EDITOR_BUTTON_";
+
+    /**postfix to create button message key. */
+    private static final String GUI_BUTTON_SUF = "LIST_0";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
@@ -95,6 +140,20 @@ public final class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
+    }
+
+    /**
+     * Create button message key.
+     * 
+     * @param gallery name 
+     * @return Button  message key as String
+     */
+    public static String getButtonName(String gallery) {
+
+        StringBuffer sb = new StringBuffer(GUI_BUTTON_PREF);
+        sb.append(gallery.toUpperCase());
+        sb.append(GUI_BUTTON_SUF);
+        return sb.toString();
     }
 
     /**

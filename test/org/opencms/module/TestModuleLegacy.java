@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/Attic/TestModuleLegacy.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/27 14:53:04 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,8 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
-import com.opencms.defaults.master.CmsMasterContent;
-import com.opencms.defaults.master.CmsMasterDataSet;
-import com.opencms.defaults.master.genericsql.CmsDbAccess;
+import com.opencms.defaults.master.*;
+import com.opencms.defaults.master.genericsql.*;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -50,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestModuleLegacy extends OpenCmsTestCase {
     
@@ -99,6 +98,8 @@ public class TestModuleLegacy extends OpenCmsTestCase {
      * Tests the legacy module import.<p>
      * 
      * @throws Throwable if something goes wrong
+     * 
+     * @deprecated because the master module is deprecated
      */
     public void testLegacyImport() throws Throwable {
         CmsObject cms = getCmsObject();
@@ -128,6 +129,8 @@ public class TestModuleLegacy extends OpenCmsTestCase {
      * in the database.
      * 
      * @throws Throwable if something goes wrong
+     * 
+     * @deprecated because the master module is deprecated
      */
     public void testLegacyInitialization() throws Throwable {
 
@@ -148,6 +151,8 @@ public class TestModuleLegacy extends OpenCmsTestCase {
      * Tests wrinting and reading the master table.<p>
      * 
      * @throws Throwable if something goes wrong
+     * 
+     * @deprecated because the master module is deprecated
      */
     public void testLegacyMasterIO()  throws Throwable {
 

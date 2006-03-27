@@ -3,14 +3,14 @@
 --%><jsp:setProperty name="Bean" property="*" /><%
 
 	// next page
-	String nextPage = "../../step_5_database_creation.jsp";		
+	String nextPage = "../../step_4a_database_validation.jsp";		
 	// previous page
 	String prevPage = "../../step_2_check_components.jsp";
 	
     boolean isFormSubmitted = Bean.setDbParamaters(request, Bean.POSTGRESQL_PROVIDER);
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -58,12 +58,13 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 
 <% if (Bean.isInitialized()) { %>
-OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
+Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
+<form method="POST" onSubmit="return checkSubmit()" class="nomargin">
+
 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%;">
 <tr><td style="vertical-align: top;">
 
-<form method="POST" onSubmit="return checkSubmit()" class="nomargin">
 <%= Bean.getHtmlPart("C_BLOCK_START", "Database") %>
 <table border="0" cellpadding="2" cellspacing="0">
 	<tr>
@@ -141,7 +142,14 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 						</tr>
 						<tr>
 							<td>Connection String</td>
-							<td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:280px;" value='<%= Bean.getDbCreateConStr() %>'></td>
+							<%
+								//Fixing the Back Button Bug in the next steps.
+								String cnString=Bean.getDbCreateConStr();
+								if (cnString.indexOf(Bean.getDbProperty(Bean.getDatabase() + ".templateDb"))>0) {
+									cnString=cnString.substring(0,cnString.indexOf(Bean.getDbProperty(Bean.getDatabase() + ".templateDb")));
+								}
+							%>
+							<td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:280px;" value='<%= cnString %>'></td>
 							<td><%= Bean.getHtmlHelpIcon("3", "../../") %></td>
 							<td>&nbsp;</td>
 						</tr>
@@ -176,10 +184,14 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 The <b>Setup Connection</b> is used <i>only</i> during this setup process.<br>&nbsp;<br>
 The specified user must have database administration permissions in order to create the database and tables.
 This user information is not stored after the setup is finished.
+For Postgresql versions before 8.0 you can use "template1"/"template0" databases.
+For Postgresql 8.0 and newer it is better to use "postgres" database.
+If you discover problems accessing to the templatedb tipcally a "templatedb is being accessed by other users" try to restart your DBMS or change the templatedb you are accessing.
+Some tools (i.e. PgAdmin3) are accessing to template1 by default, so turn off that tools.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "2") %>
-The <b>OpenCms Connection</b> is used when running OpenCms after the installation.<br>&nbsp;<br>
+The <b>OpenCms Connection</b> is used when running Alkacon OpenCms after the installation.<br>&nbsp;<br>
 For security reasons, the specified user should <i>not</i> have database administration permissions.
 This user information is stored in the <code>opencms.properties</code> file after the setup.
 <%= Bean.getHtmlPart("C_HELP_END") %>
@@ -193,7 +205,7 @@ Enter the Database Name.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "5") %>
-The setup wizard <b>creates</b> the PostgreSql user, the database and the tables for OpenCms.<br>&nbsp;<br>
+The setup wizard <b>creates</b> the PostgreSql user, the database and the tables for Alkacon OpenCms.<br>&nbsp;<br>
 <b>Attention</b>: Existing user, database and tables will be overwritten!<br>&nbsp;<br>
 Uncheck this option if an already existing user/database should be used.
 <%= Bean.getHtmlPart("C_HELP_END") %>
@@ -201,12 +213,9 @@ Uncheck this option if an already existing user/database should be used.
 
 
 <% } else	{ %>
-OpenCms Setup Wizard - Database setup
+Alkacon OpenCms Setup Wizard - Database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-
-<% request.setAttribute("pathPrefix", "../../"); %>
-<%@ include file="../../error.jsp" %>
-
+<%= Bean.displayError("../../")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

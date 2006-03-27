@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsXmlDocumentLinkValidator.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:52:46 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert
  *   
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,14 +137,14 @@ public class CmsXmlDocumentLinkValidator {
             offlineFilesLookup.put(resource.getRootPath(), resource);
 
             try {
-                if ((resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId())) instanceof I_CmsXmlDocumentLinkValidatable) {
-                    if (resource.getState() != CmsResource.STATE_DELETED) {
-                        // don't validate links on deleted resources
-                        validatableResources.add(resource);
-                    }
+                resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+                if ((resourceType instanceof I_CmsXmlDocumentLinkValidatable)
+                    && (resource.getState() != CmsResource.STATE_DELETED)) {
+                    // don't validate links on deleted resources
+                    validatableResources.add(resource);
                 }
             } catch (CmsException e) {
-                LOG.error(Messages.get().key(Messages.LOG_RETRIEVAL_RESOURCE_1, resourceName), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_RETRIEVAL_RESOURCE_1, resourceName), e);
             }
         }
 
@@ -186,7 +186,7 @@ public class CmsXmlDocumentLinkValidator {
                         I_CmsReport.FORMAT_OK);
                 }
             } catch (CmsException e) {
-                LOG.error(Messages.get().key(Messages.LOG_LINK_SEARCH_1, resourceName), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, resourceName), e);
             }
         }
 
@@ -216,9 +216,7 @@ public class CmsXmlDocumentLinkValidator {
             report.println(
                 Messages.get().container(Messages.RPT_BROKEN_LINKS_SUMMARY_END_0),
                 I_CmsReport.FORMAT_HEADLINE);
-            report.println(
-                Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_ERROR_0),
-                I_CmsReport.FORMAT_ERROR);
+            report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_ERROR_0), I_CmsReport.FORMAT_ERROR);
         }
 
         report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_END_0), I_CmsReport.FORMAT_HEADLINE);
@@ -299,5 +297,4 @@ public class CmsXmlDocumentLinkValidator {
 
         return brokenLinks;
     }
-
 }

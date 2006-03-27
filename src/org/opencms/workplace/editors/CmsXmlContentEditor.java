@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/10/10 16:11:09 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.66 $ 
+ * @version $Revision: 1.67 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,17 +94,29 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /** Action for optional element creation. */
     public static final int ACTION_ELEMENT_ADD = 152;
 
+    /** Action for element move down operation. */
+    public static final int ACTION_ELEMENT_MOVE_DOWN = 154;
+
+    /** Action for element move up operation. */
+    public static final int ACTION_ELEMENT_MOVE_UP = 153;
+
     /** Action for optional element removal. */
-    public static final int ACTION_ELEMENT_REMOVE = 153;
+    public static final int ACTION_ELEMENT_REMOVE = 155;
 
     /** Action for new file creation. */
-    public static final int ACTION_NEW = 154;
+    public static final int ACTION_NEW = 156;
 
     /** Indicates that the content should be checked before executing the direct edit action. */
     public static final String EDITOR_ACTION_CHECK = "check";
 
     /** Indicates an optional element should be created. */
     public static final String EDITOR_ACTION_ELEMENT_ADD = "addelement";
+
+    /** Indicates an element should be moved down. */
+    public static final String EDITOR_ACTION_ELEMENT_MOVE_DOWN = "elementdown";
+
+    /** Indicates an element should be moved up. */
+    public static final String EDITOR_ACTION_ELEMENT_MOVE_UP = "elementup";
 
     /** Indicates an optional element should be removed. */
     public static final String EDITOR_ACTION_ELEMENT_REMOVE = "removeelement";
@@ -264,6 +276,60 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
+     * Moves an element in the xml content either up or down.<p>
+     * 
+     * Depends on the given action value.<p>
+     * 
+     * @throws JspException if including the error page fails
+     */
+    public void actionMoveElement() throws JspException {
+
+        // set editor values from request
+        try {
+            setEditorValues(getElementLocale());
+        } catch (CmsXmlException e) {
+            // an error occured while trying to set the values, stop action
+            showErrorPage(e);
+            return;
+        }
+
+        // validate the content values
+        if (!getErrorHandler().hasErrors()) {
+            // get the necessary parameters to move the element
+            int index = 0;
+            try {
+                index = Integer.parseInt(getParamElementIndex());
+            } catch (Exception e) {
+                // ignore, should not happen
+            }
+
+            // get the value to move
+            I_CmsXmlContentValue value = m_content.getValue(getParamElementName(), getElementLocale(), index);
+
+            if (getAction() == ACTION_ELEMENT_MOVE_DOWN) {
+                // move down the value
+                value.moveDown();
+            } else {
+                // move up the value
+                value.moveUp();
+            }
+
+            if (getErrorHandler().hasWarnings(getElementLocale())) {
+                // there were warnings for the edited content, reset error handler to avoid display issues
+                resetErrorHandler();
+            }
+
+            try {
+                // write the modified content to the temporary file
+                writeContent();
+            } catch (CmsException e) {
+                // an error occured while trying to save
+                showErrorPage(e);
+            }
+        }
+    }
+
+    /**
      * Creates a new XML content item for editing.<p>
      * 
      * @throws JspException in case something goes wrong
@@ -318,7 +384,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_CREATE_XML_CONTENT_ITEM_1, m_paramNewLink), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_CREATE_XML_CONTENT_ITEM_1, m_paramNewLink), e);
             }
             throw new JspException(e);
         } finally {
@@ -343,6 +409,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // save content of the editor only to the temporary file
             setEditorValues(getElementLocale());
             writeContent();
+            // remove eventual release & expiration date from temporary file to make preview work
+            getCms().setDateReleased(getParamTempfile(), CmsResource.DATE_RELEASED_DEFAULT, false);
+            getCms().setDateExpired(getParamTempfile(), CmsResource.DATE_EXPIRED_DEFAULT, false);
         } catch (CmsException e) {
             // show error page
             showErrorPage(this, e);
@@ -465,52 +534,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
-     * Returns the html for a button to add an optional element.<p>
-     * 
-     * @param elementName name of the element
-     * @param insertAfter the index of the element after which the new element should be created
-     * @param enabled if true, the button to add an element is shown, otherwise a spacer is returned
-     * @return the html for a button to add an optional element
-     */
-    public String buildAddElement(String elementName, int insertAfter, boolean enabled) {
-
-        if (enabled) {
-            StringBuffer href = new StringBuffer(4);
-            href.append("javascript:addElement('");
-            href.append(elementName);
-            href.append("', ");
-            href.append(insertAfter);
-            href.append(");");
-            return button(href.toString(), null, "new.png", "button.addnew", 0);
-        } else {
-            return dialogHorizontalSpacer(22);
-        }
-    }
-
-    /**
-     * Returns the html for a button to remove an optional element.<p>
-     * 
-     * @param elementName name of the element
-     * @param index the element index of the element to remove
-     * @param enabled if true, the button to remove an element is shown, otherwise a spacer is returned
-     * @return the html for a button to remove an optional element
-     */
-    public String buildRemoveElement(String elementName, int index, boolean enabled) {
-
-        if (enabled) {
-            StringBuffer href = new StringBuffer(4);
-            href.append("javascript:removeElement('");
-            href.append(elementName);
-            href.append("', ");
-            href.append(index);
-            href.append(");");
-            return button(href.toString(), null, "deletecontent.png", "button.delete", 0);
-        } else {
-            return dialogHorizontalSpacer(22);
-        }
-    }
-
-    /**
      * Builds the html String for the element language selector.<p>
      * 
      * This method has to use the resource request parameter because the temporary file is
@@ -616,6 +639,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         // set "editor mode" attribute (required for link replacement in the root site) 
         getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
+
+        // add customized message bundle eventually specified in XSD of XML content
+        addMessages(m_content.getContentDefinition().getContentHandler().getMessages(getLocale()));
+
         return getXmlEditorForm(m_content.getContentDefinition(), "", true).toString();
     }
 
@@ -627,7 +654,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     public String getXmlEditorHtmlEnd() throws JspException {
 
-        StringBuffer result = new StringBuffer(32);
+        StringBuffer result = new StringBuffer(16384);
         if (m_optionalElementPresent) {
             // disabled optional element(s) present, reset widgets to show help bubbles on optional form entries
             resetWidgetCollector();
@@ -643,6 +670,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 result.append(widget.getDialogHtmlEnd(getCms(), this, (I_CmsWidgetParameter)value));
 
             }
+
+            // add empty help text layer
+            result.append("<div class=\"help\" id=\"helpText\" ");
+            result.append("onmouseover=\"showHelpText();\" onmouseout=\"hideHelpText();\"></div>\n");
+
+            // add empty element button layer
+            result.append("<div class=\"xmlButtons\" id=\"xmlElementButtons\" ");
+            result.append("onmouseover=\"checkElementButtons(true);\" onmouseout=\"checkElementButtons(false);\"></div>\n");
+
+            // return the HTML
             return result.toString();
         } catch (Exception e) {
             showErrorPage(e);
@@ -865,6 +902,21 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
+     * Initializes the message object.<p>
+     * 
+     * By default the workplace messages object is used.<p>
+     * 
+     * You SHOULD override this method for setting the bundles you really need,
+     * using the <code>{@link #addMessages(String)}</code> method.<p>
+     */
+    protected void initMessages() {
+
+        // manually add the initialized workplace messages for the current user
+        super.initMessages();
+        addMessages(Messages.get().getBundleName());
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
@@ -929,7 +981,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 actionToggleElement();
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.workplace.Messages.get().key(
+                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
@@ -943,7 +995,35 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 actionToggleElement();
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.workplace.Messages.get().key(
+                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
+                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
+                }
+            }
+            if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
+                // no error ocurred, redisplay the input form
+                setAction(ACTION_SHOW);
+            }
+        } else if (EDITOR_ACTION_ELEMENT_MOVE_DOWN.equals(getParamAction())) {
+            setAction(ACTION_ELEMENT_MOVE_DOWN);
+            try {
+                actionMoveElement();
+            } catch (JspException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
+                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
+                }
+            }
+            if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
+                // no error ocurred, redisplay the input form
+                setAction(ACTION_SHOW);
+            }
+        } else if (EDITOR_ACTION_ELEMENT_MOVE_UP.equals(getParamAction())) {
+            setAction(ACTION_ELEMENT_MOVE_UP);
+            try {
+                actionMoveElement();
+            } catch (JspException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
@@ -961,7 +1041,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             setAction(ACTION_DEFAULT);
             try {
                 // lock resource if autolock is enabled in configuration
-                if ("true".equals(getParamDirectedit())) {
+                if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
                     // set a temporary lock in direct edit mode
                     checkLock(getParamResource(), CmsLock.TEMPORARY);
                 } else {
@@ -989,6 +1069,112 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 initElementLanguage();
             }
         }
+    }
+
+    /**
+     * Returns the html for the element operation buttons add, move, remove.<p>
+     * 
+     * @param elementName name of the element
+     * @param index the index of the element
+     * @param addElement if true, the button to add an element is shown
+     * @param removeElement if true, the button to remove an element is shown
+     * @return the html for the element operation buttons
+     */
+    private String buildElementButtons(String elementName, int index, boolean addElement, boolean removeElement) {
+
+        StringBuffer jsCall = new StringBuffer(512);
+
+        // indicates if at least one button is active
+        boolean buttonPresent = false;
+
+        jsCall.append("showElementButtons('");
+        jsCall.append(elementName);
+        jsCall.append("', ");
+        jsCall.append(index);
+        jsCall.append(", ");
+
+        // build the remove element button if required
+        if (removeElement) {
+            jsCall.append(Boolean.TRUE);
+            buttonPresent = true;
+        } else {
+            jsCall.append(Boolean.FALSE);
+        }
+        jsCall.append(", ");
+
+        // build the move down button (move down in API is move up for content editor)
+        if (index > 0) {
+            // build active move down button
+            jsCall.append(Boolean.TRUE);
+            buttonPresent = true;
+        } else {
+            jsCall.append(Boolean.FALSE);
+        }
+        jsCall.append(", ");
+
+        // build the move up button (move up in API is move down for content editor)
+        int indexCount = m_content.getIndexCount(elementName, getElementLocale());
+        if (index < (indexCount - 1)) {
+            // build active move up button
+            jsCall.append(Boolean.TRUE);
+            buttonPresent = true;
+        } else {
+            jsCall.append(Boolean.FALSE);
+        }
+        jsCall.append(", ");
+
+        // build the add element button if required
+        if (addElement) {
+            jsCall.append(Boolean.TRUE);
+            buttonPresent = true;
+        } else {
+            jsCall.append(Boolean.FALSE);
+        }
+        jsCall.append(");");
+
+        String result;
+        if (buttonPresent) {
+            // at least one button active, create mouseover button
+            String btIcon = "xmledit.png";
+            String btAction = jsCall.toString();
+            // determine icon to use and if a direct click action is possible
+            if (addElement && removeElement) {
+                btIcon = "xmledit_del_add.png";
+            } else if (addElement) {
+                btIcon = "xmledit_add.png";
+                // create button action to add element on button click
+                StringBuffer action = new StringBuffer(128);
+                action.append("addElement('");
+                action.append(elementName);
+                action.append("', ");
+                action.append(index);
+                action.append(");");
+                btAction = action.toString();
+            } else if (removeElement) {
+                btIcon = "xmledit_del.png";
+                // create button action to remove element on button click
+                StringBuffer action = new StringBuffer(128);
+                action.append("removeElement('");
+                action.append(elementName);
+                action.append("', ");
+                action.append(index);
+                action.append(");");
+                btAction = action.toString();
+            }
+            StringBuffer href = new StringBuffer(512);
+            href.append("javascript:");
+            href.append(btAction);
+            href.append("\" onmouseover=\"");
+            href.append(jsCall);
+            href.append("checkElementButtons(true);\" onmouseout=\"checkElementButtons(false);\" id=\"btimg.");
+            href.append(elementName).append(".").append(index);
+            result = button(href.toString(), null, btIcon, Messages.GUI_EDITOR_XMLCONTENT_ELEMENT_BUTTONS_0, 0);
+        } else {
+            // no active button, create a spacer
+            result = buttonBarSpacer(1);
+        }
+
+        return result;
     }
 
     /**
@@ -1067,7 +1253,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
-     * Recursivion that generates the HTML form for the XML content editor.<p>
+     * Generates the HTML form for the XML content editor.<p>
      * 
      * This is a recursive method because nested schemas are possible,
      * do not call this method directly.<p>
@@ -1084,6 +1270,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         boolean showHelpBubble) {
 
         StringBuffer result = new StringBuffer(1024);
+        // only show errors if editor is not opened initially
+        boolean showErrors = (getAction() != ACTION_NEW) && (getAction() != ACTION_DEFAULT);
 
         try {
             // check if we are in a nested content definition
@@ -1098,11 +1286,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             result.append("\">\n");
 
             // show error header once if there were validation errors
-            if (!nested && getErrorHandler().hasErrors(getElementLocale())) {
+            if (!nested && showErrors && getErrorHandler().hasErrors(getElementLocale())) {
                 result.append("<tr><td colspan=\"4\">&nbsp;</td></tr>\n");
                 result.append("<tr><td colspan=\"2\">&nbsp;</td>");
                 result.append("<td class=\"xmlTdErrorHeader\">");
-                result.append(key("editor.xmlcontent.validation.error.title"));
+                result.append(key(Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0));
                 result.append("</td><td>&nbsp;");
                 result.append("</td></tr>\n");
             }
@@ -1162,7 +1350,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         result.append("Disabled");
                     }
                     result.append("\">");
-                    result.append(key(A_CmsWidget.getLabelKey((I_CmsWidgetParameter)value), value.getName()));
+                    result.append(keyDefault(A_CmsWidget.getLabelKey((I_CmsWidgetParameter)value), value.getName()));
                     if (elementCount > 1) {
                         result.append(" [").append(value.getIndex() + 1).append("]");
                     }
@@ -1194,21 +1382,20 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     } else {
                         // disabled element, show message for optional element
                         result.append("<td class=\"xmlTdDisabled maxwidth\">");
-                        result.append(key("editor.xmlcontent.optionalelement"));
+                        result.append(key(Messages.GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0));
                         result.append("</td>");
                     }
 
-                    // append add and remove element buttons if required
-                    result.append("<td style=\"vertical-align: top;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-                    result.append(buildAddElement(name, value.getIndex(), addValue));
-                    result.append(buildRemoveElement(name, value.getIndex(), removeValue));
-                    result.append("</tr></table></td>");
+                    // append element operation (add, remove, move) buttons if required
+                    result.append(buildElementButtons(name, value.getIndex(), addValue, removeValue));
+
                     // close row
                     result.append("</tr>\n");
 
                     // show errors and/or warnings               
                     String key = value.getPath();
-                    if (getErrorHandler().hasErrors(getElementLocale())
+                    if (showErrors
+                        && getErrorHandler().hasErrors(getElementLocale())
                         && getErrorHandler().getErrors(getElementLocale()).containsKey(key)) {
                         // show error message
                         result.append("<tr><td></td><td><img src=\"");
@@ -1219,7 +1406,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         result.append("</td><td></td></tr>\n");
                     }
                     // warnings can be additional to errors
-                    if (getErrorHandler().hasWarnings(getElementLocale())
+                    if (showErrors
+                        && getErrorHandler().hasWarnings(getElementLocale())
                         && getErrorHandler().getWarnings(getElementLocale()).containsKey(key)) {
                         // show warning message
                         result.append("<tr><td></td><td><img src=\"");
@@ -1234,7 +1422,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // close table
             result.append("</table>\n");
         } catch (Throwable t) {
-            LOG.error(Messages.get().key(Messages.ERR_XML_EDITOR_0), t);
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_EDITOR_0), t);
         }
         return result;
     }

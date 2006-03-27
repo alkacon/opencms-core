@@ -331,7 +331,11 @@ body, form {
   text-decoration: none;
   color: black;    
 }
-
+ 
+.list {
+	border-collapse: collapse;
+}
+	 
 .list td {
   text-align: left;
   vertical-align: middle;
@@ -362,7 +366,7 @@ body, form {
 .oddrowbg {
 	background-color: Window;
 }
-
+ 
 .pathbar {
    padding-top: 10px;
    padding-left: 10px;
@@ -1070,6 +1074,22 @@ body.dialogadmin {
 	if (style == NEW_ADMIN) { %>
 	margin: 0;
 	padding: 0;<% } %>
+}
+
+.xmlButtons {
+	color: WindowText; 
+	position: absolute; 
+	top: 0px; 
+	left: 0px; 
+	width: 90px; 
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+	padding: 2px;
+	background-color: ThreeDFace; 
+	visibility: hidden; 
+	font-size: 8pt;
 }
 
 .textInput {<%

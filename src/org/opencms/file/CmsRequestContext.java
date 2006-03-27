@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2005/08/09 11:45:05 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,9 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.workplace.CmsWorkplace;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Stores the information about the current users OpenCms context,
@@ -45,7 +46,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 6.0.0 
  */
@@ -55,7 +56,7 @@ public final class CmsRequestContext {
     public static final String ATTRIBUTE_EDITOR = "org.opencms.file.CmsRequestContext.ATTRIBUTE_EDITOR";
 
     /** A map for storing (optional) request context attributes. */
-    private HashMap m_attributeMap;
+    private Map m_attributeMap;
 
     /** The current project. */
     private CmsProject m_currentProject;
@@ -227,7 +228,7 @@ public final class CmsRequestContext {
      * @param attributeName the attribute name
      * @return Object the attribute value, or <code>null</code> if the attribute was not found
      */
-    public synchronized Object getAttribute(String attributeName) {
+    public Object getAttribute(String attributeName) {
 
         if (m_attributeMap == null) {
             return null;
@@ -395,7 +396,7 @@ public final class CmsRequestContext {
      *
      * @throws RuntimeException in case there is no site root saved
      */
-    public synchronized void restoreSiteRoot() throws RuntimeException {
+    public void restoreSiteRoot() throws RuntimeException {
 
         if (m_savedSiteRoot == null) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EMPTY_SITEROOT_0));
@@ -409,7 +410,7 @@ public final class CmsRequestContext {
      *
      * @throws RuntimeException in case there is already a site root saved
      */
-    public synchronized void saveSiteRoot() throws RuntimeException {
+    public void saveSiteRoot() throws RuntimeException {
 
         if (m_savedSiteRoot != null) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_NONEMPTY_SITEROOT_1, m_savedSiteRoot));
@@ -423,10 +424,11 @@ public final class CmsRequestContext {
      * @param key the attribute name
      * @param value the attribute value
      */
-    public synchronized void setAttribute(String key, Object value) {
+    public void setAttribute(String key, Object value) {
 
         if (m_attributeMap == null) {
-            m_attributeMap = new HashMap();
+            // Hashtable is still the most efficient form of a synchronized Map
+            m_attributeMap = new Hashtable();
         }
         m_attributeMap.put(key, value);
     }

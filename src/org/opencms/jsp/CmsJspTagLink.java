@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,17 +98,17 @@ public class CmsJspTagLink extends BodyTagSupport {
         if (CmsFlexController.isCmsRequest(req)) {
             try {
                 // Get link-string from the body and reset body 
-                String link = this.getBodyContent().getString();
-                this.getBodyContent().clear();
+                String link = getBodyContent().getString();
+                getBodyContent().clear();
                 // Calculate the link substitution
                 String newlink = linkTagAction(link, req);
                 // Write the result back to the page                
-                this.getBodyContent().print(newlink);
-                this.getBodyContent().writeOut(pageContext.getOut());
+                getBodyContent().print(newlink);
+                getBodyContent().writeOut(pageContext.getOut());
 
             } catch (Exception ex) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.ERR_PROCESS_TAG_1, "link"), ex);
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "link"), ex);
                 }
                 throw new JspException(ex);
             }

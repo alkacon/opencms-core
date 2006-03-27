@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2006/01/31 16:37:43 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,55 +182,50 @@ public class CmsJspTagProperty extends TagSupport {
         ServletRequest req) throws CmsException {
 
         CmsFlexController controller = CmsFlexController.getController(req);
-        String value;
 
         // if action is not set use default
         if (action == null) {
             action = ACTION_VALUES[0];
         }
 
+        String value;
+        String vfsUri;
+        boolean search;
         switch (ACTION_VALUES_LIST.indexOf(action)) {
             case 0: // USE_URI
             case 1: // USE_PARENT
-                // Read properties of parent (i.e. top requested) file
-                value = controller.getCmsObject().readPropertyObject(
-                    controller.getCmsObject().getRequestContext().getUri(),
-                    property,
-                    false).getValue(defaultValue);
+                // read properties of parent (i.e. top requested) file
+                vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                search = false;
                 break;
             case 2: // USE_SEARCH
             case 3: // USE_SEARCH_URI
             case 4: // USE_SEARCH_PARENT 
-                // Try to find property on parent file and all parent folders
-                value = controller.getCmsObject().readPropertyObject(
-                    controller.getCmsObject().getRequestContext().getUri(),
-                    property,
-                    true).getValue(defaultValue);
+                // try to find property on parent file and all parent folders
+                vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                search = true;
                 break;
             case 5: // USE_ELEMENT_URI
             case 6: // USE_THIS
-                // Read properties of this file            
-                value = controller.getCmsObject().readPropertyObject(
-                    controller.getCurrentRequest().getElementUri(),
-                    property,
-                    false).getValue(defaultValue);
+                // read properties of this file            
+                vfsUri = controller.getCurrentRequest().getElementUri();
+                search = false;
                 break;
             case 7: // USE_SEARCH_ELEMENT_URI
             case 8: // USE_SEARCH_THIS
-                // Try to find property on this file and all parent folders
-                value = controller.getCmsObject().readPropertyObject(
-                    controller.getCurrentRequest().getElementUri(),
-                    property,
-                    true).getValue(defaultValue);
+                // try to find property on this file and all parent folders
+                vfsUri = controller.getCurrentRequest().getElementUri();
+                search = true;
                 break;
             default:
-                // Read properties of the file named in the attribute            
-                value = controller.getCmsObject().readPropertyObject(
-                    CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri()),
-                    property,
-                    false).getValue(defaultValue);
+                // read properties of the file named in the attribute  
+                vfsUri = CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri());
+                search = false;
         }
+        // now read the property from the VFS
+        value = controller.getCmsObject().readPropertyObject(vfsUri, property, search).getValue(defaultValue);
         if (escape) {
+            // HTML escape the value 
             value = CmsEncoder.escapeHtml(value);
         }
         return value;
@@ -258,7 +253,7 @@ public class CmsJspTagProperty extends TagSupport {
 
             } catch (Exception ex) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.ERR_PROCESS_TAG_1, "property"), ex);
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "property"), ex);
                 }
                 throw new javax.servlet.jsp.JspException(ex);
             }
@@ -335,13 +330,13 @@ public class CmsJspTagProperty extends TagSupport {
     /**
      * Set the escape html flag.<p>
      * 
-     * @param value should be "true" or "false" (all values other then "true" are
+     * @param value should be <code>"true"</code> or <code>"false"</code> (all values other then <code>"true"</code> are
      * considered to be false)
      */
     public void setEscapeHtml(String value) {
 
         if (value != null) {
-            m_escapeHtml = "true".equalsIgnoreCase(value.trim());
+            m_escapeHtml = Boolean.valueOf(value.trim()).booleanValue();
         }
     }
 

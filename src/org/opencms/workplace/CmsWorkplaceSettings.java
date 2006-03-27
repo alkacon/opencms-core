@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,10 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.tools.CmsToolUserData;
 
 import java.util.HashMap;
@@ -48,12 +50,13 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsWorkplaceSettings {
 
+    private I_CmsResourceCollector m_collector;
     private String m_currentSite;
     private Object m_dialogObject;
     private CmsMessageContainer m_errorMessage;
@@ -96,6 +99,19 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Returns the collector object.<p>
+     *
+     * Use this mechanism for transferring a resource collector between
+     * several page instances of an interactive dialog. <p> 
+     *
+     * @return the dialog object
+     */
+    public I_CmsResourceCollector getCollector() {
+
+        return m_collector;
+    }
+
+    /**
      * Returns the dialog object.<p>
      *
      * Use this mechanism for transferring a complex object between
@@ -108,7 +124,7 @@ public class CmsWorkplaceSettings {
 
         return m_dialogObject;
     }
-    
+
     /**
      * Returns the error message to display in the workplace.<p>
      *
@@ -185,9 +201,9 @@ public class CmsWorkplaceSettings {
         // get the current explorer mode
         String mode = getExplorerMode();
         if (mode == null) {
-            mode = "explorerview";
+            mode = CmsExplorer.VIEW_EXPLORER;
         }
-        if ("explorerview".equals(mode)) {
+        if (CmsExplorer.VIEW_EXPLORER.equals(mode)) {
             // append the current site to the key when in explorer view mode
             mode += "_" + getSite() + "/";
         }
@@ -409,6 +425,19 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Sets the collector object.<p>
+     * 
+     * Use this mechanism for transferring a resource collector between
+     * several page instances of an interactive dialog.<p>
+     *  
+     * @param collector the dialog object to set
+     */
+    public void setCollector(I_CmsResourceCollector collector) {
+
+        m_collector = collector;
+    }
+
+    /**
      * Sets the dialog object.<p>
      * 
      * Use this mechanism for transferring a complex object between
@@ -421,13 +450,13 @@ public class CmsWorkplaceSettings {
 
         m_dialogObject = dialogObject;
     }
-    
+
     /**
      * Sets the error message to display in the workplace.<p>
      *
      * @param errorMessage the error message to display in the workplace
      */
-    public synchronized void setErrorMessage(CmsMessageContainer errorMessage) {
+    public void setErrorMessage(CmsMessageContainer errorMessage) {
 
         m_errorMessage = errorMessage;
     }
@@ -437,7 +466,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param value the explorer flat url
      */
-    public synchronized void setExplorerFlaturl(String value) {
+    public void setExplorerFlaturl(String value) {
 
         m_explorerFlaturl = value;
     }
@@ -447,7 +476,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param value the current explorer mode
      */
-    public synchronized void setExplorerMode(String value) {
+    public void setExplorerMode(String value) {
 
         m_explorerMode = value;
     }
@@ -457,7 +486,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param page the currently selected page in the explorer view
      */
-    public synchronized void setExplorerPage(int page) {
+    public void setExplorerPage(int page) {
 
         m_explorerPage = page;
     }
@@ -467,7 +496,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param value the explorer project filter
      */
-    public synchronized void setExplorerProjectFilter(String value) {
+    public void setExplorerProjectFilter(String value) {
 
         m_explorerProjectFilter = value;
     }
@@ -477,7 +506,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param value the explorer project id
      */
-    public synchronized void setExplorerProjectId(int value) {
+    public void setExplorerProjectId(int value) {
 
         m_explorerProjectId = value;
     }
@@ -495,9 +524,9 @@ public class CmsWorkplaceSettings {
         // get the current explorer mode
         String mode = getExplorerMode();
         if (mode == null) {
-            mode = "explorerview";
+            mode = CmsExplorer.VIEW_EXPLORER;
         }
-        if ("explorerview".equals(mode)) {
+        if (CmsExplorer.VIEW_EXPLORER.equals(mode)) {
             // append the current site to the key when in explorer view mode
             mode += "_" + getSite() + "/";
         }
@@ -505,7 +534,7 @@ public class CmsWorkplaceSettings {
         // set the resource for the given mode
         if (value.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")
             && (!value.startsWith(m_currentSite))
-            && (!"galleryview".equals(getExplorerMode()))) {
+            && (!CmsExplorer.VIEW_GALLERY.equals(getExplorerMode()))) {
             // restrict access to /system/ 
             m_explorerResource.put(mode, "/");
         } else {
@@ -518,7 +547,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param b true, if VFS links should be shown, otherwise false
      */
-    public synchronized void setExplorerShowLinks(boolean b) {
+    public void setExplorerShowLinks(boolean b) {
 
         m_explorerShowLinks = b;
     }
@@ -556,7 +585,7 @@ public class CmsWorkplaceSettings {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#setListObject(Class, org.opencms.workplace.list.CmsHtmlList)
      */
-    public synchronized void setListObject(Object listObject) {
+    public void setListObject(Object listObject) {
 
         m_listObject = listObject;
     }
@@ -566,7 +595,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param value the current details.
      */
-    public synchronized void setPermissionDetailView(String value) {
+    public void setPermissionDetailView(String value) {
 
         m_permissionDetailView = value;
     }
@@ -576,7 +605,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param project the currently selected project of thw workplace user
      */
-    public synchronized void setProject(int project) {
+    public void setProject(int project) {
 
         m_project = project;
     }
@@ -586,7 +615,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param publishList the publishList to set
      */
-    public synchronized void setPublishList(CmsPublishList publishList) {
+    public void setPublishList(CmsPublishList publishList) {
 
         m_publishList = publishList;
     }
@@ -596,7 +625,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param value Map with all visible resource types
      */
-    public synchronized void setResourceTypes(Map value) {
+    public void setResourceTypes(Map value) {
 
         m_resourceTypes = value;
     }
@@ -606,7 +635,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param value the current site for the user
      */
-    public synchronized void setSite(String value) {
+    public void setSite(String value) {
 
         if ((value != null) && !value.equals(m_currentSite)) {
             m_currentSite = value;
@@ -630,7 +659,7 @@ public class CmsWorkplaceSettings {
      * @param type the type of the tree
      * @param value the resource uri to set for the type
      */
-    public synchronized void setTreeResource(String type, String value) {
+    public void setTreeResource(String type, String value) {
 
         if (value == null) {
             return;
@@ -648,7 +677,7 @@ public class CmsWorkplaceSettings {
      * @param type the type of the tree
      * @param value the resource uri to set for the type
      */
-    public synchronized void setTreeSite(String type, String value) {
+    public void setTreeSite(String type, String value) {
 
         if (value == null) {
             return;
@@ -661,7 +690,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param user the current workplace user
      */
-    public synchronized void setUser(CmsUser user) {
+    public void setUser(CmsUser user) {
 
         m_user = user;
     }
@@ -671,7 +700,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param userSettings the current workplace user settings object
      */
-    public synchronized void setUserSettings(CmsUserSettings userSettings) {
+    public void setUserSettings(CmsUserSettings userSettings) {
 
         m_userSettings = userSettings;
     }
@@ -694,7 +723,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param string the view Uri for the workplace
      */
-    public synchronized void setViewUri(String string) {
+    public void setViewUri(String string) {
 
         m_viewUri = string;
     }

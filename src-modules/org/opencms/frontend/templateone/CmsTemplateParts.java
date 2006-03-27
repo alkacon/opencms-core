@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/08/09 07:39:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.map.LRUMap;
@@ -51,30 +52,23 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsTemplateParts implements I_CmsEventListener {
-    
+
     /** Key name for an illegal key. */
     public static final String KEY_ILLEGAL = "illpart";
-    
-    /** Name of the runtime property to store the class instance.<p> */
-    public static final String RUNTIME_PROPERTY_NAME = "__templateone_parts";
-
-    /** Key suffix for a stored object in the offline project.<p> */
-    private static final String PROJECT_OFFLINE = "off";
-    
-    /** Key suffix for a stored object in the online project.<p> */
-    private static final String PROJECT_ONLINE = "on";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateParts.class);
 
-    private CmsJspActionElement m_jsp;
+    /** The Singleton instance. */
+    private static CmsTemplateParts m_instance;
+
+    /** The internal map of cached template parts. */
     private Map m_parts;
-    private String m_project;
 
     /**
      * Hidden constructor.<p>
@@ -84,15 +78,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
     private CmsTemplateParts() {
 
         // create new Map
-        LRUMap cacheParts = new LRUMap(512);
-        m_parts = Collections.synchronizedMap(cacheParts);
-        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-            if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
-                // map must be of type "LRUMap" so that memory monitor can access all information
-                OpenCms.getMemoryMonitor().register(CmsTemplateParts.class.getName() + "." + "m_parts", cacheParts);
-            }
-        }
-
+        initPartsMap();
         // add an event listener
         OpenCms.addCmsEventListener(this);
     }
@@ -100,31 +86,29 @@ public final class CmsTemplateParts implements I_CmsEventListener {
     /**
      * Returns an instance of the class fetched from the application context attribute.<p>
      * 
-     * @param jsp the action element to access the application context
      * @return an instance of the class
      */
-    public static CmsTemplateParts getInstance(CmsJspActionElement jsp) {
+    public static CmsTemplateParts getInstance() {
 
-        CmsTemplateParts parts = (CmsTemplateParts)OpenCms.getRuntimeProperty(RUNTIME_PROPERTY_NAME);
-        if (parts == null) {
-            // instance not found in runtime properties, create new instance
-            parts = new CmsTemplateParts();
-            OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, parts);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_CMSTEMPLATEPARTS_NOT_FOUND_0));
-            }
-        } else if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_CMSTEMPLATEPARTS_FOUND_0));
+        if (m_instance == null) {
+            // initialize the Singleton instance
+            m_instance = new CmsTemplateParts();
         }
-        // set the project String depending on the current project (offline or online)
-        if (jsp.getRequestContext().currentProject().isOnlineProject()) {
-            parts.setProject(PROJECT_ONLINE);
-        } else {
-            parts.setProject(PROJECT_OFFLINE);
+        return m_instance;
+    }
+
+    /**
+     * Sets a part in the cache with the specified key and value.<p>
+     * 
+     * @param partKey the key to identify the part
+     * @param value the value to cache
+     */
+    public void addPart(String partKey, String value) {
+
+        if (!partKey.equals(KEY_ILLEGAL)) {
+            // only store part if valid part key was found
+            m_parts.put(partKey, value);
         }
-        // set the jsp action element
-        parts.setJsp(jsp);
-        return parts;
     }
 
     /**
@@ -137,17 +121,15 @@ public final class CmsTemplateParts implements I_CmsEventListener {
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
+            case I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR:
             case I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY:
                 // flush Map
-                m_parts.clear();
-                // set the new runtime property
-                OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, this);
+                initPartsMap();
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_CMSTEMPLATEPARTS_CLEARED_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_CMSTEMPLATEPARTS_CLEARED_0));
                 }
                 break;
-            default:
-        // no operation
+            default: // no operation
         }
     }
 
@@ -157,9 +139,9 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      * @param partKey the key to identify the part
      * @return a previously cached part of template one with the specified key
      */
-    public Object getPart(String partKey) {
+    public String getPart(String partKey) {
 
-        return m_parts.get(partKey);
+        return (String)m_parts.get(partKey);
     }
 
     /**
@@ -168,61 +150,53 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
      * @param layout the layout type of the template to get
+     * @param jsp the JSP page to generate the content with
+     * 
      * @return the content of the JSP target file
      */
-    public String includePart(String target, String element, String layout) {
+    public String includePart(String target, String element, String layout, CmsJspActionElement jsp) {
 
-        // generate a unique key for the included part
-        String partKey = generateKey(target, element, layout);
-        
-        // try to get the part String from the stored Map
+        if (OpenCms.getRunLevel() < OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+            // OpenCms is not in servlet based operating mode, return empty String
+            return "";
+        }
         String part = null;
+        String partKey = "";
+
         try {
+            // generate a unique key for the included part
+            partKey = generateKey(
+                target,
+                element,
+                layout,
+                jsp.getRequestContext().getLocale(),
+                jsp.getRequestContext().currentProject().getId());
+            // try to get the part
             part = (String)m_parts.get(partKey);
             if (part == null) {
                 // part not found, get the content of the JSP element and put it to the Map store
-                part = getJsp().getContent(target, element, getJsp().getRequestContext().getLocale());
+                part = jsp.getContent(target, element, jsp.getRequestContext().getLocale());
                 if (part != null && !part.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION)) {
-                    // only add part to map if a valid content was found
-                    if (!partKey.equals(KEY_ILLEGAL)) {
-                        // only store part if valid part key was found
-                        m_parts.put(partKey, part);
-                        // save modified class to runtime properties
-                        OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, this);
-                    }
+                    // add part to map if a valid content was found
+                    addPart(partKey, part);
                 } else {
                     // prevent displaying rubbish
                     part = "";
                 }
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_INCLUDE_PART_NOT_FOUND_1, partKey));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_INCLUDE_PART_NOT_FOUND_1, partKey));
                 }
             } else if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_INCLUDE_PART_FOUND_1, partKey));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_INCLUDE_PART_FOUND_1, partKey));
             }
         } catch (Throwable t) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_INCLUDE_PART_ERR_2, partKey, t));
-            }
+            // catch all errors to avoid displaying rubbish
             part = "";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_INCLUDE_PART_ERR_2, partKey, t));
+            }
         }
         return part;
-    }
-
-    /**
-     * Sets a part in the cache with the specified key and value.<p>
-     * 
-     * @param partKey the key to identify the part
-     * @param value the value to cache
-     */
-    public void setPart(String partKey, Object value) {
-        
-        if (!partKey.equals(KEY_ILLEGAL)) {
-            // only store part if valid part key was found
-            m_parts.put(partKey, value);
-            // save modified class to runtime properties
-            OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, this);
-        }
     }
 
     /**
@@ -233,8 +207,8 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      * @param layout the layout type of the template to get
      * @return a unique part key
      */
-    private String generateKey(String target, String element, String layout) {
-        
+    private String generateKey(String target, String element, String layout, Locale locale, int project) {
+
         try {
             if (element == null) {
                 // set element name to empty String for key generation
@@ -248,9 +222,9 @@ public final class CmsTemplateParts implements I_CmsEventListener {
             partKey.append("_");
             partKey.append(layout);
             partKey.append("_");
-            partKey.append(getJsp().getRequestContext().getLocale());
+            partKey.append(locale);
             partKey.append("_");
-            partKey.append(getProject());
+            partKey.append(project);
             return partKey.toString();
         } catch (Exception e) {
             // error creating key
@@ -259,43 +233,17 @@ public final class CmsTemplateParts implements I_CmsEventListener {
     }
 
     /**
-     * Returns the action element needed to include elements.<p>
-     * 
-     * @return the action element needed to include elements
+     * Initializes (also clears) the internal part cache map.<p>
      */
-    private CmsJspActionElement getJsp() {
+    private synchronized Map initPartsMap() {
 
-        return m_jsp;
+        LRUMap cacheParts = new LRUMap(512);
+        Map oldParts = m_parts;
+        m_parts = Collections.synchronizedMap(cacheParts);
+        if (oldParts != null) {
+            oldParts.clear();
+            oldParts = null;
+        }
+        return m_parts;
     }
-
-    /**
-     * Returns the project key suffix for the current project.<p>
-     * 
-     * @return the project key suffix for the current project
-     */
-    private String getProject() {
-
-        return m_project;
-    }
-
-    /**
-     * Sets the action element needed to include elements.<p>
-     * 
-     * @param jsp the action element needed to include elements
-     */
-    private void setJsp(CmsJspActionElement jsp) {
-
-        m_jsp = jsp;
-    }
-
-    /**
-     * Sets the project key suffix for the current project.<p>
-     * 
-     * @param project the project key suffix for the current project
-     */
-    private void setProject(String project) {
-
-        m_project = project;
-    }
-
 }

@@ -37,6 +37,7 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>
+			<preview uri="${previewtempfile}" />
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<mapping element="Release" mapto="attribute:datereleased" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2006/01/23 14:18:01 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 6.0.0 
  */
@@ -968,7 +968,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
 
             result.append("\">");
-            result.append(key(A_CmsWidget.getLabelKey(p), p.getName()));
+            result.append(keyDefault(A_CmsWidget.getLabelKey(p), p.getName()));
             if (count > 1) {
                 result.append(" [").append(p.getIndex() + 1).append("]");
             }

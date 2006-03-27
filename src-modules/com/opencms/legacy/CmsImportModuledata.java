@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
- * Date   : $Date: 2005/10/10 16:11:12 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/03/27 14:53:03 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.17 $ $Date: 2005/10/10 16:11:12 $
+ * @version $Revision: 1.18 $ $Date: 2006/03/27 14:53:03 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

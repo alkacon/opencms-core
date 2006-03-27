@@ -4,7 +4,7 @@
 CmsJspStatusBean cms = new CmsJspStatusBean(pageContext, request, response, exception);
 
 // get the template to use
-String template = cms.property("template", "search", "/system/modules/org.opencms.welcome/templates/welcome");
+String template = cms.property("template", "search", "/system/handler/template/handlertemplate");
 
 // include the template head part
 cms.includeTemplatePart(template, "head");
@@ -36,10 +36,6 @@ if (cms.showException() && cms.getException() != null) {
 <%= cms.getPageContent("foot") %>
 <%
 
-// pass request parameter "hideloginform" to included template foot (required only for "welcome" template)
-Map params = new HashMap(2);
-params.put("hideloginform", "true");
-
 // include the template foot part
-cms.includeTemplatePart(template, "foot", params);
+cms.includeTemplatePart(template, "foot");
 %>

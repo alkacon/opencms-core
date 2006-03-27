@@ -30,7 +30,7 @@ case CmsPropertyChange.ACTION_WAIT:
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<%= wp.key("input.propertychange.result") %> "<%= wp.getParamNewValue() %>":
+<%= org.opencms.workplace.tools.content.Messages.get().key(org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTYCHANGE_RESULT_0)%> "<%= wp.getParamNewValue() %>":
 <%= wp.dialogSpacer() %>
 
 <%= wp.dialogWhiteBoxStart() %>
@@ -69,8 +69,8 @@ default:
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
 <%= wp.dialogBlockStart(null) %>
-<%= wp.key("input.propertychange.info") %><br>
-<%= wp.key("input.propertychange.info2") %>
+<%= org.opencms.workplace.tools.content.Messages.get().key(org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTYCHANGE_INFO_0)%><br>
+<%= org.opencms.workplace.tools.content.Messages.get().key(org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTYCHANGE_INFO2_0) %>
 <%= wp.dialogBlockEnd() %>
 <%= wp.dialogSpacer() %>
 
@@ -81,24 +81,24 @@ default:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.resource") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= org.opencms.workplace.tools.content.Messages.get().key(org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTYCHANGE_RESOURCE_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>" type="text" value="" class="maxwidth" style="width: 99%"></td>
-	<td><%=wp.button("javascript:top.openTreeWin('param_resource', true, 'main', '"+wp.PARAM_RESOURCE+"', document);", null, "folder", "button.search", 0)%></td>
+	<td><%=wp.button("javascript:top.openTreeWin('param_resource', true, 'main', '"+wp.PARAM_RESOURCE+"', document);", null, "folder", org.opencms.workplace.tools.content.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.recursive") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= org.opencms.workplace.tools.content.Messages.get().key(org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTYCHANGE_RECURSIVE_0) %></td>
 	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_RECURSIVE %>" type="checkbox" value="true"></td>    
 </tr>
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.property") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= org.opencms.workplace.tools.content.Messages.get().key(org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTY_0) %></td>
 	<td colspan="2" class="maxwidth"><%= wp.buildSelectProperty("name=\"" + wp.PARAM_PROPERTYNAME + "\" size=\"1\"") %></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.oldvalue") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= org.opencms.workplace.tools.content.Messages.get().key(org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTYCHANGE_OLDVALUE_0) %></td>
 	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_OLDVALUE %>" type="text" value="" class="maxwidth" style="width: 99%"></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.editpropertyinfo") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= org.opencms.workplace.tools.content.Messages.get().key(org.opencms.workplace.tools.content.Messages.GUI_EDITPROPERTYINFO_0) %></td>
 	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_NEWVALUE %>" type="text" value="" class="maxwidth" style="width: 99%"></td>
 </tr>
 </table>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2006/01/06 16:59:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,9 +61,9 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
- * @since 6.0.3
+ * @since 6.1.7 
  * 
  * @see I_CmsStaticExportHandler
  *
@@ -98,7 +98,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
     public void scrubExportFolders(CmsUUID publishHistoryId) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SCRUBBING_EXPORT_FOLDERS_1, publishHistoryId));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SCRUBBING_EXPORT_FOLDERS_1, publishHistoryId));
         }
 
         Set scrubedFolders = new HashSet();
@@ -110,7 +110,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
         } catch (CmsException e) {
             // this should never happen
-            LOG.error(Messages.get().key(Messages.LOG_INIT_FAILED_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INIT_FAILED_0), e);
             return;
         }
 
@@ -119,7 +119,9 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
             publishedResources = cms.readPublishedResources(publishHistoryId);
         } catch (CmsException e) {
 
-            LOG.error(Messages.get().key(Messages.LOG_READING_CHANGED_RESOURCES_FAILED_1, publishHistoryId), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_READING_CHANGED_RESOURCES_FAILED_1, publishHistoryId),
+                e);
             return;
         }
 
@@ -142,7 +144,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                 // get the link name for the published file 
                 String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_CHECKING_STATIC_EXPORT_2, vfsName, rfsName));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_CHECKING_STATIC_EXPORT_2, vfsName, rfsName));
                 }
                 if (rfsName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix(vfsName))
                     && (!scrubedFiles.contains(rfsName))
@@ -160,7 +162,9 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                                     CmsFileUtil.purgeDirectory(exportFolder);
                                     // write log message
                                     if (LOG.isInfoEnabled()) {
-                                        LOG.info(Messages.get().key(Messages.LOG_FOLDER_DELETED_1, exportFolderName));
+                                        LOG.info(Messages.get().getBundle().key(
+                                            Messages.LOG_FOLDER_DELETED_1,
+                                            exportFolderName));
                                     }
                                     scrubedFolders.add(rfsName);
                                     continue;
@@ -168,7 +172,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                             } catch (Throwable t) {
                                 // ignore, nothing to do about this
                                 if (LOG.isWarnEnabled()) {
-                                    LOG.warn(Messages.get().key(
+                                    LOG.warn(Messages.get().getBundle().key(
                                         Messages.LOG_FOLDER_DELETION_FAILED_2,
                                         vfsName,
                                         exportFolderName));
@@ -178,7 +182,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                         // add index.html to folder name
                         rfsName += CmsStaticExportManager.EXPORT_DEFAULT_FILE;
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().key(Messages.LOG_FOLDER_1, rfsName));
+                            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FOLDER_1, rfsName));
                         }
 
                     }
@@ -245,7 +249,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         } catch (CmsException e) {
             // ignore, nothing to do about this
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_FETCHING_SIBLINGS_FAILED_1, resPath), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_FETCHING_SIBLINGS_FAILED_1, resPath), e);
             }
         }
         if (!siblings.contains(resPath)) {
@@ -275,15 +279,14 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                 exportFile.delete();
                 // write log message
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_FILE_DELETED_1, rfsName));
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_FILE_DELETED_1, rfsName));
                 }
             }
         } catch (Throwable t) {
             // ignore, nothing to do about this
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_FILE_DELETION_FAILED_1, rfsName), t);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_FILE_DELETION_FAILED_1, rfsName), t);
             }
         }
     }
-
 }

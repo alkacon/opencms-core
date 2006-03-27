@@ -1,0 +1,5 @@
+<div class="element">${layout.headline}
+<div class="lp_maxwidth"><p><span class="lp_imgright">${layout.image}</span>
+${layout.text}</p></div>
+<div class="lp_clearfloat"></div>
+</div>

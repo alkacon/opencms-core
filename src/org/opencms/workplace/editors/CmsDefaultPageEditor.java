@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.workplace.editors;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
@@ -64,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -409,7 +408,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                     "");
             }
         } catch (CmsException e) {
-            LOG.warn(Messages.get().key(Messages.LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0), e);
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0), e);
         }
         return result;
     }
@@ -426,7 +425,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             result = getCms().readPropertyObject(getParamTempfile(), CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
                 "");
         } catch (CmsException e) {
-            LOG.warn(Messages.get().key(Messages.LOG_READ_TEMPLATE_PROP_FAILED_0), e);
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_FAILED_0), e);
         }
         return result;
     }
@@ -570,29 +569,21 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 }
             }
         }
-        // get the content from the temporary file        
-        try {
-            CmsXmlPage page = CmsXmlPageFactory.unmarshal(getCms(), getCms().readFile(
-                getParamTempfile(),
-                CmsResourceFilter.ALL));
-            getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
-            String elementData = page.getStringValue(getCms(), getParamElementname(), getElementLocale());
-            if (elementData != null) {
-                setParamContent(elementData);
-            } else {
-                setParamContent("");
+        getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
+
+        String elementData;
+        if (m_page.hasValue(getParamElementname(), getElementLocale())) {
+            // element value is available in the page
+            elementData = m_page.getStringValue(getCms(), getParamElementname(), getElementLocale());
+        } else {
+            // value is not available in the page
+            if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
+                // direct edit on a non-existing element: create new element with this name
+                m_page.addValue(getParamElementname(), getElementLocale());
             }
-        } catch (CmsException e) {
-            // reading of file contents failed, show error page
-            try {
-                showErrorPage(this, e);
-            } catch (JspException exc) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(exc);
-                }
-            }
+            elementData = "";
         }
+        setParamContent(elementData);
     }
 
     /**

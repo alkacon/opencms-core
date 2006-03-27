@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyDelete.java,v $
- * Date   : $Date: 2005/10/12 07:48:21 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsException;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * @author  Andreas Zahner 
  * @author  Armen Markarian 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,6 +132,7 @@ public class CmsPropertyDelete extends CmsDialog {
      * @throws JspException if problems including sub-elements occur
      */
     public void actionDeleteCascade() throws JspException {
+        
 
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
@@ -169,7 +171,7 @@ public class CmsPropertyDelete extends CmsDialog {
                             getCms().writePropertyObject(resource.getRootPath(), property);
                             // unlock the resource
                             getCms().unlockResource(resource.getRootPath());
-                            }
+                        }
                     }
                     // delete the property definition at last
                     getCms().deletePropertyDefinition(getParamPropertyName());
@@ -224,32 +226,32 @@ public class CmsPropertyDelete extends CmsDialog {
 
         // reverse the resource list
         Collections.reverse(resourceList);
-
+        CmsMessages messages = Messages.get().getBundle(getLocale());
         StringBuffer result = new StringBuffer();
         result.append("<table border=\"0\" width=\"100%\" cellpadding=\"1\" cellspacing=\"1\">\n");
         result.append("<tr>\n");
         // Type        
         result.append("\t<td style=\"width:5%;\" class=\"textbold\">");
-        result.append(key("input.type"));
+        result.append(messages.key(Messages.GUI_INPUT_TYPE_0));
         result.append("</td>\n");
         // Uri
         result.append("\t<td style=\"width:40%;\" class=\"textbold\">");
-        result.append(key("input.adress"));
+        result.append(messages.key(Messages.GUI_INPUT_ADRESS_0));
         result.append("</td>\n");
         // Name
         result.append("\t<td style=\"width:25%;\" class=\"textbold\">");
-        result.append(key("input.title"));
+        result.append(messages.key(Messages.GUI_INPUT_TITLE_0));
         result.append("</td>\n");
         if (!lockInfo) {
             // Property value
             result.append("\t<td style=\"width:30%;\" class=\"textbold\">");
-            result.append(key("input.propertyvalue"));
+            result.append(messages.key(Messages.GUI_INPUT_PROPERTYVALUE_0));
             result.append("</td>\n");
         }
         if (lockInfo) {
             // Property value
             result.append("\t<td style=\"width:30%;\" class=\"textbold\">");
-            result.append(key("explorer.lockedby"));
+            result.append(messages.key(Messages.GUI_EXPLORER_LOCKEDBY_0));
             result.append("</td>\n");
             result.append("</tr>\n");
         }
@@ -311,7 +313,8 @@ public class CmsPropertyDelete extends CmsDialog {
      */
     public String buildSelectProperty(String attributes) {
 
-        return CmsPropertyChange.buildSelectProperty(getCms(), key("please.select"), attributes, "");
+        return CmsPropertyChange.buildSelectProperty(getCms(), Messages.get().getBundle(getLocale()).key(
+            Messages.GUI_PLEASE_SELECT_0), attributes, "");
     }
 
     /**
@@ -346,7 +349,7 @@ public class CmsPropertyDelete extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);
-            setParamTitle(key("title.propertydelete") + ": " + getParamPropertyName());
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_PROPERTYDELETE_0) + ": " + getParamPropertyName());
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else if (DIALOG_DELETE_CASCADE.equals(getParamAction())) {
@@ -354,7 +357,7 @@ public class CmsPropertyDelete extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for change property value dialog     
-            setParamTitle(key("title.propertydelete"));
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_PROPERTYDELETE_0));
         }
     }
 

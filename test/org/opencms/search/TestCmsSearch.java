@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,11 +34,13 @@ package org.opencms.search;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -53,7 +55,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -89,7 +91,9 @@ public class TestCmsSearch extends OpenCmsTestCase {
         suite.addTest(new TestCmsSearch("testCmsSearchDocumentTypes"));
         suite.addTest(new TestCmsSearch("testCmsSearchXmlContent"));
         suite.addTest(new TestCmsSearch("testIndexGeneration"));
-        
+        suite.addTest(new TestCmsSearch("testQueryEncoding"));
+        suite.addTest(new TestCmsSearch("testSearchIssueWithSpecialFoldernames"));
+
         // This test is intended only for performance/resource monitoring
         // suite.addTest(new TestCmsSearch("testCmsSearchLargeResult"));
 
@@ -108,7 +112,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         return wrapper;
     }
-    
+
     /**
      * Tests searching in various document types.<p>
      * 
@@ -130,7 +134,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         assertEquals(1, results.size());
         assertEquals("/sites/default/types/text.txt", ((CmsSearchResult)results.get(0)).getPath());
     }
-    
+
     /**
      * Test the cms search indexer.<p>
      * 
@@ -157,9 +161,11 @@ public class TestCmsSearch extends OpenCmsTestCase {
         cms.unlockResource("/test/");
 
         // create master resource
-        importTestResource(cms, 
-            "org/opencms/search/pdf-test-112.pdf", "/test/master.pdf", 
-            CmsResourceTypeBinary.getStaticTypeId(), 
+        importTestResource(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            "/test/master.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
             Collections.EMPTY_LIST);
 
         // create a copy
@@ -188,12 +194,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
         cmsSearchBean.setQuery("pdf");
 
         echo("With Permission check, with excerpt");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.PERMISSIONS,
-            "true");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "true");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.PERMISSIONS, CmsStringUtil.TRUE);
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, CmsStringUtil.TRUE);
 
-        cmsSearchBean.setPage(1);
+        cmsSearchBean.setSearchPage(1);
         long duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
@@ -204,7 +208,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
             echo(res.getPath() + res.getExcerpt());
         }
 
-        cmsSearchBean.setPage(2);
+        cmsSearchBean.setSearchPage(2);
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
@@ -216,18 +220,16 @@ public class TestCmsSearch extends OpenCmsTestCase {
         }
 
         echo("With Permission check, without excerpt");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.PERMISSIONS,
-            "true");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "false");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.PERMISSIONS, CmsStringUtil.TRUE);
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, CmsStringUtil.FALSE);
 
-        cmsSearchBean.setPage(1);
+        cmsSearchBean.setSearchPage(1);
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
         echo("Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
-        cmsSearchBean.setPage(2);
+        cmsSearchBean.setSearchPage(2);
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
@@ -236,16 +238,16 @@ public class TestCmsSearch extends OpenCmsTestCase {
         echo("Without Permission check, with excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
             CmsSearchIndex.PERMISSIONS,
-            "false");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "true");
+            CmsStringUtil.FALSE);
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, CmsStringUtil.TRUE);
 
-        cmsSearchBean.setPage(1);
+        cmsSearchBean.setSearchPage(1);
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
         echo("Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
-        cmsSearchBean.setPage(2);
+        cmsSearchBean.setSearchPage(2);
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
@@ -254,16 +256,16 @@ public class TestCmsSearch extends OpenCmsTestCase {
         echo("Without Permission check, without excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
             CmsSearchIndex.PERMISSIONS,
-            "false");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "false");
+            CmsStringUtil.FALSE);
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, CmsStringUtil.FALSE);
 
-        cmsSearchBean.setPage(1);
+        cmsSearchBean.setSearchPage(1);
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
         echo("Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
-        cmsSearchBean.setPage(2);
+        cmsSearchBean.setSearchPage(2);
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
@@ -300,7 +302,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         assertEquals(1, results.size());
         assertEquals("/sites/default/xmlcontent/article_0003.html", ((CmsSearchResult)results.get(0)).getPath());
     }
-    
+
     /**
      * Tests index generation with different analyzers.<p>
      * 
@@ -311,8 +313,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
      */
     public void testIndexGeneration() throws Throwable {
 
-        CmsSearchIndex searchIndex = new CmsSearchIndex();
-        searchIndex.setName(INDEX_TEST);
+        CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_TEST);
         searchIndex.setProjectName("Offline");
         // important: use german locale for a special treat on term analyzing
         searchIndex.setLocale(Locale.GERMAN.toString());
@@ -322,29 +323,98 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         // initialize the new index
         searchIndex.initialize();
-        
+
         // add the search index to the manager
         OpenCms.getSearchManager().addSearchIndex(searchIndex);
-        
+
         I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
         OpenCms.getSearchManager().rebuildAllIndexes(report);
-        
+
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
         List searchResult;
 
         searchBean.init(getCmsObject());
-        searchBean.setIndex(INDEX_TEST);        
+        searchBean.setIndex(INDEX_TEST);
         searchBean.setQuery(">>SearchEgg1<<");
-        
+
         // assert one file is found in the default site     
         searchResult = searchBean.getSearchResult();
         assertEquals(1, searchResult.size());
-        assertEquals("/sites/default/xmlcontent/article_0001.html", ((CmsSearchResult)searchResult.get(0)).getPath()); 
+        assertEquals("/sites/default/xmlcontent/article_0001.html", ((CmsSearchResult)searchResult.get(0)).getPath());
 
         // change seach root and assert no more files are found
-        searchBean.setSearchRoot("/folder1/");        
+        searchBean.setSearchRoot("/folder1/");
         searchResult = searchBean.getSearchResult();
         assertEquals(0, searchResult.size());
+    }
+
+    /**
+     * Tests if <code>{@link CmsSearch#setQuery(String)}</code> modifies 
+     * the query in an undesireable way (changes url encoded Strings). <p>
+     */
+    public void testQueryEncoding() {
+
+        // without encoding
+        String query = "Ölmühlmäher";
+        CmsSearch test = new CmsSearch();
+        test.setQuery(query);
+        assertEquals(query, test.getQuery());
+
+        // with encoding
+        query = CmsEncoder.encode(query, CmsEncoder.ENCODING_UTF_8);
+        test.setQuery(query);
+        assertEquals(query, test.getQuery());
+    }
+    
+    /**
+     * Tests an issue where no results are found in folders that have names
+     * like <code>/basisdienstleistungen_-_zka/</code>.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSearchIssueWithSpecialFoldernames() throws Exception {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing search issue with special folder name");
+        
+        String folderName = "/basisdienstleistungen_-_zka/";
+        cms.copyResource("/types/", folderName);
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();
+        
+        CmsSearch cmsSearchBean = new CmsSearch();
+        cmsSearchBean.init(cms);
+        cmsSearchBean.setIndex(INDEX_TEST);
+        List results;
+
+        cmsSearchBean.setSearchRoot("/");
+        cmsSearchBean.setQuery("+Alkacon +OpenCms");
+        results = cmsSearchBean.getSearchResult();
+        printResults(results);
+        assertEquals(8, results.size());
+        assertEquals("/sites/default" + folderName + "text.txt", ((CmsSearchResult)results.get(0)).getPath());        
+
+        cmsSearchBean.setSearchRoot(folderName);
+        cmsSearchBean.setQuery("+Alkacon +OpenCms");
+        results = cmsSearchBean.getSearchResult();
+        printResults(results);
+        assertEquals(1, results.size());
+        assertEquals("/sites/default" + folderName + "text.txt", ((CmsSearchResult)results.get(0)).getPath());        
+    }
+    
+    /**
+     * Prints the result form the search to System.out.<p>
+     * 
+     * @param results the result List to iterate
+     */
+    private void printResults(List results) {
+        
+        Iterator i = results.iterator();
+        int count = 0;
+        while (i.hasNext()) {
+            CmsSearchResult result = (CmsSearchResult)i.next();
+            System.out.println(++count + ": " + result.getPath() + " - " + result.getTitle());
+        }
     }
 }

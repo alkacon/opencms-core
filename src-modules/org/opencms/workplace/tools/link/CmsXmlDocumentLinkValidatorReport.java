@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/Attic/CmsXmlDocumentLinkValidatorReport.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/03/27 14:53:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,7 +125,7 @@ public class CmsXmlDocumentLinkValidatorReport extends CmsReport {
         } else {
             setAction(ACTION_DEFAULT);
             // add the title for the dialog 
-            setParamTitle(key("title." + DIALOG_TYPE));
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_HTML_LINK_VALIDATOR_0));
         }
     }
 

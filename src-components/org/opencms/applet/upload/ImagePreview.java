@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImagePreview.java,v $
- * Date   : $Date: 2005/09/11 13:29:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.swing.JFileChooser;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,7 +84,7 @@ public class ImagePreview extends JComponent implements PropertyChangeListener {
 
         setPreferredSize(new Dimension(200, 100));
         fc.addPropertyChangeListener(this);
-        m_font = new java.awt.Font("Verdana", Font.PLAIN, 9);
+        m_font = new java.awt.Font(null, Font.PLAIN, 9);
         m_messageNoPreview = messageNoPreview;
         m_mode = C_MODE_EMPTY;
     }

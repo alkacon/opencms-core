@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  * 
  * @since 6.0.0 
  */
@@ -363,7 +363,6 @@ public interface I_CmsProjectDriver {
      * @param maxVersions maximum number of backup versions
      * 
      * @throws CmsException if something goes wrong
-     * @see org.opencms.db.CmsDriverManager#getPublishList(CmsDbContext, CmsResource, boolean)
      */
     void publishProject(
         CmsDbContext dbc,

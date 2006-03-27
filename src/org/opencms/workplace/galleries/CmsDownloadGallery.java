@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsDownloadGallery.java,v $
- * Date   : $Date: 2005/10/10 16:11:04 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/27 14:52:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,12 +47,12 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDownloadGallery extends A_CmsGallery {
-    
+
     /** URI of the download gallery popup dialog. */
     public static final String URI_GALLERY = PATH_GALLERIES + "download_fs.jsp";
 
@@ -125,16 +125,17 @@ public class CmsDownloadGallery extends A_CmsGallery {
                     html.append("</a></td>");
                     html.append("</tr>");
                     // file title
-                    html.append(previewRow(key("input.title"), title));
+                    html.append(previewRow(key(Messages.GUI_INPUT_TITLE_0), title));
+
                     // file last modified date
-                    html.append(previewRow(key("input.datelastmodified"), lastmodified));
+                    html.append(previewRow(key(Messages.GUI_INPUT_DATELASTMODIFIED_0), lastmodified));
                     // file description if existing
                     if (CmsStringUtil.isNotEmpty(description)) {
-                        html.append(previewRow(key("input.description"), description));
+                        html.append(previewRow(key(Messages.GUI_INPUT_DESCRIPTION_0), description));
                     }
                     // file keywords if existing
                     if (CmsStringUtil.isNotEmpty(keywords)) {
-                        html.append(previewRow(key("input.keywords"), keywords));
+                        html.append(previewRow(key(Messages.GUI_INPUT_KEYWORDS_0), keywords));
                     }
                     html.append("</table>");
                 }
@@ -161,14 +162,14 @@ public class CmsDownloadGallery extends A_CmsGallery {
 
         return "450";
     }
-    
+
     /**
      * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
      * 
      * @return the order of the implemented gallery
      */
     public Integer getOrder() {
-        
+
         return ORDER_GALLERY;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2005/07/28 15:18:31 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2006/03/27 14:52:36 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.10 $ $Date: 2005/07/28 15:18:31 $
+ * @version $Revision: 1.11 $ $Date: 2006/03/27 14:52:36 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -43,9 +43,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsMessageException;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsResourceBundleLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsWorkplaceModuleMessages;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,7 +61,7 @@ import java.util.Set;
 public class CmsXmlLanguageFile { 
 
     /** The name of the property file */
-    public static final String C_BUNDLE_NAME = "org.opencms.workplace.workplace";
+    public static final String C_BUNDLE_NAME = "com.opencms.workplace.workplace";
     
     /** The Locales Support Runtime Property Name */
     public static final String C_COMPATIBILITY_OLDLOCALES = "compatibility.support.oldlocales";
@@ -170,7 +172,7 @@ public class CmsXmlLanguageFile {
                 String bundleName = ((String)i.next()) + ".workplace";
                 // this should result in a name like "my.module.name.workplace"
                 try {
-                    ResourceBundle bundle = ResourceBundle.getBundle(bundleName, new Locale(locale));
+                    ResourceBundle bundle = CmsResourceBundleLoader.getBundle(bundleName, new Locale(locale));
                     bundles.add(bundle);
                 } catch (MissingResourceException e) {
                     // can be ignored

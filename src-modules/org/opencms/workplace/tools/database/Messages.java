@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Messages.java,v $
- * Date   : $Date: 2005/06/28 18:38:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_IMPORTSERVER_NO_DB_EXPORTS_0 = "GUI_IMPORTSERVER_NO_DB_EXPORTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_FILE_EXPORT_0 = "ERR_ACTION_FILE_EXPORT_0";
@@ -71,6 +68,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_HTMLIMPORT_PARSE_1 = "ERR_HTMLIMPORT_PARSE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_SEARCH_0 = "GUI_BUTTON_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASE_ADMIN_TOOL_GROUP_0 = "GUI_DATABASE_ADMIN_TOOL_GROUP_0";
@@ -157,6 +157,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_IMPORTSERVER_ADMIN_TOOL_NAME_0 = "GUI_IMPORTSERVER_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMPORTSERVER_NO_DB_EXPORTS_0 = "GUI_IMPORTSERVER_NO_DB_EXPORTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGEBOX_STATICEXPORT1_0 = "GUI_MESSAGEBOX_STATICEXPORT1_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_STATEXP_ADMIN_TOOL_HELP_0 = "GUI_STATEXP_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -164,6 +170,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_STATEXP_THREAD_NAME_0 = "GUI_STATEXP_THREAD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_STATICEXPORT_0 = "GUI_TITLE_STATICEXPORT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_HTMLIMPORT_CONVERSION_ERROR_0 = "LOG_HTMLIMPORT_CONVERSION_ERROR_0";

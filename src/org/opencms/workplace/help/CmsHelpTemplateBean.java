@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/07/27 14:25:37 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/03/27 14:53:04 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,11 +131,11 @@ public class CmsHelpTemplateBean extends CmsDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHelpTemplateBean.class);
 
-    /** The online project that is switched to whenever body content is processed that shall be exported. */
-    private CmsProject m_onlineProject;
-
     /** The online project that is switched to whenever body content is processed that should not be exported. */
     private CmsProject m_offlineProject;
+
+    /** The online project that is switched to whenever body content is processed that shall be exported. */
+    private CmsProject m_onlineProject;
 
     /** Request parameter for the help build frameset flag. */
     private String m_paramBuildframe;
@@ -241,6 +241,54 @@ public class CmsHelpTemplateBean extends CmsDialog {
     }
 
     /**
+     * Returns the HTML for the end of the page.<p>
+     * 
+     * @return the HTML for the end of the page
+     */
+    public String buildHtmlHelpEnd() {
+
+        StringBuffer result = new StringBuffer(4);
+        result.append("</body>\n");
+        result.append("</html>");
+        return result.toString();
+    }
+
+    /**
+     * Returns the HTML for the start of the page.<p>
+     * 
+     * @param cssFile the CSS file name to use
+     * @param transitional if true, transitional doctype is used
+     * @return the HTML for the start of the page
+     */
+    public String buildHtmlHelpStart(String cssFile, boolean transitional) {
+
+        StringBuffer result = new StringBuffer(8);
+        if (transitional) {
+            result.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n");
+        } else {
+            result.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n");
+        }
+        result.append("<html>\n");
+        result.append("<head>\n");
+        result.append("\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8");
+        result.append("\">\n");
+        result.append("\t<title>");
+        if (CmsStringUtil.isNotEmpty(getParamHelpresource())) {
+            result.append(getJsp().property(
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                getParamHelpresource(),
+                key(Messages.GUI_HELP_FRAMESET_TITLE_0)));
+        } else {
+            result.append(key(Messages.GUI_HELP_FRAMESET_TITLE_0));
+        }
+        result.append("</title>\n");
+        result.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+        result.append(getStyleUri(getJsp(), cssFile)).append("\">\n");
+        result.append("</head>\n");
+        return result.toString();
+    }
+
+    /**
      * Returns the HTML for the body frame of the online help.<p>
      * 
      * @return the HTML for the body frame of the online help 
@@ -293,7 +341,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                             true);
 
                         if (!exportProp.isNullProperty()) {
-                            export = Boolean.valueOf(exportProp.getValue("false")).booleanValue();
+                            export = Boolean.valueOf(exportProp.getValue(CmsStringUtil.FALSE)).booleanValue();
                         }
                         if (!export) {
                             // switch back from online project to avoid export:
@@ -373,10 +421,8 @@ public class CmsHelpTemplateBean extends CmsDialog {
             StringBuffer submitAction = new StringBuffer();
             submitAction.append("parseSearchQuery(document.forms[\'searchform\'],\'");
             submitAction.append(
-                Messages.get().key(
-                    getLocale(),
-                    Messages.GUI_HELP_ERR_SEARCH_WORD_LENGTH_1,
-                    new Object[] {new Integer(3)})).append("\');");
+                Messages.get().getBundle(getLocale()).key(Messages.GUI_HELP_ERR_SEARCH_WORD_LENGTH_1, new Integer(3))).append(
+                "\');");
 
             result.append("<form style=\"margin: 0;\" name=\"searchform\" method=\"post\" action=\"");
             String searchLink = getJsp().link(
@@ -390,7 +436,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
             result.append("  <input type=\"hidden\" name=\"action\" value=\"search\" />\n");
             result.append("  <input type=\"hidden\" name=\"query\" value=\"\" />\n");
             result.append("  <input type=\"hidden\" name=\"index\" value=\"" + index + "\" />\n");
-            result.append("  <input type=\"hidden\" name=\"page\" value=\"1\" />\n");
+            result.append("  <input type=\"hidden\" name=\"searchPage\" value=\"1\" />\n");
 
             result.append("<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n");
             result.append("<tr>\n");
@@ -403,14 +449,14 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 "javascript:history.back();",
                 null,
                 "back.png",
-                Messages.GUI_HELP_BUTTON_BACK_0,
+                org.opencms.search.Messages.GUI_HELP_BUTTON_BACK_0,
                 buttonStyle,
                 resourcePath));
             result.append(button(
                 "javascript:history.forward();",
                 null,
                 "next.png",
-                Messages.GUI_HELP_BUTTON_NEXT_0,
+                org.opencms.search.Messages.GUI_HELP_BUTTON_NEXT_0,
                 buttonStyle,
                 resourcePath));
 
@@ -418,7 +464,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 "javascript:top.body.location.href='" + getParamHomelink() + "';",
                 null,
                 "contents.png",
-                Messages.GUI_HELP_BUTTON_CONTENTS_0,
+                org.opencms.search.Messages.GUI_HELP_BUTTON_CONTENTS_0,
                 buttonStyle,
                 resourcePath));
             //search
@@ -432,7 +478,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 new StringBuffer("javascript:").append(submitAction.toString()).toString(),
                 null,
                 null,
-                Messages.GUI_HELP_BUTTON_SEARCH_0,
+                org.opencms.search.Messages.GUI_HELP_BUTTON_SEARCH_0,
                 2,
                 null));
 
@@ -448,7 +494,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 "javascript:top.close();",
                 null,
                 "close",
-                Messages.GUI_HELP_BUTTON_CLOSE_0,
+                org.opencms.search.Messages.GUI_HELP_BUTTON_CLOSE_0,
                 buttonStyle,
                 resourcePath));
             result.append(buttonBar(HTML_END));
@@ -600,19 +646,6 @@ public class CmsHelpTemplateBean extends CmsDialog {
     }
 
     /**
-     * Returns the HTML for the end of the page.<p>
-     * 
-     * @return the HTML for the end of the page
-     */
-    public String buildHtmlHelpEnd() {
-
-        StringBuffer result = new StringBuffer(4);
-        result.append("</body>\n");
-        result.append("</html>");
-        return result.toString();
-    }
-
-    /**
      * Returns the HTML to build the navigation of the online help folder.<p>
      * 
      * @return the HTML to build the navigation of the online help folder
@@ -679,41 +712,6 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 result.append("</a><br style=\"clear:left\">\n");
             }
         }
-        return result.toString();
-    }
-
-    /**
-     * Returns the HTML for the start of the page.<p>
-     * 
-     * @param cssFile the CSS file name to use
-     * @param transitional if true, transitional doctype is used
-     * @return the HTML for the start of the page
-     */
-    public String buildHtmlHelpStart(String cssFile, boolean transitional) {
-
-        StringBuffer result = new StringBuffer(8);
-        if (transitional) {
-            result.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n");
-        } else {
-            result.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n");
-        }
-        result.append("<html>\n");
-        result.append("<head>\n");
-        result.append("\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8");
-        result.append("\">\n");
-        result.append("\t<title>");
-        if (CmsStringUtil.isNotEmpty(getParamHelpresource())) {
-            result.append(getJsp().property(
-                CmsPropertyDefinition.PROPERTY_TITLE,
-                getParamHelpresource(),
-                key(Messages.GUI_HELP_FRAMESET_TITLE_0)));
-        } else {
-            result.append(key(Messages.GUI_HELP_FRAMESET_TITLE_0));
-        }
-        result.append("</title>\n");
-        result.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-        result.append(getStyleUri(getJsp(), cssFile)).append("\">\n");
-        result.append("</head>\n");
         return result.toString();
     }
 
@@ -846,6 +844,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
     protected void initMessages() {
 
         addMessages(Messages.get().getBundleName());
+        addMessages(org.opencms.search.Messages.get().getBundleName());
         addMessages(org.opencms.workplace.Messages.get().getBundleName());
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/27 14:52:30 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,6 +94,8 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
             String title = computeNewTitleProperty();
             // create the full resource name
             String fullResourceName = computeFullResourceName();
+            // eventually append ".html" suffix to new file if not present
+            fullResourceName = appendSuffixHtml(fullResourceName, false);
             // create the Title and Navigation properties if configured
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType());
             List properties = createResourceProperties(fullResourceName, resType.getTypeName(), title);
@@ -123,14 +125,13 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
             setAction(ACTION_SUBMITFORM);
         } else if (DIALOG_NEWFORM.equals(getParamAction())) {
             setAction(ACTION_NEWFORM);
-            setParamTitle(key("title.new" + getParamNewResourceType()));
+            setParamTitle(key(Messages.getTitleKey(getParamNewResourceType())));
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
             // build title for new resource dialog     
-            setParamTitle(key("title.new"));
+            setParamTitle(key(Messages.GUI_NEWRESOURCE_XMLCONTENT_0));
         }
     }
-
 }

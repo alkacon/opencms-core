@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsSimpleMail.java,v $
- * Date   : $Date: 2005/06/30 10:12:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.mail;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import javax.mail.AuthenticationFailedException;
 import javax.mail.MessagingException;
@@ -51,7 +52,7 @@ import org.apache.commons.mail.SimpleEmail;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,7 +78,7 @@ public class CmsSimpleMail extends SimpleEmail {
 
         // check if username and password are provided
         String userName = host.getUsername();
-        if (userName != null && !"".equals(userName.trim())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userName)) {
             // authentication needed, set user name and password
             setAuthentication(userName, host.getPassword());
         }
@@ -86,7 +87,7 @@ public class CmsSimpleMail extends SimpleEmail {
             setFrom(OpenCms.getSystemInfo().getMailSettings().getMailFromDefault());
         } catch (MessagingException e) {
             // default email address is not valid, log error
-            LOG.error(Messages.get().key(Messages.LOG_INVALID_SENDER_ADDRESS_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_SENDER_ADDRESS_0), e);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaEngine.java,v $
- * Date   : $Date: 2006/01/05 12:10:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.octo.captcha.image.gimpy.GimpyFactory;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsCaptchaEngine extends ImageCaptchaEngine {
 

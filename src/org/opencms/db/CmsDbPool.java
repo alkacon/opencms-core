@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2005/12/12 09:48:23 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2006/03/27 14:52:26 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 6.0.0
  */
@@ -179,8 +180,8 @@ public final class CmsDbPool {
         String whenExhaustedActionValue = config.getString(
             KEY_DATABASE_POOL + '.' + key + '.' + KEY_WHEN_EXHAUSTED_ACTION).trim();
         byte whenExhaustedAction = 0;
-        boolean testOnBorrow = "true".equalsIgnoreCase(config.getString(
-            KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_ON_BORROW).trim());
+        boolean testOnBorrow = Boolean.valueOf(
+            config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_ON_BORROW).trim()).booleanValue();
 
         if ("block".equalsIgnoreCase(whenExhaustedActionValue)) {
             whenExhaustedAction = GenericObjectPool.WHEN_EXHAUSTED_BLOCK;
@@ -205,9 +206,8 @@ public final class CmsDbPool {
         }
 
         // read the values of the statement pool configuration specified by the given key
-        boolean poolingStmts = "true".equalsIgnoreCase(config.getString(
-            KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_POOLING,
-            "true").trim());
+        boolean poolingStmts = Boolean.valueOf(
+            config.getString(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_POOLING, CmsStringUtil.TRUE).trim()).booleanValue();
         int maxActiveStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_ACTIVE, 25);
         int maxWaitStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_WAIT, 250);
         int maxIdleStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_IDLE, 15);
@@ -284,7 +284,7 @@ public final class CmsDbPool {
         con.close();
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_JDBC_POOL_2, poolUrl, jdbcUrl));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_JDBC_POOL_2, poolUrl, jdbcUrl));
         }
         return driver;
     }
@@ -297,17 +297,19 @@ public final class CmsDbPool {
      * @return the database pool name
      */
     public static String getDbPoolName(Map configuration, String key) {
-        // TODO: name should be refactored to getDbPoolUrl
-        // changed KEY_JDBC_URL to KEY_POOL_URL
+
+        // TODO: name should be refactored to getDbPoolUrl 
+        // changed KEY_JDBC_URL to KEY_POOL_URL 
         return configuration.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL).toString();
-        /*
-        String jdbcUrl = 
-        if (jdbcUrl.startsWith(OPENCMS_URL_PREFIX)) {
-            return jdbcUrl.substring(jdbcUrl.indexOf(':'));
-        } else {
-            return jdbcUrl;
-        }
-        */
+
+        /* 
+         String jdbcUrl = configuration.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_URL).toString();
+         if (jdbcUrl.startsWith(OPENCMS_URL_PREFIX)) {
+         return jdbcUrl.substring(jdbcUrl.indexOf(':'));
+         } else {
+         return jdbcUrl;
+         }
+         */
     }
 
     /**
@@ -317,6 +319,7 @@ public final class CmsDbPool {
      * @return a list of database pool names
      */
     public static List getDbPoolNames(Map configuration) {
+
         // TODO: name should be refactored to getDbPoolUrls
         ExtendedProperties config;
         if (configuration instanceof ExtendedProperties) {
@@ -345,5 +348,4 @@ public final class CmsDbPool {
 
         return OPENCMS_DEFAULT_POOL_NAME;
     }
-
 }

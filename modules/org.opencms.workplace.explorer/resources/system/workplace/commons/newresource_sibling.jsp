@@ -32,8 +32,8 @@ default:
 %><%= wp.htmlStart("help.explorer.new.link") %>
 <script type="text/javascript">
 <!--
-	var labelFinish = "<%= wp.key("button.endwizard") %>";
-	var labelNext = "<%= wp.key("button.nextscreen") %>";
+	var labelFinish = "<%= wp.key(Messages.GUI_BUTTON_ENDWIZARD_0) %>";
+	var labelNext = "<%= wp.key(Messages.GUI_BUTTON_CONTINUE_0) %>";
 
 	function checkValue() {
 		var resName = document.getElementById("newresfield").value;
@@ -108,21 +108,21 @@ default:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.name") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_RESOURCE_NAME_0) %></td>
 	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>" id="newresfield" type="text" value="" class="maxwidth" onkeyup="checkValue();"></td>
 </tr> 
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.newsibling") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_NEWSIBLING_NAME_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_LINKTARGET %>" id="<%= wp.PARAM_LINKTARGET %>" type="text" value="" class="maxwidth" onkeyup="checkValue();"></td>
-	<td><input name="selectfolder" type="button" value="<%= wp.key("button.search") %>" onClick="top.openTreeWin('sibling', true, 'main', '<%= wp.PARAM_LINKTARGET %>');" class="dialogbutton" style="width: 60px;"></td>
+	<td><input name="selectfolder" type="button" value="<%= wp.key(Messages.GUI_BUTTON_SEARCH_0) %>" onClick="top.openTreeWin('sibling', true, 'main', '<%= wp.PARAM_LINKTARGET %>');" class="dialogbutton" style="width: 60px;"></td>
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td style="white-space: nowrap;" unselectable="on" colspan="2"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key("input.newfile.editproperties") %></td>    
+	<td style="white-space: nowrap;" unselectable="on" colspan="2"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key(Messages.GUI_NEWFILE_EDITPROPERTIES_0) %></td>    
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td style="white-space: nowrap;" unselectable="on" colspan="2"><input name="<%= wp.PARAM_KEEPPROPERTIES %>" id="<%= wp.PARAM_KEEPPROPERTIES %>" type="checkbox" value="true" checked="checked">&nbsp;<%= wp.key("input.keepproperties") %></td>    
+	<td style="white-space: nowrap;" unselectable="on" colspan="2"><input name="<%= wp.PARAM_KEEPPROPERTIES %>" id="<%= wp.PARAM_KEEPPROPERTIES %>" type="checkbox" value="true" checked="checked">&nbsp;<%= wp.key(Messages.GUI_RESOURCE_KEEPPROPERTIES_0) %></td>    
 </tr>
 </table>
 

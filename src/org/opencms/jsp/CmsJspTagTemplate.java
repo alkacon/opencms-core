@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2005/08/10 14:43:44 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * Used to select various template elements form a JSP template that
  * is included in another file.<p>
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,7 +103,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
             try {
                 content = CmsXmlPageFactory.unmarshal(controller.getCmsObject(), filename, req);
             } catch (CmsException e) {
-                LOG.error(Messages.get().key(Messages.ERR_XML_DOCUMENT_UNMARSHAL_1, filename), e);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_DOCUMENT_UNMARSHAL_1, filename), e);
             }
 
             if (content != null) {

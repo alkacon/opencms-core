@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+<%@ page session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
@@ -33,7 +33,7 @@ try {
 
 
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -43,7 +43,7 @@ OpenCms Setup Wizard
 	}	
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - License Agreement
+Alkacon OpenCms Setup Wizard - License Agreement
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
 
@@ -82,11 +82,11 @@ OpenCms Setup Wizard - License Agreement
 						<td><img src="resources/error.png" border="0"></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>
-							Error starting OpenCms setup wizard.<br>
-							It appears that your servlet container did not unpack the OpenCms WAR file.
-							OpenCms requires that it's WAR file is unpacked.
+							Error starting Alkacon OpenCms setup wizard.<br>
+							It appears that your servlet container did not unpack the Alkacon OpenCms WAR file.
+							Alkacon OpenCms requires that it's WAR file is unpacked.
 							<br><br>
-							<b>Please unpack the OpenCms WAR file and try again.</b>
+							<b>Please unpack the Alkacon OpenCms WAR file and try again.</b>
 							<br><br>
 							Check out the documentation of your Servlet container to learn how to unpack the WAR file,
 							or do it manually with some kind of unzip - tool.
@@ -110,7 +110,7 @@ OpenCms Setup Wizard - License Agreement
 						<td><img src="resources/error.png" border="0"></td>
 						<td>&nbsp;&nbsp;</td>
 						<td style="width: 100%;">
-							The OpenCms setup wizard is not available!<br>
+							The Alkacon OpenCms setup wizard is not available!<br>
 							To enable the wizard, unlock it in "opencms.properties".
 						</td>
 					</tr>

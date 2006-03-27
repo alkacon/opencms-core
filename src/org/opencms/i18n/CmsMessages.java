@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/07/28 15:18:32 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/03/27 14:53:01 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,26 +65,26 @@ public class CmsMessages {
     public static final String UNKNOWN_KEY_EXTENSION = "???";
 
     /** The resource bundle base name this object was initialized with. */
-    protected String m_baseName;
+    private String m_bundleName;
 
     /** The locale to use for looking up the messages from the bundle. */
-    protected Locale m_locale;
+    private Locale m_locale;
 
     /** The resource bundle this message object was initialized with. */
-    protected ResourceBundle m_resourceBundle;
+    private ResourceBundle m_resourceBundle;
 
     /**
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.
      * 
-     * @param baseName the base ResourceBundle name
+     * @param bundleName the base ResourceBundle name
      * @param locale the m_locale to use, eg. "de", "en" etc.
      */
-    public CmsMessages(String baseName, Locale locale) {
+    public CmsMessages(String bundleName, Locale locale) {
 
         try {
             m_locale = locale;
-            m_baseName = baseName;
-            m_resourceBundle = ResourceBundle.getBundle(baseName, m_locale);
+            m_bundleName = bundleName;
+            m_resourceBundle = CmsResourceBundleLoader.getBundle(bundleName, m_locale);
         } catch (MissingResourceException e) {
             m_resourceBundle = null;
         }
@@ -98,12 +98,12 @@ public class CmsMessages {
      * The Locale for the messages will be created like this:<br>
      * <code>new Locale(language, "", "")</code>.<p>
      * 
-     * @param baseName the base ResourceBundle name
+     * @param bundleName the base ResourceBundle name
      * @param language ISO language indentificator for the m_locale of the bundle
      */
-    public CmsMessages(String baseName, String language) {
+    public CmsMessages(String bundleName, String language) {
 
-        this(baseName, language, "", "");
+        this(bundleName, language, "", "");
     }
 
     /**
@@ -115,13 +115,13 @@ public class CmsMessages {
      * The Locale for the messages will be created like this:<br>
      * <code>new Locale(language, country, "")</code>.
      * 
-     * @param baseName the base ResourceBundle name
+     * @param bundleName the base ResourceBundle name
      * @param language ISO language indentificator for the m_locale of the bundle
      * @param country ISO 2 letter country code for the m_locale of the bundle 
      */
-    public CmsMessages(String baseName, String language, String country) {
+    public CmsMessages(String bundleName, String language, String country) {
 
-        this(baseName, language, country, "");
+        this(bundleName, language, country, "");
     }
 
     /**
@@ -134,14 +134,14 @@ public class CmsMessages {
      * The Locale for the messages will be created like this:<br>
      * <code>new Locale(language, country, variant)</code>.
      * 
-     * @param baseName the base ResourceBundle name
+     * @param bundleName the base ResourceBundle name
      * @param language language indentificator for the m_locale of the bundle
      * @param country 2 letter country code for the m_locale of the bundle 
      * @param variant a vendor or browser-specific variant code
      */
-    public CmsMessages(String baseName, String language, String country, String variant) {
+    public CmsMessages(String bundleName, String language, String country, String variant) {
 
-        this(baseName, new Locale(language, country, variant));
+        this(bundleName, new Locale(language, country, variant));
     }
 
     /**
@@ -188,11 +188,29 @@ public class CmsMessages {
     }
 
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsMultiMessages) {
+            return false;
+        }
+        if (obj instanceof CmsMessages) {
+            CmsMessages other = (CmsMessages)obj;
+            return other.getBundleName().equals(m_bundleName) && other.getLocale().equals(m_locale);
+        }
+        return false;
+    }
+
+    /**
      * Returns the resource bundle this message object was initialized with.<p>
      * 
      * @return the resource bundle this message object was initialized with or null if initialization was not successful
      */
-    public ResourceBundle getBundle() {
+    public ResourceBundle getResourceBundle() {
 
         return m_resourceBundle;
     }
@@ -307,14 +325,22 @@ public class CmsMessages {
             } catch (MissingResourceException e) {
                 throw new CmsMessageException(Messages.get().container(
                     Messages.ERR_CANT_FIND_RESOURCE_FOR_BUNDLE_2,
-                    keyName, 
-                    m_baseName));
+                    keyName,
+                    m_bundleName));
             }
         } else {
             throw new CmsMessageException(Messages.get().container(
                 Messages.ERR_MESSAGE_BUNDLE_NOT_INITIALIZED_1,
-                m_baseName));
+                m_bundleName));
         }
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_locale.hashCode() + (m_bundleName == null ? 0 : m_bundleName.hashCode());
     }
 
     /**
@@ -373,8 +399,55 @@ public class CmsMessages {
     }
 
     /**
-     * Returns the localized resource string for a given message key,
-     * with the provided replacement parameters.<p>
+     * Returns the selected localized message for the initialized resource bundle and locale.<p>
+     * 
+     * Convenience method for messages with one argument.<p>
+     * 
+     * @param key the message key
+     * @param arg0 the message argument
+     * 
+     * @return the selected localized message for the initialized resource bundle and locale
+     */
+    public String key(String key, Object arg0) {
+
+        return key(key, new Object[] {arg0});
+    }
+
+    /**
+     * Returns the selected localized message for the initialized resource bundle and locale.<p>
+     * 
+     * Convenience method for messages with two arguments.<p>
+     * 
+     * @param key the message key
+     * @param arg0 the first message argument
+     * @param arg1 the second message argument
+     * 
+     * @return the selected localized message for the initialized resource bundle and locale
+     */
+    public String key(String key, Object arg0, Object arg1) {
+
+        return key(key, new Object[] {arg0, arg1});
+    }
+
+    /**
+     * Returns the selected localized message for the initialized resource bundle and locale.<p>
+     * 
+     * Convenience method for messages with three arguments.<p>
+     * 
+     * @param key the message key
+     * @param arg0 the first message argument
+     * @param arg1 the second message argument
+     * @param arg2 the third message argument
+     * 
+     * @return the selected localized message for the initialized resource bundle and locale
+     */
+    public String key(String key, Object arg0, Object arg1, Object arg2) {
+
+        return key(key, new Object[] {arg0, arg1, arg2});
+    }
+
+    /**
+     * Returns the selected localized message for the initialized resource bundle and locale.<p>
      * 
      * If the key was found in the bundle, it will be formatted using
      * a <code>{@link MessageFormat}</code> using the provided parameters.<p>
@@ -383,25 +456,26 @@ public class CmsMessages {
      * <code>"??? " + keyName + " ???"</code>. This will also be returned 
      * if the bundle was not properly initialized first.
      * 
-     * @param keyName the key for the desired string 
-     * @param params the parameters to use for formatting
-     * @return the resource string for the given key 
+     * @param key the message key
+     * @param args the message arguments
+     * 
+     * @return the selected localized message for the initialized resource bundle and locale 
      */
-    public String key(String keyName, Object[] params) {
+    public String key(String key, Object[] args) {
 
-        if ((params == null) || (params.length == 0)) {
+        if ((args == null) || (args.length == 0)) {
             // no parameters available, use simple key method
-            return key(keyName);
+            return key(key);
         }
 
-        String result = key(keyName, true);
+        String result = key(key, true);
         if (result == null) {
             // key was not found
-            result = formatUnknownKey(keyName);
+            result = formatUnknownKey(key);
         } else {
             // key was found in the bundle - create and apply the formatter
             MessageFormat formatter = new MessageFormat(result, m_locale);
-            result = formatter.format(params);
+            result = formatter.format(args);
         }
         // return the result
         return result;
@@ -417,7 +491,7 @@ public class CmsMessages {
      * @param defaultValue the default value in case the key does not exist in the bundle
      * @return the resource string for the given key it it exists, or the given default if not 
      */
-    public String key(String keyName, String defaultValue) {
+    public String keyDefault(String keyName, String defaultValue) {
 
         String result = key(keyName, true);
         return (result == null) ? defaultValue : result;
@@ -473,11 +547,51 @@ public class CmsMessages {
         result.append('[');
         result.append(this.getClass().getName());
         result.append(", baseName: ");
-        result.append(m_baseName);
+        result.append(m_bundleName);
         result.append(", locale: ");
         result.append(getLocale());
         result.append(']');
 
         return result.toString();
+    }
+
+    /**
+     * Returns the name of the resource bundle this object was initialized with.<p>
+     * 
+     * @return the name of the resource bundle this object was initialized with
+     */
+    protected String getBundleName() {
+
+        return m_bundleName;
+    }
+
+    /**
+     * Sets the bundleName.<p>
+     *
+     * @param bundleName the bundleName to set
+     */
+    protected void setBundleName(String bundleName) {
+
+        m_bundleName = bundleName;
+    }
+
+    /**
+     * Sets the locale.<p>
+     *
+     * @param locale the locale to set
+     */
+    protected void setLocale(Locale locale) {
+
+        m_locale = locale;
+    }
+
+    /**
+     * Sets the resource bundle.<p>
+     *
+     * @param resourceBundle the resource bundle to set
+     */
+    protected void setResourceBundle(ResourceBundle resourceBundle) {
+
+        m_resourceBundle = resourceBundle;
     }
 }

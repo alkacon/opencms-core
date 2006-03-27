@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2005/07/11 15:55:07 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/03/27 14:52:18 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,10 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,11 +61,11 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsUndoChanges extends CmsDialog {
+public class CmsUndoChanges extends CmsMultiDialog {
 
     /** Value for the action: undo changes. */
     public static final int ACTION_UNDOCHANGES = 100;
@@ -112,7 +114,7 @@ public class CmsUndoChanges extends CmsDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
-            if (performUndoChangesOperation()) {
+            if (performDialogOperation()) {
                 // if no exception is caused undo changes operation was successful
                 actionCloseDialog();
             } else {
@@ -126,77 +128,37 @@ public class CmsUndoChanges extends CmsDialog {
     }
 
     /**
-     * Creates the "recursive" checkbox for undoing changes to subresources of folders.<p>
-     *  
-     * @return the String with the checkbox input field or an empty String for folders.
+     * Returns the HTML for the undo changes options and detailed output for single resource operations.<p>
+     * 
+     * @return the HTML for the undo changes options
      */
-    public String buildCheckRecursive() {
+    public String buildDialogOptions() {
 
-        StringBuffer retValue = new StringBuffer(256);
+        StringBuffer result = new StringBuffer(256);
 
-        CmsResource res = null;
-        try {
-            res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-        } catch (CmsException e) {
-            return "";
+        if (!isMultiOperation()) {
+            result.append(dialogSpacer());
+            result.append(key(Messages.GUI_UNDO_LASTMODIFIED_INFO_3, new Object[] {
+                getFileName(),
+                getLastModifiedDate(),
+                getLastModifiedUser()}));
+        }
+        result.append(dialogSpacer());
+        result.append(key(Messages.GUI_UNDO_CONFIRMATION_0));
+        if (isOperationOnFolder()) {
+            // show recursive option if folder(s) is/are selected
+            result.append(dialogSpacer());
+            result.append("<input type=\"checkbox\" name=\"");
+            result.append(PARAM_RECURSIVE);
+            result.append("\" value=\"true\">&nbsp;");
+            if (isMultiOperation()) {
+                result.append(key(Messages.GUI_UNDO_CHANGES_MULTI_SUBRESOURCES_0));
+            } else {
+                result.append(key(Messages.GUI_UNDO_CHANGES_SUBRESOURCES_0));
+            }
         }
 
-        // show the checkbox only for folders
-        if (res.isFolder()) {
-            retValue.append("<tr>\n\t<td colspan=\"3\" style=\"white-space: nowrap;\" unselectable=\"on\">");
-            retValue.append("<input type=\"checkbox\" name=\""
-                + PARAM_RECURSIVE
-                + "\" value=\"true\">&nbsp;"
-                + key(Messages.GUI_UNDO_CHANGES_SUBRESOURCES_0));
-            retValue.append("</td>\n</tr>\n");
-        }
-        return retValue.toString();
-    }
-
-    /**
-     * Returns the current CmsResource.<p>
-     * 
-     * @return the CmsResource
-     */
-    public CmsResource getCurrentResource() {
-
-        return m_currentResource;
-    }
-
-    /**
-     * Returns the file name without path information of the current resource.<p>
-     * 
-     * @return the name of the current resource
-     */
-    public String getFileName() {
-
-        return CmsResource.getName(getParamResource());
-    }
-
-    /**
-     * Returns the last modified date of the current resource as localized String.<p>
-     * 
-     * @return the date of last modification
-     */
-    public String getLastModifiedDate() {
-
-        long dateLong = getCurrentResource().getDateLastModified();
-        return getMessages().getDateTime(dateLong);
-    }
-
-    /**
-     * Returns the user who made the last changes to the current resource.<p>
-     * 
-     * @return the user who changed the resource
-     */
-    public String getLastModifiedUser() {
-
-        CmsUUID userId = getCurrentResource().getUserLastModified();
-        try {
-            return getCms().readUser(userId).getName();
-        } catch (CmsException e) {
-            return "";
-        }
+        return result.toString();
     }
 
     /**
@@ -214,16 +176,6 @@ public class CmsUndoChanges extends CmsDialog {
     }
 
     /**
-     * Sets the current CmsResource.<p>
-     * 
-     * @param res the CmsResource
-     */
-    public void setCurrentResource(CmsResource res) {
-
-        m_currentResource = res;
-    }
-
-    /**
      * Sets the value of the recursive parameter.<p>
      * 
      * @param value the value to set
@@ -234,19 +186,65 @@ public class CmsUndoChanges extends CmsDialog {
     }
 
     /**
+     * Returns the current CmsResource.<p>
+     * 
+     * @return the CmsResource
+     */
+    protected CmsResource getCurrentResource() {
+
+        return m_currentResource;
+    }
+
+    /**
+     * Returns the file name without path information of the current resource.<p>
+     * 
+     * @return the name of the current resource
+     */
+    protected String getFileName() {
+
+        return CmsResource.getName(getParamResource());
+    }
+
+    /**
+     * Returns the last modified date of the current resource as localized String.<p>
+     * 
+     * @return the date of last modification
+     */
+    protected String getLastModifiedDate() {
+
+        long dateLong = getCurrentResource().getDateLastModified();
+        return getMessages().getDateTime(dateLong);
+    }
+
+    /**
+     * Returns the user who made the last changes to the current resource.<p>
+     * 
+     * @return the user who changed the resource
+     */
+    protected String getLastModifiedUser() {
+
+        CmsUUID userId = getCurrentResource().getUserLastModified();
+        try {
+            return getCms().readUser(userId).getName();
+        } catch (CmsException e) {
+            return "";
+        }
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         // check the required permissions to undo changes of the resource       
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+        if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
         }
-        
+
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
@@ -259,15 +257,18 @@ public class CmsUndoChanges extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for undo changes dialog     
-            setParamTitle(key(Messages.GUI_UNDO_CHANGES_1, new Object[] {CmsResource.getName(getParamResource())}));
+            setDialogTitle(Messages.GUI_UNDO_CHANGES_1, Messages.GUI_UNDO_CHANGES_MULTI_2);
         }
 
-        try {
-            setCurrentResource(getCms().readResource(getParamResource(), CmsResourceFilter.ALL));
-        } catch (CmsException e) {
-            // should usually never happen
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
+        if (! isMultiOperation()) {
+            // collect resource to display information on single operation dialog
+            try {
+                setCurrentResource(getCms().readResource(getParamResource(), CmsResourceFilter.ALL));
+            } catch (CmsException e) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
             }
         }
 
@@ -279,23 +280,52 @@ public class CmsUndoChanges extends CmsDialog {
      * @return true, if the changes on a resource were undone, otherwise false
      * @throws CmsException if undo changes is not successful
      */
-    private boolean performUndoChangesOperation() throws CmsException {
+    protected boolean performDialogOperation() throws CmsException {
 
-        // on undo changes display "please wait" screen, not for simple file copy
-        CmsResource sourceRes = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-        if (sourceRes.isFolder() && !DIALOG_WAIT.equals(getParamAction())) {
+        // check if the current resource is a folder for single operation
+        boolean isFolder = isOperationOnFolder();
+        // on folder undo changes or multi operation display "please wait" screen, not for simple file undo changes
+        if ((isMultiOperation() || isFolder) && !DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
         }
-
-        // get the flag if the touch is recursive from request parameter
-        boolean touchRecursive = "true".equalsIgnoreCase(getParamRecursive());
-        // lock resource if autolock is enabled
-        checkLock(getParamResource());
-        // undo changes on the resource
-        getCms().undoChanges(getParamResource(), touchRecursive);
+        
+        // get the flag if the undo changes is recursive from request parameter
+        boolean undoRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
+        
+        Iterator i = getResourceList().iterator();
+        // iterate the resources to delete
+        while (i.hasNext()) {
+            String resName = (String)i.next();
+            try {
+                // lock resource if autolock is enabled
+                checkLock(resName);
+                // undo changes on the resource
+                getCms().undoChanges(resName, undoRecursive);
+            } catch (CmsException e) {
+                if (isMultiOperation()) {
+                    // collect exceptions to create a detailed output
+                    addMultiOperationException(e);
+                } else {
+                    // for single operation, throw the exception immediately
+                    throw e;
+                }
+            }
+        }
+        // check if exceptions occured
+        checkMultiOperationException(Messages.get(), Messages.ERR_UNDO_CHANGES_MULTI_0);
 
         return true;
+    }
+
+    /**
+     * Sets the current CmsResource.<p>
+     * 
+     * @param res the CmsResource
+     */
+    protected void setCurrentResource(CmsResource res) {
+
+        m_currentResource = res;
     }
 
 }

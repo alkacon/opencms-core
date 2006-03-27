@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2005/06/24 09:11:09 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/03/27 14:52:48 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.security;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 
@@ -54,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  *
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,7 +77,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     private String m_digestType = DIGEST_TYPE_MD5;
 
     /** The encoding the encoding used for translating the input string to bytes. */
-    private String m_inputEncoding = "UTF-8";
+    private String m_inputEncoding = CmsEncoder.ENCODING_UTF_8;
 
     /**
      * The constructor does not perform any operation.<p>
@@ -203,7 +204,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
         if (LOG.isDebugEnabled()) {
             CmsMessageContainer message = Messages.get().container(Messages.LOG_INIT_CONFIG_CALLED_1, this);
             LOG.debug(message.key());
-            LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIG_CALLED_1, this));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIG_CALLED_1, this));
             // supress compiler warning, this is never true
             if (this == null) {
                 throw new CmsConfigurationException(message);

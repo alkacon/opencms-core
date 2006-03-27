@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2005/08/02 10:30:01 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2006/03/27 14:52:37 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -53,7 +54,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,7 +123,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         StringBuffer result = new StringBuffer(128);
         result.append(EXPORT_PREFIX);
         if (pointer.indexOf(':') < 0) {
-            result.append(OpenCms.getLinkManager().substituteLink(cms, pointer)); 
+            result.append(OpenCms.getLinkManager().substituteLink(cms, pointer));
         } else {
             result.append(pointer);
         }
@@ -159,7 +160,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
      */
     public String getResourceLoaderInfo() {
 
-        return Messages.get().key(Messages.GUI_LOADER_POINTER_DEFAULT_DESC_0);
+        return Messages.get().getBundle().key(Messages.GUI_LOADER_POINTER_DEFAULT_DESC_0);
     }
 
     /**
@@ -168,7 +169,9 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     public void initConfiguration() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_LOADER_INITIALIZED_1,
+                this.getClass().getName()));
         }
     }
 
@@ -216,15 +219,15 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         }
 
         String pointer = new String(CmsFile.upgrade(resource, cms).getContents());
-        if (pointer == null || "".equals(pointer.trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(pointer)) {
             throw new CmsLoaderException(Messages.get().container(
                 Messages.ERR_INVALID_POINTER_FILE_1,
                 resource.getName()));
         }
         if (pointer.indexOf(':') < 0) {
-            pointer = OpenCms.getLinkManager().substituteLink(cms, pointer); 
+            pointer = OpenCms.getLinkManager().substituteLink(cms, pointer);
         }
-        
+
         res.sendRedirect(pointer);
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,19 @@
 
 package org.opencms.util;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.flex.CmsFlexCache;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.staticexport.CmsLinkManager;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -46,10 +52,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
@@ -61,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,49 +85,6 @@ public final class CmsFileUtil {
     private CmsFileUtil() {
 
         // noop
-    }
-
-    /** 
-     *  Check whether some of the resources are redundant because a superfolder has also
-     *  been selected.<p>
-     * 
-     *  @param resources a list of full pathnames for all the resources
-     *  
-     *  @return a list of consistent full pathnames
-     */
-    public static List removeRedundancies(List resources) {
-
-        if (resources == null) {
-            return new ArrayList();
-        }
-        List ret = new ArrayList(resources);
-        List redundant = new ArrayList();
-        int n = resources.size();
-        if (n < 2) {
-            return ret;
-        }
-        for (int i = 0; i < n; i++) {
-            redundant.add(new Boolean(false));
-        }
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (((String)ret.get(i)).length() < ((String)ret.get(j)).length()) {
-                    if (((String)ret.get(j)).startsWith((String)ret.get(i))) {
-                        redundant.set(j, new Boolean(true));
-                    }
-                } else {
-                    if (((String)ret.get(i)).startsWith((String)ret.get(j))) {
-                        redundant.set(i, new Boolean(true));
-                    }
-                }
-            }
-        }
-        for (int i = n - 1; i >= 0; i--) {
-            if (((Boolean)redundant.get(i)).booleanValue()) {
-                ret.remove(i);
-            }
-        }
-        return ret;
     }
 
     /**
@@ -137,7 +103,7 @@ public final class CmsFileUtil {
             String resourcePath = (String)it.next();
             try {
                 CmsResource resource = cms.readResource(resourcePath);
-                // append folder separator, of resource is a file and does not and with a slash
+                // append folder separator, if resource is a folder and does not and with a slash
                 if (resource.isFolder() && !resourcePath.endsWith("/")) {
                     it.set(resourcePath + "/");
                 }
@@ -167,12 +133,13 @@ public final class CmsFileUtil {
 
         FileInputStream in = new FileInputStream(inputFile);
         FileOutputStream out = new FileOutputStream(outputFile);
-        int c;
 
-        while ((c = in.read()) != -1) {
-            out.write(c);
+        // transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
         }
-
         in.close();
         out.close();
     }
@@ -182,7 +149,7 @@ public final class CmsFileUtil {
      * 
      * @param filesize in bytes 
      * @param locale the locale of the current OpenCms user or the System's default locale if the first choice 
-     *               is not at hand. 
+     *               is not at hand.
      * 
      * @return the formatted filesize to Bytes, KB, MB or GB depending on the given value 
      **/
@@ -192,29 +159,53 @@ public final class CmsFileUtil {
         filesize = Math.abs(filesize);
 
         if (Math.abs(filesize) < 1024) {
-            result = Messages.get().key(
-                locale,
-                Messages.GUI_FILEUTIL_FILESIZE_BYTES_1,
-                new Object[] {new Long(filesize)});
+            result = Messages.get().getBundle(locale).key(Messages.GUI_FILEUTIL_FILESIZE_BYTES_1, new Long(filesize));
         } else if (Math.abs(filesize) < 1048576) {
             // 1048576 = 1024.0 * 1024.0
-            result = Messages.get().key(
-                locale,
+            result = Messages.get().getBundle(locale).key(
                 Messages.GUI_FILEUTIL_FILESIZE_KBYTES_1,
-                new Object[] {new Double(filesize / 1024.0)});
+                new Double(filesize / 1024.0));
         } else if (Math.abs(filesize) < 1073741824) {
             // 1024.0^3 =  1073741824
-            result = Messages.get().key(
-                locale,
+            result = Messages.get().getBundle(locale).key(
                 Messages.GUI_FILEUTIL_FILESIZE_MBYTES_1,
-                new Object[] {new Double(filesize / 1048576.0)});
+                new Double(filesize / 1048576.0));
         } else {
-            result = Messages.get().key(
-                locale,
+            result = Messages.get().getBundle(locale).key(
                 Messages.GUI_FILEUTIL_FILESIZE_GBYTES_1,
-                new Object[] {new Double(filesize / 1073741824.0)});
+                new Double(filesize / 1073741824.0));
         }
         return result;
+    }
+
+    /**
+     * Returns a comma separated list of resource paths names, with the site root 
+     * from the given OpenCms user context removed.<p> 
+     * 
+     * @param context the current users OpenCms context (optional, may be <code>null</code>)
+     * @param resources a List of <code>{@link CmsResource}</code> instances to get the names from
+     * 
+     * @return a comma separated list of resource paths names
+     */
+    public static String formatResourceNames(CmsRequestContext context, List resources) {
+
+        if (resources == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(128);
+        Iterator i = resources.iterator();
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            String path = res.getRootPath();
+            if (context != null) {
+                path = context.removeSiteRoot(path);
+            }
+            result.append(path);
+            if (i.hasNext()) {
+                result.append(", ");
+            }
+        }
+        return result.toString();
     }
 
     /**
@@ -292,7 +283,7 @@ public final class CmsFileUtil {
 
         StringBuffer result = new StringBuffer(64);
         result.append(repository);
-        result.append(online ? "online" : "offline");
+        result.append(online ? CmsFlexCache.REPOSITORY_ONLINE : CmsFlexCache.REPOSITORY_OFFLINE);
         result.append(vfspath);
         return result.toString();
     }
@@ -325,7 +316,8 @@ public final class CmsFileUtil {
         String result = "";
         URL inputUrl = Thread.currentThread().getContextClassLoader().getResource(fileName);
         if (inputUrl != null) {
-            result = inputUrl.getFile();
+            // decode name here to avoid url encodings in path name
+            result = normalizePath(inputUrl);
             if (isFolder && !CmsResource.isFolder(result)) {
                 result = result + '/';
             }
@@ -334,12 +326,12 @@ public final class CmsFileUtil {
                 try {
                     URLClassLoader cl = (URLClassLoader)Thread.currentThread().getContextClassLoader();
                     URL[] paths = cl.getURLs();
-                    LOG.error(Messages.get().key(
+                    LOG.error(Messages.get().getBundle().key(
                         Messages.ERR_MISSING_CLASSLOADER_RESOURCE_2,
                         fileName,
                         Arrays.asList(paths)));
                 } catch (Throwable t) {
-                    LOG.error(Messages.get().key(Messages.ERR_MISSING_CLASSLOADER_RESOURCE_1, fileName));
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_MISSING_CLASSLOADER_RESOURCE_1, fileName));
                 }
             }
         }
@@ -374,11 +366,14 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Normalizes a file path that might contain '../' or './' or '//' elements to a normal absolute path,
-     * the path separator char is {@link File#separatorChar}.<p>
+     * Normalizes a file path that might contain <code>'../'</code> or <code>'./'</code> or <code>'//'</code> 
+     * elements to a normal absolute path, the path separator char used is {@link File#separatorChar}.<p>
      * 
      * @param path the path to normalize
+     * 
      * @return the normalized path
+     * 
+     * @see #normalizePath(String, char)
      */
     public static String normalizePath(String path) {
 
@@ -386,13 +381,15 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Normalizes a file path that might contain '../' or './' or '//' elements to a normal absolute path.<p>
+     * Normalizes a file path that might contain <code>'../'</code> or <code>'./'</code> or <code>'//'</code> 
+     * elements to a normal absolute path.<p>
      * 
      * Can also handle Windows like path information containing a drive letter, 
      * like <code>C:\path\..\</code>.<p>
      * 
      * @param path the path to normalize
      * @param separatorChar the file separator char to use, for example {@link File#separatorChar}
+     * 
      * @return the normalized path
      */
     public static String normalizePath(String path, char separatorChar) {
@@ -424,6 +421,44 @@ public final class CmsFileUtil {
             }
         }
         return path;
+    }
+
+    /**
+     * Returns the normalized file path created from the given URL.<p>
+     * 
+     * The path part {@link URL#getPath()} is used, unescaped and 
+     * normalized using {@link #normalizePath(String, char)} using {@link File#separatorChar}.<p>
+     * 
+     * @param url the URL to extract the path information from
+     * 
+     * @return the normalized file path created from the given URL using {@link File#separatorChar}
+     * 
+     * @see #normalizePath(URL, char)
+     */
+    public static String normalizePath(URL url) {
+
+        return normalizePath(url, File.separatorChar);
+    }
+
+    /**
+     * Returns the normalized file path created from the given URL.<p>
+     * 
+     * The path part {@link URL#getPath()} is used, unescaped and 
+     * normalized using {@link #normalizePath(String, char)}.<p>
+     * 
+     * @param url the URL to extract the path information from
+     * @param separatorChar the file separator char to use, for example {@link File#separatorChar}
+     * 
+     * @return the normalized file path created from the given URL
+     */
+    public static String normalizePath(URL url, char separatorChar) {
+
+        // get the path part from the URL
+        String path = new File(url.getPath()).getAbsolutePath();
+        // trick to get the OS default encoding, taken from the official Java i18n FAQ
+        String systemEncoding = (new OutputStreamWriter(new ByteArrayOutputStream())).getEncoding();
+        // decode url in order to remove spaces and escaped chars from path
+        return CmsFileUtil.normalizePath(CmsEncoder.decode(path, systemEncoding), separatorChar);
     }
 
     /**
@@ -460,22 +495,13 @@ public final class CmsFileUtil {
 
         // create input and output stream
         FileInputStream in = new FileInputStream(file);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        // read the file content
-        int c;
-        while ((c = in.read()) != -1) {
-            out.write(c);
-        }
-
-        in.close();
-        out.close();
-
-        return out.toByteArray();
+        // read the content
+        return readFully(in, (int)file.length());
     }
 
     /**
-     * Reads a file with the given name from the RFS and returns the file content.<p> 
+     * Reads a file with the given name from the class loader and returns the file content.<p> 
      * 
      * @param filename the file to read 
      * @return the read file content
@@ -489,22 +515,12 @@ public final class CmsFileUtil {
         if (in == null) {
             throw new FileNotFoundException(filename);
         }
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        // read the file content
-        int c;
-        while ((c = in.read()) != -1) {
-            out.write(c);
-        }
-
-        in.close();
-        out.close();
-
-        return out.toByteArray();
+        return readFully(in);
     }
 
     /**
-     * Reads a file from the RFS and converts it to a String with the specified encoding.<p> 
+     * Reads a file from the class loader and converts it to a String with the specified encoding.<p> 
      * 
      * @param filename the file to read 
      * @param encoding the encoding to use when converting the file content to a String
@@ -514,6 +530,182 @@ public final class CmsFileUtil {
     public static String readFile(String filename, String encoding) throws IOException {
 
         return new String(readFile(filename), encoding);
+    }
+
+    /**
+     * Reads all bytes from the given input stream and returns the result in an array.<p> 
+     * 
+     * @param in the input stream to read the bytes from 
+     * @return the byte content of the input stream
+     * 
+     * @throws IOException in case of errors in the underlying java.io methods used
+     */
+    public static byte[] readFully(InputStream in) throws IOException {
+
+        if (in instanceof ByteArrayInputStream) {
+            // content can be read in one pass
+            return readFully(in, in.available());
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
+        if (in.available() > 0) {
+            // read the file content in available chunks
+            int offset = 0;
+            int numRead = 0;
+            do {
+                int available = in.available();
+                if (available > 0) {
+                    byte[] bytes = new byte[available];
+                    numRead = in.read(bytes, offset, bytes.length);
+                    out.write(bytes, offset, numRead);
+                    offset += numRead;
+                } else {
+                    numRead = in.read();
+                    if (numRead != -1) {
+                        out.write(numRead);
+                        offset++;
+                    }
+                }
+            } while (numRead != -1);
+        } else {
+            // read the file content byte-to-byte
+            int c;
+            while ((c = in.read()) != -1) {
+                out.write(c);
+            }
+        }
+        in.close();
+        out.close();
+        return out.toByteArray();
+    }
+
+    /**
+     * Reads the specified number of bytes from the given input stream and returns the result in an array.<p> 
+     * 
+     * @param in the input stream to read the bytes from
+     * @param size the number of bytes to read 
+     *  
+     * @return the byte content read from the input stream
+     * 
+     * @throws IOException in case of errors in the underlying java.io methods used
+     */
+    public static byte[] readFully(InputStream in, int size) throws IOException {
+
+        // create the byte array to hold the data
+        byte[] bytes = new byte[size];
+
+        // read in the bytes
+        int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length && (numRead = in.read(bytes, offset, bytes.length - offset)) >= 0) {
+            offset += numRead;
+        }
+
+        // close the input stream and return bytes
+        in.close();
+
+        // ensure all the bytes have been read in
+        if (offset < bytes.length) {
+            throw new IOException("Could not read requested " + size + " bytes from input stream");
+        }
+
+        return bytes;
+    }
+
+    /** 
+     * Removes all resource names in the given List that are "redundant" because the parent folder name 
+     * is also contained in the List.<p> 
+     * 
+     * The content of the input list is not modified.<p>
+     * 
+     * @param resourcenames a list of VFS pathnames to check for redundencies (Strings)
+     *  
+     * @return a the given list with all redundancies removed
+     * 
+     * @see #removeRedundantResources(List)
+     */
+    public static List removeRedundancies(List resourcenames) {
+
+        if ((resourcenames == null) || (resourcenames.isEmpty())) {
+            return new ArrayList();
+        }
+        if (resourcenames.size() == 1) {
+            // if there is only one resource name in the list, there can be no redundancies
+            return new ArrayList(resourcenames);
+        }
+        // check all resources names and see if a parent folder name is contained
+        List result = new ArrayList(resourcenames.size());
+        List base = new ArrayList(resourcenames);
+        Collections.sort(base);
+        Iterator i = base.iterator();
+        while (i.hasNext()) {
+            // check all resource names in the list
+            String resourcename = (String)i.next();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourcename)) {
+                // skip empty strings
+                continue;
+            }
+            boolean valid = true;
+            for (int j = (result.size() - 1); j >= 0; j--) {
+                // check if this resource name is indirectly contained because a parent folder name is contained
+                String check = (String)result.get(j);
+                if (resourcename.startsWith(check)) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                // a parent folder name is not already contained in the result
+                result.add(resourcename);
+            }
+        }
+        return result;
+    }
+
+    /** 
+     * Removes all resources in the given List that are "redundant" because the parent folder 
+     * is also contained in the List.<p> 
+     * 
+     * The content of the input list is not modified.<p>
+     * 
+     * @param resources a list of <code>{@link CmsResource}</code> objects to check for redundencies
+     *  
+     * @return a the given list with all redundancies removed
+     * 
+     * @see #removeRedundancies(List)
+     */
+    public static List removeRedundantResources(List resources) {
+
+        if ((resources == null) || (resources.isEmpty())) {
+            return new ArrayList();
+        }
+        if (resources.size() == 1) {
+            // if there is only one resource in the list, there can be no redundancies
+            return new ArrayList(resources);
+        }
+        // check all resources and see if a parent folder name is contained
+        List result = new ArrayList(resources.size());
+        List base = new ArrayList(resources);
+        Collections.sort(base);
+        Iterator i = base.iterator();
+        while (i.hasNext()) {
+            // check all folders in the list
+            CmsResource resource = (CmsResource)i.next();
+            boolean valid = true;
+            for (int j = (result.size() - 1); j >= 0; j--) {
+                // check if this resource is indirectly contained because a parent folder is contained
+                String check = ((CmsResource)result.get(j)).getRootPath();
+                if (resource.getRootPath().startsWith(check)) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                // the parent folder is not already contained in the result
+                result.add(resource);
+            }
+        }
+        return result;
     }
 
     /**
@@ -535,7 +727,7 @@ public final class CmsFileUtil {
             return null;
         }
 
-        File configFile = new File(f, "config/opencms.xml".replace('/', File.separatorChar));
+        File configFile = new File(f, CmsSystemInfo.FOLDER_CONFIG + CmsConfigurationManager.DEFAULT_XML_FILE_NAME);
         if (configFile.exists() && configFile.isFile()) {
             return f.getAbsolutePath();
         }

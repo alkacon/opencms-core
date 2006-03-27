@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2005/10/13 16:26:01 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2006/03/27 14:52:54 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  * 
@@ -275,7 +275,7 @@ public class CmsImportExportManager {
     public CmsImportExportManager() {
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.INIT_IMPORTEXPORT_INITIALIZING_0));
+            LOG.info(Messages.get().getBundle().key(Messages.INIT_IMPORTEXPORT_INITIALIZING_0));
         }
 
         m_importExportHandlers = new ArrayList();
@@ -330,7 +330,9 @@ public class CmsImportExportManager {
             }
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ERROR_READING_MANIFEST_1, resource), e);
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_ERROR_READING_MANIFEST_1, resource),
+                    e);
             }
             manifest = null;
         } finally {
@@ -354,7 +356,7 @@ public class CmsImportExportManager {
     public void addIgnoredProperty(String propertyName) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_IGNORING_PROPERTY_1, propertyName));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_IGNORING_PROPERTY_1, propertyName));
         }
         m_ignoredProperties.add(propertyName);
     }
@@ -368,7 +370,9 @@ public class CmsImportExportManager {
     public void addImmutableResource(String immutableResource) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ADDED_IMMUTABLE_RESOURCE_1, immutableResource));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_IMPORTEXPORT_ADDED_IMMUTABLE_RESOURCE_1,
+                immutableResource));
         }
         m_immutableResources.add(immutableResource);
     }
@@ -381,7 +385,7 @@ public class CmsImportExportManager {
     public void addImportExportHandler(I_CmsImportExportHandler handler) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ADDED_IMPORTEXPORT_HANDLER_1, handler));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_ADDED_IMPORTEXPORT_HANDLER_1, handler));
         }
         m_importExportHandlers.add(handler);
     }
@@ -396,17 +400,21 @@ public class CmsImportExportManager {
     public void addImportPrincipalTranslation(String type, String from, String to) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ADDED_PRINCIPAL_TRANSLATION_3, type, from, to));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_IMPORTEXPORT_ADDED_PRINCIPAL_TRANSLATION_3,
+                type,
+                from,
+                to));
         }
-        if (type.equalsIgnoreCase(I_CmsPrincipal.PRINCIPAL_GROUP)) {
+        if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(type)) {
             m_importGroupTranslations.put(from, to);
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(Messages.INIT_IMPORTEXPORT_ADDED_GROUP_TRANSLATION_2, from, to));
+                LOG.info(Messages.get().getBundle().key(Messages.INIT_IMPORTEXPORT_ADDED_GROUP_TRANSLATION_2, from, to));
             }
-        } else if (type.equalsIgnoreCase(I_CmsPrincipal.PRINCIPAL_USER)) {
+        } else if (I_CmsPrincipal.PRINCIPAL_USER.equalsIgnoreCase(type)) {
             m_importUserTranslations.put(from, to);
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(Messages.INIT_IMPORTEXPORT_ADDED_USER_TRANSLATION_2, from, to));
+                LOG.info(Messages.get().getBundle().key(Messages.INIT_IMPORTEXPORT_ADDED_USER_TRANSLATION_2, from, to));
             }
         }
     }
@@ -419,7 +427,9 @@ public class CmsImportExportManager {
     public void addImportVersionClass(I_CmsImport importVersionClass) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ADDED_IMPORT_VERSION_1, importVersionClass));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_IMPORTEXPORT_ADDED_IMPORT_VERSION_1,
+                importVersionClass));
         }
         m_importVersionClasses.add(importVersionClass);
     }
@@ -632,7 +642,7 @@ public class CmsImportExportManager {
     public void setConvertToXmlPage(boolean convertToXmlPage) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_IMPORTEXPORT_SET_CONVERT_PARAMETER_1,
                 Boolean.toString(convertToXmlPage)));
         }
@@ -642,7 +652,7 @@ public class CmsImportExportManager {
     /**
      * Sets if imported pages should be converted into XML pages.<p>
      * 
-     * @param convertToXmlPage "true", if imported pages should be converted into XML pages.
+     * @param convertToXmlPage <code>"true"</code>, if imported pages should be converted into XML pages.
      */
     public void setConvertToXmlPage(String convertToXmlPage) {
 
@@ -660,7 +670,7 @@ public class CmsImportExportManager {
     public void setOldWebAppUrl(String webAppUrl) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_SET_OLD_WEBAPP_URL_1, webAppUrl));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_SET_OLD_WEBAPP_URL_1, webAppUrl));
         }
         m_webAppUrl = webAppUrl;
     }
@@ -683,7 +693,7 @@ public class CmsImportExportManager {
     public void setOverwriteCollidingResources(boolean overwriteCollidingResources) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_IMPORTEXPORT_SET_OVERWRITE_PARAMETER_1,
                 Boolean.toString(overwriteCollidingResources)));
         }
@@ -693,7 +703,7 @@ public class CmsImportExportManager {
     /**
      * @see CmsImportExportManager#setOverwriteCollidingResources(boolean)
      * 
-     * @param overwriteCollidingResources "true" if colliding resources should be overwritten during the import
+     * @param overwriteCollidingResources <code>"true"</code> if colliding resources should be overwritten during the import
      */
     public void setOverwriteCollidingResources(String overwriteCollidingResources) {
 

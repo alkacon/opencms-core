@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -325,64 +325,6 @@ public class CmsHtmlImport {
         } catch (MalformedURLException e) {
             // this won't happen
         }
-    }
-
-    /**
-     * Substitutes searchString in content with replaceItem.<p>
-     * 
-     * @param content the content which is scanned
-     * @param searchString the String which is searched in content
-     * @param replaceItem the new String which replaces searchString
-     * @return String the substituted String
-     */
-    public static String substitute(String content, String searchString, String replaceItem) {
-
-        // high performance implementation to avoid regular expression overhead
-        int findLength;
-        if (content == null) {
-            return null;
-        }
-        int stringLength = content.length();
-        if (searchString == null || (findLength = searchString.length()) == 0) {
-            return content;
-        }
-        if (replaceItem == null) {
-            replaceItem = "";
-        }
-        int replaceLength = replaceItem.length();
-        int length;
-        if (findLength == replaceLength) {
-            length = stringLength;
-        } else {
-            int count;
-            int start;
-            int end;
-            count = 0;
-            start = 0;
-            while ((end = content.indexOf(searchString, start)) != -1) {
-                count++;
-                start = end + findLength;
-            }
-            if (count == 0) {
-                return content;
-            }
-            length = stringLength - (count * (findLength - replaceLength));
-        }
-        int start = 0;
-        int end = content.indexOf(searchString, start);
-        if (end == -1) {
-            return content;
-        }
-        StringBuffer sb = new StringBuffer(length);
-        while (end != -1) {
-            sb.append(content.substring(start, end));
-            sb.append(replaceItem);
-            start = end + findLength;
-            end = content.indexOf(searchString, start);
-        }
-        end = stringLength;
-        sb.append(content.substring(start, end));
-        return sb.toString();
     }
 
     /**
@@ -752,7 +694,7 @@ public class CmsHtmlImport {
         if (translatedLink == null) {
             translatedLink = "#";
         }
-
+        
         return translatedLink;
     }
 
@@ -1456,7 +1398,7 @@ public class CmsHtmlImport {
             // escape the string to remove all special chars
             contentString = CmsEncoder.escapeNonAscii(contentString);
             // we must substitute all occurences of "&#", otherwiese tidy would remove them
-            contentString = substitute(contentString, "&#", "{subst}");
+            contentString = CmsStringUtil.substitute(contentString, "&#", "{subst}");
             // parse the content                  
             parsedHtml = m_htmlConverter.convertHTML(
                 file.getAbsolutePath(),
@@ -1465,7 +1407,7 @@ public class CmsHtmlImport {
                 m_endPattern,
                 properties);
             // resubstidute the converted HTML code
-            parsedHtml = substitute(parsedHtml, "{subst}", "&#");
+            parsedHtml = CmsStringUtil.substitute(parsedHtml, "{subst}", "&#");
         } catch (Exception e) {
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_HTMLIMPORT_PARSE_1,

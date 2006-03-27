@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/11/10 16:51:16 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.main;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
@@ -79,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  * 
@@ -176,7 +177,7 @@ public class CmsShell {
                         converted[j] = value;
                     } else if (clazz[j].equals(boolean.class)) {
                         // try to convert to boolean
-                        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+                        if (CmsStringUtil.TRUE.equalsIgnoreCase(value) || CmsStringUtil.FALSE.equalsIgnoreCase(value)) {
                             converted[j] = Boolean.valueOf(value);
                         } else {
                             match = false;
@@ -267,14 +268,12 @@ public class CmsShell {
                     }
                 }
             } catch (InvocationTargetException ite) {
-                System.out.println(Messages.get().key(
-                    getLocale(),
+                System.out.println(Messages.get().getBundle(getLocale()).key(
                     Messages.GUI_SHELL_EXEC_METHOD_1,
                     new Object[] {foundMethod.getName()}));
                 ite.getTargetException().printStackTrace(System.out);
             } catch (Throwable t) {
-                System.out.println(Messages.get().key(
-                    getLocale(),
+                System.out.println(Messages.get().getBundle(getLocale()).key(
                     Messages.GUI_SHELL_EXEC_METHOD_1,
                     new Object[] {foundMethod.getName()}));
                 t.printStackTrace(System.out);
@@ -422,6 +421,9 @@ public class CmsShell {
     /** Indicates if the 'exit' command has been called. */
     private boolean m_exitCalled;
 
+    /** The messages object. */
+    private CmsMessages m_messages;
+
     /** The OpenCms system object. */
     private OpenCmsCore m_opencms;
 
@@ -463,34 +465,29 @@ public class CmsShell {
             // Externalisation: get Locale: will be the System default since no CmsObject is up  before 
             // runlevel 2
             Locale locale = getLocale();
+            m_messages = Messages.get().getBundle(locale);
             // search for the WEB-INF folder
             if (CmsStringUtil.isEmpty(webInfPath)) {
-                System.out.println(Messages.get().key(locale, Messages.GUI_SHELL_NO_HOME_FOLDER_SPECIFIED_0, null));
+                System.out.println(m_messages.key(Messages.GUI_SHELL_NO_HOME_FOLDER_SPECIFIED_0));
                 System.out.println();
                 webInfPath = CmsFileUtil.searchWebInfFolder(System.getProperty("user.dir"));
                 if (CmsStringUtil.isEmpty(webInfPath)) {
-                    System.err.println(Messages.get().key(Messages.GUI_SHELL_HR_0));
-                    System.err.println(Messages.get().key(locale, Messages.GUI_SHELL_NO_HOME_FOLDER_FOUND_0, null));
+                    System.err.println(m_messages.key(Messages.GUI_SHELL_HR_0));
+                    System.err.println(m_messages.key(Messages.GUI_SHELL_NO_HOME_FOLDER_FOUND_0));
                     System.err.println();
-                    System.err.println(Messages.get().key(locale, Messages.GUI_SHELL_START_DIR_LINE1_0, null));
-                    System.err.println(Messages.get().key(locale, Messages.GUI_SHELL_START_DIR_LINE2_0, null));
-                    System.err.println(Messages.get().key(Messages.GUI_SHELL_HR_0));
+                    System.err.println(m_messages.key(Messages.GUI_SHELL_START_DIR_LINE1_0));
+                    System.err.println(m_messages.key(Messages.GUI_SHELL_START_DIR_LINE2_0));
+                    System.err.println(m_messages.key(Messages.GUI_SHELL_HR_0));
                     return;
                 }
             }
-            System.out.println(Messages.get().key(
-                getLocale(),
-                Messages.GUI_SHELL_WEB_INF_PATH_1,
-                new Object[] {webInfPath}));
+            System.out.println(Messages.get().getBundle(locale).key(Messages.GUI_SHELL_WEB_INF_PATH_1, webInfPath));
             // set the path to the WEB-INF folder (the 2nd and 3rd parameters are just reasonable dummies)
             m_opencms.getSystemInfo().init(webInfPath, servletMapping, null, defaultWebAppName);
 
             // now read the configuration properties
             String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();
-            System.out.println(Messages.get().key(
-                getLocale(),
-                Messages.GUI_SHELL_CONFIG_FILE_1,
-                new Object[] {propertyPath}));
+            System.out.println(m_messages.key(Messages.GUI_SHELL_CONFIG_FILE_1, propertyPath));
             System.out.println();
             ExtendedProperties configuration = CmsPropertyUtils.loadProperties(propertyPath);
 
@@ -559,20 +556,20 @@ public class CmsShell {
                 } else if (arg.startsWith(SHELL_PARAM_DEFAULT_WEB_APP)) {
                     defaultWebApp = arg.substring(SHELL_PARAM_DEFAULT_WEB_APP.length());
                 } else {
-                    System.out.println(Messages.get().key(Messages.GUI_SHELL_WRONG_USAGE_0));
+                    System.out.println(Messages.get().getBundle().key(Messages.GUI_SHELL_WRONG_USAGE_0));
                     wrongUsage = true;
                 }
             }
         }
         if (wrongUsage) {
-            System.out.println(Messages.get().key(Messages.GUI_SHELL_USAGE_1, CmsShell.class.getName()));
+            System.out.println(Messages.get().getBundle().key(Messages.GUI_SHELL_USAGE_1, CmsShell.class.getName()));
         } else {
             FileInputStream stream = null;
             if (script != null) {
                 try {
                     stream = new FileInputStream(script);
                 } catch (IOException exc) {
-                    System.out.println(Messages.get().key(Messages.GUI_SHELL_ERR_SCRIPTFILE_1, script));
+                    System.out.println(Messages.get().getBundle().key(Messages.GUI_SHELL_ERR_SCRIPTFILE_1, script));
                 }
             }
             if (stream == null) {
@@ -629,6 +626,16 @@ public class CmsShell {
     }
 
     /**
+     * Returns the localized messages object for the current user.<p>
+     *  
+     * @return the localized messages object for the current user
+     */
+    public CmsMessages getMessages() {
+
+        return m_messages;
+    }
+
+    /**
      * Obtain the additional settings related to the current user.
      * 
      * @return the additional settings related to the current user.
@@ -649,6 +656,23 @@ public class CmsShell {
         prompt = CmsStringUtil.substitute(prompt, "${project}", m_cms.getRequestContext().currentProject().getName());
         prompt = CmsStringUtil.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
         System.out.print(prompt);
+    }
+
+    /**
+     * Sets the locale of the current user.<p>
+     * 
+     * @param locale the locale to set
+     * 
+     * @throws CmsException in case the locale of the current user can not be stored
+     */
+    public void setLocale(Locale locale) throws CmsException {
+
+        CmsUserSettings settings = getSettings();
+        if (settings != null) {
+            settings.setLocale(locale);
+            settings.save(m_cms);
+            m_messages = Messages.get().getBundle(locale);
+        }
     }
 
     /**
@@ -682,20 +706,16 @@ public class CmsShell {
             CmsCommandObject cmdObj = (CmsCommandObject)i.next();
             commandList = cmdObj.getMethodHelp(searchString);
             if (!CmsStringUtil.isEmpty(commandList)) {
-                System.out.println(Messages.get().key(
-                    getLocale(),
+                System.out.println(m_messages.key(
                     Messages.GUI_SHELL_AVAILABLE_METHODS_1,
-                    new Object[] {cmdObj.getObject().getClass().getName()}));
+                    cmdObj.getObject().getClass().getName()));
                 System.out.println(commandList);
                 foundSomething = true;
             }
         }
 
         if (!foundSomething) {
-            System.out.println(Messages.get().key(
-                getLocale(),
-                Messages.GUI_SHELL_MATCH_SEARCHSTRING_1,
-                new Object[] {searchString}));
+            System.out.println(m_messages.key(Messages.GUI_SHELL_MATCH_SEARCHSTRING_1, searchString));
         }
     }
 
@@ -779,11 +799,8 @@ public class CmsShell {
             }
             commandMsg.append(")");
 
-            System.out.println(Messages.get().key(
-                getLocale(),
-                Messages.GUI_SHELL_METHOD_NOT_FOUND_1,
-                new Object[] {commandMsg.toString()}));
-            System.out.println(Messages.get().key(Messages.GUI_SHELL_HR_0));
+            System.out.println(m_messages.key(Messages.GUI_SHELL_METHOD_NOT_FOUND_1, commandMsg.toString()));
+            System.out.println(m_messages.key(Messages.GUI_SHELL_HR_0));
             ((CmsShellCommands)m_shellCommands).help();
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDirectJsAction.java,v $
- * Date   : $Date: 2005/10/13 13:26:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/27 14:52:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +71,7 @@ public abstract class A_CmsListDirectJsAction extends CmsListDirectAction {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(confirmationMessage)) {
             onClic.append("if (confirm('");
             onClic.append(confirmationMessage);
-            onClic.append("') { ");
+            onClic.append("')) { ");
         }
         onClic.append(jsCode());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(confirmationMessage)) {

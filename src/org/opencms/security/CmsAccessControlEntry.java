@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2005/10/10 16:11:12 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/03/27 14:52:48 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,11 +53,32 @@ import java.util.StringTokenizer;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsAccessControlEntry {
+
+    /** Flag to indicate that an access control entry is currently deleted. */
+    public static final int ACCESS_FLAGS_DELETED = 1;
+
+    /** Flag to indicate the pricipal type group. */
+    public static final int ACCESS_FLAGS_GROUP = 32;
+
+    /** Flag to indicate that an access control entry should be inherited. */
+    public static final int ACCESS_FLAGS_INHERIT = 2;
+
+    /** Flag to indicate that an access control entry was inherited (read only). */
+    public static final int ACCESS_FLAGS_INHERITED = 8;
+
+    /** Flag to indicate that an access control entry overwrites inherited entries. */
+    public static final int ACCESS_FLAGS_OVERWRITE = 4;
+
+    /** Flag to indicate that the principal is responsible for the resource. */
+    public static final int ACCESS_FLAGS_RESPONSIBLE = 64;
+
+    /** Flag to indicate the principal type user. */
+    public static final int ACCESS_FLAGS_USER = 16;
 
     /**
      * Flags of this access control entry.
@@ -79,27 +100,6 @@ public class CmsAccessControlEntry {
      */
     private CmsUUID m_resource;
 
-    /** Flag to indicate that an access control entry is currently deleted. */
-    public static final int ACCESS_FLAGS_DELETED = 1;
-
-    /** Flag to indicate the pricipal type group. */
-    public static final int ACCESS_FLAGS_GROUP = 32;
-
-    /** Flag to indicate the principal type user. */
-    public static final int ACCESS_FLAGS_USER = 16;
-
-    /** Flag to indicate that an access control entry should be inherited. */
-    public static final int ACCESS_FLAGS_INHERIT = 2;
-
-    /** Flag to indicate that an access control entry was inherited (read only). */
-    public static final int ACCESS_FLAGS_INHERITED = 8;
-
-    /** Flag to indicate that an access control entry overwrites inherited entries. */
-    public static final int ACCESS_FLAGS_OVERWRITE = 4;
-
-    /** Flag to indicate that the principal is responsible for the resource. */
-    public static final int ACCESS_FLAGS_RESPONSIBLE = 64;
-    
     /**
      * Constructor to create a new access control entry for a given resource
      * based on an existing access control entry.<p>
@@ -199,7 +199,7 @@ public class CmsAccessControlEntry {
                     if (prefix.charAt(0) == '-') {
                         m_flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE;
                     }
-                    break;    
+                    break;
                 default:
                     permissionString.append(prefix);
                     permissionString.append(suffix);
@@ -210,20 +210,6 @@ public class CmsAccessControlEntry {
         m_permissions = new CmsPermissionSetCustom(permissionString.toString());
     }
 
-    /**
-     * Returns the string representation of the "responsible" flag.<p>
-     * 
-     * @return string of the format {{+|-}s}*
-     */
-    public String getResponsibleString() {
-
-        if (isResponsible()) {
-            return "+l";
-        } else  {
-            return "+l";
-        }
-    }
-    
     /**
      * Sets the explicitly denied permissions in the access control entry.<p>
      * 
@@ -325,6 +311,20 @@ public class CmsAccessControlEntry {
     }
 
     /**
+     * Returns the string representation of the "responsible" flag.<p>
+     * 
+     * @return string of the format {{+|-}l}*
+     */
+    public String getResponsibleString() {
+
+        if (isResponsible()) {
+            return "+l";
+        } else {
+            return "-l";
+        }
+    }
+
+    /**
      * Sets the allowed permissions in the access control entry.<p>
      * 
      * @param allowed the allowed permissions as bitset
@@ -356,7 +356,7 @@ public class CmsAccessControlEntry {
 
         return ((m_flags & CmsAccessControlEntry.ACCESS_FLAGS_INHERITED) > 0);
     }
-    
+
     /**
      * Returns if the principal is responsible for the current resource.<p>
      * 
@@ -385,6 +385,17 @@ public class CmsAccessControlEntry {
     public void setFlags(int flags) {
 
         m_flags |= flags;
+    }
+
+    /**
+     * Sets the access flags to identify the given principal type.<p>
+     * 
+     * @param principal the principal to set the flags for
+     */
+    public void setFlagsForPrincipal(I_CmsPrincipal principal) {
+
+        setFlags(principal.isGroup() ? CmsAccessControlEntry.ACCESS_FLAGS_GROUP
+        : CmsAccessControlEntry.ACCESS_FLAGS_USER);
     }
 
     /**

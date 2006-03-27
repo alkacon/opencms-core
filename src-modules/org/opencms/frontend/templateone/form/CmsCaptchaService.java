@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaService.java,v $
- * Date   : $Date: 2005/12/15 14:42:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.octo.captcha.service.image.ImageCaptchaService;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsCaptchaService extends AbstractManageableImageCaptchaService implements ImageCaptchaService {
 
@@ -57,7 +57,7 @@ public class CmsCaptchaService extends AbstractManageableImageCaptchaService imp
      * @param captchaSettings the settings to render captcha images
      */
     public CmsCaptchaService(CmsCaptchaSettings captchaSettings) {
-   
+
         super(new MapCaptchaStore(), new CmsCaptchaEngine(captchaSettings), 180, 100000, 75000);    
     }
     

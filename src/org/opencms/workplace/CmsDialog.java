@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/10/13 08:19:25 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.95 $ 
+ * @version $Revision: 1.96 $ 
  * 
  * @since 6.0.0 
  */
@@ -390,7 +390,7 @@ public class CmsDialog extends CmsToolDialog {
         if (segment == HTML_START) {
             StringBuffer html = new StringBuffer(512);
             if (useNewStyle()) {
-                html.append(super.dialogTitle());
+                html.append(dialogTitle());
             }
             html.append("<table class=\"dialog\" cellpadding=\"0\" cellspacing=\"0\"");
             if (attributes != null) {
@@ -399,7 +399,7 @@ public class CmsDialog extends CmsToolDialog {
             }
             html.append("><tr><td>\n<table class=\"dialogbox\" cellpadding=\"0\" cellspacing=\"0\">\n");
             html.append("<tr><td>\n");
-            if (useNewStyle() && getToolManager().getToolPathForUrl(getJsp().getRequestContext().getUri()) != null) {
+            if (useNewStyle() && getToolManager().hasToolPathForUrl(getJsp().getRequestContext().getUri())) {
                 html.append(getAdminTool().groupHtml(this));
             }
             return html.toString();
@@ -425,7 +425,7 @@ public class CmsDialog extends CmsToolDialog {
                 errorStyles = " dialogerror textbold";
             }
             retValue.append("<!-- 3D block start -->\n");
-            if (headline != null && !"".equals(headline)) {
+            if (CmsStringUtil.isNotEmpty(headline)) {
                 retValue.append("<div class=\"dialogblockborder dialogblockborderheadline\" unselectable=\"on\">\n");
                 retValue.append("<div class=\"dialogblock" + errorStyles + "\" unselectable=\"on\">\n");
                 retValue.append("<span class=\"dialogblockhead" + errorStyles + "\" unselectable=\"on\">");
@@ -590,8 +590,7 @@ public class CmsDialog extends CmsToolDialog {
 
         return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[] {okAttributes, cancelAttributes});
     }
-    
-    
+
     /**
      * Builds a button row with an "ok", a "cancel" and an "advanced" button.<p>
      * 
@@ -825,6 +824,7 @@ public class CmsDialog extends CmsToolDialog {
      * @return HTML code to fold and unfild a white-box
      */
     public String dialogToggleStart(String headline, String id, boolean show) {
+
         StringBuffer result = new StringBuffer(512);
         // set icon and style class to use: hide user permissions
         String image = "plus.png";
@@ -856,7 +856,7 @@ public class CmsDialog extends CmsToolDialog {
         result.append(styleClass);
         result.append("\" id=\"");
         result.append(id);
-        result.append("\">\n"); 
+        result.append("\">\n");
         return result.toString();
     }
 
@@ -1109,9 +1109,9 @@ public class CmsDialog extends CmsToolDialog {
         if (CmsStringUtil.isNotEmpty(getParamResource())) {
             CmsResource file = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             if (getCms().isInsideCurrentProject(getParamResource())) {
-                return key("explorer.state" + file.getState());
+                return key(Messages.getStateKey(file.getState()));
             } else {
-                return key("explorer.statenip");
+                return key(Messages.GUI_EXPLORER_STATENIP_0);
             }
         }
         return "+++ resource parameter not found +++";
@@ -1177,7 +1177,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public void includeErrorpage(CmsWorkplace wp, Throwable t) throws JspException {
 
-        CmsLog.getLog(wp).error(Messages.get().key(Messages.ERR_WORKPLACE_DIALOG_0), t);
+        CmsLog.getLog(wp).error(Messages.get().getBundle().key(Messages.ERR_WORKPLACE_DIALOG_0), t);
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, wp);
         getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, t);
         getJsp().include(FILE_DIALOG_SCREEN_ERRORPAGE);
@@ -1291,8 +1291,7 @@ public class CmsDialog extends CmsToolDialog {
     public void setParamCloseLink(String value) {
 
         // ensure decoded chars are re-encoded again properly
-        
-        
+
         m_paramCloseLink = value;
     }
 
@@ -1374,7 +1373,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     protected String appendDelimiter(String attribute) {
 
-        if (attribute != null && !"".equals(attribute)) {
+        if (CmsStringUtil.isNotEmpty(attribute)) {
             if (!attribute.startsWith(" ")) {
                 // add a delimiter space between the beginning button HTML and the button tag attribs
                 return " " + attribute;

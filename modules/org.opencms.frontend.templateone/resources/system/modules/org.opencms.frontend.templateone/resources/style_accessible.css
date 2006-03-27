@@ -66,6 +66,10 @@ String formButtonBorder = cms.getConfigValue("form.button.border", headLinksBord
 String formButtonBg = cms.getConfigValue("form.button.bg", headLinksBg);
 String formButtonFont = cms.getConfigValue("form.button.font", footLinksFont);
 
+// optional additional CSS files
+String cssUri = cms.getConfigValue("css.optional.uri", null);
+String layoutPageCss = "/system/modules/org.opencms.frontend.layoutpage/resources/style.css";
+
 %>
 
 /* old styles */
@@ -333,7 +337,7 @@ div.navleft {
 	height: 100%;
 	background-color: <%= navLeftBg %>; 
 	background-image: url(<%= navLeftImgBgUri %>);
-	background-repeat: no-repeat;
+	background-repeat: repeat-y;
 }
 
 /* left navigation image row */
@@ -421,3 +425,21 @@ textarea.onlineform { height: 80px; }
 /* default styles */
 .nowrap { white-space: nowrap; }
 .bold { font-weight: bold; }
+<% 
+
+if (cms.getCmsObject().existsResource(layoutPageCss)) {
+	String layoutStyles = cms.getContent(layoutPageCss);
+	out.print(layoutStyles);
+}
+
+if (cssUri != null && cms.getCmsObject().existsResource(cssUri)) { %>
+/* optional additional styles */
+<% 
+	String additionalStyles = null;
+	try {
+		additionalStyles = cms.getContent(cssUri);
+	} catch (Exception e) {}
+	if (additionalStyles != null) {
+		out.print(additionalStyles);
+	}
+} %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlGalleryWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.galleries.A_CmsGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,13 +98,13 @@ public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
             "javascript:open" + getNameUpper() + "Gallery('" + A_CmsGallery.MODE_WIDGET + "',  '" + id + "');",
             null,
             getNameLower() + "gallery",
-            "button." + getNameLower() + "list",
+            Messages.getButtonName(this.getNameLower()),
             widgetDialog.getButtonStyle()));
         result.append(widgetDialog.button(
             "javascript:reset" + getNameUpper() + "Gallery('" + id + "');",
             null,
             "erase",
-            "button.erase",
+            Messages.GUI_BUTTON_ERASE_0,
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
         result.append("</td></tr>");

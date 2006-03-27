@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/03/27 14:52:30 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,6 +99,9 @@ public class CmsTree extends CmsWorkplace {
     /** Request parameter name for the type parameter. */
     public static final String PARAM_TYPE = "type";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTree.class);
+
     /** Type name for showing the tree when copying resources. */
     private static final String TYPE_COPY = "copy";
 
@@ -113,9 +116,6 @@ public class CmsTree extends CmsWorkplace {
 
     /** Type name for showing the tree in a widget dialog. */
     private static final String TYPE_VFSWIDGET = "vfswidget";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsTree.class);
 
     /** Indicates if only folders or files and folders should be included in the tree. */
     private boolean m_includeFiles;
@@ -185,32 +185,19 @@ public class CmsTree extends CmsWorkplace {
             int curTypeId = type.getTypeId();
             String curTypeName = type.getTypeName();
             // get the settings for the resource type
-            CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(curTypeName);
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(curTypeName);
             // determine if this resource type is editable for the current user
-            CmsPermissionSet permissions;
-            try {
-                // get permissions of the current user
-                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
-                    cms.getRequestContext().currentUser(),
-                    cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
-            } catch (CmsException e) {
-                // error reading the groups of the current user
-                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
-                    cms.getRequestContext().currentUser());
-                LOG.error(Messages.get().key(
-                    Messages.LOG_READ_GROUPS_OF_USER_FAILED_1,
-                    cms.getRequestContext().currentUser().getName()));
-            }
-            if (permissions.getPermissionString().indexOf("+w") != -1) {
+            CmsPermissionSet permissions = settings.getAccess().getPermissions(cms);
+            if (permissions.requiresWritePermission()) {
                 // user is allowed to write this resource type
                 retValue.append("\taddResourceType(");
                 retValue.append(curTypeId);
                 retValue.append(", \"");
                 retValue.append(curTypeName);
                 retValue.append("\",\t\"");
-                retValue.append(messages.key(typeSettings.getKey()));
+                retValue.append(messages.key(settings.getKey()));
                 retValue.append("\",\t\"filetypes/");
-                retValue.append(typeSettings.getIcon());
+                retValue.append(settings.getIcon());
                 retValue.append("\");\n");
             }
         }
@@ -458,6 +445,7 @@ public class CmsTree extends CmsWorkplace {
                     resource.getName(),
                     resource.getTypeId(),
                     resource.isFolder(),
+                    resource.getState(),
                     grey));
             }
 
@@ -553,7 +541,7 @@ public class CmsTree extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
-    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         setIncludeFiles(Boolean.valueOf(request.getParameter(PARAM_INCLUDEFILES)).booleanValue());
         boolean rootloaded = Boolean.valueOf(request.getParameter(PARAM_ROOTLOADED)).booleanValue();
@@ -633,11 +621,12 @@ public class CmsTree extends CmsWorkplace {
      * @param title the resource name
      * @param type the resource type 
      * @param folder if the resource is a folder
+     * @param state the resource state
      * @param grey if true, the node is displayed in grey
      *
      * @return the output for a tree node
      */
-    private String getNode(String path, String title, int type, boolean folder, boolean grey) {
+    private String getNode(String path, String title, int type, boolean folder, int state, boolean grey) {
 
         StringBuffer result = new StringBuffer(64);
         String parent = CmsResource.getParentFolder(path);
@@ -660,6 +649,9 @@ public class CmsTree extends CmsWorkplace {
         result.append(",");
         // hashcode of parent path
         result.append((parent != null) ? parent.hashCode() : 0);
+        result.append(",");
+        // resource state
+        result.append(state);
         result.append(",");
         // project status
         if (grey) {
@@ -698,7 +690,7 @@ public class CmsTree extends CmsWorkplace {
                 LOG.info(e);
             }
         }
-        return getNode(resource.getRootPath(), title, resource.getTypeId(), true, false);
+        return getNode(resource.getRootPath(), title, resource.getTypeId(), true, resource.getState(), false);
     }
 
     /**

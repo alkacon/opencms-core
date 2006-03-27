@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2006/03/27 14:52:35 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  * 
@@ -203,7 +203,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
 
         // do nothing here...
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEENTRY_ADDED_ENTRY_1, this));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEENTRY_ADDED_ENTRY_1, this));
         }
     }
 
@@ -226,7 +226,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
             m_elements = Collections.unmodifiableList(m_elements);
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEENTRY_ENTRY_COMPLETED_1, toString()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEENTRY_ENTRY_COMPLETED_1, toString()));
         }
     }
 
@@ -313,7 +313,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
             m_variationMap.remove(m_variationKey);
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEENTRY_REMOVED_ENTRY_FOR_VARIATION_1, m_variationKey));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_FLEXCACHEENTRY_REMOVED_ENTRY_FOR_VARIATION_1,
+                m_variationKey));
         }
         clear();
     }
@@ -395,7 +397,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
         m_dateExpires = dateExpires;
         if (LOG.isDebugEnabled()) {
             long now = System.currentTimeMillis();
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_FLEXCACHEENTRY_SET_EXPIRATION_DATE_3,
                 new Long(m_dateExpires),
                 new Long(now),
@@ -415,7 +417,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      *
      * @param timeout the timeout value to be set
      */
-    public synchronized void setDateExpiresToNextTimeout(long timeout) {
+    public void setDateExpiresToNextTimeout(long timeout) {
 
         if (timeout < 0 || !m_completed) {
             return;

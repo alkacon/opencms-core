@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/07/07 16:25:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/03/27 14:52:59 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,12 +51,15 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsTemplateContentListItem {
 
+    // TODO: This is really specific to templateone and should not be in the core package!
+    int todo = 0;    
+    
     /** The display area of the list: center. */
     public static final String DISPLAYAREA_CENTER = "center";
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/03/27 14:52:54 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,20 +48,23 @@ import org.dom4j.Node;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsCompatibleCheck {
 
-    /** Default class for templates. */
-    public static final String XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";
-    /** Parameter for default module. */
-    public static final String VFS_PATH_DEFAULTMODULE = CmsWorkplace.VFS_PATH_MODULES + "default/";
-    /** Path to content templates folder. */
-    public static final String VFS_PATH_DEFAULT_TEMPLATES = VFS_PATH_DEFAULTMODULE + CmsWorkplace.VFS_DIR_TEMPLATES;
     /** Parameter for content body folder. */
     public static final String VFS_PATH_BODIES = "/system/bodies/";
+    
+    /** Parameter for default module. */
+    public static final String VFS_PATH_DEFAULTMODULE = CmsWorkplace.VFS_PATH_MODULES + "default/";
+    
+    /** Path to content templates folder. */
+    public static final String VFS_PATH_DEFAULT_TEMPLATES = VFS_PATH_DEFAULTMODULE + CmsWorkplace.VFS_DIR_TEMPLATES;
+    
+    /** Default class for templates. */
+    public static final String XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";
 
     /**
      * Constructor, does nothing.<p> 
@@ -115,8 +118,7 @@ public class CmsCompatibleCheck {
             }
 
         } else if (name.startsWith(CmsCompatibleCheck.VFS_PATH_DEFAULT_TEMPLATES)
-            || (name.startsWith(CmsWorkplace.VFS_PATH_MODULES) && name.indexOf("/"
-                + CmsWorkplace.VFS_DIR_TEMPLATES) > -1)) {
+            || (name.startsWith(CmsWorkplace.VFS_PATH_MODULES) && name.indexOf("/" + CmsWorkplace.VFS_DIR_TEMPLATES) > -1)) {
             // this is a template file
             if (!CmsResourceTypePlain.getStaticTypeName().equals(type)) {
                 // only plain templates are allowed
@@ -250,12 +252,12 @@ public class CmsCompatibleCheck {
      */
     private Node getNextSibling(Node node) {
 
-        Node parent = null;
         Node sibling = null;
         List content = null;
         int i = 0;
 
-        if ((parent = node.getParent()) != null) {
+        Node parent = node.getParent();
+        if (parent != null) {
             content = ((Element)parent).content();
             i = content.indexOf(node);
             if (i < content.size() - 1) {
@@ -313,5 +315,4 @@ public class CmsCompatibleCheck {
         }
         return nextnode;
     }
-
 }

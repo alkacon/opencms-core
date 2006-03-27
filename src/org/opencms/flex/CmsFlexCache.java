@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2006/03/27 14:52:35 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -88,12 +89,14 @@ import org.apache.commons.logging.Log;
  * For every entry a key is saved which contains the resource name and the variation.
  * </ul>
  *
- * The whole cache is flushed if something is published.<p>
+ * Cache clearing is handled using events.
+ * The cache is fully flushed if an event {@link I_CmsEventListener#EVENT_PUBLISH_PROJECT} 
+ * or {@link I_CmsEventListener#EVENT_CLEAR_CACHES} is caught.<p>
  *
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 6.0.0 
  * 
@@ -125,7 +128,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         public CmsFlexCacheVariation(CmsFlexCacheKey theKey) {
 
             m_key = theKey;
-            m_map = Collections.synchronizedMap(new HashMap(CmsFlexCache.INITIAL_CAPACITY_VARIATIONS));
+            m_map = new Hashtable(INITIAL_CAPACITY_VARIATIONS);
         }
     }
 
@@ -152,8 +155,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         /**
          * Ensures that all variations that referenced by this key are released
          * if the key is released.<p>
-         * 
-         * @see org.apache.commons.collections.map.LRUMap#removeLRU(org.apache.commons.collections.map.AbstractLinkedMap.LinkEntry)
          */
         protected boolean removeLRU(LinkEntry entry) {
 
@@ -209,6 +210,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     /** Initial size for variation lists, should be a power of 2. */
     public static final int INITIAL_CAPACITY_VARIATIONS = 8;
 
+    /** Offline repository constant. */
+    public static final String REPOSITORY_OFFLINE = "offline";
+
+    /** Online repository constant. */
+    public static final String REPOSITORY_ONLINE = "online";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexCache.class);
 
@@ -248,18 +255,18 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         int maxEntryBytes = configuration.getMaxEntryBytes();
         int maxKeys = configuration.getMaxKeys();
 
-        this.m_variationCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes);
+        m_variationCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes);
 
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_entryLruCache", m_variationCache);
+            OpenCms.getMemoryMonitor().register(getClass().getName() + ".m_entryLruCache", m_variationCache);
         }
 
         if (m_enabled) {
-            CmsFlexKeyMap hashMap = new CmsFlexKeyMap(maxKeys);
-            this.m_keyCache = Collections.synchronizedMap(hashMap);
+            CmsFlexKeyMap flexKeyMap = new CmsFlexKeyMap(maxKeys);
+            m_keyCache = Collections.synchronizedMap(flexKeyMap);
 
             if (OpenCms.getMemoryMonitor().enabled()) {
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resourceMap", hashMap);
+                OpenCms.getMemoryMonitor().register(getClass().getName() + ".m_resourceMap", flexKeyMap);
             }
 
             OpenCms.addCmsEventListener(this, new int[] {
@@ -270,7 +277,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(
+            LOG.info(Messages.get().getBundle().key(
                 Messages.INIT_FLEXCACHE_CREATED_2,
                 new Boolean(m_enabled),
                 new Boolean(m_cacheOffline)));
@@ -303,19 +310,20 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_RECEIVED_EVENT_CLEAR_CACHE_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_RECEIVED_EVENT_CLEAR_CACHE_0));
                 }
                 clear();
                 break;
             case I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY:
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_RECEIVED_EVENT_PURGE_REPOSITORY_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_RECEIVED_EVENT_PURGE_REPOSITORY_0));
                 }
                 purgeJspRepository();
                 break;
             case I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR:
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_RECEIVED_EVENT_CLEAR_CACHE_PARTIALLY_0));
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_FLEXCACHE_RECEIVED_EVENT_CLEAR_CACHE_PARTIALLY_0));
                 }
                 Map m = event.getData();
                 if (m == null) {
@@ -436,7 +444,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public CmsLruCache getEntryLruCache() {
 
-        return this.m_variationCache;
+        return m_variationCache;
     }
 
     /**
@@ -470,7 +478,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public int size() {
 
-        return this.m_variationCache.size();
+        return m_variationCache.size();
     }
 
     /**
@@ -480,9 +488,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     protected void finalize() throws Throwable {
 
         try {
-            this.clear();
-            this.m_variationCache = null;
-            this.m_keyCache = null;
+            clear();
+            m_variationCache = null;
+            m_keyCache = null;
         } catch (Throwable t) {
             // ignore
         }
@@ -522,7 +530,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             }
             if (entry.getDateExpires() < System.currentTimeMillis()) {
                 // cache entry avaiable but expired, remove entry
-                this.m_variationCache.remove(entry);
+                m_variationCache.remove(entry);
                 return null;
             }
             // return the found cache entry
@@ -546,12 +554,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         Object o = m_keyCache.get(resource);
         if (o != null) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_FOUND_1, resource));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_FOUND_1, resource));
             }
             return ((CmsFlexCacheVariation)o).m_key;
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_NOT_FOUND_1, resource));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_NOT_FOUND_1, resource));
             }
             return null;
         }
@@ -590,13 +598,13 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             return false;
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_ADD_ENTRY_1, key.getResource()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_ADD_ENTRY_1, key.getResource()));
         }
         if (variation != null) {
             // This is a cachable result
             key.setVariation(variation);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(
+                LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_FLEXCACHE_ADD_ENTRY_WITH_VARIATION_2,
                     key.getResource(),
                     key.getVariation()));
@@ -608,7 +616,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         } else {
             // Result is not cachable
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_RESOURCE_NOT_CACHEABLE_0));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_RESOURCE_NOT_CACHEABLE_0));
             }
             return false;
         }
@@ -630,7 +638,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             CmsFlexCacheVariation variationMap = new CmsFlexCacheVariation(key);
             m_keyCache.put(key.getResource(), variationMap);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_ADD_KEY_1, key.getResource()));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_ADD_KEY_1, key.getResource()));
             }
         }
         // If != null the key is already in the cache, so we just do nothing
@@ -651,7 +659,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             //Object old = ((HashMap)o).remove(key.Variation);
             Object old = ((HashMap)o).get(key.getVariation());
             if (old != null) {
-                this.getEntryLruCache().remove((I_CmsLruCacheObject)old);
+                getEntryLruCache().remove((I_CmsLruCacheObject)old);
             }
         }
     }
@@ -667,10 +675,10 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         m_keyCache.clear();
         m_size = 0;
 
-        this.m_variationCache.clear();
+        m_variationCache.clear();
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_0));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_CLEAR_0));
         }
     }
 
@@ -701,9 +709,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                     while (allEntries.hasNext()) {
                         I_CmsLruCacheObject nextObject = (I_CmsLruCacheObject)allEntries.next();
                         allEntries.remove();
-                        this.m_variationCache.remove(nextObject);
+                        m_variationCache.remove(nextObject);
                     }
-                    v.m_map = Collections.synchronizedMap(new HashMap(INITIAL_CAPACITY_VARIATIONS));
+                    v.m_map = new Hashtable(INITIAL_CAPACITY_VARIATIONS);
                 } else {
                     // Clear key and entry
                     m_size -= v.m_map.size();
@@ -711,7 +719,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                     while (allEntries.hasNext()) {
                         I_CmsLruCacheObject nextObject = (I_CmsLruCacheObject)allEntries.next();
                         allEntries.remove();
-                        this.m_variationCache.remove(nextObject);
+                        m_variationCache.remove(nextObject);
                     }
 
                     v.m_map = null;
@@ -721,7 +729,10 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             }
         }
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_HALF_2, suffix, new Boolean(entriesOnly)));
+            LOG.info(Messages.get().getBundle().key(
+                Messages.LOG_FLEXCACHE_CLEAR_HALF_2,
+                suffix,
+                new Boolean(entriesOnly)));
         }
     }
 
@@ -739,7 +750,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             return;
         }
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_ALL_0));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_CLEAR_ALL_0));
         }
         // create new set to avoid ConcurrentModificationExceptions
         Set cacheKeys = new HashSet(m_keyCache.keySet());
@@ -750,9 +761,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             while (allEntries.hasNext()) {
                 I_CmsLruCacheObject nextObject = (I_CmsLruCacheObject)allEntries.next();
                 allEntries.remove();
-                this.m_variationCache.remove(nextObject);
+                m_variationCache.remove(nextObject);
             }
-            v.m_map = Collections.synchronizedMap(new HashMap(INITIAL_CAPACITY_VARIATIONS));
+            v.m_map = new Hashtable(INITIAL_CAPACITY_VARIATIONS);
         }
         m_size = 0;
     }
@@ -771,7 +782,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             return;
         }
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_KEYS_AND_ENTRIES_0));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_CLEAR_KEYS_AND_ENTRIES_0));
         }
         clearAccordingToSuffix(CACHE_OFFLINESUFFIX, false);
     }
@@ -791,7 +802,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             return;
         }
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_OFFLINE_ENTRIES_0));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_CLEAR_OFFLINE_ENTRIES_0));
         }
         clearAccordingToSuffix(CACHE_OFFLINESUFFIX, true);
     }
@@ -810,7 +821,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             return;
         }
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_ONLINE_KEYS_AND_ENTRIES_0));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_CLEAR_ONLINE_KEYS_AND_ENTRIES_0));
         }
         clearAccordingToSuffix(CACHE_ONLINESUFFIX, false);
     }
@@ -830,7 +841,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             return;
         }
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_ONLINE_ENTRIES_0));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_CLEAR_ONLINE_ENTRIES_0));
         }
         clearAccordingToSuffix(CACHE_ONLINESUFFIX, true);
     }
@@ -848,19 +859,19 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     private synchronized void purgeJspRepository() {
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_WILL_PURGE_JSP_REPOSITORY_0));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_WILL_PURGE_JSP_REPOSITORY_0));
         }
 
         File d;
-        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + "online" + File.separator);
+        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + REPOSITORY_ONLINE + File.separator);
         CmsFileUtil.purgeDirectory(d);
 
-        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + "offline" + File.separator);
+        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + REPOSITORY_OFFLINE + File.separator);
         CmsFileUtil.purgeDirectory(d);
 
         clear();
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_PURGED_JSP_REPOSITORY_0));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_PURGED_JSP_REPOSITORY_0));
         }
     }
 
@@ -881,9 +892,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             Map m = ((CmsFlexCacheVariation)o).m_map;
             boolean wasAdded = true;
             if (!m.containsKey(key.getVariation())) {
-                wasAdded = this.m_variationCache.add(theCacheEntry);
+                wasAdded = m_variationCache.add(theCacheEntry);
             } else {
-                wasAdded = this.m_variationCache.touch(theCacheEntry);
+                wasAdded = m_variationCache.touch(theCacheEntry);
             }
 
             if (wasAdded) {
@@ -894,7 +905,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             // No variation map for this resource yet, so create one
             CmsFlexCacheVariation list = new CmsFlexCacheVariation(key);
 
-            boolean wasAdded = this.m_variationCache.add(theCacheEntry);
+            boolean wasAdded = m_variationCache.add(theCacheEntry);
 
             if (wasAdded) {
                 theCacheEntry.setVariationData(key.getVariation(), list.m_map);
@@ -904,12 +915,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_FLEXCACHE_ADDED_ENTRY_FOR_RESOURCE_WITH_VARIATION_3,
                 new Integer(m_size),
                 key.getResource(),
                 key.getVariation()));
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_ADDED_ENTRY_1, theCacheEntry.toString()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_ADDED_ENTRY_1, theCacheEntry.toString()));
         }
     }
 }

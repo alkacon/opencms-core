@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 6.0.0
  */
@@ -136,7 +136,7 @@ public class CmsDefaultUsers {
 
         // check if all required user and group names are not null or empty
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_CHECKING_DEFAULT_USER_NAMES_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_CHECKING_DEFAULT_USER_NAMES_0));
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userAdmin)
             || CmsStringUtil.isEmptyOrWhitespaceOnly(userGuest)
@@ -162,15 +162,15 @@ public class CmsDefaultUsers {
         m_groupGuests = groupGuests.trim();
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADMIN_USER_1, getUserAdmin()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_GUEST_USER_1, getUserGuest()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_USER_1, getUserExport()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DELETED_RESOURCE_USER_1, getUserDeletedResource()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADMIN_GROUP_1, getGroupAdministrators()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_PROJECT_MANAGERS_GROUP_1, getGroupProjectmanagers()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_USERS_GROUP_1, getGroupUsers()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_GUESTS_GROUP_1, getGroupGuests()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DEFAULT_USER_NAMES_INITIALIZED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADMIN_USER_1, getUserAdmin()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_GUEST_USER_1, getUserGuest()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_USER_1, getUserExport()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DELETED_RESOURCE_USER_1, getUserDeletedResource()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADMIN_GROUP_1, getGroupAdministrators()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_PROJECT_MANAGERS_GROUP_1, getGroupProjectmanagers()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_USERS_GROUP_1, getGroupUsers()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_GUESTS_GROUP_1, getGroupGuests()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USER_NAMES_INITIALIZED_0));
         }
     }
 

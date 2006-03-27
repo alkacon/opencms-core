@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsResourceTypeXMLTemplate.java,v $
- * Date   : $Date: 2005/10/12 14:03:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/03/27 14:53:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.main.OpenCms;
  * Describes the resource type "XMLTemplate".
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

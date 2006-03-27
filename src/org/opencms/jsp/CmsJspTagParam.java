@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,6 +90,7 @@ package org.opencms.jsp;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -102,7 +103,7 @@ import javax.servlet.jsp.tagext.Tag;
  *
  * @author Shawn Bayern
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,19 +144,18 @@ public class CmsJspTagParam extends BodyTagSupport {
 
         Tag t = findAncestorWithClass(this, I_CmsJspTagParamParent.class);
         if (t == null) {
-            throw new JspTagException(Messages.get().key(
-                pageContext.getRequest().getLocale(),
+            throw new JspTagException(Messages.get().getBundle(pageContext.getRequest().getLocale()).key(
                 Messages.ERR_PARENTLESS_TAG_1,
                 new Object[] {"param"}));
         }
         // take no action for null or empty names
-        if (m_name == null || m_name.equals("")) {
+        if (CmsStringUtil.isEmpty(m_name)) {
             return EVAL_PAGE;
         }
 
         // send the parameter to the appropriate ancestor
         I_CmsJspTagParamParent parent = (I_CmsJspTagParamParent)t;
-        String value = this.m_value;
+        String value = m_value;
         if (value == null) {
             if (bodyContent == null || bodyContent.getString() == null) {
                 value = "";
@@ -189,7 +189,7 @@ public class CmsJspTagParam extends BodyTagSupport {
      */
     public void setName(String name) {
 
-        this.m_name = name;
+        m_name = name;
     }
 
     /**
@@ -199,7 +199,7 @@ public class CmsJspTagParam extends BodyTagSupport {
      */
     public void setValue(String value) {
 
-        this.m_value = value;
+        m_value = value;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCollectorData.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:52:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,24 +37,24 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.scheduler.CmsScheduleManager;
 
 import org.apache.commons.logging.Log;
 
 /**
- * Data structure for the collector, parsed from the collector parameters.<p>
+ * Data structure for the collector, parsed from the collector parameters.
+ * <p>
  * 
- * @author Alexander Kandzior 
- * @author Thomas Weckert  
+ * @author Alexander Kandzior
+ * @author Thomas Weckert
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
- * @since 6.0.0 
+ * @since 6.0.0
  */
 public class CmsCollectorData {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsScheduleManager.class);
+    private static final Log LOG = CmsLog.getLog(CmsCollectorData.class);
 
     /** The display count. */
     private int m_count;
@@ -66,7 +66,8 @@ public class CmsCollectorData {
     private int m_type;
 
     /**
-     * Creates a new collector data set.<p>
+     * Creates a new collector data set.
+     * <p>
      * 
      * @param data the data to parse
      */
@@ -78,7 +79,8 @@ public class CmsCollectorData {
 
         int pos1 = data.indexOf('|');
         if (pos1 == -1) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_COLLECTOR_PARAM_INVALID_1));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_COLLECTOR_PARAM_INVALID_1, data));
         }
 
         int pos2 = data.indexOf('|', pos1 + 1);
@@ -102,7 +104,7 @@ public class CmsCollectorData {
                 I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(typeInt);
                 m_type = resourceType.getTypeId();
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_RESTYPE_INTID_2,
                         resourceType.getTypeName(),
                         new Integer(m_type)));
@@ -115,8 +117,9 @@ public class CmsCollectorData {
     }
 
     /**
-     * Returns the count.<p>
-     *
+     * Returns the count.
+     * <p>
+     * 
      * @return the count
      */
     public int getCount() {
@@ -125,8 +128,9 @@ public class CmsCollectorData {
     }
 
     /**
-     * Returns the file name.<p>
-     *
+     * Returns the file name.
+     * <p>
+     * 
      * @return the file name
      */
     public String getFileName() {
@@ -135,8 +139,9 @@ public class CmsCollectorData {
     }
 
     /**
-     * Returns the type.<p>
-     *
+     * Returns the type.
+     * <p>
+     * 
      * @return the type
      */
     public int getType() {

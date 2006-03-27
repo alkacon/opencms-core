@@ -25,7 +25,37 @@
 	workflow?,
 	rfsfileviewsettings?,
 	explorertypes+,
-	default-preferences )>
+	default-preferences,
+	tool-manager? )>
+
+<!--
+# The tool manager configuration.
+-->
+<!ELEMENT tool-manager (roots) >
+<!--
+# A list of tool's roots.
+-->
+<!ELEMENT roots (root*) >
+<!--
+# A root.
+-->
+<!ELEMENT root (key, uri, name, helptext) >
+<!--
+# The key for accessing a root.
+-->
+<!ELEMENT key (#PCDATA) >
+<!--
+# The uri to look for tools for this root.
+-->
+<!ELEMENT uri (#PCDATA) >
+<!--
+# a macro for the display name of the given root.
+-->
+<!ELEMENT name (#PCDATA) >
+<!--
+# a macro for the helptext of the given root.
+-->
+<!ELEMENT helptext (#PCDATA) >
 
 <!--
 # The default locale of the OpenCms workplace that is selected if a user
@@ -154,10 +184,12 @@
 # It is an absolute path to a file that will be shown. 
 -->
 <!ELEMENT filePath (#PCDATA)> 
+
 <!--
 # Boolean value ("true"|"false") that enables/disables preview of file content. 
 -->
 <!ELEMENT enabled (#PCDATA)>
+
 <!--
 # One of the charset.name() the local machine's java VM would return by: 
 # Charset.availableCharsets().values() for each charset of that Set. 
@@ -166,67 +198,40 @@
 # java.nio.Charset have to be supported everywhere.
 -->
 <!ELEMENT fileEncoding (#PCDATA)>
+
 <!-- 
 # Currently unused. In future this information may be used 
 # to display file views  that are marked with isLogfile==true 
 # in a more convenient way as the format is well known. 
 -->
 <!ELEMENT isLogfile (#PCDATA)>
+
 <!-- 
 # Determines how many lines of text will be previewed. 
 -->
 <!ELEMENT windowSize (#PCDATA)>
 
-
-
 <!--
 # Settings for the new resource dialog and the contextmenus in the explorer view.
 # Configure which options are shown in the new resource dialog and if resources are 
 # visible and editable depending on the current users group(s). The defaultaccesscontrol
-# describes the default access control settings for all resourcestypes
+# describes the default access control settings for all resourcestypes.
+# The optional multicontextmenu describes the multi context menu configuration that is used if more
+# files are selected in the explorer view.
 -->
-<!ELEMENT explorertypes (explorertype+, defaultaccesscontrol)>
-
-<!--
-# The resource type name, the key of the localized name and the used icon are required.
--->
-<!ELEMENT explorertype (
-	newresource,
-	accesscontrol?,
-	editoptions?)>
-<!ATTLIST explorertype name CDATA #REQUIRED key CDATA #REQUIRED icon CDATA #REQUIRED reference CDATA #IMPLIED>
-
-<!--
-# The URI for the new resource dialog and the ranking is required.
-# Optionally, Title and navigation properties (last entry in current folder) can be attached automatically on resource creation
-# containing the file name as value..
--->
-<!ELEMENT newresource EMPTY>
-<!ATTLIST newresource handler CDATA #IMPLIED page CDATA #IMPLIED uri CDATA #REQUIRED order CDATA #REQUIRED autosetnavigation (true|false) #IMPLIED autosettitle (true|false) #IMPLIED>
-
-<!--
-# Enter the permissions for OpenCms groups. The flags have the following meaning:
-# +w: the context menu for editing the resource is shown
-# +c: this entry is shown in the new resource dialog for this group
-# +v: resources of the current type are visible in the explorer view
--->
-<!ELEMENT accesscontrol (accessentry*)>
-<!ELEMENT accessentry EMPTY>
-<!ATTLIST accessentry principal CDATA #REQUIRED permissions CDATA #REQUIRED>
-
-<!--
-# The edit options of the current explorer type. 
-# Don't specify them for the file upload and new link types.
--->
-<!ELEMENT editoptions (
-	defaultproperties,
-	contextmenu)>
+<!ELEMENT explorertypes (explorertype+, defaultaccesscontrol, multicontextmenu?)>
 
 <!--
 # Enter the default permissions for OpenCms groups. 
 -->
 <!ELEMENT defaultaccesscontrol (accesscontrol)>
 
+<!--
+# Enter the default permissions for OpenCms groups. 
+-->
+<!ELEMENT multicontextmenu (
+	entry*,
+	separator*)*>
 
 <!--
 # <importexport> node options.
@@ -340,7 +345,8 @@
 -->								 
 <!ELEMENT workplace-generaloptions (buttonstyle,
 									reporttype,
-									uploadapplet)>
+									uploadapplet,
+									publishbuttonappearance?)>
 <!--
 # The buttonstyle controls the appearence of the buttons on the workplace.
 # Possible values are [image|textimage|text].
@@ -357,7 +363,16 @@
 # If this element is set to "true", the upload applet is used for file uploads in the 
 # workplace explorer.
 -->	
-<!ELEMENT uploadapplet (#PCDATA)>									
+<!ELEMENT uploadapplet (#PCDATA)>
+
+<!--
+# This element controls the appearance of the "publish project" button in the workplace button bar.
+# Possible values are [always|auto|never].
+# - always (default) means that the button is always shown, depending on the current users permissions active or inactive.
+# - auto: the button is only available if the current user has permissions to publish the current project.
+# - never: the button is never shown.
+-->	
+<!ELEMENT publishbuttonappearance (#PCDATA)>									
 	
 <!--
 # The workplace startupsettings are used to define locale, project and view used directly

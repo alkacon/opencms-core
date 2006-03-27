@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,11 +50,11 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsReport extends CmsDialog {
+public class CmsReport extends CmsMultiDialog {
 
     /** Request parameter key for the type of the report. */
     public static final String PARAM_REPORT_CONTINUEKEY = "reportcontinuekey";
@@ -146,7 +147,7 @@ public class CmsReport extends CmsDialog {
      */
     public String dialogButtonsContinue(String okAttrs, String cancelAttrs, String detailsAttrs) {
 
-        if (detailsAttrs == null || "".equals(detailsAttrs.trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(detailsAttrs)) {
             detailsAttrs = "";
         } else {
             detailsAttrs += " ";
@@ -169,13 +170,14 @@ public class CmsReport extends CmsDialog {
      */
     public String dialogButtonsOkCancelDetails(String okAttrs, String cancelAttrs, String detailsAttrs) {
 
-        if (detailsAttrs == null || "".equals(detailsAttrs.trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(detailsAttrs)) {
             detailsAttrs = "";
         } else {
             detailsAttrs += " ";
         }
 
-        if ("true".equals(getParamThreadHasNext()) && !"".equals(getParamReportContinueKey())) {
+        if (Boolean.valueOf(getParamThreadHasNext()).booleanValue()
+            && CmsStringUtil.isNotEmpty(getParamReportContinueKey())) {
             return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {
                 okAttrs,
                 cancelAttrs,
@@ -189,7 +191,7 @@ public class CmsReport extends CmsDialog {
     /**
      * Returns if the workplace must be refreshed.<p>
      * 
-     * @return "true" if the workplace must be refreshed.
+     * @return <code>"true"</code> if the workplace must be refreshed.
      */
     public String getParamRefreshWorkplace() {
 
@@ -241,7 +243,7 @@ public class CmsReport extends CmsDialog {
     /**
      * Returns if another report is following this report.<p>
      * 
-     * @return "true" if another report is following this report
+     * @return <code>"true"</code> if another report is following this report
      */
     public String getParamThreadHasNext() {
 
@@ -373,7 +375,7 @@ public class CmsReport extends CmsDialog {
     /**
      * Sets  if the workplace must be refreshed.<p>
      * 
-     * @param value "true" (String) if the workplace must be refreshed.
+     * @param value <code>"true"</code> (String) if the workplace must be refreshed.
      */
     public void setParamRefreshWorkplace(String value) {
 
@@ -414,7 +416,9 @@ public class CmsReport extends CmsDialog {
             } catch (Exception e) {
                 // can usually be ignored
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_THREAD_CREATION_FAILED_1, new Integer(value)), e);
+                    LOG.info(
+                        Messages.get().getBundle().key(Messages.LOG_THREAD_CREATION_FAILED_1, new Integer(value)),
+                        e);
                 }
             }
         }
@@ -423,7 +427,7 @@ public class CmsReport extends CmsDialog {
     /**
      * Sets if another report is following this report.<p>
      * 
-     * @param value "true" if another report is following this report
+     * @param value <code>"true"</code> if another report is following this report
      */
     public void setParamThreadHasNext(String value) {
 
@@ -443,6 +447,17 @@ public class CmsReport extends CmsDialog {
         } else {
             setAction(ACTION_REPORT_BEGIN);
         }
+    }
+
+    /**
+     * Returns always true and does nothing else, has to be implemented.<p>
+     * 
+     * @see org.opencms.workplace.CmsMultiDialog#performDialogOperation()
+     */
+    protected boolean performDialogOperation() {
+
+        // do nothing, has to be implemented
+        return true;
     }
 
 }

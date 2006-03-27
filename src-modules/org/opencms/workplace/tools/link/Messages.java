@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:53:04 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,6 +82,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LINK_ADMIN_TOOL_NAME_0 = "GUI_LINK_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGEBOX_HTML_LINK_VALIDATOR1_0 = "GUI_MESSAGEBOX_HTML_LINK_VALIDATOR1_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_EXTERNAL_LINK_CHECK_GROUP_0 = "GUI_NEW_EXTERNAL_LINK_CHECK_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -92,6 +95,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_VALIDATION_YET_0 = "GUI_NO_VALIDATION_YET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_HTML_LINK_VALIDATOR_0 = "GUI_TITLE_HTML_LINK_VALIDATOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0 = "GUI_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/03/03 16:58:43 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.121 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.120 $ 
+ * @version $Revision: 1.121 $ 
  * 
  * @since 6.0.0 
  */
@@ -168,20 +168,20 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** List of export rules. */
     private List m_exportRules;
 
-    /** List of export suffixes where the "export" property default is always "true". */
+    /** List of export suffixes where the "export" property default is always <code>"true"</code>. */
     private List m_exportSuffixes;
 
     /** Temporary variable for reading the xml config file. */
     private CmsStaticExportExportRule m_exportTmpRule;
-
-    /** Temporary variable for reading the xml config file. */
-    private CmsStaticExportRfsRule m_rfsTmpRule;
 
     /** Export url to send internal requests to. */
     private String m_exportUrl;
 
     /** Export url with unstubstituted context values. */
     private String m_exportUrlConfigured;
+
+    /** Export url to send internal requests to without http://servername. */
+    private String m_exportUrlPrefix;
 
     /** Handler class for static export. */
     private I_CmsStaticExportHandler m_handler;
@@ -201,6 +201,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** List of configured rfs rules. */
     private List m_rfsRules;
 
+    /** Temporary variable for reading the xml config file. */
+    private CmsStaticExportRfsRule m_rfsTmpRule;
+
     /** Indicates if the static export is enabled or diabled. */
     private boolean m_staticExportEnabled;
 
@@ -218,9 +221,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Prefix to use for internal OpenCms files with unstubstituted context values. */
     private String m_vfsPrefixConfigured;
-
-    /** Export url to send internal requests to without http://servername. */
-    private String m_exportUrlPrefix;
 
     /**
      * Creates a new static export property object.<p>
@@ -354,7 +354,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 // event data contains a list of the published resources
                 CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
                 }
                 I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
                 if (report == null) {
@@ -365,7 +365,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 clearCaches(event);
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_EVENT_PUBLISH_PROJECT_FINISHED_1, publishHistoryId));
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_EVENT_PUBLISH_PROJECT_FINISHED_1,
+                        publishHistoryId));
                 }
 
                 break;
@@ -429,7 +431,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_STATIC_EXPORT_SITE_ROOT_2, siteRoot, vfsName));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORT_SITE_ROOT_2, siteRoot, vfsName));
         }
         cms.getRequestContext().setSiteRoot(siteRoot);
 
@@ -444,7 +446,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             wrapRes = new CmsStaticExportResponseWrapper(res);
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SE_RESOURCE_START_1, data));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SE_RESOURCE_START_1, data));
         }
 
         CmsFile file;
@@ -478,7 +480,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             oldUri = cms.getRequestContext().getUri();
             cms.getRequestContext().setUri(vfsName);
         }
-   
+
         // do the export
         byte[] result = loader.export(cms, file, req, wrapRes);
 
@@ -623,15 +625,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the default property value as a string representation.<p>
      * 
-     * @return "true" or "false"
+     * @return <code>"true"</code> or <code>"false"</code>
      */
     public String getDefault() {
 
-        if (m_exportPropertyDefault) {
-            return "true";
-        } else {
-            return "false";
-        }
+        return String.valueOf(m_exportPropertyDefault);
     }
 
     /**
@@ -718,7 +716,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the export enbled value as a string representation.<p>
      * 
-     * @return "true" or "false"
+     * @return <code>"true"</code> or <code>"false"</code>
      */
     public String getExportEnabled() {
 
@@ -859,17 +857,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the export URL used for internal requests for exporting resources that require a 
-     * request / response (like JSP) without http://servername.<p>
-     * 
-     * @return the export URL used for internal requests for exporting resources like JSP without http://servername
-     */
-    public String getExportUrlPrefix() {
-
-        return m_exportUrlPrefix;
-    }
-
-    /**
      * Returns the export URL used for internal requests with unsubstituted context values, to be used 
      * when re-writing the configuration.<p>
      * 
@@ -882,6 +869,17 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public String getExportUrlForConfiguration() {
 
         return m_exportUrlConfigured;
+    }
+
+    /**
+     * Returns the export URL used for internal requests for exporting resources that require a 
+     * request / response (like JSP) without http://servername.<p>
+     * 
+     * @return the export URL used for internal requests for exporting resources like JSP without http://servername
+     */
+    public String getExportUrlPrefix() {
+
+        return m_exportUrlPrefix;
     }
 
     /**
@@ -902,15 +900,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the plain export optimization value as a string representation.<p>
      * 
-     * @return "true" or "false"
+     * @return <code>"true"</code> or <code>"false"</code>
      */
     public String getPlainExportOptimization() {
 
-        if (m_quickPlainExport) {
-            return "true";
-        } else {
-            return "false";
-        }
+        return String.valueOf(m_quickPlainExport);
     }
 
     /**
@@ -926,15 +920,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the relative links value as a string representation.<p>
      * 
-     * @return "true" or "false"
+     * @return <code>"true"</code> or <code>"false"</code>
      */
     public String getRelativeLinks() {
 
-        if (m_exportRelativeLinks) {
-            return "true";
-        } else {
-            return "false";
-        }
+        return String.valueOf(m_exportRelativeLinks);
     }
 
     /**
@@ -1031,7 +1021,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         resourceName = CmsResource.getParentFolder(resourceName);
                     }
                 } while (cont);
-                // TODO: check how to have a corrent folder and file name
                 rfsName = exportname + rfsName.substring(resourceName.length());
             }
 
@@ -1064,7 +1053,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         parameters,
                         System.currentTimeMillis());
                 } catch (CmsException e) {
-                    LOG.error(Messages.get().key(Messages.LOG_WRITE_FAILED_1, rfsName), e);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_WRITE_FAILED_1, rfsName), e);
                 }
             }
         } catch (CmsException e) {
@@ -1242,9 +1231,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         if (CmsLog.INIT.isDebugEnabled()) {
             if (cms != null) {
-                CmsLog.INIT.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_1, cms));
+                CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_SE_MANAGER_CREATED_1, cms));
             } else {
-                CmsLog.INIT.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_0));
+                CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_SE_MANAGER_CREATED_0));
             }
         }
 
@@ -1309,53 +1298,58 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         if (CmsLog.INIT.isInfoEnabled()) {
             if (isStaticExportEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_ENABLED_0));
-                CmsLog.INIT.info(Messages.get().key(
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATIC_EXPORT_ENABLED_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_EXPORT_DEFAULT_1,
                     new Boolean(getExportPropertyDefault())));
                 itRfsRules = m_rfsRules.iterator();
                 while (itRfsRules.hasNext()) {
                     CmsStaticExportRfsRule rfsRule = (CmsStaticExportRfsRule)itRfsRules.next();
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_EXPORT_RFS_RULE_EXPORT_PATH_2,
                         rfsRule.getSource(),
                         rfsRule.getExportPath()));
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_EXPORT_RFS_RULE_RFS_PREFIX_2,
                         rfsRule.getSource(),
                         rfsRule.getRfsPrefix()));
                     if (rfsRule.getUseRelativeLinks() != null) {
                         if (rfsRule.getUseRelativeLinks().booleanValue()) {
-                            CmsLog.INIT.info(Messages.get().key(
+                            CmsLog.INIT.info(Messages.get().getBundle().key(
                                 Messages.INIT_EXPORT_RFS_RULE_RELATIVE_LINKS_1,
                                 rfsRule.getSource()));
                         } else {
-                            CmsLog.INIT.info(Messages.get().key(
+                            CmsLog.INIT.info(Messages.get().getBundle().key(
                                 Messages.INIT_EXPORT_RFS_RULE_ABSOLUTE_LINKS_1,
                                 rfsRule.getSource()));
                         }
                     }
                 }
                 // default rule
-                CmsLog.INIT.info(Messages.get().key(
+                CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_EXPORT_RFS_RULE_EXPORT_PATH_2,
                     "/",
                     m_staticExportPath));
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_RFS_RULE_RFS_PREFIX_2, "/", m_rfsPrefix));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_EXPORT_RFS_RULE_RFS_PREFIX_2,
+                    "/",
+                    m_rfsPrefix));
                 if (m_exportRelativeLinks) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_RFS_RULE_RELATIVE_LINKS_1, "/"));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_RFS_RULE_RELATIVE_LINKS_1, "/"));
                 } else {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_RFS_RULE_ABSOLUTE_LINKS_1, "/"));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_RFS_RULE_ABSOLUTE_LINKS_1, "/"));
                 }
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
-                CmsLog.INIT.info(Messages.get().key(
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_EXPORT_EXPORT_HANDLER_1,
                     getHandler().getClass().getName()));
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_OPTIMIZATION_1, getPlainExportOptimization()));
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_EXPORT_OPTIMIZATION_1,
+                    getPlainExportOptimization()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
             } else {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
             }
         }
     }
@@ -1439,7 +1433,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (!cms.getRequestContext().currentProject().isOnlineProject()) {
             return false;
         }
-        
         Boolean secureResource = (Boolean)m_cacheSecureLinks.get(getCacheKey(
             cms.getRequestContext().getSiteRoot(),
             vfsName));
@@ -1564,7 +1557,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the default property value.<p>
      * 
-     * @param value must be "true" or "false"
+     * @param value must be <code>"true"</code> or <code>"false"</code>
      */
     public void setDefault(String value) {
 
@@ -1574,7 +1567,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the export enbled value.<p>
      * 
-     * @param value must be "true" or "false"
+     * @param value must be <code>"true"</code> or <code>"false"</code>
      */
     public void setExportEnabled(String value) {
 
@@ -1602,12 +1595,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         if (CmsStringUtil.splitAsArray(exportHeader, ':').length == 2) {
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_HEADERS_1, exportHeader));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_HEADERS_1, exportHeader));
             }
             m_exportHeaders.add(exportHeader);
         } else {
             if (CmsLog.INIT.isWarnEnabled()) {
-                CmsLog.INIT.warn(Messages.get().key(Messages.INIT_INVALID_HEADER_1, exportHeader));
+                CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.INIT_INVALID_HEADER_1, exportHeader));
             }
         }
     }
@@ -1661,7 +1654,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the plain export optimization value.<p>
      * 
-     * @param value must be "true" or "false"
+     * @param value must be <code>"true"</code> or <code>"false"</code>
      */
     public void setPlainExportOptimization(String value) {
 
@@ -1671,7 +1664,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the relative links value.<p>
      * 
-     * @param value must be "true" or "false"
+     * @param value must be <code>"true"</code> or <code>"false"</code>
      */
     public void setRelativeLinks(String value) {
 
@@ -1731,7 +1724,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             count++;
             try {
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_STATIC_EXPORT_SHUTDOWN_3,
                         m_handler.getClass().getName(),
                         String.valueOf(count),
@@ -1745,7 +1738,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
         }
 
     }
@@ -1759,7 +1752,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @see #getRfsPrefix(String)
      */
-    /*package*/String getRfsPrefixForRfsName(String rfsName) {
+    protected String getRfsPrefixForRfsName(String rfsName) {
 
         String retVal = "";
         // default case
@@ -1880,7 +1873,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             if (event.getType() != I_CmsEventListener.EVENT_CLEAR_CACHES) {
                 eventType = "EVENT_PUBLISH_PROJECT";
             }
-            LOG.debug(Messages.get().key(Messages.LOG_FLUSHED_CACHES_1, eventType));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLUSHED_CACHES_1, eventType));
         }
     }
 
@@ -2122,13 +2115,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             } else {
                 // write log message
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_DEL_MAIN_SE_FOLDER_1, exportFolderName));
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_DEL_MAIN_SE_FOLDER_1, exportFolderName));
                 }
             }
         } catch (Throwable t) {
             // ignore, nothing to do about the
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName), t);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName), t);
             }
         }
         // iterate over the rules
@@ -2152,13 +2145,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 } else {
                     // write log message
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(Messages.get().key(Messages.LOG_DEL_MAIN_SE_FOLDER_1, exportFolderName));
+                        LOG.info(Messages.get().getBundle().key(Messages.LOG_DEL_MAIN_SE_FOLDER_1, exportFolderName));
                     }
                 }
             } catch (Throwable t) {
                 // ignore, nothing to do about the
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName), t);
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName), t);
                 }
             }
         }
@@ -2175,7 +2168,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     private synchronized void setExportnames() {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_START_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_START_0));
         }
 
         List resources;
@@ -2208,7 +2201,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
         }
     }
 
@@ -2234,7 +2227,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         File exportFile = null;
         String exportFileName = CmsFileUtil.normalizePath(exportPath + rfsName);
-        
+
         // make sure all required parent folder exist
         createExportFolder(exportPath, rfsName);
         // generate export file instance and output stream
@@ -2249,7 +2242,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
                 // log export success 
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_STATIC_EXPORTED_2, vfsName, exportFileName));
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORTED_2, vfsName, exportFileName));
                 }
 
             } catch (Throwable t) {
@@ -2263,7 +2256,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 if ((dateLastModified != null) && (dateLastModified.longValue() != -1)) {
                     exportFile.setLastModified((dateLastModified.longValue() / 1000) * 1000);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(
+                        LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_SET_LAST_MODIFIED_2,
                             exportFile.getName(),
                             new Long((dateLastModified.longValue() / 1000) * 1000)));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Messages.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHARSET_ILLEGAL_NAME_1 = "ERR_CHARSET_ILLEGAL_NAME_1";
 
@@ -130,6 +130,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ENC_MULTIPART_REQ_ERROR_0 = "LOG_ENC_MULTIPART_REQ_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_READ_UUID_0 = "LOG_ERR_READ_UUID_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_FILEVIEW_INDEX_EXPIRE_OK_2 = "LOG_FILEVIEW_INDEX_EXPIRE_OK_2";
 
     /** Message constant for key in the resource bundle. */
@@ -148,10 +151,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PROPERTY_READING_FAILED_2 = "LOG_PROPERTY_READING_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_READ_UUID_1 = "LOG_READ_UUID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_READ_UUID_OLD_1 = "LOG_READ_UUID_OLD_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_TRANSLATION_MATCH_2 = "LOG_TRANSLATION_MATCH_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_TRANSLATION_MATCH_3 = "LOG_TRANSLATION_MATCH_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WRITE_UUID_1 = "LOG_WRITE_UUID_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.util.messages";

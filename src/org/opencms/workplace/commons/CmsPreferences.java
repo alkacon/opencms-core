@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/10/24 07:21:53 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2006/03/27 14:52:18 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -313,7 +313,10 @@ public class CmsPreferences extends CmsTabDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         request.setAttribute(SESSION_WORKPLACE_CLASS, this);
 
-        // special case: set the preferred editor settings the user settings object      
+        // special case: set the preferred editor settings in the user settings object  
+        CmsUserSettings userSettings = new CmsUserSettings(getCms(), getSettings().getUser());
+        // first set the old preferred editors
+        m_userSettings.setEditorSettings(userSettings.getEditorSettings());
         Enumeration en = request.getParameterNames();
         while (en.hasMoreElements()) {
             // search all request parameters for the presence of the preferred editor parameters
@@ -321,10 +324,12 @@ public class CmsPreferences extends CmsTabDialog {
             if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX)) {
                 String paramValue = request.getParameter(paramName);
                 if (paramValue != null && !INPUT_DEFAULT.equals(paramValue.trim())) {
+                    // set selected editor for this resource type
                     m_userSettings.setPreferredEditor(
                         paramName.substring(PARAM_PREFERREDEDITOR_PREFIX.length()),
-                        paramValue);
+                        CmsEncoder.decode(paramValue));
                 } else {
+                    // reset preferred editor for this resource type
                     m_userSettings.setPreferredEditor(paramName.substring(PARAM_PREFERREDEDITOR_PREFIX.length()), null);
                 }
             }
@@ -432,8 +437,8 @@ public class CmsPreferences extends CmsTabDialog {
         options.add(key(Messages.GUI_PREF_PRESERVE_SIBLINGS_0));
         options.add(key(Messages.GUI_PREF_DELETE_SIBLINGS_0));
         List values = new ArrayList(2);
-        values.add(String.valueOf(CmsResource.DELETE_REMOVE_SIBLINGS));
         values.add(String.valueOf(CmsResource.DELETE_PRESERVE_SIBLINGS));
+        values.add(String.valueOf(CmsResource.DELETE_REMOVE_SIBLINGS));
         int selectedIndex = values.indexOf(getParamTabDiDeleteFileMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
@@ -510,7 +515,8 @@ public class CmsPreferences extends CmsTabDialog {
 
         for (int i = 1; i < 4; i++) {
             for (char k = 'a'; k < 'd'; k++) {
-                options.add(key(CmsTaskService.TASK_FILTER + k + i));
+                options.add(key(
+                    Messages.getTaskKey(CmsTaskService.TASK_FILTER + k + i)));
                 values.add("" + k + i);
                 if (("" + k + i).equals(getParamTabWfFilter())) {
                     selectedIndex = counter;
@@ -522,7 +528,7 @@ public class CmsPreferences extends CmsTabDialog {
             counter++;
         }
         for (int i = 1; i < 4; i++) {
-            options.add(key(CmsTaskService.TASK_FILTER + "d" + i));
+            options.add(key(Messages.getTaskKey(CmsTaskService.TASK_FILTER + "d" + i)));
             values.add("d" + i);
             if (("d" + i).equals(getParamTabWfFilter())) {
                 selectedIndex = counter;
@@ -610,7 +616,7 @@ public class CmsPreferences extends CmsTabDialog {
                     while (availableEditors.size() > 0) {
                         Float key = (Float)availableEditors.lastKey();
                         CmsWorkplaceEditorConfiguration conf = (CmsWorkplaceEditorConfiguration)availableEditors.get(key);
-                        options.add(key(conf.getEditorLabel()));
+                        options.add(keyDefault(conf.getEditorLabel(), conf.getEditorLabel()));
                         values.add(conf.getEditorUri());
                         if (conf.getEditorUri().equals(preSelection)) {
                             selectedIndex = counter;
@@ -620,8 +626,11 @@ public class CmsPreferences extends CmsTabDialog {
                     }
 
                     // create the table row for the current resource type
+                    int todo = 0;
+                    // TODO: Use WP constants here !?
+                    
                     result.append("<tr>\n\t<td style=\"white-space: nowrap;\">");
-                    String localizedName = key("fileicon." + currentResourceType, currentResourceType);
+                    String localizedName = keyDefault("fileicon." + currentResourceType, currentResourceType);
                     result.append(localizedName);
                     result.append("</td>\n\t<td>");
                     result.append(buildSelect(
@@ -683,8 +692,8 @@ public class CmsPreferences extends CmsTabDialog {
         options.add(key(Messages.GUI_PREF_PUBLISH_SIBLINGS_0));
         options.add(key(Messages.GUI_PREF_PUBLISH_ONLY_SELECTED_0));
         List values = new ArrayList(2);
-        values.add("true");
-        values.add("false");
+        values.add(CmsStringUtil.TRUE);
+        values.add(CmsStringUtil.FALSE);
         int selectedIndex = values.indexOf(getParamTabDiPublishFileMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
@@ -810,30 +819,54 @@ public class CmsPreferences extends CmsTabDialog {
 
         result.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\">\n");
         result.append("<tr>\n");
-        result.append("\t<td style=\"width: 25%;\">" + key(Messages.GUI_LABEL_USER_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\" style=\"width: 25%;\">" + user.getName() + "</td>\n");
-        result.append("\t<td style=\"width: 25%;\">" + key(Messages.GUI_LABEL_EMAIL_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\" style=\"width: 25%;\">" + user.getEmail() + "</td>\n");
+        result.append("\t<td style=\"width: 25%;\">");
+        result.append(key(Messages.GUI_LABEL_USER_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\" style=\"width: 25%;\">");
+        result.append(user.getName());
+        result.append("</td>\n");
+        result.append("\t<td style=\"width: 25%;\">");
+        result.append(key(Messages.GUI_LABEL_EMAIL_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\" style=\"width: 25%;\">");
+        result.append(user.getEmail());
+        result.append("</td>\n");
         result.append("</tr>\n");
 
         result.append("<tr>\n");
-        result.append("\t<td>" + key(Messages.GUI_LABEL_LASTNAME_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\">" + user.getLastname() + "</td>\n");
-        result.append("\t<td rowspan=\"3\" style=\"vertical-align: top;\">" + key("input.adress") + "</td>\n");
+        result.append("\t<td>");
+        result.append(key(Messages.GUI_LABEL_LASTNAME_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\">");
+        result.append(user.getLastname());
+        result.append("</td>\n");
+        result.append("\t<td rowspan=\"3\" style=\"vertical-align: top;\">");
+        result.append(key(Messages.GUI_INPUT_ADRESS_0));
+        result.append("</td>\n");
 
         String address = user.getAddress();
 
-        result.append("\t<td rowspan=\"3\" class=\"textbold\" style=\"vertical-align: top;\">" + address + "</td>\n");
+        result.append("\t<td rowspan=\"3\" class=\"textbold\" style=\"vertical-align: top;\">");
+        result.append(address);
+        result.append("</td>\n");
         result.append("</tr>\n");
 
         result.append("<tr>\n");
-        result.append("\t<td>" + key(Messages.GUI_LABEL_FIRSTNAME_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\">" + user.getFirstname() + "</td>\n");
+        result.append("\t<td>");
+        result.append(key(Messages.GUI_LABEL_FIRSTNAME_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\">");
+        result.append(user.getFirstname());
+        result.append("</td>\n");
         result.append("</tr>\n");
 
         result.append("<tr>\n");
-        result.append("\t<td>" + key(Messages.GUI_LABEL_DESCRIPTION_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\">" + user.getDescription() + "</td>\n");
+        result.append("\t<td>");
+        result.append(key(Messages.GUI_LABEL_DESCRIPTION_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\">");
+        result.append(user.getDescription());
+        result.append("</td>\n");
         result.append("</tr>\n");
         result.append("</table>\n");
 
@@ -933,7 +966,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display lock dialog" setting.<p>
      * 
-     * @return "true" if the "display lock dialog" input field is checked, otherwise ""
+     * @return <code>"true"</code> if the "display lock dialog" input field is checked, otherwise ""
      */
     public String getParamTabDiShowLock() {
 
@@ -973,7 +1006,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file creation date" setting.<p>
      * 
-     * @return "true" if the file creation date input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file creation date input field is checked, otherwise ""
      */
     public String getParamTabExFileDateCreated() {
 
@@ -983,7 +1016,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file date expired" setting.<p>
      * 
-     * @return "true" if the file date expired input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file date expired input field is checked, otherwise ""
      */
     public String getParamTabExFileDateExpired() {
 
@@ -993,7 +1026,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file last modification date" setting.<p>
      * 
-     * @return "true" if the file last modification date input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file last modification date input field is checked, otherwise ""
      */
     public String getParamTabExFileDateLastModified() {
 
@@ -1003,7 +1036,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file date released" setting.<p>
      * 
-     * @return "true" if the file date released input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file date released input field is checked, otherwise ""
      */
     public String getParamTabExFileDateReleased() {
 
@@ -1023,7 +1056,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file locked by" setting.<p>
      * 
-     * @return "true" if the file locked by input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file locked by input field is checked, otherwise ""
      */
     public String getParamTabExFileLockedBy() {
 
@@ -1033,7 +1066,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file permissions" setting.<p>
      * 
-     * @return "true" if the file permissions input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file permissions input field is checked, otherwise ""
      */
     public String getParamTabExFilePermissions() {
 
@@ -1043,7 +1076,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file size" setting.<p>
      * 
-     * @return "true" if the file size input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file size input field is checked, otherwise ""
      */
     public String getParamTabExFileSize() {
 
@@ -1053,7 +1086,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file state" setting.<p>
      * 
-     * @return "true" if the file state input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file state input field is checked, otherwise ""
      */
     public String getParamTabExFileState() {
 
@@ -1063,7 +1096,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file title" setting.<p>
      * 
-     * @return "true" if the file title input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file title input field is checked, otherwise ""
      */
     public String getParamTabExFileTitle() {
 
@@ -1073,7 +1106,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file type" setting.<p>
      * 
-     * @return "true" if the file type input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file type input field is checked, otherwise ""
      */
     public String getParamTabExFileType() {
 
@@ -1083,7 +1116,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file created by" setting.<p>
      * 
-     * @return "true" if the file created by input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file created by input field is checked, otherwise ""
      */
     public String getParamTabExFileUserCreated() {
 
@@ -1093,7 +1126,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "display file last modified by" setting.<p>
      * 
-     * @return "true" if the file last modified by input field is checked, otherwise ""
+     * @return <code>"true"</code> if the file last modified by input field is checked, otherwise ""
      */
     public String getParamTabExFileUserLastModified() {
 
@@ -1143,7 +1176,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "inform all role members" setting.<p>
      * 
-     * @return "true" if the "inform all role members" input field is checked, otherwise ""
+     * @return <code>"true"</code> if the "inform all role members" input field is checked, otherwise ""
      */
     public String getParamTabWfMessageMembers() {
 
@@ -1233,7 +1266,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns the "use upload applet" setting.<p>
      * 
-     * @return "true" if the "use upload applet" input is checked, otherwise ""
+     * @return <code>"true"</code> if the "use upload applet" input is checked, otherwise ""
      */
     public String getParamTabWpUseUploadApplet() {
 
@@ -1283,12 +1316,12 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Helper method to add the "checked" attribute to an input field.<p>
      * 
-     * @param paramValue the parameter value, if "true", the "checked" attribute will be returned 
+     * @param paramValue the parameter value, if <code>"true"</code>, the "checked" attribute will be returned 
      * @return the "checked" attribute or an empty String 
      */
     public String isChecked(String paramValue) {
 
-        if ("true".equals(paramValue)) {
+        if (Boolean.valueOf(paramValue).booleanValue()) {
             return " checked=\"checked\"";
         }
         return "";
@@ -1393,17 +1426,17 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabDiPublishFileMode(String value) {
 
-        m_userSettings.setDialogPublishSiblings("true".equals(value));
+        m_userSettings.setDialogPublishSiblings(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "display lock dialog" setting.<p>
      * 
-     * @param value "true" to enable the "display lock dialog" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display lock dialog" setting, all others to disable
      */
     public void setParamTabDiShowLock(String value) {
 
-        m_userSettings.setDialogShowLock("true".equals(value));
+        m_userSettings.setDialogShowLock(Boolean.valueOf(value).booleanValue());
     }
 
     /**
@@ -1451,41 +1484,41 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Sets the "display file creation date" setting.<p>
      * 
-     * @param value "true" to enable the "display file creation date" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file creation date" setting, all others to disable
      */
     public void setParamTabExFileDateCreated(String value) {
 
-        m_userSettings.setShowExplorerFileDateCreated("true".equals(value));
+        m_userSettings.setShowExplorerFileDateCreated(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "display file expired date" setting.<p>
      * 
-     * @param value "true" to enable the "display file expired date" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file expired date" setting, all others to disable
      */
     public void setParamTabExFileDateExpired(String value) {
 
-        m_userSettings.setShowExplorerFileDateExpired("true".equals(value));
+        m_userSettings.setShowExplorerFileDateExpired(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "display file last modification date" setting.<p>
      * 
-     * @param value "true" to enable the "display file last modification date" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file last modification date" setting, all others to disable
      */
     public void setParamTabExFileDateLastModified(String value) {
 
-        m_userSettings.setShowExplorerFileDateLastModified("true".equals(value));
+        m_userSettings.setShowExplorerFileDateLastModified(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "display file released date" setting.<p>
      * 
-     * @param value "true" to enable the "display file released date" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file released date" setting, all others to disable
      */
     public void setParamTabExFileDateReleased(String value) {
 
-        m_userSettings.setShowExplorerFileDateReleased("true".equals(value));
+        m_userSettings.setShowExplorerFileDateReleased(Boolean.valueOf(value).booleanValue());
     }
 
     /**
@@ -1505,81 +1538,81 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Sets the "display file locked by" setting.<p>
      * 
-     * @param value "true" to enable the "display file locked by" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file locked by" setting, all others to disable
      */
     public void setParamTabExFileLockedBy(String value) {
 
-        m_userSettings.setShowExplorerFileLockedBy("true".equals(value));
+        m_userSettings.setShowExplorerFileLockedBy(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "display file permissions" setting.<p>
      * 
-     * @param value "true" to enable the "display file permissions" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file permissions" setting, all others to disable
      */
     public void setParamTabExFilePermissions(String value) {
 
-        m_userSettings.setShowExplorerFilePermissions("true".equals(value));
+        m_userSettings.setShowExplorerFilePermissions(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "display file size" setting.<p>
      * 
-     * @param value "true" to enable the "display file size" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file size" setting, all others to disable
      */
     public void setParamTabExFileSize(String value) {
 
-        m_userSettings.setShowExplorerFileSize("true".equals(value));
+        m_userSettings.setShowExplorerFileSize(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "display file state" setting.<p>
      * 
-     * @param value "true" to enable the "display file state" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file state" setting, all others to disable
      */
     public void setParamTabExFileState(String value) {
 
-        m_userSettings.setShowExplorerFileState("true".equals(value));
+        m_userSettings.setShowExplorerFileState(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "display file title" setting.<p>
      * 
-     * @param value "true" to enable the "display file title" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file title" setting, all others to disable
      */
     public void setParamTabExFileTitle(String value) {
 
-        m_userSettings.setShowExplorerFileTitle("true".equals(value));
+        m_userSettings.setShowExplorerFileTitle(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "display file type" setting.<p>
      * 
-     * @param value "true" to enable the "display file type" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file type" setting, all others to disable
      */
     public void setParamTabExFileType(String value) {
 
-        m_userSettings.setShowExplorerFileType("true".equals(value));
+        m_userSettings.setShowExplorerFileType(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "display file created by" setting.<p>
      * 
-     * @param value "true" to enable the "display file created by" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file created by" setting, all others to disable
      */
     public void setParamTabExFileUserCreated(String value) {
 
-        m_userSettings.setShowExplorerFileUserCreated("true".equals(value));
+        m_userSettings.setShowExplorerFileUserCreated(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "display file last modified by" setting.<p>
      * 
-     * @param value "true" to enable the "display file last modified by" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "display file last modified by" setting, all others to disable
      */
     public void setParamTabExFileUserLastModified(String value) {
 
-        m_userSettings.setShowExplorerFileUserLastModified("true".equals(value));
+        m_userSettings.setShowExplorerFileUserLastModified(Boolean.valueOf(value).booleanValue());
     }
 
     /**
@@ -1602,7 +1635,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabWfMessageAccepted(String value) {
 
-        m_userSettings.setTaskMessageAccepted("true".equals(value));
+        m_userSettings.setTaskMessageAccepted(Boolean.valueOf(value).booleanValue());
     }
 
     /**
@@ -1612,7 +1645,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabWfMessageCompleted(String value) {
 
-        m_userSettings.setTaskMessageCompleted("true".equals(value));
+        m_userSettings.setTaskMessageCompleted(Boolean.valueOf(value).booleanValue());
     }
 
     /**
@@ -1622,17 +1655,17 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabWfMessageForwarded(String value) {
 
-        m_userSettings.setTaskMessageForwarded("true".equals(value));
+        m_userSettings.setTaskMessageForwarded(Boolean.valueOf(value).booleanValue());
     }
 
     /**
      * Sets the "inform all role members" setting.<p>
      * 
-     * @param value "true" to enable the "inform all role members" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "inform all role members" setting, all others to disable
      */
     public void setParamTabWfMessageMembers(String value) {
 
-        m_userSettings.setTaskMessageMembers("true".equals(value));
+        m_userSettings.setTaskMessageMembers(Boolean.valueOf(value).booleanValue());
     }
 
     /**
@@ -1642,7 +1675,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabWfShowAllProjects(String value) {
 
-        m_userSettings.setTaskShowAllProjects("true".equals(value));
+        m_userSettings.setTaskShowAllProjects(Boolean.valueOf(value).booleanValue());
     }
 
     /**
@@ -1709,7 +1742,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabWpRestrictExplorerView(String value) {
 
-        m_userSettings.setRestrictExplorerView("true".equals(value));
+        m_userSettings.setRestrictExplorerView(Boolean.valueOf(value).booleanValue());
     }
 
     /**
@@ -1725,11 +1758,11 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Sets the "use upload applet" setting.<p>
      * 
-     * @param value "true" to enable the "use upload applet" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "use upload applet" setting, all others to disable
      */
     public void setParamTabWpUseUploadApplet(String value) {
 
-        m_userSettings.setUseUploadApplet("true".equals(value));
+        m_userSettings.setUseUploadApplet(Boolean.valueOf(value).booleanValue());
     }
 
     /**
@@ -1749,10 +1782,6 @@ public class CmsPreferences extends CmsTabDialog {
 
         // create an empty user settings object
         m_userSettings = new CmsUserSettings();
-        // keep old synchronization settings
-        if (settings.getUserSettings() != null) {
-            m_userSettings.setSynchronizeSettings(settings.getUserSettings().getSynchronizeSettings());
-        }
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
@@ -1801,7 +1830,7 @@ public class CmsPreferences extends CmsTabDialog {
             String paramName = (String)en.nextElement();
             if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX)) {
                 String paramValue = request.getParameter(paramName);
-                if (paramValue != null && !"".equals(paramValue.trim())) {
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramValue)) {
                     map.put(paramName, CmsEncoder.decode(paramValue));
                 }
             }
@@ -1860,7 +1889,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         // first check presence of the setting in request parameter
         String preSelection = request.getParameter(PARAM_PREFERREDEDITOR_PREFIX + resourceType);
-        if (preSelection != null && !"".equals(preSelection.trim())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(preSelection)) {
             return CmsEncoder.decode(preSelection);
         } else {
             // no value found in request, check current user settings (not the member!)
@@ -1884,12 +1913,12 @@ public class CmsPreferences extends CmsTabDialog {
      * Helper method for the request parameter methods to return a String depending on the boolean parameter.<p>
      * 
      * @param isEnabled the boolean variable to check
-     * @return "true" if isEnabled is true, otherwise ""
+     * @return <code>"true"</code> if isEnabled is true, otherwise ""
      */
     private String isParamEnabled(boolean isEnabled) {
 
         if (isEnabled) {
-            return "true";
+            return CmsStringUtil.TRUE;
         }
         return "";
     }

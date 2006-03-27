@@ -47,7 +47,7 @@
 
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 0) %>
-<%= wp.buttonBarLabel("label.project") %>
+<%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0) %>
 
 <td>
 <form style="margin: 0; padding: 0;" name="wpProjectSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
@@ -61,17 +61,17 @@
 </div>
 </form></td>
 
-<% 
-if (wp.isPublishEnabled()) {
-	out.println(wp.button("../commons/publishproject.jsp", "body", "publish.png", "button.publish", buttonStyle));
-	} else {
-	out.println(wp.button(null, null, "publish_in.png", "button.publish", buttonStyle));
-}
+<%= 
+	
+	wp.getPublishButton() 
+
+
+%><%
 
 if (wp.showSiteSelector()) {
 
 %><%= wp.buttonBarSeparator(5, 0) %>          
-<%= wp.buttonBarLabel("label.site") %>
+<%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_SITE_0) %>
 
 <td>
 <form style="margin: 0; padding: 0;" name="wpSiteSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
@@ -87,7 +87,7 @@ if (wp.showSiteSelector()) {
 <% } %>
 
 <%= wp.buttonBarSeparator(5, 0) %>          
-<%= wp.buttonBarLabel("label.view") %>
+<%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_VIEW_0) %>
 
 <td>
 <form style="margin: 0; padding: 0;" name="wpViewSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
@@ -102,21 +102,21 @@ if (wp.showSiteSelector()) {
 </form></td>
 
 <%= wp.buttonBarSeparator(5, 0) %>        
-<%= wp.button("javascript:doReload()", null, "reload.png", "button.reload", buttonStyle) %>
-<%= wp.button("../commons/preferences.jsp", "body", "preferences.png", "button.preferences", buttonStyle) %>
+<%= wp.button("javascript:doReload()", null, "reload.png", org.opencms.workplace.Messages.GUI_BUTTON_RELOAD_0, buttonStyle) %>
+<%= wp.button("../commons/preferences.jsp", "body", "preferences.png",org.opencms.workplace.Messages.GUI_BUTTON_PREFERENCES_0 , buttonStyle) %>
 
 <% 
 if (wp.isSyncEnabled()) {
-	out.println(wp.button("../commons/synchronize.jsp", "body", "folder_refresh.png", "button.syncfolder", buttonStyle));
+	out.println(wp.button("../commons/synchronize.jsp", "body", "folder_refresh.png", org.opencms.workplace.Messages.GUI_BUTTON_SYNCFOLDER_0, buttonStyle));
 }
 if (wp.isHelpEnabled()) {
-	out.println(wp.button("javascript:openOnlineHelp();", null, "help.png", "button.help", buttonStyle));
+	out.println(wp.button("javascript:openOnlineHelp();", null, "help.png", org.opencms.workplace.Messages.GUI_BUTTON_HELP_0, buttonStyle));
 }        
 %>
        
 <td style="width: 100%">&nbsp;</td>
 <%= wp.buttonBarSeparator(5, 0) %>  
-<%= wp.button("../../login/index.html?logout=true", "_top", "logout.png", "button.exit", buttonStyle) %>
+<%= wp.button("../../login/index.html?logout=true", "_top", "logout.png", org.opencms.workplace.Messages.GUI_BUTTON_EXIT_0, buttonStyle) %>
 
 <% if (buttonStyle != 2) {%>
 <td>&nbsp;</td>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Alkacon Ant Task Tests" basedir=".">
+
+	<taskdef resource="org/opencms/util/ant/taskdefs.properties" >
+		<classpath>
+			<pathelement location="webapp/WEB-INF/lib/ant-opencms-1.1.jar" />
+		</classpath>
+	</taskdef>
+
+	<property name="xml.file" location="${basedir}/test.xml" />
+
+	<!-- tests the check box selection dialog -->
+	<target name="test-check-selection-dialog">
+
+		<property name="def.values.1" value="a,f,h" />
+		<property name="all.values.1" value="a,b,c,d,e,f,g,h,i,j,k" />
+		<property name="prompt.1" value="Select your letters:" />
+		<property name="title.1" value="Letters Selection" />
+		<selectionprompt property="result.1" defaultvalue="${def.values.1}" allvalues="${all.values.1}" prompt="${prompt.1}" title="${title.1}" />
+		<echo message="${result.1}" />
+	</target>
+
+	<!-- tests the radio button selection dialog -->
+	<target name="test-radio-selection-dialog">
+
+		<property name="def.value.2" value="g" />
+		<property name="all.values.2" value="a,b,c,d,e,f,g,h,i,j,k" />
+		<property name="prompt.2" value="Select your letter:" />
+		<property name="title.2" value="Letter Selection" />
+		<selectionprompt singleselection="true" property="result.2" defaultvalue="${def.value.2}" allvalues="${all.values.2}" prompt="${prompt.2}" title="${title.2}" />
+		<echo message="${result.2}" />
+	</target>
+
+	<!-- tests all selection-prompt -->
+	<target name="test-selection-prompt" depends="test-check-selection-dialog, test-radio-selection-dialog" description="test the selection prompt task"/>
+			
+	<!-- tests reading a single xml element -->
+	<target name="test-xml-single-element">
+		
+		<property name="xml.element.1" value="export/module/version" />
+
+		<readxmlproperty property="retval.1" xmlfile="${xml.file}" element="${xml.element.1}"/>
+		<echo message="${xml.element.1} = ${retval.1}" />
+	</target>
+
+	<!-- tests reading a single xml element attribute -->
+	<target name="test-xml-single-attribute">
+		
+		<property name="xml.element.2" value="export/module/exportpoints/exportpoint" />
+		<property name="xml.attribute.2" value="destination" />
+
+		<readxmlproperty property="retval.2" xmlfile="${xml.file}" element="${xml.element.2}" attribute="${xml.attribute.2}" />
+		<echo message="${xml.element.2}#${xml.attribute.2} = ${retval.2}" />
+	</target>
+
+	<!-- tests reading a multi xml elements -->
+	<target name="test-xml-multi-element">
+		
+		<property name="xml.element.3" value="export/files/file/destination" />
+
+		<readxmlproperty property="retval.3" xmlfile="${xml.file}" element="${xml.element.3}"/>
+		<echo message="${xml.element.3} = ${retval.3}" />
+	</target>
+
+	<!-- tests reading a multi xml element attributes -->
+	<target name="test-xml-multi-attribute">
+		
+		<property name="xml.element.4" value="export/module/resources/resource" />
+		<property name="xml.attribute.4" value="uri" />
+
+		<readxmlproperty property="retval.4" xmlfile="${xml.file}" element="${xml.element.4}" attribute="${xml.attribute.4}" />
+		<echo message="${xml.element.4}#${xml.attribute.4} = ${retval.4}" />
+	</target>
+
+	<!-- tests all read-xml-property -->
+	<target name="test-read-xml-property" depends="test-xml-single-element, test-xml-single-attribute, test-xml-multi-element, test-xml-multi-attribute" description="test the read XML property task" />
+		
+	<!-- tests all -->
+	<target name="test-all" depends="test-selection-prompt, test-read-xml-property" description="test all tasks"/>
+			
+</project>

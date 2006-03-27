@@ -83,6 +83,10 @@
 			<size-properties>128</size-properties>
 			<size-accesscontrollists>1024</size-accesscontrollists>	
 			<size-permissions>1024</size-permissions>
-		</resultcache>						
+		</resultcache>			
+		<content-notification>
+            <notification-time>365</notification-time>
+            <notification-project>Offline</notification-project>
+        </content-notification>				
 	</system>
 </opencms>

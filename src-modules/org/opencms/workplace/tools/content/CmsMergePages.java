@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsMergePages.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.report.I_CmsReport;
@@ -67,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -293,39 +294,30 @@ public class CmsMergePages extends CmsReport {
      */
     public void validateParameters(CmsObject cms) {
 
-        Locale userLocale = getLocale();
+        CmsMessages messages = Messages.get().getBundle(getLocale());
         StringBuffer validationErrors = new StringBuffer();
         if (CmsStringUtil.isEmpty(getParamFolder1())) {
-            validationErrors.append(
-                Messages.get().key(userLocale, Messages.GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_0, null)).append("<br>");
+            validationErrors.append(messages.key(Messages.GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_0)).append("<br>");
         } else {
             try {
                 cms.readResource(getParamFolder1());
             } catch (CmsException e) {
                 validationErrors.append(
-                    Messages.get().key(
-                        userLocale,
-                        Messages.GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_1,
-                        new Object[] {getParamFolder1()})).append("<br>");
+                    messages.key(Messages.GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_1, getParamFolder1())).append("<br>");
             }
         }
         if (CmsStringUtil.isEmpty(getParamFolder2())) {
-            validationErrors.append(
-                Messages.get().key(userLocale, Messages.GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_0, null)).append("<br>");
+            validationErrors.append(messages.key(Messages.GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_0)).append("<br>");
         } else {
             try {
                 cms.readResource(getParamFolder2());
             } catch (CmsException e) {
                 validationErrors.append(
-                    Messages.get().key(
-                        userLocale,
-                        Messages.GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1,
-                        new Object[] {getParamFolder2()})).append("<br>");
+                    messages.key(Messages.GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1, getParamFolder2())).append("<br>");
             }
         }
         if (getParamFolder1().equals(getParamFolder2())) {
-            validationErrors.append(
-                Messages.get().key(userLocale, Messages.GUI_MERGE_PAGES_VALIDATE_SAME_FOLDER_0, null)).append("<br>");
+            validationErrors.append(messages.key(Messages.GUI_MERGE_PAGES_VALIDATE_SAME_FOLDER_0)).append("<br>");
         }
 
         setErrorMessage(validationErrors.toString());
@@ -357,7 +349,7 @@ public class CmsMergePages extends CmsReport {
         } else {
             setAction(ACTION_DEFAULT);
             // add the title for the dialog 
-            setParamTitle(key("title.mergepages"));
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_MERGEPAGES_0));
         }
     }
 
@@ -793,5 +785,4 @@ public class CmsMergePages extends CmsReport {
         }
         m_report.println(Messages.get().container(Messages.RPT_MERGE_PAGES_END_0), I_CmsReport.FORMAT_HEADLINE);
     }
-
 }

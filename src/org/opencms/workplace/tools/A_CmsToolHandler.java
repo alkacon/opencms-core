@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/10/13 11:06:32 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -45,12 +46,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Helper class to build easily other admin tool handlers.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,6 +116,10 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /** Small icon path (16x16). */
     private String m_smallIconPath;
 
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsToolHandler.class);
+    
     /**
      * Returns the confirmation Message.<p>
      *
@@ -370,9 +377,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
      * The confirmation message is taken from the <code>{@link #ARGS_PROPERTY_DEFINITION}</code> with key 
      * <code>{@link #ARG_CONFIRMATION_NAME}</code>
      * 
-     * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, java.lang.String)
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, CmsToolRootHandler, java.lang.String)
      */
-    public boolean setup(CmsObject cms, String resourcePath) {
+    public boolean setup(CmsObject cms, CmsToolRootHandler root, String resourcePath) {
 
         CmsJspNavElement navElem = CmsJspNavBuilder.getNavigationForResource(cms, resourcePath);
 
@@ -420,50 +427,97 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
             group = "${key." + Messages.GUI_TOOLS_DEFAULT_GROUP_0 + "}";
         }
 
-        String link = resourcePath;
-
         String path = resourcePath;
-        boolean isFolder = false;
+        setLink(cms, resourcePath);
+        try {
+            if (cms.readResource(resourcePath).isFolder()) {
+                path = CmsToolManager.TOOLPATH_SEPARATOR
+                    + resourcePath.substring(
+                        root.getUri().length(),
+                        resourcePath.lastIndexOf(CmsToolManager.TOOLPATH_SEPARATOR));
+            } else {
+                path = CmsToolManager.TOOLPATH_SEPARATOR
+                    + resourcePath.substring(root.getUri().length(), resourcePath.lastIndexOf('.'));
+            }
+        } catch (CmsException e) {
+            // ignore
+        }
+        // install point
+        setPath(path);
+        setGroup(group);
+        setPosition(navElem.getNavPosition());
+
+        // parameters
+        setParameters(cms, resourcePath);
+
+        return !path.equals(resourcePath);
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        return m_path + " - " + m_group + " - " + m_position;
+    }
+
+    /**
+     * Sets the link for the given resource.<p>
+     * 
+     * Use the <code>resourcePath</code> as link if it is not a folder.
+     * 
+     * If it is a folder, try to use the folder default file property value as link.
+     * if not use the {@link CmsToolManager#VIEW_JSPPAGE_LOCATION}.
+     * 
+     * @param cms the cms context
+     * @param resourcePath the path to the resource to set the link for
+     */
+    protected void setLink(CmsObject cms, String resourcePath) {
+
+        String link = resourcePath;
         try {
             // make sure the res is a folder 
             cms.readFolder(resourcePath);
-            isFolder = true;
 
             // adjust the path
-            if (path.endsWith(CmsToolManager.TOOLPATH_SEPARATOR)) {
-                path = path.substring(0, path.lastIndexOf(CmsToolManager.TOOLPATH_SEPARATOR));
+            if (resourcePath.endsWith(CmsToolManager.TOOLPATH_SEPARATOR)) {
+                resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf(CmsToolManager.TOOLPATH_SEPARATOR));
             }
 
             // set admin page as link
             link = CmsToolManager.VIEW_JSPPAGE_LOCATION;
 
             // try to use the folder def file as link
-            CmsProperty prop = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_DEFAULT_FILE, true);
+            CmsProperty prop = cms.readPropertyObject(resourcePath, CmsPropertyDefinition.PROPERTY_DEFAULT_FILE, false);
             String defFile = "index.html";
             if (!prop.isNullProperty()) {
                 defFile = prop.getValue();
             }
             if (!defFile.startsWith(CmsToolManager.TOOLPATH_SEPARATOR)) {
                 // try to use this relative link
-                defFile = path + CmsToolManager.TOOLPATH_SEPARATOR + defFile;
+                defFile = resourcePath + CmsToolManager.TOOLPATH_SEPARATOR + defFile;
             }
-            cms.readResource(defFile);
-            link = defFile;
-
+            if (defFile.indexOf("?") > 0) {
+                if (cms.existsResource(defFile.substring(0, defFile.indexOf("?")))) {
+                    link = defFile;
+                }
+            } else if (cms.existsResource(defFile)) {
+                link = defFile;
+            }
         } catch (CmsException e) {
             // noop
         }
 
         setLink(link);
-        if (isFolder) {
-            path = resourcePath.substring(
-                CmsToolManager.ADMINTOOLS_ROOT_LOCATION.length(),
-                resourcePath.lastIndexOf(CmsToolManager.TOOLPATH_SEPARATOR));
-        } else {
-            path = resourcePath.substring(
-                CmsToolManager.ADMINTOOLS_ROOT_LOCATION.length(),
-                resourcePath.lastIndexOf('.'));
-        }
+    }
+
+    /**
+     * Sets the needed properties from the {@link #ARGS_PROPERTY_DEFINITION} property of the given resource.<p>
+     * 
+     * @param cms the cms context
+     * @param resourcePath the path to the resource to read the property from
+     */
+    protected void setParameters(CmsObject cms, String resourcePath) {
 
         try {
             CmsProperty prop = cms.readPropertyObject(resourcePath, ARGS_PROPERTY_DEFINITION, false);
@@ -471,12 +525,18 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
                 Map argsMap = new HashMap();
                 Iterator itArgs = CmsStringUtil.splitAsList(prop.getValue(), ARGUMENT_SEPARATOR).iterator();
                 while (itArgs.hasNext()) {
-                    String arg = (String)itArgs.next();
+                    String arg = "";
+                    try {
+                    arg = (String)itArgs.next();
                     int pos = arg.indexOf(VALUE_SEPARATOR);
                     argsMap.put(arg.substring(0, pos), arg.substring(pos + 1));
+                    } catch (StringIndexOutOfBoundsException e) {
+                        LOG.error("sep: " + VALUE_SEPARATOR + "arg: " + arg);
+                        throw e;
+                    }
                 }
                 if (argsMap.get(ARG_PATH_NAME) != null) {
-                    path = (String)argsMap.get(ARG_PATH_NAME);
+                    setPath((String)argsMap.get(ARG_PATH_NAME));
                 }
                 if (argsMap.get(ARG_CONFIRMATION_NAME) != null) {
                     setConfirmationMessage((String)argsMap.get(ARG_CONFIRMATION_NAME));
@@ -488,20 +548,5 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         } catch (CmsException e) {
             // noop
         }
-
-        // install point
-        setPath(path);
-        setGroup(group);
-        setPosition(navElem.getNavPosition());
-
-        return true;
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-
-        return m_path + " - " + m_group + " - " + m_position;
     }
 }

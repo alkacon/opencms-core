@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/10/10 16:11:09 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,7 +108,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_INIT_USER_2 = "ERR_INVALID_INIT_USER_2";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_MULTI_EXCEPTION_1 = "ERR_MULTI_EXCEPTION_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_NOT_A_FOLDER_1 = "ERR_NOT_A_FOLDER_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_OPENCMS_NOT_INITIALIZED_2 = "ERR_OPENCMS_NOT_INITIALIZED_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_READ_INTERNAL_RESOURCE_1 = "ERR_READ_INTERNAL_RESOURCE_1";
@@ -309,6 +315,30 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_CONSOLE_TOTAL_RUNTIME_1 = "LOG_CONSOLE_TOTAL_RUNTIME_1";
 
     /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_1 = "LOG_DEBUG_EVENT_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_COMPLETE_1 = "LOG_DEBUG_EVENT_COMPLETE_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_END_LISTENER_3 = "LOG_DEBUG_EVENT_END_LISTENER_3";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_LISTENERS_3 = "LOG_DEBUG_EVENT_LISTENERS_3";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_NO_LISTENER_1 = "LOG_DEBUG_EVENT_NO_LISTENER_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_START_LISTENER_3 = "LOG_DEBUG_EVENT_START_LISTENER_3";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_VALUE_3 = "LOG_DEBUG_EVENT_VALUE_3";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_NO_EVENT_VALUE_1 = "LOG_DEBUG_NO_EVENT_VALUE_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String LOG_DUPLICATE_REQUEST_HANDLER_1 = "LOG_DUPLICATE_REQUEST_HANDLER_1";
 
     /** Message contant for key in the resource bundle. */
@@ -376,6 +406,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_STARTUP_CONSOLE_NOTE_2 = "LOG_STARTUP_CONSOLE_NOTE_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_THREADSTORE_CHECK_SESSIONS_ERROR_0 = "LOG_THREADSTORE_CHECK_SESSIONS_ERROR_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_THREADSTORE_CHECK_THREADS_ERROR_0 = "LOG_THREADSTORE_CHECK_THREADS_ERROR_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_THREADSTORE_DOOMED_2 = "LOG_THREADSTORE_DOOMED_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_THREADSTORE_POOL_CONTENT_2 = "LOG_THREADSTORE_POOL_CONTENT_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_WRONG_INIT_SEQUENCE_2 = "LOG_WRONG_INIT_SEQUENCE_2";

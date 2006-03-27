@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2005/08/30 13:54:19 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/03/27 14:52:46 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,11 +53,17 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 6.0.0
  */
 public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+
+    /** The name of the DTD for this configuration. */
+    public static final String CONFIGURATION_DTD_NAME = "opencms-importexport.dtd";
+
+    /** The name of the default XML file for this configuration. */
+    public static final String DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";
 
     /** Node that indicates page conversion. */
     protected static final String N_CONVERT = "convert";
@@ -113,6 +119,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /**  The node name of the static export defualtsuffix node. */
     protected static final String N_STATICEXPORT_DEFAULTSUFFIXES = "defaultsuffixes";
 
+    /**  The node name of the static export rule description nodes. */
+    protected static final String N_STATICEXPORT_DESCRIPTION = "description";
+
     /**  The node name of the static export export-rule export node. */
     protected static final String N_STATICEXPORT_EXPORT = "export-resources";
 
@@ -137,17 +146,20 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /**  The node name of the static export header node. */
     protected static final String N_STATICEXPORT_HEADER = "header";
 
-    /**  The node name of the static export related-system-res node. */
-    protected static final String N_STATICEXPORT_RELATED_SYSTEM_RES = "related-system-res";
-
     /**  The node name of the static export export-rule modified node. */
     protected static final String N_STATICEXPORT_MODIFIED = "modified-resources";
+
+    /**  The node name of the static export rule name nodes. */
+    protected static final String N_STATICEXPORT_NAME = "name";
 
     /**  The node name of the static export plainoptimization node. */
     protected static final String N_STATICEXPORT_PLAINOPTIMIZATION = "plainoptimization";
 
     /**  The node name of the static export regex node. */
     protected static final String N_STATICEXPORT_REGEX = "regex";
+
+    /**  The node name of the static export related-system-res node. */
+    protected static final String N_STATICEXPORT_RELATED_SYSTEM_RES = "related-system-res";
 
     /**  The node name of the static export relativelinks node. */
     protected static final String N_STATICEXPORT_RELATIVELINKS = "userelativelinks";
@@ -185,20 +197,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /**  The node name of the static export export-rule export uri node. */
     protected static final String N_STATICEXPORT_URI = "uri";
 
-    /**  The node name of the static export rule name nodes. */
-    protected static final String N_STATICEXPORT_NAME = "name";
-
-    /**  The node name of the static export rule description nodes. */
-    protected static final String N_STATICEXPORT_DESCRIPTION = "description";
-
     /**  The node name of the static export vfx-prefix node. */
     protected static final String N_STATICEXPORT_VFS_PREFIX = "vfs-prefix";
-
-    /** The name of the DTD for this configuration. */
-    private static final String CONFIGURATION_DTD_NAME = "opencms-importexport.dtd";
-
-    /** The name of the default XML file for this configuration. */
-    private static final String DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";
 
     /** The configured import/export manager. */
     private CmsImportExportManager m_importExportManager;
@@ -213,7 +213,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         setXmlFileName(DEFAULT_XML_FILE_NAME);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_IMPORT_CONFIG_INIT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_IMPORT_CONFIG_INIT_0));
         }
     }
 
@@ -731,7 +731,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     public void initializeFinished() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_IMPORT_CONFIG_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_IMPORT_CONFIG_FINISHED_0));
         }
     }
 
@@ -744,7 +744,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         m_importExportManager = manager;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_IMPORT_MANAGER_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_IMPORT_MANAGER_0));
         }
     }
 
@@ -757,8 +757,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         m_staticExportManager = manager;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_STATEXP_MANAGER_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATEXP_MANAGER_0));
         }
     }
-
 }

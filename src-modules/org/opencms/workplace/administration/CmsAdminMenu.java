@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -191,29 +191,26 @@ public class CmsAdminMenu extends CmsToolDialog {
         m_groupContainer.clear();
 
         // creates the context help menu
-        CmsAdminMenuGroup helpMenu = new CmsAdminMenuGroup("help", Messages.get().key(
-            getLocale(),
-            Messages.GUI_ADMIN_MENU_HELP_GROUP_0,
-            null));
+        CmsAdminMenuGroup helpMenu = new CmsAdminMenuGroup("help", Messages.get().getBundle(getLocale()).key(
+            Messages.GUI_ADMIN_MENU_HELP_GROUP_0));
         helpMenu.addMenuItem(new CmsAdminContextHelpMenuItem());
         addGroup(helpMenu);
 
-        Iterator itElems = getToolManager().getToolHandlers().iterator();
+        Iterator itElems = getToolManager().getToolsForPath(this, getToolManager().getBaseToolPath(this), false).iterator();
         while (itElems.hasNext()) {
             CmsTool tool = (CmsTool)itElems.next();
             // check visibility
-            if (!getCms().existsResource(tool.getHandler().getLink()) || !tool.getHandler().isVisible(getCms())) {
+            String link = tool.getHandler().getLink();
+            if (link.indexOf("?") > 0) {
+                link = link.substring(0, link.indexOf("?"));
+            }
+            if (!getCms().existsResource(link) || !tool.getHandler().isVisible(getCms())) {
                 continue;
             }
 
-            String root = getToolManager().getRootToolPath(this);
-            // leave out everything above the root
-            if (!tool.getHandler().getPath().startsWith(root)) {
-                continue;
-            }
-            // cut out the root
-            String path = tool.getHandler().getPath().substring(getToolManager().getRootToolPath(this).length());
-            // special case of the root tool
+            // cut out the base
+            String path = tool.getHandler().getPath().substring(getToolManager().getBaseToolPath(this).length());
+            // special case of the base tool
             if (CmsStringUtil.isEmpty(path)) {
                 continue;
             }

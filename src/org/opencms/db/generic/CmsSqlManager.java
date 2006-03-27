@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/07/07 10:08:28 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2006/03/27 14:52:54 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,23 +57,23 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * 
  * @since 6.0.0 
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -5994026786008303964L;
-
     /** A pattern being replaced in SQL queries to generate SQL queries to access online/offline tables. */
     protected static final String QUERY_PROJECT_SEARCH_PATTERN = "_${PROJECT}_";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSqlManager.class);
 
     /** The filename/path of the SQL query properties. */
     private static final String QUERY_PROPERTIES = "org/opencms/db/generic/query.properties";
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSqlManager.class);
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -5994026786008303964L;
 
     /** A map to cache queries with replaced search patterns. */
     protected Map m_cachedQueries;
@@ -112,12 +112,12 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             Object objectInstance = Class.forName(classname).newInstance();
             sqlManager = (org.opencms.db.generic.CmsSqlManager)objectInstance;
         } catch (Throwable t) {
-            LOG.error(Messages.get().key(Messages.LOG_SQL_MANAGER_INIT_FAILED_1, classname), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_SQL_MANAGER_INIT_FAILED_1, classname), t);
             sqlManager = null;
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_SQL_MANAGER_1, classname));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_SQL_MANAGER_1, classname));
         }
 
         return sqlManager;
@@ -157,7 +157,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         // as a result there is an error that forces the connection to be destroyed and not pooled
 
         if (dbc == null) {
-            LOG.error(Messages.get().key(Messages.LOG_NULL_DB_CONTEXT_0));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_NULL_DB_CONTEXT_0));
         }
 
         try {
@@ -242,7 +242,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
     public Connection getConnection(CmsDbContext dbc, int projectId) throws SQLException {
 
         if (dbc == null) {
-            LOG.error(Messages.get().key(Messages.LOG_NULL_DB_CONTEXT_0));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_NULL_DB_CONTEXT_0));
         }
         return getConnection(projectId);
     }
@@ -334,7 +334,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @return int the new primary key
      * @throws CmsDataAccessException if an error occurs
      */
-    public synchronized int nextId(String tableName) throws CmsDataAccessException {
+    public int nextId(String tableName) throws CmsDataAccessException {
 
         return org.opencms.db.CmsDbUtil.nextId(m_poolUrl, tableName);
     }
@@ -412,10 +412,10 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      */
     public String readQuery(String queryKey) {
 
-        String value;
-        if ((value = (String)m_queries.get(queryKey)) == null) {
+        String value = (String)m_queries.get(queryKey);
+        if (value == null) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_QUERY_NOT_FOUND_1, queryKey));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_QUERY_NOT_FOUND_1, queryKey));
             }
         }
         return value;
@@ -499,7 +499,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         // different connections...        
 
         if (projectId < 0) {
-            throw new SQLException(Messages.get().key(
+            throw new SQLException(Messages.get().getBundle().key(
                 Messages.ERR_JDBC_CONN_INVALID_PROJECT_ID_1,
                 new Integer(projectId)));
         }
@@ -523,7 +523,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             replaceQuerySearchPatterns();
         } catch (Throwable t) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_LOAD_QUERY_PROP_FILE_FAILED_1, propertyFilename), t);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_LOAD_QUERY_PROP_FILE_FAILED_1, propertyFilename),
+                    t);
             }
 
             properties = null;
@@ -550,8 +552,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             lastIndex = 0;
 
             while ((startIndex = currentValue.indexOf("${", lastIndex)) != -1) {
-                if ((endIndex = currentValue.indexOf('}', startIndex)) != -1
-                    && !currentValue.startsWith(QUERY_PROJECT_SEARCH_PATTERN, startIndex - 1)) {
+                endIndex = currentValue.indexOf('}', startIndex);
+                if (endIndex != -1 && !currentValue.startsWith(QUERY_PROJECT_SEARCH_PATTERN, startIndex - 1)) {
 
                     String replaceKey = currentValue.substring(startIndex + 2, endIndex);
                     String searchPattern = currentValue.substring(startIndex, endIndex + 1);
@@ -564,7 +566,6 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
                 lastIndex = endIndex + 2;
             }
-
             m_queries.put(currentKey, currentValue);
         }
     }

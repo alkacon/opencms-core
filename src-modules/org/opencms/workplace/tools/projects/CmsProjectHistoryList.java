@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectHistoryList.java,v $
- * Date   : $Date: 2005/07/01 08:29:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -280,10 +280,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
         CmsListColumnDefinition publishingDateCol = new CmsListColumnDefinition(LIST_COLUMN_PUBLISHED_DATE);
         publishingDateCol.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_PUBLISHED_DATE_0));
         publishingDateCol.setWidth("10%");
-        CmsListDateMacroFormatter publishingDateFormatter = new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_COLS_PUBLISHING_FORMAT_1), Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_COLS_PUBLISHING_NEVER_0));
-        publishingDateCol.setFormatter(publishingDateFormatter);
+        publishingDateCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(publishingDateCol);
 
         // add column for published by
@@ -314,10 +311,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
         CmsListColumnDefinition creationCol = new CmsListColumnDefinition(LIST_COLUMN_CREATION);
         creationCol.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_CREATION_0));
         creationCol.setWidth("10%");
-        CmsListDateMacroFormatter creationDateFormatter = new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_COLS_CREATION_FORMAT_1), Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_COLS_CREATION_NEVER_0));
-        creationCol.setFormatter(creationDateFormatter);
+        creationCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(creationCol);
     }
 

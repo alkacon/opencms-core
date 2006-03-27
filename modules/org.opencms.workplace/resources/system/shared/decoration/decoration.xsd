@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+	<xsd:element name="Decorations" type="OpenCmsDecorations"/>
+	
+	<xsd:complexType name="OpenCmsDecorations">
+		<xsd:sequence>
+			<xsd:element name="Decoration" type="OpenCmsDecoration" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsDecoration">
+		<xsd:sequence>
+			<xsd:element name="name" type="OpenCmsString" />
+			<xsd:element name="markfirst" type="OpenCmsBoolean" default="true" />
+			<xsd:element name="pretext" type="OpenCmsString"  />
+			<xsd:element name="posttext" type="OpenCmsString" />
+			<xsd:element name="pretextfirst" type="OpenCmsString" />
+			<xsd:element name="posttextfirst" type="OpenCmsString" />
+			<xsd:element name="filename" type="OpenCmsVfsFile" />
+
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.jsp.decorator.messages"/>
+			<layouts/>
+		</xsd:appinfo>
+	</xsd:annotation>  
+	
+</xsd:schema>

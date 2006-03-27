@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2005/10/12 14:03:43 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/27 14:52:46 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0
  */
@@ -80,6 +80,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_MODULE_CONFIG_INIT_0 = "INIT_MODULE_CONFIG_INIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_NOTIFICATION_PROJECT_1 = "INIT_NOTIFICATION_PROJECT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_NOTIFICATION_TIME_1 = "INIT_NOTIFICATION_TIME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_PWD_HANDLER_SUCCESS_1 = "INIT_PWD_HANDLER_SUCCESS_1";

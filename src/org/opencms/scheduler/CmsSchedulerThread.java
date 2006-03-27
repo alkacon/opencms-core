@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,9 +123,9 @@ public class CmsSchedulerThread extends Thread {
                     m_runnable.run();
                 }
             } catch (InterruptedException e) {
-                LOG.error(Messages.get().key(Messages.LOG_THREAD_INTERRUPTED_1, getName()), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_THREAD_INTERRUPTED_1, getName()), e);
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.LOG_THREAD_ERROR_1, getName()), t);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_THREAD_ERROR_1, getName()), t);
             } finally {
                 if (runOnce) {
                     m_run = false;
@@ -134,7 +134,7 @@ public class CmsSchedulerThread extends Thread {
             }
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_THREAD_SHUTDOWN_1, getName()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_THREAD_SHUTDOWN_1, getName()));
         }
     }
 

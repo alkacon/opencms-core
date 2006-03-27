@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2005/07/29 10:13:57 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/03/27 14:53:03 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0
  */
@@ -519,7 +519,7 @@ public class TestCmsXmlPage extends TestCase {
         assertTrue(page.hasValue("body3", Locale.ENGLISH));
         CmsLinkTable table = page.getLinkTable("body3", Locale.ENGLISH);
         assertTrue(table.getLink("link0").isInternal());
-        assertEquals("English WRITTEN! Image <img src=\"/test/image.gif\" />", page.getStringValue(
+        assertEquals("English WRITTEN! Image <img alt=\"\" src=\"/test/image.gif\" />", page.getStringValue(
             null,
             "body3",
             Locale.ENGLISH));
@@ -546,7 +546,7 @@ public class TestCmsXmlPage extends TestCase {
         assertTrue(page.hasValue("body3", Locale.ENGLISH));
         CmsLinkTable table = page.getLinkTable("body3", Locale.ENGLISH);
         assertTrue(table.getLink("link0").isInternal());
-        assertEquals("English WRITTEN! Image <img src=\"/test/image.gif\" />", page.getStringValue(
+        assertEquals("English WRITTEN! Image <img alt=\"\" src=\"/test/image.gif\" />", page.getStringValue(
             null,
             "body3",
             Locale.ENGLISH));

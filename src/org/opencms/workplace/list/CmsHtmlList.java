@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/10/13 11:06:32 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -51,20 +52,26 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlList {
-
-    /** Constant for item separator char used for coding/encoding multiselection. */
-    public static final String ITEM_SEPARATOR = "|";
 
     /** Standard list button location. */
     public static final String ICON_LEFT = "list/leftarrow.png";
 
     /** Standard list button location. */
     public static final String ICON_RIGHT = "list/rightarrow.png";
+
+    /** Constant for item separator char used for coding/encoding multiselection. */
+    public static final String ITEM_SEPARATOR = "|";
+
+    /** Var name for error message if no item has been selected. */
+    public static final String NO_SELECTION_HELP_VAR = "noSelHelp";
+
+    /** Var name for error message if number of selected items does not match. */
+    public static final String NO_SELECTION_MATCH_HELP_VAR = "noSelMatchHelp";
 
     /** Current displayed page number. */
     private int m_currentPage;
@@ -199,6 +206,19 @@ public class CmsHtmlList {
     public int getCurrentPage() {
 
         return m_currentPage;
+    }
+
+    /**
+     * Returns all items of the current page.<p>
+     * 
+     * @return all items of the current page, a list of {@link CmsListItem} objects
+     */
+    public List getCurrentPageItems() {
+
+        if (getSize() == 0) {
+            return Collections.EMPTY_LIST;
+        }
+        return Collections.unmodifiableList(getContent().subList(displayedFrom() - 1, displayedTo()));
     }
 
     /**
@@ -409,6 +429,31 @@ public class CmsHtmlList {
     }
 
     /**
+     * Generates the csv output for the list.<p>
+     * 
+     * Synchronized to not collide with <code>{@link #listHtml(CmsWorkplace)}</code>.<p> 
+     * 
+     * @param wp the workplace object
+     * 
+     * @return csv output
+     */
+    public synchronized String listCsv(CmsWorkplace wp) {
+
+        StringBuffer csv = new StringBuffer(5120);
+        csv.append(m_metadata.csvHeader(wp));
+        if (getContent().isEmpty()) {
+            csv.append(m_metadata.csvEmptyList());
+        } else {
+            Iterator itItems = getContent().iterator();
+            while (itItems.hasNext()) {
+                CmsListItem item = (CmsListItem)itItems.next();
+                csv.append(m_metadata.csvItem(item, wp));
+            }
+        }
+        return wp.resolveMacros(csv.toString());
+    }
+
+    /**
      * Generates the html code for the list.<p>
      * 
      * Synchronized to not collide with <code>{@link #printableHtml(CmsWorkplace)}</code>.<p> 
@@ -419,17 +464,31 @@ public class CmsHtmlList {
      */
     public synchronized String listHtml(CmsWorkplace wp) {
 
-        if (displayedFrom() == 0) {
-            // empty list
-            m_visibleItems = new ArrayList();
+        if (isPrintable()) {
+            m_visibleItems = new ArrayList(getContent());
         } else {
-            m_visibleItems = new ArrayList(getContent().subList(displayedFrom() - 1, displayedTo()));
+            m_visibleItems = new ArrayList(getCurrentPageItems());
         }
 
         StringBuffer html = new StringBuffer(5120);
         html.append(htmlBegin(wp));
-        html.append(htmlTitle(wp));
-        html.append(htmlToolBar(wp));
+        if (!isPrintable()) {
+            html.append(htmlTitle(wp));
+            html.append(htmlToolBar(wp));
+        } else {
+            html.append("<style type='text/css'>\n");
+            html.append("td.listdetailitem, \n");
+            html.append(".linkdisabled {\n");
+            html.append("\tcolor: black;\n");
+            html.append("}\n");
+            html.append(".list th {\n");
+            html.append("\tborder: 1px solid black;\n");
+            html.append("}\n");
+            html.append(".list {\n");
+            html.append("\tborder: 1px solid black;\n");
+            html.append("}\n");
+            html.append("</style>");
+        }
         html.append("<table width='100%' cellpadding='1' cellspacing='0' class='list'>\n");
         html.append(m_metadata.htmlHeader(this, wp));
         if (m_visibleItems.isEmpty()) {
@@ -439,36 +498,56 @@ public class CmsHtmlList {
             boolean odd = true;
             while (itItems.hasNext()) {
                 CmsListItem item = (CmsListItem)itItems.next();
-                html.append(m_metadata.htmlItem(item, wp, odd));
+                html.append(m_metadata.htmlItem(item, wp, odd, isPrintable()));
                 odd = !odd;
             }
         }
         html.append("</table>\n");
-        html.append(htmlPagingBar(wp));
+        if (!isPrintable()) {
+            html.append(htmlPagingBar(wp));
+        }
         html.append(htmlEnd(wp));
         return wp.resolveMacros(html.toString());
     }
 
     /**
      * Generate the need js code for the list.<p>
-     * @param locale TODO:
+     * 
+     * @param locale the locale
      * 
      * @return js code
      */
     public String listJs(Locale locale) {
 
         StringBuffer js = new StringBuffer(1024);
+        CmsMessages messages = Messages.get().getBundle(locale);
         js.append("<script type='text/javascript' src='");
         js.append(CmsWorkplace.getSkinUri());
         js.append("admin/javascript/list.js'></script>\n");
-        js.append("<script type='text/javascript'>\n");
-        js.append("\tvar noSelHelp = '");
-        js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(
-            locale,
-            Messages.GUI_LIST_ACTION_NO_SELECTION_0,
-            null)));
-        js.append("';\n");
-        js.append("</script>\n");
+        if (!m_metadata.getMultiActions().isEmpty()) {
+            js.append("<script type='text/javascript'>\n");
+            js.append("\tvar ");
+            js.append(NO_SELECTION_HELP_VAR);
+            js.append(" = '");
+            js.append(CmsStringUtil.escapeJavaScript(messages.key(Messages.GUI_LIST_ACTION_NO_SELECTION_0)));
+            js.append("';\n");
+            Iterator it = m_metadata.getMultiActions().iterator();
+            while (it.hasNext()) {
+                CmsListMultiAction action = (CmsListMultiAction)it.next();
+                if (action instanceof CmsListRadioMultiAction) {
+                    CmsListRadioMultiAction rAction = (CmsListRadioMultiAction)action;
+                    js.append("\tvar ");
+                    js.append(NO_SELECTION_MATCH_HELP_VAR);
+                    js.append(rAction.getId());
+                    js.append(" = '");
+                    js.append(CmsStringUtil.escapeJavaScript(messages.key(
+                        Messages.GUI_LIST_ACTION_NO_SELECTION_MATCH_1,
+                        new Integer(rAction.getSelections()))));
+                    js.append("';\n");
+                }
+            }
+            js.append("</script>\n");
+        }
         return js.toString();
     }
 
@@ -684,7 +763,7 @@ public class CmsHtmlList {
                     Messages.ERR_LIST_INVALID_PAGE_1,
                     new Integer(currentPage)));
             }
-        } 
+        }
         m_currentPage = currentPage;
     }
 
@@ -713,9 +792,11 @@ public class CmsHtmlList {
             // reset content if filter is empty
             m_filteredItems = null;
             m_searchFilter = "";
+            getMetadata().getSearchAction().getShowAllAction().setVisible(false);
         } else {
             m_filteredItems = getMetadata().getSearchAction().filter(getAllContent(), searchFilter);
             m_searchFilter = searchFilter;
+            getMetadata().getSearchAction().getShowAllAction().setVisible(true);
         }
         String sCol = m_sortedColumn;
         m_sortedColumn = "";
@@ -854,9 +935,8 @@ public class CmsHtmlList {
 
         StringBuffer html = new StringBuffer(512);
         // help & confirmation text for actions if needed
-        // TODO: support for help & confirmation text depending on the item
-        if (m_visibleItems != null && !m_visibleItems.isEmpty()) {
-            Iterator cols = getMetadata().getListColumns().iterator();
+        if (!isPrintable() && m_visibleItems != null && !m_visibleItems.isEmpty()) {
+            Iterator cols = getMetadata().getColumnDefinitions().iterator();
             while (cols.hasNext()) {
                 CmsListColumnDefinition col = (CmsListColumnDefinition)cols.next();
                 Iterator actions = col.getDirectActions().iterator();
@@ -897,7 +977,7 @@ public class CmsHtmlList {
         html.append("\t\t</table>\n");
         html.append(((CmsDialog)wp).dialogBlock(CmsWorkplace.HTML_END, m_name.key(wp.getLocale()), false));
         html.append("</div>\n");
-        if (getMetadata().isSearchable()) {
+        if (!isPrintable() && getMetadata().isSearchable()) {
             html.append("<script type='text/javascript'>\n");
             html.append("\tvar form = document.forms['");
             html.append(getId());
@@ -923,17 +1003,18 @@ public class CmsHtmlList {
             return "";
         }
         StringBuffer html = new StringBuffer(1024);
+        CmsMessages messages = Messages.get().getBundle(wp.getLocale());
         html.append("<table width='100%' cellspacing='0' style='margin-top: 5px;'>\n");
         html.append("\t<tr>\n");
         html.append("\t\t<td class='main'>\n");
         // prev button
         String id = "listPrev";
-        String name = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0, null);
+        String name = messages.key(Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0);
         String iconPath = ICON_LEFT;
         boolean enabled = getCurrentPage() > 1;
-        String helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_PREVIOUS_HELP_0, null);
+        String helpText = messages.key(Messages.GUI_LIST_PAGING_PREVIOUS_HELP_0);
         if (!enabled) {
-            helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_PREVIOUS_HELPDIS_0, null);
+            helpText = messages.key(Messages.GUI_LIST_PAGING_PREVIOUS_HELPDIS_0);
         }
         String onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() - 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
@@ -949,12 +1030,12 @@ public class CmsHtmlList {
         html.append("\n");
         // next button
         id = "listNext";
-        name = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_NEXT_NAME_0, null);
+        name = messages.key(Messages.GUI_LIST_PAGING_NEXT_NAME_0);
         iconPath = ICON_RIGHT;
         enabled = getCurrentPage() < getNumberOfPages();
-        helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_NEXT_HELP_0, null);
+        helpText = messages.key(Messages.GUI_LIST_PAGING_NEXT_HELP_0);
         if (!enabled) {
-            helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_NEXT_HELPDIS_0, null);
+            helpText = messages.key(Messages.GUI_LIST_PAGING_NEXT_HELPDIS_0);
         }
         onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() + 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
@@ -989,13 +1070,11 @@ public class CmsHtmlList {
         html.append("\t\t\t</select>\n");
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
-            html.append(Messages.get().key(
-                wp.getLocale(),
+            html.append(messages.key(
                 Messages.GUI_LIST_PAGING_TEXT_2,
                 new Object[] {m_name.key(wp.getLocale()), new Integer(getTotalSize())}));
         } else {
-            html.append(Messages.get().key(
-                wp.getLocale(),
+            html.append(messages.key(
                 Messages.GUI_LIST_PAGING_FILTER_TEXT_3,
                 new Object[] {m_name.key(wp.getLocale()), new Integer(getSize()), new Integer(getTotalSize())}));
         }
@@ -1015,35 +1094,41 @@ public class CmsHtmlList {
     private String htmlTitle(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
+        CmsMessages messages = Messages.get().getBundle(wp.getLocale());
         html.append("<table width='100%' cellspacing='0'>");
         html.append("\t<tr>\n");
         html.append("\t\t<td align='left'>\n");
         html.append("\t\t\t");
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
-            html.append(Messages.get().key(
-                wp.getLocale(),
-                Messages.GUI_LIST_TITLE_TEXT_4,
-                new Object[] {
+        if (getTotalNumberOfPages() > 1) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
+                html.append(messages.key(Messages.GUI_LIST_TITLE_TEXT_4, new Object[] {
                     m_name.key(wp.getLocale()),
                     new Integer(displayedFrom()),
                     new Integer(displayedTo()),
                     new Integer(getTotalSize())}));
-        } else {
-            html.append(Messages.get().key(
-                wp.getLocale(),
-                Messages.GUI_LIST_TITLE_FILTERED_TEXT_5,
-                new Object[] {
+            } else {
+                html.append(messages.key(Messages.GUI_LIST_TITLE_FILTERED_TEXT_5, new Object[] {
                     m_name.key(wp.getLocale()),
                     new Integer(displayedFrom()),
                     new Integer(displayedTo()),
                     new Integer(getSize()),
                     new Integer(getTotalSize())}));
+            }
+        } else {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
+                html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_TEXT_2, new Object[] {
+                    m_name.key(wp.getLocale()),
+                    new Integer(getTotalSize())}));
+            } else {
+                html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3, new Object[] {
+                    m_name.key(wp.getLocale()),
+                    new Integer(getSize()),
+                    new Integer(getTotalSize())}));
+            }
         }
         html.append("\n");
         html.append("\t\t</td>\n\t\t");
-        if (!isPrintable()) {
-            html.append(getMetadata().htmlActionBar(wp));
-        }
+        html.append(getMetadata().htmlActionBar(wp));
         html.append("\n\t</tr>\n");
         html.append("</table>\n");
         return html.toString();

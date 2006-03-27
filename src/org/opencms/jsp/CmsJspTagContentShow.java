@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/10/20 11:24:13 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,15 +39,15 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.I_CmsXmlDocument;
 
 import java.io.IOException;
 import java.util.Locale;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,75 +75,40 @@ public class CmsJspTagContentShow extends TagSupport {
 
     /** Locale of the content node elemen to show. */
     private Locale m_locale;
-    
+
     /**
      * Internal action method to show an element from a XML content document.<p>
      * 
-     * @param content the XML content to show the element from
+     * @param container the content container to read the XML content from
+     * @param context the current JSP page context
      * @param element the node name of the element to show
      * @param locale the locale of the element to show
-     * @param req the current request 
      * 
      * @return the value of the selected content element
      */
     public static String contentShowTagAction(
-        A_CmsXmlDocument content,
+        I_CmsXmlContentContainer container,
+        PageContext context,
         String element,
-        Locale locale,
-        ServletRequest req) {
-
-        if (content == null) {
-            // no content was loaded
-            return null;
-        }
-
-        if (content.hasValue(element, locale)) {
-            // selected element is available in content
-            CmsObject cms = CmsFlexController.getCmsObject(req);
-            try {
-                // read the element from the content
-                return content.getStringValue(cms, element, locale);
-            } catch (Exception e) {
-                LOG.error(Messages.get().key(Messages.LOG_ERR_CONTENT_SHOW_1, element), e);
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
-     */
-    public int doStartTag() throws JspException {
+        Locale locale) {
 
         // get the current users OpenCms context
-        CmsObject cms = CmsFlexController.getCmsObject(pageContext.getRequest());
+        CmsObject cms = CmsFlexController.getCmsObject(context.getRequest());
 
-        // get a reference to the parent "content container" class
-        Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
-        if (ancestor == null) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_PARENTLESS_TAG_1, "contentshow");
-            String msg = Messages.getLocalizedMessage(errMsgContainer, pageContext);
-            throw new JspTagException(msg);
-        }
-        I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;
-
-        // get loaded content from parent <contentload> tag
-        A_CmsXmlDocument xmlContent = contentContainer.getXmlDocument();
-        String element = getElement();
+        // get loaded content from content container
+        I_CmsXmlDocument xmlContent = container.getXmlDocument();
 
         if (CmsStringUtil.isEmpty(element)) {
-            element = contentContainer.getXmlDocumentElement();
+            element = container.getXmlDocumentElement();
         } else {
-            element = CmsXmlUtils.concatXpath(contentContainer.getXmlDocumentElement(), element);
+            element = CmsXmlUtils.concatXpath(container.getXmlDocumentElement(), element);
         }
 
         String content;
         if (CmsMacroResolver.isMacro(element)) {
             // this is a macro, initialize a macro resolver
-            String resourcename = CmsJspTagContentLoad.getResourceName(cms, contentContainer);
-            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setJspPageContext(pageContext).setResourceName(
+            String resourcename = CmsJspTagContentLoad.getResourceName(cms, container);
+            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setJspPageContext(context).setResourceName(
                 resourcename).setKeepEmptyMacros(true);
             // resolve the macro
             content = resolver.resolveMacros(element);
@@ -153,13 +118,23 @@ public class CmsJspTagContentShow extends TagSupport {
         } else {
 
             // determine the locale to display
-            Locale locale = m_locale;
             if (locale == null) {
                 // no locale was set, use default from parent tag (usually "contentload")
-                locale = contentContainer.getXmlDocumentLocale();
-            }            
+                locale = container.getXmlDocumentLocale();
+            }
             // now get the content element value to display
-            content = contentShowTagAction(xmlContent, element, locale, pageContext.getRequest());
+
+            if (xmlContent.hasValue(element, locale)) {
+                try {
+                    // read the element from the content
+                    content = xmlContent.getStringValue(cms, element, locale);
+                } catch (Exception e) {
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_CONTENT_SHOW_1, element), e);
+                    content = null;
+                }
+            } else {
+                content = null;
+            }
 
             // make sure that no null String is returned
             if (content == null) {
@@ -167,13 +142,43 @@ public class CmsJspTagContentShow extends TagSupport {
             }
         }
 
+        return content;
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     */
+    public int doEndTag() {
+
+        // need to release manually, JSP container may not call release as required (happens with Tomcat)
+        release();
+        return EVAL_PAGE;
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     */
+    public int doStartTag() throws JspException {
+
+        // get a reference to the parent "content container" class
+        Tag ancestor = findAncestorWithClass(this, I_CmsXmlContentContainer.class);
+        if (ancestor == null) {
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_PARENTLESS_TAG_1, "contentshow");
+            String msg = Messages.getLocalizedMessage(errMsgContainer, pageContext);
+            throw new JspTagException(msg);
+        }
+        I_CmsXmlContentContainer contentContainer = (I_CmsXmlContentContainer)ancestor;
+
+        // now get the content element value to display
+        String content = contentShowTagAction(contentContainer, pageContext, getElement(), m_locale);
+
         try {
             if (content != null) {
                 pageContext.getOut().print(content);
             }
         } catch (IOException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_ERR_JSP_BEAN_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_JSP_BEAN_0), e);
             }
             throw new JspException(e);
         }

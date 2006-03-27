@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -119,7 +119,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
                 }
 
                 // check if key exists in bundle for constant 
-                String message = bundle.key(key, null);
+                String message = bundle.getBundle().key(key);
                 if (CmsMessages.isUnknownKey(message)) {
                     String bundleName = bundle.getBundleName();
                     if (!bundleName.endsWith(".messages")) {
@@ -194,7 +194,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
         CmsMessages messages = bundle.getBundle();
 
-        Enumeration bundleKeys = messages.m_resourceBundle.getKeys();
+        Enumeration bundleKeys = messages.getResourceBundle().getKeys();
         while (bundleKeys.hasMoreElements()) {
             String bundleKey = (String)bundleKeys.nextElement();
             if (bundleKey.toUpperCase().equals(bundleKey)) {

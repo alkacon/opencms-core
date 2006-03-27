@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
 
@@ -48,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,9 +93,7 @@ public class CmsUsersList extends A_CmsUsersList {
      */
     protected List getUsers() throws CmsException {
 
-        List users = getCms().getUsers(CmsUser.USER_TYPE_SYSTEMUSER);
-        CmsUser.filterCore(users);
-        return users;
+        return CmsPrincipal.filterCore(getCms().getUsers(CmsUser.USER_TYPE_SYSTEMUSER));
     }
 
     /**

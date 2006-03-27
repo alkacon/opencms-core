@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailSettings.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,31 +54,32 @@ public class CmsMailSettings {
     public static final String MAIL_DEFAULT_PROTOCOL = "smtp";
 
     /** The default mail from address. */
-    public static final String MAIL_DEFAULT_SENDER = "opencms@unconfigured.com";    
+    public static final String MAIL_DEFAULT_SENDER = "opencms@unconfigured.com";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsMailSettings.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsMailSettings.class);
+
     /** The default mail "from" sender address. */
     private String m_mailFromDefault;
-    
+
     /** The list of internal mail hosts. */
     private List m_mailHosts;
-    
+
     /** The default order if no order is given for a host. */
     private int m_orderDefault;
-    
+
     /**
      * Empty constructor, required for configuration.<p> 
      */
     public CmsMailSettings() {
+
         m_mailFromDefault = MAIL_DEFAULT_SENDER;
         m_mailHosts = new ArrayList();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_EMPTY_CONSTRUCTOR_CALLED_1));
-        }          
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_EMPTY_CONSTRUCTOR_CALLED_1));
+        }
     }
-    
+
     /**
      * Adds a new mail host to the internal list of mail hosts.<p>
      * 
@@ -87,8 +88,9 @@ public class CmsMailSettings {
      * @param protocol the protocol to use (default "smtp")
      * @param username the user name to use for authentication 
      * @param password the password to use for authentication
-     */    
+     */
     public void addMailHost(String hostname, String order, String protocol, String username, String password) {
+
         m_orderDefault += 10;
         Integer theOrder;
         try {
@@ -102,11 +104,11 @@ public class CmsMailSettings {
         CmsMailHost host = new CmsMailHost(hostname, theOrder, protocol, username, password);
         m_mailHosts.add(host);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.LOG_ADD_HOST_1, host));
-        }           
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_ADD_HOST_1, host));
+        }
         Collections.sort(m_mailHosts);
     }
-    
+
     /**
      * Returns the default mail host.<p>
      * 
@@ -116,34 +118,37 @@ public class CmsMailSettings {
 
         return (CmsMailHost)m_mailHosts.get(0);
     }
-    
+
     /**
      * Returns the mail from default sender.<p>
      * 
      * @return the mail from default sender
      */
     public String getMailFromDefault() {
+
         return m_mailFromDefault;
     }
-    
+
     /**
      * Returns an unmodifiable sorted list of all configured mail hosts.<p>
      *  
      * @return an unmodifiable sorted list of all configured mail hosts
      */
     public List getMailHosts() {
+
         return Collections.unmodifiableList(m_mailHosts);
     }
-   
+
     /**
      * Sets the mail from default sender.<p>
      * 
      * @param sender the mail from default sender to set
      */
     public void setMailFromDefault(String sender) {
+
         m_mailFromDefault = sender;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.LOG_DEFAULT_SENDER_1, m_mailFromDefault));
-        }        
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_DEFAULT_SENDER_1, m_mailFromDefault));
+        }
     }
 }

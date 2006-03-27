@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TemplateOneLayouts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/layouts.xsd">
+  <TemplateOneLayout language="en">
+    <Title><![CDATA[Individual right layout]]></Title>
+    <Column><![CDATA[right]]></Column>
+  </TemplateOneLayout>
+  <TemplateOneLayout language="de">
+    <Title><![CDATA[Individuelles rechtes Layout]]></Title>
+    <Column><![CDATA[right]]></Column>
+  </TemplateOneLayout>
+</TemplateOneLayouts>

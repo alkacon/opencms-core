@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,7 +146,7 @@ public class CmsTemplateStyleSheet extends CmsTemplateBase {
         } catch (Exception e) {
             // log error in debug mode
             if (LOG.isDebugEnabled()) {
-                LOG.debug(e);
+                LOG.debug(e.getMessage(), e);
             }
         }
         if (CmsStringUtil.isEmpty(value)) {
@@ -159,7 +159,7 @@ public class CmsTemplateStyleSheet extends CmsTemplateBase {
     /**
      * Returns the CSS formatting String for underlining an element.<p>
      * 
-     * Checks the value in the configuration file, if the value is "true",
+     * Checks the value in the configuration file, if the value is <code>"true"</code>,
      * the text decoration will be underlined, otherwise none.<p>
      * 
      * @param key the key name to look up in the optional configuration
@@ -169,7 +169,7 @@ public class CmsTemplateStyleSheet extends CmsTemplateBase {
     public String getFontUnderline(String key, String defaultValue) {
 
         String value = getOptionalConfigValue(key, defaultValue);
-        if ("true".equals(value)) {
+        if (Boolean.valueOf(value).booleanValue()) {
             value = "underline;";
         } else {
             value = "none;";
@@ -180,7 +180,7 @@ public class CmsTemplateStyleSheet extends CmsTemplateBase {
     /**
      * Returns the CSS formatting String for bold output of an element.<p>
      * 
-     * Checks the value in the configuration file, if the value is "true",
+     * Checks the value in the configuration file, if the value is <code>"true"</code>,
      * the font weight will be bold, otherwise normal.<p>
      * 
      * @param key the key name to look up in the optional configuration
@@ -190,7 +190,7 @@ public class CmsTemplateStyleSheet extends CmsTemplateBase {
     public String getFontWeight(String key, String defaultValue) {
 
         String value = getOptionalConfigValue(key, defaultValue);
-        if ("true".equals(value)) {
+        if (Boolean.valueOf(value).booleanValue()) {
             value = "bold;";
         } else {
             value = "normal;";
@@ -284,7 +284,7 @@ public class CmsTemplateStyleSheet extends CmsTemplateBase {
         } catch (Exception e) {
             // problem getting properties, log error
             if (LOG.isDebugEnabled()) {
-                LOG.debug(e);
+                LOG.debug(e.getMessage(), e);
             }
         }
     }

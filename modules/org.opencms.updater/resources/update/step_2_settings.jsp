@@ -3,7 +3,7 @@
 --%><jsp:setProperty name="Bean" property="*" /><%
 
 	// next page
-	String nextPage = "step_3_module_selection.jsp";		
+	String nextPage = "step_3_xmlupdate.jsp";		
 	// previous page
 	String prevPage = "index.jsp";
 	
@@ -138,7 +138,7 @@ If not you can use the root '/' site.
 <% } else	{ %>
 OpenCms Setup Wizard - Settings
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<%@ include file="error.jsp" %>
+<%= Bean.displayError("")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

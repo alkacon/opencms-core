@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="OpenCms HEAD Common Modules" default="war" basedir=".">
+<project name="OpenCms Common Modules" default="war" basedir=".">
+	<property name="app.name" 							value="opencms" />
  	<property name="opencms.input" 						location="${basedir}/.." />
     <property name="opencms.output"						location="${opencms.input}/.." />
  	<property name="opencms.setup.input" 				location="${opencms.input}/webapp/setup" />
@@ -25,7 +26,7 @@
 	
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms"> 
 	  <classpath>
-	    <pathelement location="${opencms.input.libs}/ant-opencms-1.0.jar"/>
+	    <pathelement location="${opencms.input.libs}/ant-opencms-1.1.jar"/>
 	  </classpath>
 	</taskdef>
 	
@@ -60,7 +61,8 @@
 					  	    defaultvalue="${modules.common.selection}"
 					  		allvalues="${modules.all.sort}"
 					  		prompt="Please select the modules to process:"
-					  		title="Module Selection"
+					  		title="Module Selection" 
+					  		columns="2"
 					  	/>
 					</then>
 					<else>
@@ -70,6 +72,7 @@
 					  		allvalues="${modules.all.sort}"
 					  		prompt="Please select the modules to process:"
 					  		title="Module Selection"
+					  		columns="2"
 					  	/>
 					</else>
 				</if>

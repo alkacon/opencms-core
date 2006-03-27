@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDateMacroFormatter.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/03/27 14:52:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,14 +43,17 @@ import java.util.Locale;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
 
-    /** Constant for never. */
+    /** Constant for never message. */
     private final CmsMessageContainer m_never;
+
+    /** Constant for never time. */
+    private final long m_neverTime;
 
     /**
      * Default constructor that sets the mask to use.<p>
@@ -60,8 +63,48 @@ public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
      */
     public CmsListDateMacroFormatter(CmsMessageContainer mask, CmsMessageContainer never) {
 
+        this(mask, never, 0);
+    }
+
+    /**
+     * Default constructor that sets the mask to use.<p>
+     * 
+     * @param mask pattern for <code>{@link java.text.MessageFormat}</code>
+     * @param never message (without args) for the 'never' message
+     * @param neverTime the time considered as 'never', default is <code>0</code>
+     */
+    public CmsListDateMacroFormatter(CmsMessageContainer mask, CmsMessageContainer never, long neverTime) {
+
         super(mask);
         m_never = never;
+        m_neverTime = neverTime;
+    }
+
+    /**
+     * Returns a default date formatter object.<p>
+     * 
+     * @return a default date formatter object
+     */
+    public static I_CmsListFormatter getDefaultDateFormatter() {
+
+        return new CmsListDateMacroFormatter(
+            Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_1),
+            Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_NEVER_0));
+    }
+
+    /**
+     * Returns a default date formatter object.<p>
+     * 
+     * @param never time considered as never
+     * 
+     * @return a default date formatter object
+     */
+    public static I_CmsListFormatter getDefaultDateFormatter(long never) {
+
+        return new CmsListDateMacroFormatter(
+            Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_1),
+            Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_NEVER_0),
+            never);
     }
 
     /**
@@ -73,7 +116,7 @@ public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
             return m_never.key(locale);
         }
         if (data instanceof Date) {
-            if (((Date)data).getTime() == 0) {
+            if (((Date)data).getTime() == m_neverTime) {
                 return m_never.key(locale);
             }
         }

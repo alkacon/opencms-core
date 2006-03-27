@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeUnknown.java,v $
- * Date   : $Date: 2005/10/12 14:03:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/03/27 14:52:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +80,7 @@ public class CmsResourceTypeUnknown extends A_CmsResourceType {
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         // if this class is used this is usually a configuration error
-        LOG.error(Messages.get().key(
+        LOG.error(Messages.get().getBundle().key(
             Messages.ERR_UNKNOWN_RESTYPE_CLASS_4,
             new Object[] {className, name, id, this.getClass().getName()}));
 

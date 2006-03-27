@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/27 14:52:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,30 +23,37 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 //------------------------------------------------------//
-// Script for xml content editor 
+// Script for xml content editor
 //------------------------------------------------------//
 
 // stores the opened window object
 var treewin = null;
+// stores id prefix of opened element operation buttons
+var oldEditorButtons = null;
+// helper for the timeout on button row
+var buttonTimer = null;
+// mouse up & resize event closes open element operation buttons
+document.onmouseup = hideElementButtons;
+window.onresize = hideElementButtons;
 
 // function action on button click
-function buttonAction(para) {	
+function buttonAction(para) {
 	var _form = document.EDITOR;
 	_form.target = "_self";
 	submit(_form);
 
 	switch (para) {
-	case 1: 
+	case 1:
 		// exit editor without saving
 		_form.action.value = actionExit;
-		_form.target = "_top";		
+		_form.target = "_top";
 		_form.submit();
 		break;
 	case 2:
@@ -75,12 +82,12 @@ function buttonAction(para) {
 		_form.submit();
 		break;
 	case 7:
-		// preview	
+		// preview
 		_form.action.value = actionPreview;
 		_form.target = "PREVIEW";
 		openWindow = window.open("about:blank", "PREVIEW", "width=950,height=700,left=10,top=10,resizable=yes,scrollbars=yes,location=yes,menubar=yes,toolbar=yes,dependent=yes");
 		_form.submit();
-		break;	
+		break;
 	case 8:
 		// check elements before performing customized action
 		_form.action.value = actionCheck;
@@ -92,16 +99,26 @@ function buttonAction(para) {
 		_form.target = "_top";
 		_form.submit();
 		break;
+	case 10:
+		// move element down
+		_form.action.value = actionMoveElementDown;
+		_form.submit();
+		break;
+	case 11:
+		// move element up
+		_form.action.value = actionMoveElementUp;
+		_form.submit();
+		break;
 	default:
 		alert("No action defined for this button!");
 		break;
 	}
 }
 
-function submit(form) {	
+function submit(form) {
 	try {
-		// submit html areas if present
-		submitHtmlArea(form);
+		// submit html editing areas if present
+		submitHtml(form);
 	} catch (e) {}
 }
 
@@ -118,36 +135,47 @@ function opensmallwin(url, name, w, h) {
 
 // add an optional element to the currently edited content
 function addElement(elemName, insertAfter) {
-	try {
-		if (browser.isIE) {
-			top.edit.buttonbar.lastPosY = document.body.scrollTop;	
-		} else {
-			top.edit.buttonbar.lastPosY = window.pageYOffset;
-		}	
-	} catch (e) {
-		// ignore
-	}
+	setLastPosition();
 	var _form = document.EDITOR;
 	_form.elementname.value = elemName;
 	_form.elementindex.value = insertAfter;
 	buttonAction(5);
 }
 
+// move an element in currently edited content
+function moveElement(elemName, index, direction) {
+	setLastPosition();
+	var _form = document.EDITOR;
+	_form.elementname.value = elemName;
+	_form.elementindex.value = index;
+	if (direction == "down") {
+		buttonAction(10);
+	} else {
+		buttonAction(11);
+	}
+
+}
+
 // remove an optional element from currently edited content
 function removeElement(elemName, index) {
+	setLastPosition();
+	var _form = document.EDITOR;
+	_form.elementname.value = elemName;
+	_form.elementindex.value = index;
+	buttonAction(6);
+}
+
+// sets the last scroll position to return to
+function setLastPosition() {
 	try {
 		if (browser.isIE) {
-			top.edit.buttonbar.lastPosY = document.body.scrollTop;	
+			top.edit.buttonbar.lastPosY = document.body.scrollTop;
 		} else {
 			top.edit.buttonbar.lastPosY = window.pageYOffset;
 		}
 	} catch (e) {
 		// ignore
-	}	
-	var _form = document.EDITOR;
-	_form.elementname.value = elemName;
-	_form.elementindex.value = index;
-	buttonAction(6);
+	}
 }
 
 // checks and adjusts the language selector in case an error is found in the edited content
@@ -213,4 +241,264 @@ function closeTreeWin() {
 		treeField = null;
 		treeDoc = null;
 	}
+}
+
+// shows the element operation buttons
+function showElementButtons(elementName, elementIndex, showRemove, showUp, showDown, showAdd) {
+	var elemId = elementName + "." + elementIndex;
+	if (oldEditorButtons != null && oldEditorButtons != elemId) {
+		// close eventually open element buttons
+		document.getElementById("xmlElementButtons").style.visibility = "hidden";
+	}
+	// get button element
+	var elem = document.getElementById("xmlElementButtons");
+
+	// create the button row HTML
+	var buttons = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">";
+
+	// remove element button
+	if (showRemove) {
+		buttons += button("javascript:removeElement('" + elementName + "', " + elementIndex + ")", null, "deletecontent", LANG_BT_DELETE, buttonStyle);
+	} else {
+		buttons += button(null, null, "deletecontent_in", LANG_BT_DELETE, buttonStyle);
+	}
+
+	// move up element button
+	if (showUp) {
+		buttons += button("javascript:moveElement('" + elementName + "', " + elementIndex + ", 'down')", null, "move_up", LANG_BT_MOVE_UP, buttonStyle);
+	} else {
+		buttons += button(null, null, "move_up_in", LANG_BT_MOVE_UP, buttonStyle);
+	}
+
+	// move down element button
+	if (showDown) {
+		buttons += button("javascript:moveElement('" + elementName + "', " + elementIndex + ", 'up')", null, "move_down", LANG_BT_MOVE_DOWN, buttonStyle);
+	} else {
+		buttons += button(null, null, "move_down_in", LANG_BT_MOVE_DOWN, buttonStyle);
+	}
+
+	// add element button
+	if (showAdd) {
+		buttons += button("javascript:addElement('" + elementName + "', " + elementIndex + ")", null, "new", LANG_BT_ADD, buttonStyle);
+	} else {
+		buttons += button(null, null, "new_in", LANG_BT_ADD, buttonStyle);
+	}
+
+	buttons += "</table>";
+
+	// set the created HTML
+	elem.innerHTML = buttons;
+	// get the icon
+	var icon = document.getElementById("btimg." + elemId);
+	showEditorElement(elem, icon, 10, 20, true);
+	oldEditorButtons = elemId;
+}
+
+// hides the element operation buttons
+function hideElementButtons() {
+	if (oldEditorButtons != null) {
+		document.getElementById("xmlElementButtons").style.visibility = "hidden";
+		oldEditorButtons = null;
+		return false;
+	}
+	return true;
+}
+
+// checks presence of element buttons and hides row after a timeout
+function checkElementButtons(resetTimer) {
+	if (resetTimer) {
+		// reset the timer because cursor is over buttons
+		if (buttonTimer != null) {
+			clearTimeout(buttonTimer);
+		}
+	} else {
+		// set timeout for button row (mouseout)
+		buttonTimer = setTimeout("hideElementButtons()", 1500);
+	}
+}
+
+// shows the specified element belonging to the given icon (for help & element buttons
+function showEditorElement(elem, icon, xOffset, yOffset, alignToLeft) {
+
+    if (elem.style.visibility == "visible") {
+        return;
+    }
+
+    x = findPosX(icon) + xOffset;
+    y = findPosY(icon) + yOffset;
+    var textHeight = elem.scrollHeight;
+    var textWidth = elem.scrollWidth;
+    var scrollSize = 20;
+    var scrollTop = 0;
+    var scrollLeft = 0;
+    var clientHeight = 0;
+    var clientWidth = 0;
+    if (document.documentElement && (document.documentElement.scrollTop || document.documentElement.clientHeight)) {
+        scrollTop = document.documentElement.scrollTop;
+        scrollLeft = document.documentElement.scrollLeft;
+        clientHeight = document.documentElement.clientHeight;
+        clientWidth = document.documentElement.clientWidth;
+    } else if (document.body) {
+        scrollTop = document.body.scrollTop;
+        scrollLeft = document.body.scrollLeft;
+        clientHeight = document.body.clientHeight;
+        clientWidth = document.body.clientWidth;
+    }
+    if ((y + textHeight) > (clientHeight + scrollTop)) {
+        y = y - textHeight;
+    }
+    if (y < scrollTop) {
+        y = (clientHeight + scrollTop) - (textHeight + scrollSize);
+    }
+    if (y < scrollTop) {
+        y = scrollTop;
+    }
+    if ((x + textWidth) > (clientWidth + scrollLeft) || alignToLeft) {
+        x = x - textWidth;
+    }
+    if (x < scrollLeft) {
+        x = (clientWidth + scrollLeft) - (textWidth + scrollSize);
+    }
+    if (x < scrollLeft) {
+        x = scrollLeft;
+    }
+
+    if (alignToLeft) {
+    	x += xOffset;
+    }
+
+    elem.style.left = x + "px";
+    elem.style.top =  y + "px";
+    elem.style.visibility = "visible";
+    return y;
+}
+
+// finds the x position of an element
+function findPosX(obj) {
+    var curleft = 0;
+    if (obj.offsetParent) {
+        while (obj.offsetParent) {
+            curleft += obj.offsetLeft - obj.scrollLeft;
+            obj = obj.offsetParent;
+        }
+    } else if (obj.x) {
+        curleft += obj.x;
+    }
+    return curleft;
+}
+
+// finds the y position of an element
+function findPosY(obj) {
+    var curtop = 0;
+    if (obj.offsetParent) {
+        while (obj.offsetParent) {
+            curtop += obj.offsetTop - obj.scrollTop;
+            obj = obj.offsetParent;
+        }
+    } else if (obj.y) {
+        curtop += obj.y;
+    }
+    return curtop;
+}
+
+// formats a button in one of 3 styles (type 0..2)
+function button(href, target, image, label, type) {
+
+	if (image != null && image.indexOf('.') == -1) {
+        // append default suffix for images
+        image += ".png";
+    }
+
+	var result = "<td>";
+	switch (type) {
+		case 1:
+		// image and text
+		if (href != null) {
+			result += "<a href=\"";
+			result += href;
+			result += "\" class=\"button\"";
+			if (target != null) {
+				result += " target=\"";
+				result += target;
+				result += "\"";
+			}
+			result += ">";
+		}
+		result += "<span unselectable=\"on\"";
+		if (href != null) {
+			result += " class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"";
+		} else {
+			result += " class=\"disabled\"";
+		}
+		result += "><span unselectable=\"on\" class=\"combobutton\" ";
+		result += "style=\"background-image: url('";
+		result += skinUri;
+		result += "buttons/";
+		result += image;
+		result += "');\">";
+		result += label;
+		result += "</span></span>";
+		if (href != null) {
+			result += "</a>";
+		}
+		break;
+
+		case 2:
+		// text only
+		if (href != null) {
+			result += "<a href=\"";
+			result += href;
+			result += "\" class=\"button\"";
+			if (target != null) {
+				result += " target=\"";
+				result += target;
+				result += "\"";
+			}
+			result += ">";
+		}
+		result += "<span unselectable=\"on\"";
+		if (href != null) {
+			result += " class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"";
+		} else {
+			result += " class=\"disabled\"";
+		}
+		result += "><span unselectable=\"on\" class=\"txtbutton\">";
+		result += label;
+		result += "</span></span>";
+		if (href != null) {
+			result += "</a>";
+		}
+		break;
+
+		default:
+		// only image
+		if (href != null) {
+			result += "<a href=\"";
+			result += href;
+			result += "\" class=\"button\"";
+			if (target != null) {
+				result += " target=\"";
+				result += target;
+				result += "\"";
+			}
+			result += " title=\"";
+			result += label;
+			result += "\">";
+		}
+		result += "<span unselectable=\"on\"";
+		if (href != null) {
+			result += " class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"";
+		} else {
+			result += " class=\"disabled\"";
+		}
+		result += "><img class=\"button\" src=\"";
+		result += skinUri;
+		result += "buttons/";
+		result += image;
+		result += "\">";
+		result += "</span>";
+		break;
+	}
+	result += "</td>\n";
+	return result;
 }

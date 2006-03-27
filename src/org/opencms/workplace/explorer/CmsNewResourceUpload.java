@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/10/12 09:51:18 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/03/27 14:52:30 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -454,37 +454,37 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append(maxFileSize);
         applet.append("\">\n");
         applet.append("<param name=\"actionOutputSelect\" value=\"");
-        applet.append(key("uploadapplet.action.select"));
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_SELECT_0)); 
         applet.append("\">\n");
         applet.append("<param name=\"actionOutputCount\"value=\"");
-        applet.append(key("uploadapplet.action.count"));
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_COUNT_0));
         applet.append("\">\n");
         applet.append("<param name=\"actionOutputCreate\" value=\"");
-        applet.append(key("uploadapplet.action.create"));
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_CREATE_0));
         applet.append("\">\n");
         applet.append("<param name=\"actionOutputUpload\" value=\"");
-        applet.append(key("uploadapplet.action.upload"));
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_UPLOAD_0));
         applet.append("\">\n");
         applet.append("<param name=\"messageOutputUpload\" value=\"");
-        applet.append(key("uploadapplet.message.upload"));
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_UPLOAD_0));
         applet.append("\">\n");
         applet.append("<param name=\"messageOutputErrorZip\" value=\"");
-        applet.append(key("uploadapplet.message.error.zip"));
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_ERROR_ZIP_0));
         applet.append("\">\n");
         applet.append("<param name=\"messageOutputErrorSize\" value=\"");
-        applet.append(key("uploadapplet.message.error.size"));
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_ERROR_SIZE_0));
         applet.append("\">\n");
         applet.append("<param name=\"messageNoPreview\" value=\"");
-        applet.append(key("uploadapplet.message.nopreview"));
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_NOPREVIEW_0));
         applet.append("\">\n");
         applet.append("<param name=\"messageOutputAdding\" value=\"");
-        applet.append(key("uploadapplet.message.adding"));
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_ADDING_0));
         applet.append(" \">\n");
         applet.append("<param name=\"errorTitle\" value=\"");
-        applet.append(key("uploadapplet.error.title"));
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_TITLE_0));
         applet.append(" \">\n");
         applet.append("<param name=\"errorLine1\" value=\"");
-        applet.append(key("uploadapplet.error.line1"));
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_LINE1_0));
         applet.append(" \">\n");
         applet.append("</applet>\n");
 
@@ -671,7 +671,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 setAction(ACTION_DEFAULT);
             }
             // build title for new resource dialog     
-            setParamTitle(key("title.upload"));
+            setParamTitle(key(Messages.GUI_NEWRESOURCE_UPLOAD_0));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/03/03 16:58:43 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 6.0.0 
  */
@@ -233,7 +233,7 @@ public class CmsLinkManager {
 
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_MALFORMED_URI_1, targetUri), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_MALFORMED_URI_1, targetUri), e);
             }
             return null;
         }
@@ -304,7 +304,7 @@ public class CmsLinkManager {
                 if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
                     return absolutePath + suffix;
                 }
-                // HACK: some editor components (e.h. HtmlArea) mix up the editor URL with the current request URL 
+                // HACK: some editor components (e.g. HtmlArea) mix up the editor URL with the current request URL 
                 absolutePath = getAbsoluteUri(path, cms.getRequestContext().getSiteRoot()
                     + CmsWorkplace.VFS_PATH_EDITORS);
                 if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
@@ -487,9 +487,18 @@ public class CmsLinkManager {
                         // read the linked resource 
                         linkType = cms.readResource(vfsName).getTypeId();
                     } catch (CmsException e) {
-                        // there are no access rights on the resource
+                        // the resource could not be read
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().key(Messages.LOG_NO_ACCESS_RIGHTS_1, vfsName), e);
+                            String message = Messages.get().getBundle().key(
+                                Messages.LOG_RESOURCE_ACESS_ERROR_3,
+                                vfsName,
+                                cms.getRequestContext().currentUser().getName(),
+                                cms.getRequestContext().getSiteRoot());
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(message, e);
+                            } else {
+                                LOG.info(message);
+                            }
                         }
                     }
 

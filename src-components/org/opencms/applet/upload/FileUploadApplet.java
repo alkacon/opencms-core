@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2005/10/10 16:11:12 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,14 +62,14 @@ import org.apache.commons.httpclient.methods.MultipartPostMethod;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
 public class FileUploadApplet extends JApplet implements Runnable {
 
     /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -3710093915699772777L;
+    private static final long serialVersionUID = -3710093915699772778L;
 
     /** Applet thread. */
     Thread m_runner;
@@ -88,9 +88,6 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
     /** The URL to return to after an error. */
     private String m_errorUrl = "";
-
-    /** The name of the temporary zip file. */
-    private String m_zipfile = "_tmpupload.zip";
 
     /** The name of the folder to upload to. */
     private String m_uploadFolder = "";
@@ -125,7 +122,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private Image m_floater;
 
     /** Image position for the floater during upload. */
-    private int m_floaterPos = 80;
+    private int m_floaterPos = 50;
 
     /** Defintion of output strings.*/
     private String m_actionOutputSelect = "Seleting files for upload....";
@@ -171,10 +168,10 @@ public class FileUploadApplet extends JApplet implements Runnable {
         m_colors = extractColors(getParameter("colors"));
 
         // setup the applet output
-        m_font = new java.awt.Font("Verdana", Font.BOLD, 12);
+        m_font = new java.awt.Font(null, Font.BOLD, 12);
         m_metrics = getFontMetrics(m_font);
-        m_source = getImage(getCodeBase(), "org/opencms/applet/upload/folder_open.gif");
-        m_target = getImage(getCodeBase(), "org/opencms/applet/upload/ocms.gif");
+        m_source = getImage(getCodeBase(), "org/opencms/applet/upload/applet_source.png");
+        m_target = getImage(getCodeBase(), "org/opencms/applet/upload/applet_target.png");
         m_floater = getImage(getCodeBase(), "org/opencms/applet/upload/floater.gif");
 
         // get the output massages in the correct language
@@ -248,7 +245,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             while (ok) {
                 ok = true;
                 
-                //System.out.println("Version 1.60");
+                //System.out.println("Version 1.62");
                                 
                 m_message = "";
                 m_resources = 0;
@@ -445,9 +442,10 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
         // show nonsense during upload
         if (m_outputMode == 3) {
-            m_offgraphics.drawImage(m_source, 50, 59, this);
-            m_offgraphics.drawImage(m_target, 440, 52, this);
-            m_offgraphics.drawImage(m_floater, m_floaterPos, 59, this);
+            m_offgraphics.drawImage(m_floater, m_floaterPos, 57, this);
+            m_offgraphics.drawImage(m_source, 30, 47, this);
+            m_offgraphics.drawImage(m_target, 440, 47, this);
+            
         }
 
         // copy the offcreen graphics to the applet
@@ -460,8 +458,8 @@ public class FileUploadApplet extends JApplet implements Runnable {
     public void moveFloater() {
 
         m_floaterPos += 10;
-        if ((m_floaterPos) > 410) {
-            m_floaterPos = 80;
+        if ((m_floaterPos) > 430) {
+            m_floaterPos = 50;
         }
         repaint();
     }
@@ -478,7 +476,16 @@ public class FileUploadApplet extends JApplet implements Runnable {
         m_action = m_actionOutputCreate;
         try {
             // create a new zipStream
-            ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(m_zipfile));
+            String zipFileName = ".opencms_upload.zip";                
+            String userHome = System.getProperty("user.home");
+            // create file in user home directory where write permissions should exist
+            if (userHome != null) {
+                if (! userHome.endsWith(File.separator)) {
+                    userHome = userHome + File.separator;
+                }
+                zipFileName = userHome + zipFileName;
+            }
+            ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(zipFileName));
             // loop through all files
             for (int i = 0; i < files.length; i++) {
 
@@ -494,7 +501,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             }
             zipStream.close();
             // get the zipfile
-            targetFile = new File(m_zipfile);
+            targetFile = new File(zipFileName);
         } catch (Exception e) {
             System.err.println("Error creating zipfile " + e);
         }
@@ -693,6 +700,4 @@ public class FileUploadApplet extends JApplet implements Runnable {
         }
         return col;
     }
-
 }
-

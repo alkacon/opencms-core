@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2005/08/03 08:58:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/27 14:52:48 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,31 +33,37 @@ package org.opencms.security;
 
 import org.opencms.util.CmsUUID;
 
+import java.security.Principal;
+
 /**
  * Representation of an identity in the cms (currently user or group), 
  * used to define permissions on a resource.<p>
  * 
+ * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
-public interface I_CmsPrincipal {
+public interface I_CmsPrincipal extends Principal {
 
+    /** Upper limit for core flags, any principal object with flags greater than this value will be filtered out. */
+    int FLAG_CORE_LIMIT = 65536; // 2^16
+    
     /** This flag is set for disabled principals in the database. */
     int FLAG_DISABLED = 1;
 
     /** This flag is set for enabled principals in the database. */
     int FLAG_ENABLED = 0;
 
-    /** Flag to indicate a goup is a potential project manager group. */
+    /** Flag to indicate a group is a potential project manager group. */
     int FLAG_GROUP_PROJECT_MANAGER = 2;
 
-    /** Flag to indicate a goup is a potential project user group. */
+    /** Flag to indicate a group is a potential project user group. */
     int FLAG_GROUP_PROJECT_USER = 4;
 
-    /** Flag to indicate a goup is used as a role in the workflow. */
+    /** Flag to indicate a group is used as a role in the workflow. */
     int FLAG_GROUP_WORKFLOW_ROLE = 8;
 
     /** Identifier for group principals. */
@@ -66,8 +72,13 @@ public interface I_CmsPrincipal {
     /** Identifier for user principals. */
     String PRINCIPAL_USER = "USER";
 
-    /** Upper limit for core flags, any principal object with flags greater than this value will be filtered out. */
-    int FLAG_CORE_LIMIT = 65536;  // 2^16
+    /**
+     * Checks if the provided principal name is valid and can be used as an argument value 
+     * for {@link #setName(String)}.<p> 
+     * 
+     * @param name the principal name to check
+     */
+    void checkName(String name);
 
     /**
      * Compares the given object with this principal.<p>
@@ -78,18 +89,47 @@ public interface I_CmsPrincipal {
     boolean equals(Object obj);
 
     /**
-     * Gets the id of this principal.<p>
+     * Returns the description of this principal.<p>
+     *
+     * @return the description of this principal
+     */
+    String getDescription();
+
+    /**
+     * Returns the flags of this principal.<p>
+     *
+     * The principal flags are used to store special information about the 
+     * principals state encoded bitwise. Usually the flags int value should not 
+     * be directly accessed. Utility methods like <code>{@link #isEnabled()}</code>
+     * provide a much easier way to access the information contained in the flags.<p>
      * 
-     * @return the unique id of the principal.
+     * @return the flags of this principal
+     */
+    int getFlags();
+
+    /**
+     * Returns the unique id of this principal.<p>
+     *
+     * @return the unique id of this principal
      */
     CmsUUID getId();
 
     /**
-     * Gets the name of this principal.<p>
-     * 
-     * @return the name of the principal
+     * Returns the unique name of this principal.<p>
+     *
+     * @return the unique name of this principal
      */
     String getName();
+
+    /**
+     * Returns this principals unique name prefixed with it's type.<p>
+     * 
+     * The type prefix can either be <code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}.</code> 
+     * (for groups) or <code>{@link I_CmsPrincipal#PRINCIPAL_USER}.</code> (for users).<p>
+     * 
+     * @return this principals unique name prefixed with this principals type
+     */
+    String getPrefixedName();
 
     /**
      * Returns the hash code of this object.<p>
@@ -97,4 +137,62 @@ public interface I_CmsPrincipal {
      * @return the hash code
      */
     int hashCode();
+
+    /**
+     * Returns <code>true</code> if this principal is enabled.<p>
+     * 
+     * A principal may be disabled in order to deactivate it, for example to prevent
+     * logins of a user. If a principal is just disabled but not deleted, 
+     * the credentials of the principal in the VFS are still valid.<p>
+     * 
+     * @return <code>true</code> if this principal is enabled
+     */
+    boolean isEnabled();
+
+    /**
+     * Returns <code>true</code> if this principal is of type <code>{@link org.opencms.file.CmsGroup}</code>.<p>
+     * 
+     * @return <code>true</code> if this principal is of type <code>{@link org.opencms.file.CmsGroup}</code>
+     */
+    boolean isGroup();
+
+    /**
+     * Returns <code>true</code> if this principal is of type <code>{@link org.opencms.file.CmsUser}</code>.<p>
+     * 
+     * @return <code>true</code> if this principal is of type <code>{@link org.opencms.file.CmsUser}</code>
+     */
+    boolean isUser();
+
+    /**
+     * Sets the description of this principal.<p>
+     * 
+     * @param description the principal description to set
+     */
+    void setDescription(String description);
+
+    /**
+     * Enables (or disables) this principal, depending on the given status.<p>
+     * 
+     * @param enabled the principal status to set
+     */
+    void setEnabled(boolean enabled);
+
+    /**
+     * Sets this principals flags to the specified value.<p>
+     *
+     * The principal flags are used to store special information about the 
+     * principals state encoded bitwise. Usually the flags int value should not 
+     * be directly accessed. Utility methods like <code>{@link #setEnabled(boolean)}</code>
+     * provide a much easier way to manipulate the information contained in the flags.<p>
+     *
+     * @param value the value to set this principals flags to
+     */
+    void setFlags(int value);
+
+    /**
+     * Sets the unique name of this principal.<p>
+     *
+     * @param name the unique name of this principal to set
+     */
+    void setName(String name);
 }

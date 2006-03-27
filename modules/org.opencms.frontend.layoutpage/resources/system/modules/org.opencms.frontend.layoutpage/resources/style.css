@@ -1,0 +1,40 @@
+div.element {}
+
+h2.lp_headline {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.lp_maxwidth {
+	width: 100%;
+}
+
+span.lp_imgleft {
+	float: left;
+	padding: 0 5px 5px 2px;
+}
+
+span.lp_imgright {
+	float: right;
+	padding: 0 2px 5px 5px;
+}
+
+div.lp_clearfloat {
+	clear: both;
+}
+
+td.lp_top {
+	vertical-align: top;
+}
+
+td.lp_imgleft {
+	padding-right: 8px;
+}
+
+td.lp_imgright {
+	padding-left: 8px;
+}
+
+p.lp_imgdesc {
+	font-size: 10px;
+}

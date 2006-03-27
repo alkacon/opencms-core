@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2006/01/23 14:19:49 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2006/03/27 14:52:54 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
@@ -53,9 +52,8 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsXmlSaxWriter;
 import org.opencms.workplace.CmsWorkplace;
@@ -93,7 +91,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.83 $ 
+ * @version $Revision: 1.84 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,6 +122,9 @@ public class CmsExport {
 
     /** Indicates if the user data and group data should be included to the export. */
     private boolean m_exportUserdata;
+
+    /** Indicates if the webuser data should be included to the export. */
+    private boolean m_exportWebusers;
 
     /** The export ZIP stream to write resources to. */
     private ZipOutputStream m_exportZipStream;
@@ -160,20 +161,11 @@ public class CmsExport {
     /**
      * Constructs a new export.<p>
      *
-     * NOTE: This constructor is just to be compatible with the dev-branch, and ocee.
-     *       Replace after merging.<p>
-     *
      * @param cms the cmsObject to work with
      * @param exportFile the file or folder to export to
      * @param resourcesToExport the paths of folders and files to export
      * @param includeSystem if true, the system folder is included
      * @param includeUnchanged <code>true</code>, if unchanged files should be included
-     * @param moduleElement module informations in a Node for module export
-     * @param exportUserdata if true, the user and grou pdata will also be exported
-     * @param contentAge export contents changed after this date/time
-     * @param report to handle the log messages
-     * @param recursive recursive flag
-     * 
      * @throws CmsImportExportException if something goes wrong
      * @throws CmsRoleViolationException if the current user has not the required role
      */
@@ -181,43 +173,6 @@ public class CmsExport {
         CmsObject cms,
         String exportFile,
         List resourcesToExport,
-        boolean includeSystem,
-        boolean includeUnchanged,
-        Element moduleElement,
-        boolean exportUserdata,
-        long contentAge,
-        I_CmsReport report,
-        boolean recursive)
-    throws CmsImportExportException, CmsRoleViolationException {
-
-        this(
-            cms,
-            exportFile,
-            listToStringArray(resourcesToExport),
-            includeSystem,
-            includeUnchanged,
-            moduleElement,
-            exportUserdata,
-            contentAge,
-            report,
-            true);
-    }
-
-    /**
-     * Constructs a new export.<p>
-     *
-     * @param cms the cmsObject to work with
-     * @param exportFile the file or folder to export to
-     * @param resourcesToExport the paths of folders and files to export
-     * @param includeSystem if true, the system folder is included
-     * @param includeUnchanged <code>true</code>, if unchanged files should be included
-     * @throws CmsImportExportException if something goes wrong
-     * @throws CmsRoleViolationException if the current user has not the required role
-     */
-    public CmsExport(
-        CmsObject cms,
-        String exportFile,
-        String[] resourcesToExport,
         boolean includeSystem,
         boolean includeUnchanged)
     throws CmsImportExportException, CmsRoleViolationException {
@@ -235,6 +190,107 @@ public class CmsExport {
      * @param includeSystem if true, the system folder is included
      * @param includeUnchanged <code>true</code>, if unchanged files should be included
      * @param moduleElement module informations in a Node for module export
+     * @param exportUserdata if true, the user and group data will also be exported
+     * @param exportWebusers if true, the webuser data will also be exported
+     * @param contentAge export contents changed after this date/time
+     * @param report to handle the log messages
+     * @param recursive recursive flag
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsRoleViolationException if the current user has not the required role
+     */
+    public CmsExport(
+        CmsObject cms,
+        String exportFile,
+        List resourcesToExport,
+        boolean includeSystem,
+        boolean includeUnchanged,
+        Element moduleElement,
+        boolean exportUserdata,
+        boolean exportWebusers,
+        long contentAge,
+        I_CmsReport report,
+        boolean recursive)
+    throws CmsImportExportException, CmsRoleViolationException {
+
+        setCms(cms);
+        setReport(report);
+        setExportFileName(exportFile);
+
+        // check if the user has the required permissions
+        cms.checkRole(CmsRole.EXPORT_DATABASE);
+
+        m_includeSystem = includeSystem;
+        m_includeUnchanged = includeUnchanged;
+        m_exportUserdata = exportUserdata;
+        m_exportWebusers = exportWebusers;
+        m_contentAge = contentAge;
+        m_exportCount = 0;
+        m_recursive = recursive;
+
+        // clear all caches
+        report.println(Messages.get().container(Messages.RPT_CLEARCACHE_0), I_CmsReport.FORMAT_NOTE);
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
+
+        try {
+            Element exportNode = openExportFile();
+
+            if (moduleElement != null) {
+                // add the module element
+                exportNode.add(moduleElement);
+                // write the XML
+                digestElement(exportNode, moduleElement);
+            }
+
+            exportAllResources(exportNode, resourcesToExport);
+
+            // export userdata and groupdata if selected
+            if (m_exportUserdata || m_exportWebusers) {
+                Element userGroupData = exportNode.addElement(CmsImportExportManager.N_USERGROUPDATA);
+                getSaxWriter().writeOpen(userGroupData);
+
+                exportGroups(userGroupData);
+                exportUsers(userGroupData);
+
+                getSaxWriter().writeClose(userGroupData);
+                exportNode.remove(userGroupData);
+            }
+
+            closeExportFile(exportNode);
+        } catch (SAXException se) {
+            getReport().println(se);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1,
+                getExportFileName());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message.key(), se);
+            }
+
+            throw new CmsImportExportException(message, se);
+        } catch (IOException ioe) {
+            getReport().println(ioe);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1,
+                getExportFileName());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message.key(), ioe);
+            }
+
+            throw new CmsImportExportException(message, ioe);
+        }
+    }
+
+    /**
+     * Constructs a new export.<p>
+     *
+     * @param cms the cmsObject to work with
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param includeSystem if true, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * @param moduleElement module informations in a Node for module export
      * @param exportUserdata if true, the user and grou pdata will also be exported
      * @param contentAge export contents changed after this date/time
      * @param report to handle the log messages
@@ -245,7 +301,7 @@ public class CmsExport {
     public CmsExport(
         CmsObject cms,
         String exportFile,
-        String[] resourcesToExport,
+        List resourcesToExport,
         boolean includeSystem,
         boolean includeUnchanged,
         Element moduleElement,
@@ -287,7 +343,7 @@ public class CmsExport {
     public CmsExport(
         CmsObject cms,
         String exportFile,
-        String[] resourcesToExport,
+        List resourcesToExport,
         boolean includeSystem,
         boolean includeUnchanged,
         Element moduleElement,
@@ -297,152 +353,18 @@ public class CmsExport {
         boolean recursive)
     throws CmsImportExportException, CmsRoleViolationException {
 
-        setCms(cms);
-        setReport(report);
-        setExportFileName(exportFile);
-
-        // check if the user has the required permissions
-        cms.checkRole(CmsRole.EXPORT_DATABASE);
-
-        m_includeSystem = includeSystem;
-        m_includeUnchanged = includeUnchanged;
-        m_exportUserdata = exportUserdata;
-        m_contentAge = contentAge;
-        m_exportCount = 0;
-        m_recursive = recursive;
-
-        // clear all caches
-        report.println(Messages.get().container(Messages.RPT_CLEARCACHE_0), I_CmsReport.FORMAT_NOTE);
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
-
-        try {
-            Element exportNode = openExportFile();
-
-            if (moduleElement != null) {
-                // add the module element
-                exportNode.add(moduleElement);
-                // write the XML
-                digestElement(exportNode, moduleElement);
-            }
-
-            exportAllResources(exportNode, resourcesToExport);
-
-            // export userdata and groupdata if selected
-            if (m_exportUserdata) {
-                Element userGroupData = exportNode.addElement(CmsImportExportManager.N_USERGROUPDATA);
-                getSaxWriter().writeOpen(userGroupData);
-
-                exportGroups(userGroupData);
-                exportUsers(userGroupData);
-
-                getSaxWriter().writeClose(userGroupData);
-                exportNode.remove(userGroupData);
-            }
-
-            closeExportFile(exportNode);
-        } catch (SAXException se) {
-            getReport().println(se);
-
-            CmsMessageContainer message = Messages.get().container(
-                Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1,
-                getExportFileName());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(message.key(), se);
-            }
-
-            throw new CmsImportExportException(message, se);
-        } catch (IOException ioe) {
-            getReport().println(ioe);
-
-            CmsMessageContainer message = Messages.get().container(
-                Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1,
-                getExportFileName());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(message.key(), ioe);
-            }
-
-            throw new CmsImportExportException(message, ioe);
-        }
-    }
-
-    /** 
-     * Checks whether some of the resources are redundant because a superfolder has also
-     * been selected or a file is included in a folder.<p>
-     * 
-     * @param folderNames contains the full pathnames of all folders
-     * @param fileNames contains the full pathnames of all files
-     */
-    public static void checkRedundancies(List folderNames, List fileNames) {
-
-        if (folderNames == null) {
-            return;
-        }
-        if (!folderNames.isEmpty()) {
-            Collections.sort(folderNames);
-            List result = new ArrayList();
-            Iterator i = folderNames.iterator();
-            while (i.hasNext()) {
-                // check all folders in the list
-                String folder = (String)i.next();
-                if (CmsStringUtil.isEmpty(folder)) {
-                    // skip empty strings
-                    continue;
-                }
-                boolean valid = true;
-                for (int j = (result.size() - 1); j >= 0; j--) {
-                    // check if this folder is indirectly contained because a parent folder is contained
-                    String check = (String)result.get(j);
-                    if (folder.startsWith(check)) {
-                        valid = false;
-                        break;
-                    }
-                }
-                if (valid) {
-                    // the folder is not already contained in the result
-                    result.add(folder);
-                }
-            }
-            folderNames.clear();
-            folderNames.addAll(result);
-        }
-        if (!fileNames.isEmpty()) {
-            Collections.sort(fileNames);
-            List result = new ArrayList();
-            Iterator i = fileNames.iterator();
-            while (i.hasNext()) {
-                // check all folders in the list
-                String file = (String)i.next();
-                if (CmsStringUtil.isEmpty(file)) {
-                    // skip empty strings
-                    continue;
-                }
-                boolean valid = true;
-                for (int j = (folderNames.size() - 1); j >= 0; j--) {
-                    // check if this folder is indirectly contained because a parent folder is contained
-                    String check = (String)folderNames.get(j);
-                    if (file.startsWith(check)) {
-                        valid = false;
-                        break;
-                    }
-                }
-                if (valid) {
-                    // the folder is not already contained in the result
-                    result.add(file);
-                }
-            }
-            fileNames.clear();
-            fileNames.addAll(result);
-        }
-    }
-
-    /**
-     * Remove after merging dev-branch.<p>
-     */
-    private static String[] listToStringArray(List list) {
-
-        String[] array = new String[list.size()];
-        list.toArray(array);
-        return array;
+        this(
+            cms,
+            exportFile,
+            resourcesToExport,
+            includeSystem,
+            includeUnchanged,
+            moduleElement,
+            exportUserdata,
+            false,
+            contentAge,
+            report,
+            recursive);
     }
 
     /**
@@ -592,7 +514,7 @@ public class CmsExport {
      * @throws SAXException if something goes wrong procesing the manifest.xml
      * @throws IOException if not all resources could be appended to the ZIP archive
      */
-    protected void exportAllResources(Element parent, String[] resourcesToExport)
+    protected void exportAllResources(Element parent, List resourcesToExport)
     throws CmsImportExportException, IOException, SAXException {
 
         // export all the resources
@@ -600,20 +522,22 @@ public class CmsExport {
         m_resourceNode = parent.addElement(resourceNodeName);
         getSaxWriter().writeOpen(m_resourceNode);
 
+        if (m_recursive) {
+            // remove the possible redundancies in the list of resources
+            resourcesToExport = CmsFileUtil.removeRedundancies(resourcesToExport);
+        }
+
         // distinguish folder and file names   
         List folderNames = new ArrayList();
         List fileNames = new ArrayList();
-        for (int i = 0; i < resourcesToExport.length; i++) {
-            if (CmsResource.isFolder(resourcesToExport[i])) {
-                folderNames.add(resourcesToExport[i]);
+        Iterator it = resourcesToExport.iterator();
+        while (it.hasNext()) {
+            String resource = (String)it.next();
+            if (CmsResource.isFolder(resource)) {
+                folderNames.add(resource);
             } else {
-                fileNames.add(resourcesToExport[i]);
+                fileNames.add(resource);
             }
-        }
-
-        if (m_recursive) {
-            // remove the possible redundancies in the list of resources
-            checkRedundancies(folderNames, fileNames);
         }
 
         // init sets required for the body file exports 
@@ -770,6 +694,8 @@ public class CmsExport {
         CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(
             new StringWriter(4096),
             OpenCms.getSystemInfo().getDefaultEncoding());
+        saxHandler.setEscapeXml(true);
+        saxHandler.setEscapeUnknownChars(true);
         // initialize the dom4j writer object as member variable
         setSaxWriter(new SAXWriter(saxHandler, saxHandler));
         // the XML document to write the XMl to
@@ -1031,7 +957,7 @@ public class CmsExport {
                     I_CmsReport.FORMAT_OK);
 
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(
+                    LOG.info(Messages.get().getBundle().key(
                         Messages.LOG_EXPORTING_OK_2,
                         String.valueOf(m_exportCount),
                         getCms().getSitePath(resource)));
@@ -1060,8 +986,7 @@ public class CmsExport {
             } catch (CmsException e) {
                 userNameLastModified = OpenCms.getDefaultUsers().getUserAdmin();
             }
-            fileElement.addElement(CmsImportExportManager.N_USERLASTMODIFIED).addText(
-                CmsEncoder.escapeXml(userNameLastModified));
+            fileElement.addElement(CmsImportExportManager.N_USERLASTMODIFIED).addText(userNameLastModified);
             // <datecreated>
             fileElement.addElement(CmsImportExportManager.N_DATECREATED).addText(
                 CmsDateUtil.getHeaderDate(resource.getDateCreated()));
@@ -1072,7 +997,7 @@ public class CmsExport {
             } catch (CmsException e) {
                 userNameCreated = OpenCms.getDefaultUsers().getUserAdmin();
             }
-            fileElement.addElement(CmsImportExportManager.N_USERCREATED).addText(CmsEncoder.escapeXml(userNameCreated));
+            fileElement.addElement(CmsImportExportManager.N_USERCREATED).addText(userNameCreated);
             // <release>
             if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
                 fileElement.addElement(CmsImportExportManager.N_DATERELEASED).addText(
@@ -1115,7 +1040,7 @@ public class CmsExport {
                                 CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE_SHARED);
                         }
 
-                        propertyElement.addElement(CmsImportExportManager.N_NAME).addText(CmsEncoder.escapeXml(key));
+                        propertyElement.addElement(CmsImportExportManager.N_NAME).addText(key);
                         propertyElement.addElement(CmsImportExportManager.N_VALUE).addCDATA(value);
                     }
                 }
@@ -1139,16 +1064,13 @@ public class CmsExport {
                 CmsUUID acePrincipal = ace.getPrincipal();
                 if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_GROUP) > 0) {
                     // the principal is a group
-                    acePrincipalName = I_CmsPrincipal.PRINCIPAL_GROUP
-                        + '.'
-                        + getCms().readGroup(acePrincipal).getName();
+                    acePrincipalName = getCms().readGroup(acePrincipal).getPrefixedName();
                 } else {
                     // the principal is a user
-                    acePrincipalName = I_CmsPrincipal.PRINCIPAL_USER + '.' + getCms().readUser(acePrincipal).getName();
+                    acePrincipalName = getCms().readUser(acePrincipal).getPrefixedName();
                 }
 
-                a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(
-                    CmsEncoder.escapeXml(acePrincipalName));
+                a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
                 a.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(flags));
 
                 Element b = a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET);
@@ -1240,7 +1162,7 @@ public class CmsExport {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_EXPORTING_OK_2, String.valueOf(m_exportCount), source));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_EXPORTING_OK_2, String.valueOf(m_exportCount), source));
         }
         report.println(
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -1372,7 +1294,9 @@ public class CmsExport {
                 getReport().println(ioe);
 
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_USER_1, user.getName()), ioe);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_USER_1,
+                        user.getName()), ioe);
                 }
             }
             // append the node for groups of user
@@ -1409,7 +1333,15 @@ public class CmsExport {
 
         try {
             I_CmsReport report = getReport();
-            List allUsers = getCms().getUsers();
+            List allUsers = new ArrayList();
+            if (m_exportUserdata) {
+                // add system users
+                allUsers.addAll(getCms().getUsers());
+            }
+            if (m_exportWebusers) {
+                // add webusers
+                allUsers.addAll(getCms().getUsers(CmsUser.USER_TYPE_WEBUSER));
+            }
             for (int i = 0, l = allUsers.size(); i < l; i++) {
                 CmsUser user = (CmsUser)allUsers.get(i);
                 report.print(org.opencms.report.Messages.get().container(

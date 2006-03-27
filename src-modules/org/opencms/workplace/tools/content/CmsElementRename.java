@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -83,7 +84,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,28 +92,28 @@ public class CmsElementRename extends CmsReport {
 
     /** A constant representing the select option all templates. */
     public static final String ALL = "ALL";
-    
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "renameelement";
-    
+
     /** Request parameter name for the locale. */
     public static final String PARAM_LOCALE = "locale";
-    
+
     /** Request parameter name for the new element name. */
     public static final String PARAM_NEW_ELEMENT = "newelement";
-    
+
     /** Request parameter name for the old element name. */
     public static final String PARAM_OLD_ELEMENT = "oldelement";
-    
+
     /** Request parameter name for the recursive search. */
     public static final String PARAM_RECURSIVE = "recursive";
-    
+
     /** Request parameter name for the remove empty elements. */
     public static final String PARAM_REMOVE_EMPTYELEMENTS = "removeemptyelements";
-    
+
     /** Request parameter name for the template. */
     public static final String PARAM_TEMPLATE = "template";
-    
+
     /** Request parameter name for the validate new element. */
     public static final String PARAM_VALIDATE_NEW_ELEMENT = "validatenewelement";
 
@@ -266,10 +267,11 @@ public class CmsElementRename extends CmsReport {
             // no locales found, return empty String
             return "";
         } else {
-            // locales found, create option and value lists            
-            options.add(key("please.select"));
+            // locales found, create option and value lists   
+            CmsMessages messages = Messages.get().getBundle(getLocale());
+            options.add(messages.key(Messages.GUI_PLEASE_SELECT_0));
             values.add("");
-            options.add(key("button.all"));
+            options.add(messages.key(Messages.GUI_BUTTON_ALL_0));
             values.add(ALL);
             if (ALL.equals(getParamLocale())) {
                 selectedIndex = 1;
@@ -306,7 +308,7 @@ public class CmsElementRename extends CmsReport {
         int selectedIndex = -1;
         try {
             // get all available templates
-            templates = CmsNewResourceXmlPage.getTemplates(getCms());
+            templates = CmsNewResourceXmlPage.getTemplates(getCms(), null);
         } catch (CmsException e) {
             // can usually be ignored
             if (LOG.isInfoEnabled()) {
@@ -318,9 +320,10 @@ public class CmsElementRename extends CmsReport {
             return "";
         } else {
             // templates found, create option and value lists
-            options.add(key("please.select"));
+            CmsMessages messages = Messages.get().getBundle(getLocale());
+            options.add(messages.key(Messages.GUI_PLEASE_SELECT_0));
             values.add("");
-            options.add(key("button.all"));
+            options.add(messages.key(Messages.GUI_BUTTON_ALL_0));
             values.add(ALL);
             if (ALL.equals(getParamTemplate())) {
                 selectedIndex = 1;
@@ -525,35 +528,30 @@ public class CmsElementRename extends CmsReport {
     public void validateParameters() {
 
         // localisation  
-        Locale locale = getLocale();
+        CmsMessages messages = Messages.get().getBundle(getLocale());
 
         StringBuffer validationErrors = new StringBuffer();
         if (CmsStringUtil.isEmpty(getParamResource())) {
-            validationErrors.append(
-                Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_RESOURCE_FOLDER_0, null)).append("<br>");
+            validationErrors.append(messages.key(Messages.GUI_ELEM_RENAME_VALIDATE_RESOURCE_FOLDER_0)).append("<br>");
         }
         if (CmsStringUtil.isEmpty(getParamTemplate())) {
-            validationErrors.append(
-                Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_SELECT_TEMPLATE_0, null)).append("<br>");
+            validationErrors.append(messages.key(Messages.GUI_ELEM_RENAME_VALIDATE_SELECT_TEMPLATE_0)).append("<br>");
         }
         if (CmsStringUtil.isEmpty(getParamLocale())) {
-            validationErrors.append(
-                Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_SELECT_LANGUAGE_0, null)).append("<br>");
+            validationErrors.append(messages.key(Messages.GUI_ELEM_RENAME_VALIDATE_SELECT_LANGUAGE_0)).append("<br>");
         }
         if (CmsStringUtil.isEmpty(getParamOldElement())) {
-            validationErrors.append(
-                Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_ENTER_OLD_ELEM_0, null)).append("<br>");
+            validationErrors.append(messages.key(Messages.GUI_ELEM_RENAME_VALIDATE_ENTER_OLD_ELEM_0)).append("<br>");
         }
         if (CmsStringUtil.isEmpty(getParamNewElement())) {
-            validationErrors.append(
-                Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0, null)).append("<br>");
+            validationErrors.append(messages.key(Messages.GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0)).append("<br>");
         }
         if (!isValidElement(getParamNewElement())) {
             validationErrors.append(
-                Messages.get().key(
-                    locale,
+                messages.key(
                     Messages.GUI_ELEM_RENAME_VALIDATE_INVALID_NEW_ELEM_2,
-                    new Object[] {getParamNewElement(), getParamTemplate()})).append("<br>");
+                    getParamNewElement(),
+                    getParamTemplate())).append("<br>");
         }
 
         setErrorMessage(validationErrors.toString());
@@ -601,7 +599,7 @@ public class CmsElementRename extends CmsReport {
         List resourcesWithTemplate = new ArrayList();
         TreeMap templates = null;
         try {
-            templates = CmsNewResourceXmlPage.getTemplates(getCms());
+            templates = CmsNewResourceXmlPage.getTemplates(getCms(), null);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e);

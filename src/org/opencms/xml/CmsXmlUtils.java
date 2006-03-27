@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2005/06/26 12:51:32 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -64,7 +65,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -348,6 +349,35 @@ public final class CmsXmlUtils {
     }
 
     /**
+     * Marshals (writes) an XML node into an output stream using XML pretty-print formatting.<p>
+     * 
+     * @param node the XML node to marshal
+     * @param encoding the encoding to use
+     * 
+     * @return the string with the xml content
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    public static String marshal(Node node, String encoding) throws CmsXmlException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            OutputFormat format = OutputFormat.createPrettyPrint();
+            format.setEncoding(encoding);
+            format.setSuppressDeclaration(true);
+
+            XMLWriter writer = new XMLWriter(out, format);
+            writer.setEscapeText(false);
+
+            writer.write(node);
+            writer.close();
+        } catch (Exception e) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_MARSHALLING_XML_DOC_0), e);
+        }
+        return new String(out.toByteArray());
+    }
+
+    /**
      * Removes the first Xpath element from the path.<p>
      * 
      * If the provided path does not contain a "/" character, 
@@ -397,6 +427,45 @@ public final class CmsXmlUtils {
         }
 
         return path.substring(0, pos);
+    }
+
+    /**
+     * Removes the last complex Xpath element from the path.<p>
+     * 
+     * The same as {@link #removeLastXpathElement(String)} both it works with more complex xpaths.
+     * 
+     * <p>Example:<br> 
+     * <code>system/backup[@date='23/10/2003']/resource[path='/a/b/c']</code> becomes <code>system/backup[@date='23/10/2003']</code><p>
+     * 
+     * @param path the Xpath to remove the last element from
+     * 
+     * @return the path with the last element removed
+     */
+    public static String removeLastComplexXpathElement(String path) {
+
+        int pos = path.lastIndexOf('/');
+        if (pos < 0) {
+            return path;
+        }
+        // count ' chars
+        int p = pos;
+        int count = -1;
+        while (p > 0) {
+            count++;
+            p = path.indexOf("\'", p + 1);
+        }
+        String parentPath = path.substring(0, pos);
+        if (count % 2 == 0) {
+            // if substring is complete 
+            return parentPath;
+        }
+        // if not complete
+        p = parentPath.lastIndexOf("'");
+        if (p >= 0) {
+            // complete it if possible
+            return removeLastComplexXpathElement(parentPath.substring(0, p));
+        }
+        return parentPath;
     }
 
     /**
@@ -524,6 +593,7 @@ public final class CmsXmlUtils {
                 reader.setEntityResolver(resolver);
             }
             reader.setMergeAdjacentText(true);
+            reader.setStripWhitespaceText(true);
             return reader.read(source);
         } catch (DocumentException e) {
             throw new CmsXmlException(Messages.get().container(Messages.ERR_UNMARSHALLING_XML_DOC_0), e);
@@ -555,8 +625,7 @@ public final class CmsXmlUtils {
      * 
      * @throws CmsXmlException if the validation fails
      */
-    public static void validateXmlStructure(byte[] xmlData, EntityResolver resolver)
-    throws CmsXmlException {
+    public static void validateXmlStructure(byte[] xmlData, EntityResolver resolver) throws CmsXmlException {
 
         XMLReader reader;
         try {
@@ -564,7 +633,7 @@ public final class CmsXmlUtils {
         } catch (SAXException e) {
             // xerces parser not available - no schema validation possible
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_VALIDATION_INIT_XERXES_SAX_READER_FAILED_0), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_VALIDATION_INIT_XERXES_SAX_READER_FAILED_0), e);
             }
             // no validation of the content is possible
             return;
@@ -580,14 +649,14 @@ public final class CmsXmlUtils {
         } catch (SAXNotRecognizedException e) {
             // should not happen as Xerces 2 support this feature
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_SAX_READER_FEATURE_NOT_RECOGNIZED_0), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_SAX_READER_FEATURE_NOT_RECOGNIZED_0), e);
             }
             // no validation of the content is possible
             return;
         } catch (SAXNotSupportedException e) {
             // should not happen as Xerces 2 support this feature
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_SAX_READER_FEATURE_NOT_SUPPORTED_0), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_SAX_READER_FEATURE_NOT_SUPPORTED_0), e);
             }
             // no validation of the content is possible
             return;
@@ -607,13 +676,13 @@ public final class CmsXmlUtils {
         } catch (IOException e) {
             // should not happen since we read form a byte array
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_READ_XML_FROM_BYTE_ARR_FAILED_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_XML_FROM_BYTE_ARR_FAILED_0), e);
             }
             return;
         } catch (SAXException e) {
             // should not happen since all errors are handled in the XML error handler
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_PARSE_SAX_EXC_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSE_SAX_EXC_0), e);
             }
             return;
         }
@@ -630,7 +699,7 @@ public final class CmsXmlUtils {
             } catch (IOException e) {
                 // should not happen since we write to a StringWriter
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.LOG_STRINGWRITER_IO_EXC_0), e);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_STRINGWRITER_IO_EXC_0), e);
                 }
             }
             // generate String from XML for display of document in error message

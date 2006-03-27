@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:52:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.PrintfFormat;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0 
  */
@@ -223,7 +224,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
-        // must check ALL resources in folder because name dosen't care for type
+        // must check ALL resources in folder because name doesn't care for type
         List resources = cms.readResources(foldername, CmsResourceFilter.ALL, false);
 
         // now create a list of all resources that just contains the file names
@@ -234,16 +235,26 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
         }
 
         String fileName = cms.getRequestContext().addSiteRoot(data.getFileName());
+        int fileNameLength = fileName.length();
+        String checkFileName;
         String checkName;
+        StringBuffer checkTempFileName;
         String number;
 
         int j = 0;
         do {
             number = NUMBER_FORMAT.sprintf(++j);
-            checkName = CmsStringUtil.substitute(fileName, "${number}", number);
-        } while (result.contains(checkName));
+            checkFileName = CmsStringUtil.substitute(fileName, "${number}", number);
+            // get new resource name without path information
+            checkName = CmsResource.getName(checkFileName);
+            // create temporary file name to check for additionally
+            checkTempFileName = new StringBuffer(fileNameLength);
+            checkTempFileName.append(CmsResource.getFolderPath(checkFileName));
+            checkTempFileName.append(CmsWorkplace.TEMP_FILE_PREFIX);
+            checkTempFileName.append(checkName);
+        } while (result.contains(checkFileName) || result.contains(checkTempFileName.toString()));
 
-        return cms.getRequestContext().removeSiteRoot(checkName);
+        return cms.getRequestContext().removeSiteRoot(checkFileName);
     }
 
     /**

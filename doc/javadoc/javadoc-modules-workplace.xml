@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="javadoc">
-    <property name="opencms.input" value="../../"/>
-    <property name="opencms.output" value="${opencms.input}../BuildCms/" />
+<project default="javadoc" name="Javadoc modules workplace">
+	<property name="opencms.input" value="../../" />
+	<property name="opencms.output" value="${opencms.input}../BuildCms/" />
 
-    <property name="srcdir" value="${opencms.input}/src-modules"/>
-    <property name="imgdir" value="${basedir}/logos"  />
-    <property name="partname" value="modules-workplace" />
-  
-    <!-- dont change this property! -->
-    <property name="destdir" value="${opencms.output}/doc/${partname}"  />
-   
-    <taskdef resource="net/sf/antcontrib/antlib.xml">
-	      <classpath>
-	          <pathelement location="${opencms.input}/webapp/WEB-INF/lib/ant-contrib-1.0b1.jar"/>
-	      </classpath>
-    </taskdef>
+	<property name="srcdir" value="${opencms.input}/src-modules" />
+	<property name="imgdir" value="${basedir}/logos" />
+	<property name="partname" value="modules-workplace-dev" />
 
-    <target name="init">
-        <tstamp />
-        <mkdir dir="${destdir}" />
-    </target>
+	<!-- dont change this property! -->
+	<property name="destdir" value="${opencms.output}/doc/${partname}" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${opencms.input}/webapp/WEB-INF/lib/ant-contrib-1.0b1.jar" />
+		</classpath>
+	</taskdef>
+
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${destdir}" />
+	</target>
 
 	<target name="javadoc" depends="init,clean">
 		<javadoc destdir="${destdir}" access="protected" use="true" notree="true" nonavbar="false" noindex="false" splitindex="true" author="true" version="true" source="1.4" useexternalfile="true" linksource="false" nodeprecatedlist="false" nodeprecated="false" stylesheetfile="javadoc.css" doctitle="OpenCms Workplace Modules API, version 6.1.8" Windowtitle="OpenCms Workplace Modules API, version 6.1.8" additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src={@docRoot}/logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src={@docRoot}logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;">

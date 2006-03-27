@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2006/03/27 14:52:43 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,9 @@
 
 package org.opencms.workplace;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -45,7 +43,6 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.85 $ 
+ * @version $Revision: 1.86 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,6 +88,15 @@ public class CmsFrameset extends CmsWorkplace {
 
     /** The request parameter for the workplace view selection. */
     public static final String PARAM_WP_VIEW = "wpView";
+    
+    /** Publish button appearance: show always. */
+    public static final String PUBLISHBUTTON_SHOW_ALWAYS = "always";
+    
+    /** Publish button appearance: show auto (only if user has publish permissions). */
+    public static final String PUBLISHBUTTON_SHOW_AUTO = "auto";
+    
+    /** Publish button appearance: show never. */
+    public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFrameset.class);
@@ -109,34 +115,6 @@ public class CmsFrameset extends CmsWorkplace {
     public CmsFrameset(CmsJspActionElement jsp) {
 
         super(jsp);
-    }
-
-    /**
-     * Builds the Javascript for the Workplace context menus.<p>
-     * 
-     * @return the Javascript for the Workplace context menus
-     */
-    public String buildContextMenues() {
-
-        StringBuffer result = new StringBuffer();
-        // get all available resource types
-        List allResTypes = OpenCms.getResourceManager().getResourceTypes();
-        for (int i = 0; i < allResTypes.size(); i++) {
-            // loop through all types
-            I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
-            int resTypeId = type.getTypeId();
-            // get explorer type settings for current resource type
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-            if (settings != null) {
-                // append the context menu of the current resource type 
-                result.append(settings.getContextMenu().getJSEntries(
-                    getCms(),
-                    settings,
-                    resTypeId,
-                    getSettings().getUserSettings().getLocale()));
-            }
-        }
-        return result.toString();
     }
 
     /**
@@ -162,18 +140,6 @@ public class CmsFrameset extends CmsWorkplace {
             result.append("\n//-->\n</script>");
         }
         return result.toString();
-    }
-
-    /**
-     * Returns the file settings for the Workplace explorer view.<p>
-     * 
-     * @return the file settings for the Workplace explorer view
-     */
-    public int getExplorerSettings() {
-
-        CmsUserSettings settings = new CmsUserSettings(getCms());
-        int value = settings.getExplorerSettings();
-        return value;
     }
 
     /**
@@ -234,7 +200,7 @@ public class CmsFrameset extends CmsWorkplace {
      * Returns a html select box filled with the current users accessible projects.<p>
      * 
      * @param htmlAttributes attributes that will be inserted into the generated html 
-     * @param htmlWidth additional "width" html attributes
+     * @param htmlWidth additional style attributes containing width information
      * @return a html select box filled with the current users accessible projects
      */
     public String getProjectSelect(String htmlAttributes, String htmlWidth) {
@@ -254,7 +220,6 @@ public class CmsFrameset extends CmsWorkplace {
         List options = new ArrayList();
         List values = new ArrayList();
         int selectedIndex = 0;
-        int maxNameLength = 0;
 
         // now loop through all projects and fill the result vectors
         for (int i = 0, n = allProjects.size(); i < n; i++) {
@@ -270,10 +235,9 @@ public class CmsFrameset extends CmsWorkplace {
                 selectedIndex = i;
             }
             // check the length of the project name, to optionallly adjust the size of the selector
-            maxNameLength = Math.max(loopProjectName.length(), maxNameLength);
         }
-        if (maxNameLength <= 20) {
-            StringBuffer buf = new StringBuffer(htmlAttributes.length() + htmlWidth.length() + 5);
+        if (CmsStringUtil.isNotEmpty(htmlWidth)) {
+            StringBuffer buf = new StringBuffer(htmlAttributes.length() + htmlWidth.length() + 2);
             buf.append(htmlAttributes);
             buf.append(" ");
             buf.append(htmlWidth);
@@ -281,6 +245,36 @@ public class CmsFrameset extends CmsWorkplace {
         }
 
         return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+
+    /**
+     * Returns the html for the "publish project" button depending on the current users permissions and the default
+     * workplace settings.<p>
+     * 
+     * @return the html for the "publish project" button
+     */
+    public String getPublishButton() {
+
+        String publishButton = OpenCms.getWorkplaceManager().getDefaultUserSettings().getPublishButtonAppearance();
+        if (PUBLISHBUTTON_SHOW_NEVER.equals(publishButton)) {
+            return "";
+        }
+
+        int buttonStyle = getSettings().getUserSettings().getWorkplaceButtonStyle();
+
+        if (PUBLISHBUTTON_SHOW_AUTO.equals(publishButton)) {
+            if (getCms().isManagerOfProject()) {
+                return button("../commons/publishproject.jsp", "body", "publish.png", Messages.GUI_BUTTON_PUBLISH_0 , buttonStyle);
+            } else {
+                return "";
+            }
+        }
+
+        if (getCms().isManagerOfProject()) {
+            return (button("../commons/publishproject.jsp", "body", "publish.png", Messages.GUI_BUTTON_PUBLISH_0, buttonStyle));
+        } else {
+            return (button(null, null, "publish_in.png", Messages.GUI_BUTTON_PUBLISH_0, buttonStyle));
+        }
     }
 
     /**
@@ -385,16 +379,6 @@ public class CmsFrameset extends CmsWorkplace {
     }
 
     /**
-     * Returns true if the user has publish permissions for the current project.<p>
-     * 
-     * @return true if the user has publish permissions for the current project
-     */
-    public boolean isPublishEnabled() {
-
-        return getCms().isManagerOfProject();
-    }
-
-    /**
      * Returns <code>true</code> if a reload of the main body frame is required.<p>
      * 
      * This value is modified with the select options (project, site or view) in the head frame of 
@@ -442,7 +426,7 @@ public class CmsFrameset extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
-    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // check if a startup page has been set
         String frame = CmsRequestUtil.getNotEmptyDecodedParameter(request, CmsFrameset.PARAM_WP_FRAME);

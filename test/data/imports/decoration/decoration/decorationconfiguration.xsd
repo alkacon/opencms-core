@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://sites/default/decoration/decoration.xsd"/>
+
+	<xsd:element name="DecorationConfigurations" type="OpenCmsDecorationConfigurations"/>
+	
+	<xsd:complexType name="OpenCmsDecorationConfigurations">
+		<xsd:sequence>
+			<xsd:element name="DecorationConfiguration" type="OpenCmsDecorationConfiguration" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsDecorationConfiguration">
+		<xsd:sequence>
+		  <xsd:element name="uselocale" type="OpenCmsBoolean" minOccurs="1" />
+			<xsd:element name="decoration" type="OpenCmsDecoration" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.jsp.decoration.workplace"/>
+		</xsd:appinfo>
+	</xsd:annotation>  
+	
+</xsd:schema>

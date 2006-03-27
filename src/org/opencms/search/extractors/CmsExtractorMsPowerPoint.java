@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsPowerPoint.java,v $
- * Date   : $Date: 2005/07/29 10:35:06 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/03/27 14:53:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.poi.util.LittleEndian;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,7 +89,7 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
         String result = removeControlChars(m_buffer.toString());
 
         // free some memory
-        m_buffer = null;
+        m_buffer = new StringBuffer(4096);
         cleanup();
 
         // return the final result

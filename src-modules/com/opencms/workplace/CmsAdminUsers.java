@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2006/03/27 14:52:36 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.6 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.7 $ $Date: 2006/03/27 14:52:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -309,7 +309,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                 newUser.setLastname(userLastname);
                                 newUser.setAddress(street);
                                 newUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE, zipcode);
-                                newUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN, town);
+                                newUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_CITY, town);
                                 newUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                                 for(int z = 0;z < selectedGroups.size();z++) {
                                     String groupname = (String)selectedGroups.elementAt(z);
@@ -382,9 +382,9 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     street = theUser.getAddress();
                     userLastname = theUser.getLastname();
                     email = theUser.getEmail();
-                    disabled = theUser.getDisabled();
+                    disabled = !theUser.isEnabled();
                     zipcode = (String)theUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE);
-                    town = (String)theUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN);
+                    town = (String)theUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_CITY);
                     defaultGroup = (String)theUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DEFAULTGROUP);
                     List groups = cms.getDirectGroupsOfUser(user);
                     if(groups != null) {
@@ -460,7 +460,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                     theUser.setLastname(userLastname);
                                     theUser.setAddress(street);
                                     theUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE, zipcode);
-                                    theUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN, town);
+                                    theUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_CITY, town);
                                     theUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                                     if((OpenCms.getDefaultUsers().getUserAdmin().equals(theUser.getName()))
                                             && (!selectedGroups.contains(OpenCms.getDefaultUsers().getGroupAdministrators()))) {
@@ -471,11 +471,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                         throw new CmsLegacyException("disabled admin",
                                             CmsLegacyException.C_NOT_ADMIN);
                                     }
-                                    if(disabled == true) {
-                                        theUser.setDisabled();
-                                    }else {
-                                        theUser.setEnabled();
-                                    }
+                                    theUser.setEnabled(!disabled);
                                     changeGroups(cms, theUser, selectedGroups);
                                     session.removeValue("selectedGroups");
                                     session.removeValue("notSelectedGroups");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/10/11 08:01:13 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,9 +124,6 @@ public abstract class CmsEditor extends CmsDialog {
 
     /** Stores the VFS editor path. */
     public static final String PATH_EDITORS = PATH_WORKPLACE + "editors/";
-    
-    /** Constant for the Editor special "save error" confirmation dialog. */
-    public static final String FILE_DIALOG_EDITOR_CONFIRM = PATH_EDITORS + "dialogs/confirm.jsp";
 
     /** Parameter name for the request parameter "backlink". */
     public static final String PARAM_BACKLINK = "backlink";
@@ -286,9 +283,9 @@ public abstract class CmsEditor extends CmsDialog {
     public String buttonActionCancel() {
 
         String target = null;
-        if ("true".equals(getParamDirectedit())) {
+        if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
             // editor is in direct edit mode
-            if (!"".equals(getParamBacklink())) {
+            if (CmsStringUtil.isNotEmpty(getParamBacklink())) {
                 // set link to the specified back link target
                 target = getParamBacklink();
             } else {
@@ -324,7 +321,7 @@ public abstract class CmsEditor extends CmsDialog {
         } else {
             // action class not defined, display inactive button
             url = getSkinUri() + "buttons/publish_in.png";
-            name = "explorer.context.publish";
+            name = Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0;
         }
         String image = url.substring(url.lastIndexOf("/") + 1);
         if (url.endsWith(".gif")) {
@@ -338,7 +335,7 @@ public abstract class CmsEditor extends CmsDialog {
                 url.lastIndexOf("/") + 1));
         } else {
             // create the inactive button
-            return button(null, null, image, name + "_in", type, url.substring(0, url.lastIndexOf("/") + 1));
+            return button(null, null, image, name, type, url.substring(0, url.lastIndexOf("/") + 1));
         }
     }
 
@@ -539,7 +536,7 @@ public abstract class CmsEditor extends CmsDialog {
     /**
      * Sets the  edit as text parameter.<p>
      * 
-     * @param editAsText "true" if the resource should be handled like a text file
+     * @param editAsText <code>"true"</code> if the resource should be handled like a text file
      */
     public void setParamEditastext(String editAsText) {
 
@@ -660,13 +657,13 @@ public abstract class CmsEditor extends CmsDialog {
             getCms().writeFile(orgFile);
         } else {
             getCms().copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
-            // remove the temporary file flag
-            int flags = getCms().readResource(getParamResource()).getFlags();
-            if ((flags & CmsResource.FLAG_TEMPFILE) == CmsResource.FLAG_TEMPFILE) {
-                flags ^= CmsResource.FLAG_TEMPFILE;
-            }
-            getCms().chflags(getParamResource(), flags);
         }
+        // remove the temporary file flag
+        int flags = getCms().readResource(getParamResource(), CmsResourceFilter.ALL).getFlags();
+        if ((flags & CmsResource.FLAG_TEMPFILE) == CmsResource.FLAG_TEMPFILE) {
+            flags ^= CmsResource.FLAG_TEMPFILE;
+        }
+        getCms().chflags(getParamResource(), flags);
     }
 
     /**
@@ -714,6 +711,9 @@ public abstract class CmsEditor extends CmsDialog {
                 flags += CmsResource.FLAG_TEMPFILE;
             }
             getCms().chflags(temporaryFilename, flags);
+            // remove eventual release & expiration date from temporary file to make preview in editor work
+            getCms().setDateReleased(temporaryFilename, CmsResource.DATE_RELEASED_DEFAULT, false);
+            getCms().setDateExpired(temporaryFilename, CmsResource.DATE_EXPIRED_DEFAULT, false);
         } catch (CmsException e) {
             switchToCurrentProject();
             throw e;

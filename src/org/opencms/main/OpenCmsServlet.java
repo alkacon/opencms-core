@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/07/14 12:02:13 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 6.0.0 
  * 
@@ -85,9 +85,6 @@ import org.apache.commons.logging.Log;
  * @see org.opencms.main.OpenCms
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
-
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = 4729951599966070050L;
 
     /** Name of the <code>DefaultWebApplication</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
     public static final String SERVLET_PARAM_DEFAULT_WEB_APPLICATION = "DefaultWebApplication";
@@ -104,11 +101,20 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     /** Handler prefix. */
     private static final String HANDLE_PATH = "/handle";
 
+    /** Path to handler "error page" files in the VFS. */
+    private static final String HANDLE_VFS_PATH = "/system/handler" + HANDLE_PATH;
+
+    /** Handler "error page" file suffix. */
+    private static final String HANDLE_VFS_SUFFIX = ".html";
+
     /** Handler implementation names. */
     private static final String[] HANDLER_NAMES = {"404"};
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(OpenCmsServlet.class);
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 4729951599966070050L;
 
     /**
      * OpenCms servlet main request handling method.<p>
@@ -117,31 +123,37 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
+        // check to OpenCms runlevel
         int runlevel = OpenCmsCore.getInstance().getRunLevel();
 
         // write OpenCms server identification in the response header
         res.setHeader(CmsRequestUtil.HEADER_SERVER, OpenCmsCore.getInstance().getSystemInfo().getVersion());
 
         if (runlevel != OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+            // not the "normal" servlet runlevel
             if (runlevel == OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
                 // we have shell runlevel only, upgrade to servlet runlevel (required after setup wizard)
                 init(getServletConfig());
             } else {
                 // illegal runlevel, we can't process requests
-                // sending status code 503, indicating that the HTTP server is temporarily overloaded, and unable to handle the request
-                res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                // sending status code 403, indicating the server understood the request but refused to fulfill it
+                res.sendError(HttpServletResponse.SC_FORBIDDEN);
+                // goodbye
+                return;
             }
         }
         String path = req.getPathInfo();
         if ((path != null) && path.startsWith(HANDLE_PATH)) {
+            // this is a request to an OpenCms handler URI
             invokeHandler(req, res);
         } else {
+            // standard request to a URI in the OpenCms VFS 
             OpenCmsCore.getInstance().showResource(req, res);
         }
     }
 
     /**
-     * OpenCms servlet request handling method, 
+     * OpenCms servlet POST request handling method, 
      * will just call {@link #doGet(HttpServletRequest, HttpServletResponse)}.<p>
      * 
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -169,7 +181,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         try {
             errorCode = Integer.valueOf(name).intValue();
         } catch (NumberFormatException nf) {
-            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
         switch (errorCode) {
@@ -183,22 +195,22 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 } catch (CmsException e) {
                     // unlikely to happen 
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2, name, path), e);
+                        LOG.warn(
+                            Messages.get().getBundle().key(Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2, name, path),
+                            e);
                     }
                 }
                 if (exportData != null) {
-                    synchronized (this) {
-                        try {
-                            // generate a static export request wrapper
-                            CmsStaticExportRequest exportReq = new CmsStaticExportRequest(req, exportData);
-                            // export the resource and set the response status according to the result
-                            res.setStatus(OpenCms.getStaticExportManager().export(exportReq, res, cms, exportData));
-                        } catch (Throwable t) {
-                            if (LOG.isWarnEnabled()) {
-                                LOG.warn(Messages.get().key(Messages.LOG_ERROR_EXPORT_1, exportData), t);
-                            }
-                            openErrorHandler(req, res, errorCode);
+                    try {
+                        // generate a static export request wrapper
+                        CmsStaticExportRequest exportReq = new CmsStaticExportRequest(req, exportData);
+                        // export the resource and set the response status according to the result
+                        res.setStatus(OpenCms.getStaticExportManager().export(exportReq, res, cms, exportData));
+                    } catch (Throwable t) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().getBundle().key(Messages.LOG_ERROR_EXPORT_1, exportData), t);
                         }
+                        openErrorHandler(req, res, errorCode);
                     }
                 } else {
                     openErrorHandler(req, res, errorCode);
@@ -224,12 +236,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             OpenCmsCore.getInstance().initServlet(this);
         } catch (CmsInitException e) {
             if (Messages.ERR_CRITICAL_INIT_WIZARD_0.equals(e.getMessageContainer().getKey())) {
-                // if wizard is still enabled allow retry of initialization (required for setup wizard)
+                // if wizard is still enabled - allow retry of initialization (required for setup wizard)
                 // this means the servlet init() call must be terminated by an exception
                 throw new ServletException(e.getMessage());
             }
         } catch (Throwable t) {
-            LOG.error(Messages.get().key(Messages.LOG_ERROR_GENERIC_0), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_GENERIC_0), t);
         }
     }
 
@@ -267,13 +279,17 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     protected void openErrorHandler(HttpServletRequest req, HttpServletResponse res, int errorCode)
     throws IOException, ServletException {
 
-        String handlerUri = "/system/handler/handle" + errorCode + ".html";
-        CmsObject cms = null;
+        String handlerUri = (new StringBuffer(64)).append(HANDLE_VFS_PATH).append(errorCode).append(HANDLE_VFS_SUFFIX).toString();
+        CmsObject cms;
+        CmsFile file;
         try {
+            // create OpenCms context
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             cms.getRequestContext().setUri(handlerUri);
+            // read the error handler file
+            file = cms.readFile(handlerUri, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
-            // unlikely to happen, comment: that's what they all say
+            // unlikely to happen as the OpenCms "Guest" context can always be initialized
             CmsMessageContainer container = Messages.get().container(
                 Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2,
                 new Integer(errorCode),
@@ -281,14 +297,10 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(org.opencms.jsp.Messages.getLocalizedMessage(container, req), e);
             }
-        }
-        CmsFile file;
-        try {
-            file = cms.readFile(handlerUri, CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (CmsException e) {
+            // however, if it _does_ happen, then we really can't continue here
             if (!res.isCommitted()) {
-                // handler file does not exist, display default error code page
-                res.sendError(errorCode);
+                // since the handler file is not accessible, display the default error page
+                res.sendError(errorCode, e.getLocalizedMessage());
             }
             return;
         }
@@ -297,6 +309,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             req.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, new Integer(errorCode));
             OpenCms.getResourceManager().loadResource(cms, file, req, res);
         } catch (CmsException e) {
+            // unable to load error page handler VFS resource
             CmsMessageContainer container = Messages.get().container(
                 Messages.ERR_SHOW_ERR_HANDLER_RESOURCE_2,
                 new Integer(errorCode),

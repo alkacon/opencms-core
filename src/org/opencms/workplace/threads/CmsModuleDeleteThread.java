@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsModuleDeleteThread.java,v $
- * Date   : $Date: 2005/10/19 10:21:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,13 +27,11 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */ 
+ */
 
 package org.opencms.workplace.threads;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModuleManager;
@@ -43,7 +41,6 @@ import org.opencms.report.I_CmsReport;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -52,7 +49,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,10 +74,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
      */
     public CmsModuleDeleteThread(CmsObject cms, List moduleNames, boolean replaceMode, boolean old) {
 
-        super(cms, Messages.get().key(
-            cms.getRequestContext().getLocale(),
-            Messages.GUI_DELETE_MODULE_THREAD_NAME_1,
-            new Object[] {moduleNames}));
+        super(cms, Messages.get().getBundle().key(Messages.GUI_DELETE_MODULE_THREAD_NAME_1, moduleNames));
         m_moduleNames = moduleNames;
         m_replaceMode = replaceMode;
         if (old) {
@@ -89,9 +83,8 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             initHtmlReport(cms.getRequestContext().getLocale());
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_CONSTRUCTED_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DELETE_THREAD_CONSTRUCTED_0));
         }
-
     }
 
     /**
@@ -110,72 +103,30 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
         I_CmsReport report = getReport();
         try {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_STARTED_0));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DELETE_THREAD_STARTED_0));
             }
             if (!m_replaceMode) {
                 OpenCms.getModuleManager().checkModuleSelectionList(m_moduleNames, null, true);
             }
             m_moduleNames = CmsModuleManager.topologicalSort(m_moduleNames, null);
             Collections.reverse(m_moduleNames);
-            
+
             Iterator j = m_moduleNames.iterator();
             while (j.hasNext()) {
                 String moduleName = (String)j.next();
 
                 moduleName = moduleName.replace('\\', '/');
-                CmsProject project = null;
-                Locale userLocale = getCms().getRequestContext().getLocale();
-                // create a Project to delete the module.
-                project = getCms().createProject(
-                    Messages.get().key(userLocale, Messages.GUI_DELETE_MODULE_PROJECT_NAME_0, null),
-                    Messages.get().key(userLocale, Messages.GUI_DELETE_MODULE_PROJECT_DESC_1, new Object[] {moduleName}),
-                    OpenCms.getDefaultUsers().getGroupAdministrators(),
-                    OpenCms.getDefaultUsers().getGroupAdministrators(),
-                    CmsProject.PROJECT_TYPE_TEMPORARY);
-                getCms().getRequestContext().setCurrentProject(project);
 
-                report.print(
-                    Messages.get().container(Messages.RPT_DELETE_MODULE_BEGIN_0),
-                    I_CmsReport.FORMAT_HEADLINE);
-                report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_HTML_ITAG_1,
-                    moduleName), I_CmsReport.FORMAT_HEADLINE);
-
-                // copy the resources to the project
-                List projectFiles = OpenCms.getModuleManager().getModule(moduleName).getResources();
-                for (int i = 0; i < projectFiles.size(); i++) {
-                    try {
-                        getCms().copyResourceToProject((String)projectFiles.get(i));
-                    } catch (CmsException e) {
-                        // may happen if the resource has already been deleted
-                        LOG.error(Messages.get().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, projectFiles.get(i)), e);
-                        report.println(e);
-                    }
-                }
                 // now delete the module
                 OpenCms.getModuleManager().deleteModule(getCms(), moduleName, m_replaceMode, report);
+            }
 
-                report.println(
-                    Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0),
-                    I_CmsReport.FORMAT_HEADLINE);
-                // now unlock and publish the project
-                getCms().unlockProject(project.getId());
-                getCms().publishProject(report);
-
-                report.println(
-                    Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0),
-                    I_CmsReport.FORMAT_HEADLINE);
-                report.println(
-                    Messages.get().container(Messages.RPT_DELETE_MODULE_END_0),
-                    I_CmsReport.FORMAT_HEADLINE);
-
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_FINISHED_0));
-                }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DELETE_THREAD_FINISHED_0));
             }
         } catch (Exception e) {
             report.println(e);
-            LOG.error(Messages.get().key(Messages.LOG_MODULE_DELETE_FAILED_1, m_moduleNames), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_MODULE_DELETE_FAILED_1, m_moduleNames), e);
         }
     }
 }

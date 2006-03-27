@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorHandler.java,v $
- * Date   : $Date: 2005/10/10 16:11:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  * 
@@ -96,7 +96,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
         try {
             wp.includeErrorpage(wp, t);
         } catch (JspException e) {
-            LOG.debug(org.opencms.workplace.commons.Messages.get().key(
+            LOG.debug(org.opencms.workplace.commons.Messages.get().getBundle().key(
                 org.opencms.workplace.commons.Messages.LOG_ERROR_INCLUDE_FAILED_1,
                 FILE_DIALOG_SCREEN_ERRORPAGE), e);
         }

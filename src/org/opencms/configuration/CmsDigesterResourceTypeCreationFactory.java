@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDigesterResourceTypeCreationFactory.java,v $
- * Date   : $Date: 2005/10/12 14:03:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/03/27 14:52:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.xml.sax.Attributes;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0.2
  */
@@ -60,7 +60,7 @@ implements ObjectCreationFactory {
 
     /** The log object of this class. */
     private static final Log LOG = CmsLog.getLog(CmsDigesterResourceTypeCreationFactory.class);
-    
+
     /**
      * Default constructor for the resource type configuration factory.<p> 
      */
@@ -87,7 +87,7 @@ implements ObjectCreationFactory {
             // resource type is unknown, use dummy class to import the module resources
             type = new CmsResourceTypeUnknown();
             // write an error to the log
-            LOG.error(Messages.get().key(
+            LOG.error(Messages.get().getBundle().key(
                 Messages.ERR_UNKNOWN_RESTYPE_CLASS_2,
                 className,
                 type.getClass().getName()), e);

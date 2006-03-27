@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/10/10 16:11:04 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/03/27 14:52:28 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,6 @@ import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -49,7 +47,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,8 +56,8 @@ public class CmsListMetadata {
     /** Container for column definitions. */
     private CmsIdentifiableObjectContainer m_columns = new CmsIdentifiableObjectContainer(true, false);
 
-    /** List of independent actions. */
-    private List m_indepActions = new ArrayList();
+    /** Container for of independent actions. */
+    private CmsIdentifiableObjectContainer m_indepActions = new CmsIdentifiableObjectContainer(true, false);
 
     /** Container for item detail definitions. */
     private CmsIdentifiableObjectContainer m_itemDetails = new CmsIdentifiableObjectContainer(true, false);
@@ -67,8 +65,8 @@ public class CmsListMetadata {
     /** The id of the list. */
     private String m_listId;
 
-    /** List of multi actions. */
-    private List m_multiActions = new ArrayList();
+    /** Container for multi actions. */
+    private CmsIdentifiableObjectContainer m_multiActions = new CmsIdentifiableObjectContainer(true, false);
 
     /** Search action. */
     private CmsListSearchAction m_searchAction;
@@ -89,6 +87,13 @@ public class CmsListMetadata {
     /**
      * Adds a new column definition at the end.<p>
      * 
+     * By default a column is printable if it is the first column in the list,
+     * or if it is sorteable.<p>
+     * 
+     * If you want to override this behaviour, use the 
+     * {@link CmsListColumnDefinition#setPrintable(boolean)}
+     * method after calling this one.
+     * 
      * @param listColumn the column definition
      * 
      * @see CmsIdentifiableObjectContainer
@@ -96,11 +101,23 @@ public class CmsListMetadata {
     public void addColumn(CmsListColumnDefinition listColumn) {
 
         setListIdForColumn(listColumn);
+        if (m_columns.elementList().isEmpty()) {
+            listColumn.setPrintable(true);
+        } else {
+            listColumn.setPrintable(listColumn.isSorteable());
+        }        
         m_columns.addIdentifiableObject(listColumn.getId(), listColumn);
     }
 
     /**
      * Adds a new column definition at the given position.<p>
+     * 
+     * By default a column is printable if it is the first column in the list,
+     * or if it is sorteable.<p>
+     * 
+     * If you want to override this behaviour, use the 
+     * {@link CmsListColumnDefinition#setPrintable(boolean)}
+     * method after calling this one.
      * 
      * @param listColumn the column definition
      * @param position the position
@@ -110,6 +127,11 @@ public class CmsListMetadata {
     public void addColumn(CmsListColumnDefinition listColumn, int position) {
 
         setListIdForColumn(listColumn);
+        if (m_columns.elementList().isEmpty()) {
+            listColumn.setPrintable(true);
+        } else {
+            listColumn.setPrintable(listColumn.isSorteable());
+        }        
         m_columns.addIdentifiableObject(listColumn.getId(), listColumn, position);
     }
 
@@ -121,7 +143,7 @@ public class CmsListMetadata {
     public void addIndependentAction(I_CmsListAction action) {
 
         action.setListId(getListId());
-        m_indepActions.add(action);
+        m_indepActions.addIdentifiableObject(action.getId(), action);
     }
 
     /**
@@ -161,7 +183,66 @@ public class CmsListMetadata {
     public void addMultiAction(CmsListMultiAction multiAction) {
 
         multiAction.setListId(getListId());
-        m_multiActions.add(multiAction);
+        m_multiActions.addIdentifiableObject(multiAction.getId(), multiAction);
+    }
+
+    /**
+     * Generates the csv output for an empty table.<p>
+     * 
+     * @return csv output
+     */
+    public String csvEmptyList() {
+
+        StringBuffer html = new StringBuffer(512);
+        html.append("\n");
+        return html.toString();
+    }
+
+    /**
+     * Returns the csv output for the header of the list.<p>
+     * 
+     * @param wp the workplace instance
+     * 
+     * @return csv output
+     */
+    public String csvHeader(CmsWorkplace wp) {
+
+        StringBuffer csv = new StringBuffer(1024);
+        Iterator itCols = m_columns.elementList().iterator();
+        while (itCols.hasNext()) {
+            CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            if (!col.isVisible()) {
+                continue;
+            }
+            csv.append(col.csvHeader(wp));
+            csv.append("\t");
+        }
+        csv.append("\n\n");
+        return csv.toString();
+    }
+
+    /**
+     * Returns the csv output for a list item.<p>
+     * 
+     * @param item the list item to render
+     * @param wp the workplace context
+     * 
+     * @return csv output
+     */
+    public String csvItem(CmsListItem item, CmsWorkplace wp) {
+
+        StringBuffer csv = new StringBuffer(1024);
+        Iterator itCols = m_columns.elementList().iterator();
+        while (itCols.hasNext()) {
+            CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            if (!col.isVisible()) {
+                continue;
+            }
+            csv.append(col.csvCell(item, wp));
+            csv.append("\t");
+        }
+        csv.append("\n");
+        return csv.toString();
     }
 
     /**
@@ -177,21 +258,43 @@ public class CmsListMetadata {
     }
 
     /**
+     * Returns all columns definitions.<p>
+     * 
+     * @return a list of <code>{@link CmsListColumnDefinition}</code>s.
+     */
+    public List getColumnDefinitions() {
+
+        return m_columns.elementList();
+    }
+
+    /**
+     * Returns an independent action object for a given id.<p>
+     * 
+     * @param actionId the id
+     * 
+     * @return the independent action, or <code>null</code> if not present
+     */
+    public I_CmsListAction getIndependentAction(String actionId) {
+
+        return (I_CmsListAction)m_indepActions.getObject(actionId);
+    }
+
+    /**
      * Returns the list of independent actions.<p>
      * 
      * @return a list of <code>{@link I_CmsListAction}</code>s
      */
     public List getIndependentActions() {
 
-        return Collections.unmodifiableList(m_indepActions);
+        return m_indepActions.elementList();
     }
 
     /**
-     * Returns a list item details definition object for a given id.<p>
+     * Returns the item details definition object for a given id.<p>
      * 
      * @param itemDetailId the id
      * 
-     * @return the list item details definition, or <code>null</code> if not present
+     * @return the item details definition, or <code>null</code> if not present
      */
     public CmsListItemDetails getItemDetailDefinition(String itemDetailId) {
 
@@ -199,21 +302,11 @@ public class CmsListMetadata {
     }
 
     /**
-     * Returns all columns definitions.<p>
-     * 
-     * @return a list of <code>{@link CmsListColumnDefinition}</code>s.
-     */
-    public List getListColumns() {
-
-        return m_columns.elementList();
-    }
-
-    /**
      * Returns all detail definitions.<p>
      * 
      * @return a list of <code>{@link CmsListItemDetails}</code>.
      */
-    public List getListDetails() {
+    public List getItemDetailDefinitions() {
 
         return m_itemDetails.elementList();
     }
@@ -229,13 +322,25 @@ public class CmsListMetadata {
     }
 
     /**
+     * Returns a multi action object for a given id.<p>
+     * 
+     * @param actionId the id
+     * 
+     * @return the multi action, or <code>null</code> if not present
+     */
+    public CmsListMultiAction getMultiAction(String actionId) {
+
+        return (CmsListMultiAction)m_multiActions.getObject(actionId);
+    }
+
+    /**
      * Returns the list of multi actions.<p>
      * 
      * @return a list of <code>{@link CmsListMultiAction}</code>s
      */
     public List getMultiActions() {
 
-        return Collections.unmodifiableList(m_multiActions);
+        return m_multiActions.elementList();
     }
 
     /**
@@ -255,7 +360,7 @@ public class CmsListMetadata {
      */
     public int getWidth() {
 
-        return m_columns.elementList().size() + (m_multiActions.isEmpty() ? 0 : 1);
+        return m_columns.elementList().size() + (hasCheckMultiActions() ? 1 : 0);
     }
 
     /**
@@ -265,7 +370,24 @@ public class CmsListMetadata {
      */
     public boolean hasActions() {
 
-        return !m_indepActions.isEmpty();
+        return !m_indepActions.elementList().isEmpty();
+    }
+
+    /**
+     * Returns <code>true</code> if at least 'check' multiaction has been set.<p>
+     * 
+     * @return <code>true</code> if at least 'check' multiaction has been set
+     */
+    public boolean hasCheckMultiActions() {
+
+        Iterator it = m_multiActions.elementList().iterator();
+        while (it.hasNext()) {
+            CmsListMultiAction action = (CmsListMultiAction)it.next();
+            if (!(action instanceof CmsListRadioMultiAction)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -275,7 +397,7 @@ public class CmsListMetadata {
      */
     public boolean hasMultiActions() {
 
-        return !m_multiActions.isEmpty();
+        return !m_multiActions.elementList().isEmpty();
     }
 
     /**
@@ -312,12 +434,16 @@ public class CmsListMetadata {
             I_CmsListAction detailAction = ((CmsListItemDetails)itDetails.next()).getAction();
             html.append("\t\t");
             html.append(detailAction.buttonHtml(wp));
+            if (itDetails.hasNext()) {
+                html.append("&nbsp;&nbsp;");
+            }
             html.append("\n");
         }
-        Iterator itActions = m_indepActions.iterator();
+        Iterator itActions = m_indepActions.elementList().iterator();
         while (itActions.hasNext()) {
             I_CmsListAction indepAction = (I_CmsListAction)itActions.next();
             html.append("\t\t");
+            html.append("&nbsp;&nbsp;");
             html.append(indepAction.buttonHtml(wp));
             html.append("\n");
         }
@@ -340,11 +466,12 @@ public class CmsListMetadata {
         html.append("\t<td align='center' colspan='");
         html.append(getWidth());
         html.append("'>\n");
-        html.append(Messages.get().key(locale, Messages.GUI_LIST_EMPTY_0, null));
+        html.append(Messages.get().getBundle(locale).key(Messages.GUI_LIST_EMPTY_0));
         html.append("\t</td>\n");
         html.append("</tr>\n");
         return html.toString();
     }
+
     /**
      * Returns the html code for the header of the list.<p>
      * 
@@ -360,13 +487,15 @@ public class CmsListMetadata {
         Iterator itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
-            html.append(col.htmlHeader(list, wp));
+            if (!list.isPrintable() || col.isPrintable()) {
+                html.append(col.htmlHeader(list, wp));
+            }
         }
-        if (!m_multiActions.isEmpty()) {
+        if (!list.isPrintable() && hasCheckMultiActions()) {
             html.append("\t<th width='0' class='select'>\n");
             html.append("\t\t<input type='checkbox' class='checkbox' name='listSelectAll' value='true' onClick=\"listSelect('");
             html.append(list.getId());
-            html.append("')\"\n>");
+            html.append("')\">\n");
             html.append("\t</th>\n");
         }
         html.append("</tr>\n");
@@ -379,21 +508,28 @@ public class CmsListMetadata {
      * @param item the list item to render
      * @param wp the workplace context
      * @param odd if the position is odd or even
+     * @param isPrintable if the list is to be printed
      * 
      * @return html code
      */
-    public String htmlItem(CmsListItem item, CmsWorkplace wp, boolean odd) {
+    public String htmlItem(CmsListItem item, CmsWorkplace wp, boolean odd, boolean isPrintable) {
 
         StringBuffer html = new StringBuffer(1024);
-        html.append("<tr class='");
-        html.append(odd ? "oddrowbg" : "evenrowbg");
-        html.append("'>\n");
+        html.append("<tr ");
+        if (!isPrintable) {
+            html.append("class='");
+            html.append(odd ? "oddrowbg" : "evenrowbg");
+            html.append("'");
+        }
+        html.append(">\n");
         Iterator itCols = m_columns.elementList().iterator();
+        int width = 0;
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
-            if (!col.isVisible()) {
+            if (!col.isVisible() || (isPrintable && !col.isPrintable())) {
                 continue;
             }
+            width++;
             StringBuffer style = new StringBuffer(64);
             html.append("<td");
             CmsListColumnAlignEnum align = col.getAlign();
@@ -405,17 +541,21 @@ public class CmsListMetadata {
             if (col.isTextWrapping()) {
                 style.append("white-space: normal;");
             }
+            if (isPrintable) {
+                style.append("border-top: 1px solid black;");
+            }
             if (style.length() > 0) {
                 html.append(" style='");
                 html.append(style);
                 html.append("'");
             }
             html.append(">\n");
-            html.append(col.htmlCell(item, wp));
+            html.append(col.htmlCell(item, wp, isPrintable));
             html.append("</td>\n");
         }
-        if (!m_multiActions.isEmpty()) {
-            html.append("\t<td class='select' align='center' >\n");
+        if (!isPrintable && hasCheckMultiActions()) {
+            width++;
+            html.append("\t<td class='select' align='center'>\n");
             html.append("\t\t<input type='checkbox' class='checkbox' name='listMultiAction' value='");
             html.append(item.getId());
             html.append("'>\n");
@@ -433,16 +573,23 @@ public class CmsListMetadata {
                 itCols = m_columns.elementList().iterator();
                 while (itCols.hasNext()) {
                     CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+                    if (!col.isVisible() || (isPrintable && !col.isPrintable())) {
+                        continue;
+                    }
                     if (col.getId().equals(lid.getAtColumn())) {
                         break;
                     }
                     padCols++;
                 }
-                int spanCols = getWidth() - padCols;
+                int spanCols = width - padCols;
 
-                html.append("<tr class='");
-                html.append(odd ? "oddrowbg" : "evenrowbg");
-                html.append("'>\n");
+                html.append("<tr ");
+                if (!isPrintable) {
+                    html.append("class='");
+                    html.append(odd ? "oddrowbg" : "evenrowbg");
+                    html.append("'");
+                }
+                html.append(">\n");
                 if (padCols > 0) {
                     html.append("<td colspan='");
                     html.append(padCols);
@@ -451,7 +598,7 @@ public class CmsListMetadata {
                 html.append("<td colspan='");
                 html.append(spanCols);
                 html.append("' style='padding-left: 20px; white-space:normal;'>\n");
-                html.append(lid.htmlCell(item, wp));
+                html.append(lid.htmlCell(item, wp, isPrintable));
                 html.append("\n</td>\n");
                 html.append("\n");
                 html.append("</tr>\n");
@@ -472,10 +619,14 @@ public class CmsListMetadata {
         StringBuffer html = new StringBuffer(1024);
         html.append("<td class='misc'>\n");
         html.append("\t<div>\n");
-        Iterator itActions = m_multiActions.iterator();
+        Iterator itActions = m_multiActions.elementList().iterator();
         while (itActions.hasNext()) {
             CmsListMultiAction multiAction = (CmsListMultiAction)itActions.next();
+            html.append("\t\t");
             html.append(multiAction.buttonHtml(wp));
+            if (itActions.hasNext()) {
+                html.append("&nbsp;&nbsp;");
+            }
             html.append("\n");
         }
         html.append("\t</div>\n");
@@ -502,6 +653,7 @@ public class CmsListMetadata {
         html.append(m_searchAction.buttonHtml(wp));
         I_CmsListAction showAllAction = m_searchAction.getShowAllAction();
         if (showAllAction != null) {
+            html.append("&nbsp;&nbsp;");
             html.append(showAllAction.buttonHtml(wp));
         }
         html.append("\t</div>\n");
@@ -614,7 +766,7 @@ public class CmsListMetadata {
             ids.add(id);
         }
         // details
-        Iterator itItemDetails = getListDetails().iterator();
+        Iterator itItemDetails = getItemDetailDefinitions().iterator();
         while (itItemDetails.hasNext()) {
             String id = ((CmsListItemDetails)itItemDetails.next()).getId();
             if (ids.contains(id)) {
@@ -623,7 +775,7 @@ public class CmsListMetadata {
             ids.add(id);
         }
         // columns
-        Iterator itColumns = getListColumns().iterator();
+        Iterator itColumns = getColumnDefinitions().iterator();
         while (itColumns.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itColumns.next();
             if (ids.contains(col.getId())) {

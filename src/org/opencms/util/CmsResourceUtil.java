@@ -31,6 +31,7 @@
 
 package org.opencms.util;
 
+import org.opencms.db.CmsDbUtil;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -39,9 +40,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.List;
 
@@ -71,6 +72,12 @@ public final class CmsResourceUtil {
     /** The current resource lock. */
     private CmsLock m_lock;
 
+    /** Reference project resources cache. */
+    private List m_projectResources;
+
+    /** The project to use to check project state, if <code>null</code> the current project will be used. */
+    private CmsProject m_referenceProject;
+
     /** The current request context. */
     private CmsRequestContext m_request;
 
@@ -79,6 +86,10 @@ public final class CmsResourceUtil {
 
     /** The current resource type. */
     private I_CmsResourceType m_resourceType;
+
+    // TODO: Remove this class, maybe refactor to org.opencms.workplace.list package
+    // TODO: Check if CmsResource should be extended by this class
+    private int todo = 0;
 
     /**
      * Creates a new {@link CmsRequestUtil} object.<p> 
@@ -176,11 +187,11 @@ public final class CmsResourceUtil {
      */
     public String getIconPathLock() {
 
-        int lockId = getLockTypeId();
+        int lockId = getLock().getType();
         String iconPath = null;
-        if (lockId != CmsLock.TYPE_UNLOCKED && m_request != null && isInsideCurrentProject()) {
-            if (getLockedById().equals(m_request.currentUser().getId())
-                && getLockedInProjectId() == m_request.currentProject().getId()) {
+        if (lockId != CmsLock.TYPE_UNLOCKED && m_request != null && isInsideProject()) {
+            if (getLock().getUserId().equals(m_request.currentUser().getId())
+                && getLockedInProjectId() == getReferenceProject().getId()) {
                 if (lockId == CmsLock.TYPE_SHARED_EXCLUSIVE || lockId == CmsLock.TYPE_SHARED_INHERITED) {
                     iconPath = "shared";
                 } else {
@@ -227,6 +238,10 @@ public final class CmsResourceUtil {
      */
     public String getIconPathResourceType() {
 
+        if (!isEditable()) {
+            return "filetypes/"
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePlain.getStaticTypeName()).getIcon();
+        }
         return "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getResourceTypeName()).getIcon();
     }
 
@@ -238,29 +253,13 @@ public final class CmsResourceUtil {
     public CmsLock getLock() {
 
         if (m_lock == null) {
-            CmsLock lock;
             try {
-                lock = getCms().getLock(m_resource);
-            } catch (CmsException e) {
-                lock = CmsLock.getNullLock();
+                m_lock = getCms().getLock(m_resource);
+            } catch (Throwable e) {
+                m_lock = CmsLock.getNullLock();
             }
-            m_lock = lock;
         }
         return m_lock;
-    }
-
-    /**
-     * Returns the user id who owns the lock for the given resource.<p>
-     * 
-     * @return the user id of who owns the lock for the given resource
-     */
-    public CmsUUID getLockedById() {
-
-        CmsUUID lockedBy = CmsLock.getNullLock().getUserId();
-        if (!getLock().isNullLock()) {
-            lockedBy = getLock().getUserId();
-        }
-        return lockedBy;
     }
 
     /**
@@ -274,7 +273,7 @@ public final class CmsResourceUtil {
         if (!getLock().isNullLock()) {
             try {
                 lockedBy = getCms().readUser(getLock().getUserId()).getName();
-            } catch (CmsException e) {
+            } catch (Throwable e) {
                 lockedBy = e.getMessage();
             }
         }
@@ -288,14 +287,20 @@ public final class CmsResourceUtil {
      */
     public int getLockedInProjectId() {
 
-        int projectId = m_resource.getProjectLastModified();
-        if (!getLock().isNullLock()
-            && getLock().getType() != CmsLock.TYPE_INHERITED
-            && getLock().getType() != CmsLock.TYPE_SHARED_INHERITED) {
-            // use lock project ID only if lock is not inherited
-            projectId = getLock().getProjectId();
+        int lockedInProject = CmsDbUtil.UNKNOWN_ID;
+        if (getLock().isNullLock() && getResource().getState() != CmsResource.STATE_UNCHANGED) {
+            // resource is unlocked and modified
+            lockedInProject = getResource().getProjectLastModified();
+        } else {
+            if (getResource().getState() != CmsResource.STATE_UNCHANGED) {
+                // resource is locked and modified
+                lockedInProject = getProjectId();
+            } else {
+                // resource is locked and unchanged
+                lockedInProject = getLock().getProjectId();
+            }
         }
-        return projectId;
+        return lockedInProject;
     }
 
     /**
@@ -306,20 +311,15 @@ public final class CmsResourceUtil {
     public String getLockedInProjectName() {
 
         try {
-            return getCms().readProject(getLockedInProjectId()).getName();
+            int pId = getLockedInProjectId();
+            if (pId == CmsDbUtil.UNKNOWN_ID) {
+                // the resource is unlocked and unchanged
+                return "";
+            }
+            return getCms().readProject(pId).getName();
         } catch (Throwable e) {
             return e.getMessage();
         }
-    }
-
-    /**
-     * Returns the the lock type for the given resource.<p>
-     * 
-     * @return the lock type the given resource
-     */
-    public int getLockTypeId() {
-
-        return getLock().getType();
     }
 
     /**
@@ -331,11 +331,32 @@ public final class CmsResourceUtil {
 
         String permissions;
         try {
-            permissions = getCms().getPermissions(m_resource.getRootPath()).getPermissionString();
-        } catch (CmsException e) {
-            permissions = e.getMessage();
+            permissions = getCms().getPermissions(getCms().getSitePath(getResource())).getPermissionString();
+        } catch (Throwable e) {
+            try {
+                permissions = getCms().getPermissions(getResource().getRootPath()).getPermissionString();
+            } catch (Throwable e1) {
+                permissions = e1.getMessage();
+            }
         }
         return permissions;
+    }
+
+    /**
+     * Returns the id of the project which the resource belongs to.<p>
+     * 
+     * @return the id of the project which the resource belongs to
+     */
+    public int getProjectId() {
+
+        int projectId = m_resource.getProjectLastModified();
+        if (!getLock().isNullLock()
+            && getLock().getType() != CmsLock.TYPE_INHERITED
+            && getLock().getType() != CmsLock.TYPE_SHARED_INHERITED) {
+            // use lock project ID only if lock is not inherited
+            projectId = getLock().getProjectId();
+        }
+        return projectId;
     }
 
     /**
@@ -351,11 +372,26 @@ public final class CmsResourceUtil {
      */
     public Boolean getProjectState() {
 
-        if (m_resource.getState() == CmsResource.STATE_UNCHANGED || !isInsideCurrentProject()) {
+        if (m_resource.getState() == CmsResource.STATE_UNCHANGED || !isInsideProject()) {
             return null;
         } else {
-            return new Boolean(getLockedInProjectId() == m_request.currentProject().getId());
+            return new Boolean(getLockedInProjectId() == getReferenceProject().getId());
         }
+    }
+
+    /**
+     * Returns the project to use to check project state.<p>
+     *
+     * @return the project to use to check project state
+     */
+    public CmsProject getReferenceProject() {
+
+        if (m_referenceProject == null) {
+            if (m_request != null) {
+                m_referenceProject = m_request.currentProject();
+            }
+        }
+        return m_referenceProject;
     }
 
     /**
@@ -378,11 +414,11 @@ public final class CmsResourceUtil {
         if (m_resourceType == null) {
             try {
                 m_resourceType = OpenCms.getResourceManager().getResourceType(m_resource.getTypeId());
-            } catch (CmsException e) {
+            } catch (Throwable e) {
                 try {
                     m_resourceType = OpenCms.getResourceManager().getResourceType(
                         CmsResourceTypePlain.getStaticTypeId());
-                } catch (CmsException e1) {
+                } catch (Throwable e1) {
                     // should never happen
                     m_resourceType = null;
                 }
@@ -439,6 +475,27 @@ public final class CmsResourceUtil {
     }
 
     /**
+     * Returns the state name for a resource.<p>
+     * 
+     * Uses default locale if request context is <code>null</code>.<p>
+     * 
+     * @return the state name for that resource
+     */
+    public String getStateName() {
+
+        int state = m_resource.getState();
+        String name;
+        if (m_request == null) {
+            name = org.opencms.workplace.explorer.Messages.get().getBundle().key(
+                org.opencms.workplace.explorer.Messages.getStateKey(state));
+        } else {
+            name = org.opencms.workplace.explorer.Messages.get().getBundle(m_request.getLocale()).key(
+                org.opencms.workplace.explorer.Messages.getStateKey(state));
+        }
+        return name;
+    }
+
+    /**
      * Returns the style class to use for the given resource.<p>
      * 
      * @return style class name
@@ -447,7 +504,7 @@ public final class CmsResourceUtil {
      */
     public String getStyleClassName() {
 
-        if (isInsideCurrentProject()) {
+        if (isInsideProject() && isEditable()) {
             switch (m_resource.getState()) {
                 case CmsResource.STATE_CHANGED:
                     return "fc";
@@ -510,7 +567,7 @@ public final class CmsResourceUtil {
                 getCms().getSitePath(m_resource),
                 CmsPropertyDefinition.PROPERTY_TITLE,
                 false).getValue();
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             title = e.getMessage();
         }
         if (title == null) {
@@ -529,7 +586,7 @@ public final class CmsResourceUtil {
         String user = m_resource.getUserCreated().toString();
         try {
             user = getCms().readUser(m_resource.getUserCreated()).getName();
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // ignore
         }
         return user;
@@ -545,10 +602,29 @@ public final class CmsResourceUtil {
         String user = m_resource.getUserLastModified().toString();
         try {
             user = getCms().readUser(m_resource.getUserLastModified()).getName();
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // ignore
         }
         return user;
+    }
+
+    /**
+     * Returns <code>true</code> if the given resource is editable by the current user.<p>
+     * 
+     * Retuns <code>false</code> if no request context is set.<p>
+     * 
+     * @return <code>true</code> if the given resource  is editable by the current user
+     */
+    public boolean isEditable() {
+
+        if (m_request == null) {
+            return false;
+        }
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(getResourceTypeName());
+        if (settings != null) {
+            return settings.getAccess().getPermissions(getCms()).requiresWritePermission();
+        }
+        return false;
     }
 
     /**
@@ -561,7 +637,7 @@ public final class CmsResourceUtil {
     public boolean isExpired() {
 
         if (m_request == null) {
-            return true;
+            return m_resource.getDateExpired() < System.currentTimeMillis();
         }
         return m_resource.getDateExpired() < m_request.getRequestTime();
     }
@@ -579,37 +655,35 @@ public final class CmsResourceUtil {
     }
 
     /**
-     * Returns <code>true</code> if the given resource is in the current project.<p>
+     * Returns <code>true</code> if the given resource is in the reference project.<p>
      * 
      * Returns <code>false</code> if the request context is <code>null</code>.<p>
      * 
-     * @return <code>true</code> if the given resource is in the current project
+     * @return <code>true</code> if the given resource is in the reference project
+     * 
+     * @see #getReferenceProject()
      */
-    public boolean isInsideCurrentProject() {
+    public boolean isInsideProject() {
 
-        if (m_request == null) {
-            return false;
+        if (m_projectResources == null) {
+            try {
+                m_projectResources = getCms().readProjectResources(getReferenceProject());
+            } catch (Throwable e) {
+                return false;
+            }
         }
-        List projectResources;
-        try {
-            projectResources = getCms().readProjectResources(m_request.currentProject());
-        } catch (CmsException e) {
-            return false;
-        }
-        return CmsProject.isInsideProject(projectResources, m_resource);
+        return CmsProject.isInsideProject(m_projectResources, m_resource);
     }
 
     /**
      * Returns <code>true</code> if the given resource has been released.<p>
-     * 
-     * Retuns <code>false</code> if no request context is set.<p>
      * 
      * @return <code>true</code> if the given resource has been released
      */
     public boolean isReleased() {
 
         if (m_request == null) {
-            return false;
+            return m_resource.getDateReleased() < System.currentTimeMillis();
         }
         return m_resource.getDateReleased() < m_request.getRequestTime();
     }
@@ -623,6 +697,19 @@ public final class CmsResourceUtil {
 
         m_cms = cms;
         m_request = cms.getRequestContext();
+        m_referenceProject = null;
+        m_projectResources = null;
+    }
+
+    /**
+     * Sets the project to use to check project state.<p>
+     *
+     * @param project the project to set
+     */
+    public void setReferenceProject(CmsProject project) {
+
+        m_referenceProject = project;
+        m_projectResources = null;
     }
 
     /**

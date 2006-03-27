@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThreadPool.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.quartz.spi.ThreadPool;
  * @author James House
  * @author Juergen Donnerstag
  *
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -174,13 +174,13 @@ public class CmsSchedulerThreadPool implements ThreadPool {
     public void initialize() throws SchedulerConfigException {
 
         if (m_maxThreadCount <= 0 || m_maxThreadCount > 200) {
-            throw new SchedulerConfigException(Messages.get().key(Messages.ERR_MAX_THREAD_COUNT_BOUNDS_0));
+            throw new SchedulerConfigException(Messages.get().getBundle().key(Messages.ERR_MAX_THREAD_COUNT_BOUNDS_0));
         }
         if (m_initialThreadCount < 0 || m_initialThreadCount > m_maxThreadCount) {
-            throw new SchedulerConfigException(Messages.get().key(Messages.ERR_INIT_THREAD_COUNT_BOUNDS_0));
+            throw new SchedulerConfigException(Messages.get().getBundle().key(Messages.ERR_INIT_THREAD_COUNT_BOUNDS_0));
         }
         if (m_threadPriority <= 0 || m_threadPriority > 9) {
-            throw new SchedulerConfigException(Messages.get().key(Messages.ERR_SCHEDULER_PRIORITY_BOUNDS_0));
+            throw new SchedulerConfigException(Messages.get().getBundle().key(Messages.ERR_SCHEDULER_PRIORITY_BOUNDS_0));
         }
 
         if (m_inheritGroup) {
@@ -197,7 +197,9 @@ public class CmsSchedulerThreadPool implements ThreadPool {
         }
 
         if (m_inheritLoader) {
-            LOG.debug(Messages.get().key(Messages.LOG_USING_THREAD_CLASSLOADER_1, Thread.currentThread().getName()));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_USING_THREAD_CLASSLOADER_1,
+                Thread.currentThread().getName()));
         }
 
         // create the worker threads and start them
@@ -225,7 +227,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
         }
 
         if (m_isShutdown) {
-            LOG.debug(Messages.get().key(Messages.LOG_THREAD_POOL_UNAVAILABLE_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_THREAD_POOL_UNAVAILABLE_0));
             return false;
         }
 
@@ -313,7 +315,9 @@ public class CmsSchedulerThreadPool implements ThreadPool {
                     if (m_workers[i].isAlive()) {
                         try {
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug(Messages.get().key(Messages.LOG_THREAD_POOL_WAITING_1, new Integer(i)));
+                                LOG.debug(Messages.get().getBundle().key(
+                                    Messages.LOG_THREAD_POOL_WAITING_1,
+                                    new Integer(i)));
                             }
 
                             // note: with waiting infinite - join(0) - the application 
@@ -330,10 +334,12 @@ public class CmsSchedulerThreadPool implements ThreadPool {
 
             int activeCount = m_threadGroup.activeCount();
             if (activeCount > 0 && LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(Messages.LOG_THREAD_POOL_STILL_ACTIVE_1, new Integer(activeCount)));
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.LOG_THREAD_POOL_STILL_ACTIVE_1,
+                    new Integer(activeCount)));
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_THREAD_POOL_SHUTDOWN_0));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_THREAD_POOL_SHUTDOWN_0));
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/10/12 10:00:06 $
- * Version: $Revision: 1.145 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.146 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
@@ -82,7 +83,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.145 $
+ * @version $Revision: 1.146 $
  * 
  * @since 6.0.0 
  */
@@ -151,8 +152,6 @@ public final class CmsObject {
         return m_securityManager.addWebUser(m_context, name, password, group, description, additionalInfos);
     }
 
-
-    
     /**
      * Creates a backup of the current project.<p>
      * 
@@ -191,28 +190,15 @@ public final class CmsObject {
         int flags) throws CmsException {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
-        CmsAccessControlEntry acEntry = null;
-        I_CmsPrincipal principal = null;
 
-        if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
-            principal = readGroup(principalName);
-            acEntry = new CmsAccessControlEntry(
-                res.getResourceId(),
-                principal.getId(),
-                allowedPermissions,
-                deniedPermissions,
-                flags);
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_GROUP);
-        } else if (I_CmsPrincipal.PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
-            principal = readUser(principalName);
-            acEntry = new CmsAccessControlEntry(
-                res.getResourceId(),
-                principal.getId(),
-                allowedPermissions,
-                deniedPermissions,
-                flags);
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_USER);
-        }
+        I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+        CmsAccessControlEntry acEntry = new CmsAccessControlEntry(
+            res.getResourceId(),
+            principal.getId(),
+            allowedPermissions,
+            deniedPermissions,
+            flags);
+        acEntry.setFlagsForPrincipal(principal);
 
         m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
     }
@@ -235,18 +221,13 @@ public final class CmsObject {
     throws CmsException {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
-        CmsAccessControlEntry acEntry = null;
-        I_CmsPrincipal principal = null;
 
-        if ("group".equals(principalType.toLowerCase())) {
-            principal = readGroup(principalName);
-            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_GROUP);
-        } else if ("user".equals(principalType.toLowerCase())) {
-            principal = readUser(principalName);
-            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_USER);
-        }
+        I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+        CmsAccessControlEntry acEntry = new CmsAccessControlEntry(
+            res.getResourceId(),
+            principal.getId(),
+            permissionString);
+        acEntry.setFlagsForPrincipal(principal);
 
         m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
     }
@@ -341,6 +322,19 @@ public final class CmsObject {
     public void changeUserType(String username, int userType) throws CmsException {
 
         m_securityManager.changeUserType(m_context, username, userType);
+    }
+
+    /**
+     * Checks if the given base publish list can be published by the current user.<p>
+     * 
+     * @param publishList the base publish list to check
+     * 
+     * @throws CmsException in case the publish permissions are not granted
+     */
+    public void checkPublishPermissions(CmsPublishList publishList) throws CmsException {
+
+        // now perform the permission test
+        m_securityManager.checkPublishPermissions(m_context, publishList);
     }
 
     /**
@@ -1271,12 +1265,12 @@ public final class CmsObject {
      */
     public CmsPublishList getPublishList() throws CmsException {
 
-        return getPublishList(null, false);
+        return m_securityManager.fillPublishList(m_context, new CmsPublishList(m_context.currentProject()));
     }
 
     /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
-     * project that actually get published.<p>
+     * project that actually get published for a direct publish of a single resource.<p>
      * 
      * @param directPublishResource the resource which will be directly published
      * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
@@ -1289,7 +1283,51 @@ public final class CmsObject {
     public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings)
     throws CmsException {
 
-        return m_securityManager.getPublishList(m_context, directPublishResource, directPublishSiblings);
+        return m_securityManager.fillPublishList(m_context, new CmsPublishList(
+            directPublishResource,
+            directPublishSiblings));
+    }
+
+    /**
+     * Returns a publish list with all new/changed/deleted resources of the current (offline)
+     * project that actually get published for a direct publish of a List of resources.<p>
+     * 
+     * @param directPublishResources the resources which will be directly published
+     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
+     *                      published resources should also get published.
+     * 
+     * @return a publish list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList getPublishList(List directPublishResources, boolean directPublishSiblings)
+    throws CmsException {
+
+        return getPublishList(directPublishResources, directPublishSiblings, true);
+    }
+
+    /**
+     * Returns a publish list with all new/changed/deleted resources of the current (offline)
+     * project that actually get published for a direct publish of a List of resources.<p>
+     * 
+     * @param directPublishResources the resources which will be directly published
+     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
+     *                      published resources should also get published.
+     * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
+     * 
+     * @return a publish list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList getPublishList(
+        List directPublishResources,
+        boolean directPublishSiblings,
+        boolean publishSubResources) throws CmsException {
+
+        return m_securityManager.fillPublishList(m_context, new CmsPublishList(
+            directPublishResources,
+            directPublishSiblings,
+            publishSubResources));
     }
 
     /**
@@ -1305,7 +1343,7 @@ public final class CmsObject {
 
         return m_context;
     }
-    
+
     /**
      * Returns all resources associated to a given principal via an ACE with the given permissions.<p> 
      * 
@@ -1325,16 +1363,10 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getResourcesForPrincipal(
-        CmsUUID principalId,
-        CmsPermissionSet permissions,
-        boolean includeAttr) throws CmsException {
+    public List getResourcesForPrincipal(CmsUUID principalId, CmsPermissionSet permissions, boolean includeAttr)
+    throws CmsException {
 
-        return m_securityManager.getResourcesForPrincipal(
-            getRequestContext(),
-            principalId,
-            permissions,
-            includeAttr);
+        return m_securityManager.getResourcesForPrincipal(getRequestContext(), principalId, permissions, includeAttr);
     }
 
     /**
@@ -1561,13 +1593,14 @@ public final class CmsObject {
             // resource name is optional
             try {
                 resource = readResource(resourcename, CmsResourceFilter.ALL);
+                checkPublishPermissions(new CmsPublishList(Collections.singletonList(resource), false));
             } catch (CmsException e) {
                 // if any exception (e.g. security) occurs the result is false
                 return false;
             }
         }
-        // now perform the permission test
-        return m_securityManager.hasPublishPermissions(m_context, resource);
+        // no exception means permissions are granted
+        return true;
     }
 
     /**
@@ -1920,7 +1953,7 @@ public final class CmsObject {
      */
     public CmsUUID publishProject(I_CmsReport report) throws CmsException {
 
-        return publishProject(report, null, false);
+        return publishProject(report, getPublishList());
     }
 
     /**
@@ -1935,12 +1968,11 @@ public final class CmsObject {
      * 
      * @see #getPublishList()
      * @see #getPublishList(CmsResource, boolean)
+     * @see #getPublishList(List, boolean)
      */
     public CmsUUID publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
 
-        synchronized (m_securityManager) {
-            return m_securityManager.publishProject(this, publishList, report);
-        }
+        return m_securityManager.publishProject(this, publishList, report);
     }
 
     /**
@@ -1963,8 +1995,7 @@ public final class CmsObject {
     public CmsUUID publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings)
     throws CmsException {
 
-        CmsPublishList publishList = getPublishList(directPublishResource, directPublishSiblings);
-        return publishProject(report, publishList);
+        return publishProject(report, getPublishList(directPublishResource, directPublishSiblings));
     }
 
     /**
@@ -2100,6 +2131,19 @@ public final class CmsObject {
     public CmsBackupProject readBackupProject(int tagId) throws CmsException {
 
         return (m_securityManager.readBackupProject(m_context, tagId));
+    }
+
+    /**
+     * Reads the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource.<p>
+     * 
+     * @param resource the backup resource to read the properties from
+     * @return the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readBackupPropertyObjects(CmsBackupResource resource) throws CmsException {
+
+        return m_securityManager.readBackupPropertyObjects(m_context, resource);
     }
 
     /**
@@ -2320,11 +2364,11 @@ public final class CmsObject {
     }
 
     /**
-     * Returns the list of all resources that define the "view" of the given project.<p>
+     * Returns the list of all resource names that define the "view" of the given project.<p>
      * 
      * @param project the project to get the project resources for
      * 
-     * @return the list of all resources, as <code>{@link String}</code> objects 
+     * @return the list of all resource names, as <code>{@link String}</code> objects 
      *              that define the "view" of the given project.
      * 
      * @throws CmsException if something goes wrong
@@ -2749,20 +2793,6 @@ public final class CmsObject {
 
         return m_securityManager.readResourcesWithProperty(m_context, addSiteRoot(path), propertyDefinition, value);
     }
-    
-    /**
-     * Returns a set of users that are responsible for a specific resource.<p>
-     * 
-     * @param resource the resource to get the responsible users from
-     * 
-     * @return the set of users that are responsible for a specific resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public Set readResponsibleUsers(CmsResource resource) throws CmsException {
-        
-        return m_securityManager.readResponsibleUsers(m_context, resource);
-    }
 
     /**
      * Returns a set of principals that are responsible for a specific resource.<p>
@@ -2774,10 +2804,24 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public Set readResponsiblePrincipals(CmsResource resource) throws CmsException {
-        
+
         return m_securityManager.readResponsiblePrincipals(m_context, resource);
     }
-    
+
+    /**
+     * Returns a set of users that are responsible for a specific resource.<p>
+     * 
+     * @param resource the resource to get the responsible users from
+     * 
+     * @return the set of users that are responsible for a specific resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Set readResponsibleUsers(CmsResource resource) throws CmsException {
+
+        return m_securityManager.readResponsibleUsers(m_context, resource);
+    }
+
     /**
      * Returns a list of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
@@ -2919,6 +2963,24 @@ public final class CmsObject {
     }
 
     /**
+     * Removes a resource from the current project of the user.<p>
+     * 
+     * This is used to reduce the current users project with the
+     * specified resource, in case that the resource is already part of the project.
+     * The resource is not really removed like in a regular copy operation, 
+     * it is in fact only "disabled" in the current users project.<p>   
+     * 
+     * @param resourcename the name of the resource to remove to the current project (full path)
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void removeResourceFromProject(String resourcename) throws CmsException {
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        getResourceType(resource.getTypeId()).removeResourceFromProject(this, m_securityManager, resource);
+    }
+
+    /**
      * Removes a user from a group.<p>
      *
      * @param username the name of the user that is to be removed from the group
@@ -2988,30 +3050,77 @@ public final class CmsObject {
      * 
      * @param resourceName name of the resource
      * @param principalType the type of the principal (currently group or user)
-     * @param principalName name of the principal
+     * @param principalName the name of the principal
      * 
      * @throws CmsException if something goes wrong
      */
     public void rmacc(String resourceName, String principalType, String principalName) throws CmsException {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
-        I_CmsPrincipal principal = null;
-        CmsUUID principalId = null;
 
-        try {
-            if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
-                principal = readGroup(principalName);
-                principalId = principal.getId();
-            } else if (I_CmsPrincipal.PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
-                principal = readUser(principalName);
-                principalId = principal.getId();
-            }
-        } catch (CmsException exc) {
-            // cw: fallback - deleting ace's must be possible even if principal is missing
-            principalId = new CmsUUID(principalName);
+        if (CmsUUID.isValidUUID(principalName)) {
+            // principal name is in fact a UUID, probably the user was already deleted
+            m_securityManager.removeAccessControlEntry(m_context, res, new CmsUUID(principalName));
+        } else {
+            // principal name not a UUID, assume this is a normal name
+            I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+            m_securityManager.removeAccessControlEntry(m_context, res, principal.getId());
         }
+    }
 
-        m_securityManager.removeAccessControlEntry(m_context, res, principalId);
+    /**
+     * Changes the "expire" date of a resource.<p>
+     * 
+     * @param resourcename the name of the resource to change (full path)
+     * @param dateExpired the new expire date of the changed resource
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setDateExpired(String resourcename, long dateExpired, boolean recursive) throws CmsException {
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(resource.getTypeId()).setDateExpired(this, m_securityManager, resource, dateExpired, recursive);
+    }
+
+    /**
+     * Changes the "last modified" timestamp of a resource.<p>
+     * 
+     * @param resourcename the name of the resource to change (full path)
+     * @param dateLastModified timestamp the new timestamp of the changed resource
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setDateLastModified(String resourcename, long dateLastModified, boolean recursive) throws CmsException {
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(resource.getTypeId()).setDateLastModified(
+            this,
+            m_securityManager,
+            resource,
+            dateLastModified,
+            recursive);
+    }
+
+    /**
+     * Changes the "release" date of a resource.<p>
+     * 
+     * @param resourcename the name of the resource to change (full path)
+     * @param dateReleased the new release date of the changed resource
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setDateReleased(String resourcename, long dateReleased, boolean recursive) throws CmsException {
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(resource.getTypeId()).setDateReleased(
+            this,
+            m_securityManager,
+            resource,
+            dateReleased,
+            recursive);
     }
 
     /**
@@ -3079,7 +3188,7 @@ public final class CmsObject {
      */
     public void touch(String resourcename, long dateLastModified, long dateReleased, long dateExpired, boolean recursive)
     throws CmsException {
-        
+
         if (dateReleased != CmsResource.TOUCH_DATE_UNCHANGED) {
             setDateReleased(resourcename, dateReleased, recursive);
         }
@@ -3090,70 +3199,7 @@ public final class CmsObject {
             setDateLastModified(resourcename, dateLastModified, recursive);
         }
     }
-    
-    /**
-     * Changes the "last modified" timestamp of a resource.<p>
-     * 
-     * @param resourcename the name of the resource to change (full path)
-     * @param dateLastModified timestamp the new timestamp of the changed resource
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void setDateLastModified(String resourcename,
-        long dateLastModified, boolean recursive) throws CmsException {
 
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).setDateLastModified(
-            this,
-            m_securityManager,
-            resource,
-            dateLastModified,
-            recursive);
-    }
-    
-    /**
-     * Changes the "expire" date of a resource.<p>
-     * 
-     * @param resourcename the name of the resource to change (full path)
-     * @param dateExpired the new expire date of the changed resource
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void setDateExpired(String resourcename,
-        long dateExpired, boolean recursive) throws CmsException {
-
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).setDateExpired(
-            this,
-            m_securityManager,
-            resource,
-            dateExpired,
-            recursive);
-    }
-    
-    /**
-     * Changes the "release" date of a resource.<p>
-     * 
-     * @param resourcename the name of the resource to change (full path)
-     * @param dateReleased the new release date of the changed resource
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void setDateReleased(String resourcename,
-        long dateReleased, boolean recursive) throws CmsException {
-
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).setDateReleased(
-            this,
-            m_securityManager,
-            resource,
-            dateReleased,
-            recursive);
-    }
-       
     /**
      * Undeletes a resource (this is the same operation as "undo changes").<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.jsp;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,10 +120,10 @@ public class CmsJspTagUser extends TagSupport {
                 result = user.getAddress();
                 break;
             case 5: // zip
-                result = (String)user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE);
+                result = user.getZipcode();
                 break;
             case 6: // city
-                result = (String)user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN);
+                result = user.getCity();
                 break;
             case 7: // description
                 result = user.getDescription();
@@ -168,7 +167,7 @@ public class CmsJspTagUser extends TagSupport {
                 pageContext.getOut().print(result);
             } catch (Exception ex) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.ERR_PROCESS_TAG_1, "user"), ex);
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "user"), ex);
                 }
                 throw new javax.servlet.jsp.JspException(ex);
             }

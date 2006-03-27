@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2005/07/13 10:06:02 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  */
@@ -510,11 +510,17 @@ public final class OpenCms {
     }
 
     /**
-     * Returns an initialized CmsObject with the user initialized as provided,
+     * Returns an initialized CmsObject (OpenCms user context) with the user initialized as provided,
      * with the "Online" project selected and "/" set as the current site root.<p>
      * 
      * Note: Only the default users 'Guest' and 'Export' can initialized with 
      * this method, all other user names will throw an Exception.<p>
+     * 
+     * In order to initialize another user (for example, the {@link CmsDefaultUsers#getUserAdmin()}),
+     * you need to get the 'Guest' user context first, then login the target user with 
+     * his user name and password, using {@link CmsObject#loginUser(String, String)}.
+     * There is no way to obtain a user context other then the 'Guest' or 'Export' user
+     * without the users password. This is a security feature.<p> 
      * 
      * @param user the user name to initialize, can only be 
      *        {@link org.opencms.db.CmsDefaultUsers#getUserGuest()} or

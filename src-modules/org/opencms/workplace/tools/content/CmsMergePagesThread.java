@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,9 +61,7 @@ public class CmsMergePagesThread extends A_CmsReportThread {
      */
     public CmsMergePagesThread(CmsObject cms, CmsMergePages mergePages) {
 
-        super(
-            cms,
-            Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_MERGE_PAGES_THREAD_NAME_0, null));
+        super(cms, Messages.get().getBundle().key(Messages.GUI_MERGE_PAGES_THREAD_NAME_0));
         cms.getRequestContext().setUpdateSessionEnabled(false);
         initHtmlReport(cms.getRequestContext().getLocale());
         m_mergePages = mergePages;

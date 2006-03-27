@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <editor>
-	<label>editor.title.simpletext</label>
+	<label>GUI_EDITOR_TITLE_SIMPLETEXT_0</label>
 	<resourcetypes>
 		<type>
 			<name>plain</name>

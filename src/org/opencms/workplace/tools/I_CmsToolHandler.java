@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2005/10/13 11:06:32 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,10 +157,11 @@ public interface I_CmsToolHandler {
     /**
      * Main method that somehow setups the admin tool handler.<p>
      * 
-     * @param cms the admin context (at opencms-workplace (re-)initialization time) 
+     * @param cms the admin context (at opencms-workplace (re-)initialization time)
+     * @param root the root context 
      * @param resourcePath the resource path of the file/folder to use as admin tool
      *
      * @return <code>false</code> if something goes wrong
      */
-    boolean setup(CmsObject cms, String resourcePath);
+    boolean setup(CmsObject cms, CmsToolRootHandler root, String resourcePath);
 }

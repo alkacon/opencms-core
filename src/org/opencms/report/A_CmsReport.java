@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/03/27 14:53:05 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.report;
 
 import org.opencms.file.CmsRequestContext;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import java.util.Locale;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,6 +58,9 @@ public abstract class A_CmsReport implements I_CmsReport {
 
     /** The locale this report is written in. */
     private Locale m_locale;
+
+    /** The default report message bundle. */
+    private CmsMessages m_messages;
 
     /** The original site root of the user who started this report. */
     private String m_siteRoot;
@@ -126,7 +130,7 @@ public abstract class A_CmsReport implements I_CmsReport {
     /**
      * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
      */
-    public synchronized void print(CmsMessageContainer container) {
+    public void print(CmsMessageContainer container) {
 
         print(container.key(getLocale()), FORMAT_DEFAULT);
     }
@@ -134,7 +138,7 @@ public abstract class A_CmsReport implements I_CmsReport {
     /**
      * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer, int)
      */
-    public synchronized void print(CmsMessageContainer container, int format) {
+    public void print(CmsMessageContainer container, int format) {
 
         print(container.key(getLocale()), format);
     }
@@ -142,7 +146,7 @@ public abstract class A_CmsReport implements I_CmsReport {
     /**
      * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer)
      */
-    public synchronized void println(CmsMessageContainer container) {
+    public void println(CmsMessageContainer container) {
 
         println(container.key(getLocale()), FORMAT_DEFAULT);
     }
@@ -150,7 +154,7 @@ public abstract class A_CmsReport implements I_CmsReport {
     /**
      * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer, int)
      */
-    public synchronized void println(CmsMessageContainer container, int format) {
+    public void println(CmsMessageContainer container, int format) {
 
         println(container.key(getLocale()), format);
     }
@@ -158,7 +162,7 @@ public abstract class A_CmsReport implements I_CmsReport {
     /**
      * @see org.opencms.report.I_CmsReport#printMessageWithParam(org.opencms.i18n.CmsMessageContainer,Object)
      */
-    public synchronized void printMessageWithParam(CmsMessageContainer container, Object param) {
+    public void printMessageWithParam(CmsMessageContainer container, Object param) {
 
         print(container, I_CmsReport.FORMAT_NOTE);
         print(Messages.get().container(Messages.RPT_ARGUMENT_1, param));
@@ -168,7 +172,7 @@ public abstract class A_CmsReport implements I_CmsReport {
     /**
      * @see org.opencms.report.I_CmsReport#printMessageWithParam(int,int,org.opencms.i18n.CmsMessageContainer,Object)
      */
-    public synchronized void printMessageWithParam(int m, int n, CmsMessageContainer container, Object param) {
+    public void printMessageWithParam(int m, int n, CmsMessageContainer container, Object param) {
 
         print(
             Messages.get().container(Messages.RPT_SUCCESSION_2, String.valueOf(m), String.valueOf(n)),
@@ -213,6 +217,16 @@ public abstract class A_CmsReport implements I_CmsReport {
     }
 
     /**
+     * Returns the default report message bundle.<p>
+     * 
+     * @return the default report message bundle
+     */
+    protected CmsMessages getMessages() {
+
+        return m_messages;
+    }
+
+    /**
      * Initializes some member variables for this report.<p>
      * 
      * @param locale the locale for this report
@@ -223,6 +237,7 @@ public abstract class A_CmsReport implements I_CmsReport {
         m_starttime = System.currentTimeMillis();
         m_locale = locale;
         m_siteRoot = siteRoot;
+        m_messages = Messages.get().getBundle(locale);
     }
 
     /**
@@ -230,7 +245,7 @@ public abstract class A_CmsReport implements I_CmsReport {
      *
      * @param value the String to add
      */
-    protected synchronized void print(String value) {
+    protected void print(String value) {
 
         print(value, FORMAT_DEFAULT);
     }
@@ -251,7 +266,7 @@ public abstract class A_CmsReport implements I_CmsReport {
      * 
      * @param value the message container to add
      */
-    protected synchronized void println(String value) {
+    protected void println(String value) {
 
         println(value, FORMAT_DEFAULT);
     }
@@ -265,7 +280,7 @@ public abstract class A_CmsReport implements I_CmsReport {
      * @param value the String to add
      * @param format the formatting to use for the output
      */
-    protected synchronized void println(String value, int format) {
+    protected void println(String value, int format) {
 
         print(value, format);
         println();

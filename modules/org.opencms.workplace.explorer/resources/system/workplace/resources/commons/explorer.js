@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/06/26 13:20:23 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/27 14:52:44 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,40 +30,29 @@
  */
 
 var help_url="ExplorerAnsicht/index.html";
-
 var flaturl="";
-
-var mode = "explorerview";
-
-var showlinks = false;
-
+var mode="explorerview";
+var showlinks=false;
 var openfolderMethod="openFolder";
-
 var showKon=true;
-
-var autolock = false;
-
-var plainresid = -1;
-
+var autolock=false;
+var plainresid=-1;
 var win;
-
-var buttonType = 1;
-
-var link_newresource = "/system/workplace/commons/newresource.jsp";
-
-var link_uploadresource = "/system/workplace/commons/newresource_upload.jsp";
-
-var link_showresource = "/system/workplace/commons/displayresource.jsp";
-
-var last_id = -1;
-var last_id_style = "";
-
-var active_mouse_id = -1;
-
-var displayResource = "/";
-
-var g_histLoc = 0;
-var g_history = null;
+var buttonType=1;
+var link_newresource="/system/workplace/commons/newresource.jsp";
+var link_uploadresource="/system/workplace/commons/newresource_upload.jsp";
+var link_showresource="/system/workplace/commons/displayresource.jsp";
+var last_id=-1;
+var active_mouse_id=-1;
+var active_from_text=false;
+var cancelNextOpen=false;
+var selectedResources=new Array();
+var selectedStyles=new Array();
+var contextOpen=false;
+var displayResource="/";
+var g_histLoc=0;
+var g_history=null;
+var m_rootFolder="/";
 
 
 function show_help(){
@@ -75,7 +64,8 @@ function windowStore(body, head, tree, files) {
 	this.body = body;
 	this.head = head;
 	this.tree = tree;
-	this.files = files;
+	this.files = files.document;
+	this.fileswin = files;
 }
 
 
@@ -175,7 +165,6 @@ function getDisplayResource(param) {
 	return displayResource;
 }
 
-var m_rootFolder = "/";
 
 function getRootFolder() {
 	if (m_rootFolder == null) {
@@ -185,6 +174,7 @@ function getRootFolder() {
 	}
 }
 
+
 function setRootFolder(value) {
 	m_rootFolder = value;
 }
@@ -193,22 +183,13 @@ function setRootFolder(value) {
 function initHist() {
 	g_histLoc = 0;
 	g_history = new Array();
-	addHist(getDisplayResource(true));
 }
 
 
 function addHist(entry) {
-	if (g_history[g_histLoc] != entry) {
+	if (g_history[g_histLoc] != entry && entry.indexOf("siblings:") == -1) {
 		g_histLoc++;
-		if (g_histLoc == 1 && entry.indexOf("siblings:") == 0) {
-			entry = entry.substring(9);
-			entry = entry.substring(0, entry.lastIndexOf("/") + 1);
-			g_history[g_histLoc] = entry;
-			g_histLoc++;
-			g_history[g_histLoc] = entry;
-		} else {
-			g_history[g_histLoc] = entry;
-		}
+		g_history[g_histLoc] = entry;
 	}
 }
 
@@ -217,13 +198,15 @@ function histGoBack() {
 	if (g_histLoc > 1) {
 		g_histLoc--;
 		setDisplayResource(g_history[g_histLoc]);
+	} else {
+		setDisplayResource(removeSiblingPrefix(getDisplayResource()));
 	}
 	openurl();
 }
 
 
 function dU(doc, pages, actpage) {
-	last_id = -1;
+
 	vi.locklength = 0;
 	vi.doc = doc;
 	updateWindowStore();
@@ -242,12 +225,12 @@ function updateWindowStore() {
 		theTree = window.body.explorer_body.explorer_tree;
 	}
 
-	if ((mode == "projectview") || (mode == "galleryview")) {
+	if ((mode == "listview") || (mode == "galleryview")) {
                 var theDoc = null;
                 if (window.body.admin_content.tool_content) {
-                   theDoc = window.body.admin_content.tool_content.document;
+                   theDoc = window.body.admin_content.tool_content;
                 } else {
-                   theDoc = window.body.admin_content.document;
+                   theDoc = window.body.admin_content;
                 }
                 if (window.body.admin_head) {
  			win = new windowStore(window.body.document, window.body.admin_head.document, theTree, theDoc);
@@ -256,7 +239,7 @@ function updateWindowStore() {
                 }
 	} else {
 		try {
-			win = new windowStore(window.body.document, window.body.explorer_head.document, theTree, window.body.explorer_body.explorer_files.document);
+			win = new windowStore(window.body.document, window.body.explorer_head.document, theTree, window.body.explorer_body.explorer_files);
 		} catch (e) {}
 	}
 }
@@ -297,29 +280,465 @@ function showCols(cols) {
 }
 
 
-// set the last selected menu id
+// set the last selected menu id (from icon)
 function setId(id) {
 	active_mouse_id = id;
+	active_from_text = false;
 }
 
 
-// handle the right mouse click
+// set the last selected menu id (from link text)
+function setId2(id) {
+	active_mouse_id = id;
+	active_from_text = true;
+}
+
+
+// handle the context menu to show
 function handleContext(e) {
-	if ((last_id >= 0) || (active_mouse_id >= 0)) {
-		if (active_mouse_id < 0) closeMenu();
-		if (!e) var e = window.body.explorer_body.explorer_files.event;
-		showContext(window.body.explorer_body.explorer_files.document, active_mouse_id);
+
+	if (selectedResources.length > 1) {
+		// multi context menu
+		showContext(win.files, "multi", false);
+	} else {
+		// single context menu
+		if (active_mouse_id >= 0) {
+			showContext(win.files, active_mouse_id, true);
+		}
+	}
+	// stop event bubbling
+	e.cancelBubble = true;
+	if (e.stopPropagation) {
+		e.stopPropagation();
+	}
+	return false;
+}
+
+
+// builds the HTML for a context menu (single or multi context menu)
+function showContext(doc, i, isSingleContext) {
+
+	var spanstart    = "<span class=\"cmenorm\" onmouseover=\"className='cmehigh';\" onmouseout=\"className='cmenorm';\">";
+	var spanstartina = "<span class=\"inanorm\" onmouseover=\"className='inahigh';\" onmouseout=\"className='inanorm';\">";
+	var spanend      = "</span>";
+
+	var menu = "";
+	// the type id of the current context menu
+	var typeId;
+	// the resource name needed for single context menu
+	var resourceName;
+
+	var access = true;
+	if (isSingleContext) {
+		resourceName = getResourceAbsolutePath(i);
+		typeId = vi.liste[i].type;
+		if ((typeof vi.resource[typeId] == 'undefined') || (vi.resource[typeId].editable == false)) {
+			// the user has no access to this resource type
+			access = false;
+		}
+	} else {
+		// multi context menu uses special menu type ID
+		typeId = "multi";
+		if (vi.menus[typeId] == null) {
+			// no multi context menu defined, do not show menu
+			return;
+		}
+		// set resource list in hidden form field value
+		var resourceList = "";
+		var isFirst = true;
+		for (i=0; i<selectedResources.length; i++) {	
+			if (!isFirst) {
+				resourceList += "|";
+			}
+			resourceList += getResourceAbsolutePath(selectedResources[i]);
+			isFirst = false;
+
+		}
+		doc.forms["formmulti"].elements["resourcelist"].value = resourceList; 
+	}
+
+	if (access) {
+		menu += "<div class=\"cm2\">";
+		menu += "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"cm\">";
+
+		var lastWasSeparator = false;
+		var firstEntryWritten = false;
+		for (a = 0; a < vi.menus[typeId].items.length; a++) {
+
+			// 0:unchanged, 1:changed, 2:new, 3:deleted
+			var result = -1;
+
+			if (vi.menus[typeId].items[a].name == "-") {
+				result = 1;
+			} else if (vr.actProject == vr.onlineProject) {
+				// online project
+				if (isSingleContext) {
+					if (vi.menus[typeId].items[a].rules.charAt(0) == 'i') {
+						result = 2;
+					} else {
+						if (vi.menus[typeId].items[a].rules.charAt(0) == 'a') {
+							if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
+							&& (vi.liste[i].linkType == 0)) {
+								// special case: resource without siblings
+								result = 2;
+							} else {
+								result = (typeId == 0)?3:4;
+							}
+						}
+					}
+				} else {
+					// multi context menu
+					result = 2;
+				}
+			} else {
+				// offline project
+				if (isSingleContext) {
+					if (! vi.liste[i].isInsideCurrentProject) {
+						// resource is from online project
+						if (vi.menus[typeId].items[a].rules.charAt(1) == 'i') {
+							result = (vi.menus[typeId].items[a].name == "-")?1:2;
+						} else {
+							if (vi.menus[typeId].items[a].rules.charAt(1) == 'a') {
+								if (vi.menus[typeId].items[a].name == "-") {
+									result = 1;
+								} else {
+									if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
+									&& (vi.liste[i].linkType == 0)) {
+										// special case: resource without siblings
+										result = 2;
+									} else {
+										result = (typeId == 0)?3:4;
+									}
+								}
+							}
+						}
+					} else {
+						// resource is in this project => we have to differ 4 cases
+						if (vi.liste[i].lockedBy == '') {
+							// resource is not locked...
+							if (autolock) {
+								// autolock is enabled
+								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 6);
+							} else {
+								// autolock is disabled
+								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 2);
+							}
+						} else {
+							var isSharedLock = (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2)?true:false;
+							if (vi.liste[i].lockedInProjectId == vr.actProject) {
+								// locked in this project from ...
+								if (vi.liste[i].lockedBy == vr.userName) {
+									// ... the current user ...
+									if (isSharedLock) {
+										// ... as shared lock
+										display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
+									} else {
+										// ... as exclusive lock
+										display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 10);
+									}
+
+								} else {
+									// ... someone else
+									display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
+								}
+							} else {
+								// locked in an other project ...
+								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
+							}
+						}
+						if (display == 'i') {
+							result = 2;
+						} else {
+							if (display == 'a') {
+								if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
+								&& (vi.liste[i].linkType == 0)) {
+									// special case: resource without siblings
+									result = 2;
+								} else {
+									result = (typeId == 0)?3:4;
+								}
+							}
+						}
+					}
+				} else {
+					// multi context menu
+					result = 3;
+				}
+			}
+			switch (result) {
+				case 1:
+					// separator line
+					if ((firstEntryWritten) && (!lastWasSeparator) && (a != (vi.menus[typeId].items.length - 1))) {
+						menu += "<tr><td class=\"cmsep\"><span class=\"cmsep\"></div></td></tr>";
+						lastWasSeparator = true;
+					}
+					break;
+				case 2:
+					// inactive entry
+					menu += "<tr><td>" + spanstartina + vi.menus[typeId].items[a].name + spanend + "</td></tr>";
+					lastWasSeparator = false;
+					firstEntryWritten = true;
+					break;
+				case 3:
+				case 4:
+					// active entry
+					var link;
+					if (isSingleContext) {
+						link = "href=\"" + vi.menus[typeId].items[a].link;
+						if (link.indexOf("?") > 0) {
+							link += "&";
+						} else {
+							link += "?";
+						}
+
+						link += "resource=" + resourceName + "\"";
+						if (result == 4) {
+							// href has a target set
+							link += " target=" + vi.menus[typeId].items[a].target;
+						}
+
+						menu += "<tr><td><a class=\"cme\" " + link + ">" + spanstart + vi.menus[typeId].items[a].name + spanend + "</a></td></tr>";
+					} else {
+						// multi context menu
+						link = "href=\"javascript:top.submitMultiAction('" + vi.menus[typeId].items[a].link + "');\"";
+						menu += "<tr><td><a class=\"cme\" " + link + ">" + spanstart + vi.menus[typeId].items[a].name + spanend + "</a></td></tr>";
+					}
+					lastWasSeparator = false;
+					firstEntryWritten = true;
+					break;
+				default:
+					// alert("Undefined result for menu " + a);
+					break;
+			}
+		} // end for ...
+		menu += "</table></div>";
+		
+		var el = doc.getElementById("contextmenu");
+		el.innerHTML = menu;
+		var x = 12;
+		el.style.left = x + "px";
+		el.style.visibility = "visible";
+		// calculate menu y position after setting visibility to avoid display errors
+		var y = getMenuPosY(doc, active_mouse_id);
+		el.style.top =  y + "px";
+	} // end if (access)
+	last_id = active_mouse_id;
+	contextOpen = true;
+}
+
+
+// closes a context menu
+function closeContext() {
+
+	var cm = win.files.getElementById("contextmenu");
+	cm.style.visibility = "hidden";
+	contextOpen = false;
+}
+
+
+// submits a selected multi action
+function submitMultiAction(dialog) {
+
+	var doc = win.files;
+	doc.forms["formmulti"].action = dialog;
+	doc.forms["formmulti"].submit();
+}
+
+// handle the mouse clicks
+function handleOnClick(e) {
+
+	e = checkEvent(e);
+	cancelNextOpen = (selectedResources.length > 0);
+	if (contextOpen) {
+		// close eventually open context menu
+		closeContext();	
+		if (active_mouse_id == last_id) {
+			// clicked on same icon again, leave handler
+			return false;
+		}
+	}
+	// unselect resources;
+	toggleSelectionStyle(false);
+	selectedStyles = new Array();
+	
+	var btp = e.button;	
+	var keyHold = e.shiftKey || e.ctrlKey || e.altKey;
+	if (keyHold) {
+		// stop event bubbling
 		e.cancelBubble = true;
-		if (e.stopPropagation) e.stopPropagation();
-		return false;
+		if (e.stopPropagation) {
+			e.stopPropagation();
+		}
+	}
+	if ((active_mouse_id < 0) || (active_from_text && !keyHold && (selectedResources.length <= 1) && (btp != 2))) {
+		// no icon clicked, reset selected resources and leave handler
+		last_id = -1;
+		selectedResources = new Array();
+		return true;
+	}
+
+	if (e.shiftKey) {
+		// shift pressed, mark resources
+		if (last_id >= 0) {
+			// mark resources from last clicked to current one
+			var incrementor = 1;
+			if (last_id < active_mouse_id) {
+				incrementor = -1;
+			}
+			var count = active_mouse_id;
+			selectedResources = new Array();
+			selectedResources[selectedResources.length] = count;
+			while (count != last_id) {
+				count += incrementor;
+				selectedResources[selectedResources.length] = count;
+
+			}
+		} else {
+			// first click, mark single resource	
+			selectedResources = new Array();
+			selectedResources[selectedResources.length] = active_mouse_id;
+		}
+		last_id = active_mouse_id;
+	} else if (e.ctrlKey || e.altKey) {
+		// control or alt key pressed, add or remove resource from marked resources
+		var found = false;
+		for (i=0; i<selectedResources.length; i++) {
+			if (selectedResources[i] == active_mouse_id) {
+				// resource was previously selected, remove it from selection
+				selectedResources[i] = -1;
+				found = true;
+				i = selectedResources.length;
+			}
+		}
+		if (found) {
+			// remove resource from selection array, rebuild array
+			var tempResources = new Array();
+			for (i=0; i<selectedResources.length; i++) {
+				if (selectedResources[i] > -1) {
+					tempResources[tempResources.length] = selectedResources[i];
+				}
+			}
+			selectedResources = tempResources;
+		} else {
+			// not found, add resource to selection
+			selectedResources[selectedResources.length] = active_mouse_id;
+		}
+	} else {
+		// common click, mark currently clicked resource if not clicked before
+		if (active_mouse_id != last_id) {
+			var clickedMarked = false;
+			for (i=0; i<selectedResources.length; i++) {
+				if (selectedResources[i] == active_mouse_id) {
+					clickedMarked = true;
+				}
+			}
+			if (!clickedMarked || selectedResources.length <= 1) {
+				// left mouse button clicked or only one resource selected, select the current resource
+				selectedResources = new Array();
+				selectedResources[selectedResources.length] = active_mouse_id;
+			}
+		}
+		toggleSelectionStyle(true);
+		cancelNextOpen = keyHold || (selectedResources.length > 0);
+		return handleContext(e);
+	}
+	toggleSelectionStyle(true);
+	cancelNextOpen = keyHold || (selectedResources.length > 0);
+
+	return false;
+}
+
+
+// check if the event object is available and gets it if necessary
+function checkEvent(e) {
+
+	// fix for IE if window access is refused in some cases
+	try {
+		win.files.getElementById("contextmenu");
+	} catch (e) {
+		updateWindowStore();
+	} 
+	// check event
+	if (!e) {
+		e = win.fileswin.event;
+	}
+	return e;
+}
+
+// toggles the style of the selected resources
+function toggleSelectionStyle(isSelected) {
+
+	var doc = win.files;
+	var styleName = "selected";
+	if (! isSelected) {
+		styleName = "unselected";
+	}
+
+	for (i=0; i<selectedResources.length; i++) {
+		var last_id_style = "";
+		var ah = doc.getElementById("a" + selectedResources[i]);
+		var td = doc.getElementById("td3_" + selectedResources[i]);
+		if (ah == null) {
+			ah = td;
+		}
+		var rowStyle;
+		if (ah != null) {
+			last_id_style = ah.className;
+			if (isSelected) {
+				selectedStyles[selectedResources[i]] = last_id_style;
+			}
+
+			if (isSelected) {
+				ah.className = styleName;
+			} else {
+				var cls = selectedStyles[selectedResources[i]];
+				if (cls.charAt(cls.length - 1) == 'i') {
+					cls = cls.substring(0, cls.length-1);
+				}
+				ah.className = cls;
+			}
+
+			rowStyle = styleName;
+			if (last_id_style == "fd") {
+				rowStyle += " fd";
+				td.className = rowStyle;
+			} else {
+				td.className = ah.className;
+			}
+		}			
+
+		for (k=0; k<3; k++) {
+			// change style of columns 0 to 2
+			try {
+				var elem = doc.getElementById("td" + k + "_" + selectedResources[i]);
+				if (elem.className != "fd") {
+					elem.className = rowStyle;
+				}
+			} catch (e) {}
+		}
 	}
 }
 
+function linkOver(obj, id) {
 
-// handle the left mouse click
-function handleOnClick(e) {
-	if (active_mouse_id != last_id) closeMenu();
-	return true;
+	var cls = obj.className;
+	if (cls.charAt(cls.length - 1) != 'i') {
+		cls = cls + 'i';
+	}
+	obj.className = cls;
+	active_mouse_id = id;
+	active_from_text = true;
+}
+
+function linkOut(obj) {
+	
+	var cls = obj.className;
+	if (cls.charAt(cls.length - 1) == 'i') {
+		cls = cls.substring(0, cls.length-1);
+	}
+	obj.className = cls;
+	active_mouse_id = -1;
+	active_from_text = false;
 }
 
 
@@ -334,8 +753,9 @@ function printList(wo) {
 	+ top.frames.head.encoding
 	+ "\">\n"
 	+ "<script language=\"JavaScript\">\n"
-	+ "document.oncontextmenu = top.handleContext;"
-	+ "document.onclick = top.handleOnClick;"
+	+ "document.oncontextmenu = new Function('return false;');\n"
+	+ "document.onmousedown = new Function('return false;');\n"
+	+ "document.onmouseup = top.handleOnClick;\n"
 	+ "</script>"
 	+ "<style type='text/css'>\n"
 	+ "body { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 0px; margin: 0px; background-color: Window; } "
@@ -344,32 +764,27 @@ function printList(wo) {
 	+ "td.t125 { white-space: nowrap; width: 125px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
 	+ "td.t100 { white-space: nowrap; width: 100px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
 	+ "td.t75 { white-space: nowrap; width: 75px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
-	+ "a { text-decoration: none; } "
+	+ "a { text-decoration: none; cursor: pointer; } "
 
-	+ "td.fc{ color: #b40000; } "
-	+ "a.fc{ color: #b40000; } "
-	+ "a:visited.fc { color: #b40000; }"
-	+ "a:hover.fc { text-decoration: underline; color: #000088; } "
+	+ "td.fc { color: #b40000; } "
+	+ "a.fc { color: #b40000; } "
+	+ "a.fci { text-decoration: underline; color: #000088; } "
 
 	+ "td.fn { color: #0000aa; } "
 	+ "a.fn { color: #0000aa; } "
-	+ "a:visited.fn { color: #0000aa; } "
-	+ "a:hover.fn { text-decoration: underline; color: #000088; } "
+	+ "a.fni { text-decoration: underline; color: #000088; } "
 
 	+ "td.fd { color: #000000; text-decoration: line-through; } "
 	+ "a.fd { color: #000000; text-decoration: line-through; } "
-	+ "a:visited.fd { color: #000000; text-decoration: line-through; } "
-	+ "a:hover.fd { text-decoration: line-through underline; color: #000088; } "
+	+ "a.fdi { text-decoration: line-through underline; color: #000088; } "
 
 	+ "td.fp { color: #888888; } "
 	+ "a.fp { color: #888888; } "
-	+ "a:visited.fp { color: #888888; } "
-	+ "a:hover.fp { text-decoration: underline; color: #000088;  } "
+	+ "a.fpi { text-decoration: underline; color: #000088; } "
 
 	+ "td.nf { color:#000000; } "
 	+ "a.nf { color:#000000; } "
-	+ "a:visited.nf { color:#000000; } "
-	+ "a:hover.nf { text-decoration: underline; color: #000088; } "
+	+ "a.nfi { text-decoration: underline; color: #000088; } "
 
 	+ "div.cm { position: absolute; visibility: hidden; top: 0px; left: 0px; background-color: ThreeDFace; z-index: 100; border-left: 1px solid ThreeDFace; border-top: 1px solid ThreeDFace; border-bottom: 1px solid ThreedDarkShadow; border-right: 1px solid ThreedDarkShadow; filter:progid:DXImageTransform.Microsoft.Shadow(color=ThreeDShadow, Direction=135, Strength=3); } "
 	+ "div.cm2 { border-left: 1px solid ThreeDHighlight; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreeDShadow; border-right: 1px solid ThreeDShadow; } "
@@ -386,17 +801,13 @@ function printList(wo) {
 	+ ".unselected { background: Window; color:WindowText; } "
 
 	+ "</style></head>";
-
-	var spanstart    = "<span class=\"cmenorm\" onmouseover=\"className='cmehigh';\" onmouseout=\"className='cmenorm';\" >";
-	var spanstartina = "<span class=\"inanorm\" onmouseover=\"className='inahigh';\" onmouseout=\"className='inanorm';\" >";
-	var spanend      = "</span>"
-
+	
 	var returnplace = wo.location.href;
-	if ((openfolderMethod != "openthisfolderflat") && (mode != "projectview")) {
+	if ((openfolderMethod != "openthisfolderflat") && (mode != "listview")) {
 		var pos = returnplace.indexOf("/commons/");
 		if (pos >= 0) {
 			returnplace = returnplace.substring(0, pos + 1) + returnplace.substring(pos + 9);
-			
+
 			var pos2 = returnplace.indexOf("?");
 			if (pos2 < 0) {
 				pos2 = returnplace.length + 1;
@@ -406,7 +817,7 @@ function printList(wo) {
 			returnplace = loc + returnplace.substring(pos2);
 		}
 
-	}  
+	}
 	returnplace = returnplace.replace(/\?/g, "%3F");
 	returnplace = returnplace.replace(/\&/g, "%26");
 	returnplace = returnplace.replace(/\=/g, "%3D");
@@ -434,8 +845,8 @@ function printList(wo) {
 	if (vi.check_dateExpired)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[10] + "&nbsp;</td>");
 	if (vi.check_state)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[11] + "&nbsp;</td>");
 	if (vi.check_lockedBy)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;"  + vr.descr[12] + "&nbsp;</td>");
-	
-	
+
+
 	wo.writeln("</tr>");
 
 	for (var i = 0; i < vi.liste.length; i++) {
@@ -453,14 +864,13 @@ function printList(wo) {
 			// type exists but the user has no access to this resource type
 			noaccess = true;
 			vi_icon = vi.resource[plainresid].icon;
-			vi_text = vi.resource[vi.liste[i].type].text;			
+			vi_text = vi.resource[vi.liste[i].type].text;
 		} else {
 			vi_icon = vi.resource[vi.liste[i].type].icon;
 			vi_text = vi.resource[vi.liste[i].type].text;
 		}
 
-
-		ssclass = "class = \"";
+		ssclass = "class=\"";
 
 		if (!vi.liste[i].isInsideCurrentProject || noaccess) {
 			ssclass += "fp";
@@ -474,12 +884,12 @@ function printList(wo) {
 			if (vi.liste[i].state == 3)
 			ssclass += "fd";
 		}
-		
+
 
 		ssclass += "\"";
-		 
+
 		if ((vi.liste[i].layoutstyle) == 1) ssclass += " style=\"font-style:italic;\"";
-		if ((vi.liste[i].layoutstyle) == 2) ssclass += " style=\"font-style:italic;\"";	
+		if ((vi.liste[i].layoutstyle) == 2) ssclass += " style=\"font-style:italic;\"";
 
 		var vi_bg = "";
 		if (vi.liste[i].linkType != 0) {
@@ -494,8 +904,9 @@ function printList(wo) {
 
 		wo.writeln("<tr>");
 		wo.write("<td unselectable=\"on\" id=\"td0_" + i + "\"" + vi_bg + ">");
+
 		if (showKon && !noaccess) {
-			wo.write("<a style=\"cursor:pointer;\" onclick=\"top.showContext(document, " + i + ");\"");
+			wo.write("<a style=\"cursor:pointer;\"");
 			wo.write(" onmouseover=\"top.setId(" + i + ")\" onmouseout=\"top.setId(-1)\">");
 		}
 		wo.write("<img id=\"ic" + i + "\" src='" + vi_icon + "' border=0 width=16 height=16>");
@@ -506,7 +917,7 @@ function printList(wo) {
 
 		if (vi.liste[i].isInsideCurrentProject) {
 			wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\">");
-			// the ressource is in the current project, so display the lock and project state
+			// the resource is in the current project, so display the lock and project state
 
 			var lockIcon;
 
@@ -550,37 +961,43 @@ function printList(wo) {
 
 		if (vi.check_name) {
 			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" " + ssclass + ">&nbsp;");
-			if (vi.liste[i].isFolder) {
-				if ((mode == "projectview") || (mode == "galleryview") || showlinks) {
-					wo.write(vi.liste[i].path);
-				} else if (vi.liste[i].state == 3) {
-					wo.write(vi.liste[i].name);
-				} else if (flaturl != "") {
-					wo.write("<a href=\"javascript:top." + openfolderMethod + "('" + vi.liste[i].name + "')\" id=\"a" + i + "\" " + ssclass + ">");
-					wo.write(vi.liste[i].name);
-					wo.write("</a>");
-				} else {
-					wo.write("<a href=\"javascript:top." + openfolderMethod + "('" + vi.liste[i].name + "')\" id=\"a" + i + "\" " + ssclass + ">");
-					wo.write(vi.liste[i].name);
-					wo.write("</a>");
-				}
+			if (mode == "listview") {
+				wo.write("<a onclick=\"top.openwinfull('");
+				wo.write(vi.liste[i].path);
+				wo.write("');\"")
+				wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+				wo.writeln(" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].path + "</a>");
 			} else {
-				if ((mode == "galleryview") || showlinks) {
-					wo.writeln(vi.liste[i].path);
-				} else if (mode == "projectview" ) {	
-					wo.write("<a href=\"javascript:top.openwinfull('");
-					wo.write(vi.liste[i].path);
-					wo.writeln("');\" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].path + "</a>");
-				} else if (vi.liste[i].state == 3) {
-					wo.write(vi.liste[i].name);
-				} else if (flaturl != "") {
-					wo.write("<a href=\"javascript:top.openwinfull('");
-					wo.write(vr.actDirectory + vi.liste[i].name);
-					wo.writeln("');\" id=\"a" + i + "\" " + ssclass + ">&" + vi.liste[i].name + "</a>");
+				if (vi.liste[i].isFolder) {
+					if (mode == "galleryview" || showlinks) {
+						wo.write(vi.liste[i].path);
+					} else if (vi.liste[i].state == 3) {
+						wo.write(vi.liste[i].name);
+					} else {
+						wo.write("<a onclick=\"top." + openfolderMethod + "('" + vi.liste[i].name + "')\"");
+						wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+						wo.write(" id=\"a" + i + "\" " + ssclass + ">");
+						wo.write(vi.liste[i].name);
+						wo.write("</a>");
+					}
 				} else {
-					wo.write("<a href=\"javascript:top.openwinfull('");
-					wo.write(vr.actDirectory + vi.liste[i].name);
-					wo.writeln("');\" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].name + "</a>");
+					if ((mode == "galleryview") || showlinks) {
+						wo.writeln(vi.liste[i].path);
+					} else if (vi.liste[i].state == 3) {
+						wo.write(vi.liste[i].name);
+					} else if (flaturl != "") {
+						wo.write("<a onclick=\"top.openwinfull('");
+						wo.write(vr.actDirectory + vi.liste[i].name);
+						wo.write("');\"");
+						wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+						wo.writeln("id=\"a" + i + "\" " + ssclass + ">&" + vi.liste[i].name + "</a>");
+					} else {
+						wo.write("<a onclick=\"top.openwinfull('");
+						wo.write(vr.actDirectory + vi.liste[i].name);
+						wo.write("');\"");
+						wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+						wo.writeln(" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].name + "</a>");
+					}
 				}
 			}
 			wo.writeln("</td>");
@@ -604,168 +1021,31 @@ function printList(wo) {
 
 	wo.writeln("</tr></table>");
 
-	for (i = 0; i < vi.liste.length; i++) {
+	// create multi context menu form
+	wo.writeln("<form name=\"formmulti\" action=\"\" method=\"post\">");
+	wo.writeln("<input type=\"hidden\" name=\"resourcelist\" value=\"\">");
+	wo.writeln("</form>");
 
-		var access = true;
-		if ((typeof vi.resource[vi.liste[i].type] == 'undefined') || (vi.resource[vi.liste[i].type].editable == false)) {
-			// the user has no access to this resource type
-			access = false;
-		}
+	// create div for context menus
+	wo.writeln("<div id=\"contextmenu\" class=\"cm\"></div>");
 
-		if (access) {
-			wo.writeln("<div id=\"men" + i + "\" class=\"cm\"><div class=\"cm2\">");
-			wo.writeln("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"cm\">");
-
-			var resourceName = vr.actDirectory + vi.liste[i].name;
-			if ((mode == "projectview") || (mode == "galleryview") || showlinks) {
-				if (vi.liste[i].type == 0) {
-					resourceName = vi.liste[i].path.substring(0, vi.liste[i].path.lastIndexOf("/"));
-				} else {
-					resourceName = vi.liste[i].path;
-				}
-			}
-			var lastWasSeparator = false;
-			var firstEntryWritten = false;
-			for (a = 0; a < vi.menus[vi.liste[i].type].items.length; a++) {
-				
-				// 0:unchanged, 1:changed, 2:new, 3:deleted
-				var result = -1;
-				
-				if (vi.menus[vi.liste[i].type].items[a].name == "-") {
-					result = 1;
-				} else if (vr.actProject == vr.onlineProject) {
-					// online project
-					if (vi.menus[vi.liste[i].type].items[a].rules.charAt(0) == 'i') {
-						result = 2;
-					} else {							
-						if (vi.menus[vi.liste[i].type].items[a].rules.charAt(0) == 'a') {
-							if ((vi.menus[vi.liste[i].type].items[a].link.indexOf("showlinks=true") > 0)
-							&& (vi.liste[i].linkType == 0)) {
-								// special case: resource without siblings
-								result = 2;
-							} else {
-								result = (vi.liste[i].type == 0)?3:4;
-							}						
-						}
-					}
-				} else {
-					// offline project
-					if (! vi.liste[i].isInsideCurrentProject) {
-						// resource is from online project
-						if (vi.menus[vi.liste[i].type].items[a].rules.charAt(1) == 'i') {
-							result = (vi.menus[vi.liste[i].type].items[a].name == "-")?1:2;
-						} else {
-							if (vi.menus[vi.liste[i].type].items[a].rules.charAt(1) == 'a') {
-								if (vi.menus[vi.liste[i].type].items[a].name == "-") {
-									result = 1;
-								} else {
-									if ((vi.menus[vi.liste[i].type].items[a].link.indexOf("showlinks=true") > 0)
-									&& (vi.liste[i].linkType == 0)) {
-										// special case: resource without siblings
-										result = 2;
-									} else {
-										result = (vi.liste[i].type == 0)?3:4;
-									}
-								}
-							}
-						}
-					} else {
-						// resource is in this project => we have to differ 4 cases
-						if (vi.liste[i].lockedBy == '') {
-							// resource is not locked...
-							if (autolock) {
-								// autolock is enabled
-								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 6);
-							} else {
-								// autolock is disabled
-								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 2);
-							}
-						} else {
-							var isSharedLock = (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2)?true:false;
-							if (vi.liste[i].lockedInProjectId == vr.actProject) {
-								// locked in this project from ...
-								if (vi.liste[i].lockedBy == vr.userName) {
-									// ... the current user ...
-									if (isSharedLock) {
-										// ... as shared lock
-										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 14);
-									} else {
-										// ... as exclusive lock
-										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 10);
-									}
-
-								} else {
-									// ... someone else
-									display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 14);
-								}
-							} else {
-								// locked in an other project ...
-								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 14);
-							}
-						}
-						if (display == 'i') {
-							result = 2;
-						} else {
-							if (display == 'a') {
-								if ((vi.menus[vi.liste[i].type].items[a].link.indexOf("showlinks=true") > 0)
-								&& (vi.liste[i].linkType == 0)) {
-									// special case: resource without siblings
-									result = 2;
-								} else {
-									result = (vi.liste[i].type == 0)?3:4;
-								}
-							}
-						}
-					}
-				}
-				switch (result) {
-					case 1:
-						// separator line
-						if ((firstEntryWritten) && (!lastWasSeparator) && (a != (vi.menus[vi.liste[i].type].items.length - 1))) {
-							wo.writeln("<tr><td class=\"cmsep\"><span class=\"cmsep\"></div></td></tr>");
-							lastWasSeparator = true;
-						}
-						break;
-					case 2:
-						// inactive entry
-						wo.writeln("<tr><td>" + spanstartina + vi.menus[vi.liste[i].type].items[a].name + spanend + "</td></tr>");
-						lastWasSeparator = false;
-						firstEntryWritten = true;
-						break;
-					case 3:
-					case 4:
-						// active entry
-						link = "href=\"" + vi.menus[vi.liste[i].type].items[a].link;
-						if (link.indexOf("/action/") == -1) {
-							if (link.indexOf("?") > 0) {
-								link += "&";
-							} else {
-								link += "?";
-							}
-						} else {
-							link += "&lasturl=" + returnplace + "&";
-						}
-						link += "resource=" + resourceName + "\"";
-						if (result == 4) {
-							// href has a target set
-							link += " target=" + vi.menus[vi.liste[i].type].items[a].target;
-						}
-
-						wo.writeln("<tr><td><a class=\"cme\" " + link + ">" + spanstart + vi.menus[vi.liste[i].type].items[a].name + spanend + "</a></td></tr>");
-						lastWasSeparator = false;
-						firstEntryWritten = true;
-						break;
-					default:
-						// alert("Undefined result for menu " + a);
-						break;
-				}
-			} // end for ...
-			wo.writeln("</table></div></div>");
-		} // end if (access)
-	} // end for ...
-
-	wo.writeln("<br></body></html>");
+	wo.write("<br></body></html>");
 	wo.close();
+}
+
+
+// Returns the absolute path of the resource with the index i
+function getResourceAbsolutePath(i) {
+
+	var resourceName = vr.actDirectory + vi.liste[i].name;
+	if ((mode == "listview") || (mode == "galleryview") || showlinks) {
+		if (vi.liste[i].type == 0) {
+			resourceName = vi.liste[i].path.substring(0, vi.liste[i].path.lastIndexOf("/"));
+		} else {
+			resourceName = vi.liste[i].path;
+		}
+	}	
+	return resourceName;
 }
 
 
@@ -775,6 +1055,9 @@ function simpleEscape(text) {
 
 
 function openwinfull(url) {
+	if (cancelNextOpen) {
+		return;
+	}
 	if (url != '#') {
 		w = screen.availWidth - 50;
 		h = screen.availHeight - 200;
@@ -801,7 +1084,12 @@ function submitResource() {
 
 function openurl() {
 	updateTreeFolder(getDisplayResource());
-	win.files.open();
+	try {
+		win.files.open();
+	} catch (e) {
+		updateWindowStore();
+		win.files.open();
+	}
 	win.files.writeln("<html>");
 	win.files.writeln("<head><meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=" + top.frames.head.encoding + "\"></head>");
 	win.files.writeln("<body>\n<center><br><br><br><br><font face=Helvetica size=2>"+vr.langloading+"</center></body>\n</html>");
@@ -810,7 +1098,7 @@ function openurl() {
 	if(win.head.forms.urlform && win.head.forms.urlform.pageSelect){
 		selectedpage = "&page=" + win.head.forms.urlform.pageSelect.value;
 	}
-	win.files.location = vr.servpath + "/system/workplace/views/explorer/explorer_files.jsp?resource=" + getDisplayResource() + selectedpage;
+	win.files.location.href = vr.servpath + "/system/workplace/views/explorer/explorer_files.jsp?resource=" + getDisplayResource() + selectedpage;
 }
 
 
@@ -833,7 +1121,7 @@ function addProjectDir(nodid) {
 function dirUp(){
 	var temp;
 	var marke=0;
-	var directory = getDisplayResource();
+	var directory = removeSiblingPrefix(getDisplayResource());
 	var zaehler=0;
 	var newDir = directory.substring(0, directory.length - 1);
 	var res = newDir.substring(0, newDir.lastIndexOf("/") + 1);
@@ -843,6 +1131,19 @@ function dirUp(){
 	}
 	setDisplayResource(res);
 	openurl();
+}
+
+
+function removeSiblingPrefix(directory) {
+	
+	if (directory.indexOf("siblings:") == 0) {
+		directory = directory.substring(9);
+		var lastSlashPos = directory.lastIndexOf("/");
+		if (lastSlashPos != (directory.length - 1)) {
+			directory = directory.substring(0, lastSlashPos + 1);
+		}
+	}
+	return directory;
 }
 
 
@@ -893,14 +1194,14 @@ function displayHead(doc, pages, actpage){
 	+ "input.location { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; width: 99% }\n"
 	+ "select.location { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; width: 50px }\n"
 	+ "</style>\n"
-	
+
 	+ "<script type=\"text/javascript\">\n"
 	+ "<!--\n"
 	+ "function doSet() {\n"
 	+ "\tdocument.urlform.resource.value=\"" + getDisplayResource("true") + "\";\n"
 	+ "}\n"
 	+ "//-->\n"
-	+ "</script>\n"	
+	+ "</script>\n"
 
 	+ "</head>\n"
 	+ "<body class=\"buttons-head\" onload=\"window.setTimeout('doSet()',50);\">\n"
@@ -923,19 +1224,19 @@ function displayHead(doc, pages, actpage){
 	+ "</body>\n</html>";
 
 	doc.open();
-	doc.writeln(html);
+	doc.write(html);
 	doc.close();
 }
 
 
 // formats a button in one of 3 styles (type 0..2)
 function button(href, target, image, label, type) {
-	
+
 	if (image != null && image.indexOf('.') == -1) {
         // append default suffix for images
         image += ".png";
     }
-	
+
 	var result = "<td>";
 	switch (type) {
 		case 1:
@@ -1060,14 +1361,10 @@ function setDirectory(id, dir){
 		addHist(dir);
 	}
 	vr.actDirId=id;
-	if (dir.indexOf("siblings:") == 0) {
-		dir = dir.substring(9);
-	}
-	var lastSlashPos = dir.lastIndexOf("/");
-	if (lastSlashPos != (dir.length - 1)) {
-		dir = dir.substring(0, lastSlashPos + 1);
-	}
+	dir = removeSiblingPrefix(dir);
 	vr.actDirectory = dir;
+	last_id = -1;
+	selectedResources = new Array();
 }
 
 
@@ -1077,11 +1374,22 @@ function enableNewButton(showit){
 
 
 function openFolder(folderName) {
+	if (cancelNextOpen) {
+		return;
+	}
 	if (folderName.charAt(0) != '/') {
 		folderName = getDisplayResource() + folderName + "/";
 	}
 	setDisplayResource(folderName);
 	openurl();
+}
+
+
+function openthisfolderflat(thisdir){
+	if (cancelNextOpen) {
+		return;
+	}	
+	eval(flaturl + "?resource=" + vr.actDirectory+thisdir+"/\"");
 }
 
 
@@ -1102,112 +1410,6 @@ function addNodeToLoad(nodeName) {
 function reloadNodeList() {
 	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
 		window.body.explorer_body.explorer_tree.loadNodeList(window.body.explorer_body.explorer_tree.tree_display.document, "&rootloaded=true");
-	}
-}
-
-
-function openthisfolderflat(thisdir){
-	eval(flaturl + "?resource=" + vr.actDirectory+thisdir+"/\"");
-}
-
-
-// displays a context menu
-function showContext(doc, id) {
-
-	if (id == last_id) {
-		// just close menu if clicked twice
-		closeMenu();
-		return;
-	} else {
-		// close currently open menu (if any) before opening new one
-		closeMenu();
-	}
-
-	// get menu position
-	x = 12;
-	y = findPosY(doc.getElementById("ic" + id)) + 16;
-	var scrollTop = 0;
-	var clientHeight = 0;
-
-	if (doc.documentElement && (doc.documentElement.scrollTop || doc.documentElement.clientHeight)) {
-		scrollTop = doc.documentElement.scrollTop;
-		clientHeight = doc.documentElement.clientHeight;
-	} else if (doc.body) {
-		scrollTop = doc.body.scrollTop;
-		clientHeight = doc.body.clientHeight;
-	}
-
-	var el = doc.getElementById("men" + id);
-	var elementHeight = el.scrollHeight;
-	var oy = y;
-	var scrollSize = 20;
-
-	if ((y + elementHeight + scrollSize) > (clientHeight + scrollTop)) {
-		y = y - 16 - elementHeight;
-	}
-	if (y < scrollTop) {
-		y = (clientHeight + scrollTop) - (elementHeight + scrollSize);
-	}
-	if (y < scrollTop) {
-		y = scrollTop;
-	}
-
-	var ah = null;
-	if (mode == "projectview") {
-		ah = doc.getElementById("td3_" + id);
-	} else {
-		ah = doc.getElementById("a" + id);
-		if (ah == null) {
-			ah = doc.getElementById("td3_" + id);
-		}
-	}
-	if (ah != null) {
-		last_id_style = "" + ah.className;
-		ah.className = "selected";
-	}
-
-	var selectedClassName = "selected";
-	if (last_id_style == "fd") {
-		selectedClassName += " fd";
-	}
-
-	for (i=0; i<4; i++) {
-		doc.getElementById("td" + i + "_" + id).className = selectedClassName;
-		if (last_id >= 0) {
-			doc.getElementById("td" + i + "_" + last_id).className = "unselected";
-		}
-	}
-
-	el.style.left = x + "px";
-	el.style.top =  y + "px";
-	el.style.visibility = "visible";
-
-	last_id = id;
-	active_mouse_id = id;
-}
-
-
-// closes the currently open context menu
-function closeMenu() {
-	if(last_id >= 0) {
-		doc = win.files;
-		doc.getElementById("men" + last_id).style.visibility = "hidden";
-		for (i=0; i<4; i++) {
-			doc.getElementById("td" + i + "_" + last_id).className = "unselected";
-		}
-		var ah = null;
-		if (mode == "projectview") {
-			ah = doc.getElementById("td3_" + last_id);
-		} else {
-			ah = doc.getElementById("a" + last_id);
-			if (ah == null) {
-				ah = doc.getElementById("td3_" + last_id);
-			}
-		}
-		if (ah != null) {
-			ah.className = last_id_style;
-		}
-		last_id = -1;
 	}
 }
 
@@ -1239,6 +1441,38 @@ function findPosY(obj) {
 		curtop += obj.y;
 	}
 	return curtop;
+}
+
+
+function getMenuPosY(doc, id) {
+
+	var y = findPosY(doc.getElementById("ic" + id)) + 16;
+	var scrollTop = 0;
+	var clientHeight = 0;
+
+	if (doc.documentElement && (doc.documentElement.scrollTop || doc.documentElement.clientHeight)) {
+		scrollTop = doc.documentElement.scrollTop;
+		clientHeight = doc.documentElement.clientHeight;
+	} else if (doc.body) {
+		scrollTop = doc.body.scrollTop;
+		clientHeight = doc.body.clientHeight;
+	}
+
+	var el = doc.getElementById("contextmenu");
+	var elementHeight = el.scrollHeight;
+	var oy = y;
+	var scrollSize = 20;
+
+	if ((y + elementHeight + scrollSize) > (clientHeight + scrollTop)) {
+		y = y - 16 - elementHeight;
+	}
+	if (y < scrollTop) {
+		y = (clientHeight + scrollTop) - (elementHeight + scrollSize);
+	}
+	if (y < scrollTop) {
+		y = scrollTop;
+	}
+	return y;
 }
 
 
@@ -1307,21 +1541,21 @@ function setFormValue(filename) {
 	var curForm;
 	// the document of the target form
 	var curDoc;
-	// update the window store	
+	// update the window store
 	updateWindowStore();
-	
+
 	if (treeDoc != null) {
 		curDoc = treeDoc;
 	} else {
 		curDoc = win.files;
 	}
-	
+
 	if (treeForm != null) {
 		curForm = curDoc.forms[treeForm];
 	} else {
 		curForm = curDoc.forms[0];
 	}
-		
+
 	if (curForm.elements[treeField]) {
 		curForm.elements[treeField].value = filename;
 	} else if (curForm.folder) {
@@ -1329,7 +1563,7 @@ function setFormValue(filename) {
 	} else if (curForm.target) {
 		curForm.target.value = filename;
 	}
-	
+
 	// this calls the fillValues() function in the explorer window, if present
 	if (window.body.explorer_body && window.body.explorer_body.explorer_files) {
 		var filesDoc = window.body.explorer_body.explorer_files;
@@ -1337,7 +1571,7 @@ function setFormValue(filename) {
 			filesDoc.fillValues(filename);
 		}
 	}
-	
+
 	// this fills the parameter from the hidden field to the select box
 	if (window.body.admin_content) {
 		if (treeField == "tempChannel") {
@@ -1346,7 +1580,7 @@ function setFormValue(filename) {
 			try {
 				window.body.admin_content.copySelection();
 			} catch (e) {
-				
+
 			}
 		}
 	}

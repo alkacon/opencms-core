@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project  name="Javadoc OpenCms HEAD " default="javadoc">
+<project name="Javadoc Core" default="javadoc">
 <property name="opencms.input" value="../../"/>
     <property name="opencms.output" value="${opencms.input}../BuildCms/"/>
     <property name="srcdir" value="${opencms.input}/src"/>
     <property name="imgdir" value="${opencms.input}/doc/javadoc/logos"  />
-    <property name="partname"   value="core" />
+    <property name="partname"   value="core-dev" />
  
-     <!-- dont change this property! -->
+    <!-- dont change this property! -->
     <property name="destdir" value="${opencms.output}/doc/${partname}"  />
   
     <taskdef resource="net/sf/antcontrib/antlib.xml">
@@ -73,4 +73,3 @@
         </zip>
     </target>
 </project>
-

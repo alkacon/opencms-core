@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,7 +149,7 @@ public class CmsRfsFileViewer implements Cloneable {
             // switch to info!
             if (LOG.isDebugEnabled()) {
                 // sizeof Long is 16 Bytes
-                LOG.debug(Messages.get().key(
+                LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_FILEVIEW_INDEX_EXPIRE_OK_2,
                     CmsFileUtil.formatFilesize(m_breakPositions.size() * 16, Locale.getDefault()),
                     m_file.getAbsolutePath()));
@@ -322,7 +322,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.16 $
+     * @version $Revision: 1.17 $
      * 
      * @since 6.0.0
      */
@@ -715,7 +715,7 @@ public class CmsRfsFileViewer implements Cloneable {
                 }
             }
         } else {
-            return Messages.get().key(Messages.GUI_FILE_VIEW_NO_PREVIEW_0);
+            return Messages.get().getBundle().key(Messages.GUI_FILE_VIEW_NO_PREVIEW_0);
         }
 
     }

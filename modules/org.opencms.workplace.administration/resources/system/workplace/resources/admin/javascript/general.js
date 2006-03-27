@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/general.js,v $
- * Date   : $Date: 2005/07/27 10:26:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/27 14:53:04 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,78 @@
  */
 
 /*
+ * Returns the current documents height.
+ */
+function pHeight () {
+  var h;
+  var test1 = document.body.scrollHeight;
+  var test2 = document.body.offsetHeight;
+  if (test1 > test2) {// all but Explorer Mac
+    h = test1;
+  } else {// Explorer Mac;
+     //would also work in Explorer 6 Strict, Mozilla and Safari
+    h = test2;
+  }
+  return h;
+}
+
+/*
+ * Returns the current documents width.
+ */
+function pWidth() {
+  var w;
+  var test1 = document.body.scrollWidth;
+  var test2 = document.body.offsetWidth;
+  if (test1 > test2) {// all but Explorer Mac
+    w = test1;
+  } else {// Explorer Mac;
+     //would also work in Explorer 6 Strict, Mozilla and Safari
+    w = test2;
+  }
+  return w;
+}
+
+/*
+ * Returns the current windows height.
+ */
+function wHeight() {
+  var h;
+  if (self.innerHeight) {// all except Explorer
+    h = self.innerHeight;
+  } else if (document.documentElement && document.documentElement.clientHeight) {
+    // Explorer 6 Strict Mode
+    h = document.documentElement.clientHeight;
+  } else if (document.body) { // other Explorers
+    h = document.body.clientHeight;
+  } else {
+    h = 0;
+  }
+  return h;
+}
+
+/*
+ * Returns the current windows width.
+ */
+function wWidth() {
+  var w;
+  if (self.innerWidth) {// all except Explorer
+    w = self.innerWidth;
+  } else if (document.documentElement && document.documentElement.clientWidth) {
+    // Explorer 6 Strict Mode
+    w = document.documentElement.clientWidth;
+  } else if (document.body) { // other Explorers
+    w = document.body.clientWidth;
+  } else {
+    w = 0;
+  }
+  return w;
+}
+
+/*
  * Returns the form that contains the control with the given id.
  */
 function getFormForId(id) {
-        return document.getElementById(id).form;
+  return document.getElementById(id).form;
 }
 
 /*
@@ -41,9 +109,9 @@ function getFormForId(id) {
  * It also shows the loading screen during loading
  */
 function openPage(url) {
-    target = isFramed() ? parent.admin_content : this;
+    var target = isFramed() ? parent.admin_content : this;
     if (!isFramed()) {
-       if (parent.parent.admin_content) {
+       if (parent.parent && parent.parent.admin_content) {
            target = parent.parent.admin_content;
        }
     }
@@ -64,12 +132,10 @@ function openPageIn(url, target) {
  * It only works if framed.
  */
 function setContextHelp(contextHelp) {
-    try {
+    if (parent && parent.admin_menu && parent.admin_menu.setInternalContextHelp) {
         parent.admin_menu.setInternalContextHelp(contextHelp);
-    } catch(e) {
-        try {
-             parent.parent.admin_menu.setInternalContextHelp(contextHelp);
-        } catch (e1) { }
+    } else if (parent && parent.parent && parent.parent.admin_menu && parent.parent.admin_menu.setInternalContextHelp) {
+        parent.parent.admin_menu.setInternalContextHelp(contextHelp);
     }
 }
 
@@ -89,7 +155,12 @@ function setContext(defaultContext) {
  * It only works if framed.
  */
 function getContext() {
-    return parent.defContextHelp;
+    if (parent && parent.defContextHelp) {
+      return parent.defContextHelp;
+    } else if (this.defContextHelp) {
+      return this.defContextHelp;
+    }
+    return "";
 }
 
 /*
@@ -97,12 +168,10 @@ function getContext() {
  * It only works if framed.
  */
 function setActiveItemByName(name) {
-    try {
+    if (parent && parent.admin_menu && parent.admin_menu.setActiveItem) {
         parent.admin_menu.setActiveItem(name);
-    } catch (e) {
-        try {
-             parent.parent.admin_menu.setActiveItem(name);
-        } catch (e1) { }
+    } else if (parent && parent.parent && parent.parent.admin_menu && parent.parent.admin_menu.setActiveItem) {
+        parent.parent.admin_menu.setActiveItem(name);
     }
 }
 
@@ -114,20 +183,19 @@ function setActiveItemByName(name) {
  * which contains the help text.
  */
 function sMH(obj_id) {
-   try {
-      if (!isFramed() && !parent.parent.admin_content) {
-         showHelp(obj_id);
-      } else {
-         try {
-            var writezone = document.getElementById('help' + obj_id);
-            context = writezone.firstChild.nodeValue;
-         } catch(e) {
-            context = obj_id;
-         }
-         setContextHelp(context);
-      }
-   } catch(e) {
-      // ignore
+   var t = false;
+   if (parent && parent.parent && parent.parent.admin_content) {
+     t = true;
+   }
+   if (!isFramed() && !t) {
+     showHelp(obj_id);
+   } else {
+     var context = obj_id;
+     var writezone = document.getElementById('help' + obj_id);
+     if (writezone) {
+       context = writezone.firstChild.nodeValue;
+     }
+     setContextHelp(context);
    }
 }
 
@@ -139,14 +207,14 @@ function sMH(obj_id) {
  * which contains the help text.
  */
 function hMH(obj_id) {
-   try {
-      if (!isFramed() && !parent.parent.admin_content) {
-         hideHelp(obj_id);
-      } else {
-         setContextHelp('');
-      }
-   } catch(e) {
-      // ignore
+   var t = false;
+   if (parent && parent.parent && parent.parent.admin_content) {
+     t = true;
+   }
+   if (!isFramed() && !t) {
+     hideHelp(obj_id);
+   } else {
+     setContextHelp('');
    }
 }
 
@@ -158,20 +226,19 @@ function hMH(obj_id) {
  * The help_id argument should be the id of a div tag, which contains the help text.
  */
 function sMHS(obj_id, help_id) {
-   try {
-      if (!isFramed() && !parent.parent.admin_content) {
-         showHelpX(obj_id, help_id);
-      } else {
-         try {
-            var writezone = document.getElementById('help' + help_id);
-            context = writezone.firstChild.nodeValue;
-         } catch(e) {
-            context = obj_id;
-         }
-         setContextHelp(context);
-      }
-   } catch(e) {
-      // ignore
+   var t = false;
+   if (parent && parent.parent && parent.parent.admin_content) {
+     t = true;
+   }
+   if (!isFramed() && !t) {
+     showHelpX(obj_id, help_id);
+   } else {
+     var context = obj_id;
+     var writezone = document.getElementById('help' + help_id);
+     if (writezone) {
+       context = writezone.firstChild.nodeValue;
+     }
+     setContextHelp(context);
    }
 }
 
@@ -266,6 +333,6 @@ function submitForm(theForm) {
  * Checks is we are working in the admin-view framed environment.
  */
 function isFramed() {
-    return parent.admin_content && parent.admin_menu;
+    return parent && parent.admin_content && parent.admin_menu;
 }
 

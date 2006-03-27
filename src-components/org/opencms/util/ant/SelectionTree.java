@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/SelectionTree.java,v $
- * Date   : $Date: 2005/12/23 15:16:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/27 14:53:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,11 +63,10 @@ import javax.swing.tree.TreeSelectionModel;
  * <li>{@link javax.swing.tree.TreeSelectionModel#DISCONTIGUOUS_TREE_SELECTION} </li>
  * <li> Custom node UI with checkboxes. </li>
  * </ul>
- * </p>
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  */
 public class SelectionTree extends JTree {
@@ -79,7 +78,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2 $
+     * @version $Revision: 1.3 $
      * 
      * @since 6.1.6
      * 
@@ -119,7 +118,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2 $
+     * @version $Revision: 1.3 $
      * 
      * @since 6.1.6
      * 
@@ -146,7 +145,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2 $
+     * @version $Revision: 1.3 $
      * 
      * @since 6.1.6
      * 

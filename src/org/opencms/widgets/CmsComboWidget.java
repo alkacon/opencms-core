@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsComboWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Andreas Zahner 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +126,7 @@ public class CmsComboWidget extends A_CmsSelectWidget {
                 result.append("\"");
                 if (option.getHelp() != null) {
                     // create help text mousevent attributes
-                    result.append(getJsHelpMouseHandler(widgetDialog, itemId));
+                    result.append(getJsHelpMouseHandler(widgetDialog, itemId, CmsEncoder.escape(option.getHelp(), cms.getRequestContext().getEncoding())));
                 }
                 result.append(">");
                 result.append(option.getValue());
@@ -137,22 +137,24 @@ public class CmsComboWidget extends A_CmsSelectWidget {
             // close combo div
             result.append("</div>\n");
 
-            // create help texts for the values
-            count = 0;
-            i = options.iterator();
-            while (i.hasNext()) {
-                CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
-                if (option.getHelp() != null) {
-                    // help text is optional
-                    String itemId = new StringBuffer(64).append("ci").append(id).append('.').append(count).toString();
-                    result.append("<div class=\"help\" id=\"help");
-                    result.append(itemId);
-                    result.append("\"");
-                    result.append(getJsHelpMouseHandler(widgetDialog, itemId));
-                    result.append(">");
-                    result.append(option.getHelp());
-                    result.append("</div>\n");
-                    count++;
+            if (widgetDialog.useNewStyle()) {
+                // create help texts for the values in admin view
+                count = 0;
+                i = options.iterator();
+                while (i.hasNext()) {
+                    CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
+                    if (option.getHelp() != null) {
+                        // help text is optional
+                        String itemId = new StringBuffer(64).append("ci").append(id).append('.').append(count).toString();
+                        result.append("<div class=\"help\" id=\"help");
+                        result.append(itemId);
+                        result.append("\"");
+                        result.append(getJsHelpMouseHandler(widgetDialog, itemId, itemId));
+                        result.append(">");
+                        result.append(option.getHelp());
+                        result.append("</div>\n");
+                        count++;
+                    }
                 }
             }
         }

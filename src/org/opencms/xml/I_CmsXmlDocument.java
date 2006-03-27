@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2005/07/29 10:13:57 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -268,6 +268,14 @@ public interface I_CmsXmlDocument {
      *      false otherwise
      */
     boolean hasValue(String name, Locale locale, int index);
+
+    /**
+     * Initializes this XML document, required after structural changes to the XML.<p>
+     * 
+     * If nodes in the XML are added, removed or moved, the document needs to be initialized in 
+     * order to update the internal data structures.<p>
+     */
+    void initDocument();
 
     /**
      * Returns <code>true</code> if a value exists with the given key name,
