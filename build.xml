@@ -5,7 +5,8 @@
     <property name="version.number"             		value="6.1.13" />    
     
 	<property name="app.name" 							value="opencms" />
-    
+	<property name="src.all.comps" 						value="src-modules,src-components,test,webapp" />
+	
     <property name="opencms.input" 						location="${basedir}" />
     <property name="opencms.output"						location="${basedir}/../" />    	
 
@@ -589,26 +590,42 @@ ${opencms.inputlib.textextraction}
     <target name="srcdist" 
     	description="Creates a source distribution ZIP">
     	
-        <tstamp>
-            <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
-        </tstamp>
-        <property name="version.number" value="${env.USERNAME}_${timestamp}_current"/>
-        
-        <echo message="Building OpenCms ${version.number} source distribution " />
+    	<echo message="Building OpenCms ${app.name} source distribution " />
         <echo message=" " />
         <echo message="OpenCms input directory is: ${opencms.input}" />
         <echo message="OpenCms output directory is: ${opencms.output}" />
 		
+	  	<selectionprompt 
+	  	  	property="src.comps"
+	  	    defaultvalue="${src.all.comps}"
+	  		allvalues="${src.all.comps}"
+	  		prompt="Please select the additional source components to include:"
+	  		title="Additional Source Components Selection" 
+	  		columns="1" 
+	  	/>
+
         <mkdir dir="${opencms.output.distfiles}" />                    
 		
-        <zip destfile="${opencms.output.distfiles}/opencms_src_${version.number}.zip">
+        <zip destfile="${opencms.output.distfiles}/${app.name}__${version.number}_src.zip">
         	<zipfileset dir="${opencms.input}/src" excludes="${excludes}" prefix="src" />
-        	<zipfileset dir="${opencms.input}/src-modules" excludes="${excludes}" prefix="src-modules" />
-        	<zipfileset dir="${opencms.input}/src-components" excludes="${excludes}" prefix="src-components" />
-            <zipfileset dir="${opencms.input}/test" excludes="${excludes}" prefix="test" />
-            <zipfileset dir="${opencms.input.warfiles}" excludes="${excludes}" prefix="webapp" />
             <zipfileset dir="${opencms.input}" includes="build.xml,install.html,license.txt,history.txt"/>
         </zip>
+    	
+	    <if>
+	      <not>
+		      <equals arg1="${src.comps}" arg2="__ABORT__" />
+	      </not>
+	      <then>
+	    	<for list="${src.comps}" param="comp" trim="yes">
+	    	  <sequential>
+	            <zip destfile="${opencms.output.distfiles}/${app.name}_src.zip" update="true" whenempty="fail">
+	            	<zipfileset dir="${opencms.input}/@{comp}" excludes="${excludes}" prefix="@{comp}" />
+	            </zip>
+	    	  </sequential>
+	    	</for>
+	      </then>
+	    </if>
+
     </target>
 		
     <target name="compile-tests" 
