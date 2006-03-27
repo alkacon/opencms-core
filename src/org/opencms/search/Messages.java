@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2005/08/31 16:20:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/27 15:13:37 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Jan Baudisch 
+ * @author Achim Westermann
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,13 +68,34 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_DOCTYPE_NO_RESOURCETYPE_DEF_0 = "ERR_DOCTYPE_NO_RESOURCETYPE_DEF_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEX_LOCK_FAILED_1 = "ERR_INDEX_LOCK_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INDEX_NOT_FOUND_1 = "ERR_INDEX_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEX_NULL_0 = "ERR_INDEX_NULL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEX_REBUILD_ALL_1 = "ERR_INDEX_REBUILD_ALL_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INDEX_RESOURCE_FAILED_2 = "ERR_INDEX_RESOURCE_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INDEX_SOURCE_ASSOCIATION_1 = "ERR_INDEX_SOURCE_ASSOCIATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEX_SOURCE_DELETE_2 = "ERR_INDEX_SOURCE_DELETE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEXSOURCE_CREATE_INVALID_NAME_1 = "ERR_INDEXSOURCE_CREATE_INVALID_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEXSOURCE_CREATE_MISSING_NAME_0 = "ERR_INDEXSOURCE_CREATE_MISSING_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEXSOURCE_INDEXER_CLASS_NAME_2 = "ERR_INDEXSOURCE_INDEXER_CLASS_NAME_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IO_INDEX_WRITER_OPEN_2 = "ERR_IO_INDEX_WRITER_OPEN_2";
@@ -88,10 +110,49 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SEARCH_PARAMS_1 = "ERR_SEARCH_PARAMS_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SEARCHINDEX_CREATE_INVALID_NAME_1 = "ERR_SEARCHINDEX_CREATE_INVALID_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SEARCHINDEX_CREATE_MISSING_NAME_0 = "ERR_SEARCHINDEX_CREATE_MISSING_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HELP_BUTTON_BACK_0 = "GUI_HELP_BUTTON_BACK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HELP_BUTTON_CLOSE_0 = "GUI_HELP_BUTTON_CLOSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HELP_BUTTON_CONTENTS_0 = "GUI_HELP_BUTTON_CONTENTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HELP_BUTTON_NEXT_0 = "GUI_HELP_BUTTON_NEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HELP_BUTTON_SEARCH_0 = "GUI_HELP_BUTTON_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HELP_SEARCH_NOMATCH_1 = "GUI_HELP_SEARCH_NOMATCH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HELP_SEARCH_RESULT_START_0 = "GUI_HELP_SEARCH_RESULT_START_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HELP_SEARCH_RESULT_TITLE_0 = "GUI_HELP_SEARCH_RESULT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HELP_SEARCH_UNAVAILABLE_0 = "GUI_HELP_SEARCH_UNAVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_ANALYZER_2 = "INIT_ADD_ANALYZER_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_SEARCH_INDEX_2 = "INIT_ADD_SEARCH_INDEX_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_INDEX_CONFIGURED_2 = "INIT_INDEX_CONFIGURED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_INDEX_NOT_CONFIGURED_2 = "INIT_INDEX_NOT_CONFIGURED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SEARCH_DOC_TYPES_2 = "INIT_SEARCH_DOC_TYPES_2";
@@ -190,6 +251,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_SEARCH_PRIORITY_TOO_LOW_2 = "LOG_SEARCH_PRIORITY_TOO_LOW_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2 = "LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SEARCHINDEX_DISABLED_1 = "LOG_SEARCHINDEX_DISABLED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_SEARCHING_FAILED_0 = "LOG_SEARCHING_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -230,6 +297,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_FILE_BEGIN_0 = "RPT_SEARCH_INDEXING_FILE_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_LOCK_WAIT_2 = "RPT_SEARCH_INDEXING_LOCK_WAIT_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_REBUILD_BEGIN_1 = "RPT_SEARCH_INDEXING_REBUILD_BEGIN_1";
