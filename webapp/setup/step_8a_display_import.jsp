@@ -122,9 +122,7 @@ Alkacon OpenCms Setup Wizard - Import modules
 	enable();
 </script>
 <% } else { %>
-
-<%@ include file="error.jsp" %>
-
+<%= Bean.displayError("")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

@@ -172,9 +172,7 @@ if (!setupTests.isGreen() && !hasUserAccepted) {
 <%= descriptions %>
 
 <% } else	{ %>
-
-<%@ include file="error.jsp" %>
-
+<%= Bean.displayError("")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <% } %>

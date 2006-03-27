@@ -185,10 +185,7 @@ MySQL versions <b>4.0.x</b> are only limited by the amount of available memory o
 <% } else	{ %>
 Alkacon OpenCms Setup Wizard - Database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-
-<% request.setAttribute("pathPrefix", "../../"); %>
-<%@ include file="../../error.jsp" %>
-
+<%= Bean.displayError("../../")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

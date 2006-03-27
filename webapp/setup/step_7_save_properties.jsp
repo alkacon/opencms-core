@@ -115,9 +115,7 @@ manually edit the <code>opencms-system.xml</code> file after the installation.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <% } else	{ %>
-
-<%@ include file="error.jsp" %>
-
+<%= Bean.displayError("")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

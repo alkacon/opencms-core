@@ -23,9 +23,7 @@ Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 Alkacon OpenCms Setup Wizard - Database selection
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-
-<%@ include file="error.jsp" %>
-
+<%= Bean.displayError("")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <%= Bean.getHtmlPart("C_HTML_END") %>
 <% } %>

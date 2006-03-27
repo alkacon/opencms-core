@@ -138,7 +138,7 @@ If not you can use the root '/' site.
 <% } else	{ %>
 OpenCms Setup Wizard - Settings
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<%@ include file="error.jsp" %>
+<%= Bean.displayError("")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

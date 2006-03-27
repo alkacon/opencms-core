@@ -152,9 +152,7 @@ Alkacon OpenCms Setup Wizard - Validate database connection
 } %>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <% } else	{ %>
-
-<%@ include file="error.jsp" %>
-
+<%= Bean.displayError("")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

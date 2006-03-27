@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/03/25 22:42:43 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2006/03/27 13:34:21 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.12 $ 
+ * @version $Revision: 1.1.2.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,6 +129,41 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Returns html code to display an error.<p> 
+     * 
+     * @param pathPrefix to adjust the path
+     * 
+     * @return html code
+     */
+    public String displayError(String pathPrefix) {
+
+        if (pathPrefix == null) {
+            pathPrefix = "";
+        }
+        StringBuffer html = new StringBuffer(512);
+        html.append("<table border='0' cellpadding='5' cellspacing='0' style='width: 100%; height: 100%;'>");
+        html.append("\t<tr>");
+        html.append("\t\t<td style='vertical-align: middle; height: 100%;'>");
+        html.append(getHtmlPart("C_BLOCK_START", "Error"));
+        html.append("\t\t\t<table border='0' cellpadding='0' cellspacing='0' style='width: 100%;'>");
+        html.append("\t\t\t\t<tr>");
+        html.append("\t\t\t\t\t<td><img src='").append(pathPrefix).append("resources/error.png' border='0'></td>");
+        html.append("\t\t\t\t\t<td>&nbsp;&nbsp;</td>");
+        html.append("\t\t\t\t\t<td style='width: 100%;'>");
+        html.append("\t\t\t\t\t\tThe Alkacon OpenCms update wizard has not been started correctly!<br>");
+        html.append("\t\t\t\t\t\tPlease click <a href='").append(pathPrefix);
+        html.append("index.jsp'>here</a> to restart the wizard.");
+        html.append("\t\t\t\t\t</td>");
+        html.append("\t\t\t\t</tr>");
+        html.append("\t\t\t</table>");
+        html.append(getHtmlPart("C_BLOCK_END"));
+        html.append("\t\t</td>");
+        html.append("\t</tr>");
+        html.append("</table>");
+        return html.toString();
+    }
+
+    /**
      * Returns the admin Pwd.<p>
      *
      * @return the admin Pwd
@@ -170,7 +205,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                     ver = getXmlHelper().getValue(
                         file,
                         CmsStringUtil.substitute(basePath, "?", "" + (i - 1)) + CmsModuleXmlHandler.N_VERSION);
-                 } catch (CmsXmlException e) {
+                } catch (CmsXmlException e) {
                     // ignore
                 }
                 modules.put(name, new CmsModuleVersion(ver));
@@ -585,4 +620,5 @@ public class CmsUpdateBean extends CmsSetupBean {
             Messages.get().container(Messages.RPT_END_UPDATE_MODULE_1, moduleName),
             I_CmsReport.FORMAT_HEADLINE);
     }
+
 }

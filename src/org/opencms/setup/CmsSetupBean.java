@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/03/24 16:01:25 $
- * Version: $Revision: 1.44.2.14 $
+ * Date   : $Date: 2006/03/27 13:34:21 $
+ * Version: $Revision: 1.44.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.44.2.14 $ 
+ * @version $Revision: 1.44.2.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -298,6 +298,41 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
             m_errors.add("Could not copy " + source + " to " + target + " \n");
             m_errors.add(e.toString() + "\n");
         }
+    }
+
+    /**
+     * Returns html code to display an error.<p> 
+     * 
+     * @param pathPrefix to adjust the path
+     * 
+     * @return html code
+     */
+    public String displayError(String pathPrefix) {
+
+        if (pathPrefix == null) {
+            pathPrefix = "";
+        }
+        StringBuffer html = new StringBuffer(512);
+        html.append("<table border='0' cellpadding='5' cellspacing='0' style='width: 100%; height: 100%;'>");
+        html.append("\t<tr>");
+        html.append("\t\t<td style='vertical-align: middle; height: 100%;'>");
+        html.append(getHtmlPart("C_BLOCK_START", "Error"));
+        html.append("\t\t\t<table border='0' cellpadding='0' cellspacing='0' style='width: 100%;'>");
+        html.append("\t\t\t\t<tr>");
+        html.append("\t\t\t\t\t<td><img src='").append(pathPrefix).append("resources/error.png' border='0'></td>");
+        html.append("\t\t\t\t\t<td>&nbsp;&nbsp;</td>");
+        html.append("\t\t\t\t\t<td style='width: 100%;'>");
+        html.append("\t\t\t\t\t\tThe Alkacon OpenCms setup wizard has not been started correctly!<br>");
+        html.append("\t\t\t\t\t\tPlease click <a href='").append(pathPrefix);
+        html.append("index.jsp'>here</a> to restart the wizard.");
+        html.append("\t\t\t\t\t</td>");
+        html.append("\t\t\t\t</tr>");
+        html.append("\t\t\t</table>");
+        html.append(getHtmlPart("C_BLOCK_END"));
+        html.append("\t\t</td>");
+        html.append("\t</tr>");
+        html.append("</table>");
+        return html.toString();
     }
 
     /**
@@ -1276,10 +1311,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
             xp.append("/").append(CmsSystemConfiguration.N_SITES);
             xp.append("/").append(CmsSystemConfiguration.N_WORKPLACE_SERVER);
 
-            getXmlHelper().setValue(
-                CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
-                xp.toString(),
-                getWorkplaceSite());
+            getXmlHelper().setValue(CmsSystemConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
 
             // /opencms/system/sites/site[@uri='/sites/default/']/@server
             xp = new StringBuffer(256);
@@ -1291,10 +1323,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
             xp.append("='").append(CmsResource.VFS_FOLDER_SITES);
             xp.append("/default/']/@").append(CmsSystemConfiguration.A_SERVER);
 
-            getXmlHelper().setValue(
-                CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
-                xp.toString(),
-                getWorkplaceSite());
+            getXmlHelper().setValue(CmsSystemConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
 
             getXmlHelper().writeAll();
         }
@@ -2085,4 +2114,4 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         }
         m_configRfsPath = m_webAppRfsPath + FOLDER_WEBINF + CmsSystemInfo.FOLDER_CONFIG;
     }
-}
+};
