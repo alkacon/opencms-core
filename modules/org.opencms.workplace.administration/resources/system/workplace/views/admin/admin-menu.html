@@ -27,9 +27,9 @@
       loadingOn();
     }
     function checkSize() {
-      if (wHeight() <= pHeight() && pWidth() < 213) {
+      if (wHeight() <= pHeight() && wWidth() < 213) {
     	parent.location.href='admin-fs.html?scroll=true';
-      } else if (wHeight() > pHeight() && pWidth() > 212) {
+      } else if (wHeight() > pHeight() && wWidth() > 212) {
         parent.location.href='admin-fs.html?scroll=false';
       }
     }
