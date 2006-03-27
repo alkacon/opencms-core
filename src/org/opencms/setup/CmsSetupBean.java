@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/03/27 14:52:50 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2006/03/27 15:18:19 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  */
@@ -2114,4 +2114,4 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         }
         m_configRfsPath = m_webAppRfsPath + FOLDER_WEBINF + CmsSystemInfo.FOLDER_CONFIG;
     }
-};
+}
