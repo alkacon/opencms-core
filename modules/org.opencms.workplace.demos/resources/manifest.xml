@@ -37,7 +37,7 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -48,7 +48,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -59,7 +59,7 @@
 		<file>
 			<destination>system/workplace/demos</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -81,7 +81,7 @@
 			<destination>system/workplace/demos/readme.txt</destination>
 			<type>plain</type>
 			<uuidresource>b1f1dfde-256b-46da-be12-4b5a0be1b421</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 09 Nov 2005 14:18:27 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -92,7 +92,7 @@
 		<file>
 			<destination>system/workplace/views</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 09 Nov 2005 14:41:51 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 09 Nov 2005 14:38:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -103,7 +103,7 @@
 		<file>
 			<destination>system/workplace/views/demos</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 09 Nov 2005 14:41:51 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 09 Nov 2005 14:38:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -133,7 +133,7 @@
 			<destination>system/workplace/views/demos/admin-fs.html</destination>
 			<type>jsp</type>
 			<uuidresource>bd846c5c-4e0b-11da-ac8d-4b5a0381b421</uuidresource>
-			<datelastmodified>Wed, 09 Nov 2005 14:39:34 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Sat, 05 Nov 2005 14:52:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
