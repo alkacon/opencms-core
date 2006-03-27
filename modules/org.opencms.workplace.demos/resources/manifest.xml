@@ -117,14 +117,14 @@
 					<name>NavPos</name>
 					<value><![CDATA[50]]></value>
 				</property>
-				<property>
+				<!--property>
 					<name>default-file</name>
 					<value><![CDATA[admin-fs.html]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
 					<value><![CDATA[${key.GUI_DEMOS_VIEW_ROOT_NAME_0}]]></value>
-				</property>
+				</property-->
 			</properties>
 			<accesscontrol/>
 		</file>
