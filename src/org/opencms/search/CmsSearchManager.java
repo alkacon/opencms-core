@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2006/03/25 22:42:38 $
- * Version: $Revision: 1.53.2.13 $
+ * Date   : $Date: 2006/03/27 14:24:52 $
+ * Version: $Revision: 1.53.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.13 $ 
+ * @version $Revision: 1.53.2.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -574,11 +574,24 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void rebuildAllIndexes(I_CmsReport report, boolean wait) throws CmsException {
 
+        CmsMessageContainer container = null;
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
             // iterate all configured seach indexes
             CmsSearchIndex searchIndex = (CmsSearchIndex)m_indexes.get(i);
-            // update the index 
-            updateIndex(searchIndex, report, wait, null, null);
+            try {
+                // update the index 
+                updateIndex(searchIndex, report, wait, null, null);
+            } catch (CmsException e) {
+                container = new CmsMessageContainer(
+                    Messages.get(),
+                    Messages.ERR_INDEX_REBUILD_ALL_1,
+                    new Object[] {searchIndex.getName()});
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_REBUILD_ALL_1, searchIndex.getName()), e);
+            }
+        }
+        if (container != null) {
+            // throw stored exception
+            throw new CmsSearchException(container);
         }
     }
 
