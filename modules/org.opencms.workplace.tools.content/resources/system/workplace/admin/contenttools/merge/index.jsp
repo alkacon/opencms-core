@@ -1,12 +1,13 @@
-<%@ page import = "org.opencms.jsp.CmsJspActionElement,
-  				 	 					 	org.opencms.file.CmsObject,
-				 							java.util.*,
-				 							org.opencms.workplace.*,
-											org.opencms.workplace.commons.*,
-				 							org.opencms.workplace.editors.CmsDialogElements,				 											 							 
-											org.opencms.workplace.tools.content.*" %>
-
-<%	
+<%@ page import = "
+	org.opencms.jsp.CmsJspActionElement,
+	org.opencms.file.CmsObject,
+	java.util.*,
+	org.opencms.workplace.*,
+	org.opencms.workplace.commons.*,
+	org.opencms.workplace.editors.CmsDialogElements,				 											 							 
+	org.opencms.workplace.tools.content.*
+" %><%
+	
 	// Initialize action element
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 
@@ -64,7 +65,7 @@ default:
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
 <%= wp.dialogBlockStart(null) %>
-<%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(), org.opencms.workplace.tools.content.Messages.GUI_INPUT_MERGEPAGES_INFO_0) %><br>
+<%= wp.key( org.opencms.workplace.tools.content.Messages.GUI_INPUT_MERGEPAGES_INFO_0) %><br>
 <%= wp.dialogBlockEnd() %>
 <%= wp.dialogSpacer() %>
 
@@ -92,12 +93,12 @@ default:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(), org.opencms.workplace.tools.content.Messages.GUI_INPUT_MERGEPAGES_FOLDER1_0)%></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(org.opencms.workplace.tools.content.Messages.GUI_INPUT_MERGEPAGES_FOLDER1_0)%></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_FOLDER1 %>" type="text" value="<%=wp.getParamFolder1()==null?"":wp.getParamFolder1()%>" class="maxwidth" style="width: 99%"></td>
 	<td><%=wp.button("javascript:top.openTreeWin('param_folder1', true, 'main', '"+wp.PARAM_FOLDER1+"', document);", null, "folder", org.opencms.workplace.tools.content.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(), org.opencms.workplace.tools.content.Messages.GUI_INPUT_MERGEPAGES_FOLDER2_0)%></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(org.opencms.workplace.tools.content.Messages.GUI_INPUT_MERGEPAGES_FOLDER2_0)%></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_FOLDER2 %>" type="text" value="<%=wp.getParamFolder2()==null?"":wp.getParamFolder2()%>" class="maxwidth" style="width: 99%"></td>
 	<td><%=wp.button("javascript:top.openTreeWin('param_folder2', true, 'main', '"+wp.PARAM_FOLDER2+"', document);", null, "folder", org.opencms.workplace.tools.content.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
 </tr>

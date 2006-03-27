@@ -1,9 +1,8 @@
-<%@ page import= "org.opencms.workplace.tools.content.*, 
-						java.util.List, 
-						java.util.Iterator, 
-						org.opencms.file.CmsResource,
-						org.opencms.file.CmsObject" %>
-<%	
+<%@ page import= "
+	org.opencms.workplace.tools.content.*, 
+	org.opencms.workplace.*,
+	java.util.*
+"%><%	
 
 	// initialize the workplace class
 	CmsPropertyDelete wp = new CmsPropertyDelete(pageContext, request, response);
@@ -12,14 +11,14 @@
 	
 switch (wp.getAction()) {
 
-case CmsPropertyDelete.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
 
 break;
 
-case CmsPropertyDelete.ACTION_OK:		
+case CmsDialog.ACTION_OK:		
 
 //////////////////// ACTION: main delete property definition action
 
@@ -37,14 +36,14 @@ case CmsPropertyDelete.ACTION_OK:
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
 <%= wp.dialogBlockStart(null) %>
-<%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(),  org.opencms.workplace.tools.content.Messages.GUI_MESSAGE_DELETEPROPERTY_0)%>
+<%= wp.key(  org.opencms.workplace.tools.content.Messages.GUI_MESSAGE_DELETEPROPERTY_0)%>
 <%= wp.dialogBlockEnd() %>
 <%= wp.dialogSpacer() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 <%= wp.dialogWhiteBoxStart() %>
 <%= wp.buildResourceList() %>
 <%= wp.dialogWhiteBoxEnd() %>
@@ -70,12 +69,12 @@ case CmsPropertyDelete.ACTION_DELETE_CASCADE:
 	
 break;
 
-case CmsPropertyDelete.ACTION_DEFAULT:
+case CmsDialog.ACTION_DEFAULT:
 default:
 
 //////////////////// ACTION: show property definition delete dialog (default)
 
-	wp.setParamAction(CmsPropertyDelete.DIALOG_OK);
+	wp.setParamAction(CmsDialog.DIALOG_OK);
 
 %><%= wp.htmlStart(null) %>
 <%= wp.bodyStart("dialog", null) %>
@@ -84,19 +83,19 @@ default:
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
 <%= wp.dialogBlockStart(null) %>
-<%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(),  org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTYDELETE_INFO_0)%>
+<%= wp.key(  org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTYDELETE_INFO_0)%>
 <%= wp.dialogBlockEnd() %>
 <%= wp.dialogSpacer() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(), org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTY_0) %></td>
-	<td colspan="2" class="maxwidth"><%= wp.buildSelectProperty("name=\"" + wp.PARAM_PROPERTYNAME + "\" size=\"1\"") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTY_0) %></td>
+	<td colspan="2" class="maxwidth"><%= wp.buildSelectProperty("name=\"" + CmsPropertyDelete.PARAM_PROPERTYNAME + "\" size=\"1\"") %></td>
 </tr>
 </table>
 
