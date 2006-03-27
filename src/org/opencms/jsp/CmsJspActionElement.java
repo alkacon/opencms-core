@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2006/02/14 09:43:17 $
- * Version: $Revision: 1.24.2.3 $
+ * Date   : $Date: 2006/03/27 12:59:19 $
+ * Version: $Revision: 1.24.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.2.3 $ 
+ * @version $Revision: 1.24.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -202,6 +202,20 @@ public class CmsJspActionElement extends CmsJspBean {
      * convenient access to localized resource bundles.<p>
      * 
      * @param bundleName the name of the ResourceBundle to use
+     * @param locale the locale to use for localization
+     * 
+     * @return CmsMessages a message bundle initialized with the provided values
+     */
+    public CmsMessages getMessages(String bundleName, Locale locale) {
+
+        return new CmsMessages(bundleName, locale);
+    }
+
+    /**
+     * Generates an initialized instance of {@link CmsMessages} for 
+     * convenient access to localized resource bundles.<p>
+     * 
+     * @param bundleName the name of the ResourceBundle to use
      * @param language language indentificator for the locale of the bundle
      * @return CmsMessages a message bundle initialized with the provided values
      */
@@ -260,7 +274,7 @@ public class CmsJspActionElement extends CmsJspBean {
             if (variant == null) {
                 variant = "";
             }
-            return new CmsMessages(bundleName, language, country, variant);
+            return getMessages(bundleName, new Locale(language, country, variant));
         } catch (Throwable t) {
             handleException(t);
         }

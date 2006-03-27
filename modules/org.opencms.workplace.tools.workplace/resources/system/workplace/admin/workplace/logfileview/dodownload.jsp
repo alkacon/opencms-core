@@ -1,5 +1,10 @@
-<%@ page import="org.opencms.main.*,org.opencms.workplace.tools.workplace.rfsfile.*, org.opencms.util.*, org.opencms.workplace.*, java.io.*" %>
-<% // cannot use new_admin style, link class shifts vertical-align from baseline (firefox looks awful). %>
+<%@ page import="
+	org.opencms.main.*,
+	org.opencms.workplace.tools.workplace.rfsfile.*,
+	org.opencms.util.*,
+	org.opencms.workplace.*,
+	java.io.*
+" %><% // cannot use new_admin style, link class shifts vertical-align from baseline (firefox looks awful). %>
 <style type="text/css">
 body, table {
   font-size: 11px;
@@ -64,9 +69,8 @@ File file = new File(filePath);
 </p>
 <script type="text/javascript">
 function download(){
-  window.location.href = "<%=request.getParameter("servletUrl")%>?filePath=<%=file.getAbsolutePath().replace('\\', '/')%>"
+  window.location.href = "<%= request.getParameter("servletUrl")%>?filePath=<%=file.getAbsolutePath().replace('\\', '/') %>"
 }
 
 window.setTimeout("download()",500);
 </script>
-

@@ -55,7 +55,7 @@ function init() {
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
-<%= org.opencms.workplace.tools.link.Messages.get().getBundle(wp.getLocale()).key(org.opencms.workplace.tools.link.Messages.GUI_MESSAGEBOX_HTML_LINK_VALIDATOR1_0) %>
+<%= wp.key(org.opencms.workplace.tools.link.Messages.GUI_MESSAGEBOX_HTML_LINK_VALIDATOR1_0) %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>

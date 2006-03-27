@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2006/03/25 22:42:36 $
- * Version: $Revision: 1.12.2.4 $
+ * Date   : $Date: 2006/03/27 12:59:19 $
+ * Version: $Revision: 1.12.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -54,11 +53,14 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12.2.4 $ 
+ * @version $Revision: 1.12.2.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsMultiMessages extends CmsMessages {
+
+    /** Constant for the multi bundle name. */
+    public static final String MULTI_BUNDLE_NAME = CmsMultiMessages.class.getName();
 
     /** Null String value for caching of null message results. */
     public static final String NULL_STRING = "null";
@@ -73,99 +75,86 @@ public class CmsMultiMessages extends CmsMessages {
     private List m_messages;
 
     /**
-     * Constructor for creating a new messages object
-     * initialized with the provided bundle.<p>
+     * Constructor for creating a new messages object initialized with the given locale.<p>
      * 
-     * @param messages a message instance
+     * @param locale the locale to use for localization of the messages
      */
-    public CmsMultiMessages(CmsMessages messages) {
-
-        this(new CmsMessages[] {messages});
-    }
-
-    /**
-     * Constructor for creating a new messages object
-     * initialized with the provided bundles.<p>
-     * 
-     * @param message1 a message instance
-     * @param message2 a message instance
-     */
-    public CmsMultiMessages(CmsMessages message1, CmsMessages message2) {
-
-        this(new CmsMessages[] {message1, message2});
-    }
-
-    /**
-     * Constructor for creating a new messages object
-     * initialized with the provided array of bundles.<p>
-     * 
-     * @param messages array of <code>{@link CmsMessages}</code>, must not be null or empty
-     */
-    public CmsMultiMessages(CmsMessages[] messages) {
-
-        this(Arrays.asList(messages));
-    }
-
-    /**
-     * Constructor for creating a new messages object
-     * initialized with the provided list of bundles.<p>
-     * 
-     * @param messages list of <code>{@link CmsMessages}</code>, must not be null or empty
-     * 
-     * @throws CmsIllegalArgumentException if the given <code>List</code> is null or empty
-     */
-    public CmsMultiMessages(List messages)
-    throws CmsIllegalArgumentException {
+    public CmsMultiMessages(Locale locale) {
 
         super();
-        setBundleName(CmsMultiMessageBundle.MULTI_BUNDLE_NAME);
-        if ((messages == null) || (messages.size() == 0)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_MULTIMSG_EMPTY_LIST_0));
-        }
-
-        // set the locale
-        setLocale(((CmsMessages)messages.get(0)).getLocale());
-
-        // set messages        
+        // set the bundle name and the locale
+        setBundleName(CmsMultiMessages.MULTI_BUNDLE_NAME);
+        setLocale(locale);
+        // generate array for the messages        
         m_messages = new ArrayList();
-        Iterator i = messages.iterator();
-        while (i.hasNext()) {
-            addMessage((CmsMessages)i.next());
-        }
-
         // use "old" Hashtable since it is the most efficient synchronized HashMap implementation
         m_messageCache = new Hashtable();
     }
 
     /**
+     * Adds a bundle instance to this multi message bundle.<p>
+     * 
+     * The added bundle will be localized with the locale of this multi message bundle.<p>
+     * 
+     * @param bundle the bundle instance to add
+     */
+    public void addBundle(I_CmsMessageBundle bundle) {
+
+        // add the localized bundle to the messages
+        addMessages(bundle.getBundle(getLocale()));
+    }
+
+    /**
      * Adds a messages instance to this multi message bundle.<p> 
      * 
-     * @param message the messages instance to add
+     * The messages instance should have been initialized with the same locale as this multi bundle,
+     * if not, the locale of the messages instance is automatically replaced. However, this will not work 
+     * if the added messages instance is in face also of type <code>{@link CmsMultiMessages}</code>.<p>
      * 
-     * @throws CmsIllegalArgumentException if the locale of the given <code>CmsMessages</code> does not match the locale of this multi messages
+     * @param messages the messages instance to add
+     * 
+     * @throws CmsIllegalArgumentException if the locale of the given <code>{@link CmsMultiMessages}</code> does not match the locale of this multi messages
      */
-    public void addMessage(CmsMessages message) throws CmsIllegalArgumentException {
+    public void addMessages(CmsMessages messages) throws CmsIllegalArgumentException {
 
-        Locale locale = message.getLocale();
+        Locale locale = messages.getLocale();
         if (!getLocale().equals(locale)) {
             // not the same locale, try to change the locale if this is a simple CmsMessage object
-            if (!(message instanceof CmsMultiMessages)) {
+            if (!(messages instanceof CmsMultiMessages)) {
                 // match locale of multi bundle
-                String bundleName = message.getBundleName();
-                message = new CmsMessages(bundleName, getLocale());
+                String bundleName = messages.getBundleName();
+                messages = new CmsMessages(bundleName, getLocale());
             } else {
-                // multi bundles with wring locales can't be added this way
+                // multi bundles with wrong locales can't be added this way
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.ERR_MULTIMSG_LOCALE_DOES_NOT_MATCH_2,
-                    message.getLocale(),
+                    messages.getLocale(),
                     getLocale()));
             }
         }
-        if (!m_messages.contains(message)) {
-            if (m_messageCache != null) {
+        if (!m_messages.contains(messages)) {
+            if ((m_messageCache != null) && (m_messageCache.size() > 0)) {
+                // cache has already been used, must flush because of newly added keys
                 m_messageCache = new Hashtable();
             }
-            m_messages.add(message);
+            m_messages.add(messages);
+        }
+    }
+
+    /**
+     * Adds a list a messages instances to this multi message bundle.<p> 
+     * 
+     * @param messages the messages instance to add
+     */
+    public void addMessages(List messages) {
+
+        if (messages == null) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_MULTIMSG_EMPTY_LIST_0));
+        }
+
+        Iterator i = messages.iterator();
+        while (i.hasNext()) {
+            addMessages((CmsMessages)i.next());
         }
     }
 

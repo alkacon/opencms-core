@@ -79,8 +79,7 @@ String editId = "directedit_".concat(String.valueOf(rnd.nextInt()));
 <tr>
 <% 
 if (showEdit) { 
-%>
-	<td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= editAction %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
+%><td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= editAction %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
    if (editButtonStyle == 1) { 
 	%><span id="bt_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= CmsWorkplace.getSkinUri() %>buttons/directedit_cl.png');">&nbsp;<%= msg.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_FRONTEND_BUTTON_EDIT_0)%></span><%
    } else if (editButtonStyle == 2) { 
@@ -91,9 +90,7 @@ if (showEdit) {
 <% 
 }
 if (showDelete) {
-%>
-
-	<td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= deleteAction %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
+%><td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= deleteAction %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
    if (editButtonStyle == 1) { 
 	%><span id="del_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= CmsWorkplace.getSkinUri() %>buttons/deletecontent.png');">&nbsp;<%= msg.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0) %></span><%
    } else if (editButtonStyle == 2) { 
@@ -104,8 +101,7 @@ if (showDelete) {
 <%
 }
 if (showNew) {
-%>   
-	<td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= newAction %>', '<%= editNewLink %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
+%><td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= newAction %>', '<%= editNewLink %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
    if (editButtonStyle == 1) { 
 	%><span id="new_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= CmsWorkplace.getSkinUri() %>buttons/new.png');">&nbsp;<%= msg.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_NEW_0)%></span><%
    } else if (editButtonStyle == 2) { 
@@ -115,8 +111,7 @@ if (showNew) {
    } %></span></a></td>     
 <%
 }
-%>   
-</tr>
+%></tr>
 </table>
 </span>
 </div>
@@ -169,7 +164,7 @@ if (showNew) {
 --%><cms:template element="directedit_includes">
 <style type="text/css">
 <!--
-a.ocms_button,a.ocms_button:active,a.ocms_button:hover,a.ocms_button:visited {
+a.ocms_button,a.ocms_button:link,a.ocms_button:active,a.ocms_button:hover,a.ocms_button:visited {
 	color: ButtonText;
 	text-decoration: none;
 	cursor: pointer;

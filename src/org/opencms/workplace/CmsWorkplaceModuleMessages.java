@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsWorkplaceModuleMessages.java,v $
- * Date   : $Date: 2006/03/24 13:59:24 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/27 12:59:19 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,10 +46,14 @@ import java.util.Set;
 /**
  * Provides access to the localized messages for modules of the workplace.<p>
  * 
- * The workplace module messages are collected from the workplace resource bundles of all installed modules.
+ * The workplace module messages are collected from the workplace resource bundles of all installed modules,
+ * as well as all OpenCms core packages.<p>
+ * 
  * To be recognized as a workplace module resource bundle,
  * the workplace property file must follow the naming convention <code>${module_package_name}.workplace${locale}.properties</code>,
- * for example like <code>com.mycompany.module.workplace_en.properties</code>.<p> 
+ * or <code>${module_package_name}.messages${locale}.properties</code>
+ * for example like <code>com.mycompany.module.workplace_en.properties</code> or 
+ * <code>com.mycompany.module.messages_en.properties</code>.<p>
  * 
  * Workplace module messages are cached for faster lookup. If a localized key is contained in more then one module,
  * it will be used only from the module where it was first found in. The module order is undefined. It is therefore 
@@ -57,15 +61,21 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsWorkplaceModuleMessages extends CmsMultiMessages {
 
+    /** Constant for the <code>".messages"</code> prefix. */
+    public static final String PREFIX_BUNDLE_MESSAGES = ".messages";
+
+    /** Constant for the <code>".workplace"</code> prefix. */
+    public static final String PREFIX_BUNDLE_WORKPLACE = ".workplace";
+
     /** Constant for the multi bundle name. */
     public static final String WORKPLACE_BUNDLE_NAME = CmsWorkplaceModuleMessages.class.getName();
-    
+
     /**
      * Constructor for creating a new messages object
      * initialized with the provided locale.<p>
@@ -74,8 +84,9 @@ public class CmsWorkplaceModuleMessages extends CmsMultiMessages {
      */
     public CmsWorkplaceModuleMessages(Locale locale) {
 
-        super(collectModuleMessages(locale));        
+        super(locale);
         setBundleName(WORKPLACE_BUNDLE_NAME);
+        addMessages(collectModuleMessages(locale));
     }
 
     /**
@@ -94,25 +105,25 @@ public class CmsWorkplaceModuleMessages extends CmsMultiMessages {
         // create a new list and add the base bundle
         ArrayList result = new ArrayList();
 
-        ////////////    iterate over all registered modules ////////////////        
+        //////////// iterate over all registered modules ////////////////        
         Set names = OpenCms.getModuleManager().getModuleNames();
         if (names != null) {
             // iterate all module names
             Iterator i = names.iterator();
             while (i.hasNext()) {
                 String modName = (String)i.next();
-                ////////////    collect the workplace.properties ////////////////
+                //////////// collect the workplace.properties ////////////////
                 // this should result in a name like "my.module.name.workplace"
-                String bundleName = modName + ".workplace";
+                String bundleName = modName + PREFIX_BUNDLE_WORKPLACE;
                 // try to load a bundle with the module names
                 CmsMessages msg = new CmsMessages(bundleName, locale);
                 // bundle was loaded, add to list of bundles
                 if (msg.isInitialized()) {
                     result.add(msg);
                 }
-                ////////////    collect the messages.properties ////////////////
+                //////////// collect the messages.properties ////////////////
                 // this should result in a name like "my.module.name.messages"
-                bundleName = modName + ".messages";
+                bundleName = modName + PREFIX_BUNDLE_MESSAGES;
                 // try to load a bundle with the module names
                 msg = new CmsMessages(bundleName, locale);
                 // bundle was loaded, add to list of bundles
@@ -122,7 +133,7 @@ public class CmsWorkplaceModuleMessages extends CmsMultiMessages {
             }
         }
 
-        ////////////collect additional core packages ////////////////
+        //////////// collect additional core packages ////////////////
         I_CmsMessageBundle[] coreMsgs = A_CmsMessageBundle.getOpenCmsMessageBundles();
         for (int i = 0; i < coreMsgs.length; i++) {
             I_CmsMessageBundle bundle = coreMsgs[i];
@@ -130,5 +141,21 @@ public class CmsWorkplaceModuleMessages extends CmsMultiMessages {
         }
 
         return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsWorkplaceModuleMessages) {
+            // workplace module messages are equal if the locale is equal (since all bundles are the same)
+            CmsMessages other = (CmsMessages)obj;
+            return other.getLocale().equals(getLocale());
+        }
+        return false;
     }
 }
