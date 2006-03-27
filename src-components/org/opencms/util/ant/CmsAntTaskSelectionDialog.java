@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2005/11/15 08:14:04 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2006/03/27 14:22:40 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.swing.border.Border;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12.2.1 $
+ * @version $Revision: 1.12.2.2 $
  * 
  * @since 6.0.0
  * 
@@ -238,11 +238,12 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
                 ret += m_selections[i].getText() + CmsAntTaskSelectionPrompt.LIST_SEPARATOR;
             }
         }
-        if (m_aborted || ret.trim().length() < CmsAntTaskSelectionPrompt.LIST_SEPARATOR.length()) {
-            dispose();
-            return null;
-        }
         dispose();
+        if (m_aborted) {
+            return null;
+        } else if (ret.trim().length() < CmsAntTaskSelectionPrompt.LIST_SEPARATOR.length()) {
+            return ""; 
+        }
         return ret.substring(0, ret.length() - CmsAntTaskSelectionPrompt.LIST_SEPARATOR.length());
     }
 
