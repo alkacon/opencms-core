@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/photoalbum/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/28 15:40:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,39 +39,42 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.3
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIG_ERRORS_HEADLINE_0 = "GUI_CONFIG_ERRORS_HEADLINE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DETAIL_IMAGEINFO_2 = "GUI_DETAIL_IMAGEINFO_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NAVIGATION_BACK_0 = "GUI_NAVIGATION_BACK_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NAVIGATION_NEXT_0 = "GUI_NAVIGATION_NEXT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NAVIGATION_ORIGINAL_0 = "GUI_NAVIGATION_ORIGINAL_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NAVIGATION_OVERVIEW_0 = "GUI_NAVIGATION_OVERVIEW_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_THUMB_PAGEINFO_2 = "GUI_THUMB_PAGEINFO_2";
 
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_TITLE_NEWPHOTOALBUM_0 = "GUI_TITLE_NEWPHOTOALBUM_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_IMAGEFOLDER_NOT_FOUND_1 = "LOG_ERR_IMAGEFOLDER_NOT_FOUND_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_WRONG_DETAIL_BGCOLOR_1 = "LOG_ERR_WRONG_DETAIL_BGCOLOR_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_WRONG_THUMB_BGCOLOR_1 = "LOG_ERR_WRONG_THUMB_BGCOLOR_1";
 

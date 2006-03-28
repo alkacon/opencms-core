@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/28 15:40:56 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INIT_INPUT_FIELD_MISSING_ITEM_2 = "ERR_INIT_INPUT_FIELD_MISSING_ITEM_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SELECTWIDGET_CONFIGURATION_2 = "ERR_SELECTWIDGET_CONFIGURATION_2";
@@ -76,27 +78,27 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SELECTWIDGET_INTERNAL_CONFIGURATION_2 = "ERR_SELECTWIDGET_INTERNAL_CONFIGURATION_2";
 
- /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_SELECTWIDGET_NO_RESOURCES_FOUND_3 = "LOG_ERR_SELECTWIDGET_NO_RESOURCES_FOUND_3";
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_TITLE_NEWEMAILFORM_0 = "GUI_TITLE_NEWEMAILFORM_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_SELECTWIDGET_XPATH_INVALID_4 = "LOG_ERR_SELECTWIDGET_XPATH_INVALID_4";
-   /** Message constant for key in the resource bundle. */
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_INIT_INPUT_FIELD_MISSING_ITEM_2 = "ERR_INIT_INPUT_FIELD_MISSING_ITEM_2";
-    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_CAPTCHA_CONFIG_IMAGE_SIZE_2 = "LOG_ERR_CAPTCHA_CONFIG_IMAGE_SIZE_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_PATTERN_SYNTAX_0 = "LOG_ERR_PATTERN_SYNTAX_0";
-    
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_FIELD_INSTANTIATION_1 = "LOG_ERR_FIELD_INSTANTIATION_1";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_PATTERN_SYNTAX_0 = "LOG_ERR_PATTERN_SYNTAX_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_READING_CUSTOM_FORM_FIELD_PROPERTIES_1 = "LOG_ERR_READING_CUSTOM_FORM_FIELD_PROPERTIES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_SELECTWIDGET_NO_RESOURCES_FOUND_3 = "LOG_ERR_SELECTWIDGET_NO_RESOURCES_FOUND_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_SELECTWIDGET_XPATH_INVALID_4 = "LOG_ERR_SELECTWIDGET_XPATH_INVALID_4";
+    /** Message constant for key in the resource bundle. */
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.frontend.templateone.form.messages";
