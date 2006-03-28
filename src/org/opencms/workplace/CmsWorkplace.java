@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/03/28 13:53:34 $
- * Version: $Revision: 1.154 $
+ * Date   : $Date: 2006/03/28 14:32:53 $
+ * Version: $Revision: 1.155 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.154 $ 
+ * @version $Revision: 1.155 $ 
  * 
  * @since 6.0.0 
  */
@@ -381,7 +381,7 @@ public abstract class CmsWorkplace {
     public static String getSkinUri() {
 
         if (m_skinUri == null) {
-            m_skinUri = OpenCms.getSystemInfo().getContextPath() + "/resources/";
+            m_skinUri = OpenCms.getSystemInfo().getContextPath() + RFS_PATH_RESOURCES;
         }
         return m_skinUri;
     }
