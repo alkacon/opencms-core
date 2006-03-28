@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlUpdateLocalizationKeys.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/28 17:14:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -82,24 +82,6 @@ public class CmsXmlUpdateLocalizationKeys extends A_CmsXmlWorkplace {
 
         if (m_newKeys == null) {
             m_newKeys = new ArrayList();
-            m_newKeys.add("GUI_FILEICON_FOLDER_0");
-            m_newKeys.add("GUI_FILEICON_EXTENDEDFOLDER_0");
-            m_newKeys.add("GUI_FILEICON_STRUCTURECONTENT_0");
-            m_newKeys.add("GUI_FILEICON_XMLPAGE_0");
-            m_newKeys.add("GUI_FILEICON_PLAIN_0");
-            m_newKeys.add("GUI_FILEICON_IMAGE_0");
-            m_newKeys.add("GUI_FILEICON_JSP_0");
-            m_newKeys.add("GUI_FILEICON_BINARY_0");
-            m_newKeys.add("GUI_FILEICON_POINTER_0");
-            m_newKeys.add("GUI_FILEICON_XMLTEMPLATE_0");
-            m_newKeys.add("GUI_FILEICON_LINK_0");
-            m_newKeys.add("GUI_FILEICON_UPLOAD_0");
-            m_newKeys.add("GUI_FILEICON_IMAGEGALLERY_0");
-            m_newKeys.add("GUI_FILEICON_DOWNLOADGALLERY_0");
-            m_newKeys.add("GUI_FILEICON_LINKGALLERY_0");
-            m_newKeys.add("GUI_FILEICON_HTMLGALLERY_0");
-            m_newKeys.add("GUI_FILEICON_TABLEGALLERY_0");
-            m_newKeys.add("GUI_FILEICON_XMLCONTENT_0");
             m_newKeys.add("GUI_EXPLORER_CONTEXT_LOCK_0");
             m_newKeys.add("GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0");
             m_newKeys.add("GUI_EXPLORER_CONTEXT_UNLOCK_0");
@@ -142,24 +124,6 @@ public class CmsXmlUpdateLocalizationKeys extends A_CmsXmlWorkplace {
 
         if (m_oldKeys == null) {
             m_oldKeys = new ArrayList();
-            m_oldKeys.add("fileicon.folder");
-            m_oldKeys.add("fileicon.extendedfolder");
-            m_oldKeys.add("fileicon.structurecontent");
-            m_oldKeys.add("fileicon.xmlpage");
-            m_oldKeys.add("fileicon.plain");
-            m_oldKeys.add("fileicon.image");
-            m_oldKeys.add("fileicon.jsp");
-            m_oldKeys.add("fileicon.binary");
-            m_oldKeys.add("fileicon.pointer");
-            m_oldKeys.add("fileicon.XMLTemplate");
-            m_oldKeys.add("fileicon.link");
-            m_oldKeys.add("fileicon.upload");
-            m_oldKeys.add("fileicon.imagegallery");
-            m_oldKeys.add("fileicon.downloadgallery");
-            m_oldKeys.add("fileicon.linkgallery");
-            m_oldKeys.add("fileicon.htmlgallery");
-            m_oldKeys.add("fileicon.tablegallery");
-            m_oldKeys.add("fileicon.xmlcontent");
             m_oldKeys.add("explorer.context.lock");
             m_oldKeys.add("explorer.context.overridelock");
             m_oldKeys.add("explorer.context.unlock");

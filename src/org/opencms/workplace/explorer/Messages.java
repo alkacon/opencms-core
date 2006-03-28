@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2006/03/28 16:48:21 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/28 17:14:41 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -209,60 +209,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_STATE3_0 = "GUI_EXPLORER_STATE3_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_BINARY_0 = "GUI_FILEICON_BINARY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_DOWNLOADGALLERY_0 = "GUI_FILEICON_DOWNLOADGALLERY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_EXTENDEDFOLDER_0 = "GUI_FILEICON_EXTENDEDFOLDER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_FOLDER_0 = "GUI_FILEICON_FOLDER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_HTMLGALLERY_0 = "GUI_FILEICON_HTMLGALLERY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_IMAGE_0 = "GUI_FILEICON_IMAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_IMAGEGALLERY_0 = "GUI_FILEICON_IMAGEGALLERY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_JSP_0 = "GUI_FILEICON_JSP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_LINK_0 = "GUI_FILEICON_LINK_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_LINKGALLERY_0 = "GUI_FILEICON_LINKGALLERY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_PLAIN_0 = "GUI_FILEICON_PLAIN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_POINTER_0 = "GUI_FILEICON_POINTER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_STRUCTURECONTENT_0 = "GUI_FILEICON_STRUCTURECONTENT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_TABLEGALLERY_0 = "GUI_FILEICON_TABLEGALLERY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_UPLOAD_0 = "GUI_FILEICON_UPLOAD_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_XMLCONTENT_0 = "GUI_FILEICON_XMLCONTENT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_XMLPAGE_0 = "GUI_FILEICON_XMLPAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILEICON_XMLTEMPLATE_0 = "GUI_FILEICON_XMLTEMPLATE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_ADRESS_0 = "GUI_INPUT_ADRESS_0";

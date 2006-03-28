@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/Messages.java,v $
- * Date   : $Date: 2006/03/28 15:40:56 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/28 17:14:41 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,9 +77,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SELECTWIDGET_INTERNAL_CONFIGURATION_2 = "ERR_SELECTWIDGET_INTERNAL_CONFIGURATION_2";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWEMAILFORM_0 = "GUI_TITLE_NEWEMAILFORM_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_CAPTCHA_CONFIG_IMAGE_SIZE_2 = "LOG_ERR_CAPTCHA_CONFIG_IMAGE_SIZE_2";

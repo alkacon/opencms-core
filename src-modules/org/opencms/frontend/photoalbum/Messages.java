@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/photoalbum/Messages.java,v $
- * Date   : $Date: 2006/03/28 15:40:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/28 17:14:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.3
  */
@@ -65,9 +65,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_THUMB_PAGEINFO_2 = "GUI_THUMB_PAGEINFO_2";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWPHOTOALBUM_0 = "GUI_TITLE_NEWPHOTOALBUM_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_IMAGEFOLDER_NOT_FOUND_1 = "LOG_ERR_IMAGEFOLDER_NOT_FOUND_1";

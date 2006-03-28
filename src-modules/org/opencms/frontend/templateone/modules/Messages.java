@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/Messages.java,v $
- * Date   : $Date: 2006/03/28 15:32:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/03/28 17:14:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,26 +39,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWEVENT_0 = "GUI_TITLE_NEWEVENT_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWFAQ_0 = "GUI_TITLE_NEWFAQ_0";
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWJOB_0 = "GUI_TITLE_NEWJOB_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWLINKLIST_0 = "GUI_TITLE_NEWLINKLIST_0";
-
-    /** Message contant for key in the resource bundle. */
-
-    public static final String GUI_TITLE_NEWNEWS_0 = "GUI_TITLE_NEWNEWS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_BUILD_HTML_NAVLIST_2 = "LOG_DEBUG_BUILD_HTML_NAVLIST_2";
