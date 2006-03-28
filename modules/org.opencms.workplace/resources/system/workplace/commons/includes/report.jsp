@@ -1,5 +1,7 @@
 <%@ page import="
-	org.opencms.workplace.*, org.opencms.report.I_CmsReport"%>
+		org.opencms.workplace.*, 
+		org.opencms.workplace.tools.CmsToolDialog, 
+		org.opencms.report.I_CmsReport"%>
 <%	
     // get workplace class from request attribute
     CmsReport wp = CmsReport.initCmsReport(pageContext, request, response);
@@ -19,7 +21,7 @@
 switch (wp.getAction()) {
 
 //////////////////// ACTION: get report update
-    case CmsReport.ACTION_REPORT_UPDATE:
+    case CmsDialog.ACTION_REPORT_UPDATE:
 %>
     <%= wp.htmlStart(false) %>
 
@@ -74,7 +76,7 @@ function init() {
     parent.update();
     
 	if (alive) {
-    	active = setTimeout("reload('<%= wp.REPORT_UPDATE %>');", <%= wp.REPORT_UPDATE_TIME %>);
+    	active = setTimeout("reload('<%= CmsDialog.REPORT_UPDATE %>');", <%= CmsReport.REPORT_UPDATE_TIME %>);
    	} else {
    		var hasNext = "<%= wp.getParamThreadHasNext() %>";
    		if (hasNext == "true") {
@@ -96,7 +98,7 @@ function reload(actionParam) {
 	if (resName != "") {
 		resName = "&resource=" + encodeURIComponent(resName);
 	}
-	location.href="<%= wp.getDialogRealUri() %>?<%= wp.PARAM_STYLE%>=<%=wp.getParamStyle()%>&<%= wp.PARAM_ACTION %>=" + actionParam + "&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>" + resName;
+	location.href="<%= wp.getDialogRealUri() %>?<%= CmsToolDialog.PARAM_STYLE%>=<%=wp.getParamStyle()%>&<%= CmsDialog.PARAM_ACTION %>=" + actionParam + "&<%= CmsDialog.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= CmsDialog.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>&<%= CmsReport.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>" + resName;
 }
 
 
@@ -109,9 +111,9 @@ function continueReport() {
 	parent.displayButtonRowOk();
 	parent.hasError = false;
 	parent.lastError = "";	
-	setTimeout("reload('<%= wp.REPORT_END %>');", <%= wp.REPORT_UPDATE_TIME %>);
-	if (parent.document.main.<%= wp.PARAM_THREAD_HASNEXT %>) {
-		parent.document.main.<%= wp.PARAM_THREAD_HASNEXT %>.value = "false";
+	setTimeout("reload('<%= CmsDialog.REPORT_END %>');", <%= CmsReport.REPORT_UPDATE_TIME %>);
+	if (parent.document.main.<%= CmsDialog.PARAM_THREAD_HASNEXT %>) {
+		parent.document.main.<%= CmsDialog.PARAM_THREAD_HASNEXT %>.value = "false";
 	}
 }
 
@@ -125,10 +127,10 @@ function continueReport() {
 
 break;
 //////////////////// ACTION: report begin
-case CmsReport.ACTION_REPORT_BEGIN:
+case CmsDialog.ACTION_REPORT_BEGIN:
 default:
 
-wp.setParamAction(CmsReport.REPORT_END);
+wp.setParamAction(CmsDialog.REPORT_END);
 
 %>
 
@@ -219,13 +221,13 @@ function appendBr() {
 }
 
 var report_running = new Image();
-report_running.src = "<%= wp.getSkinUri() %>commons/wait.gif";
+report_running.src = "<%= CmsWorkplace.getSkinUri() %>commons/wait.gif";
 
 var report_ok = new Image();
-report_ok.src = "<%= wp.getSkinUri() %>commons/ok.png";
+report_ok.src = "<%= CmsWorkplace.getSkinUri() %>commons/ok.png";
 
 var report_error = new Image();
-report_error.src = "<%= wp.getSkinUri() %>commons/error.png";
+report_error.src = "<%= CmsWorkplace.getSkinUri() %>commons/error.png";
 
 // toggles between the simple and extended output format
 function switchOutputFormat() {
@@ -259,7 +261,7 @@ var pageStartSimple =
     "<body style='background-color:Menu;'>\n" +   
     "<div style='vertical-align:middle; height: 100%;'>\n"+
     "<table border='0' style='vertical-align:middle; height: 100%;'>\n" + 
-    "<tr><td width='40' align='center' valign='middle'><img name='report_img' src='<%= wp.getSkinUri() %>commons/wait.gif' width='32' height='32' alt=''></td>\n" + 
+    "<tr><td width='40' align='center' valign='middle'><img name='report_img' src='<%= CmsWorkplace.getSkinUri() %>commons/wait.gif' width='32' height='32' alt=''></td>\n" + 
     "<td valign='middle'>";
     
 var pageEndSimple = 
@@ -291,8 +293,8 @@ function start() {
 function stop() {
 	isRunning = false;
 	
-	if (document.main.<%= wp.PARAM_THREAD_HASNEXT %>) {
-		document.main.<%= wp.PARAM_THREAD_HASNEXT %>.value = "false";
+	if (document.main.<%= CmsDialog.PARAM_THREAD_HASNEXT %>) {
+		document.main.<%= CmsDialog.PARAM_THREAD_HASNEXT %>.value = "false";
 	}
 	enableButtons("buttonrowcontinue");
 	enableButtons("buttonrowok");
@@ -327,7 +329,7 @@ function flushArray() {
 
 // updates the report, builds the HTML string from the JavaScript input
 function update() {
-	var size = <%= wp.REPORT_UPDATE_SIZE %>; 
+	var size = <%= CmsReport.REPORT_UPDATE_SIZE %>; 
 
 	// resize the HTML string
     if (htmlText.length > size) {
@@ -486,8 +488,8 @@ function toggleButton(buttonId, disableButton) {
 }
 
 function initButtons() {
-	if (document.main.<%= wp.PARAM_THREAD_HASNEXT %> && document.main.<%= wp.PARAM_THREAD_HASNEXT %>.value == "true"
-			&& document.main.<%= wp.PARAM_REPORT_CONTINUEKEY %> && document.main.<%= wp.PARAM_REPORT_CONTINUEKEY %>.value != "") {
+	if (document.main.<%= CmsDialog.PARAM_THREAD_HASNEXT %> && document.main.<%= CmsDialog.PARAM_THREAD_HASNEXT %>.value == "true"
+			&& document.main.<%= CmsReport.PARAM_REPORT_CONTINUEKEY %> && document.main.<%= CmsReport.PARAM_REPORT_CONTINUEKEY %>.value != "") {
 		displayButtonRowContinue();
 	} else {
 		displayButtonRowOk();
@@ -500,12 +502,11 @@ function initButtons() {
 
 
 function submitActionRefresh(para1, para2, para3) {	
- var refreshWorkplace = "<%= wp.getParamRefreshWorkplace() %>";
- if (refreshWorkplace == "true") {
-     top.location.reload();
- } else {
+<% if (Boolean.parseBoolean(wp.getParamRefreshWorkplace())) { %>
+     top.location.href = "<%= org.opencms.main.OpenCms.getSystemInfo().getOpenCmsContext() + CmsWorkplace.VFS_PATH_VIEWS %>workplace.jsp";
+<% } else { %>
 	 return submitAction(para1, para2, para3);
- }
+<% } %>
 }
 
 //-->
@@ -514,7 +515,7 @@ function submitActionRefresh(para1, para2, para3) {
     <%= wp.bodyStart(null, "onLoad=\"start();\"") /*"dialog"*/%>
     <%= wp.dialogStart() %>
 
-<form name="main" action="<%= wp.getDialogRealUri() %>" method="post" class="nomargin" onsubmit="return submitActionRefresh('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogRealUri() %>" method="post" class="nomargin" onsubmit="return submitActionRefresh('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 <%= wp.paramsAsHidden() %>
@@ -535,8 +536,8 @@ function submitActionRefresh(para1, para2, para3) {
     <%= wp.dialogButtonsOkCancelDetails("id=\"okclose\"", "id=\"okcancel\"", "id=\"details\"") %>
   </td></tr>
   <tr><td>
-    <iframe src="<%= wp.getDialogRealUri() %>?<%= wp.PARAM_STYLE%>=<%=wp.getParamStyle()%>&<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= 
-     wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= 
+    <iframe src="<%= wp.getDialogRealUri() %>?<%= CmsToolDialog.PARAM_STYLE%>=<%=wp.getParamStyle()%>&<%= CmsDialog.PARAM_ACTION %>=<%= CmsDialog.REPORT_UPDATE %>&<%= 
+     CmsDialog.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= CmsReport.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= CmsDialog.PARAM_THREAD_HASNEXT %>=<%= 
      wp.getParamThreadHasNext() %>&resource=<%= wp.getParamResource() %>" name="updateWin" style="width:20px; height:20px; margin: 0px;" marginwidth="0" 
      marginheight="0" frameborder="0" framespacing="0" scrolling="no" class='hide'></iframe>
   </td></tr>
