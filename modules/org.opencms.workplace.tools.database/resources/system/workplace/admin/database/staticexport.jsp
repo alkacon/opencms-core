@@ -61,7 +61,7 @@ function init() {
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
-<%= wp.key(org.opencms.workplace.tools.database.Messages.GUI_TITLE_STATICEXPORT_0) %>
+<%= wp.key(org.opencms.workplace.tools.database.Messages.GUI_MESSAGEBOX_STATICEXPORT1_0) %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>
