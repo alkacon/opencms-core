@@ -2,6 +2,8 @@
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
+	// next page
+	String nextPage = "../../step_4a_database_validation.jsp";		
 	// previous page
 	String prevPage = "../../step_2_check_components.jsp";
 

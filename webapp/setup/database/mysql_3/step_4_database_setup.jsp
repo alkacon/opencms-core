@@ -7,7 +7,7 @@
 	// previous page
 	String prevPage = "../../step_2_check_components.jsp";
 	
-    boolean isFormSubmitted = Bean.setDbParamaters(request, Bean.MYSQL_PROVIDER);
+    boolean isFormSubmitted = Bean.setDbParamaters(request, CmsSetupBean.MYSQL_PROVIDER);
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 Alkacon OpenCms Setup Wizard
