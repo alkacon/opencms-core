@@ -163,24 +163,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/editors/ledit/mainpage.txt</source>
-			<destination>system/workplace/editors/ledit/mainpage.txt</destination>
-			<type>plain</type>
-			<uuidresource>5fb129b5-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Main editor page]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
