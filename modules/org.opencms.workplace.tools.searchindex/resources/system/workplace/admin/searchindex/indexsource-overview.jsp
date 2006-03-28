@@ -1,10 +1,5 @@
-<%@ page import="
-	org.opencms.workplace.tools.searchindex.*,
-	org.opencms.jsp.CmsJspActionElement,
-	org.opencms.workplace.CmsWidgetDialog,
-	org.opencms.workplace.list.A_CmsListDialog
-"%><% 
-
+<%@ page import="org.opencms.workplace.tools.searchindex.*, org.opencms.jsp.CmsJspActionElement, org.opencms.workplace.CmsWidgetDialog, org.opencms.workplace.list.A_CmsListDialog" %>
+<% 
   CmsJspActionElement actionElement = new CmsJspActionElement(pageContext, request, response);
   CmsWidgetDialog wpWidget = new CmsOverviewIndexSourceDialog(actionElement);
 
@@ -30,3 +25,4 @@
   listDoctypes.writeDialog();
   listResources.writeDialog();
 %>
+

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/28 09:06:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,7 +77,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      * The request parameter for the search index to work with when contacting 
      * this dialog from another. <p>
      * 
-     * It may be emtpy if we are on the new index dialog (/searchindex/new-index.html).<p>
+     * It may be emtpy if we are on the new index dialog (/searchindex/new-index.jsp).<p>
      *      
      **/
     public static final String PARAM_INDEXNAME = "indexname";

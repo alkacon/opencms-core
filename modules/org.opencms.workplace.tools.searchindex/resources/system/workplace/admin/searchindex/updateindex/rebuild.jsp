@@ -1,10 +1,7 @@
 <%@ page import="
-
 org.opencms.workplace.*,
 org.opencms.workplace.tools.*,
 org.opencms.workplace.tools.searchindex.*,
-org.opencms.search.*
-
 "%><%	
 
 	// initialize the workplace class

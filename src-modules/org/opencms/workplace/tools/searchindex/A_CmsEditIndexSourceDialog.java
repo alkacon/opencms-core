@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsEditIndexSourceDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/28 09:06:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,7 +81,7 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
      * The request parameter for the indexsource to work with when contacting 
      * this dialog from another. <p>
      * 
-     * It may be emtpy if we are on the new indexsource dialog (/searchindex/new-indexsource.html).<p>
+     * It may be emtpy if we are on the new indexsource dialog (/searchindex/new-indexsource.jsp).<p>
      *      
      **/
     public static final String PARAM_INDEXSOURCE = "indexsource";

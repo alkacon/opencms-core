@@ -161,7 +161,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -187,8 +187,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/index.html</source>
-			<destination>system/workplace/admin/searchindex/index.html</destination>
+			<source>system/workplace/admin/searchindex/index.jsp</source>
+			<destination>system/workplace/admin/searchindex/index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>77ed82c7-ff54-11d9-a992-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -221,8 +221,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/indexsource-delete.html</source>
-			<destination>system/workplace/admin/searchindex/indexsource-delete.html</destination>
+			<source>system/workplace/admin/searchindex/indexsource-delete.jsp</source>
+			<destination>system/workplace/admin/searchindex/indexsource-delete.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>1a116985-1af1-11da-accb-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -271,8 +271,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/indexsource-doctypes.html</source>
-			<destination>system/workplace/admin/searchindex/indexsource-doctypes.html</destination>
+			<source>system/workplace/admin/searchindex/indexsource-doctypes.jsp</source>
+			<destination>system/workplace/admin/searchindex/indexsource-doctypes.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>36ee08ec-1b94-11da-bb23-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -321,8 +321,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/indexsource-edit.html</source>
-			<destination>system/workplace/admin/searchindex/indexsource-edit.html</destination>
+			<source>system/workplace/admin/searchindex/indexsource-edit.jsp</source>
+			<destination>system/workplace/admin/searchindex/indexsource-edit.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>9d53a364-1ac3-11da-9610-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -371,8 +371,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/indexsource-index.html</source>
-			<destination>system/workplace/admin/searchindex/indexsource-index.html</destination>
+			<source>system/workplace/admin/searchindex/indexsource-index.jsp</source>
+			<destination>system/workplace/admin/searchindex/indexsource-index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>3a21c71b-1a32-11da-be9c-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -417,8 +417,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/indexsource-new.html</source>
-			<destination>system/workplace/admin/searchindex/indexsource-new.html</destination>
+			<source>system/workplace/admin/searchindex/indexsource-new.jsp</source>
+			<destination>system/workplace/admin/searchindex/indexsource-new.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>9fbf70d5-1a20-11da-904f-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -463,8 +463,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/indexsource-overview.html</source>
-			<destination>system/workplace/admin/searchindex/indexsource-overview.html</destination>
+			<source>system/workplace/admin/searchindex/indexsource-overview.jsp</source>
+			<destination>system/workplace/admin/searchindex/indexsource-overview.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>f23558cf-1ac6-11da-af77-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -509,8 +509,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/indexsource-resources.html</source>
-			<destination>system/workplace/admin/searchindex/indexsource-resources.html</destination>
+			<source>system/workplace/admin/searchindex/indexsource-resources.jsp</source>
+			<destination>system/workplace/admin/searchindex/indexsource-resources.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>173f580b-1b03-11da-aa26-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -559,8 +559,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/searchindex-new.html</source>
-			<destination>system/workplace/admin/searchindex/searchindex-new.html</destination>
+			<source>system/workplace/admin/searchindex/searchindex-new.jsp</source>
+			<destination>system/workplace/admin/searchindex/searchindex-new.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>c916ee62-0324-11da-a31c-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -601,8 +601,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/searchindex_delete.html</source>
-			<destination>system/workplace/admin/searchindex/searchindex_delete.html</destination>
+			<source>system/workplace/admin/searchindex/searchindex_delete.jsp</source>
+			<destination>system/workplace/admin/searchindex/searchindex_delete.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>a569a01a-04b7-11da-a42b-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -647,8 +647,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/searchindex_edit.html</source>
-			<destination>system/workplace/admin/searchindex/searchindex_edit.html</destination>
+			<source>system/workplace/admin/searchindex/searchindex_edit.jsp</source>
+			<destination>system/workplace/admin/searchindex/searchindex_edit.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>3e49a7ec-035c-11da-92d5-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -693,8 +693,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/searchindex_overview.html</source>
-			<destination>system/workplace/admin/searchindex/searchindex_overview.html</destination>
+			<source>system/workplace/admin/searchindex/searchindex_overview.jsp</source>
+			<destination>system/workplace/admin/searchindex/searchindex_overview.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>d1d08a5e-04ce-11da-bcc5-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -739,8 +739,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/searchindex_rebuild.html</source>
-			<destination>system/workplace/admin/searchindex/searchindex_rebuild.html</destination>
+			<source>system/workplace/admin/searchindex/searchindex_rebuild.jsp</source>
+			<destination>system/workplace/admin/searchindex/searchindex_rebuild.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>869783e9-2114-11da-886a-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -785,8 +785,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/searchindex_rebuild_report.html</source>
-			<destination>system/workplace/admin/searchindex/searchindex_rebuild_report.html</destination>
+			<source>system/workplace/admin/searchindex/searchindex_rebuild_report.jsp</source>
+			<destination>system/workplace/admin/searchindex/searchindex_rebuild_report.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>20498eb1-0366-11da-9cfa-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -819,8 +819,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/searchindex_search.html</source>
-			<destination>system/workplace/admin/searchindex/searchindex_search.html</destination>
+			<source>system/workplace/admin/searchindex/searchindex_search.jsp</source>
+			<destination>system/workplace/admin/searchindex/searchindex_search.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>c2ae5904-07e2-11da-9a85-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -869,8 +869,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/searchindex_sources.html</source>
-			<destination>system/workplace/admin/searchindex/searchindex_sources.html</destination>
+			<source>system/workplace/admin/searchindex/searchindex_sources.jsp</source>
+			<destination>system/workplace/admin/searchindex/searchindex_sources.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>30bcaa94-1872-11da-9aff-0334e4183c08</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

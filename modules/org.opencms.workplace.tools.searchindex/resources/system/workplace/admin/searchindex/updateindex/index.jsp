@@ -66,7 +66,7 @@
 
 <p>
 
-	<form method="post" action='<%=cms.link("/system/workplace/admin/searchindex/updateindex/rebuild.html") + "?style=" + wp.getParamStyle() %>'>
+	<form method="post" action='<%=cms.link("/system/workplace/admin/searchindex/updateindex/rebuild.jsp") + "?style=" + wp.getParamStyle() %>'>
     	<input type="submit" value="Rebuild All">
 	</form>
 
