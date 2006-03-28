@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.153 $
+ * Date   : $Date: 2006/03/28 13:53:34 $
+ * Version: $Revision: 1.154 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.153 $ 
+ * @version $Revision: 1.154 $ 
  * 
  * @since 6.0.0 
  */
@@ -1276,7 +1276,7 @@ public abstract class CmsWorkplace {
                 result.append('[');
                 result.append(getMessages().getDateTime(message.getSendTime()));
                 result.append("] ");
-                result.append(key("label.broadcastmessagefrom"));
+                result.append(key(Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0));
                 result.append(' ');
                 result.append(message.getUser().getName());
                 result.append(":\n");

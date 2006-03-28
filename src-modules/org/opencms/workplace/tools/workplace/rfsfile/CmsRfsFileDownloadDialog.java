@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/28 13:52:51 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,6 +213,15 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+    
+        addMessages(org.opencms.workplace.tools.workplace.rfsfile.Messages.get().getBundleName());
+        super.initMessages();
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
@@ -238,7 +247,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
                 new Object[] {getDownloadFile().getName()}));
         }
     }
-
+    
     /**
      * Returns the File to downoad from the <code>{@link org.opencms.workplace.WorkplaceManager}</code>'s 
      * setting {@link org.opencms.workplace.WorkplaceManager#getRfsFileViewSettings()}.<p>

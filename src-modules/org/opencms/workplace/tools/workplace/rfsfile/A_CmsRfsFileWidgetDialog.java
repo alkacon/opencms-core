@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/A_CmsRfsFileWidgetDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/03/28 13:52:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,6 +156,7 @@ public abstract class A_CmsRfsFileWidgetDialog extends CmsWidgetDialog {
         // also include top-level messages to allow the admin navigation access messages of the module top-package 
         // that is shared with other tools.
         addMessages(org.opencms.workplace.tools.workplace.Messages.get().getBundleName());
+        addMessages(org.opencms.workplace.tools.workplace.rfsfile.Messages.get().getBundleName());
         // add default resource bundles
         super.initMessages();
     }
