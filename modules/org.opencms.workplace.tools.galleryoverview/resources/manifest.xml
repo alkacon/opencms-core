@@ -193,7 +193,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -223,8 +223,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/galleryoverview/downloadgallery/index.html</source>
-			<destination>system/workplace/admin/galleryoverview/downloadgallery/index.html</destination>
+			<source>system/workplace/admin/galleryoverview/downloadgallery/index.jsp</source>
+			<destination>system/workplace/admin/galleryoverview/downloadgallery/index.jsp</destination>
 			<type>jsp</type>
             <uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -263,7 +263,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -293,8 +293,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/galleryoverview/downloadgallery/index.html</source>
-			<destination>system/workplace/admin/galleryoverview/htmlgallery/index.html</destination>
+			<source>system/workplace/admin/galleryoverview/downloadgallery/index.jsp</source>
+			<destination>system/workplace/admin/galleryoverview/htmlgallery/index.jsp</destination>
 			<type>jsp</type>
             <uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -333,7 +333,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -363,8 +363,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/galleryoverview/downloadgallery/index.html</source>
-			<destination>system/workplace/admin/galleryoverview/tablegallery/index.html</destination>
+			<source>system/workplace/admin/galleryoverview/downloadgallery/index.jsp</source>
+			<destination>system/workplace/admin/galleryoverview/tablegallery/index.jsp</destination>
 			<type>jsp</type>
             <uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -403,7 +403,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -433,8 +433,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/galleryoverview/downloadgallery/index.html</source>
-			<destination>system/workplace/admin/galleryoverview/imagegallery/index.html</destination>
+			<source>system/workplace/admin/galleryoverview/downloadgallery/index.jsp</source>
+			<destination>system/workplace/admin/galleryoverview/imagegallery/index.jsp</destination>
 			<type>jsp</type>
             <uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -473,7 +473,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -503,8 +503,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/galleryoverview/downloadgallery/index.html</source>
-			<destination>system/workplace/admin/galleryoverview/linkgallery/index.html</destination>
+			<source>system/workplace/admin/galleryoverview/downloadgallery/index.jsp</source>
+			<destination>system/workplace/admin/galleryoverview/linkgallery/index.jsp</destination>
 			<type>jsp</type>
             <uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

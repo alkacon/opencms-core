@@ -17,12 +17,12 @@
    </head>
 
    <frameset rows="24,*,24" border="0" frameborder="0" framespacing="0">
-      <frame <%= wp.getFrameSource("admin_head", jsp.link("admin-close.html") + "?" + wp.allParamsAsRequest()) %> noresize scrolling="no">
+      <frame <%= wp.getFrameSource("admin_head", jsp.link("admin-close.jsp") + "?" + wp.allParamsAsRequest()) %> noresize scrolling="no">
 <%  if (!wp.withMenu()) { %>
-         <frame <%= wp.getFrameSource("admin_content", jsp.link("admin-main.html") + "?" + wp.allParamsAsRequest()) %> noresize scrolling="no">
+         <frame <%= wp.getFrameSource("admin_content", jsp.link("admin-main.jsp") + "?" + wp.allParamsAsRequest()) %> noresize scrolling="no">
 <%  } else { %>
 	<frameset cols="212,*" border="0" frameborder="0" framespacing="0">
-		<frame <%= wp.getFrameSource("admin_menu", jsp.link("admin-menu.html") + "?" + wp.allParamsAsRequest()) %> frameborder="0" border="0" noresize scrolling="auto">
+		<frame <%= wp.getFrameSource("admin_menu", jsp.link("admin-menu.jsp") + "?" + wp.allParamsAsRequest()) %> frameborder="0" border="0" noresize scrolling="auto">
 		<frame <%= wp.getFrameSource("admin_content", jsp.link(CmsToolManager.VIEW_JSPPAGE_LOCATION) + "?" + wp.allParamsAsRequest()) %> frameborder="0" border="0" framespacing="0" marginheight="7" marginwidth="7" noresize scrolling="auto">
 	</frameset>
 <%  } %>

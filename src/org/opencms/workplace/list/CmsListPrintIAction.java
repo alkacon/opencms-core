@@ -68,7 +68,7 @@ public class CmsListPrintIAction extends A_CmsListIndependentJsAction {
     public String jsCode(CmsWorkplace wp) {
 
         String url = wp.getJsp().link(
-            "/system/workplace/commons/list-print.html?"
+            "/system/workplace/commons/list-print.jsp?"
                 + CmsListPrintDialog.PARAM_LISTCLASS
                 + "="
                 + CmsEncoder.encode(wp.getClass().getName()));

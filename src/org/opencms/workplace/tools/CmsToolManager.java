@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2006/03/28 13:10:02 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,7 +88,7 @@ public class CmsToolManager {
     public static final String TOOLPATH_SEPARATOR = "/";
 
     /** Location of the default admin view jsp page. */
-    public static final String VIEW_JSPPAGE_LOCATION = ADMINVIEW_ROOT_LOCATION + "/admin-main.html";
+    public static final String VIEW_JSPPAGE_LOCATION = ADMINVIEW_ROOT_LOCATION + "/admin-main.jsp";
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsToolManager.class);

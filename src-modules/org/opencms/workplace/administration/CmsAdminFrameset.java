@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminFrameset.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/03/28 13:10:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,14 +46,14 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * The following files use this class:<br>
  * <ul>
- * <li>/views/admin/external-fs.html</li>
- * <li>/views/admin/admin-fs.html</li>
+ * <li>/views/admin/external-fs.jsp</li>
+ * <li>/views/admin/admin-fs.jsp</li>
  * </ul>
  * <p>
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */

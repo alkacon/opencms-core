@@ -112,8 +112,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo1.html</source>
-			<destination>system/workplace/demos/list/demo1.html</destination>
+			<source>system/workplace/demos/list/demo1.jsp</source>
+			<destination>system/workplace/demos/list/demo1.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>b1f1d395-512b-11da-be12-4b5a0381b421</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -154,8 +154,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo10.html</source>
-			<destination>system/workplace/demos/list/demo10.html</destination>
+			<source>system/workplace/demos/list/demo10.jsp</source>
+			<destination>system/workplace/demos/list/demo10.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>cf7832c3-5152-11da-8766-4b5a0381b421</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -196,8 +196,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo11.html</source>
-			<destination>system/workplace/demos/list/demo11.html</destination>
+			<source>system/workplace/demos/list/demo11.jsp</source>
+			<destination>system/workplace/demos/list/demo11.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>d5705dbe-5152-11da-8766-4b5a0381b421</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -238,8 +238,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo12.html</source>
-			<destination>system/workplace/demos/list/demo12.html</destination>
+			<source>system/workplace/demos/list/demo12.jsp</source>
+			<destination>system/workplace/demos/list/demo12.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>a01e972d-51c4-11da-8d5c-4b5a0381b421</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -280,8 +280,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo13.html</source>
-			<destination>system/workplace/demos/list/demo13.html</destination>
+			<source>system/workplace/demos/list/demo13.jsp</source>
+			<destination>system/workplace/demos/list/demo13.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>a02eee2f-51c8-11da-8182-4b5a0381b421</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -322,8 +322,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo14.html</source>
-			<destination>system/workplace/demos/list/demo14.html</destination>
+			<source>system/workplace/demos/list/demo14.jsp</source>
+			<destination>system/workplace/demos/list/demo14.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>c8eb65ba-51c8-11da-8182-4b5a0381b421</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -364,8 +364,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo15.html</source>
-			<destination>system/workplace/demos/list/demo15.html</destination>
+			<source>system/workplace/demos/list/demo15.jsp</source>
+			<destination>system/workplace/demos/list/demo15.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>cfa72ed5-51c8-11da-8182-4b5a0381b421</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -406,8 +406,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo16.html</source>
-			<destination>system/workplace/demos/list/demo16.html</destination>
+			<source>system/workplace/demos/list/demo16.jsp</source>
+			<destination>system/workplace/demos/list/demo16.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>d605e3d0-51c8-11da-8182-4b5a0381b421</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -448,8 +448,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo2.html</source>
-			<destination>system/workplace/demos/list/demo2.html</destination>
+			<source>system/workplace/demos/list/demo2.jsp</source>
+			<destination>system/workplace/demos/list/demo2.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>169604b8-bf0f-22d9-be2a-8faad6d3132a</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -490,8 +490,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo3.html</source>
-			<destination>system/workplace/demos/list/demo3.html</destination>
+			<source>system/workplace/demos/list/demo3.jsp</source>
+			<destination>system/workplace/demos/list/demo3.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>5b010dc2-bed4-22d9-a222-8fbbd6d3132a</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -532,8 +532,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo4.html</source>
-			<destination>system/workplace/demos/list/demo4.html</destination>
+			<source>system/workplace/demos/list/demo4.jsp</source>
+			<destination>system/workplace/demos/list/demo4.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>a0881c4e-bffc-22d9-866f-8faad6d3132a</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -574,8 +574,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo5.html</source>
-			<destination>system/workplace/demos/list/demo5.html</destination>
+			<source>system/workplace/demos/list/demo5.jsp</source>
+			<destination>system/workplace/demos/list/demo5.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>62acabc9-c09a-22d9-ac1c-8fccd6d3132a</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -616,8 +616,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo6.html</source>
-			<destination>system/workplace/demos/list/demo6.html</destination>
+			<source>system/workplace/demos/list/demo6.jsp</source>
+			<destination>system/workplace/demos/list/demo6.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>62acabc9-c09a-33d9-ac1c-8fddd6d3132b</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -658,8 +658,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo7.html</source>
-			<destination>system/workplace/demos/list/demo7.html</destination>
+			<source>system/workplace/demos/list/demo7.jsp</source>
+			<destination>system/workplace/demos/list/demo7.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>4f51fe11-c2db-22d9-a8f1-44d77f772bde</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -700,8 +700,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo8.html</source>
-			<destination>system/workplace/demos/list/demo8.html</destination>
+			<source>system/workplace/demos/list/demo8.jsp</source>
+			<destination>system/workplace/demos/list/demo8.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>4c7273a7-c2f7-22d9-8b1b-0cca6f0b9766</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -742,8 +742,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo9.html</source>
-			<destination>system/workplace/demos/list/demo9.html</destination>
+			<source>system/workplace/demos/list/demo9.jsp</source>
+			<destination>system/workplace/demos/list/demo9.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>e44c6e18-c392-22d9-bec1-0cca6f0b9766</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -784,8 +784,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/demos/list/demo9a.html</source>
-			<destination>system/workplace/demos/list/demo9a.html</destination>
+			<source>system/workplace/demos/list/demo9a.jsp</source>
+			<destination>system/workplace/demos/list/demo9a.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>eaac6e18-c392-aad9-bec1-0aaa6f0b97aa</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

@@ -40,7 +40,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Workplace class for /system/workplace/views/admin/admin-editor.html .<p>
+ * Workplace class for /system/workplace/views/admin/admin-editor.jsp .<p>
  * 
  * @author Michael Moossen 
  * 

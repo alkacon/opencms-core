@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminDialog.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/28 13:10:02 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,11 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Workplace class for /system/workplace/views/admin/admin-main.html .<p>
+ * Workplace class for /system/workplace/views/admin/admin-main.jsp .<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,7 +91,7 @@ public class CmsAdminDialog extends CmsDialog {
                 actionCloseDialog();
                 return;
             }
-            getToolManager().jspForwardPage(this, CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/tool-fs.html", params);
+            getToolManager().jspForwardPage(this, CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/tool-fs.jsp", params);
             return;
         }
 

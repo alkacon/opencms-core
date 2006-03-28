@@ -28,9 +28,9 @@
     }
     function checkSize() {
       if (wHeight() <= pHeight() && wWidth() < 213) {
-    	parent.location.href='admin-fs.html?scroll=true';
+    	parent.location.href='admin-fs.jsp?scroll=true';
       } else if (wHeight() > pHeight() && wWidth() > 212) {
-        parent.location.href='admin-fs.html?scroll=false';
+        parent.location.href='admin-fs.jsp?scroll=false';
       }
     }
     var activeItem = '/';

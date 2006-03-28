@@ -198,8 +198,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/database/export.html</source>
-			<destination>system/workplace/admin/database/export.html</destination>
+			<source>system/workplace/admin/database/export.jsp</source>
+			<destination>system/workplace/admin/database/export.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>1b715245-d81e-11d9-b639-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -244,8 +244,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/database/htmlimport.html</source>
-			<destination>system/workplace/admin/database/htmlimport.html</destination>
+			<source>system/workplace/admin/database/htmlimport.jsp</source>
+			<destination>system/workplace/admin/database/htmlimport.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>c5389f45-d72e-11d9-b767-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -290,8 +290,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/database/importhttp.html</source>
-			<destination>system/workplace/admin/database/importhttp.html</destination>
+			<source>system/workplace/admin/database/importhttp.jsp</source>
+			<destination>system/workplace/admin/database/importhttp.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>cbad1dad-d761-11d9-90a6-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -336,8 +336,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/database/importserver.html</source>
-			<destination>system/workplace/admin/database/importserver.html</destination>
+			<source>system/workplace/admin/database/importserver.jsp</source>
+			<destination>system/workplace/admin/database/importserver.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>95b800de-d75b-11d9-be76-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -382,8 +382,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/database/staticexport.html</source>
-			<destination>system/workplace/admin/database/staticexport.html</destination>
+			<source>system/workplace/admin/database/staticexport.jsp</source>
+			<destination>system/workplace/admin/database/staticexport.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>ca1f2426-d980-11d9-98f6-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -440,8 +440,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/database/reports/export.html</source>
-			<destination>system/workplace/admin/database/reports/export.html</destination>
+			<source>system/workplace/admin/database/reports/export.jsp</source>
+			<destination>system/workplace/admin/database/reports/export.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>8c489d4f-d82c-11d9-8b9b-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -462,8 +462,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/database/reports/import.html</source>
-			<destination>system/workplace/admin/database/reports/import.html</destination>
+			<source>system/workplace/admin/database/reports/import.jsp</source>
+			<destination>system/workplace/admin/database/reports/import.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>74972b17-d75b-11d9-be76-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

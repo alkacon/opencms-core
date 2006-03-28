@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/03/28 13:10:02 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
     public static final String[] PAGES = {"page1"};
 
     /** The import JSP report workplace URI. */
-    protected static final String EXPORT_ACTION_REPORT = PATH_WORKPLACE + "admin/database/reports/export.html";
+    protected static final String EXPORT_ACTION_REPORT = PATH_WORKPLACE + "admin/database/reports/export.jsp";
 
     /** The export handler object that is edited on this dialog. */
     private CmsVfsImportExportHandler m_exportHandler;

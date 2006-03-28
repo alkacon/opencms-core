@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2006/03/28 07:53:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/28 13:10:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,7 +125,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     public static final String LIST_DEFACTION_OPEN = "edo";
 
     /** Explorer list JSP path. */
-    public static final String PATH_EXPLORER_LIST = PATH_DIALOGS + "list-explorer.html";
+    public static final String PATH_EXPLORER_LIST = PATH_DIALOGS + "list-explorer.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsListExplorerDialog.class);

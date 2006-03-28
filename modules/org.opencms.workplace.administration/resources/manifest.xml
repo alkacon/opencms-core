@@ -31,9 +31,9 @@
 			<exportpoint uri="/system/modules/org.opencms.workplace.administration/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/workplace/commons/list-csv.txt"/>
-			<resource uri="/system/workplace/commons/list-explorer.html"/>
-			<resource uri="/system/workplace/commons/list-print.html"/>
+			<resource uri="/system/workplace/commons/list-csv.jsp"/>
+			<resource uri="/system/workplace/commons/list-explorer.jsp"/>
+			<resource uri="/system/workplace/commons/list-print.jsp"/>
 			<resource uri="/system/workplace/resources/admin/"/>
 			<resource uri="/system/workplace/resources/list/"/>
 			<resource uri="/system/workplace/views/admin/"/>
@@ -127,8 +127,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/commons/list-csv.txt</source>
-			<destination>system/workplace/commons/list-csv.txt</destination>
+			<source>system/workplace/commons/list-csv.jsp</source>
+			<destination>system/workplace/commons/list-csv.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>82c2b8eb-551e-11da-a4cf-4b5a0381b421</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -149,8 +149,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/commons/list-explorer.html</source>
-			<destination>system/workplace/commons/list-explorer.html</destination>
+			<source>system/workplace/commons/list-explorer.jsp</source>
+			<destination>system/workplace/commons/list-explorer.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>a8569182-5d0b-11da-a6ec-23cc0017c940</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -171,8 +171,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/commons/list-print.html</source>
-			<destination>system/workplace/commons/list-print.html</destination>
+			<source>system/workplace/commons/list-print.jsp</source>
+			<destination>system/workplace/commons/list-print.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>8a3eb8eb-de1e-6fda-a4cf-4b5a0381b421</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -711,7 +711,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[admin-fs.html]]></value>
+					<value><![CDATA[admin-fs.jsp]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -721,8 +721,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/views/admin/admin-close.html</source>
-			<destination>system/workplace/views/admin/admin-close.html</destination>
+			<source>system/workplace/views/admin/admin-close.jsp</source>
+			<destination>system/workplace/views/admin/admin-close.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>c201a1d6-738d-11d9-be77-2f77a917d9ae</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -739,8 +739,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/views/admin/admin-editor.html</source>
-			<destination>system/workplace/views/admin/admin-editor.html</destination>
+			<source>system/workplace/views/admin/admin-editor.jsp</source>
+			<destination>system/workplace/views/admin/admin-editor.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>22524fa9-452f-11da-941a-1d873b0b8abd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -757,8 +757,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/views/admin/admin-fs.html</source>
-			<destination>system/workplace/views/admin/admin-fs.html</destination>
+			<source>system/workplace/views/admin/admin-fs.jsp</source>
+			<destination>system/workplace/views/admin/admin-fs.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>bbe95589-6933-11d9-aaa9-2f77a917d9ae</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -775,8 +775,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/views/admin/admin-main.html</source>
-			<destination>system/workplace/views/admin/admin-main.html</destination>
+			<source>system/workplace/views/admin/admin-main.jsp</source>
+			<destination>system/workplace/views/admin/admin-main.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>9086a075-6937-11d9-aaa9-2f77a917d9ae</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -793,8 +793,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/views/admin/admin-menu.html</source>
-			<destination>system/workplace/views/admin/admin-menu.html</destination>
+			<source>system/workplace/views/admin/admin-menu.jsp</source>
+			<destination>system/workplace/views/admin/admin-menu.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>fea1427f-6933-11d9-aaa9-2f77a917d9ae</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -811,8 +811,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/views/admin/external-fs.html</source>
-			<destination>system/workplace/views/admin/external-fs.html</destination>
+			<source>system/workplace/views/admin/external-fs.jsp</source>
+			<destination>system/workplace/views/admin/external-fs.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>aa33e1cf-738d-11d9-be77-2f77a917d9ae</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -829,8 +829,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/views/admin/list-explorer.html</source>
-			<destination>system/workplace/views/admin/list-explorer.html</destination>
+			<source>system/workplace/views/admin/list-explorer.jsp</source>
+			<destination>system/workplace/views/admin/list-explorer.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>eff426fb-5d90-11da-a0f2-23cc0017c940</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -847,8 +847,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/views/admin/list-title.html</source>
-			<destination>system/workplace/views/admin/list-title.html</destination>
+			<source>system/workplace/views/admin/list-title.jsp</source>
+			<destination>system/workplace/views/admin/list-title.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>7ce83f76-5d90-11da-a0f2-23cc0017c940</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -865,8 +865,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/views/admin/tool-fs.html</source>
-			<destination>system/workplace/views/admin/tool-fs.html</destination>
+			<source>system/workplace/views/admin/tool-fs.jsp</source>
+			<destination>system/workplace/views/admin/tool-fs.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>7b535ff3-d0e5-11d9-ac67-b920ebfd9bc1</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -883,8 +883,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/views/admin/tool-title.html</source>
-			<destination>system/workplace/views/admin/tool-title.html</destination>
+			<source>system/workplace/views/admin/tool-title.jsp</source>
+			<destination>system/workplace/views/admin/tool-title.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>7b55d0f9-d0e5-11d9-ac67-b920ebfd9bc1</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
