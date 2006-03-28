@@ -21,7 +21,7 @@
 	function confirmExit()
 	{
 		if (EDITOR.edit1.IsModified(2)) {
-			if (confirm("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0) %>")) {
+			if (confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0) %>")) {
 				buttonAction(1);
 			}
 		} else {
