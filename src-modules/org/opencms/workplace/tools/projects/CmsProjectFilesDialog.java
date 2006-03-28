@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/03/28 12:22:36 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -251,7 +251,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
             getSettings().setCollector(new CmsListResourcesCollector(resources));
             getSettings().setExplorerMode(CmsExplorer.VIEW_LIST);
             try {
-                getToolManager().jspForwardPage(this, PATH_DIALOGS + "list-explorer.html", params);
+                getToolManager().jspForwardPage(this, PATH_DIALOGS + "list-explorer.jsp", params);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

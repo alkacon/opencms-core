@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/CmsProjectSettingsDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/28 12:22:36 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,7 +239,7 @@ public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         super.initWorkplaceMembers(jsp);
-        setOnlineHelpUriCustom("/projects/project_settings.html");
+        setOnlineHelpUriCustom("/projects/project_settings.jsp");
     }
 
     /**
