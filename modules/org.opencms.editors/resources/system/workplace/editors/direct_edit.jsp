@@ -1,11 +1,10 @@
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
---%><%@ page import="
+--%><%@ page session="false" import="
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
 	org.opencms.jsp.*,
 	java.util.*,
-	org.opencms.i18n.*"
-	session="false" %><%
+"%><%
 
 // Create a JSP action element
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
