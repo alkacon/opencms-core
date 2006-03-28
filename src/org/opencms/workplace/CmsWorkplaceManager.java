@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2006/03/28 16:48:21 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.75 $ 
+ * @version $Revision: 1.76 $ 
  * 
  * @since 6.0.0 
  */
@@ -650,21 +650,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns the {@link CmsWorkplaceModuleMessages} for the given locale.<p>
+     * Returns the {@link CmsWorkplaceMessages} for the given locale.<p>
      * 
-     * The workplace module messages are a collection of resource bundles, containing the messages 
-     * for all OpenCms core bundles and for each initialized module.<p>
+     * The workplace messages are a collection of resource bundles, containing the messages 
+     * for all OpenCms core bundles and of all initialized modules.<p>
      * 
-     * Please note that the message objects are cached. The result should therefor never be
-     * modified directly in any way.<p>
+     * Please note that the message objects are cached internally. 
+     * The returned message object should therefore never be modified directly in any way.<p>
      * 
      * @param locale the locale to get the messages for
      * 
-     * @return the {@link CmsWorkplaceModuleMessages} for the given locale
+     * @return the {@link CmsWorkplaceMessages} for the given locale
      */
-    public CmsWorkplaceModuleMessages getMessages(Locale locale) {
+    public CmsWorkplaceMessages getMessages(Locale locale) {
 
-        CmsWorkplaceModuleMessages result = (CmsWorkplaceModuleMessages)m_messages.get(locale);
+        CmsWorkplaceMessages result = (CmsWorkplaceMessages)m_messages.get(locale);
         if (result != null) {
             // messages have already been read
             return result;
@@ -672,7 +672,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         // messages have not been read so far
         synchronized (this) {
-            result = new CmsWorkplaceModuleMessages(locale);
+            result = new CmsWorkplaceMessages(locale);
             m_messages.put(locale, result);
         }
         return result;

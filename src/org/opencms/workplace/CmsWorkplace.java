@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/03/28 14:32:53 $
- * Version: $Revision: 1.155 $
+ * Date   : $Date: 2006/03/28 16:48:21 $
+ * Version: $Revision: 1.156 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.155 $ 
+ * @version $Revision: 1.156 $ 
  * 
  * @since 6.0.0 
  */
@@ -2012,7 +2012,7 @@ public abstract class CmsWorkplace {
     /**
      * Initializes the message object.<p>
      * 
-     * By default the {@link CmsWorkplaceModuleMessages} are initialized.<p>
+     * By default the {@link CmsWorkplaceMessages} are initialized.<p>
      * 
      * You SHOULD override this method for setting the bundles you really need,
      * using the <code>{@link #addMessages(CmsMessages)}</code> or <code>{@link #addMessages(String)}</code> method.<p>

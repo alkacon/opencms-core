@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2006/03/28 16:48:21 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import org.opencms.workflow.CmsTaskService;
 import org.opencms.workplace.CmsTabDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.CmsWorkplaceView;
 import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -626,11 +627,8 @@ public class CmsPreferences extends CmsTabDialog {
                     }
 
                     // create the table row for the current resource type
-                    int todo = 0;
-                    // TODO: Use WP constants here !?
-                    
                     result.append("<tr>\n\t<td style=\"white-space: nowrap;\">");
-                    String localizedName = keyDefault("fileicon." + currentResourceType, currentResourceType);
+                    String localizedName = CmsWorkplaceMessages.getNewResourceTitle(this, currentResourceType);
                     result.append(localizedName);
                     result.append("</td>\n\t<td>");
                     result.append(buildSelect(

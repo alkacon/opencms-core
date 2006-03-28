@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2006/03/28 15:40:56 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/28 16:48:21 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -564,12 +564,6 @@ public final class Messages extends A_CmsMessageBundle {
     /**The  first part of contant for creation NEWTITLE key. */
     private static final String GUI_STATE_PREFIX = "GUI_EXPLORER_STATE";
 
-    /** End part of contant for creation NEWTITLE key. */
-    private static final String GUI_TITLE_POSTFIX = "_0";
-
-    /**The  first part of contant for creation NEWTITLE key. */
-    private static final String GUI_TITLE_PREFIX = "GUI_TITLE_NEW";
-
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
@@ -605,21 +599,6 @@ public final class Messages extends A_CmsMessageBundle {
         StringBuffer sb = new StringBuffer(GUI_STATE_PREFIX);
         sb.append(state);
         sb.append(GUI_STATE_POSTFIX);
-        return sb.toString();
-    }
-
-    /**
-     * Create title message key for resource name.<p>
-     * 
-     * @param resType resource Type as String "jsp" , "link" etc.
-     * 
-     * @return title message key to resource new dialog
-     */
-    public static String getTitleKey(String resType) {
-
-        StringBuffer sb = new StringBuffer(GUI_TITLE_PREFIX);
-        sb.append(resType.toUpperCase());
-        sb.append(GUI_TITLE_POSTFIX);
         return sb.toString();
     }
 

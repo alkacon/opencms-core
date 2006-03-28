@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsWorkplaceModuleMessages.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
+ * Date   : $Date: 2006/03/28 16:48:21 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,10 +44,10 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * Provides access to the localized messages for modules of the workplace.<p>
+ * Provides access to the localized messages for the OpenCms workplace.<p>
  * 
- * The workplace module messages are collected from the workplace resource bundles of all installed modules,
- * as well as all OpenCms core packages.<p>
+ * The workplace messages are collected from the workplace resource bundles of all installed modules,
+ * plus all the OpenCms core packages.<p>
  * 
  * To be recognized as a workplace module resource bundle,
  * the workplace property file must follow the naming convention <code>${module_package_name}.workplace${locale}.properties</code>,
@@ -55,17 +55,23 @@ import java.util.Set;
  * for example like <code>com.mycompany.module.workplace_en.properties</code> or 
  * <code>com.mycompany.module.messages_en.properties</code>.<p>
  * 
- * Workplace module messages are cached for faster lookup. If a localized key is contained in more then one module,
+ * Workplace messages are cached for faster lookup. If a localized key is contained in more then one module,
  * it will be used only from the module where it was first found in. The module order is undefined. It is therefore 
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a module.<p>
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsWorkplaceModuleMessages extends CmsMultiMessages {
+public class CmsWorkplaceMessages extends CmsMultiMessages {
+
+    /** The title key prefix used for the "new resource" dialog. */
+    public static final String GUI_NEW_RESOURCE_TITLE_PREFIX = "title.new";
+
+    /** The prefix to generate the resource type names with. */
+    public static final String GUI_RESOURCE_TYPE_PREFIX = "fileicon.";
 
     /** Constant for the <code>".messages"</code> prefix. */
     public static final String PREFIX_BUNDLE_MESSAGES = ".messages";
@@ -74,7 +80,7 @@ public class CmsWorkplaceModuleMessages extends CmsMultiMessages {
     public static final String PREFIX_BUNDLE_WORKPLACE = ".workplace";
 
     /** Constant for the multi bundle name. */
-    public static final String WORKPLACE_BUNDLE_NAME = CmsWorkplaceModuleMessages.class.getName();
+    public static final String WORKPLACE_BUNDLE_NAME = CmsWorkplaceMessages.class.getName();
 
     /**
      * Constructor for creating a new messages object
@@ -82,11 +88,56 @@ public class CmsWorkplaceModuleMessages extends CmsMultiMessages {
      * 
      * @param locale the locale to initialize 
      */
-    public CmsWorkplaceModuleMessages(Locale locale) {
+    public CmsWorkplaceMessages(Locale locale) {
 
         super(locale);
         setBundleName(WORKPLACE_BUNDLE_NAME);
         addMessages(collectModuleMessages(locale));
+    }
+
+    /**
+     * Returns the title for the "new resource" dialog.<p>
+     * 
+     * It will look up a key with the prefix {@link #GUI_NEW_RESOURCE_TITLE_PREFIX} 
+     * and the given name appended (converted to lower case).<p>
+     * 
+     * If this key is not found, the value of 
+     * {@link org.opencms.workplace.explorer.Messages#GUI_TITLE_NEWFILEOTHER_0} will be returned.<p>
+     * 
+     * @param wp an instance of a {@link CmsWorkplace} to resolve the key name with
+     * @param name the type to generate the title for
+     * 
+     * @return the title for the "new resource" dialog
+     */
+    public static String getNewResourceTitle(CmsWorkplace wp, String name) {
+
+        // try to find the localized key
+        String title = wp.key(GUI_NEW_RESOURCE_TITLE_PREFIX + name.toLowerCase());
+        if (CmsMessages.isUnknownKey(title)) {
+            // still unknown - use default title
+            title = wp.key(org.opencms.workplace.explorer.Messages.GUI_TITLE_NEWFILEOTHER_0);
+        }
+        return title;
+    }
+
+    /**
+     * Returns the nice name of the given resource type name.<p>
+     * 
+     * It will look up a key with the prefix {@link #GUI_RESOURCE_TYPE_PREFIX} 
+     * and the given name appended.<p>
+     * 
+     * If this key is not found, the value of 
+     * the name input will be returned.<p>
+     * 
+     * @param wp an instance of a {@link CmsWorkplace} to resolve the key name with
+     * @param name the resource type name to generate the nice name for
+     * 
+     * @return the nice name of the given resource type name
+     */
+    public static String getResourceName(CmsWorkplace wp, String name) {
+
+        // try to find the localized key
+        return wp.keyDefault(GUI_RESOURCE_TYPE_PREFIX + name, name);
     }
 
     /**
@@ -151,8 +202,8 @@ public class CmsWorkplaceModuleMessages extends CmsMultiMessages {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof CmsWorkplaceModuleMessages) {
-            // workplace module messages are equal if the locale is equal (since all bundles are the same)
+        if (obj instanceof CmsWorkplaceMessages) {
+            // workplace messages are equal if the locale is equal (since all bundles are the same)
             CmsMessages other = (CmsMessages)obj;
             return other.getLocale().equals(getLocale());
         }
