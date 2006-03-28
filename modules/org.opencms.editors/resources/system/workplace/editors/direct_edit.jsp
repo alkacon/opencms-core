@@ -3,7 +3,7 @@
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
 	org.opencms.jsp.*,
-	java.util.*,
+	java.util.*
 "%><%
 
 // Create a JSP action element
