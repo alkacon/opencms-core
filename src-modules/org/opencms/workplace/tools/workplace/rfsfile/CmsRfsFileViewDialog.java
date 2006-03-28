@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/28 13:19:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,7 +161,7 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
         }
         result.append(createWidgetBlockStart(fileContentHeader));
         result.append("<iframe style=\"overflow: auto;\" src=\"");
-        result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/index.html?showlog=true"));
+        result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/index.jsp?showlog=true"));
         result.append("\" width=\"100%\" height=\"400\" border=\"0\" frameborder=\"0\"></iframe>");
         result.append(createWidgetBlockEnd());
 
