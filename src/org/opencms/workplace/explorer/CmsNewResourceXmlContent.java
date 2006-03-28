@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/28 15:03:40 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,7 +126,12 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
             setAction(ACTION_SUBMITFORM);
         } else if (DIALOG_NEWFORM.equals(getParamAction())) {
             setAction(ACTION_NEWFORM);
-            setParamTitle(key(Messages.getTitleKey(getParamNewResourceType())));
+            String title = key(Messages.getTitleKey(getParamNewResourceType()));
+            if (CmsMessages.isUnknownKey(title)) {
+                // use generic title
+                title = key(Messages.GUI_TITLE_NEWFILEOTHER_0);
+            }
+            setParamTitle(title);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
