@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2006/03/28 12:14:36 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.util;
 
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.I_CmsMessageBundle;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 
 import java.awt.Color;
@@ -56,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,6 +144,43 @@ public final class CmsStringUtil {
         } else {
             // the string has no suffix
             return filename;
+        }
+    }
+
+    /**
+     * Checks if a given name is composed only of the characters <code>a...z,A...Z,0...9</code>
+     * and the provided <code>contraints</code>.<p> 
+     * 
+     * If the check fails, an Exception is generated. The provided bundle and key is
+     * used to generate the Exception. 4 parameters are passed to the Exception:<ol>
+     * <li>The <code>name</code>
+     * <li>The first illegal character found
+     * <li>The position where the illegal character was found
+     * <li>The <code>contraints</code></ol>
+     * 
+     * @param name the name to check
+     * @param contraints the additional character contraints
+     * @param key the key to use for generating the Exception (if required)
+     * @param bundle the bundle to use for generating the Exception (if required)
+     * 
+     * @throws CmsIllegalArgumentException if the check fails (generated from the given key and bundle)
+     */
+    public static void checkName(String name, String contraints, String key, I_CmsMessageBundle bundle) {
+
+        int l = name.length();
+        for (int i = 0; i < l; i++) {
+            char c = name.charAt(i);
+            if (((c < 'a') || (c > 'z'))
+                && ((c < '0') || (c > '9'))
+                && ((c < 'A') || (c > 'Z'))
+                && (contraints.indexOf(c) < 0)) {
+
+                throw new CmsIllegalArgumentException(bundle.container(key, new Object[] {
+                    name,
+                    new Character(c),
+                    new Integer(i),
+                    contraints}));
+            }
         }
     }
 

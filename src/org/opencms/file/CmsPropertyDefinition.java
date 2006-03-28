@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/28 12:14:36 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.file;
 
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -38,11 +40,14 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0 
  */
 public class CmsPropertyDefinition implements Cloneable, Comparable {
+
+    /** The name constraints when generating new properties. */
+    public static final String NAME_CONSTRAINTS = "-._~$";
 
     /** Property for the active method in the administration view. */
     public static final String PROPERTY_ACTIV = "activemethod";
@@ -118,7 +123,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property for the resource title. */
     public static final String PROPERTY_NOTIFICATION_INTERVAL = "notification-interval";
-    
+
     /** Property for the relative root link substitution. */
     public static final String PROPERTY_RELATIVEROOT = "relativeroot";
 
@@ -142,7 +147,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property to control the template. */
     public static final String PROPERTY_TEMPLATE = "template";
-    
+
     /** Property to control the template elements. */
     public static final String PROPERTY_TEMPLATE_ELEMENTS = "template-elements";
 
@@ -175,6 +180,26 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
         m_id = id;
         m_name = name;
+    }
+
+    /**
+     * Checks if the provided property name is a valid property name, 
+     * that is contains only valid characters.<p>
+     * 
+     * A property name can only be composed of digits, 
+     * standard ASCII letters and the symbols defined in {@link #NAME_CONSTRAINTS}.<p>
+     *
+     * @param name the property name to check
+     * 
+     * @throws CmsIllegalArgumentException if the given property name is not valid
+     */
+    public static void checkPropertyName(String name) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_PROPERTYNAME_EMPTY_0, name));
+        }
+
+        CmsStringUtil.checkName(name, NAME_CONSTRAINTS, Messages.ERR_BAD_PROPERTYNAME_4, Messages.get());
     }
 
     /**

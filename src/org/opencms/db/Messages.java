@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2006/03/28 12:14:36 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 6.0.0 
  */
@@ -56,7 +56,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCESSING_POOL_1 = "ERR_ACCESSING_POOL_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_GROUP_FAILED_2 = "ERR_ADD_USER_GROUP_FAILED_2";
 
@@ -68,15 +68,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BACKUP_PROJECT_4 = "ERR_BACKUP_PROJECT_4";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_BAD_FILENAME_1 = "ERR_BAD_FILENAME_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_BAD_GROUPNAME_1 = "ERR_BAD_GROUPNAME_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_BAD_PROPERTYNAME_1 = "ERR_BAD_PROPERTYNAME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_RESOURCENAME_1 = "ERR_BAD_RESOURCENAME_1";
@@ -299,12 +290,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INIT_DRIVER_MANAGER_1 = "ERR_INIT_DRIVER_MANAGER_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_INVALID_TASKNAME_0 = "ERR_INVALID_TASKNAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_INVALID_USERNAME_0 = "ERR_INVALID_USERNAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCK_RESOURCE_2 = "ERR_LOCK_RESOURCE_2";
@@ -544,9 +529,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SET_TASK_TIMEOUT_2 = "ERR_SET_TASK_TIMEOUT_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_TASKNAME_ILLEGAL_CHARACTERS_1 = "ERR_TASKNAME_ILLEGAL_CHARACTERS_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_UNDO_CHANGES_FOR_RESOURCE_1 = "ERR_UNDO_CHANGES_FOR_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -556,11 +538,11 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UNKNOWN_GROUP_1 = "ERR_UNKNOWN_GROUP_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNKNOWN_USER_1 = "ERR_UNKNOWN_USER_1";
+    public static final String ERR_UNKNOWN_POOL_URL_1 = "ERR_UNKNOWN_POOL_URL_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNKNOWN_POOL_URL_1 = "ERR_UNKNOWN_POOL_URL_1";
-    
+    public static final String ERR_UNKNOWN_USER_1 = "ERR_UNKNOWN_USER_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_ALL_PROJECT_LOCKED_1 = "ERR_UNLOCK_ALL_PROJECT_LOCKED_1";
 
@@ -584,9 +566,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_USER_NOT_IN_GROUP_2 = "ERR_USER_NOT_IN_GROUP_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_USERNAME_ILLEGAL_CHARACTERS_2 = "ERR_USERNAME_ILLEGAL_CHARACTERS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_USERNAME_PASSWORD_MISMATCH_1 = "ERR_USERNAME_PASSWORD_MISMATCH_1";
@@ -635,7 +614,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_WEB_USER_CONSTRAINT_0 = "ERR_WRITE_WEB_USER_CONSTRAINT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0 = "GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0";
 

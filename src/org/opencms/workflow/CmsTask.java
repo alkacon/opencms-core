@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTask.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/28 12:14:36 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.workflow;
 
 import org.opencms.db.CmsDbUtil;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -39,11 +41,14 @@ import org.opencms.util.CmsUUID;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsTask {
+
+    /** The name constraints when generating new tasks. */
+    public static final String NAME_CONSTRAINTS = "‰ˆ¸ƒ÷‹ -._~?/()\\#&:;";
 
     /** The id of the user who is the agent of this task. */
     private CmsUUID m_agentUserId;
@@ -205,6 +210,27 @@ public class CmsTask {
         m_htmlLink = htmlLink;
         m_milestone = milestone;
         m_autoFinish = autofinish;
+    }
+
+    /**
+     * 
+     * Checks if the provided task name is a valid task name, 
+     * that is contains only valid characters.<p>
+     *
+     * A task name can only be composed of digits, 
+     * standard ASCII letters and the symbols defined in {@link #NAME_CONSTRAINTS}.<p>
+     * 
+     * @param name the task name to check
+     * 
+     * @throws CmsIllegalArgumentException if the given task name is not valid
+     */
+    public static void checkTaskName(String name) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_TASKNAME_EMPTY_0, name));
+        }
+
+        CmsStringUtil.checkName(name, NAME_CONSTRAINTS, Messages.ERR_BAD_TASKNAME_4, Messages.get());
     }
 
     /**

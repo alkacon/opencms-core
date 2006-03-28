@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2006/03/28 12:14:36 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,13 +69,16 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 6.0.0
  * 
  * @see CmsGroup 
  */
 public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
+
+    /** The name constraints when generating new users. */
+    public static final String NAME_CONSTRAINTS = "-._~$@";
 
     /** Identifies the system user type. */
     public static final int USER_TYPE_SYSTEMUSER = 0;
@@ -212,6 +215,26 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Checks if the provided user name is a valid user name, 
+     * that is contains only valid characters.<p>
+     *
+     * A user name can only be composed of digits, 
+     * standard ASCII letters and the symbols defined in {@link #NAME_CONSTRAINTS}.<p>
+     * 
+     * @param name the user name to check
+     * 
+     * @throws CmsIllegalArgumentException if the given user name is not valid
+     */
+    public static void checkUserName(String name) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USERNAME_EMPTY_0, name));
+        }
+
+        CmsStringUtil.checkName(name, NAME_CONSTRAINTS, Messages.ERR_BAD_USERNAME_4, Messages.get());
+    }
+
+    /**
      * Validates a zip code.<p>
      * 
      * That means, the parameter should only be composed by digits and standard english letters.<p>
@@ -268,19 +291,19 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Checks if the provided user name is valid and can be used as an argument value 
+     * Checks if the provided user name is a valid user name and can be used as an argument value 
      * for {@link #setName(String)}.<p> 
      * 
-     * A user name can only be composed of digits, standard ASCII letters, points, minus and underscore.
-     * More formally, it must match the regular expression <code>[\\w\\.\\-~_]*</code>.<p>
-     * 
      * @param name the user name to check
+     * 
+     * @see #checkUserName(String)
+     * 
+     * @throws CmsIllegalArgumentException if the check fails
      */
     public void checkName(String name) {
 
-        if (!CmsStringUtil.validateRegex(name, "[\\w\\.\\-~_]*", false)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LOGIN_VALIDATION_1, name));
-        }
+        // use static validation method
+        checkUserName(name);
     }
 
     /**

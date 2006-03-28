@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2005/10/12 15:40:27 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2006/03/28 12:14:36 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -44,14 +45,11 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 6.0.0 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
-
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = 257325098790850498L;
 
     /**
      * A comparator for the release date of 2 resources.<p>
@@ -182,11 +180,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** Flag to indicate that this is an internal resource, that can't be accessed directly. */
     public static final int FLAG_INTERNAL = 512;
 
+    /** The resource is linked inside a site folder specified in the OpenCms configuration. */
+    public static final int FLAG_LABELED = 2;
+
     /** Flag to indicate that this is a temporary resource. */
     public static final int FLAG_TEMPFILE = 1024;
 
-    /** The resource is linked inside a site folder specified in the OpenCms configuration. */
-    public static final int FLAG_LABELED = 2;
+    /** The name constraints when generating new resources. */
+    public static final String NAME_CONSTRAINTS = "-._~$";
 
     /** Indicates if a resource has been changed in the offline version when compared to the online version. */
     public static final int STATE_CHANGED = 1;
@@ -217,6 +218,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The vfs path of the system folder. */
     public static final String VFS_FOLDER_SYSTEM = "/system";
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 257325098790850498L;
 
     /** The size of the content. */
     protected int m_length;
@@ -324,6 +328,44 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_dateReleased = dateReleased;
         m_dateExpired = dateExpired;
         m_isTouched = false;
+    }
+
+    /**
+     * Checks if the provided resource name is a valid resource name, 
+     * that is contains only valid characters.<p>
+     * 
+     * A resource name can only be composed of digits, 
+     * standard ASCII letters and the symbols defined in {@link #NAME_CONSTRAINTS}.
+     * A resource name must also not contain only dots.<p>
+     *
+     * @param name the resource name to check
+     * 
+     * @throws CmsIllegalArgumentException if the given resource name is not valid
+     */
+    public static void checkResourceName(String name) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_RESOURCENAME_EMPTY_0, name));
+        }
+
+        CmsStringUtil.checkName(name, NAME_CONSTRAINTS, Messages.ERR_BAD_RESOURCENAME_4, Messages.get());
+
+        // check for filenames that have only dots (which will cause issues in the static export)
+        boolean onlydots = true;
+        // this must be done only for the last name (not for parent folders)
+        String lastName = CmsResource.getName(name);
+        int l = lastName.length();
+        for (int i = 0; i < l; i++) {
+            char c = lastName.charAt(i);
+            if ((c != '.') && (c != '/')) {
+                onlydots = false;
+            }
+        }
+        if (onlydots) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_BAD_RESOURCENAME_DOTS_1,
+                lastName));
+        }
     }
 
     /**

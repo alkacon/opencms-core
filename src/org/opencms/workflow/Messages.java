@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/28 12:14:36 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,11 +43,17 @@ import java.util.Locale;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_BAD_TASKNAME_4 = "ERR_BAD_TASKNAME_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_BAD_TASKNAME_EMPTY_0 = "ERR_BAD_TASKNAME_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TASK_STATE_ENDED_0 = "GUI_TASK_STATE_ENDED_0";

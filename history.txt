@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.713 $
+ * Date   : $Date: 2006/03/28 12:14:36 $
+ * Version: $Revision: 1.714 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,6 +22,7 @@ Legend:
 OpenCms 6.1.13 - March 27, 2006
 - First tagged 6.1.x version AFTER merge to HEAD
 * Fixed issue #1105: Added entry for MS IE 7 in editor_configuration.xml
+* Fixed issue #1106: User name validation is now always using the same constraints 
 
 OpenCms 6.1.12 - March 27, 2006
 - Refactored usage of resource bundle messages

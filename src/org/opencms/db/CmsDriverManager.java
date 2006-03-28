@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:26 $
- * Version: $Revision: 1.568 $
+ * Date   : $Date: 2006/03/28 12:14:36 $
+ * Version: $Revision: 1.569 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1314,14 +1314,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsGroup createGroup(CmsDbContext dbc, CmsUUID id, String name, String description, int flags, String parent)
     throws CmsIllegalArgumentException, CmsDataAccessException {
 
-        // check the lenght of the groupname
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-            name = name.trim();
-            return m_userDriver.createGroup(dbc, id, name, description, flags, parent, null);
-        } else {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_GROUPNAME_1, name));
-        }
-
+        // check the groupname
+        CmsGroup.checkGroupName(name);
+        // trim the name
+        name = name.trim();
+        // create the group
+        return m_userDriver.createGroup(dbc, id, name, description, flags, parent, null);
     }
 
     /**
@@ -1425,7 +1423,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsPropertyDefinition propertyDefinition = null;
 
         name = name.trim();
-        validPropertyName(name);
+        // validate the property name
+        CmsPropertyDefinition.checkPropertyName(name);
 
         try {
             try {
@@ -1590,7 +1589,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // check if the target name is valid (forbitten chars etc.), 
             // if not throw an exception
             // must do this here since targetName is modified in folder case (see above)
-            validFilename(targetName);
+            CmsResource.checkResourceName(targetName);
 
             // set strcuture and resource ids
             CmsUUID structureId;
@@ -1865,7 +1864,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
 
-        validTaskname(taskName); // check for valid Filename
+        // validate the task name
+        CmsTask.checkTaskName(taskName);
 
         CmsTask task = m_workflowDriver.createTask(
             dbc,
@@ -1923,7 +1923,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
         CmsUUID agentId = CmsUUID.getNullUUID();
-        validTaskname(taskname); // check for valid Filename
+        // validate the task name
+        CmsTask.checkTaskName(taskname);
         try {
             agentId = readUser(dbc, agentName, CmsUser.USER_TYPE_SYSTEMUSER).getId();
         } catch (Exception e) {
@@ -3653,7 +3654,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // no space before or after the name
         name = name.trim();
         // check the username
-        validUsername(name);
+        CmsUser.checkUserName(name);
 
         CmsUser newUser = m_userDriver.importUser(
             dbc,
@@ -7075,108 +7076,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Checks if the provided file name is a valid file name, that contains only
-     * valid characters.<p>
-     *
-     * @param filename the file name to check
-     * 
-     * @throws CmsIllegalArgumentException if the check fails
-     */
-    public void validFilename(String filename) throws CmsIllegalArgumentException {
-
-        if (filename == null) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, "null"));
-        }
-
-        int l = filename.length();
-
-        if (l == 0) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
-        }
-
-        for (int i = 0; i < l; i++) {
-            char c = filename.charAt(i);
-            if (((c < 'a') || (c > 'z'))
-                && ((c < '0') || (c > '9'))
-                && ((c < 'A') || (c > 'Z'))
-                && (c != '-')
-                && (c != '.')
-                && (c != '_')
-                && (c != '~')
-                && (c != '$')) {
-                throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
-            }
-        }
-
-        // check for filenames that have only dots (which will cause issues in the static export)
-        boolean onlydots = true;
-        String name = CmsResource.getName(filename);
-        l = name.length();
-        for (int i = 0; i < l; i++) {
-            char c = name.charAt(i);
-            if ((c != '.') && (c != '/')) {
-                onlydots = false;
-            }
-        }
-        if (onlydots) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
-        }
-    }
-
-    /**
-     * Checks if the provided property name is a valid property name, that contains only
-     * valid characters.<p>
-     *
-     * @param propertyName the property name to check
-     * 
-     * @throws CmsIllegalArgumentException if the check fails
-     */
-    public void validPropertyName(String propertyName) throws CmsIllegalArgumentException {
-
-        try {
-            validFilename(propertyName);
-        } catch (CmsIllegalArgumentException e) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_BAD_PROPERTYNAME_1,
-                e.getMessageContainer().getArgs()));
-        }
-    }
-
-    /**
-     * Checks if the provided name is a valid user name, that is contains only
-     * valid characters.<p>
-     *
-     * @param username the name to check
-     * @throws CmsIllegalArgumentException if the check fails
-     */
-    public void validUsername(String username) throws CmsIllegalArgumentException {
-
-        if (username == null || username.trim().length() == 0) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_USERNAME_0));
-        }
-
-        int l = username.length();
-
-        for (int i = 0; i < l; i++) {
-            char c = username.charAt(i);
-            if (((c < 'a') || (c > 'z'))
-                && ((c < '0') || (c > '9'))
-                && ((c < 'A') || (c > 'Z'))
-                && (c != '-')
-                && (c != '.')
-                && (c != '_')
-                && (c != '~')
-                && (c != '$')
-                && (c != '@')) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_USERNAME_ILLEGAL_CHARACTERS_2,
-                    username,
-                    new Character(c)));
-            }
-        }
-    }
-
-    /**
      * Writes an access control entries to a given resource.<p>
      * 
      * @param dbc the current database context
@@ -7756,54 +7655,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Checks if characters in a String are allowed for taskname.<p>
-     *
-     * @param taskname String to check
-     * @throws CmsIllegalArgumentException the taskname is not valid
-     */
-    protected void validTaskname(String taskname) throws CmsIllegalArgumentException {
-
-        if (taskname == null || taskname.trim().length() == 0) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_TASKNAME_0));
-        }
-
-        int l = taskname.length();
-
-        for (int i = 0; i < l; i++) {
-            char c = taskname.charAt(i);
-            if (((c < '?') || (c > '?'))
-                && ((c < '?') || (c > '?'))
-                && ((c < 'a') || (c > 'z'))
-                && ((c < '0') || (c > '9'))
-                && ((c < 'A') || (c > 'Z'))
-                && (c != 'ä')
-                && (c != 'ö')
-                && (c != 'ü')
-                && (c != 'Ä')
-                && (c != 'Ö')
-                && (c != 'Ü')
-                && (c != '-')
-                && (c != '.')
-                && (c != '_')
-                && (c != '~')
-                && (c != ' ')
-                && (c != '?')
-                && (c != '/')
-                && (c != '(')
-                && (c != ')')
-                && (c != '\'')
-                && (c != '#')
-                && (c != '&')
-                && (c != ':')
-                && (c != ';')) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_TASKNAME_ILLEGAL_CHARACTERS_1,
-                    taskname));
-            }
-        }
-    }
-
-    /**
      * Checks the parent of a resource during publishing.<p> 
      * 
      * @param dbc the current database context
@@ -7918,7 +7769,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // no space before or after the name
         name = name.trim();
         // check the username
-        validUsername(name);
+        CmsUser.checkUserName(name);
         // check the password
         validatePassword(password);
 
