@@ -35,11 +35,11 @@
 			<resource uri="/system/workplace/admin/contenttools/merge/"/>
 			<resource uri="/system/workplace/admin/contenttools/renameelement/"/>
 			<resource uri="/system/workplace/admin/contenttools/reports/"/>
-			<resource uri="/system/workplace/admin/contenttools/changeelementlocale.html"/>
-			<resource uri="/system/workplace/admin/contenttools/tagreplace.html"/>
-			<resource uri="/system/workplace/admin/contenttools/check/index.html"/>
-			<resource uri="/system/workplace/admin/contenttools/check/report.html"/>
-			<resource uri="/system/workplace/admin/contenttools/check/result.html"/>
+			<resource uri="/system/workplace/admin/contenttools/changeelementlocale.jsp"/>
+			<resource uri="/system/workplace/admin/contenttools/tagreplace.jsp"/>
+			<resource uri="/system/workplace/admin/contenttools/check/index.jsp"/>
+			<resource uri="/system/workplace/admin/contenttools/check/report.jsp"/>
+			<resource uri="/system/workplace/admin/contenttools/check/result.jsp"/>
 			<resource uri="/system/workplace/admin/contenttools/check/plugin/propertycheck/"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/small/"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/change_elementlocale.png"/>
@@ -332,8 +332,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/change/index.html</source>
-			<destination>system/workplace/admin/contenttools/change/index.html</destination>
+			<source>system/workplace/admin/contenttools/change/index.jsp</source>
+			<destination>system/workplace/admin/contenttools/change/index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>cb68388f-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -372,7 +372,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -563,8 +563,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/delete/index.html</source>
-			<destination>system/workplace/admin/contenttools/delete/index.html</destination>
+			<source>system/workplace/admin/contenttools/delete/index.jsp</source>
+			<destination>system/workplace/admin/contenttools/delete/index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>cb8843fd-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -629,8 +629,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/merge/index.html</source>
-			<destination>system/workplace/admin/contenttools/merge/index.html</destination>
+			<source>system/workplace/admin/contenttools/merge/index.jsp</source>
+			<destination>system/workplace/admin/contenttools/merge/index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>cb8fe52e-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -691,8 +691,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/renameelement/index.html</source>
-			<destination>system/workplace/admin/contenttools/renameelement/index.html</destination>
+			<source>system/workplace/admin/contenttools/renameelement/index.jsp</source>
+			<destination>system/workplace/admin/contenttools/renameelement/index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>cb9626ce-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -747,8 +747,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/reports/tagreplace.html</source>
-			<destination>system/workplace/admin/contenttools/reports/tagreplace.html</destination>
+			<source>system/workplace/admin/contenttools/reports/tagreplace.jsp</source>
+			<destination>system/workplace/admin/contenttools/reports/tagreplace.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>91eaf6f3-88d4-11da-bc09-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -860,8 +860,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/changeelementlocale.html</source>
-			<destination>system/workplace/admin/contenttools/changeelementlocale.html</destination>
+			<source>system/workplace/admin/contenttools/changeelementlocale.jsp</source>
+			<destination>system/workplace/admin/contenttools/changeelementlocale.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>cbf4b59f-001b-11da-b47b-6b865d00f841</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -910,8 +910,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/check/index.html</source>
-			<destination>system/workplace/admin/contenttools/check/index.html</destination>
+			<source>system/workplace/admin/contenttools/check/index.jsp</source>
+			<destination>system/workplace/admin/contenttools/check/index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>5ed6f649-3bbb-11da-9820-11c9c0330e35</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -932,8 +932,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/check/report.html</source>
-			<destination>system/workplace/admin/contenttools/check/report.html</destination>
+			<source>system/workplace/admin/contenttools/check/report.jsp</source>
+			<destination>system/workplace/admin/contenttools/check/report.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>c768a5b6-3ca7-11da-b888-11c9c0330e35</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -954,8 +954,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/check/result.html</source>
-			<destination>system/workplace/admin/contenttools/check/result.html</destination>
+			<source>system/workplace/admin/contenttools/check/result.jsp</source>
+			<destination>system/workplace/admin/contenttools/check/result.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>e36b1b1a-3ede-11da-89c6-11c9c0330e35</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -1000,8 +1000,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/tagreplace.html</source>
-			<destination>system/workplace/admin/contenttools/tagreplace.html</destination>
+			<source>system/workplace/admin/contenttools/tagreplace.jsp</source>
+			<destination>system/workplace/admin/contenttools/tagreplace.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>fc110625-88d0-11da-ad24-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

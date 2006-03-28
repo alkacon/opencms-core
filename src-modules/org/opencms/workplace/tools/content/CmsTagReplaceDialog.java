@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/28 10:01:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.1.7
  */
@@ -73,7 +73,7 @@ public class CmsTagReplaceDialog extends CmsWidgetDialog {
 
     /** The import JSP report workplace URI. */
     protected static final String TAGREPLACE_ACTION_REPORT = PATH_WORKPLACE
-        + "admin/contenttools/reports/tagreplace.html";
+        + "admin/contenttools/reports/tagreplace.jsp";
 
     /** The settings object that is edited on this dialog. */
     private CmsTagReplaceSettings m_settings;

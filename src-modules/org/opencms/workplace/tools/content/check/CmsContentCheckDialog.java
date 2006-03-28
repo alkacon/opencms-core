@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/28 10:01:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.2 
  */
@@ -71,10 +71,10 @@ public class CmsContentCheckDialog extends CmsWidgetDialog {
     public static final String[] PAGES = {"page1"};
 
     /** The content check JSP report workplace URI. */
-    protected static final String CONTENT_CHECK_REPORT = PATH_WORKPLACE + "admin/contenttools/check/report.html";
+    protected static final String CONTENT_CHECK_REPORT = PATH_WORKPLACE + "admin/contenttools/check/report.jsp";
 
     /** The content check JSP result workplace URI. */
-    protected static final String CONTENT_CHECK_RESULT = PATH_WORKPLACE + "admin/contenttools/check/result.html";
+    protected static final String CONTENT_CHECK_RESULT = PATH_WORKPLACE + "admin/contenttools/check/result.jsp";
 
     /** The Content Check object. */
     private CmsContentCheck m_contentCheck;
