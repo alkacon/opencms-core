@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupDependenciesList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/28 10:13:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,7 +185,7 @@ public class CmsGroupDependenciesList extends A_CmsListDialog {
                 params.put(PARAM_GROUPID, getParamGroupid());
                 getToolManager().jspForwardPage(
                     this,
-                    getJsp().getRequestContext().getFolderUri() + "group_transfer.html",
+                    getJsp().getRequestContext().getFolderUri() + "group_transfer.jsp",
                     params);
                 break;
 

@@ -157,7 +157,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -183,8 +183,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/group_delete.html</source>
-			<destination>system/workplace/admin/accounts/group_delete.html</destination>
+			<source>system/workplace/admin/accounts/group_delete.jsp</source>
+			<destination>system/workplace/admin/accounts/group_delete.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>38b64705-d83b-11d9-9459-efaaea26ed93</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -233,8 +233,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/group_edit.html</source>
-			<destination>system/workplace/admin/accounts/group_edit.html</destination>
+			<source>system/workplace/admin/accounts/group_edit.jsp</source>
+			<destination>system/workplace/admin/accounts/group_edit.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>7d30fde9-d6a9-11d9-a49a-57d6fd0f62d2</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -283,8 +283,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/group_new.html</source>
-			<destination>system/workplace/admin/accounts/group_new.html</destination>
+			<source>system/workplace/admin/accounts/group_new.jsp</source>
+			<destination>system/workplace/admin/accounts/group_new.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>6ee7e38a-d726-11d9-9ecc-57d6fd0f62d2</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -329,8 +329,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/group_overview.html</source>
-			<destination>system/workplace/admin/accounts/group_overview.html</destination>
+			<source>system/workplace/admin/accounts/group_overview.jsp</source>
+			<destination>system/workplace/admin/accounts/group_overview.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>14bd19e6-d6a7-11d9-814d-57d6fd0f62d2</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -379,8 +379,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/group_transfer.html</source>
-			<destination>system/workplace/admin/accounts/group_transfer.html</destination>
+			<source>system/workplace/admin/accounts/group_transfer.jsp</source>
+			<destination>system/workplace/admin/accounts/group_transfer.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>37e713a1-0a6b-11da-9201-1d873b0b8abd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -401,8 +401,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/group_users.html</source>
-			<destination>system/workplace/admin/accounts/group_users.html</destination>
+			<source>system/workplace/admin/accounts/group_users.jsp</source>
+			<destination>system/workplace/admin/accounts/group_users.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>75dee83d-d6a9-11d9-a49a-57d6fd0f62d2</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -451,7 +451,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/accounts/groups_delete.html</destination>
+			<destination>system/workplace/admin/accounts/groups_delete.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>38b64705-d83b-11d9-9459-efaaea26ed93</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -500,8 +500,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/groups_list.html</source>
-			<destination>system/workplace/admin/accounts/groups_list.html</destination>
+			<source>system/workplace/admin/accounts/groups_list.jsp</source>
+			<destination>system/workplace/admin/accounts/groups_list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>54c29019-d68d-11d9-aa6d-57d6fd0f62d2</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -546,8 +546,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/user_delete.html</source>
-			<destination>system/workplace/admin/accounts/user_delete.html</destination>
+			<source>system/workplace/admin/accounts/user_delete.jsp</source>
+			<destination>system/workplace/admin/accounts/user_delete.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>0a1bba28-d40e-11d9-8431-b920ebfd9bc1</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -596,8 +596,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/user_edit.html</source>
-			<destination>system/workplace/admin/accounts/user_edit.html</destination>
+			<source>system/workplace/admin/accounts/user_edit.jsp</source>
+			<destination>system/workplace/admin/accounts/user_edit.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>44347be5-ac0e-11d9-80b4-733e319ca5ea</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -646,8 +646,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/user_groups.html</source>
-			<destination>system/workplace/admin/accounts/user_groups.html</destination>
+			<source>system/workplace/admin/accounts/user_groups.jsp</source>
+			<destination>system/workplace/admin/accounts/user_groups.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>4fb1c05b-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -696,8 +696,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/user_new.html</source>
-			<destination>system/workplace/admin/accounts/user_new.html</destination>
+			<source>system/workplace/admin/accounts/user_new.jsp</source>
+			<destination>system/workplace/admin/accounts/user_new.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>794610f3-d42a-11d9-8431-b920ebfd9bc1</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -742,8 +742,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/user_overview.html</source>
-			<destination>system/workplace/admin/accounts/user_overview.html</destination>
+			<source>system/workplace/admin/accounts/user_overview.jsp</source>
+			<destination>system/workplace/admin/accounts/user_overview.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>442ed246-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -792,8 +792,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/user_transfer.html</source>
-			<destination>system/workplace/admin/accounts/user_transfer.html</destination>
+			<source>system/workplace/admin/accounts/user_transfer.jsp</source>
+			<destination>system/workplace/admin/accounts/user_transfer.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>6dbcc0c3-0a57-11da-81e3-1d873b0b8abd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -814,7 +814,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/accounts/users_delete.html</destination>
+			<destination>system/workplace/admin/accounts/users_delete.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>0a1bba28-d40e-11d9-8431-b920ebfd9bc1</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -863,8 +863,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/users_list.html</source>
-			<destination>system/workplace/admin/accounts/users_list.html</destination>
+			<source>system/workplace/admin/accounts/users_list.jsp</source>
+			<destination>system/workplace/admin/accounts/users_list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>fb553117-aa75-11d9-bdd4-733e319ca5ea</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -913,8 +913,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/webuser_delete.html</source>
-			<destination>system/workplace/admin/accounts/webuser_delete.html</destination>
+			<source>system/workplace/admin/accounts/webuser_delete.jsp</source>
+			<destination>system/workplace/admin/accounts/webuser_delete.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>90ab3920-e7fe-11d9-936a-1937cc62396b</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -963,8 +963,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/webuser_edit.html</source>
-			<destination>system/workplace/admin/accounts/webuser_edit.html</destination>
+			<source>system/workplace/admin/accounts/webuser_edit.jsp</source>
+			<destination>system/workplace/admin/accounts/webuser_edit.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>99ed10dd-e7fe-11d9-936a-1937cc62396b</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -1013,8 +1013,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/webuser_groups.html</source>
-			<destination>system/workplace/admin/accounts/webuser_groups.html</destination>
+			<source>system/workplace/admin/accounts/webuser_groups.jsp</source>
+			<destination>system/workplace/admin/accounts/webuser_groups.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>a69ebafa-e7fe-11d9-936a-1937cc62396b</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -1063,8 +1063,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/webuser_new.html</source>
-			<destination>system/workplace/admin/accounts/webuser_new.html</destination>
+			<source>system/workplace/admin/accounts/webuser_new.jsp</source>
+			<destination>system/workplace/admin/accounts/webuser_new.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>ba5d3462-e7fe-11d9-936a-1937cc62396b</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -1109,8 +1109,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/webuser_overview.html</source>
-			<destination>system/workplace/admin/accounts/webuser_overview.html</destination>
+			<source>system/workplace/admin/accounts/webuser_overview.jsp</source>
+			<destination>system/workplace/admin/accounts/webuser_overview.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>c699fc9f-e7fe-11d9-936a-1937cc62396b</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -1159,7 +1159,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/accounts/webusers_delete.html</destination>
+			<destination>system/workplace/admin/accounts/webusers_delete.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>90ab3920-e7fe-11d9-936a-1937cc62396b</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -1208,8 +1208,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/webusers_list.html</source>
-			<destination>system/workplace/admin/accounts/webusers_list.html</destination>
+			<source>system/workplace/admin/accounts/webusers_list.jsp</source>
+			<destination>system/workplace/admin/accounts/webusers_list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>d323101c-e7fe-11d9-936a-1937cc62396b</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
