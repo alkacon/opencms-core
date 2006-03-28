@@ -725,8 +725,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/reports/changelocale.html</source>
-			<destination>system/workplace/admin/contenttools/reports/changelocale.html</destination>
+			<source>system/workplace/admin/contenttools/reports/changelocale.jsp</source>
+			<destination>system/workplace/admin/contenttools/reports/changelocale.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>7573088b-001f-11da-8023-6b865d00f841</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2006/03/28 17:14:41 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/28 18:44:59 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -361,9 +361,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_TITLE_LOCKED_0 = "GUI_TITLE_LOCKED_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWDOWNLOADGALLERY_0 = "GUI_TITLE_NEWDOWNLOADGALLERY_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_TITLE_NEWEXTENSION_0 = "GUI_TITLE_NEWEXTENSION_0";
 
     /** Message contant for key in the resource bundle. */
@@ -373,43 +370,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_TITLE_NEWFILEOTHER_0 = "GUI_TITLE_NEWFILEOTHER_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWFOLDER_0 = "GUI_TITLE_NEWFOLDER_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWHTMLGALLERY_0 = "GUI_TITLE_NEWHTMLGALLERY_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWIMAGEGALLERY_0 = "GUI_TITLE_NEWIMAGEGALLERY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWJSP_0 = "GUI_TITLE_NEWJSP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWLINK_0 = "GUI_TITLE_NEWLINK_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWLINKGALLERY_0 = "GUI_TITLE_NEWLINKGALLERY_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWPAGE_0 = "GUI_TITLE_NEWPAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWPLAIN_0 = "GUI_TITLE_NEWPLAIN_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_TITLE_NEWPROPDEFFOR_0 = "GUI_TITLE_NEWPROPDEFFOR_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_TITLE_NEWPROPERTYINFO_0 = "GUI_TITLE_NEWPROPERTYINFO_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWTABLE_0 = "GUI_TITLE_NEWTABLE_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWTABLEGALLERY_0 = "GUI_TITLE_NEWTABLEGALLERY_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWXMLCONTENT_0 = "GUI_TITLE_NEWXMLCONTENT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOADAPPLET_ACTION_COUNT_0 = "GUI_UPLOADAPPLET_ACTION_COUNT_0";
