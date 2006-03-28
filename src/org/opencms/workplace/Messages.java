@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/03/28 09:10:03 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,9 +158,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_LOGINTIME_0 = "GUI_LABEL_LOGINTIME_0";
-    
-    /** Message constant for key in the resource bundle. */
-   
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_PROJECT_0 = "GUI_LABEL_PROJECT_0";
@@ -169,7 +166,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_SITE_0 = "GUI_LABEL_SITE_0";
 
     /** Message constant for key in the resource bundle. */
-
     public static final String GUI_LABEL_USER_0 = "GUI_LABEL_USER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -198,34 +194,34 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_FAILED_TEMP_DISABLED_0 = "GUI_LOGIN_FAILED_TEMP_DISABLED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_FAILED_WITH_MESSAGE_1 = "GUI_LOGIN_FAILED_WITH_MESSAGE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_HEADLINE_0 = "GUI_LOGIN_HEADLINE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_HEADLINE_ALREADY_IN_0 = "GUI_LOGIN_HEADLINE_ALREADY_IN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_MESSAGE_0 = "GUI_LOGIN_MESSAGE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_MESSAGE_ALREADY_IN_0 = "GUI_LOGIN_MESSAGE_ALREADY_IN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_NO_DATA_0 = "GUI_LOGIN_NO_DATA_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_NO_NAME_0 = "GUI_LOGIN_NO_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_NO_PASSWORD_0 = "GUI_LOGIN_NO_PASSWORD_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_NOSCRIPT_1 = "GUI_LOGIN_NOSCRIPT_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0 = "GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0";
 
@@ -354,22 +350,22 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PARAM_RESOURCE_2 = "LOG_PARAM_RESOURCE_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READING_VIEW_FOLDER_FAILED_1 = "LOG_READING_VIEW_FOLDER_FAILED_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_PARAM_2 = "LOG_SET_PARAM_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_THREAD_CREATION_FAILED_1 = "LOG_THREAD_CREATION_FAILED_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_UNSUPPORTED_ENCODING_SET_1 = "LOG_UNSUPPORTED_ENCODING_SET_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WORKPLACE_INIT_NO_LOCALES_1 = "LOG_WORKPLACE_INIT_NO_LOCALES_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WORKPLACE_INIT_NO_VIEWS_1 = "LOG_WORKPLACE_INIT_NO_VIEWS_1";
 
