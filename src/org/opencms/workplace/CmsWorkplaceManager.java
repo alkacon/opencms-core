@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2006/03/28 07:53:22 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.I_CmsLocaleHandler;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -95,7 +94,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.74 $ 
+ * @version $Revision: 1.75 $ 
  * 
  * @since 6.0.0 
  */
@@ -651,17 +650,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns the workplace messages for the given locale.<p>
+     * Returns the {@link CmsWorkplaceModuleMessages} for the given locale.<p>
      * 
-     * The workplace messages are a collection of resource bundles, one for the basic
-     * workplace, and (optionally) one for each initialized module.<p>
+     * The workplace module messages are a collection of resource bundles, containing the messages 
+     * for all OpenCms core bundles and for each initialized module.<p>
+     * 
+     * Please note that the message objects are cached. The result should therefor never be
+     * modified directly in any way.<p>
      * 
      * @param locale the locale to get the messages for
-     * @return the workplace messages for the given locale
+     * 
+     * @return the {@link CmsWorkplaceModuleMessages} for the given locale
      */
-    public CmsMessages getMessages(Locale locale) {
+    public CmsWorkplaceModuleMessages getMessages(Locale locale) {
 
-        CmsMessages result = (CmsMessages)m_messages.get(locale);
+        CmsWorkplaceModuleMessages result = (CmsWorkplaceModuleMessages)m_messages.get(locale);
         if (result != null) {
             // messages have already been read
             return result;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2006/03/28 07:53:22 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -864,15 +864,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
             m_metadatas.put(listDialogName, metadata);
         }
         return (CmsListMetadata)m_metadatas.get(listDialogName);
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    protected void initMessages() {
-
-        addMessages(Messages.get().getBundleName());
-        addMessages(org.opencms.workplace.tools.Messages.get().getBundleName());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.152 $
+ * Date   : $Date: 2006/03/28 07:53:22 $
+ * Version: $Revision: 1.153 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.152 $ 
+ * @version $Revision: 1.153 $ 
  * 
  * @since 6.0.0 
  */
@@ -1921,9 +1921,7 @@ public abstract class CmsWorkplace {
     /**
      * Auxiliary method for initialization of messages.<p>
      * 
-     * @param messages the messages to add
-     * 
-     * @see #initMessages()
+     * @param messages the {@link CmsMessages} to add
      */
     protected void addMessages(CmsMessages messages) {
 
@@ -1935,9 +1933,7 @@ public abstract class CmsWorkplace {
     /**
      * Auxiliary method for initialization of messages.<p>
      * 
-     * @param bundleName the bundle name to instanciate
-     * 
-     * @see #initMessages()
+     * @param bundleName the resource bundle name to add
      */
     protected void addMessages(String bundleName) {
 
@@ -2016,15 +2012,14 @@ public abstract class CmsWorkplace {
     /**
      * Initializes the message object.<p>
      * 
-     * By default the workplace messages object is used.<p>
+     * By default the {@link CmsWorkplaceModuleMessages} are initialized.<p>
      * 
      * You SHOULD override this method for setting the bundles you really need,
      * using the <code>{@link #addMessages(CmsMessages)}</code> or <code>{@link #addMessages(String)}</code> method.<p>
      */
     protected void initMessages() {
 
-        // manually add the default workplace messages for the current user
-        addMessages(Messages.get().getBundleName());
+        // no bundles are added by default as all core bundles are added as part of the WorkplaceModuleMessages
     }
 
     /**
@@ -2054,6 +2049,7 @@ public abstract class CmsWorkplace {
 
             // initialize messages            
             CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getLocale());
+            // generate a new multi messages object and add the messages from the workplace
             m_messages = new CmsMultiMessages(getLocale());
             m_messages.addMessages(messages);
             initMessages();

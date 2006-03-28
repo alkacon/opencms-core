@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2006/03/28 07:53:22 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 6.0.0 
  */
@@ -1416,15 +1416,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected boolean hasValidationErrors() {
 
         return (m_validationErrorList != null) && (m_validationErrorList.size() > 0);
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    protected void initMessages() {
-
-        addMessages(org.opencms.workplace.Messages.get().getBundleName());
-        addMessages(org.opencms.workplace.tools.Messages.get().getBundleName());
     }
 
     /**

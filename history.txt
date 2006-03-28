@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.712 $
+ * Date   : $Date: 2006/03/28 07:53:22 $
+ * Version: $Revision: 1.713 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,6 +21,7 @@ Legend:
 
 OpenCms 6.1.13 - March 27, 2006
 - First tagged 6.1.x version AFTER merge to HEAD
+* Fixed issue #1105: Added entry for MS IE 7 in editor_configuration.xml
 
 OpenCms 6.1.12 - March 27, 2006
 - Refactored usage of resource bundle messages

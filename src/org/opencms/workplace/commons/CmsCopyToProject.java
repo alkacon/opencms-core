@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopyToProject.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/28 07:53:22 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -178,15 +178,6 @@ public class CmsCopyToProject extends CmsDialog {
         String[] localizedObject = new String[] {resName, getCms().getRequestContext().currentProject().getName()};
         result.append(key(Messages.GUI_COPYTOPROJECT_PROJECT_CONFIRMATION_2, localizedObject));
         return result.toString();
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    protected void initMessages() {
-
-        addMessages(Messages.get().getBundleName());
-        super.initMessages();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2006/03/27 14:53:04 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/03/28 07:53:22 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -836,16 +836,6 @@ public class CmsHelpTemplateBean extends CmsDialog {
         } finally {
             getJsp().getRequestContext().setCurrentProject(m_offlineProject);
         }
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    protected void initMessages() {
-
-        addMessages(Messages.get().getBundleName());
-        addMessages(org.opencms.search.Messages.get().getBundleName());
-        addMessages(org.opencms.workplace.Messages.get().getBundleName());
     }
 
     /**

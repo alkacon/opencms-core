@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2006/03/28 07:53:23 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.67 $ 
+ * @version $Revision: 1.68 $ 
  * 
  * @since 6.0.0 
  */
@@ -899,21 +899,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
         }
         setParamElementlanguage(defaultLocale.toString());
-    }
-
-    /**
-     * Initializes the message object.<p>
-     * 
-     * By default the workplace messages object is used.<p>
-     * 
-     * You SHOULD override this method for setting the bundles you really need,
-     * using the <code>{@link #addMessages(String)}</code> method.<p>
-     */
-    protected void initMessages() {
-
-        // manually add the initialized workplace messages for the current user
-        super.initMessages();
-        addMessages(Messages.get().getBundleName());
     }
 
     /**

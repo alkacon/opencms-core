@@ -3,8 +3,8 @@
 	org.opencms.workplace.editors.*,
 	org.opencms.workplace.help.*,
 	org.opencms.jsp.*,
-	java.util.*"
-%><%
+	java.util.*
+"%><%
 	
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 CmsMSDHtmlEditor wp = new CmsMSDHtmlEditor(cms);

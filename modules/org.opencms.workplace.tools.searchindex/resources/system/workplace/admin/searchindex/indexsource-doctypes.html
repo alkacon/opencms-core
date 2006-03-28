@@ -1,8 +1,12 @@
-<%@ page import="org.opencms.workplace.tools.searchindex.*, org.opencms.workplace.CmsWidgetDialog, org.opencms.workplace.CmsDialog, org.opencms.workplace.list.*" %>
+<%@ page import="
+	org.opencms.workplace.tools.searchindex.*, 
+	org.opencms.workplace.CmsWidgetDialog, 
+	org.opencms.workplace.CmsDialog, 
+	org.opencms.workplace.list.*
+"%><%     
 
-<%     
 	// initialize index view
-        CmsWidgetDialog wp = new CmsOverviewIndexSourceDialog(pageContext, request, response);
+    CmsWidgetDialog wp = new CmsOverviewIndexSourceDialog(pageContext, request, response);
 	// perform the widget actions
 	wp.displayDialog(true);
 	if (wp.isForwarded()) {

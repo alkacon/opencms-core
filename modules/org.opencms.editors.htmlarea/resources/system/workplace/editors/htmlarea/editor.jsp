@@ -1,6 +1,5 @@
 <%@ page import="
 	org.opencms.editors.htmlarea.*,
-	org.opencms.widgets.*,
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
 	org.opencms.workplace.help.*,
