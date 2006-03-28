@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesDelete.java,v $
- * Date   : $Date: 2006/03/27 14:52:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/28 13:54:48 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,7 +63,7 @@ public class CmsModulesDelete extends CmsDialog {
     public static final String PARAM_MODULE = "module";
 
     /** The delete action. */
-    private static final String DELETE_ACTION_REPORT = "/system/workplace/admin/modules/reports/delete.html";
+    private static final String DELETE_ACTION_REPORT = "/system/workplace/admin/modules/reports/delete.jsp";
 
     /** Modulename. */
     protected String m_paramModule;

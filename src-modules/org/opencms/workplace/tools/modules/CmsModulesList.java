@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2006/03/27 14:52:53 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/03/28 13:54:48 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,7 +185,7 @@ public class CmsModulesList extends A_CmsListDialog {
             params.put(PARAM_MODULE, moduleList);
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
-            getToolManager().jspForwardPage(this, PATH_REPORTS + "delete.html", params);
+            getToolManager().jspForwardPage(this, PATH_REPORTS + "delete.jsp", params);
         }
         listSave();
     }
@@ -211,12 +211,12 @@ public class CmsModulesList extends A_CmsListDialog {
             // forward to the delete module screen   
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
-            getToolManager().jspForwardPage(this, PATH_REPORTS + "delete.html", params);
+            getToolManager().jspForwardPage(this, PATH_REPORTS + "delete.jsp", params);
         } else if (getParamListAction().equals(LIST_ACTION_EXPORT)) {
             // forward to the delete module screen   
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
-            getToolManager().jspForwardPage(this, "/system/workplace/admin/modules/reports/export.html", params);
+            getToolManager().jspForwardPage(this, "/system/workplace/admin/modules/reports/export.jsp", params);
         }
         listSave();
     }

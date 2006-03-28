@@ -175,7 +175,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -201,8 +201,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/dependencies_edit.html</source>
-			<destination>system/workplace/admin/modules/dependencies_edit.html</destination>
+			<source>system/workplace/admin/modules/dependencies_edit.jsp</source>
+			<destination>system/workplace/admin/modules/dependencies_edit.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>11493748-d740-11d9-ae08-d995bfb3ec20</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -229,7 +229,7 @@
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.GUI_EDITDEPENDENCIES_ADMIN_TOOL_HELP_0}]]></value>
+					<value><![CDATA[${key.GUI_EDITADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -247,8 +247,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/dependencies_list.html</source>
-			<destination>system/workplace/admin/modules/dependencies_list.html</destination>
+			<source>system/workplace/admin/modules/dependencies_list.jsp</source>
+			<destination>system/workplace/admin/modules/dependencies_list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>4a82559b-d763-11d9-a9e3-d995bfb3ec20</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -297,8 +297,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/dependencies_new.html</source>
-			<destination>system/workplace/admin/modules/dependencies_new.html</destination>
+			<source>system/workplace/admin/modules/dependencies_new.jsp</source>
+			<destination>system/workplace/admin/modules/dependencies_new.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>f36724cb-d762-11d9-a9e3-d995bfb3ec20</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -347,8 +347,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/exportpoints_edit.html</source>
-			<destination>system/workplace/admin/modules/exportpoints_edit.html</destination>
+			<source>system/workplace/admin/modules/exportpoints_edit.jsp</source>
+			<destination>system/workplace/admin/modules/exportpoints_edit.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>880ffa36-d828-11d9-b53a-5b7b61659346</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -393,8 +393,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/exportpoints_list.html</source>
-			<destination>system/workplace/admin/modules/exportpoints_list.html</destination>
+			<source>system/workplace/admin/modules/exportpoints_list.jsp</source>
+			<destination>system/workplace/admin/modules/exportpoints_list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>e78b3453-d816-11d9-ad49-5b7b61659346</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -443,8 +443,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/exportpoints_new.html</source>
-			<destination>system/workplace/admin/modules/exportpoints_new.html</destination>
+			<source>system/workplace/admin/modules/exportpoints_new.jsp</source>
+			<destination>system/workplace/admin/modules/exportpoints_new.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>98310450-d82c-11d9-9c7f-5b7b61659346</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -493,8 +493,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/index.html</source>
-			<destination>system/workplace/admin/modules/index.html</destination>
+			<source>system/workplace/admin/modules/index.jsp</source>
+			<destination>system/workplace/admin/modules/index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>108a398a-c6d8-11d9-888d-8fa6905eb2f3</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -511,8 +511,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/modules_delete.html</source>
-			<destination>system/workplace/admin/modules/modules_delete.html</destination>
+			<source>system/workplace/admin/modules/modules_delete.jsp</source>
+			<destination>system/workplace/admin/modules/modules_delete.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>9bc2b3a3-d9b0-11d9-ba5c-6f6c98ba0933</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -557,8 +557,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/modules_edit.html</source>
-			<destination>system/workplace/admin/modules/modules_edit.html</destination>
+			<source>system/workplace/admin/modules/modules_edit.jsp</source>
+			<destination>system/workplace/admin/modules/modules_edit.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>93110d4f-c7b0-11d9-93cd-8fa6905eb2f3</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -607,8 +607,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/modules_edit_parameters.html</source>
-			<destination>system/workplace/admin/modules/modules_edit_parameters.html</destination>
+			<source>system/workplace/admin/modules/modules_edit_parameters.jsp</source>
+			<destination>system/workplace/admin/modules/modules_edit_parameters.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>563379bf-d8e3-11d9-a1eb-bfc671789551</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -657,8 +657,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/modules_edit_resources.html</source>
-			<destination>system/workplace/admin/modules/modules_edit_resources.html</destination>
+			<source>system/workplace/admin/modules/modules_edit_resources.jsp</source>
+			<destination>system/workplace/admin/modules/modules_edit_resources.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>7aa2691d-d8e3-11d9-a1eb-bfc671789551</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -707,8 +707,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/modules_export.html</source>
-			<destination>system/workplace/admin/modules/modules_export.html</destination>
+			<source>system/workplace/admin/modules/modules_export.jsp</source>
+			<destination>system/workplace/admin/modules/modules_export.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>2f789de2-cba0-11d9-a301-218dc7aa42ee</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -757,8 +757,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/modules_import.html</source>
-			<destination>system/workplace/admin/modules/modules_import.html</destination>
+			<source>system/workplace/admin/modules/modules_import.jsp</source>
+			<destination>system/workplace/admin/modules/modules_import.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>21ec5535-d742-11d9-ae08-d995bfb3ec20</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -803,8 +803,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/modules_import_server.html</source>
-			<destination>system/workplace/admin/modules/modules_import_server.html</destination>
+			<source>system/workplace/admin/modules/modules_import_server.jsp</source>
+			<destination>system/workplace/admin/modules/modules_import_server.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>e41c82b6-d741-11d9-ae08-d995bfb3ec20</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -849,8 +849,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/modules_new.html</source>
-			<destination>system/workplace/admin/modules/modules_new.html</destination>
+			<source>system/workplace/admin/modules/modules_new.jsp</source>
+			<destination>system/workplace/admin/modules/modules_new.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>45166370-d754-11d9-9d80-d995bfb3ec20</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -899,8 +899,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/modules_overview.html</source>
-			<destination>system/workplace/admin/modules/modules_overview.html</destination>
+			<source>system/workplace/admin/modules/modules_overview.jsp</source>
+			<destination>system/workplace/admin/modules/modules_overview.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>b36b567e-d664-11d9-97a9-d37c396b7f8d</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -961,8 +961,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/reports/delete.html</source>
-			<destination>system/workplace/admin/modules/reports/delete.html</destination>
+			<source>system/workplace/admin/modules/reports/delete.jsp</source>
+			<destination>system/workplace/admin/modules/reports/delete.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>ac82abe0-c933-11d9-969b-8fa6905eb2f3</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -983,7 +983,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/modules/reports/export.html</destination>
+			<destination>system/workplace/admin/modules/reports/export.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>2f789de2-cba0-11d9-a301-218dc7aa42ee</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -1004,8 +1004,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/reports/import.html</source>
-			<destination>system/workplace/admin/modules/reports/import.html</destination>
+			<source>system/workplace/admin/modules/reports/import.jsp</source>
+			<destination>system/workplace/admin/modules/reports/import.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>a84841c9-cc39-11d9-bf12-218dc7aa42ee</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -1026,8 +1026,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/reports/replace.html</source>
-			<destination>system/workplace/admin/modules/reports/replace.html</destination>
+			<source>system/workplace/admin/modules/reports/replace.jsp</source>
+			<destination>system/workplace/admin/modules/reports/replace.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>74c1a615-cc53-11d9-8042-218dc7aa42ee</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

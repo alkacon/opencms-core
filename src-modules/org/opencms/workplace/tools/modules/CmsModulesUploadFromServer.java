@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2006/03/27 14:52:53 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/03/28 13:54:48 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,10 +81,10 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
     public static final String PARAM_MODULENAME = "modulename";
 
     /** The import action. */
-    protected static final String IMPORT_ACTION_REPORT = "/system/workplace/admin/modules/reports/import.html";
+    protected static final String IMPORT_ACTION_REPORT = "/system/workplace/admin/modules/reports/import.jsp";
 
     /** The replace action. */
-    protected static final String REPLACE_ACTION_REPORT = "/system/workplace/admin/modules/reports/replace.html";
+    protected static final String REPLACE_ACTION_REPORT = "/system/workplace/admin/modules/reports/replace.jsp";
 
     /** Modulename. */
     private String m_moduleupload;
