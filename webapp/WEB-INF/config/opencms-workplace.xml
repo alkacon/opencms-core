@@ -102,7 +102,7 @@
             <separator order="330"/>
             <entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
             <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.jsp" rules="a a aaai aaai aaai" order="350"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
           </contextmenu>
         </editoptions>
@@ -139,7 +139,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
             <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.jsp" rules="a a aaai aaai aaai" order="350"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
           </contextmenu>
         </editoptions>
@@ -175,7 +175,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
             <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.jsp" rules="a a aaai aaai aaai" order="350"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
           </contextmenu>
         </editoptions>
@@ -219,7 +219,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
             <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.jsp" rules="a a aaai aaai aaai" order="350"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
           </contextmenu>
         </editoptions>
@@ -254,7 +254,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
             <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.jsp" rules="a a aaai aaai aaai" order="350"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
           </contextmenu>
         </editoptions>
@@ -286,7 +286,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
             <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.jsp" rules="a a aaai aaai aaai" order="350"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
           </contextmenu>
         </editoptions>
@@ -324,7 +324,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
             <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
             <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.jsp" rules="a a aaai aaai aaai" order="350"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
           </contextmenu>
         </editoptions>
@@ -447,7 +447,7 @@
             <separator order="330"/>
             <entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
             <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.jsp" rules="a a aaai aaai aaai" order="350"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
           </contextmenu>
         </editoptions>

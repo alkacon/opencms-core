@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/28 19:15:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -401,7 +401,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
             CmsSearchResultView resultView = new CmsSearchResultView(getJsp());
             // proprietary workplace admin link for pagelinks of search: 
             resultView.setSearchRessourceUrl(getJsp().link(
-                "/system/workplace/views/admin/admin-main.html?path=/searchindex/singleindex/search&indexname="
+                "/system/workplace/views/admin/admin-main.jsp?path=/searchindex/singleindex/search&indexname="
                     + m_index.getName()));
             m_search.init(getCms());
 
