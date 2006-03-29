@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2006/03/29 14:45:33 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2006/03/29 16:39:17 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,7 +138,7 @@ public class CmsSecure extends CmsDialog {
             writeProperty(CmsPropertyDefinition.PROPERTY_SECURE, getParamSecure());
 
             // change the flag of the resource so that it is internal            
-            CmsResource resource = getCms().readResource(filename);
+            CmsResource resource = getCms().readResource(filename, CmsResourceFilter.IGNORE_EXPIRATION);
             if (resource.isInternal() && !Boolean.valueOf(getParamIntern()).booleanValue()) {
                 getCms().chflags(filename, resource.getFlags() & (~CmsResource.FLAG_INTERNAL));
             } else if (!resource.isInternal() && Boolean.valueOf(getParamIntern()).booleanValue()) {
@@ -310,7 +310,7 @@ public class CmsSecure extends CmsDialog {
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setSiteRoot(getCms().getRequestContext().getSiteRoot());
             // let's look up if the export user has the permission to read
-            return exportCms.hasPermissions(cms.readResource(vfsName), CmsPermissionSet.ACCESS_READ);
+            return exportCms.hasPermissions(cms.readResource(vfsName, CmsResourceFilter.IGNORE_EXPIRATION), CmsPermissionSet.ACCESS_READ);
         } catch (CmsException e) {
             // ignore this exception
         }    
@@ -326,7 +326,7 @@ public class CmsSecure extends CmsDialog {
 
         boolean internProp = false;
         try {
-            internProp = getCms().readResource(getParamResource()).isInternal();
+            internProp = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION).isInternal();
         } catch (CmsException e) {
             if (LOG.isInfoEnabled()) {
                 LOG.info(e.getLocalizedMessage());
