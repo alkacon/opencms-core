@@ -606,7 +606,7 @@ ${opencms.inputlib.textextraction}
 
         <mkdir dir="${opencms.output.distfiles}" />                    
 		
-        <zip destfile="${opencms.output.distfiles}/${app.name}__${version.number}_src.zip">
+        <zip destfile="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip">
         	<zipfileset dir="${opencms.input}/src" excludes="${excludes}" prefix="src" />
             <zipfileset dir="${opencms.input}" includes="build.xml,install.html,license.txt,history.txt"/>
         </zip>
@@ -618,7 +618,7 @@ ${opencms.inputlib.textextraction}
 	      <then>
 	    	<for list="${src.comps}" param="comp" trim="yes">
 	    	  <sequential>
-	            <zip destfile="${opencms.output.distfiles}/${app.name}_src.zip" update="true" whenempty="fail">
+	            <zip destfile="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip" update="true" whenempty="fail">
 	            	<zipfileset dir="${opencms.input}/@{comp}" excludes="${excludes}" prefix="@{comp}" />
 	            </zip>
 	    	  </sequential>
