@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2006/03/27 14:52:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/03/29 16:16:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -320,68 +320,66 @@ function checkElementButtons(resetTimer) {
 // shows the specified element belonging to the given icon (for help & element buttons
 function showEditorElement(elem, icon, xOffset, yOffset, alignToLeft) {
 
-    if (elem.style.visibility == "visible") {
-        return;
+    if (elem.style.visibility != "visible" && icon) {
+	    var x = findPosX(icon) + xOffset;
+	    var y = findPosY(icon) + yOffset;
+	    var textHeight = elem.scrollHeight;
+	    var textWidth = elem.scrollWidth;
+	    var scrollSize = 20;
+	    var scrollTop = 0;
+	    var scrollLeft = 0;
+	    var clientHeight = 0;
+	    var clientWidth = 0;
+	    if (document.documentElement && (document.documentElement.scrollTop || document.documentElement.clientHeight)) {
+	        scrollTop = document.documentElement.scrollTop;
+	        scrollLeft = document.documentElement.scrollLeft;
+	        clientHeight = document.documentElement.clientHeight;
+	        clientWidth = document.documentElement.clientWidth;
+	    } else if (document.body) {
+	        scrollTop = document.body.scrollTop;
+	        scrollLeft = document.body.scrollLeft;
+	        clientHeight = document.body.clientHeight;
+	        clientWidth = document.body.clientWidth;
+	    }
+	    if ((y + textHeight) > (clientHeight + scrollTop)) {
+	        y = y - textHeight;
+	    }
+	    if (y < scrollTop) {
+	        y = (clientHeight + scrollTop) - (textHeight + scrollSize);
+	    }
+	    if (y < scrollTop) {
+	        y = scrollTop;
+	    }
+	    if ((x + textWidth) > (clientWidth + scrollLeft) || alignToLeft) {
+	        x = x - textWidth;
+	    }
+	    if (x < scrollLeft) {
+	        x = (clientWidth + scrollLeft) - (textWidth + scrollSize);
+	    }
+	    if (x < scrollLeft) {
+	        x = scrollLeft;
+	    }
+	
+	    if (alignToLeft) {
+	    	x += xOffset;
+	    }
+	
+	    elem.style.left = x + "px";
+	    elem.style.top =  y + "px";
+	    elem.style.visibility = "visible";
+	    return y;
     }
-
-    x = findPosX(icon) + xOffset;
-    y = findPosY(icon) + yOffset;
-    var textHeight = elem.scrollHeight;
-    var textWidth = elem.scrollWidth;
-    var scrollSize = 20;
-    var scrollTop = 0;
-    var scrollLeft = 0;
-    var clientHeight = 0;
-    var clientWidth = 0;
-    if (document.documentElement && (document.documentElement.scrollTop || document.documentElement.clientHeight)) {
-        scrollTop = document.documentElement.scrollTop;
-        scrollLeft = document.documentElement.scrollLeft;
-        clientHeight = document.documentElement.clientHeight;
-        clientWidth = document.documentElement.clientWidth;
-    } else if (document.body) {
-        scrollTop = document.body.scrollTop;
-        scrollLeft = document.body.scrollLeft;
-        clientHeight = document.body.clientHeight;
-        clientWidth = document.body.clientWidth;
-    }
-    if ((y + textHeight) > (clientHeight + scrollTop)) {
-        y = y - textHeight;
-    }
-    if (y < scrollTop) {
-        y = (clientHeight + scrollTop) - (textHeight + scrollSize);
-    }
-    if (y < scrollTop) {
-        y = scrollTop;
-    }
-    if ((x + textWidth) > (clientWidth + scrollLeft) || alignToLeft) {
-        x = x - textWidth;
-    }
-    if (x < scrollLeft) {
-        x = (clientWidth + scrollLeft) - (textWidth + scrollSize);
-    }
-    if (x < scrollLeft) {
-        x = scrollLeft;
-    }
-
-    if (alignToLeft) {
-    	x += xOffset;
-    }
-
-    elem.style.left = x + "px";
-    elem.style.top =  y + "px";
-    elem.style.visibility = "visible";
-    return y;
 }
 
 // finds the x position of an element
 function findPosX(obj) {
     var curleft = 0;
-    if (obj.offsetParent) {
+    if (obj && obj.offsetParent) {
         while (obj.offsetParent) {
             curleft += obj.offsetLeft - obj.scrollLeft;
             obj = obj.offsetParent;
         }
-    } else if (obj.x) {
+    } else if (obj && obj.x) {
         curleft += obj.x;
     }
     return curleft;
@@ -390,12 +388,12 @@ function findPosX(obj) {
 // finds the y position of an element
 function findPosY(obj) {
     var curtop = 0;
-    if (obj.offsetParent) {
+    if (obj && obj.offsetParent) {
         while (obj.offsetParent) {
             curtop += obj.offsetTop - obj.scrollTop;
             obj = obj.offsetParent;
         }
-    } else if (obj.y) {
+    } else if (obj && obj.y) {
         curtop += obj.y;
     }
     return curtop;
