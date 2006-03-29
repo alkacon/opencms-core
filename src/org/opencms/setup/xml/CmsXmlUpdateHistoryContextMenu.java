@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlUpdateHistoryContextMenu.java,v $
- * Date   : $Date: 2006/03/28 19:15:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/29 16:39:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.8 
  */
@@ -89,7 +89,7 @@ public class CmsXmlUpdateHistoryContextMenu extends A_CmsSetupXmlUpdate {
                 CmsSetupXmlHelper.setValue(
                     document,
                     xpath + "/@" + I_CmsXmlConfiguration.A_URI,
-                    "views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.jsp");
+                    "views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory");
 
                 return true;
             }
