@@ -14,7 +14,7 @@
 
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
-<link rel="stylesheet" type="text/css" href="<%= wp.getStyleUri(wp.getJsp(),"workplace.css")%>">
+<link rel="stylesheet" type="text/css" href="<%= CmsWorkplace.getStyleUri(wp.getJsp(), "workplace.css")%>">
 <title>OpenCms Workplace Head Frame</title>
 <script type="text/javascript">
     var pfad="<%= wp.getResourceUri() %>";
@@ -45,7 +45,7 @@
 
 <body class="buttons-head" unselectable="on"<%= wp.isReloadRequired()?" onload=\"loadBody();\"":"" %>>
 
-<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 0) %>
 <%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0) %>
 
@@ -57,7 +57,7 @@
 	wp.getProjectSelect("name=\"wpProject\" onchange=\"document.forms.wpProjectSelect.submit()\"", "style=\"width:150px\"")
         
 %>
-<input type="hidden" name="<%= wp.PARAM_WP_FRAME %>" value="head">
+<input type="hidden" name="<%= CmsFrameset.PARAM_WP_FRAME %>" value="head">
 </div>
 </form></td>
 
@@ -81,7 +81,7 @@ if (wp.showSiteSelector()) {
 	wp.getSiteSelect("name=\"wpSite\" style=\"width:150px\" onchange=\"document.forms.wpSiteSelect.submit()\"")
         
 %>
-<input type="hidden" name="<%= wp.PARAM_WP_FRAME %>" value="head">
+<input type="hidden" name="<%= CmsFrameset.PARAM_WP_FRAME %>" value="head">
 </div>
 </form></td>
 <% } %>
@@ -97,7 +97,7 @@ if (wp.showSiteSelector()) {
 	wp.getViewSelect("name=\"wpView\" style=\"width:150px\" onchange=\"document.forms.wpViewSelect.submit()\"")
         
 %>
-<input type="hidden" name="<%= wp.PARAM_WP_FRAME %>" value="head">
+<input type="hidden" name="<%= CmsFrameset.PARAM_WP_FRAME %>" value="head">
 </div>
 </form></td>
 
@@ -120,9 +120,9 @@ if (wp.isHelpEnabled()) {
 
 <% if (buttonStyle != 2) {%>
 <td>&nbsp;</td>
-<td><span style="display: block; width: 80px; height: 22px; background-image: url('<%= wp.getSkinUri() %>commons/workplace.png'); "></span></td>
+<td><span style="display: block; width: 80px; height: 22px; background-image: url('<%= CmsWorkplace.getSkinUri() %>commons/workplace.png'); "></span></td>
 <% } %>
-<%= wp.buttonBar(wp.HTML_END) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_END) %>
 
 </body>
 </html>

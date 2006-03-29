@@ -1,4 +1,5 @@
 <%@ page import="
+	org.opencms.workplace.*,
 	org.opencms.workplace.explorer.*,
 	org.opencms.jsp.*"
 %><%
@@ -13,7 +14,7 @@
 </head>
 
 <frameset rows="24,*" border="0" frameborder="0" framespacing="0">
-    <frame name="explorer_head" src="<%= wp.getSkinUri() %>commons/empty.html" noresize scrolling="no">
+    <frame name="explorer_head" src="<%= CmsWorkplace.getSkinUri() %>commons/empty.html" noresize scrolling="no">
     <frame <%= wp.getFrameSource("explorer_body", cms.link("explorer_body_fs.jsp")) %> noresize scrolling="no">
 </frameset>
 

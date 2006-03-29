@@ -1,5 +1,4 @@
 <%@ page import="
-    org.opencms.main.*,
 	org.opencms.workplace.*,
 	org.opencms.jsp.*"
 %><%
@@ -19,7 +18,7 @@ if (wp.isReloadRequired()) {
 
 <title><%= wp.key(org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_2, new Object[]{wp.getSettings().getUser().getName(), request.getServerName()}) %></title>
 
-<script type="text/javascript" src="<%= wp.getSkinUri() %>commons/explorer.js"></script>
+<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() %>commons/explorer.js"></script>
 <script type="text/javascript" src="<%= cms.link("/system/workplace/views/top_js.jsp") %>"></script> 
 
 </head>

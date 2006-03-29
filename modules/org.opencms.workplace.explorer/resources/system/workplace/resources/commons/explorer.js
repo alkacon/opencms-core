@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/29 14:38:43 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ var buttonType=1;
 var link_newresource="/system/workplace/commons/newresource.jsp";
 var link_uploadresource="/system/workplace/commons/newresource_upload.jsp";
 var link_showresource="/system/workplace/commons/displayresource.jsp";
+var link_searchresource="/system/workplace/views/admin/admin-main.jsp?root=explorer&path=%2Fsearch%2Findex.jsp";
 var last_id=-1;
 var active_mouse_id=-1;
 var active_from_text=false;
@@ -1153,6 +1154,7 @@ function displayHead(doc, pages, actpage){
 	var btUp = "";
 	var btWizard = "";
 	var btUpload = "";
+	var btSearch = "";
 	var pageSelect = "";
 
 	if(vr.actDirectory == getRootFolder()) {
@@ -1168,6 +1170,8 @@ function displayHead(doc, pages, actpage){
 		btWizard = button(null, null, "wizard_in.png", vr.langnew, buttonType);
 		btUpload = button(null, null, "upload_in.png", vr.langupload, buttonType);
 	}
+
+	btSearch = button(vr.servpath + link_searchresource, "explorer_files", "search.png", vr.langsearch, buttonType);
 
 	if(pages > 1){
 		pageSelect=
@@ -1212,6 +1216,7 @@ function displayHead(doc, pages, actpage){
 	+ buttonSep(0, 0, 0)
 	+ button("javascript:top.histGoBack();", null, "back.png", vr.langback, buttonType)
 	+ btUpload
+	+ btSearch
 	+ btWizard
 	+ btUp
 
