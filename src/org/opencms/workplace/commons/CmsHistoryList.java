@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/29 15:51:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.2 
  */
@@ -453,7 +453,7 @@ public class CmsHistoryList extends A_CmsListDialog {
                 String versionId = getItem().getId().toString();
                 if ("-1".equals(versionId)) {
                     // offline version
-                    jsCode.append(jsp.link(getParamResource()));  
+                    jsCode.append(jsp.link(jsp.getRequestContext().removeSiteRoot(getItem().get(LIST_COLUMN_RESOURCE_PATH).toString())));  
                 } else {
                     jsCode.append(jsp.link(getBackupLink(getItem().get(LIST_COLUMN_RESOURCE_PATH).toString(), 
                         versionId)));
