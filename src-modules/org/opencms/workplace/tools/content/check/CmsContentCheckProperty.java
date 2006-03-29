@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckProperty.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/29 16:04:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.2
  */
@@ -186,11 +186,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
      */
     public String getLink() {
 
-        return "/system/workplace/views/admin/admin-editor.html?resource=/system/workplace/admin/contenttools/check/plugin/propertycheck/configuration.xml";
-
-        // String editor = "/system/workplace/editors/editor.jsp?resource=";
-        // String resource = CmsEncoder.encode("/system/workplace/admin/contenttools/check/plugin/propertycheck/configuration.xml");
-
+        return "/system/workplace/views/admin/admin-editor.jsp?resource=/system/workplace/admin/contenttools/check/plugin/propertycheck/configuration.xml";
     }
 
     /**
