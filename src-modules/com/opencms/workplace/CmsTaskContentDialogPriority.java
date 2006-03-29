@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2005/06/27 23:22:07 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2006/03/29 16:07:48 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,8 +43,11 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 /**
@@ -52,7 +55,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2005/06/27 23:22:07 $
+ * @version $Revision: 1.5 $ $Date: 2006/03/29 16:07:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -172,7 +175,9 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
             paraAll = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL);
             paraCompletion = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_COMPLETION);
             paraDelivery = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_DELIVERY);
-            due = CmsDateUtil.getDateShort(task.getTimeOut().getTime());
+            // we have to creagte a date in german date format, otherwise the redisplay in the dialogs does
+            // not work correctly.
+            due = CmsDateUtil.getDate(new Date(task.getTimeOut().getTime()), DateFormat.MEDIUM, new Locale("de"));
 
             // preselect the old user and role in the dialog for forwarding and resurrection
             // compute the indices of the user and role
