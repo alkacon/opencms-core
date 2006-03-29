@@ -606,6 +606,7 @@ ${opencms.inputlib.textextraction}
 
         <mkdir dir="${opencms.output.distfiles}" />                    
 		
+    	<delete file="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip" failonerror="no"/>
         <zip destfile="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip">
         	<zipfileset dir="${opencms.input}/src" excludes="${excludes}" prefix="src" />
             <zipfileset dir="${opencms.input}" includes="build.xml,install.html,license.txt,history.txt"/>
