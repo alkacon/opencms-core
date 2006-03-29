@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2006/03/28 18:44:59 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2006/03/29 08:50:11 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -561,6 +561,9 @@ public class CmsPreferences extends CmsTabDialog {
             String language = currentLocale.getDisplayLanguage(setLocale);
             if (CmsStringUtil.isNotEmpty(currentLocale.getCountry())) {
                 language = language + " (" + currentLocale.getDisplayCountry(setLocale) + ")";
+            }
+            if (CmsStringUtil.isNotEmpty(currentLocale.getVariant())) {
+                language = language + " (" + currentLocale.getDisplayVariant(setLocale) + ")";
             }
             options.add(language);
             values.add(currentLocale.toString());
