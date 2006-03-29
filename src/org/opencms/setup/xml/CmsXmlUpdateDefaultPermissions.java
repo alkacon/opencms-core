@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlUpdateDefaultPermissions.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/29 11:06:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -88,51 +88,45 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
                     + "='???']";
                 if (xpath.indexOf(CmsResourceTypeJsp.getStaticTypeName()) < 0 && xpath.indexOf("XMLTemplate") < 0) {
                     if (xpath.indexOf(CmsWorkplaceConfiguration.N_DEFAULTACCESSCONTROL) < 0) {
-                        changed = changed
-                            || (0 < CmsSetupXmlHelper.setValue(
-                                document,
-                                CmsStringUtil.substitute(xp, "???", "DEFAULT"),
-                                null));
-                        changed = changed
-                        || (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
+                        changed = (0 < CmsSetupXmlHelper.setValue(
+                            document,
+                            CmsStringUtil.substitute(xp, "???", "DEFAULT"),
+                            null)) || changed;
+                        changed = (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
                             xp,
                             "???",
-                            "GROUP.Guests"), null));
+                            "GROUP.Guests"), null)) || changed;
                     }
-                    changed = changed
-                        || (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
+                    changed = (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
                             xp,
                             "???",
-                            "GROUP.Administrators"), null));
+                            "GROUP.Administrators"), null)) || changed;
                 }
-                changed = changed
-                    || (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
+                changed = (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
                         xp,
                         "???",
-                        "GROUP.Projectmanagers"), null));
-                changed = changed
-                    || (0 < CmsSetupXmlHelper.setValue(
+                        "GROUP.Projectmanagers"), null)) || changed;
+                changed = (0 < CmsSetupXmlHelper.setValue(
                         document,
                         CmsStringUtil.substitute(xp, "???", "GROUP.Users"),
-                        null));
-                changed = changed
-                    || (0 < CmsSetupXmlHelper.setValue(
+                        null)) || changed;
+                changed = (0 < CmsSetupXmlHelper.setValue(
                         document,
                         CmsStringUtil.substitute(xp, "???", "GROUP.TestGroup"),
-                        null));
+                        null)) || changed;
                 if (CmsSetupXmlHelper.getValue(document, xpath + "/" + CmsWorkplaceConfiguration.N_ACCESSENTRY) == null) {
                     if (xpath.indexOf(CmsResourceTypeJsp.getStaticTypeName()) < 0 && xpath.indexOf("XMLTemplate") < 0) {
-                        changed = changed || (0 < CmsSetupXmlHelper.setValue(document, xpath, null));
+                        changed = (0 < CmsSetupXmlHelper.setValue(document, xpath, null)) || changed;
                     }
                 }
             }
             if (xpath.indexOf(CmsResourceTypeJsp.getStaticTypeName()) > 0 || xpath.indexOf("XMLTemplate") > 0) {
-                changed = changed || setAccessEntry(document, xpath, "DEFAULT", "+r+v");
-                changed = changed || setAccessEntry(document, xpath, "GROUP.Administrators", "+r+v+w+c");
-                changed = changed || setAccessEntry(document, xpath, "GROUP.Guests", "-r-v-w-c");
+                changed = setAccessEntry(document, xpath, "DEFAULT", "+r+v") || changed;
+                changed = setAccessEntry(document, xpath, "GROUP.Administrators", "+r+v+w+c") || changed;
+                changed = setAccessEntry(document, xpath, "GROUP.Guests", "-r-v-w-c") || changed;
             } else if (xpath.indexOf(CmsWorkplaceConfiguration.N_DEFAULTACCESSCONTROL) > 0) {
-                changed = changed || setAccessEntry(document, xpath, "DEFAULT", "+r+v+w+c");
-                changed = changed || setAccessEntry(document, xpath, "GROUP.Guests", "-r-v-w-c");
+                changed = setAccessEntry(document, xpath, "DEFAULT", "+r+v+w+c") || changed;
+                changed = setAccessEntry(document, xpath, "GROUP.Guests", "-r-v-w-c") || changed;
             }
         }
         return changed;
