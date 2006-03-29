@@ -502,7 +502,7 @@ function initButtons() {
 
 
 function submitActionRefresh(para1, para2, para3) {	
-<% if (Boolean.parseBoolean(wp.getParamRefreshWorkplace())) { %>
+<% if (Boolean.valueOf(wp.getParamRefreshWorkplace()).booleanValue()) { %>
      top.location.href = "<%= org.opencms.main.OpenCms.getSystemInfo().getOpenCmsContext() + CmsWorkplace.VFS_PATH_VIEWS %>workplace.jsp";
 <% } else { %>
 	 return submitAction(para1, para2, para3);
