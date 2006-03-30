@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2006/03/30 07:49:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/30 09:30:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,8 +95,10 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      */
     class CmsXmlContentTextExtractor implements I_CmsXmlContentValueVisitor {
 
+        /** The StringBuffer to write the extracted text to. */
         private StringBuffer m_buffer;
 
+        /** The locales of the xml content. */
         private List m_locales;
         
         /**

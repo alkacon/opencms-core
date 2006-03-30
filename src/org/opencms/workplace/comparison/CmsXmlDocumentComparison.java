@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsXmlDocumentComparison.java,v $
- * Date   : $Date: 2006/03/30 07:50:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/30 09:30:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,6 +59,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
      */
     class CmsXmlContentElementPathExtractor implements I_CmsXmlContentValueVisitor {
 
+        /** The paths to the elements in the xml content. */
         private List m_elementPaths;
 
         /**
