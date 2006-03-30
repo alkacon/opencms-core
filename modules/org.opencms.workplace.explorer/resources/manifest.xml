@@ -509,12 +509,7 @@
 			<datecreated>Fri, 11 Nov 2005 13:43:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[add]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -540,12 +535,7 @@
 			<datecreated>Fri, 11 Nov 2005 16:07:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[preferences]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -571,12 +561,7 @@
 			<datecreated>Fri, 11 Nov 2005 13:43:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[delete]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -602,12 +587,7 @@
 			<datecreated>Fri, 11 Nov 2005 13:43:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[check_gray]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
