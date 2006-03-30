@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2006/03/29 15:51:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/03/30 09:31:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.2 
  */
@@ -429,7 +429,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             }
         };
         restoreAction.setName(Messages.get().container(Messages.GUI_HISTORY_RESTORE_VERSION_0));
-        restoreAction.setIconPath("tools/history/buttons/restore.png");
+        restoreAction.setIconPath("tools/ex_history/buttons/restore.png");
         restoreAction.setConfirmationMessage(Messages.get().container(Messages.GUI_HISTORY_CONFIRMATION_0));
         restoreAction.setEnabled(true);
         
@@ -581,7 +581,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             LIST_MACTION_COMPARE,
             Arrays.asList(new String[] {LIST_RACTION_SEL1, LIST_RACTION_SEL2}));
         compareAction.setName(Messages.get().container(Messages.GUI_HISTORY_COMPARE_0));
-        compareAction.setIconPath("tools/history/buttons/compare.png");
+        compareAction.setIconPath("tools/ex_history/buttons/compare.png");
         metadata.addMultiAction(compareAction);
     }
 }

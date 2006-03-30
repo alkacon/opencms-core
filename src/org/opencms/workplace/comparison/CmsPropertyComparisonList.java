@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2006/03/30 07:50:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/03/30 09:31:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -468,7 +468,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             }
         };
         addedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_ADDED_0));
-        addedAction.setIconPath("tools/history/buttons/added.png");
+        addedAction.setIconPath("tools/ex_history/buttons/added.png");
         addedAction.setEnabled(true);
         iconCol.addDirectAction(addedAction);
 
@@ -485,7 +485,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             }
         };
         removedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_REMOVED_0));
-        removedAction.setIconPath("tools/history/buttons/removed.png");
+        removedAction.setIconPath("tools/ex_history/buttons/removed.png");
         removedAction.setEnabled(true);
         iconCol.addDirectAction(removedAction);
 
@@ -502,7 +502,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             }
         };
         changedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_CHANGED_0));
-        changedAction.setIconPath("tools/history/buttons/changed.png");
+        changedAction.setIconPath("tools/ex_history/buttons/changed.png");
         changedAction.setEnabled(true);
         iconCol.addDirectAction(changedAction);
 
@@ -519,7 +519,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             }
         };
         unchangedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_UNCHANGED_0));
-        unchangedAction.setIconPath("tools/history/buttons/unchanged.png");
+        unchangedAction.setIconPath("tools/ex_history/buttons/unchanged.png");
         unchangedAction.setEnabled(true);
         iconCol.addDirectAction(unchangedAction);
         metadata.addColumn(iconCol);
