@@ -92,7 +92,7 @@
 			<resource uri="/system/workplace/resources/tree/"/>
 			<resource uri="/system/workplace/views/explorer/"/>
 			<resource uri="/system/workplace/explorer/"/>
-			<resource uri="/system/workplace/resources/tools/history/buttons/"/>
+			<resource uri="/system/workplace/resources/tools/ex_history/buttons/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -478,7 +478,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/history</destination>
+			<destination>system/workplace/resources/tools/ex_history</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -489,7 +489,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/history/buttons</destination>
+			<destination>system/workplace/resources/tools/ex_history/buttons</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -500,8 +500,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/history/buttons/added.png</source>
-			<destination>system/workplace/resources/tools/history/buttons/added.png</destination>
+			<source>system/workplace/resources/tools/ex_history/buttons/added.png</source>
+			<destination>system/workplace/resources/tools/ex_history/buttons/added.png</destination>
 			<type>image</type>
 			<uuidresource>14e80c70-52b9-11da-b6f7-29ec6bce001d</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -518,8 +518,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/history/buttons/changed.png</source>
-			<destination>system/workplace/resources/tools/history/buttons/changed.png</destination>
+			<source>system/workplace/resources/tools/ex_history/buttons/changed.png</source>
+			<destination>system/workplace/resources/tools/ex_history/buttons/changed.png</destination>
 			<type>image</type>
 			<uuidresource>2fe414d6-4f77-11da-8a85-29ec6bce001d</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -531,8 +531,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/history/buttons/compare.png</source>
-			<destination>system/workplace/resources/tools/history/buttons/compare.png</destination>
+			<source>system/workplace/resources/tools/ex_history/buttons/compare.png</source>
+			<destination>system/workplace/resources/tools/ex_history/buttons/compare.png</destination>
 			<type>image</type>
 			<uuidresource>499696cd-52cd-11da-8971-29ec6bce001d</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -549,8 +549,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/history/buttons/preview.png</source>
-			<destination>system/workplace/resources/tools/history/buttons/preview.png</destination>
+			<source>system/workplace/resources/tools/ex_history/buttons/preview.png</source>
+			<destination>system/workplace/resources/tools/ex_history/buttons/preview.png</destination>
 			<type>image</type>
 			<uuidresource>531ad569-503f-11da-b81a-29ec6bce001d</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -562,8 +562,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/history/buttons/removed.png</source>
-			<destination>system/workplace/resources/tools/history/buttons/removed.png</destination>
+			<source>system/workplace/resources/tools/ex_history/buttons/removed.png</source>
+			<destination>system/workplace/resources/tools/ex_history/buttons/removed.png</destination>
 			<type>image</type>
 			<uuidresource>14f1a968-52b9-11da-b6f7-29ec6bce001d</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -580,8 +580,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/history/buttons/restore.png</source>
-			<destination>system/workplace/resources/tools/history/buttons/restore.png</destination>
+			<source>system/workplace/resources/tools/ex_history/buttons/restore.png</source>
+			<destination>system/workplace/resources/tools/ex_history/buttons/restore.png</destination>
 			<type>image</type>
 			<uuidresource>dd4ebb84-d9b6-11d9-a746-37a411e55f9c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
@@ -593,8 +593,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/history/buttons/unchanged.png</source>
-			<destination>system/workplace/resources/tools/history/buttons/unchanged.png</destination>
+			<source>system/workplace/resources/tools/ex_history/buttons/unchanged.png</source>
+			<destination>system/workplace/resources/tools/ex_history/buttons/unchanged.png</destination>
 			<type>image</type>
 			<uuidresource>14ef3864-52b9-11da-b6f7-29ec6bce001d</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
