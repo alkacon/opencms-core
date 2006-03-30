@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsXmlDocumentComparison.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/30 07:50:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -191,6 +191,11 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         return m_elements;
     }
 
+    /** Returs a list of all element names of a xml page.<p>
+     * 
+     * @param xmlPage the xml page to read the element names from
+     * @return a list of all element names of a xml page
+     */
     private List getElements(I_CmsXmlDocument xmlPage) {
 
         List elements = new ArrayList();

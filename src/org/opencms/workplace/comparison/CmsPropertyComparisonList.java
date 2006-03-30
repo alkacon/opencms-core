@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/30 07:50:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,22 +116,31 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPropertyComparisonList.class);
 
+    /** The first file to compare. */
     private CmsFile m_file1;
 
+    /** The second file to compare. */
     private CmsFile m_file2;
 
+    /** Parameter value for the path of the first file. */
     private String m_paramPath1;
 
+    /** Parameter value for the path of the second file. */
     private String m_paramPath2;
 
+    /** Parameter value for the tag id of the first file. */
     private String m_paramTagId1;
 
+    /** Parameter value for the tag id of the second file. */
     private String m_paramTagId2;
 
+    /** Parameter value for the version of the first file. */
     private String m_paramVersion1;
 
+    /** Parameter value for the version of the second file. */
     private String m_paramVersion2;
 
+    /** The type of the files. */
     private int m_resourceType;
 
     /**

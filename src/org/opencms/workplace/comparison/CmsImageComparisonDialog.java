@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsImageComparisonDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/30 07:50:17 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -39,22 +39,28 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsImageComparisonDialog extends CmsDialog {
 
+    /** Parameter value for the path of the first file. */
     private String m_paramPath1;
 
+    /** Parameter value for the path of the second file. */
     private String m_paramPath2;
 
+    /** Parameter value for the tag id of the first file. */
     private String m_paramTagId1;
 
+    /** Parameter value for the tag id of the second file. */
     private String m_paramTagId2;
 
+    /** Parameter value for the version of the first file. */
     private String m_paramVersion1;
 
+    /** Parameter value for the version of the second file. */
     private String m_paramVersion2;
 
     /**

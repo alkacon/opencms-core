@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsDifferenceDialog.java,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/03/30 07:50:17 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -39,36 +39,46 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
 
+    /** The content of the second file to compare. */
     private String m_copySource;
-
+    
+    /** The content of the first file to compare. */
     private String m_originalSource;
 
+    /** Parameter value indicating wether to compare properties, attributes or elements. */
     private String m_paramCompare;
 
     /** Parameter value for the element name. */
     private String m_paramElement;
 
+    /** Parameter value for the locale. */
     private String m_paramLocale;
 
+    /** Parameter value for the path of the first file. */
     private String m_paramPath1;
 
+    /** Parameter value for the path of the second file. */
     private String m_paramPath2;
 
+    /** Parameter value for the tag id of the first file. */
     private String m_paramTagId1;
 
+    /** Parameter value for the tag id of the second file. */
     private String m_paramTagId2;
 
+    /** Parameter value for the text mode. */
     private String m_paramTextmode;
 
-    /** Parameter value for the configuration file name. */
+    /** Parameter value for the version of the first file. */
     private String m_paramVersion1;
 
+    /** Parameter value for the version of the second file. */
     private String m_paramVersion2;
 
     /**
