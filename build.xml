@@ -400,31 +400,33 @@ ${opencms.inputlib.textextraction}
 	  		<property name="modules.common.selection" value="${modules.var}" />
 	  	</ant>
 
-    	<delete failonerror="no" file="${opencms.output.distfiles}/opencms-updater.zip" />
+    	<delete failonerror="no" file="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" />
     	<zip
-            zipfile="${opencms.output.distfiles}/opencms-updater.zip"
+            zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip"
             basedir="${opencms.input.updater}"
             includes="**" excludes="empty.jar">
     	</zip>
 
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
+    	  	<!-- skip some unwanted modules -->
         	<if>
         		<not>
         			<or>
+			    		<equals arg1="@{module}" arg2="org.opencms.legacy.compatibility" />
 			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos" />
 			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos.list" />
 			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos.widget" />
         			</or>
         		</not>
 				<then>
-		    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+		    	  	<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
 		            	<zipfileset dir="${opencms.output.distfiles}" prefix="update/modules" includes="@{module}_*.zip" />
 		    	  	</zip>
 		        	<if>
 			    		<available file="${opencms.output}/build/jars-@{module}" />
 						<then>
-				    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+				    	  	<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
 				            	<zipfileset dir="${opencms.output}/build/jars-@{module}" prefix="WEB-INF/lib" includes="@{module}.jar" />
 				    	  	</zip>
 						</then>
@@ -432,7 +434,7 @@ ${opencms.inputlib.textextraction}
 		        	<if>
 			    		<available file="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" />
 						<then>
-				    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+				    	  	<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
 				            	<zipfileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" prefix="WEB-INF/lib" includes="*.jar" />
 				    	  	</zip>
 						</then>
@@ -442,7 +444,7 @@ ${opencms.inputlib.textextraction}
     	  </sequential>
     	</for>
     	
-	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+	  	<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
         	<zipfileset dir="${opencms.input.libs}" prefix="WEB-INF/lib" includes="*.jar" />
 	  	</zip>
     	
@@ -452,11 +454,11 @@ ${opencms.inputlib.textextraction}
       	  </sequential>
 		</for>
     	
-	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+	  	<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
         	<zipfileset dir="${opencms.output}/build/jars-core/" prefix="WEB-INF/lib" includes="*.jar" />
 	  	</zip>
     	
-	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+	  	<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
         	<zipfileset dir="${opencms.input.webinf}" prefix="WEB-INF" includes="${updater.webinf.files}" />
 	  	</zip>
     	
@@ -568,8 +570,39 @@ ${opencms.inputlib.textextraction}
     	<!-- read list of all available modules -->
     	<property file="${opencms.input}/modules/all-modules.properties" />
     	
-    	<var name="modules.common.selection" value="${modules.common.all}" />
-    	
+		<!-- remove org.opencms.workplace.demos and org.opencms.legacy.compatibility modules -->
+		<var name="modules.common.selection" unset="true" />
+		<for list="${modules.common.all}" param="module" trim="yes">
+			<sequential>
+				<propertyregex property="pack.name" input="@{module}" regexp="org\.opencms\.workplace\.demos([^\.]*)" select="\1" casesensitive="false" />
+				<if>
+					<not>
+						<isset property="pack.name" />
+					</not>
+					<then>
+						<propertyregex property="pack.name" input="@{module}" regexp="org\.opencms\.legacy\.compatibility" select="\1" casesensitive="false" />
+					</then>
+				</if>
+				<if>
+					<not>
+						<isset property="pack.name" />
+					</not>
+					<then>
+						<if>
+						  <isset property="modules.common.selection"/>
+						  <then>
+							<var name="modules.common.selection" value="${modules.common.selection},@{module}" />
+						  </then>
+						  <else>
+							<var name="modules.common.selection" value="@{module}" />
+						  </else>
+						</if>
+					</then>
+				</if>
+				<var name="pack.name" unset="true" />
+			</sequential>
+		</for>
+    	<echo>${modules.common.selection}</echo>
     	<!-- build war with selected modules -->
 	  	<ant antfile="${opencms.input}/modules/build.xml" target="war" inheritAll="false" >
 	  		<property name="modules.common.selection" value="${modules.common.selection}" />
