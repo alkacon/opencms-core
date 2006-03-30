@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/30 07:49:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.comparison;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -83,44 +84,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceComparisonDialog extends CmsDialog {
-
-    /** Constant indicating that all elements are compared.<p> */
-    public static final String COMPARE_ALL_ELEMENTS = "allelements";
-    /** Constant indicating that the attributes are compared.<p> */
-    public static final String COMPARE_ATTRIBUTES = "attributes";
-    /** Constant indicating that the properties are compared.<p> */
-    public static final String COMPARE_PROPERTIES = "properties";
-    /** The log object for this class. */
-    static final Log LOG = CmsLog.getLog(CmsResourceComparisonDialog.class);
-
-    private CmsDifferenceDialog m_differenceDialog;
-
-    private String m_paramCompare;
-
-    /** Parameter value for the element name. */
-    private String m_paramElement;
-
-    private String m_paramLocale;
-
-    private String m_paramPath1;
-
-    private String m_paramPath2;
-
-    private String m_paramTagId1;
-
-    private String m_paramTagId2;
-
-    private String m_paramTextmode;
-
-    /** Parameter value for the configuration file name. */
-    private String m_paramVersion1;
-
-    private String m_paramVersion2;
 
     /**
      * Visitor that collects the xpath expressions of xml contents.<p>
@@ -169,6 +137,51 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         }
     }
     
+    /** Constant indicating that all elements are compared.<p> */
+    public static final String COMPARE_ALL_ELEMENTS = "allelements";
+    
+    /** Constant indicating that the attributes are compared.<p> */
+    public static final String COMPARE_ATTRIBUTES = "attributes";
+    
+    /** Constant indicating that the properties are compared.<p> */
+    public static final String COMPARE_PROPERTIES = "properties";
+
+    /** The log object for this class. */
+    static final Log LOG = CmsLog.getLog(CmsResourceComparisonDialog.class);
+
+    /** The difference dialog. */
+    private CmsDifferenceDialog m_differenceDialog;
+
+    /** Parameter value indicating wether to compare properties, attributes or elements. */
+    private String m_paramCompare;
+
+    /** Parameter value for the element name. */
+    private String m_paramElement;
+
+    /** Parameter value for the locale. */
+    private String m_paramLocale;
+
+    /** Parameter value for the path of the first file. */
+    private String m_paramPath1;
+
+    /** Parameter value for the path of the second file. */
+    private String m_paramPath2;
+
+    /** Parameter value for the tag id of the first file. */
+    private String m_paramTagId1;
+
+    /** Parameter value for the tag id of the second file. */
+    private String m_paramTagId2;
+
+    /** Parameter value for the text mode. */
+    private String m_paramTextmode;
+
+    /** Parameter value for the version of the first file. */
+    private String m_paramVersion1;
+
+    /** Parameter value for the version of the second file. */
+    private String m_paramVersion2;
+    
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -209,7 +222,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/");
             if (CmsHistoryList.OFFLINE_PROJECT.equals(version)) {
-                return cms.readFile(cms.getRequestContext().removeSiteRoot(path));
+                return cms.readFile(cms.getRequestContext().removeSiteRoot(path), CmsResourceFilter.ALL);
             } else {
                 return cms.readBackupFile(cms.getRequestContext().removeSiteRoot(path), tagId);
             }
@@ -691,6 +704,15 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         return result.toString();
     }
 
+    /**
+     * Extracts the content from the files according to the file type.<p>
+     * 
+     * @param file1 the first file to compare
+     * @param file2 the second file to compare
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws UnsupportedEncodingException if the encoding of one file is not supported
+     */
     private void setContentAsSource(CmsFile file1, CmsFile file2) throws CmsException, UnsupportedEncodingException {
 
         CmsObject cms = getCms();
