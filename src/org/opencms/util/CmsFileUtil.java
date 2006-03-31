@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/03/31 13:08:20 $
- * Version: $Revision: 1.23.2.1 $
+ * Date   : $Date: 2006/03/31 13:14:54 $
+ * Version: $Revision: 1.23.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23.2.1 $ 
+ * @version $Revision: 1.23.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -326,8 +327,8 @@ public final class CmsFileUtil {
         String result = "";
         URL inputUrl = Thread.currentThread().getContextClassLoader().getResource(fileName);
         if (inputUrl != null) {
-            //  decode name here to avoid %20
-            result = CmsEncoder.decode(inputUrl.getFile());
+            // decode name here to avoid url encodings in path name
+            result = normalizePath(inputUrl);
             if (isFolder && !CmsResource.isFolder(result)) {
                 result = result + '/';
             }
@@ -428,6 +429,44 @@ public final class CmsFileUtil {
         return path;
     }
 
+    /**
+     * Returns the normalized file path created from the given URL.<p>
+     * 
+     * The path part {@link URL#getPath()} is used, unescaped and 
+     * normalized using {@link #normalizePath(String, char)} using {@link File#separatorChar}.<p>
+     * 
+     * @param url the URL to extract the path information from
+     * 
+     * @return the normalized file path created from the given URL using {@link File#separatorChar}
+     * 
+     * @see #normalizePath(URL, char)
+     */
+    public static String normalizePath(URL url) {
+
+        return normalizePath(url, File.separatorChar);
+    }
+
+    /**
+     * Returns the normalized file path created from the given URL.<p>
+     * 
+     * The path part {@link URL#getPath()} is used, unescaped and 
+     * normalized using {@link #normalizePath(String, char)}.<p>
+     * 
+     * @param url the URL to extract the path information from
+     * @param separatorChar the file separator char to use, for example {@link File#separatorChar}
+     * 
+     * @return the normalized file path created from the given URL
+     */
+    public static String normalizePath(URL url, char separatorChar) {
+
+        // get the path part from the URL
+        String path = new File(url.getPath()).getAbsolutePath();
+        // trick to get the OS default encoding, taken from the official Java i18n FAQ
+        String systemEncoding = (new OutputStreamWriter(new ByteArrayOutputStream())).getEncoding();
+        // decode url in order to remove spaces and escaped chars from path
+        return CmsFileUtil.normalizePath(CmsEncoder.decode(path, systemEncoding), separatorChar);
+    }
+    
     /**
      * Deletes a directory in the file system and all subfolders of that directory.<p>
      * 
