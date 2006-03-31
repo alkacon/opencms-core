@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2006/01/25 16:57:54 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2006/03/31 14:25:18 $
+ * Version: $Revision: 1.28.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,30 +42,20 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsXsltUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceException;
-import org.opencms.xml.CmsXmlException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
@@ -82,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.28.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,18 +98,6 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /** Constant for the tab-value inside delimiter the select. */
     public static final String TABULATOR = "tab";
-
-    /** The delimiter to separate the text. */
-    public static final char TEXT_DELIMITER = '"';
-
-    /** The delimiter to start a tag */
-    public static final String TAG_START_DELIMITER = "<";
-    
-    /** The delimiter to end a tag */
-    public static final String TAG_END_DELIMITER = ">";    
-    
-    /** the delimiters, the csv data can be separated with.*/
-    static final String[] DELIMITERS = {";", ",", "\t"};
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewCsvFile.class);
@@ -153,82 +131,6 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     public CmsNewCsvFile(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * Converts a delimiter separated format string int o colgroup html fragment.<p>
-     * @param formatString the formatstring to convert
-     * @param delimiter the delimiter the formats (l,r or c) are delimited with
-     * 
-     * @return the resulting colgroup HTML
-     */
-    private static String getColGroup(String formatString, String delimiter) {
-
-        StringBuffer colgroup = new StringBuffer(128);
-        String[] formatStrings = formatString.split(delimiter);
-        colgroup.append("<colgroup>");
-        for (int i = 0; i < formatStrings.length; i++) {
-            colgroup.append("<col align=\"");
-            char align = formatStrings[i].trim().charAt(0);
-            switch (align) {
-                case 'l':
-                    colgroup.append("left");
-                    break;
-                case 'c':
-                    colgroup.append("center");
-                    break;
-                case 'r':
-                    colgroup.append("right");
-                    break;
-                default:
-                    throw new RuntimeException("invalid format option");
-            }
-            colgroup.append("\"/>");
-        }
-        return colgroup.append("</colgroup>").toString();
-    }
-
-    /**
-     * Tests if the given string is a <code>delimiter</code> separated list of Formatting Information.<p>
-     * 
-     * @param formatString the string to check
-     * @param delimiter the list separators
-     * 
-     * @return true if the string is a <code>delimiter</code> separated list of Formatting Information
-     */
-    private static boolean isFormattingInformation(String formatString, String delimiter) {
-
-        String[] formatStrings = formatString.split(delimiter);
-        for (int i = 0; i < formatStrings.length; i++) {
-            if (!formatStrings[i].trim().matches("[lcr]")) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**                                                                                                                              
-     * Removes the string delimiters from a key (as well as any white space                                                          
-     * outside the delimiters).<p>                                                                                                      
-     *                                                                                                                               
-     * @param key the key (including delimiters)                                                                                   
-     *                                                                                                                               
-     * @return the key without delimiters                                                                                           
-     */
-    private static String removeStringDelimiters(String key) {
-
-        String k = key.trim();
-        if (CmsStringUtil.isNotEmpty(k)) {
-            if (k.charAt(0) == TEXT_DELIMITER) {
-                k = k.substring(1);
-            }
-            if (k.charAt(k.length() - 1) == TEXT_DELIMITER) {
-                k = k.substring(0, k.length() - 1);
-            }
-        }
-        // replace excel protected quotations marks ("") by single quotation marks
-        k = CmsStringUtil.substitute(k, "\"\"", "\"");
-        return k;
     }
 
     /**
@@ -280,36 +182,25 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             setParamResource(computeFullResourceName());
             int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
 
-            CmsProperty styleProp = CmsProperty.getNullProperty();
-
-            // set the delimiter
-            String delimiter = getParamDelimiter();
-            if (TABULATOR.equals(delimiter)) {
-                delimiter = "\t";
-            } else if (BEST_DELIMITER.equals(delimiter)) {
-                delimiter = getPreferredDelimiter(getParamCsvContent());
-            }
-            setParamDelimiter(delimiter);
+            
 
             // transform csv to html
-            String xmlContent = "";
-            try {
-                xmlContent = getTableHtml();
-            } catch (IOException e) {
-                throw new CmsXmlException(Messages.get().container(Messages.ERR_CSV_XML_TRANSFORMATION_FAILED_0));
-            }
-
+            String xmlContent = CmsXsltUtil.transformCsvContent(
+                getCms(),
+                getParamXsltFile(),
+                getParamCsvContent(),
+                (BEST_DELIMITER.equals(getParamDelimiter()) ? null : getParamDelimiter()));
+            byte[] content = xmlContent.getBytes();
+            
             // if xslt file parameter is set, transform the raw html and set the css stylesheet property
             // of the converted file to that of the stylesheet
+            CmsProperty styleProp = CmsProperty.getNullProperty();
             if (CmsStringUtil.isNotEmpty(getParamXsltFile())) {
-                xmlContent = applyXslTransformation(getParamXsltFile(), xmlContent);
                 styleProp = getCms().readPropertyObject(
                     getParamXsltFile(),
                     CmsPropertyDefinition.PROPERTY_STYLESHEET,
                     true);
-            }
-
-            byte[] content = xmlContent.getBytes();
+            }           
 
             try {
                 // create the resource
@@ -327,39 +218,6 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             // error uploading file, show error dialog
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_TABLE_IMPORT_FAILED_0));
             includeErrorpage(this, e);
-        }
-    }
-
-    /**
-     * Applies a XSLT Transformation to the xmlContent.<p>
-     * 
-     * The method does not use DOM4J, because iso-8859-1 code ist not transformed correctly.
-     * 
-     * @param xsltFile the XSLT transformation file
-     * @param xmlContent the XML content to transform
-     * 
-     * @return the transformed xml
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public String applyXslTransformation(String xsltFile, String xmlContent) throws Exception {
-
-        // JAXP reads data
-        Source xmlSource = new StreamSource(new StringReader(xmlContent));
-        String xsltString = new String(getCms().readFile(xsltFile).getContents());
-        Source xsltSource = new StreamSource(new StringReader(xsltString));
-
-        TransformerFactory transFact = TransformerFactory.newInstance();
-        Transformer trans = transFact.newTransformer(xsltSource);
-
-        StringWriter writer = new StringWriter();
-        trans.transform(xmlSource, new StreamResult(writer));
-        String result = writer.toString();
-        // cut of the prefacing declaration '<?xml version="1.0" encoding="UTF-8"?>'
-        if (result.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")) {
-            return result.substring(38);
-        } else {
-            return result;
         }
     }
 
@@ -523,28 +381,6 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     }
 
     /**
-     * returns the Delimiter that most often occures in the CSV content.<p>
-     * 
-     * @param csvData the comma separated values
-     * 
-     * @return the delimiter, that is best applicable for the csvData
-     */
-    public String getPreferredDelimiter(String csvData) {
-
-        String bestMatch = "";
-        int bestMatchCount = 0;
-        // find for each delimiter, how often it occures in the String csvData
-        for (int i = 0; i < DELIMITERS.length; i++) {
-            int currentCount = csvData.split(DELIMITERS[i]).length;
-            if (currentCount > bestMatchCount) {
-                bestMatch = DELIMITERS[i];
-                bestMatchCount = currentCount;
-            }
-        }
-        return bestMatch;
-    }
-
-    /**
      * Returns a list of CmsResources with the xslt files in the modules folder.<p>
      * 
      * @return a list of the available xslt files
@@ -600,73 +436,4 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
         m_paramXsltFile = xsltFile;
     }
-
-    /**
-     * Converts CSV data to xml.<p>
-     * 
-     * @return a XML representation of the csv data
-     * 
-     * @param csvData the csv data to convert
-     * @param colGroup the format definitions for the table columns, can be null
-     * @param delimiter the delimiter to separate the values with
-     * 
-     * @throws IOException if there is an IO problem
-     */
-    private String getTableHtml() throws IOException {
-
-        String csvData = getParamCsvContent();
-        String lineSeparator = System.getProperty("line.separator");
-        String formatString = csvData.substring(0, csvData.indexOf(lineSeparator));
-        String delimiter = getParamDelimiter();
-
-        StringBuffer xml = new StringBuffer("<table>");
-        if (isFormattingInformation(formatString, delimiter)) {
-            // transform formatting to HTML colgroup
-            xml.append(getColGroup(formatString, delimiter));
-            // cut of first line
-            csvData = csvData.substring(formatString.length() + lineSeparator.length());
-        }
-
-        String line;
-        BufferedReader br = new BufferedReader(new StringReader(csvData));
-        while ((line = br.readLine()) != null) {
-            xml.append("<tr>\n");
-            
-            // must use tokenizer with delimiters include in order to handle empty cells appropriately
-            StringTokenizer t = new StringTokenizer(line, delimiter, true); 
-            boolean hasValue = false;
-            while (t.hasMoreElements()) {
-                String item = (String)t.nextElement();
-                if (!hasValue) {
-                    xml.append("\t<td>");
-                    hasValue = true;
-                }
-                if (!item.equals(delimiter)) {
-                    
-                    // remove enclosing delimiters
-                    item = removeStringDelimiters(item);
-                    
-                    // in order to allow links, lines starting and ending with tag delimiters (< ...>) remains unescaped
-                    if (item.startsWith(TAG_START_DELIMITER) && item.endsWith(TAG_END_DELIMITER)) {
-                        xml.append(item);
-                    } else {
-                        xml.append(CmsStringUtil.escapeHtml(item));
-                    }
-                } else {
-                    xml.append("</td>\n");
-                    hasValue = false;
-                }
-            }
-            if (hasValue) {
-                xml.append("</td>\n");
-            } else {
-                xml.append("<td></td>\n");
-            }
-            
-            xml.append("</tr>\n");
-        }
-
-        return xml.append("</table>").toString();
-    }
-
 }
