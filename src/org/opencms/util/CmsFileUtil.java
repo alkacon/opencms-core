@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/03/31 13:08:20 $
+ * Version: $Revision: 1.23.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.util;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.23.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -325,7 +326,8 @@ public final class CmsFileUtil {
         String result = "";
         URL inputUrl = Thread.currentThread().getContextClassLoader().getResource(fileName);
         if (inputUrl != null) {
-            result = inputUrl.getFile();
+            //  decode name here to avoid %20
+            result = CmsEncoder.decode(inputUrl.getFile());
             if (isFolder && !CmsResource.isFolder(result)) {
                 result = result + '/';
             }
