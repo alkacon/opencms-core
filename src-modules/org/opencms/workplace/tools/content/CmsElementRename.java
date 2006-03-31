@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/31 13:59:16 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,17 +74,11 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the change page element name dialog.<p> 
- * 
- * The following files use this class:
- * <ul>
- * <li>/administration/properties/renameelement/index.html
- * </ul>
- * <p>
+ * Provides methods for the change page element name dialog.<p>
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
