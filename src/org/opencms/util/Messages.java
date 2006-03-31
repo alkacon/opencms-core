@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Messages.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/03/31 13:18:21 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,6 +57,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CONTROL_STRING_START_0 = "ERR_CONTROL_STRING_START_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CSV_XML_TRANSFORMATION_FAILED_0 = "ERR_CSV_XML_TRANSFORMATION_FAILED_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FILE_ARG_ACCESS_1 = "ERR_FILE_ARG_ACCESS_1";
 
