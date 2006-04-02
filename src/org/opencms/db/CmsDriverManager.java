@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/03/28 12:14:36 $
- * Version: $Revision: 1.569 $
+ * Date   : $Date: 2006/04/02 09:59:56 $
+ * Version: $Revision: 1.570 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,6 +98,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
@@ -344,6 +345,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** The backup driver. */
     private I_CmsBackupDriver m_backupDriver;
+
+    /** Temporary concurrent lock list for the "create resource" method. */
+    private List m_concurrentCreateResourceLocks;
 
     /** The configuration of the property-file. */
     private Map m_configuration;
@@ -1493,7 +1497,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsResource newResource = null;
 
+        if (m_concurrentCreateResourceLocks.contains(resourcePath)) {
+            // since this method is a long-runner, we must make sure to avoid concurrent creation of the same resource
+            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_CURRENTLY_CREATED_1,
+                dbc.removeSiteRoot(resourcePath)));
+            // potential issue with this solution: 
+            // in theory, someone _without_ write permissions could "block" the concurrent creation of a resource
+            // for someone _with_ permissions this way since the permissions have not been checked yet
+        }
+
         try {
+            // avoid concurrent creation issues
+            m_concurrentCreateResourceLocks.add(resourcePath);
+
             // check import configuration of "lost and found" folder
             boolean useLostAndFound = importCase && !OpenCms.getImportExportManager().overwriteCollidingResources();
 
@@ -1676,6 +1693,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             lockResource(dbc, newResource, CmsLock.COMMON);
 
         } finally {
+            // remove the create lock
+            m_concurrentCreateResourceLocks.remove(resourcePath);
 
             // clear the internal caches
             clearAccessControlListCache();
@@ -2137,8 +2156,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
                 res.getRootPath()));
-
-            //report.printItem(counter, size, Messages.get().container(Messages.RPT_CHECKING_0), res.getRootPath());
 
             // now delete all versions of this resource that have more than the maximun number
             // of allowed versions and which are older then the maximum backup date
@@ -3778,6 +3795,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // initialize the HTML link validator
         m_htmlLinkValidator = new CmsXmlDocumentLinkValidator(this);
+        // initialize the lock list for the "CreateResource" method, use Vector for most efficient synchronization 
+        m_concurrentCreateResourceLocks = new Vector();
     }
 
     /**
