@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.jsp.*" %><%	
+<%@ page session="true" %><%	
 
     /*      
      * This page checks if all libraries required for the demo modules have been installed.
@@ -22,6 +22,7 @@ try {
 }
 
 if (missingClasses) {
+    // some classes are missing
 %>
 
 <div style="border: 1px solid red; padding: 5px; background-color: #CCFFCC;">

@@ -1,12 +1,7 @@
-<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+<%@ page session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
-	// next page
-	String nextPage = "step_6_finished.jsp";	
-	// previous page 
-	String prevPage = "index.jsp";
-	
 	Bean.prepareUpdateStep5();	
 
 %>
