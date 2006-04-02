@@ -1,15 +1,12 @@
 <%@ page import="
-        org.opencms.workplace.*,
-        org.opencms.workplace.administration.*,
-        org.opencms.workplace.tools.*,
-	org.opencms.jsp.*"
-%>
-<%
+	org.opencms.workplace.*,
+	org.opencms.jsp.*
+"%><%
+
     CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
     CmsDialog wp = new CmsDialog(jsp);
     
-%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 
 <html>
   <head>

@@ -1,15 +1,13 @@
-<%@ page import="
+<%@ page session="false" import="
 	org.opencms.jsp.*,
-        org.opencms.workplace.*,
-        org.opencms.workplace.administration.*,
-        org.opencms.workplace.tools.*"
-	session="false"
-%>
-<%
+	org.opencms.workplace.administration.*,
+	org.opencms.workplace.tools.*
+"%><%
+
 	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
 	CmsAdminFrameset wp = new CmsAdminFrameset(jsp);
-%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
    <head>
       <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">

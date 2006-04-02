@@ -1,9 +1,10 @@
 <%@ page import="
+	org.opencms.workplace.CmsWorkplace,
 	org.opencms.workplace.administration.CmsAdminMenu,
-	org.opencms.jsp.CmsJspActionElement"
-%>
-<%
-    CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
+	org.opencms.jsp.CmsJspActionElement
+"%><%
+
+	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
     CmsAdminMenu wp = new CmsAdminMenu(jsp);
 
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -11,10 +12,10 @@
 <head>
   <title>Administration Menu</title>
   <meta http-equiv='Content-Type' content='text/html; charset=<%= wp.getEncoding() %>'>
-  <link rel='stylesheet' type='text/css' href='<%=wp.getStyleUri(wp.getJsp(),"menu.css")%>'>
+  <link rel='stylesheet' type='text/css' href='<%= CmsWorkplace.getStyleUri(wp.getJsp(),"menu.css") %>'>
 
-  <script type='text/javascript' src='<%=wp.getSkinUri()%>admin/javascript/general.js'></script>
-  <script type='text/javascript' src='<%=wp.getSkinUri()%>admin/javascript/adminmenu.js'></script>
+  <script type='text/javascript' src='<%= CmsWorkplace.getSkinUri() %>admin/javascript/general.js'></script>
+  <script type='text/javascript' src='<%= CmsWorkplace.getSkinUri() %>admin/javascript/adminmenu.js'></script>
   <script type='text/javascript'>
     function bodyLoad() {
       checkSize();
