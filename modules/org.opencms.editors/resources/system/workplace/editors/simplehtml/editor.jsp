@@ -123,7 +123,7 @@ function closeDialog() {
 }
 
 function popupCloseAction(closeObj) {
-	if (closeObj.refreshOpener && closeObj.refreshOpener == true) {
+	if (closeObj.refreshOpener && closeObj.refreshOpener) {
 		buttonAction(1);
 	} else if (closeObj.elemName) {
 		changeElement(closeObj.elemName, closeObj.elemLocale);

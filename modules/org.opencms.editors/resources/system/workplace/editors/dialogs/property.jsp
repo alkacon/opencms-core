@@ -1,4 +1,8 @@
-<%@ page import="org.opencms.workplace.editors.*" %><%	
+<%@ page import="
+	org.opencms.workplace.*,
+	org.opencms.workplace.editors.*,
+	org.opencms.workplace.commons.*
+"%><%	
 
 	// initialize the workplace class
 	CmsDialogProperty wp = new CmsDialogProperty(pageContext, request, response);
@@ -8,7 +12,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsDialogProperty.ACTION_CLOSEPOPUP_SAVE:
+case CmsDialog.ACTION_CLOSEPOPUP_SAVE:
 //////////////////// ACTION: save edited properties for the current resource type and close the popup window
 
 	wp.actionEdit(request);
@@ -18,21 +22,23 @@ case CmsDialogProperty.ACTION_CLOSEPOPUP_SAVE:
 	}
 
 
-case CmsDialogProperty.ACTION_CLOSEPOPUP:
+case CmsDialog.ACTION_CLOSEPOPUP:
 //////////////////// ACTION: close the popup window
 %>
 	
-	<html><head></head>
+	<html>
+	<head>
 	<script type="text/javascript">
 		<%= additionalScript %>
 		window.close();
 	</script>
-	</head></html>
+	</head>
+	</html>
 	
 <%
 break;
 
-case CmsDialogProperty.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed, close dialog
 
 	wp.actionDeleteResource();
@@ -41,7 +47,7 @@ case CmsDialogProperty.ACTION_CANCEL:
 break;
 
 
-case CmsDialogProperty.ACTION_SAVE_EDIT:
+case CmsPropertyAdvanced.ACTION_SAVE_EDIT:
 //////////////////// ACTION: save edited properties for the current resource type
 
 	wp.actionEdit(request);
@@ -50,11 +56,11 @@ case CmsDialogProperty.ACTION_SAVE_EDIT:
 break;
 
 
-case CmsDialogProperty.ACTION_EDIT:
+case CmsPropertyCustom.ACTION_EDIT:
 default:
 //////////////////// ACTION: show edit properties window
 
-	wp.setParamAction(wp.DIALOG_SAVE_EDIT);
+	wp.setParamAction(CmsPropertyAdvanced.DIALOG_SAVE_EDIT);
 	
 %><%= wp.htmlStart(null, wp.getParamTitle()) %>
 <script type="text/javascript">
@@ -72,15 +78,15 @@ function toggleDelete(propName) {
 	var sepIndex = propName.indexOf("---");
 	if (sepIndex != -1) {
 		propName = propName.substring(0, sepIndex);
-		var checked = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName).checked;
+		var checked = document.getElementById("<%= CmsPropertyAdvanced.PREFIX_USEPROPERTY %>"+propName).checked;
 		var count = 1;
 		var curElem = null;
 		while (true) {
-			curElem = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName+"---"+count);
+			curElem = document.getElementById("<%= CmsPropertyAdvanced.PREFIX_VALUE %>"+propName+"---"+count);
 			if (curElem == null) {
 				break;
 			}
-			var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>"+propName+"---"+count).value;
+			var hiddenValue = document.getElementById("<%= CmsPropertyAdvanced.PREFIX_HIDDEN %>"+propName+"---"+count).value;
 			if (checked == true) {
 				curElem.value = hiddenValue;
 			} else {
@@ -89,10 +95,10 @@ function toggleDelete(propName) {
 			count ++;
 		}	
 	} else {
-		var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>"+propName).value;
-		var checked = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName).checked;
-		var field = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName);
-		if (checked == true) {
+		var hiddenValue = document.getElementById("<%= CmsPropertyAdvanced.PREFIX_HIDDEN %>"+propName).value;
+		var checked = document.getElementById("<%= CmsPropertyAdvanced.PREFIX_USEPROPERTY %>"+propName).checked;
+		var field = document.getElementById("<%= CmsPropertyAdvanced.PREFIX_VALUE %>"+propName);
+		if (checked) {
 			field.value = hiddenValue;
 		} else {
 			field.value = "";
@@ -110,7 +116,7 @@ function checkValue(propName) {
 		var count = 1;
 		var curElem = null;
 		while (true) {
-			curElem = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName+"---"+count);
+			curElem = document.getElementById("<%= CmsPropertyAdvanced.PREFIX_VALUE %>"+propName+"---"+count);
 			if (curElem == null) {
 				break;
 			}
@@ -122,12 +128,12 @@ function checkValue(propName) {
 			count ++;
 		}	
 	} else {
-		newVal = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName).value;
+		newVal = document.getElementById("<%= CmsPropertyAdvanced.PREFIX_VALUE %>"+propName).value;
 		if (newVal != null && newVal != "") {
 			allEmpty = false;
 		}
 	}
-	var field = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName);
+	var field = document.getElementById("<%= CmsPropertyAdvanced.PREFIX_USEPROPERTY %>"+propName);
 	if (allEmpty) {
 		field.checked = false;
 	} else {
@@ -136,7 +142,7 @@ function checkValue(propName) {
 }
 
 function submitAdvanced() {
-	document.forms["main"].action.value = "<%= wp.DIALOG_SHOW_DEFAULT %>";
+	document.forms["main"].action.value = "<%= CmsPropertyAdvanced.DIALOG_SHOW_DEFAULT %>";
 	document.forms["main"].submit();
 }
 
@@ -144,28 +150,28 @@ function toggleNav() {
 	var checked = document.getElementById("enablenav").checked;
 	var disableField = false;
 	var inputStyle = "Window";
-	if (checked == true && document.getElementById("enablenav").disabled == false) {
-		if (document.getElementById("<%= wp.PREFIX_HIDDEN %>NavText")) {
-			var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>NavText").value;
-			if (hiddenValue != null && hiddenValue != "" && document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText")) {
-				document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText").checked = true;
+	if (checked && !document.getElementById("enablenav").disabled) {
+		if (document.getElementById("<%= CmsPropertyAdvanced.PREFIX_HIDDEN %>NavText")) {
+			var hiddenValue = document.getElementById("<%= CmsPropertyAdvanced.PREFIX_HIDDEN %>NavText").value;
+			if (hiddenValue != null && hiddenValue != "" && document.getElementById("<%= CmsPropertyAdvanced.PREFIX_USEPROPERTY %>NavText")) {
+				document.getElementById("<%= CmsPropertyAdvanced.PREFIX_USEPROPERTY %>NavText").checked = true;
 				toggleDelete('NavText');
 			}		
 		}	
 	} else {
 		disableField = true;
 		inputStyle = "Menu";
-		if (document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText")) {
-			document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText").checked = false;
+		if (document.getElementById("<%= CmsPropertyAdvanced.PREFIX_USEPROPERTY %>NavText")) {
+			document.getElementById("<%= CmsPropertyAdvanced.PREFIX_USEPROPERTY %>NavText").checked = false;
 			toggleDelete('NavText');
 		}
 	}
-	if (document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText")) {
-		document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText").disabled = disableField;
+	if (document.getElementById("<%= CmsPropertyAdvanced.PREFIX_USEPROPERTY %>NavText")) {
+		document.getElementById("<%= CmsPropertyAdvanced.PREFIX_USEPROPERTY %>NavText").disabled = disableField;
 	}
-	document.getElementById("<%= wp.PREFIX_VALUE %>NavText").style.backgroundColor = inputStyle;
+	document.getElementById("<%= CmsPropertyAdvanced.PREFIX_VALUE %>NavText").style.backgroundColor = inputStyle;
 	document.getElementById("navpos").style.backgroundColor = inputStyle;
-	document.getElementById("<%= wp.PREFIX_VALUE %>NavText").disabled = disableField;
+	document.getElementById("<%= CmsPropertyAdvanced.PREFIX_VALUE %>NavText").disabled = disableField;
 	document.getElementById("navpos").disabled = disableField;
 }
 
@@ -182,9 +188,9 @@ function doSet() {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <%= wp.buildEditForm() %>
 
@@ -199,7 +205,8 @@ function doSet() {
 <!--
 toggleNav();
 <%
-if ("true".equals(wp.getParamIsPopup())) {
+if (Boolean.valueOf(wp.getParamIsPopup()).booleanValue()) {
+    // resize the window for a popup
 	%>resizeWindow();
 <%
 } 

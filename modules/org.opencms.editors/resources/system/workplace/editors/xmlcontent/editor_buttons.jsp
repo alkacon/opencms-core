@@ -1,12 +1,9 @@
-<%@ page import="
-	org.opencms.jsp.*,
+<%@ page session="false" import="
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
-	org.opencms.workplace.explorer.*,
 	org.opencms.jsp.*,
-	java.util.*"
-	session="false"
-%><%
+	java.util.*
+"%><%
 	
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 CmsXmlContentEditor wp = new CmsXmlContentEditor(cms);
@@ -35,7 +32,7 @@ function buttonAction(actionValue) {
 }
 
 function changeElementLanguage() {
-	formFrame.document.forms["EDITOR"].elements["<%= wp.PARAM_ELEMENTLANGUAGE %>"].value = document.forms["buttons"].elements["<%= wp.PARAM_ELEMENTLANGUAGE %>"].value;
+	formFrame.document.forms["EDITOR"].elements["<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>"].value = document.forms["buttons"].elements["<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>"].value;
 	buttonAction(4);
 	formFrame.focus();
 }
@@ -49,7 +46,7 @@ function confirmExit() {
 </head>
 <body class="buttons-head" unselectable="on">
 
-<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
 
 <form name="buttons" action="" method="post">
@@ -68,7 +65,7 @@ if (options.showElement("button.customized", displayOptions)) {%>
 if (options.showElement("option.element.language", displayOptions) && wp.showElementLanguageSelector()) {
 	out.println(wp.buttonBarSeparator(5, 5));
 	out.println(wp.buttonBarLabel(org.opencms.workplace.editors.Messages.GUI_INPUT_LANG_0));
-	out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + wp.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"changeElementLanguage();\"") + "</td>");
+	out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + CmsEditor.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"changeElementLanguage();\"") + "</td>");
 }
 
 %>
@@ -90,7 +87,7 @@ if (wp.isPreviewEnabled()) {
 </form>
 
 <%= wp.buttonBarSpacer(5) %>
-<%= wp.buttonBar(wp.HTML_END) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_END) %>
 
 </body>
 </html>

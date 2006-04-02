@@ -1,4 +1,8 @@
-<%@ page import="org.opencms.util.*,org.opencms.workplace.editors.*" %><%	
+<%@ page import="
+	org.opencms.util.*,
+	org.opencms.workplace.*,
+	org.opencms.workplace.editors.*
+"%><%	
 
 	// initialize the workplace class
 	CmsDialogElements wp = new CmsDialogElements(pageContext, request, response);
@@ -31,12 +35,12 @@ case CmsDialogElements.ACTION_UPDATE_ELEMENTS:
 <%
 break;
 
-case CmsDialogElements.ACTION_DEFAULT:
+case CmsDialog.ACTION_DEFAULT:
 default:
 
 //////////////////// ACTION: show initial template dialog (default)
 
-	wp.setParamAction(wp.DIALOG_UPDATE_ELEMENTS);
+	wp.setParamAction(CmsDialogElements.DIALOG_UPDATE_ELEMENTS);
 
 %><%= wp.htmlStart(null, wp.getParamTitle()) %>
 <script type="text/javascript">
@@ -45,7 +49,7 @@ default:
 function confirmDelete() {
 	var isDeleted = false;
 	for (var i=0; i<elems.length; i++) {
-		var elemName = "<%= wp.PREFIX_PARAM_BODY %>" + elems[i]["name"];
+		var elemName = "<%= CmsDialogElements.PREFIX_PARAM_BODY %>" + elems[i]["name"];
 		if (elems[i]["enabled"] && (document.forms["main"].elements[elemName].checked == false)) {
 			isDeleted = true;
 		}
@@ -84,10 +88,10 @@ function registerElement(elemName, isEnabled) {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <%= wp.buildElementList() %>
 
@@ -99,7 +103,8 @@ function registerElement(elemName, isEnabled) {
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
 <%
-if ("true".equals(wp.getParamIsPopup())) {
+if (Boolean.valueOf(wp.getParamIsPopup()).booleanValue()) {
+    // this is a popup window
 	%><script type="text/javascript">
 <!--
 resizeWindow();
