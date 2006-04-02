@@ -2,7 +2,7 @@
 	
 	// get workplace class from request attribute
 	CmsDialog wp = CmsDialog.initCmsDialog(pageContext, request, response);
-	wp.setParamAction(wp.DIALOG_CONFIRMED);
+	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
 
 %><%= wp.htmlStart() %>
 <%= wp.bodyStart("dialog") %>
@@ -12,7 +12,7 @@
 <%= wp.getParamMessage() %>
 <%= wp.dialogContentEnd() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>       
 <%= wp.dialogButtonsOkCancel() %>
 </form>

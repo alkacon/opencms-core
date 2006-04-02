@@ -1,8 +1,8 @@
 <%@ page import="
-		org.opencms.workplace.*, 
-		org.opencms.workplace.tools.CmsToolDialog, 
-		org.opencms.report.I_CmsReport"%>
-<%	
+	org.opencms.workplace.*, 
+	org.opencms.workplace.tools.CmsToolDialog, 
+	org.opencms.report.I_CmsReport
+"%><%	
     // get workplace class from request attribute
     CmsReport wp = CmsReport.initCmsReport(pageContext, request, response);
     
@@ -502,9 +502,14 @@ function initButtons() {
 
 
 function submitActionRefresh(para1, para2, para3) {	
-<% if (Boolean.valueOf(wp.getParamRefreshWorkplace()).booleanValue()) { %>
+<% if (Boolean.valueOf(wp.getParamRefreshWorkplace()).booleanValue()) { 
+    	// workplace must be refresehd (reloaded)
+%>
      top.location.href = "<%= org.opencms.main.OpenCms.getSystemInfo().getOpenCmsContext() + CmsWorkplace.VFS_PATH_VIEWS %>workplace.jsp";
-<% } else { %>
+<% 
+	} else { 
+	    // no workplace refresh required
+%>
 	 return submitAction(para1, para2, para3);
 <% } %>
 }

@@ -1,9 +1,7 @@
-<%@ page import="org.opencms.jsp.*, 
-					  org.opencms.workplace.CmsWorkplaceManager,
-					  org.opencms.util.CmsStringUtil,
-					  org.opencms.workplace.galleries.*" session="false" %>
-
-<%	
+<%@ page session="false" import="
+	org.opencms.jsp.*, 
+	org.opencms.workplace.galleries.*
+"%><%	
 	// initialize action element for link substitution
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	
@@ -20,8 +18,8 @@
 		var mainForm = document.forms["main"];
 		<% if (wp.galleriesExists()) { %>
 			if (mainForm.gallerypath.value != '<%= wp.getParamGalleryPath() %>') {
-				if (mainForm.<%= wp.PARAM_PAGE %> != null) {
-					mainForm.<%= wp.PARAM_PAGE %>.options[0].selected = true;
+				if (mainForm.<%= A_CmsGallery.PARAM_PAGE %> != null) {
+					mainForm.<%= A_CmsGallery.PARAM_PAGE %>.options[0].selected = true;
 				}
 			}
 			mainForm.submit();			
@@ -34,9 +32,9 @@
 	// displays initial gallery item list in list frame (needed when popup is loaded the first time)
 	function displayFirstGallery() {
 		var listForm = document.forms["list"];
-		if (listForm.elements["<%= wp.PARAM_GALLERYPATH %>"].value == "") {
+		if (listForm.elements["<%= A_CmsGallery.PARAM_GALLERYPATH %>"].value == "") {
 			var mainForm = document.forms["main"];
-			listForm.elements["<%= wp.PARAM_GALLERYPATH %>"].value = mainForm.elements["<%= wp.PARAM_GALLERYPATH %>"].value;
+			listForm.elements["<%= A_CmsGallery.PARAM_GALLERYPATH %>"].value = mainForm.elements["<%= A_CmsGallery.PARAM_GALLERYPATH %>"].value;
 			listForm.submit();
 		}
 	}
@@ -53,8 +51,8 @@
 <body onload="<%=wp.getBodyOnload()%>" style="background-color: ThreeDFace; margin: 0; padding: 2px;">
 
 <form name="main" action="<%= cms.link("gallery_fs_head.jsp") %>" target="gallery_fs" method="post" class="nomargin">
-<input type="hidden" name="<%= wp.PARAM_DIALOGMODE %>" value="<%= wp.getParamDialogMode() %>">
-<input type="hidden" name="<%= wp.PARAM_FIELDID %>" value="<%= wp.getParamFieldId() %>">
+<input type="hidden" name="<%= A_CmsGallery.PARAM_DIALOGMODE %>" value="<%= wp.getParamDialogMode() %>">
+<input type="hidden" name="<%= A_CmsGallery.PARAM_FIELDID %>" value="<%= wp.getParamFieldId() %>">
 <table border="0" cellpadding="1" cellspacing="0" width="100%">
 <tr>
 	<td colspan="2"><%= wp.buildGallerySelectBox() %></td>
@@ -65,7 +63,7 @@
 		<tr>
 			<%= wp.wizardButton() %>
 			<%= wp.buttonBarSpacer(5) %>
-			<td class="maxwidth"><input type="text" style="width: 98%" name="<%= wp.PARAM_SEARCHWORD %>" id="<%= wp.PARAM_SEARCHWORD %>" value="<%= wp.getParamSearchWord() %>"></td>			
+			<td class="maxwidth"><input type="text" style="width: 98%" name="<%= A_CmsGallery.PARAM_SEARCHWORD %>" id="<%= A_CmsGallery.PARAM_SEARCHWORD %>" value="<%= wp.getParamSearchWord() %>"></td>			
 			<%= wp.searchButton() %>			
 		</tr>
 		</table>
@@ -83,11 +81,11 @@
 </form>
 
 <form name="list" action="<%= cms.link("gallery_list.jsp") %>" method="post" class="nomargin" target="gallery_list">
-	<input type="hidden" name="<%= wp.PARAM_GALLERYPATH %>" value="<%= wp.getParamGalleryPath() %>">
-	<input type="hidden" name="<%= wp.PARAM_PAGE %>">
-	<input type="hidden" name="<%= wp.PARAM_SEARCHWORD %>">
-	<input type="hidden" name="<%= wp.PARAM_DIALOGMODE %>" value="<%= wp.getParamDialogMode() %>">
-	<input type="hidden" name="<%= wp.PARAM_FIELDID %>" value="<%= wp.getParamFieldId() %>">
+	<input type="hidden" name="<%= A_CmsGallery.PARAM_GALLERYPATH %>" value="<%= wp.getParamGalleryPath() %>">
+	<input type="hidden" name="<%= A_CmsGallery.PARAM_PAGE %>">
+	<input type="hidden" name="<%= A_CmsGallery.PARAM_SEARCHWORD %>">
+	<input type="hidden" name="<%= A_CmsGallery.PARAM_DIALOGMODE %>" value="<%= wp.getParamDialogMode() %>">
+	<input type="hidden" name="<%= A_CmsGallery.PARAM_FIELDID %>" value="<%= wp.getParamFieldId() %>">
 </form>
 
 <script type="text/javascript">

@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
-<link rel="stylesheet" type="text/css" href="<%= wp.getStyleUri(wp.getJsp(),"workplace.css")%>">
+<link rel="stylesheet" type="text/css" href="<%= CmsWorkplace.getStyleUri(wp.getJsp(), "workplace.css")%>">
 <title>OpenCms Workplace Foot Frame</title>
 <script type="text/javascript"> 
 function doReloadFoot() {
@@ -22,11 +22,11 @@ function doReloadFoot() {
 </head>
 
 <body class="buttons-foot" unselectable="on" onload="setTimeout('doReloadFoot()', 300000);">
-<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 0) %>
 <%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_USER_0) %><td><%= wp.getSettings().getUser().getName() %></td>
 <%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_LOGINTIME_0) %><td><%= wp.getLoginTime() %></td>
 <%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_LOGINADDRESS_0) %><td><%= wp.getLoginAddress() %></td>
-<%= wp.buttonBar(wp.HTML_END) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_END) %>
 </body>
 </html>
