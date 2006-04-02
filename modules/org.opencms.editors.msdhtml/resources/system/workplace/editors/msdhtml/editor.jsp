@@ -265,7 +265,7 @@ function checkPopup() {
 }
 
 function popupCloseAction(closeObj) {
-	if (closeObj.refreshOpener && closeObj.refreshOpener == true) {
+	if (closeObj.refreshOpener && closeObj.refreshOpener) {
 		buttonAction(1);
 	} else if (closeObj.elemName) {
 		changeElement(closeObj.elemName, closeObj.elemLocale);
@@ -314,7 +314,9 @@ End Sub
 <body class="buttons-head" unselectable="on" onload="initContent(); initStyles();" onunload="closeDialog();">
 
 <table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
+
 <form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogRealUri() %>">
+
 <input type="hidden" name="<%= CmsEditor.PARAM_CONTENT %>">
 <input type="hidden" name="<%= CmsDialog.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
 <input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
@@ -374,12 +376,186 @@ out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", org.openc
 
 <%	
 	if ("edit".equals(wp.getParamEditormode())) {
-		%><%@ include file="form_text.txt" %><%
-	} else {
-		%><%@ include file="form_html.txt" %><%
-	}
+	    // display the WYSIWYG html editor
+	    
 %>
-	
+
+<%= wp.buttonBar(CmsWorkplace.HTML_START) %>
+<%= wp.buttonBarStartTab(0, 5) %>
+<%
+if (options.showElement("button.customized", displayOptions)) {%>
+	<td><%= wp.buttonActionDirectEdit("doEditHTML(55);", buttonStyle) %></td><%
+}
+%>
+<%= wp.button("javascript:doEditHTML(2);", null, "save_exit",org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0, buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(3);", null, "save", org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0, buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(4);", null, "undo", org.opencms.workplace.editors.Messages.GUI_BUTTON_UNDO_0, buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(5);", null, "redo", org.opencms.workplace.editors.Messages.GUI_BUTTON_REDO_0, buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(6);", null, "editorsearch",org.opencms.workplace.editors.Messages.GUI_BUTTON_SEARCH_0, buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(9);", null, "cut",org.opencms.workplace.editors.Messages.GUI_BUTTON_CUT_0, buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(10);", null, "copy", org.opencms.workplace.editors.Messages.GUI_BUTTON_COPY_0, buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(11);", null, "paste", org.opencms.workplace.editors.Messages.GUI_BUTTON_PASTE_0, buttonStyle) %>
+<%
+if (options.showElement("option.table", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(40);", null, "table", org.opencms.workplace.editors.Messages.GUI_BUTTON_TABLE_0, buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(51);", null, "table_tr",org.opencms.workplace.editors.Messages.GUI_BUTTON_TABLEROW_0, buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(52);", null, "table_td",org.opencms.workplace.editors.Messages.GUI_BUTTON_TABLECELL_0, buttonStyle) %><%
+}
+if (options.showElement("option.links", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(50);", null, "link", org.opencms.workplace.editors.Messages.GUI_BUTTON_LINKTO_0, buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(53);", null, "anchor",org.opencms.workplace.editors.Messages.GUI_BUTTON_ANCHOR_0, buttonStyle) %><%
+}
+if (options.showElement("option.images", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(42);", null, "image", org.opencms.workplace.editors.Messages.GUI_BUTTON_IMAGE_0, buttonStyle) %><%
+} %>
+<%= wp.buildGalleryButtons(options,buttonStyle,displayOptions) %>
+<%
+if (options.showElement("option.specialchars", displayOptions)) {
+	%><%= wp.button("javascript:doEditHTML(48);", null, "specialchar",org.opencms.workplace.editors.Messages.GUI_BUTTON_SPECIALCHARS_0, buttonStyle) %><%
+}
+%>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(47);", null, "details", org.opencms.workplace.editors.Messages.GUI_BUTTON_TOGGLEDETAILS_0, buttonStyle) %>
+<%
+if (wp.isHelpEnabled()) {%>								
+	<%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:openOnlineHelp('/editors/msdhtml');", null, "help.png", org.opencms.workplace.editors.Messages.GUI_BUTTON_HELP_0, buttonStyle) %><%
+} %>
+<td class="maxwidth">&nbsp;</td>
+<%= wp.button("javascript:confirmExitHTML();", null, "exit",org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0, buttonStyle) %>
+<%= wp.buttonBarSpacer(5) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_END) %>
+<%= wp.buttonBarHorizontalLine() %>
+<%= wp.buttonBar(CmsWorkplace.HTML_START) %>
+<%= wp.buttonBarStartTab(0, 5) %>
+<td><select class="textfeld" name="BLOCK" id="BLOCK" width=100 style="width:100px" onchange="doEditHTML(21);" size="1"><option selected value="Normal">Normal</select></td>
+<%
+		
+if (options.showElement("font.face", displayOptions)) {%>
+	<%= wp.buttonBarSpacer(5) %>
+	<td><%= wp.buildSelectFonts("class=\"textfeld\" name=\"FONTFACE\" width=\"120\" onchange=\"doEditHTML(22);\"") %></td><%
+} else {
+    // don't display font face selection
+%>
+	<input type="hidden" name="FONTFACE" style="display: none;"><%
+} 
+if (options.showElement("font.size", displayOptions)) {
+	%><%= wp.buttonBarSpacer(5) %>
+	<td><select class="textfeld" name="FONTSIZE" id="FONTSIZE" width="40" style="width:40px" onchange="doEditHTML(23);" size="1"><option selected value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></td><%
+} else {
+    // don't diaply font size selection
+%>
+	<input type="hidden" name="FONTSIZE" style="display: none;"><%
+}
+
+if (options.showElement("font.decoration", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(24);", null, "bold", org.opencms.workplace.editors.Messages.GUI_BUTTON_BOLD_0, buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(25);", null, "italic",org.opencms.workplace.editors.Messages.GUI_BUTTON_ITALIC_0, buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(26);", null, "underline",org.opencms.workplace.editors.Messages.GUI_BUTTON_UNDERLINE_0, buttonStyle) %><%
+} 
+if (options.showElement("text.align", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(31);", null, "left",org.opencms.workplace.editors.Messages.GUI_BUTTON_ALIGNLEFT_0, buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(32);", null, "center",org.opencms.workplace.editors.Messages.GUI_BUTTON_ALIGNCENTER_0, buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(33);", null, "right", org.opencms.workplace.editors.Messages.GUI_BUTTON_ALIGNRIGHT_0, buttonStyle) %><%
+}
+if (options.showElement("text.lists", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(34);", null, "bullist",org.opencms.workplace.editors.Messages.GUI_BUTTON_UL_0, buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(35);", null, "numlist",org.opencms.workplace.editors.Messages.GUI_BUTTON_OL_0, buttonStyle) %><%
+}
+if (options.showElement("text.indent", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(36);", null, "indent", org.opencms.workplace.editors.Messages.GUI_BUTTON_INDENTIN_0, buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(37);", null, "outdent",org.opencms.workplace.editors.Messages.GUI_BUTTON_INDENTOUT_0, buttonStyle) %><%
+}
+
+boolean fontColor = options.showElement("font.color", displayOptions);
+boolean bgColor = options.showElement("bg.color", displayOptions);			
+if (fontColor || bgColor) {%>
+	<%= wp.buttonBarSeparator(5, 5) %><%
+}
+if (fontColor) {%>
+	<%= wp.button("javascript:doEditHTML(38);", null, "color_text", org.opencms.workplace.editors.Messages.GUI_BUTTON_FONTCOLOR_0, buttonStyle) %><%
+}
+if (bgColor) {%>
+	<%= wp.button("javascript:doEditHTML(39);", null, "color_fill", org.opencms.workplace.editors.Messages.GUI_BUTTON_COLOR_0, buttonStyle) %><%
+}
+%>
+<%= wp.buttonBar(CmsWorkplace.HTML_END) %>
+</td>
+<tr>
+<tr>
+	<td style="width: 100%; height: 100%;"><OBJECT
+		CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" 
+		ID="EDIT_HTML"
+		WIDTH="100%"
+		height="100%"
+		VIEWASTEXT
+		onfocus="checkPopup();">
+		<param name="Scrollbars" value="true">
+		<param name="ShowBorders" value="true">
+	</OBJECT>
+	<!-- DEInsertTableParam Object -->
+	<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>
+	</object>
+	<!-- DEGetBlockFmtNamesParam Object -->
+	<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
+	</object>
+	</td>
+</tr>
+
+<%
+
+		// end of WYSIWYG html editor
+	} else {
+		// display the source code / text editor
+
+%>
+<%= wp.buttonBar(CmsWorkplace.HTML_START) %>
+<%= wp.buttonBarStartTab(0, 5) %>
+<%
+if (options.showElement("button.customized", displayOptions)) {
+	%><td><%= wp.buttonActionDirectEdit("doEdit(4);", buttonStyle) %></td><%
+}
+%>
+<%= wp.button("javascript:doEdit(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
+<%= wp.button("javascript:doEdit(3);", null, "save", "button.save", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEdit(7);", null, "cut", "button.cut", buttonStyle) %>
+<%= wp.button("javascript:doEdit(8);", null, "copy", "button.copy", buttonStyle) %>
+<%= wp.button("javascript:doEdit(9);", null, "paste", "button.paste", buttonStyle) %>
+<%			
+if (wp.isHelpEnabled()) {%>
+	<%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:openOnlineHelp('/editors/msdhtmltext');", null, "help.png", "button.help", buttonStyle) %><%
+} %>
+<td class="maxwidth">&nbsp;</td>
+<%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
+<%= wp.buttonBarSpacer(5) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_END) %>
+
+</td>
+<tr>
+<tr>
+	<td class="texteditor" height="100%" width="100%">
+		<textarea id="edit1" name="edit1" style="width:100%; height:100%; background-color: #ffffff; font-family: 'Fixedsys'; margin:0px; padding:0px;"></textarea>
+	</td>
+</tr>
+
+<%
+
+		// end of source code / text editor
+	}
+
+%>	
 </form>
 
 <form style="display:none" name="ELEMENTS" action="dialogs/elements.jsp" target="dialogElementWindow" method="post">

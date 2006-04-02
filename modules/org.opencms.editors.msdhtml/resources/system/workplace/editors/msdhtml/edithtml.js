@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.msdhtml/resources/system/workplace/editors/msdhtml/Attic/edithtml.js,v $
- * Date   : $Date: 2006/03/27 14:52:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/04/02 07:07:11 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -457,7 +457,7 @@ function DisplayChanged() {
 		document.all.FONTSIZE.disabled = true;
 	} else {
 		var value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTSIZE, OLECMDEXECOPT_DODEFAULT);
-		if ((value != null) && (USE_FONTSIZE == true)) {
+		if ((value != null) && USE_FONTSIZE)) {
 	    		document.all.FONTSIZE.disabled = false;
 			document.all.FONTSIZE.value = value;
 		} else {

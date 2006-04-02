@@ -173,42 +173,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/editors/msdhtml/form_html.txt</source>
-			<destination>system/workplace/editors/msdhtml/form_html.txt</destination>
-			<type>plain</type>
-			<uuidresource>5fd4de64-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[WYSIWYG editor part]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/editors/msdhtml/form_text.txt</source>
-			<destination>system/workplace/editors/msdhtml/form_text.txt</destination>
-			<type>plain</type>
-			<uuidresource>5fde7b58-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Text editor part]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
