@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2006/04/04 15:46:20 $
+ * Version: $Revision: 1.110 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.109 $
+ * @version $Revision: 1.110 $
  * 
  * @since 6.0.0 
  */
@@ -1532,7 +1532,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             info = (Map)oin.readObject();
         } catch (IOException e) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_READING_ADDITIONAL_INFO_1, userName);
-            LOG.error(message.key());
+            LOG.error(message.key(), e);
 
             info = new HashMap();
         }
