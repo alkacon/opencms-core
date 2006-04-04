@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/04/04 14:39:16 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -66,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,8 +142,8 @@ public class CmsChtype extends CmsDialog {
                 }
 
                 if (isResourceType) {
-                    if (CmsStringUtil.isEmpty(settings.getNewResourceUri())) {
-                        // skip resource types without valid "new" resource URI
+                    if (settings.getName().equals("XMLTemplate")) {
+                        // skip legacy resource type XMLTemplate
                         continue;
                     }
                     
