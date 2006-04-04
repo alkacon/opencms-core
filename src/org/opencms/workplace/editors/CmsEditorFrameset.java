@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorFrameset.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/04/04 14:39:50 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,13 +133,13 @@ public class CmsEditorFrameset extends CmsEditor {
     public String getParamEditorTitle() {
 
         if (CmsStringUtil.isEmpty(m_paramEditorTitle)) {
-            return key(Messages.GUI_EDITOR_TITLE_PREFIX_0);
+            return key(Messages.GUI_EDITOR_TITLE_PREFIX_0) + " " + getParamResource();
         }
         return m_paramEditorTitle;
     }
 
     /**
-     * Sets the editort title.<p>
+     * Sets the editor title.<p>
      *
      * @param editorTitle the editor title to set
      */
