@@ -46,11 +46,11 @@ function disallowDate(date) {
 function validateForm() {
   // exactly one of the values must be given
   if (document.main.date.value == "" && document.main.versions.value == "") {
-    alert("<%= wp.key("error.message.datamissing") %>");
+    alert("<%= wp.key(org.opencms.workplace.tools.history.Messages.ERR_MESSAGE_INVALIDCLEARHISTORYDATA_0) %>");
     return false;
   }
   if (document.main.date.value != "" && document.main.versions.value != "") {
-    alert("<%= wp.key("error.message.invalidclearhistorydata") %>");
+    alert("<%= wp.key(org.opencms.workplace.tools.history.Messages.ERR_MESSAGE_DATAMISSING_0) %>");
     return false;
   } 
   return true;
