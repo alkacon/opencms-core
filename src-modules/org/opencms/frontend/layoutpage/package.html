@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+
+ File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/layoutpage/package.html,v $
+ Date   : $Date: 2006/03/27 14:53:03 $
+ Version: $Revision: 1.2 $
+
+ This library is part of OpenCms -
+ the Open Source Content Mananagement System
+
+ Copyright (c) 2006 Alkacon Software GmbH (http://www.alkacon.com)
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ For further information about Alkacon Software GmbH, please see the
+ company website: http://www.alkacon.com
+
+ For further information about OpenCms, please see the
+ project website: http://www.opencms.org
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+-->
+</head>
+<body bgcolor="white">
+
+<p>Classes for the OpenCms 6.0 'layoutpage' resource type module.</p>
+<p>
+The provided classes are used to generate a frontend layout page that provides an easy to use form based page layout for page editors.
+The XML content type 'layoutpage' configures the frontend appearance of text paragraphs together with images.
+</p>
+
+<p>
+To modify the enclosing output HTML code, please edit the files in the <code>layouts/</code> subfolder of the module.
+You can use the following macros in the files:
+</p>
+<ul>
+	<li><code>${layout.headline}</code>: the optional headline of the paragraph</li>
+	<li><code>${layout.image}</code>: the image tag for the paragraph</li>
+	<li><code>${layout.description}</code>: the image description text</li>
+	<li><code>${layout.text}</code>: the text of the paragraph</li>
+</ul>
+
+<p>
+To add your own predefined layout pattern, do the following:
+</p>
+<ul>
+	<li>Create a text file in the module subfolder <code>layouts/</code></li>
+	<li>You can use the following macros in the text file: ${layout.headline}, ${layout.image}, ${layout.description}, ${layout.text}</li>
+	<li>Use the method <code>addLayoutPattern</code> to make your layout file available in the bean with the image width as second argument</li>
+	<li>Edit the schema appinfo node in <code>schemas/layoutimage.xsd</code> to add your layout to the alignment selector widget</li>
+	<li>Eventually enhance the CSS style sheet <code>resources/style.css</code></li>
+</ul>
+
+@version $Revision: 1.2 $ 
+
+@since 6.1.9
+
+</body>
+</html>

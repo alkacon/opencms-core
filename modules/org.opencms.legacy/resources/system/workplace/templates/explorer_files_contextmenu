@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+
+<!-- context menues for folders start -->
+<contextmenue name="folder">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.copy"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="folderlock">
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.copy"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="folderlockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+    <contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
+	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+<!-- context menues for folders end -->
+
+<!-- context menues for plain files start -->
+<contextmenue name="plain">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.htmledit"/>
+	<contextdisabled name="explorer.context.edit"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="plainlock">
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.htmledit"/>
+	<contextdisabled name="explorer.context.edit"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="plainlockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.htmledit" href="javascript:doAction(DO_HTMLEDIT)"/>
+	<contextentry name="explorer.context.edit" href="javascript:doAction(DO_EDIT)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
+	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+<!-- context menues for plain files end -->
+
+
+<!-- context menues for link files start -->
+<contextmenue name="link">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.editlink"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="linklock">
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.editlink"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="linklockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.editlink" href="javascript:doAction(DO_LINKEDIT)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
+	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+<!-- context menues for link files end -->
+
+
+<!-- context menues for XMLTemplates start -->
+<contextmenue name="XMLTemplate">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.edit"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="XMLTemplatelock">
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.edit"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="XMLTemplatelockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.edit" href="javascript:doAction(DO_EDIT)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
+	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
+	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+<!-- context menues for XMLTemplates end -->
+
+<!-- context menues for script files start -->
+<contextmenue name="script">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.edit"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="scriptlock">
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.edit"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="scriptlockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.edit" href="javascript:doAction(DO_EDIT)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
+	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+<!-- context menues for script files end -->
+
+<!-- context menues for pages start -->
+<contextmenue name="page">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.pageedit"/>
+	<contextdisabled name="explorer.context.editcontrolfile" />
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="pagelock">
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.pageedit"/>
+    <contextdisabled name="explorer.context.editcontrolfile" />
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="pagelockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.pageedit" href="javascript:doAction(DO_TEMPLATEEDIT)"/>
+	<contextentry name="explorer.context.editcontrolfile" href="javascript:doAction(DO_EDIT)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
+	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+<!-- context menues for pages end -->
+
+<!-- context menues for pdfpages start -->
+<contextmenue name="pdfpage">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.pageedit"/>
+	<contextdisabled name="explorer.context.editcontrolfile" />
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="pdfpagelock">
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.pageedit"/>
+    <contextdisabled name="explorer.context.editcontrolfile" />
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="pdfpagelockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.pageedit" href="javascript:doAction(DO_TEMPLATEEDIT)"/>
+	<contextentry name="explorer.context.editcontrolfile" href="javascript:doAction(DO_EDIT)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
+	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+<!-- context menues for pdfpages end -->
+
+<!-- context menues for image files start -->
+<contextmenue name="image">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="imagelock">
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="imagelockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
+	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+<!-- context menues for image files end -->
+
+<!-- context menues for binary files start -->
+<contextmenue name="binary">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+    <contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="binarylock">
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="binarylockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
+	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
+	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+<!-- context menues for binary files end -->
+
+<!-- context menues for news pages start -->
+<contextmenue name="newspage">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.editarticle"/>
+	<contextdisabled name="explorer.context.editcontrolfile" />
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.delete"/>
+</contextmenue>
+
+<contextmenue name="newspagelock">
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.editarticle"/>
+	<contextdisabled name="explorer.context.editcontrolfile" />
+	<contextspacer/>
+	<contextdisabled name="explorer.context.delete"/>
+</contextmenue>
+
+<contextmenue name="newspagelockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.editarticle" href="javascript:doAction(DO_NEWSEDIT)"/>
+	<contextentry name="explorer.context.editcontrolfile" href="javascript:doAction(DO_EDIT)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
+</contextmenue>
+<!-- context menues for news pages end -->
+
+<!-- context menues for file not in project or in online project start -->
+<contextmenue name="online">
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+
+<contextmenue name="onlinefolder">
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
+</contextmenue>
+<!-- context menues for file not in project or in online project end -->
+
+<contextmenue name="backoffice">
+	<contextentry name="explorer.context.editarticle" href="javascript:doAction(DO_BOEDIT)"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_BODELETE)"/>
+</contextmenue>
+</WORKPLACE>

@@ -1,0 +1,43 @@
+<%@page buffer="none" session="false" import="org.opencms.jsp.*" %><%
+
+// initialize action element to access the API
+CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+
+String template = "/system/modules/org.opencms.frontend.templateone/templates/main";
+
+if (cms.template("head")) {
+	// include the template head part
+	cms.include(template, "head");
+}
+
+if (cms.template("content")) {
+%>
+	<div class="element"><span style="font-weight:bold; font-size: 1.2em">Form Head</span><br>
+		<% cms.includeSilent(null, "form_head", true); %>
+	</div>
+	<div class="element"><span style="font-weight:bold; font-size: 1.2em">Form Contact</span><br>
+		<% cms.includeSilent(null, "form_contact", true); %>
+	</div>
+	<div class="element"><span style="font-weight:bold; font-size: 1.2em">Form Foot</span><br>
+		<% cms.includeSilent(null, "form_foot", true); %>
+	</div>
+	<div class="element"><span style="font-weight:bold; font-size: 1.2em">Mail Head</span><br>
+		<% cms.includeSilent(null, "mail_head", true); %>
+	</div>
+	<div class="element"><span style="font-weight:bold; font-size: 1.2em">Mail Foot</span><br>
+		<% cms.includeSilent(null, "mail_foot", true); %>
+	</div>
+	<div class="element"><span style="font-weight:bold; font-size: 1.2em">Confirmation Head</span><br>
+		<% cms.includeSilent(null, "confirm_head", true); %>
+	</div>
+	<div class="element"><span style="font-weight:bold; font-size: 1.2em">Confirmation Foot</span><br>
+		<% cms.includeSilent(null, "confirm_foot", true); %>
+	</div>
+<%
+}
+
+if (cms.template("foot")) {
+	// include the template foot part
+	cms.include(template, "foot");
+}
+%>

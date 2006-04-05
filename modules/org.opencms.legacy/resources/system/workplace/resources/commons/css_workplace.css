@@ -1,0 +1,549 @@
+/* Default font settings for all standard p, td elements */
+p, td, div, span {
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+}
+
+/* Default font settings for all form elements */
+input, select, option, textarea {
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+}
+
+/* Body used for workplace head (top_head.html) */
+body.buttons-head {
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+	padding: 0px;
+	margin: 0px;
+	background-color: ThreeDFace;
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDShadow;
+}
+
+/* Body used for workplace foot (top_foot.html) */
+body.buttons-foot {
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+	padding: 0px;
+	margin: 0px;
+	background-color: ThreeDFace;
+	border-top: 1px solid ThreeDLightShadow;
+	border-left: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDShadow;
+}
+
+/* Button - Normal style (inactive) */
+span.norm {
+	display: block;
+	border: 1px solid ThreeDFace;
+}
+
+/* Button - Hover style */
+span.over {
+	display: block;
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDShadow;
+}
+
+/* Button - Push style */
+span.push {
+	display: block;
+	border-top: 1px solid ThreeDShadow;
+	border-left: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDHighlight;
+}
+
+/* Button - Disabled style */
+span.disabled {
+	display: block;
+	border: 1px solid ThreeDFace;
+	color: GrayText;
+}
+
+/* Button - Tart tab */
+span.starttab {
+	display: block;
+	height: 16px;
+	width: 1px;
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDShadow;
+}
+
+/* Button - Separator */
+span.separator {
+	display: block;
+	height: 18px;
+	width: 0px;
+	border-top: 0px;
+	border-left: 1px solid ThreeDShadow;
+	border-bottom: 0px;
+	border-right: 1px solid ThreeDHighlight;
+}
+
+/* Button - Horizontal Separator line */
+.horseparator {
+	width: 100%;
+	background-color: ThreeDHighlight;
+	border-top: 1px solid ThreeDShadow;
+}
+
+/* Button - Text button wrapper  */
+span.txtbutton {
+	display: block;
+	height: 17px;
+	white-space: nowrap;
+	padding-top: 3px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+/* Button - Image button wrapper */
+span.imgbutton {
+	padding-left: 1px;
+	padding-right: 5px;
+}
+
+/* Button - Combined image and text button wrapper */
+span.combobutton {
+	display: block;
+	height: 17px;
+	white-space: nowrap;
+	padding-top: 3px;
+	padding-left: 21px;
+	padding-right: 5px;
+	background-repeat: no-repeat;
+}
+
+/* Button - Image button in image style */
+img.button {
+	height: 20px;
+	width: 20px;
+	border: 0px none;
+	vertical-align: middle;
+}
+
+/* Button - Link (href) style */
+a.button {
+	color: ButtonText;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* ########## Dialog styles ########## */
+
+body.report {
+	background-color: Window;
+}
+
+body.dialogadmin {
+	margin-top: 0;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: Window;
+	border-top: 1px solid ThreedDarkShadow;
+}
+
+body.dialog {
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+	padding: 0;
+	margin: 0;
+	background-color: Window;
+}
+
+body.dialogpopup {
+	margin: 0 auto;
+	background-color: ThreeDFace;
+}
+
+/* outer table of complete dialog window */
+table.dialog {
+	margin: 20px auto;
+	width: 85%;
+	border-left: 1px solid ThreeDLightShadow;
+	border-top: 1px solid ThreeDLightShadow;
+	border-right: 1px solid ThreedDarkShadow;
+	border-bottom: 1px solid ThreedDarkShadow;
+}
+
+/* inner table of complete dialog window */
+table.dialogbox {
+	width: 100%;
+	background-color: ThreeDFace;
+	border-left: 1px solid ThreeDHighlight;
+	border-top: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+	padding: 1px;
+}
+
+/* headline of dialog window */
+.dialoghead {
+	background-color: ActiveCaption;
+	margin-bottom: 8px;
+	padding: 2px;
+	color: CaptionText;
+	font-size: 12px;
+	font-weight: bold;
+	width: 100%;
+	white-space: nowrap;	
+}
+
+/* Subheadline used in content area */
+.dialogsubheader {
+	font-weight: bold;
+	margin: 12px 0 5px 0;
+}
+
+/* content area of dialog */
+.dialogcontent {
+	border-left: 1px solid ThreeDHighlight;
+	border-top: 1px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	border-bottom: 2px solid ThreeDShadow;
+	padding: 15px;
+	margin: 8px;
+}
+
+/* one content line of dialog (e.g. text and input field) without breaks */
+.dialogrow {
+	margin-bottom: 5px;
+	display: block;
+	white-space: nowrap;
+}
+
+/* 3D block outer border definition */
+div.dialogblockborderheadline {
+	margin-top: 10px;
+}
+
+/* 3D block outer border definition without headline */
+div.dialogblockborder {
+	border-left: 1px solid ThreeDShadow;
+	border-top: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDHighlight;
+}
+
+/* 3D block main style */
+div.dialogblock {
+	position: relative;
+	padding: 8px;
+	border-left: 1px solid ThreeDHighlight;
+	border-top: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+}
+
+/* 3D block headline, positioned "inside" border */
+span.dialogblockhead {
+	font-weight: bold;
+	position:absolute;
+	top: -7px;
+	left: 5px;
+	background-color: ThreeDFace;
+	padding: 0 3px;
+	white-space: nowrap;
+}
+
+/* outer border of white inner box */
+.dialoginnerboxborder {
+	border-left: 1px solid ThreeDShadow;
+	border-top: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDHighlight;
+	padding: 0;
+}
+
+/* white inner box for dialogs */
+.dialoginnerbox {
+	background-color: Window;
+	border-left: 1px solid ThreedDarkShadow;
+	border-top: 1px solid ThreedDarkShadow;
+	border-right: 1px solid ThreeDLightShadow;
+	border-bottom: 1px solid ThreeDLightShadow;
+	padding: 2px;
+}
+
+/* separator line */
+.dialogseparator {
+	border-top: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDHighlight;
+	margin: 5px 0;
+}
+
+/* separator line */
+.dialogspacer {
+	height: 10px;
+}
+
+/* error messages style */
+.dialogerror {
+	color: #c03;
+}
+
+/* final button row of dialog window */
+.dialogbuttons {
+	padding: 3px 8px 5px;
+	text-align: center;
+}
+
+/* Submit and other buttons */
+input.dialogbutton {
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+	background-color: ButtonFace;
+	width: 100px;
+	height: 20px;
+	padding: 0 5px;
+	margin-left: 12px;
+	overflow: visible;
+}
+
+/* Special input field for property dialog */
+input.dialogmarkedfield {
+	width: 100%;
+	background-color: #E9E9E9;
+}
+
+/* row marked as selected */
+.dialogmarked {
+	background-color: ActiveCaption;
+	color: CaptionText;
+	display: block;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+/* an unmarked row */
+.dialogunmarked {
+	display: block;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+/* empty dummy style */
+.empty {}
+
+/* bold text */
+.textbold {
+	font-weight: bold;
+}
+
+/* centered text */
+.textcenter {
+	text-align: center;
+}
+
+/* maximum width for td, input field, etc. */
+.maxwidth {
+	width: 100%;
+}
+
+/* no border for elements */
+.noborder {
+	border-style: none;
+}
+
+/* element without margin and padding */
+.nomargin {
+	padding: 0;
+	margin: 0;
+}
+
+/* hide a block */
+.hide {
+	display: none;
+	visibility: hidden;
+}
+
+/* show a block */
+.show {
+	display: inline;
+	visibility: visible;
+}
+
+/* special definitions for permission dialog */
+table.dialogpermissiondetails {
+	table-layout: fixed;
+	width: 420px;
+	margin-left: 15px;
+}
+
+td.dialogpermissioncell {
+	width: 140px;
+	overflow: hidden;
+}
+
+div.dialogpermissioninherit {
+	width: 420px;
+	overflow: auto;
+	margin-left: 17px;
+}
+
+/* definitions for "tab-style" dialogs */
+.dialogtab {
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	background-color: ThreeDFace;
+	text-align: center;
+	color: #000;
+	white-space: nowrap;
+}
+
+.dialogtabactive {
+	border-top: 2px solid ThreeDHighlight;
+	border-left: 2px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	background-color: ThreeDFace;
+	text-align: center;
+	color: CaptionText;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.dialogtabstart {
+	padding: 15px;
+	margin: 8px;
+}
+
+.dialogtabrow {
+	height: 1px;
+	background-color: ThreeDHighlight;
+}
+
+.dialogtabcontent {
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	border-bottom: 2px solid ThreeDShadow;
+	padding: 15px;
+	margin-top: -1px;
+}
+
+a.tab {
+	color: WindowText;
+	text-decoration: none;
+	display: block;
+	padding: 4px;
+}
+
+a.tab:hover {
+	color: GrayText;
+}
+
+span.tabactive {
+	color: WindowText;
+	text-decoration: none;
+	display: block;
+	padding: 4px;
+}
+
+.texteditor {
+	font-family: fixedsys, monospace, sans-serif;
+	font-size: 11px;
+}
+
+.buttonbackground {
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+	padding: 1px;
+	background-color: ThreeDFace;	
+}
+
+/* definitions for xmlcontent editor form */
+.xmlTable { 
+	width:100%; 
+}
+
+.xmlTableNested { 
+	width:100%;
+	border: 2px outset ThreeDHighlight;
+}
+
+.xmlTd    { 
+	width: 100%; 
+	height: 22px; 
+}
+
+.xmlTdDisabled {
+	font-style: italic; 
+	border-right: 1px dotted ThreeDShadow;
+}
+
+.xmlTdErrorHeader {
+	font-size: 14px;
+	font-weight: bold;
+	color: #B40000;
+	text-align: center;
+}
+
+.xmlTdError {
+	font-style: italic;
+	font-weight: bold;
+	color: #B40000;
+}
+
+.xmlTdWarning {
+	font-style: italic;
+	font-weight: bold;
+	color: #EE7700;
+}
+
+.xmlLabel { 
+	white-space: nowrap;
+}
+
+.xmlLabelDisabled {
+	font-style: italic; 
+	white-space: nowrap;
+}
+
+.xmlInput { 
+	border: 1px solid WindowFrame; 
+}
+
+.xmlInputSmall { 
+	width: 200px; 
+	border: 1px solid WindowFrame; 
+}
+
+.xmlInputMedium { 
+	width: 400px;
+	border: 1px solid WindowFrame;  
+}
+
+.xmlHtmlGallery {
+	width: 100%;
+	overflow: auto;
+	background-color: ThreeDFace;
+	border: 1px solid WindowFrame;
+}
+
+.help { 
+	color: InfoText; 
+    position: absolute; 
+    top: 0px; 
+    left: 0px; 
+    padding: 5px; 
+    width: 200px; 
+    border: 1px solid WindowFrame; 
+    background-color: InfoBackground; 
+    visibility: hidden; 
+    font-size: 8pt; 
+}
+
+/* special definition for IE bug displaying horizontal scroll bar in STRICT mode,
+   this must ALWAYS stay at the end of the css! */
+body.dialog { voice-family: "\"}\""; voice-family: inherit; width: expression(document.documentElement.clientWidth - 20); }

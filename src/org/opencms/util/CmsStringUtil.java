@@ -1,0 +1,1043 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
+ * Date   : $Date: 2006/03/28 12:14:36 $
+ * Version: $Revision: 1.39 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.util;
+
+import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.I_CmsMessageBundle;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
+
+import java.awt.Color;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
+import org.apache.oro.text.perl.MalformedPerl5PatternException;
+import org.apache.oro.text.perl.Perl5Util;
+
+/**
+ * Provides String utility functions.<p>
+ * 
+ * @author  Andreas Zahner 
+ * @author  Alexander Kandzior 
+ * @author Thomas Weckert  
+ * 
+ * @version $Revision: 1.39 $ 
+ * 
+ * @since 6.0.0 
+ */
+public final class CmsStringUtil {
+
+    /** Regular expression that matches the HTML body end tag. */
+    public static final String BODY_END_REGEX = "<\\s*/\\s*body[^>]*>";
+
+    /** Regular expression that matches the HTML body start tag. */
+    public static final String BODY_START_REGEX = "<\\s*body[^>]*>";
+
+    /** Constant for <code>"false"</code>. */
+    public static final String FALSE = Boolean.toString(false);
+
+    /** a convienient shorthand to the line separator constant. */
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
+    /** Context macro. */
+    public static final String MACRO_OPENCMS_CONTEXT = "${OpenCmsContext}";
+
+    /** a convienient shorthand for tabulations.  */
+    public static final String TABULATOR = "  ";
+
+    /** Constant for <code>"true"</code>. */
+    public static final String TRUE = Boolean.toString(true);
+
+    /** Regex pattern that matches an end body tag. */
+    private static final Pattern BODY_END_PATTERN = Pattern.compile(BODY_END_REGEX, Pattern.CASE_INSENSITIVE);
+
+    /** Regex pattern that matches a start body tag. */
+    private static final Pattern BODY_START_PATTERN = Pattern.compile(BODY_START_REGEX, Pattern.CASE_INSENSITIVE);
+
+    /** Day constant. */
+    private static final long DAYS = 1000 * 60 * 60 * 24;
+
+    /** Hour constant. */
+    private static final long HOURS = 1000 * 60 * 60;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsStringUtil.class);
+
+    /** OpenCms context replace String, static for performance reasons. */
+    private static String m_contextReplace;
+
+    /** OpenCms context search String, static for performance reasons. */
+    private static String m_contextSearch;
+
+    /** Minute constant. */
+    private static final long MINUTES = 1000 * 60;
+
+    /** Second constant. */
+    private static final long SECONDS = 1000;
+
+    /** Regex that matches an encoding String in an xml head. */
+    private static final Pattern XML_ENCODING_REGEX = Pattern.compile(
+        "encoding\\s*=\\s*[\"'].+[\"']",
+        Pattern.CASE_INSENSITIVE);
+
+    /** Regex that matches an xml head. */
+    private static final Pattern XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
+
+    /** 
+     * Default constructor (empty), private because this class has only 
+     * static methods.<p>
+     */
+    private CmsStringUtil() {
+
+        // empty
+    }
+
+    /**
+     * Changes the filename suffix. 
+     * 
+     * @param filename the filename to be changed
+     * @param suffix the new suffix of the file
+     * @return the filename with the replaced suffix
+     */
+    public static String changeFileNameSuffixTo(String filename, String suffix) {
+
+        int dotPos = filename.lastIndexOf('.');
+        if (dotPos != -1) {
+            return filename.substring(0, dotPos + 1) + suffix;
+        } else {
+            // the string has no suffix
+            return filename;
+        }
+    }
+
+    /**
+     * Checks if a given name is composed only of the characters <code>a...z,A...Z,0...9</code>
+     * and the provided <code>contraints</code>.<p> 
+     * 
+     * If the check fails, an Exception is generated. The provided bundle and key is
+     * used to generate the Exception. 4 parameters are passed to the Exception:<ol>
+     * <li>The <code>name</code>
+     * <li>The first illegal character found
+     * <li>The position where the illegal character was found
+     * <li>The <code>contraints</code></ol>
+     * 
+     * @param name the name to check
+     * @param contraints the additional character contraints
+     * @param key the key to use for generating the Exception (if required)
+     * @param bundle the bundle to use for generating the Exception (if required)
+     * 
+     * @throws CmsIllegalArgumentException if the check fails (generated from the given key and bundle)
+     */
+    public static void checkName(String name, String contraints, String key, I_CmsMessageBundle bundle) {
+
+        int l = name.length();
+        for (int i = 0; i < l; i++) {
+            char c = name.charAt(i);
+            if (((c < 'a') || (c > 'z'))
+                && ((c < '0') || (c > '9'))
+                && ((c < 'A') || (c > 'Z'))
+                && (contraints.indexOf(c) < 0)) {
+
+                throw new CmsIllegalArgumentException(bundle.container(key, new Object[] {
+                    name,
+                    new Character(c),
+                    new Integer(i),
+                    contraints}));
+            }
+        }
+    }
+
+    /**
+     * Replaces occurences of special control characters in the given input with 
+     * a HTML representation.<p>
+     * 
+     * This method currrently replaces line breaks to <code>&lt;br/&gt;</code> and special HTML chars 
+     * like <code>&lt; &gt; &amp; &quot;</code> with their HTML entity representation.<p>
+     * 
+     * @param source the String to escape
+     * @return the escaped String
+     */
+    public static String escapeHtml(String source) {
+
+        if (source == null) {
+            return null;
+        }
+        source = CmsEncoder.escapeXml(source);
+        source = CmsStringUtil.substitute(source, "\r", "");
+        source = CmsStringUtil.substitute(source, "\n", "<br/>\n");
+        return source;
+    }
+
+    /**
+     * Escapes a String so it may be used in JavaScript String definitions.<p>
+     * 
+     * This method replaces line breaks, quotationmarks and \ characters.<p>
+     * 
+     * @param source the String to escape
+     * @return the escaped String
+     */
+    public static String escapeJavaScript(String source) {
+
+        source = CmsStringUtil.substitute(source, "\\", "\\\\");
+        source = CmsStringUtil.substitute(source, "\"", "\\\"");
+        source = CmsStringUtil.substitute(source, "\'", "\\\'");
+        source = CmsStringUtil.substitute(source, "\r\n", "\\n");
+        source = CmsStringUtil.substitute(source, "\n", "\\n");
+        return source;
+    }
+
+    /**
+     * Escapes a String so it may be used as a Perl5 regular expression.<p>
+     * 
+     * This method replaces the following characters in a String:<br>
+     * <code>{}[]()\$^.*+/</code>
+     * 
+     * 
+     * @param source the string to escape
+     * @return the escaped string
+     */
+    public static String escapePattern(String source) {
+
+        if (source == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(source.length() * 2);
+        for (int i = 0; i < source.length(); ++i) {
+            char ch = source.charAt(i);
+            switch (ch) {
+                case '\\':
+                    result.append("\\\\");
+                    break;
+                case '/':
+                    result.append("\\/");
+                    break;
+                case '$':
+                    result.append("\\$");
+                    break;
+                case '^':
+                    result.append("\\^");
+                    break;
+                case '.':
+                    result.append("\\.");
+                    break;
+                case '*':
+                    result.append("\\*");
+                    break;
+                case '+':
+                    result.append("\\+");
+                    break;
+                case '|':
+                    result.append("\\|");
+                    break;
+                case '?':
+                    result.append("\\?");
+                    break;
+                case '{':
+                    result.append("\\{");
+                    break;
+                case '}':
+                    result.append("\\}");
+                    break;
+                case '[':
+                    result.append("\\[");
+                    break;
+                case ']':
+                    result.append("\\]");
+                    break;
+                case '(':
+                    result.append("\\(");
+                    break;
+                case ')':
+                    result.append("\\)");
+                    break;
+                default:
+                    result.append(ch);
+            }
+        }
+        return new String(result);
+    }
+
+    /**
+     * This method takes a part of a html tag definition, an attribute to extend within the
+     * given text and a default value for this attribute; and returns a <code>{@link Map}</code>
+     * with 2 values: a <code>{@link String}</code> with key <code>"text"</code> with the new text
+     * without the given attribute, and another <code>{@link String}</code> with key <code>"value"</code>
+     * with the new extended value for the given attribute, this value is sourrounded by the same type of 
+     * quotation marks as in the given text.<p> 
+     * 
+     * @param text the text to search in
+     * @param attribute the attribute to remove and extend from the text
+     * @param defValue a default value for the attribute, should not have any quotation mark
+     * 
+     * @return a map with the new text and the new value for the given attribute 
+     */
+    public static Map extendAttribute(String text, String attribute, String defValue) {
+
+        Map retValue = new HashMap();
+        retValue.put("text", text);
+        retValue.put("value", "'" + defValue + "'");
+        if (text != null && text.toLowerCase().indexOf(attribute.toLowerCase()) >= 0) {
+            // this doesnot work for things like "att=method()" without quotations.
+            String quotation = "\'";
+            int pos1 = text.toLowerCase().indexOf(attribute.toLowerCase());
+            // looking for the opening quotation mark
+            int pos2 = text.indexOf(quotation, pos1);
+            int test = text.indexOf("\"", pos1);
+            if (test > -1 && (pos2 == -1 || test < pos2)) {
+                quotation = "\"";
+                pos2 = test;
+            }
+            // assuming there is a closing quotation mark
+            int pos3 = text.indexOf(quotation, pos2 + 1);
+            // building the new attribute value
+            String newValue = quotation + defValue + text.substring(pos2 + 1, pos3 + 1);
+            // removing the onload statement from the parameters
+            String newText = text.substring(0, pos1);
+            if (pos3 < text.length()) {
+                newText += text.substring(pos3 + 1);
+            }
+            retValue.put("text", newText);
+            retValue.put("value", newValue);
+        }
+        return retValue;
+    }
+
+    /**
+     * Extracts the content of a &lt;body&gt tag in a HTML page.<p>
+     * 
+     * This method should be pretty robust and work even if the input HTML does not contains
+     * a valid body tag.<p> 
+     * 
+     * @param content the content to extract the body from
+     * @return the extracted body tag content
+     */
+    public static String extractHtmlBody(String content) {
+
+        Matcher startMatcher = BODY_START_PATTERN.matcher(content);
+        Matcher endMatcher = BODY_END_PATTERN.matcher(content);
+
+        int start = 0;
+        int end = content.length();
+
+        if (startMatcher.find()) {
+            start = startMatcher.end();
+        }
+
+        if (endMatcher.find(start)) {
+            end = endMatcher.start();
+        }
+
+        return content.substring(start, end);
+    }
+
+    /**
+     * Extracts the xml encoding setting from an xml file that is contained in a String by parsing 
+     * the xml head.<p>
+     * 
+     * This is useful if you have a byte array that contains a xml String, 
+     * but you do not know the xml encoding setting. Since the encoding setting 
+     * in the xml head is usually encoded with standard US-ASCII, you usually
+     * just create a String of the byte array without encoding setting,
+     * and use this method to find the 'true' encoding. Then create a String
+     * of the byte array again, this time using the found encoding.<p>   
+     * 
+     * This method will return <code>null</code> in case no xml head 
+     * or encoding information is contained in the input.<p>
+     * 
+     * @param content the xml content to extract the encoding from
+     * @return the extracted encoding, or null if no xml encoding setting was found in the input 
+     */
+    public static String extractXmlEncoding(String content) {
+
+        String result = null;
+        Matcher xmlHeadMatcher = XML_HEAD_REGEX.matcher(content);
+        if (xmlHeadMatcher.find()) {
+            String xmlHead = xmlHeadMatcher.group();
+            Matcher encodingMatcher = XML_ENCODING_REGEX.matcher(xmlHead);
+            if (encodingMatcher.find()) {
+                String encoding = encodingMatcher.group();
+                int pos1 = encoding.indexOf('=') + 2;
+                String charset = encoding.substring(pos1, encoding.length() - 1);
+                if (Charset.isSupported(charset)) {
+                    result = charset;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Formats a resource name that it is displayed with the maximum length and path information is adjusted.<p>
+     * 
+     * Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns <code>/.../subfolder/index.html</code>.<p>
+     * @param name the resource name to format
+     * @param maxLength the maximum length of the resource name (without leading <code>/...</code>)
+     * @return the formatted resource name
+     */
+    public static String formatResourceName(String name, int maxLength) {
+
+        if (name == null) {
+            return null;
+        }
+        if (name.length() <= maxLength) {
+            return name;
+        }
+
+        String result = CmsResource.getName(name);
+        name = CmsResource.getParentFolder(name);
+        while (name != null) {
+            String part = CmsResource.getName(name);
+
+            if ((part.length() + result.length()) <= maxLength) {
+                result = part + result;
+            } else {
+                result = "/" + result;
+                if (!part.equals("/")) {
+                    result = "/..." + result;
+                }
+                break;
+            }
+            name = CmsResource.getParentFolder(name);
+        }
+
+        return result;
+    }
+
+    /**
+     * Formats a runtime in the format hh:mm:ss, to be used e.g. in reports.<p>
+     * 
+     * If the runtime is greater then 24 hours, the format dd:hh:mm:ss is used.<p> 
+     * 
+     * @param runtime the time to format
+     * @return the formatted runtime
+     */
+    public static String formatRuntime(long runtime) {
+
+        long seconds = (runtime / SECONDS) % 60;
+        long minutes = (runtime / MINUTES) % 60;
+        long hours = (runtime / HOURS) % 24;
+        long days = runtime / DAYS;
+        StringBuffer strBuf = new StringBuffer();
+
+        if (days > 0) {
+            if (days < 10) {
+                strBuf.append('0');
+            }
+            strBuf.append(days);
+            strBuf.append(':');
+        }
+
+        if (hours < 10) {
+            strBuf.append('0');
+        }
+        strBuf.append(hours);
+        strBuf.append(':');
+
+        if (minutes < 10) {
+            strBuf.append('0');
+        }
+        strBuf.append(minutes);
+        strBuf.append(':');
+
+        if (seconds < 10) {
+            strBuf.append('0');
+        }
+        strBuf.append(seconds);
+
+        return strBuf.toString();
+    }
+
+    /**
+     * Returns the color value (<code>{@link Color}</code>) for the given String value.<p> 
+     * 
+     * All parse errors are caught and the given default value is returned in this case.<p>
+     * 
+     * @param value the value to parse as color
+     * @param defaultValue the default value in case of parsing errors
+     * @param key a key to be included in the debug output in case of parse errors
+     * 
+     * @return the int value for the given parameter value String
+     */
+    public static Color getColorValue(String value, Color defaultValue, String key) {
+
+        Color result;
+        try {
+            char pre = value.charAt(0);
+            if (pre != '#') {
+                value = "#" + value;
+            }
+            result = Color.decode(value);
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_PARSE_COLOR_2, value, key));
+            }
+            result = defaultValue;
+        }
+        return result;
+    }
+
+    /**
+     * Returns the Integer (int) value for the given String value.<p> 
+     * 
+     * All parse errors are caught and the given default value is returned in this case.<p>
+     * 
+     * @param value the value to parse as int
+     * @param defaultValue the default value in case of parsing errors
+     * @param key a key to be included in the debug output in case of parse errors
+     * 
+     * @return the int value for the given parameter value String
+     */
+    public static int getIntValue(String value, int defaultValue, String key) {
+
+        int result;
+        try {
+            result = Integer.valueOf(value).intValue();
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_PARSE_INT_2, value, key));
+            }
+            result = defaultValue;
+        }
+        return result;
+    }
+
+    /**
+     * Returns <code>true</code> if the provided String is either <code>null</code>
+     * or the empty String <code>""</code>.<p> 
+     * 
+     * @param value the value to check
+     * @return true, if the provided value is null or the empty String, false otherwise
+     */
+    public static boolean isEmpty(String value) {
+
+        return (value == null) || (value.length() == 0);
+    }
+
+    /**
+     * Returns <code>true</code> if the provided String is either <code>null</code>
+     * or contains only white spaces.<p> 
+     * 
+     * @param value the value to check
+     * @return true, if the provided value is null or contains only white spaces, false otherwise
+     */
+    public static boolean isEmptyOrWhitespaceOnly(String value) {
+
+        return isEmpty(value) || (value.trim().length() == 0);
+    }
+
+    /**
+     * Returns <code>true</code> if the provided String is neither <code>null</code>
+     * nor the empty String <code>""</code>.<p> 
+     * 
+     * @param value the value to check
+     * @return true, if the provided value is not null and not the empty String, false otherwise
+     */
+    public static boolean isNotEmpty(String value) {
+
+        return (value != null) && (value.length() != 0);
+    }
+
+    /**
+     * Returns <code>true</code> if the provided String is neither <code>null</code>
+     * nor contains only white spaces.<p> 
+     * 
+     * @param value the value to check
+     * @return true, if the provided value is null or contains only white spaces, false otherwise
+     */
+    public static boolean isNotEmptyOrWhitespaceOnly(String value) {
+
+        return (value != null) && (value.trim().length() > 0);
+    }
+
+    /**
+     * Checks if the given class name is a valid Java class name.<p>
+     * 
+     * @param className the name to check
+     * @return true if the given class name is a valid Java class name
+     */
+    public static boolean isValidJavaClassName(String className) {
+
+        if (CmsStringUtil.isEmpty(className)) {
+            return false;
+        }
+        int length = className.length();
+        boolean nodot = true;
+        for (int i = 0; i < length; i++) {
+            char ch = className.charAt(i);
+            if (nodot) {
+                if (ch == '.') {
+                    return false;
+                } else if (Character.isJavaIdentifierStart(ch)) {
+                    nodot = false;
+                } else {
+                    return false;
+                }
+            } else {
+                if (ch == '.') {
+                    nodot = true;
+                } else if (Character.isJavaIdentifierPart(ch)) {
+                    nodot = false;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Applies white space padding to the left of the given String.<p>
+     * 
+     * @param input the input to pad left
+     * @param size the size of the padding
+     * 
+     * @return the input padded to the left
+     */
+    public static String padLeft(String input, int size) {
+
+        return (new PrintfFormat("%" + size + "s")).sprintf(input);
+    }
+
+    /**
+     * Applies white space padding to the right of the given String.<p>
+     * 
+     * @param input the input to pad right
+     * @param size the size of the padding
+     * 
+     * @return the input padded to the right
+     */
+    public static String padRight(String input, int size) {
+
+        return (new PrintfFormat("%-" + size + "s")).sprintf(input);
+    }
+
+    /**
+     * Splits a String into substrings along the provided char delimiter and returns
+     * the result as an Array of Substrings.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     *
+     * @return the Array of splitted Substrings
+     */
+    public static String[] splitAsArray(String source, char delimiter) {
+
+        List result = splitAsList(source, delimiter);
+        return (String[])result.toArray(new String[result.size()]);
+    }
+
+    /**
+     * Splits a String into substrings along the provided String delimiter and returns
+     * the result as an Array of Substrings.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     *
+     * @return the Array of splitted Substrings
+     */
+    public static String[] splitAsArray(String source, String delimiter) {
+
+        List result = splitAsList(source, delimiter);
+        return (String[])result.toArray(new String[result.size()]);
+    }
+
+    /**
+     * Splits a String into substrings along the provided char delimiter and returns
+     * the result as a List of Substrings.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     *
+     * @return the List of splitted Substrings
+     */
+    public static List splitAsList(String source, char delimiter) {
+
+        return splitAsList(source, delimiter, false);
+    }
+
+    /**
+     * Splits a String into substrings along the provided char delimiter and returns
+     * the result as a List of Substrings.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     * @param trim flag to indicate if leading and trailing whitespaces should be omitted
+     *
+     * @return the List of splitted Substrings
+     */
+    public static List splitAsList(String source, char delimiter, boolean trim) {
+
+        List result = new ArrayList();
+        int i = 0;
+        int l = source.length();
+        int n = source.indexOf(delimiter);
+        while (n != -1) {
+            // zero - length items are not seen as tokens at start or end
+            if ((i < n) || (i > 0) && (i < l)) {
+                result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
+            }
+            i = n + 1;
+            n = source.indexOf(delimiter, i);
+        }
+        // is there a non - empty String to cut from the tail? 
+        if (n < 0) {
+            n = source.length();
+        }
+        if (i < n) {
+            result.add(trim ? source.substring(i).trim() : source.substring(i));
+        }
+        return result;
+    }
+
+    /**
+     * Splits a String into substrings along the provided String delimiter and returns
+     * the result as List of Substrings.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     *
+     * @return the Array of splitted Substrings
+     */
+    public static List splitAsList(String source, String delimiter) {
+
+        return splitAsList(source, delimiter, false);
+    }
+
+    /**
+     * Splits a String into substrings along the provided String delimiter and returns
+     * the result as List of Substrings.<p>
+     * 
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     * @param trim flag to indicate if leading and trailing whitespaces should be omitted
+     * 
+     * @return the Array of splitted Substrings
+     */
+    public static List splitAsList(String source, String delimiter, boolean trim) {
+
+        int dl = delimiter.length();
+        if (dl == 1) {
+            // optimize for short strings
+            return splitAsList(source, delimiter.charAt(0), trim);
+        }
+
+        List result = new ArrayList();
+        int i = 0;
+        int l = source.length();
+        int n = source.indexOf(delimiter);
+        while (n != -1) {
+            // zero - length items are not seen as tokens at start or end:  ",," is one empty token but not three
+            if ((i < n) || (i > 0) && (i < l)) {
+                result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
+            }
+            i = n + dl;
+            n = source.indexOf(delimiter, i);
+        }
+        // is there a non - empty String to cut from the tail? 
+        if (n < 0) {
+            n = source.length();
+        }
+        if (i < n) {
+            result.add(trim ? source.substring(i).trim() : source.substring(i));
+        }
+        return result;
+    }
+
+    /**
+     * Replaces a set of <code>searchString</code> and <code>replaceString</code> pairs, 
+     * given by the <code>substitutions</code> Map parameter.<p>
+     * 
+     * @param source the constent which is scanned
+     * @param substitions the map of substitutions
+     * 
+     * @return the substituted String
+     * 
+     * @see #substitute(String, String, String)
+     */
+    public static String substitute(String source, Map substitions) {
+
+        String result = source;
+        Iterator it = substitions.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next().toString();
+            result = substitute(result, key, substitions.get(key).toString());
+        }
+        return result;
+    }
+
+    /**
+     * Substitutes <code>searchString</code> in the given source String with <code>replaceString</code>.<p>
+     * 
+     * This is a high-performance implementation which should be used as a replacement for 
+     * <code>{@link String#replaceAll(java.lang.String, java.lang.String)}</code> in case no
+     * regular expression evaluation is required.<p>
+     * 
+     * @param source the content which is scanned
+     * @param searchString the String which is searched in content
+     * @param replaceString the String which replaces <code>searchString</code>
+     * 
+     * @return the substituted String
+     */
+    public static String substitute(String source, String searchString, String replaceString) {
+
+        if (source == null) {
+            return null;
+        }
+
+        if (isEmpty(searchString)) {
+            return source;
+        }
+
+        if (replaceString == null) {
+            replaceString = "";
+        }
+        int len = source.length();
+        int sl = searchString.length();
+        int rl = replaceString.length();
+        int length;
+        if (sl == rl) {
+            length = len;
+        } else {
+            int c = 0;
+            int s = 0;
+            int e;
+            while ((e = source.indexOf(searchString, s)) != -1) {
+                c++;
+                s = e + sl;
+            }
+            if (c == 0) {
+                return source;
+            }
+            length = len - (c * (sl - rl));
+        }
+
+        int s = 0;
+        int e = source.indexOf(searchString, s);
+        if (e == -1) {
+            return source;
+        }
+        StringBuffer sb = new StringBuffer(length);
+        while (e != -1) {
+            sb.append(source.substring(s, e));
+            sb.append(replaceString);
+            s = e + sl;
+            e = source.indexOf(searchString, s);
+        }
+        e = len;
+        sb.append(source.substring(s, e));
+        return sb.toString();
+    }
+
+    /**
+     * Substitutes the OpenCms context path (e.g. /opencms/opencms/) in a HTML page with a 
+     * special variable so that the content also runs if the context path of the server changes.<p>
+     * 
+     * @param htmlContent the HTML to replace the context path in 
+     * @param context the context path of the server
+     * @return the HTML with the replaced context path
+     */
+    public static String substituteContextPath(String htmlContent, String context) {
+
+        if (m_contextSearch == null) {
+            m_contextSearch = "([^\\w/])" + context;
+            m_contextReplace = "$1" + CmsStringUtil.escapePattern(CmsStringUtil.MACRO_OPENCMS_CONTEXT) + "/";
+        }
+        return substitutePerl(htmlContent, m_contextSearch, m_contextReplace, "g");
+    }
+
+    /**
+     * Substitutes searchString in content with replaceItem.<p>
+     * 
+     * @param content the content which is scanned
+     * @param searchString the String which is searched in content
+     * @param replaceItem the new String which replaces searchString
+     * @param occurences must be a "g" if all occurences of searchString shall be replaced
+     * @return String the substituted String
+     */
+    public static String substitutePerl(String content, String searchString, String replaceItem, String occurences) {
+
+        String translationRule = "s#" + searchString + "#" + replaceItem + "#" + occurences;
+        Perl5Util perlUtil = new Perl5Util();
+        try {
+            return perlUtil.substitute(translationRule, content);
+        } catch (MalformedPerl5PatternException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, translationRule), e);
+            }
+        }
+        return content;
+    }
+
+    /**
+     * Returns the java String literal for the given String. <p>
+     *  
+     * This is the form of the String that had to be written into sourcecode 
+     * using the unicode escape sequence for special characters. <p> 
+     * 
+     * Example: "Ä" would be transformed to "\\u00C4".<p>
+     * 
+     * @param s a string that may contain non-ascii characters 
+     * 
+     * @return the java unicode escaped string Literal of the given input string
+     */
+    public static String toUnicodeLiteral(String s) {
+
+        StringBuffer result = new StringBuffer();
+        char[] carr = s.toCharArray();
+
+        String unicode;
+        for (int i = 0; i < carr.length; i++) {
+            result.append("\\u");
+            // append leading zeros
+            unicode = Integer.toHexString(carr[i]).toUpperCase();
+            for (int j = 4 - unicode.length(); j > 0; j--) {
+                result.append("0");
+            }
+            result.append(unicode);
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns a substring of string source, which is at most length characters long.<p>
+     * 
+     * @param source the string to trim
+     * @param length the maximum length of the string to be returned
+     * 
+     * @return a substring of string source, which is at most length characters long
+     */
+    public static String trimToSize(String source, int length) {
+
+        int end = 0;
+        int newend;
+        while (true) {
+            newend = source.indexOf(" ", end);
+            if (newend > length && end > 0) {
+                return source.substring(0, length - 3) + "...";
+            } else if (newend == -1) {
+                if (length < source.length()) {
+                    return source.substring(0, length - 3) + "...";
+                } else {
+                    return source;
+                }
+            } else {
+                end = newend + 1;
+            }
+        }
+    }
+
+    /**
+     * Validates a value against a regular expression.<p>
+     * 
+     * @param value the value to test
+     * @param regex the regular expression
+     * @param allowEmpty if an empty value is allowed
+     * 
+     * @return <code>true</code> if the value satisfies the validation
+     */
+    public static boolean validateRegex(String value, String regex, boolean allowEmpty) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            return allowEmpty;
+        }
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(value);
+        return matcher.matches();
+    }
+
+    /**
+     * Checks if the provided name is a valid resource name, that is contains only
+     * valid characters.<p>
+     *
+     * PLEASE NOTE:
+     * This logic is NOT yet used in the current release.<p>
+     *
+     * @param name the resource name to check
+     * @return true if the resource name is vaild, false otherwise 
+     */
+    public static boolean validateResourceName(String name) {
+
+        if (name == null) {
+            return false;
+        }
+        int l = name.length();
+        if (l == 0) {
+            return false;
+        }
+        if (name.length() != name.trim().length()) {
+            // leading or trainling white space are not allowed
+            return false;
+        }
+        for (int i = 0; i < l; i++) {
+            char ch = name.charAt(i);
+            switch (ch) {
+                case '/':
+                    return false;
+                case '\\':
+                    return false;
+                case ':':
+                    return false;
+                case '*':
+                    return false;
+                case '?':
+                    return false;
+                case '"':
+                    return false;
+                case '>':
+                    return false;
+                case '<':
+                    return false;
+                case '|':
+                    return false;
+                default:
+                    // ISO control chars are not allowed
+                    if (Character.isISOControl(ch)) {
+                        return false;
+                    }
+                    // chars not defined in unicode are not allowed
+                    if (!Character.isDefined(ch)) {
+                        return false;
+                    }
+            }
+        }
+
+        return true;
+    }
+}

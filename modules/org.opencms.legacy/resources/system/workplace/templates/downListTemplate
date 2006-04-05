@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+	<COLUMN_CUSTOMIZED>
+		<PROCESS>COLUMN_NAME_GALLERY</PROCESS> 
+		<PROCESS>COLUMN_TITLE_GALLERY</PROCESS> 
+	</COLUMN_CUSTOMIZED>
+	<COLUMN_NAME_GALLERY><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="label.name" /><![CDATA[</p></td>]]></COLUMN_NAME_GALLERY> 
+	<COLUMN_TITLE_GALLERY><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="label.title" /><![CDATA[</p></td>]]></COLUMN_TITLE_GALLERY> 
+	
+	<COLUMN_CUSTOMIZED_VALUE>
+		<PROCESS>COLUMN_NAME_GALLERY_VALUE</PROCESS> 
+		<PROCESS>COLUMN_TITEL_GALLERY_VALUE</PROCESS> 
+	</COLUMN_CUSTOMIZED_VALUE>
+	<COLUMN_NAME_GALLERY_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>output_class</PROCESS><![CDATA["><p class="einzug"><a href="javascript:updateFrame('body.admin_content',']]><METHOD name="getServletPath"></METHOD><![CDATA[system/workplace/action/old_explorer_files.html?filelist=]]><PROCESS>link_value</PROCESS><![CDATA[');updateFrame('body.admin_head','administration_head_downgalleries2.html?folder=]]><PROCESS>link_value</PROCESS><![CDATA[')" class="]]><PROCESS>output_class</PROCESS><![CDATA[">]]><PROCESS>name_value</PROCESS><![CDATA[</a></p></td>]]></COLUMN_NAME_GALLERY_VALUE> 
+	<COLUMN_TITEL_GALLERY_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>output_class</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>title_value</PROCESS><![CDATA[</p></td>]]></COLUMN_TITEL_GALLERY_VALUE>
+</WORKPLACE>

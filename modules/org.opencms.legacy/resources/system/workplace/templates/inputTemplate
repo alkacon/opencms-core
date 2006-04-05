@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WP_INPUTS>	
+	<inputfield><![CDATA[<input class="]]><PROCESS>class</PROCESS><![CDATA[" value="]]><PROCESS>value</PROCESS><![CDATA[" size=]]><PROCESS>size</PROCESS><![CDATA[ maxlength=]]><PROCESS>length</PROCESS><![CDATA[ name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA[" ]]><PROCESS>action</PROCESS>></inputfield>
+	<password><![CDATA[<input type ="password" class="]]><PROCESS>class</PROCESS><![CDATA[" size=]]><PROCESS>size</PROCESS><![CDATA[ maxlength=]]><PROCESS>length</PROCESS><![CDATA[ name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA["]]>></password>
+	<selectbox>
+		<start><![CDATA[<select ]]><PROCESS>class</PROCESS><![CDATA[name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA[" width=]]><PROCESS>width</PROCESS><![CDATA[ style="width:]]><PROCESS>width</PROCESS><![CDATA[px" onchange="]]><PROCESS>onchange</PROCESS><![CDATA[" size="]]><PROCESS>size</PROCESS><![CDATA[">]]></start>
+		<startdiv><![CDATA[<select ]]><PROCESS>class</PROCESS><![CDATA[name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA[" width=]]><PROCESS>width</PROCESS><![CDATA[ onchange="]]><PROCESS>onchange</PROCESS><![CDATA[" size="]]><PROCESS>size</PROCESS><![CDATA[">]]></startdiv>
+		<end><![CDATA[</select>]]></end>
+		<class>class=<PROCESS>classname</PROCESS><![CDATA[ ]]></class>
+		<option><![CDATA[<option value="]]><PROCESS>value</PROCESS><![CDATA[">]]><PROCESS>name</PROCESS></option>
+		<seloption><![CDATA[<option selected value="]]><PROCESS>value</PROCESS><![CDATA[">]]><PROCESS>name</PROCESS></seloption>
+	</selectbox>
+</WP_INPUTS>
+
+

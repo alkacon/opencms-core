@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="de">
+    <element name="text1">
+      <links/>
+      <content/>
+    </element>
+    <element name="text2">
+      <links/>
+      <content/>
+    </element>
+    <element name="text3">
+      <links/>
+      <content/>
+    </element>
+    <element name="text4">
+      <links/>
+      <content/>
+    </element>
+  </page>
+  <page language="en">
+    <element name="text1">
+      <links/>
+      <content><![CDATA[<H1>Global configuration options</H1>
+<P>Each templateone microsite needs a configuration folder 
+that provides the data to create an individual appearance.&nbsp;This folder is automatically copied 
+when creating a new microsite. For each microsite folder, the 
+property value "style_main_configpath" must point to the configuration 
+folder.&nbsp;This folder contains 4 XML content style configuration files.</P>
+<UL>
+  <LI><STRONG>configuration_common</STRONG>: Global templateone 
+  configuration options 
+  <UL>
+    <LI>set the navigation behaviour</LI><LI>set the default template version to display, 
+    accessible or classic</LI><LI>optional configuration options for a login page, 
+    texts for the "recommend page" and the "letter to the editor" 
+  function</LI></UL></LI><LI><STRONG>configuration_css</STRONG>: Defines the values 
+  for the CSS style sheet to modify 
+  <UL>
+    <LI>defines the different colors for each template 
+    item, e.g. borders, navigation colors, background</LI><LI>optional configuration of heading sizes and colors</LI><LI>set the background image for the left navigation</LI></UL></LI><LI><STRONG>configuration_links</STRONG>: Defines the links appearing 
+  in the top head area&nbsp;of the template.</LI><LI><STRONG>configuration_imprint</STRONG>: Information data to be used when clicking on the 
+  imprint link in the template foot.</LI></UL>
+<P>Have a look at possible layout styles by browsing the contents of the OpenCms 
+Modules demo folder or the Xml Content demo folder. Each microsite uses the same 
+template!</P>]]></content>
+    </element>
+    <element name="text2">
+      <links/>
+      <content><![CDATA[<H2>Properties</H2>
+<P>Other options for templateone are selectable by using properties on files or folders. These properties can be 
+set by using the "Properties" option of the file context menu in the Explorer 
+view of OpenCms. For files or folders using templateone, a customized property 
+dialog is provided. This dialog can be used to configure the following 
+items:</P>
+<UL>
+  <LI>set common properties like "Title", "Description", 
+  "Keywords"</LI><LI>manage navigation properties</LI><LI>define the image to use in the template head area</LI><LI>show editable items left below the navigation or in 
+  the right column</LI><LI>define the displayed&nbsp;list(s) of XML contents like news messages in the center or right 
+  area of the template</LI></UL>]]></content>
+    </element>
+    <element name="text3">
+      <links/>
+      <content><![CDATA[<H1>Using XML Contents</H1>
+<P>Templateone provides four XML content types that are usable out of the box. 
+Have a look at the OpenCms Modules demo pages to get an overview over their 
+capabilities.</P>
+<P>In order to use these contents, each microsite has to contain a "modules/" 
+subfolder with the correct substructure. When creating a new microsite, this 
+folder is automatically created.</P>]]></content>
+    </element>
+  </page>
+</pages>

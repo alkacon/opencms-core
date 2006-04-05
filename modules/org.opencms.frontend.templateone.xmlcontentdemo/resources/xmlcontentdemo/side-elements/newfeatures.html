@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="de">
+    <element name="text1">
+      <links/>
+      <content/>
+    </element>
+  </page>
+  <page language="en">
+    <element name="text1">
+      <links>
+        <link name="link2" type="A" internal="true">
+          <target><![CDATA[/sites/default/demopages/onlineform.html]]></target>
+        </link>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/sites/default/xmlcontentdemo/widgetdemo/list.jsp]]></target>
+        </link>
+        <link name="link1" type="A" internal="true">
+          <target><![CDATA[/sites/default/xmlcontentdemo/nestedcontent/list.jsp]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<div class="element2"><strong>XML content Highlights</strong> <p>Among the many uses for the OpenCms 6.0 XML content are:</p><p>Automatic editor generation with multiple widgets. Check out the <A href="${link0}" target=_self>Widget Demo</a> to see all available widgets in action.</p><p>It's possible to "nest" OpenCms XML content, i.e. one XML content definition can include another. See the <A href="${link1}" target=_self>Nested XML Content</a> example.</p><p>XML content can be used for RAD in OpenCms. See the <A 
+href="${link2}" target=_self>Email Form 
+Editor</A> example.<br ></p><p>OpenCms XML contents are defined by a W3C XML schema that can contain
+additional information for custom content validation, editor layout,
+default values and property mappings.<br ></p></div>]]></content>
+    </element>
+  </page>
+</pages>

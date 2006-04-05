@@ -1,0 +1,33 @@
+<div class="element">
+
+<h3><cms:contentshow element="Title" /></h3>
+
+<cms:contentcheck ifexists="Description">
+<p><cms:contentshow element="Description" /></p>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="Logo">
+<img src="<cms:link><cms:contentshow element="Logo" /></cms:link>" align="right" border="0">
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="Contact">
+<h3>Contact information:</h3>
+</cms:contentcheck>
+<cms:contentloop element="Contact">
+<p>
+<cms:contentshow element="Company" /><br>
+<cms:contentloop element="Name"><cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Street"><cms:contentshow /><br></cms:contentloop>
+<cms:contentcheck ifexists="ZIP"><cms:contentshow element="ZIP" /></cms:contentcheck>
+<cms:contentcheck ifexists="City"><cms:contentshow element="City" /></cms:contentcheck>
+<cms:contentcheck ifexistsone="ZIP,City"><br></cms:contentcheck>
+<cms:contentloop element="Country"><cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Phone">Phone: <cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Fax">Fax: <cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Email">Email: <a href="mailto:<cms:contentshow />"><cms:contentshow /></a><br></cms:contentloop>
+<cms:contentloop element="ContactData"><cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Link"><a href="<cms:contentshow />"><cms:contentshow /></a><br></cms:contentloop>
+</p>
+</cms:contentloop>
+
+</div>

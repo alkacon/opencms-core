@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE name="file">
+<![CDATA[
+<HTML>
+
+    <script language=JavaScript>
+    <!--
+    top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.lock"/><![CDATA[';
+    //-->
+    </script>
+
+    <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+    <title>OpenCms</title>
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+    </HEAD>
+    <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+    <!-- table to center the page-->
+    <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+    <tr><td align=middle valign=center>
+
+    <!-- table to set up the dialog box-->
+    <form id=LOCK name=LOCK>
+
+    ]]><MESSAGEBOX title="messagebox.title.lock" message1="messagebox.message1.lock" message2="messagebox.message2.lock" button1="button.ok" button2="button.cancel" link1="lock.html?lock=true" link2="explorer_files.html"><PROCESS>FILENAME</PROCESS></MESSAGEBOX><![CDATA[
+    </td></tr>
+    </table>
+
+    </BODY>
+    </html>
+    ]]>
+</TEMPLATE>
+
+<TEMPLATE name="folder">
+<![CDATA[
+<HTML>
+
+    <script language=JavaScript>
+    <!--
+    top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.lock"/><![CDATA[';
+    //-->
+    </script>
+
+    <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+    <title>OpenCms</title>
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+    </HEAD>
+    <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+    <!-- table to center the page-->
+    <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+    <tr><td align=middle valign=center>
+
+    <!-- table to set up the dialog box-->
+    <form id=LOCK name=LOCK>
+    ]]><MESSAGEBOX title="messagebox.title.lockfolder" message1="messagebox.message1.lockfolder" message2="messagebox.message2.lockfolder" button1="button.ok" button2="button.cancel" link1="lock.html?lock=true" link2="explorer_files.html"><PROCESS>FILENAME</PROCESS></MESSAGEBOX><![CDATA[
+    </td></tr>
+    </table>
+
+    </BODY>
+    </html>
+    ]]>
+</TEMPLATE>
+
+
+<TEMPLATE name="erroraccessdenied">
+<ERRORPAGE title="error.title.lock" message="error.message.lock" reason="error.reason.lock" suggestion="error.suggestion.lock" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
+</TEMPLATE>
+
+<TEMPLATE name="error">
+<ERRORPAGE title="error.title.lock" message="error.message.lock" reason="error.reason.lock" suggestion="error.suggestion.lock" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
+</TEMPLATE>
+
+</WORKPLACE>

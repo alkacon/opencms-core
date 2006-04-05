@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Modcastests
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test9.xsd">
+  
+	<Modcastest language="en">
+		<Test><![CDATA[Another Test]]></Test>
+		<Cascade>
+			<Test><![CDATA[Test]]></Test>
+			<Title><![CDATA[This is just a modification test]]></Title>
+			<Toast><![CDATA[Toast]]></Toast>
+		</Cascade>
+		<Toast><![CDATA[Another Toast]]></Toast>
+	</Modcastest>
+
+	<Modcastest language="de">
+		<Test><![CDATA[Another Test]]></Test>
+		<Cascade>
+			<Test><![CDATA[Test]]></Test>
+			<Title><![CDATA[This is just a modification test]]></Title>
+			<Toast><![CDATA[Toast]]></Toast>
+		</Cascade>
+		<Toast><![CDATA[Another Toast]]></Toast>
+	</Modcastest>
+
+</Modcastests>

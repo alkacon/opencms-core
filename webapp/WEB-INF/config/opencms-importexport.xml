@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-importexport.dtd">
+
+<opencms>
+	<importexport>
+		<importexporthandlers>
+			<importexporthandler class="com.opencms.legacy.CmsCosImportExportHandler"/>
+			<importexporthandler class="org.opencms.importexport.CmsVfsImportExportHandler"/>
+			<importexporthandler class="org.opencms.module.CmsModuleImportExportHandler"/>
+		</importexporthandlers>
+		<import>
+			<overwrite>true</overwrite>
+			<convert>true</convert>
+			<importversions>
+				<importversion class="com.opencms.legacy.CmsImportVersion1"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion2"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion3"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion4"/>
+			</importversions>
+			<immutables>
+				<resource uri="/system/"/>
+				<resource uri="/system/bodies/"/>
+				<resource uri="/system/galleries/"/>
+				<resource uri="/system/galleries/download/"/>
+				<resource uri="/system/galleries/externallinks/"/>
+				<resource uri="/system/galleries/htmlgalleries/"/>
+				<resource uri="/system/galleries/pics/"/>
+				<resource uri="/system/login/"/>
+				<resource uri="/system/modules/"/>
+				<resource uri="/system/shared/"/>
+				<resource uri="/system/workplace/"/>
+				<resource uri="/system/workplace/action/"/>
+				<resource uri="/system/workplace/administration/"/>
+				<resource uri="/system/workplace/admin/"/>
+				<resource uri="/system/workplace/help/"/>
+				<resource uri="/system/workplace/locales/"/>
+				<resource uri="/system/workplace/resources/"/>
+				<resource uri="/system/workplace/restypes/"/>
+				<resource uri="/system/workplace/scripts/"/>
+				<resource uri="/system/workplace/templates/"/>
+				<resource uri="/system/workplace/views/"/>
+				<resource uri="/channels/"/>
+				<resource uri="/sites/"/>
+			</immutables>
+			<principaltranslations/>
+			<ignoredproperties/>
+		</import>
+	</importexport>
+	<staticexport enabled="true">
+		<staticexporthandler>org.opencms.staticexport.CmsOnDemandStaticExportHandler</staticexporthandler>
+		<exportpath>export</exportpath>
+		<defaultpropertyvalue>false</defaultpropertyvalue>
+		<defaultsuffixes>
+			<suffix key=".jpg"/>
+			<suffix key=".gif"/>
+			<suffix key=".png"/>
+			<suffix key=".doc"/>
+			<suffix key=".xls"/>
+			<suffix key=".ppt"/>
+			<suffix key=".pdf"/>
+			<suffix key=".txt"/>
+			<suffix key=".css"/>
+			<suffix key=".zip"/>
+			<suffix key=".swf"/>
+		</defaultsuffixes>
+		<rendersettings>
+			<rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
+			<vfs-prefix>${CONTEXT_NAME}${SERVLET_NAME}</vfs-prefix>
+			<userelativelinks>false</userelativelinks>			
+			<exporturl>http://127.0.0.1:8080${CONTEXT_NAME}/handle404</exporturl>
+			<plainoptimization>true</plainoptimization>
+			<testresource uri="/system/shared/page.dtd"/>
+			<resourcestorender>
+				<regex>/sites/.*</regex>
+				<regex>/system/galleries/.*</regex>
+				<regex>/system/modules/.*/resources/.*</regex>
+			</resourcestorender>
+		</rendersettings>
+	</staticexport>
+</opencms>

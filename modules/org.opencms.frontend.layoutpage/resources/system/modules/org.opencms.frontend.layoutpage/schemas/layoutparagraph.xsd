@@ -1,0 +1,36 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.layoutpage/schemas/layoutimage.xsd"/>
+		
+	<xsd:element name="LayoutPageParagraphs" type="OpenCmsLayoutPageParagraphs"/>
+	
+	<xsd:complexType name="OpenCmsLayoutPageParagraphs">
+		<xsd:sequence>
+			<xsd:element name="LayoutPageParagraph" type="OpenCmsLayoutPageParagraph" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsLayoutPageParagraph">
+		<xsd:sequence>
+			<xsd:element name="Headline" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Text" type="OpenCmsHtml" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Image" type="OpenCmsLayoutPageImage" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.layoutpage.workplace"/>
+			<preview uri="${previewtempfile}" />
+			<mappings/>
+			<layouts>
+				<layout element="Text" widget="HtmlWidget" configuration="source,link,anchor" />
+			</layouts>
+			<validationrules/>
+			<defaults/>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

@@ -1,0 +1,4 @@
+#
+# Script: Create the default "Offline" project
+#
+createDefaultProject "Offline" "The Offline Project"

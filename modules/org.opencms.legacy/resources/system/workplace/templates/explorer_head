@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<STARTUP></STARTUP>
+<TEMPLATE>
+<![CDATA[
+<html>
+
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+    var filelist="]]><PROCESS>FILELIST</PROCESS><![CDATA[";
+    var previouslist="]]><PROCESS>PREVIOUSLIST</PROCESS><![CDATA[";
+
+    <!-- URL for pictures -->
+    var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
+
+</SCRIPT>
+
+<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+]]><PROCESS>STARTUP</PROCESS><![CDATA[
+</SCRIPT>
+
+</head>
+
+<body bgcolor="#C0C0C0" topmargin="0" marginheight="0" >
+
+<table cellspacing=0 cellpadding=0 border=0>
+<form name=urlform onSubmit='javascript:top.openurl();return false;'>
+    <tr valign=center>
+        ]]><PROCESS>PREVIOUS</PROCESS><![CDATA[
+        ]]><PROCESS>PARENT</PROCESS><![CDATA[
+        ]]><PROCESS>NEW</PROCESS><![CDATA[
+        <td class=menu width=30px nowrap align=right>&nbsp;</td>
+        <td class=menubold nowrap align=right valign=middle><IMG border=0  src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" width=16 height=16></td>
+        <td class=menubold nowrap align=right valign=middle><p class=einzug>]]><LABEL value="input.adress" /><![CDATA[:</td>
+        <td class=menu nowrap align=left valign=middle><p class=einzug>]]><INPUTFIELD name="url" class="textfeld2" size="50" length="255" method="setValue" /><![CDATA[</td>
+        <!--<td class=menu nowrap align=left valign=middle><p class=einzug><input size=50 class="textfeld2" value="/" name=URL ID=URL></td>-->
+    </tr>
+
+</table>
+</form>
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="viewfile">
+<![CDATA[
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT>
+    <!-- URL for pictures -->
+    var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>
+</head>
+<body bgcolor="#E0E0E0" >
+
+<table cellspacing=0 cellpadding=0 border=0>
+]]><PROCESS>BACKBUTTON</PROCESS><![CDATA[
+</table>
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+<BACKBUTTON>
+<BUTTON href="javascript:updateFrame('body.explorer_content.explorer_head','explorer_head.html');updateFrame('body.explorer_content.explorer_files','explorer_files.html')" name="bt_back" action="" alt="back"/>
+</BACKBUTTON>
+
+<PARENT_DISABLED>
+<![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="resourcesUri">bt_up_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.parent"  />"<![CDATA[" name="bt_up" border=0 width=32 height=32></td>]]>
+</PARENT_DISABLED>
+
+<PARENT_ENABLED>
+<![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files.html?filelist='+filelist);updateFrame('body.explorer_content.explorer_head','explorer_head.html?filelist='+filelist);updateFrame('body.explorer_tree','explorer_tree.html?filelist='+filelist)" name="bt_up" action="" alt="parent"/><![CDATA[</td>]]>
+</PARENT_ENABLED>
+
+<PREVIOUS_DISABLED>
+<![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="resourcesUri">bt_back_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.back" />"<![CDATA[" name="bt_up" border=0 width=32 height=32></td>]]>
+</PREVIOUS_DISABLED>
+
+<PREVIOUS_ENABLED>
+<![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files.html?filelist='+previouslist);updateFrame('body.explorer_content.explorer_head','explorer_head.html?filelist='+previouslist);updateFrame('body.explorer_tree','explorer_tree.html?filelist='+previouslist)" name="bt_back" action="" alt="back"/><![CDATA[</td>]]>
+</PREVIOUS_ENABLED>
+
+<NEW_DISABLED>
+<![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="resourcesUri">bt_new_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.new" />"<![CDATA[" name="bt_new" border=0 width=32 height=32></a></td>]]>
+</NEW_DISABLED>
+
+<NEW_ENABLED>
+<![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files_new.html')" name="bt_new" action="" alt="new"/><![CDATA[</td>]]>
+</NEW_ENABLED>
+
+
+<STARTUP_FOLDER>
+<![CDATA[
+updateFrame('body.explorer_content.explorer_files','explorer_files.html?filelist=]]><PROCESS>FILELIST</PROCESS><![CDATA[');
+updateFrame('body.explorer_tree','explorer_tree.html?filelist=]]><PROCESS>FILELIST</PROCESS><![CDATA[');
+updateFrame('body.explorer_content.explorer_head','explorer_head.html?filelist=]]><PROCESS>FILELIST</PROCESS><![CDATA[');
+]]>
+</STARTUP_FOLDER>
+
+<STARTUP_FILE>
+<![CDATA[
+updateFrame('body.explorer_content.explorer_files',']]><PROCESS>LINK_VALUE</PROCESS><![CDATA[');
+updateFrame('body.explorer_content.explorer_head','explorer_head.html?viewfile=]]><PROCESS>LINK_VALUE</PROCESS><![CDATA[');
+]]>
+</STARTUP_FILE>
+
+
+
+</WORKPLACE>
+
+
+
+

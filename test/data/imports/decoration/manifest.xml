@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.2.0</opencms_version>
+		<createdate>Thu, 10 Nov 2005 10:02:30 GMT</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<files>
+		<file>
+			<destination>decoration</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 09 Nov 2005 11:45:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Nov 2005 11:45:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[HTML Decoration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>decoration/configuration.xml</source>
+			<destination>decoration/configuration.xml</destination>
+			<type>xmlcontent</type>
+			<uuidresource>540a9238-5116-11da-9936-11c9c0330e35</uuidresource>
+			<datelastmodified>Wed, 09 Nov 2005 11:46:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Nov 2005 11:45:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Decoration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>decoration/decoration.xsd</source>
+			<destination>decoration/decoration.xsd</destination>
+			<type>plain</type>
+			<uuidresource>5420160e-5116-11da-9936-11c9c0330e35</uuidresource>
+			<datelastmodified>Tue, 08 Nov 2005 15:49:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Nov 2005 11:45:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schemadefinition for decoration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>decoration/decorationconfiguration.xsd</source>
+			<destination>decoration/decorationconfiguration.xsd</destination>
+			<type>plain</type>
+			<uuidresource>543327e3-5116-11da-9936-11c9c0330e35</uuidresource>
+			<datelastmodified>Wed, 09 Nov 2005 11:46:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Nov 2005 11:45:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schemadefinition for property check]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>decoration/decorations.csv</source>
+			<destination>decoration/decorations.csv</destination>
+			<type>plain</type>
+			<uuidresource>0db71da9-51d1-11da-8b9d-11c9c0330e35</uuidresource>
+			<datelastmodified>Thu, 10 Nov 2005 10:01:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Nov 2005 10:02:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[decorations_en]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>decoration/decorations_de.csv</source>
+			<destination>decoration/decorations_de.csv</destination>
+			<type>plain</type>
+			<uuidresource>574e3d48-5136-11da-9936-11c9c0330e35</uuidresource>
+			<datelastmodified>Wed, 09 Nov 2005 15:34:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Nov 2005 15:34:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[decorations_de]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>decoration/decorations_en.csv</source>
+			<destination>decoration/decorations_en.csv</destination>
+			<type>plain</type>
+			<uuidresource>5443c9b8-5116-11da-9936-11c9c0330e35</uuidresource>
+			<datelastmodified>Wed, 09 Nov 2005 10:16:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Nov 2005 11:45:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[decorations_en]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

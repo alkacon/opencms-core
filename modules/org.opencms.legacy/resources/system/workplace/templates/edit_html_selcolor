@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workplace>
+<template>
+<![CDATA[
+<!-- This document displays a color selector and returns the selected value to           -->
+<!-- the document invoking the color selector 											 -->
+<!-- The selected color is stored in a Variable called SelColor of the patent Document,  -->
+<!-- a flag ColorSelected indicates that the color selector is closed with the OK button -->
+<!-- NOTE: It is REQUIRED that the parent document has this two variables !!!!           -->
+
+<HTML>
+<HEAD>
+<TITLE>Select Color</TITLE>
+
+<!-- Style information -->
+
+<STYLE TYPE="text/css">
+ BODY   {margin-left:10; font-family:Verdana; font-size:12; background:menu}
+ BUTTON {width:7em}
+ P      {text-align:center}
+ TABLE  {cursor:hand}
+</STYLE>
+
+
+<SCRIPT LANGUAGE=JavaScript>
+<!-- Definittion of required variables and constants -->
+
+  var SelColor = 0;
+  var convert = new makeArray('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+  var LEFTCELL_XOFFSET =3;
+  var LEFTCELL_YOFFSET =4;
+  var LEFTCELL_XSIZE=20;
+  var LEFTCELL_YSIZE=20;
+  var LEFT_XCELLMAX =18;
+  var LEFT_YCELLMAX =12;
+  var RIGHTCELL_XOFFSET =375;
+  var RIGHTCELL_YOFFSET =4;
+  var RIGHTCELL_XSIZE=20;
+  var RIGHTCELL_YSIZE=16;
+  var RIGHT_XCELLMAX =4;
+  var RIGHT_YCELLMAX =15;
+
+  var cell_x =0;
+  var cell_y =0;
+  
+  var red=0;
+  var blue=0;
+  var green=0;
+
+<!-- The main routine to calculate the color value from the displayed color selection gif. -->
+<!-- This algortihem is based on the T-Online Counter Wizzard Color Selector               -->
+   
+  str = location.search;
+  if (str == "") 
+   {
+     document.write("<P>]]><LABEL value="message.nocolor"/><![CDATA[");
+     document.write("<P><table border=0 width=100 height=20 ><tr><td><td></tr></table>");
+   }
+
+  else {
+   commaloc = str.indexOf(",");
+   
+    xpos= str.substring(1, commaloc);
+    ypos= str.substring(commaloc+1, str.length);
+    
+    if ((xpos >= LEFTCELL_XOFFSET) &&
+        (ypos >= LEFTCELL_YOFFSET) &&
+        ((xpos-LEFTCELL_XOFFSET)/(LEFTCELL_XSIZE) <= LEFT_XCELLMAX) &&
+        ((ypos-LEFTCELL_YOFFSET)/(LEFTCELL_YSIZE) <= LEFT_YCELLMAX) )
+        {
+         cell_x=parseInt((xpos-LEFTCELL_XOFFSET)/(LEFTCELL_XSIZE));
+         cell_y=parseInt((ypos-LEFTCELL_YOFFSET)/(LEFTCELL_YSIZE));
+         red =(51*cell_y) % 306;
+         blue=(51*cell_x) % 306;
+         green = (153*(parseInt((51*cell_y)/306)))+(51*(parseInt((51*cell_x)/306)));
+         
+         SelColor="#"+returnHex(red)+returnHex(green)+returnHex(blue);
+         document.write("<P>]]><LABEL value="input.colorcode"/><![CDATA[ " + SelColor);
+         document.write("<P><table border=0 width=100 height=20 bgcolor="+SelColor+"><tr><td><td></tr></table>")
+        }
+    else if ((xpos >= RIGHTCELL_XOFFSET) &&
+            (ypos >= RIGHTCELL_YOFFSET) &&
+            ((xpos-RIGHTCELL_XOFFSET)/(RIGHTCELL_XSIZE) <= RIGHT_XCELLMAX) &&
+            ((ypos-RIGHTCELL_YOFFSET)/(RIGHTCELL_YSIZE) <= RIGHT_YCELLMAX) )
+         {
+         cell_x=parseInt((xpos-RIGHTCELL_XOFFSET)/(RIGHTCELL_XSIZE));
+         cell_y=parseInt((ypos-RIGHTCELL_YOFFSET)/(RIGHTCELL_YSIZE));
+         if ((cell_x==0) || (cell_x==3))
+          {
+           red=(17+17*cell_y);
+          }
+         else red=0;
+         if ((cell_x==1) || (cell_x==3))
+          {
+           green=(17+17*cell_y);
+          }
+         else green=0;
+         if ((cell_x==2) || (cell_x==3))
+          {
+           blue=(17+17*cell_y);
+          }
+         else blue=0;
+         SelColor="#"+returnHex(red)+returnHex(green)+returnHex(blue);
+         document.write("<P>]]><LABEL value="input.colorcode"/><![CDATA[" + SelColor);
+         document.write("<P><table border=0 width=100 height=20 bgcolor="+SelColor+"><tr><td><td></tr></table>")
+         }   
+    else 
+     {
+      document.write("<P>]]><LABEL value="message.nocolor"/><![CDATA[");
+      document.write("<P><table border=0 width=100 height=20 ><tr><td><td></tr></table>");
+    }
+    
+}
+
+<!-- Initalizes a data array needed for the decimal -> Hex conversion --> 
+ function makeArray()
+  { 
+     for (i = 0; i<makeArray.arguments.length; i++)
+     this[i] = makeArray.arguments[i];
+  }
+
+ var convert = new makeArray('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+
+<!-- This function converts a decimal value (number) into a Hex value. This conversion     -->
+<!-- is needed because colors in HTML documents are defined by three two-digit hex values. -->
+ function returnHex(number)
+  {
+    var base=16;
+    var ouput =0;
+    if (number < base) 
+     {
+      output = "0"+convert[number];  
+      return output;
+     }
+    else 
+    {
+      var MSD = '' + Math.floor(number / base);
+      var LSD = number - MSD*base;
+      if (MSD > base)
+       {
+         output = returnHex(MSD,base) + convert[LSD];
+       }
+      else 
+       {
+         var output = convert[MSD] + convert[LSD];   
+       }
+      return output;
+    }
+  }
+
+
+
+</script>
+
+<!-- When the OK button is pressed, the actual color value is stored in the SelColor variable of -->
+<!-- the parent document. The ColorSelected flag is set to 1.                                    -->
+
+<SCRIPT LANGUAGE=JavaScript FOR=Ok EVENT=onclick>
+  window.returnValue = SelColor;
+  opener.SelColor=SelColor;
+  opener.ColorSelected=1;
+  window.close();
+</SCRIPT>
+
+<!-- Body of the Documant. A Color Selection is displayed as an image map, when clicked on it -->
+<!-- the document is reloaded and the mouse position is submitted as additional parameters.   -->
+<!-- Based on the mouse position, the actual color value can be calculated.                   -->
+
+<BODY>
+<table align=center> 
+<tr>
+<td>
+<A HREF="edit_html_selcolor.html"><IMG SRC="]]><METHOD name="resourcesUri">colortable.gif</METHOD><![CDATA[" BORDER=0 ISMAP></A>
+</td>
+</tr>
+</table>
+
+<P>
+<BUTTON ID=Ok TYPE=SUBMIT>]]><LABEL value="button.ok"/><![CDATA[</BUTTON>
+<BUTTON ONCLICK="window.close();">]]><LABEL value="button.cancel"/><![CDATA[</BUTTON>
+
+</BODY>
+</HTML>
+]]>
+</template>
+</workplace>

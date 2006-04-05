@@ -1,0 +1,124 @@
+<%@ page session="false" import="org.opencms.frontend.templateone.modules.*, org.opencms.util.*, java.util.*" %><%--
+--%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
+--%><%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><%--
+--%><%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %><%
+
+CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
+
+cms.include("../elements/seturi.jsp");
+if (cms.isUriChanged()) {
+	pageContext.setAttribute("detailfile", cms.getOriginalUri());
+} else {
+	pageContext.setAttribute("detailfile", cms.getRequestContext().getUri());
+}
+
+// get currently active locale to initialize message bundle
+String locale = cms.getRequestContext().getLocale().toString();
+pageContext.setAttribute("locale", locale);
+
+String targetAttr = "";
+String description = "";
+String link = "";
+boolean newWin = false;
+
+%><fmt:setLocale value="${locale}" /><%--
+--%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
+
+--%>
+<cms:include property="template" element="head" />
+<div class="element">
+
+<cms:contentload collector="singleFile" param="${pageContext.detailfile}" editable="true">
+
+<%-- first generate variables holding images --%>
+<c:set var="firstimage" value="" />
+<c:set var="nextimages" value="" />
+<cms:contentcheck ifexists="Image">
+<c:set var="count" value="1" />
+<cms:contentloop element="Image">
+	<c:if test="${count == 1}">
+		<c:set var="firstimage"><img src="<cms:link><cms:contentshow element="Image" /></cms:link>" border="0" alt="<cms:contentshow element="Description" />" title="<cms:contentshow element="Description" />" align="right" hspace="5"></c:set>
+	</c:if>
+	<c:if test="${count > 1}">
+		<c:set var="nextimages"><c:out value="${nextimages}" escapeXml="false" /><p><img src="<cms:link><cms:contentshow element="Image" /></cms:link>" border="0" alt="<cms:contentshow element="Description" />" title="<cms:contentshow element="Description" />"><br clear="all"><small><cms:contentshow element="Description" /></small></p></c:set>
+	</c:if>
+	<c:set var="count" value="${count + 1}" />
+</cms:contentloop>
+</cms:contentcheck>
+
+<h1><cms:contentshow element="Title" /></h1>
+
+<%-- create a date object from date value --%>
+<c:set var="dateString">
+	<cms:contentshow element="Date" />
+</c:set><%
+
+try {
+	long dateLong = (new Long((String)pageContext.getAttribute("dateString"))).longValue();
+	Date date = new Date(dateLong);
+	pageContext.setAttribute("date", date);
+} catch (Exception e) {}
+
+%>
+
+<p>
+<cms:contentcheck ifexists="SubTitle"><span style="font-weight: bold;"><cms:contentshow element="SubTitle" /></span><br></cms:contentcheck>
+<small><fmt:formatDate value="${date}" dateStyle="long" />; <cms:contentshow element="Author" /> <cms:contentcheck ifexists="AuthorMail">(<a href="mailto:<cms:contentshow element="AuthorMail" />"><cms:contentshow element="AuthorMail" /></a>)</cms:contentcheck></small></p>
+
+<%-- show news text --%>
+<p><c:out value="${firstimage}" escapeXml="false" />
+<cms:contentshow element="Text" />
+</p>
+
+<table border="0">
+<%-- show contact --%>
+<cms:contentcheck ifexists="Contact">
+<tr>
+<td valign="top" class="nowrap"><b><fmt:message key="newsarticle.contact" /></b></td><td valign="top">
+<cms:contentshow element="Contact" />
+</td></tr>
+</cms:contentcheck>
+
+<%-- show attachments --%>
+<cms:contentcheck ifexists="Attachment">
+<tr>
+<td valign="top" class="nowrap"><b><fmt:message key="newsarticle.attachments" /></b></td><td valign="top"><ul>
+<cms:contentloop element="Attachment">
+<li><a href="<cms:link><cms:contentshow element="File" /></cms:link>" target="_blank" title="<cms:contentshow element="Description" />"><cms:contentshow element="Description" /></a></li>
+</cms:contentloop>
+</ul></td>
+</tr>
+</cms:contentcheck>
+
+<c:if test="${nextimages != ''}">
+<tr><td colspan="2">
+<c:out value="${nextimages}" escapeXml="false" />
+</td></tr>
+</c:if>
+
+<%-- show links --%>
+<cms:contentcheck ifexistsone="ExternalLink,InternalLink">
+<tr>
+<td valign="top" class="nowrap"><b><fmt:message key="newsarticle.links" /></b></td><td valign="top">
+
+<%@ include file="../elements/detail-element-internallink.txt" %>
+
+<%@ include file="../elements/detail-element-externallink.txt" %>
+
+</td>
+</tr>
+</cms:contentcheck>
+
+<% if (cms.isUriChanged()) { %>
+<tr>
+	<td colspan="2">&nbsp;<br><form action="<cms:link><c:out value="${param.uri}" /></cms:link>" style="margin: 0; padding: 0"><input class="formbutton" type="submit" value="<fmt:message key="modules.button.back" />"></form></td>
+</tr>
+<% } %>
+</table>
+
+</cms:contentload>
+
+</div>
+
+<cms:include property="template" element="foot" /><%--
+--%></fmt:bundle>

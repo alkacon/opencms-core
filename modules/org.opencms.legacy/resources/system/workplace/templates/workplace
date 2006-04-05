@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+<title>]]><LABEL value="label.wptitle" /><![CDATA[ ]]><METHOD name="userName" /><![CDATA[</title>
+<!-- Beginn Styles und Scripte -->
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<!-- Ende Styles und Scripte -->
+</head>
+
+<!-- Beginn Aufbau der Frames des gesamten Systems -->
+<frameset rows="40,*,32" border=0 frameborder=0 framespacing=0>
+    <frame name="head" src="head.html" marginwidth=1 marginheight=3 leftmargin=1 topmargin=3 noresize scrolling=no>
+    <frame name="body" src="start.html" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 noresize scrolling=no>
+    <frame name="foot" src="foot.html" marginwidth=1 marginheight=5 leftmargin=1 topmargin=0 noresize scrolling=no>
+</frameset>
+<!-- Ende Aufbau der Frames des gesamten Systems -->
+
+<!-- Beginn Aufbau Inhalt fuer Browser ohne Frameversion -->
+<body>
+<p><img src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA[" border=0 alt="opencms">
+<p>Leider unterstuetzt Ihr Browser keine Frames.
+<p>Wir achten stets darauf, daß in diesem Produkt die neueste Technik verwendet wird.
+<p>Bitte laden Sie sich die aktuelle Version von
+<a href="www.netscape.com">Netscape</a> oder
+<a href="www.microsoft.com">MS Internet Explorer</a> runter.
+</body>
+<!-- Beginn Aufbau Inhalt fuer Browser ohne Frameversion -->
+
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>

@@ -1,0 +1,409 @@
+<!-- 
+# The root configuration node is called <opencms> for all OpenCms configurations.
+-->
+<!ELEMENT opencms (system)>
+
+<!--
+# <system> configuration:
+#
+# This node contains various core runtime options for OpenCms.
+-->
+<!ELEMENT system (
+	internationalization,
+	mail,
+	scheduler,
+	versionhistory,
+	resourceinit?,
+	requesthandlers?,
+	passwordhandler,
+	loginmanager?,
+	loginmessage?,
+	sites,
+	runtimeproperties?,
+	runtimeclasses,
+	defaultusers,
+	defaultcontentencoding,
+	memorymonitor?,
+	flexcache,
+	http-authentication,
+	resultcache,
+	content-notification?)>
+
+<!--
+# Version history settings.
+# The OpenCms VFS keeps a version history for old versions of files.
+# This is done as a binary 1:1 copy of the original file (i.e. no "diff").
+# Because of this the database would grow very large if unlimited versions
+# would be stored. The version history is enabled by default. You can
+# enable / disable it with the "enabled" attribute. The "count" attribute
+# controls the number of binary copies that are kept in the database per individual file. 
+# If a file has more versions, the oldest binary content is deleted (you can not re-create this 
+# version anymore). However, the basic information about the old version (i.e. who 
+# did the publish etc.) is still kept in the database.
+-->
+<!ELEMENT versionhistory EMPTY>
+<!ATTLIST versionhistory enabled (TRUE|true|FALSE|false) #REQUIRED count CDATA #REQUIRED>
+
+<!ELEMENT internationalization (localehandler, localesconfigured, localesdefault)>
+
+<!ELEMENT localehandler EMPTY>
+<!ATTLIST localehandler class CDATA #REQUIRED>
+
+<!ELEMENT localesconfigured (locale+)>
+<!ELEMENT localesdefault (locale+)>
+
+<!ELEMENT locale (#PCDATA)>
+
+<!ELEMENT mail (mailfrom, mailhost+)>
+<!ELEMENT mailfrom (#PCDATA)>
+<!ELEMENT mailhost EMPTY>
+<!ATTLIST mailhost 
+	name CDATA #REQUIRED
+	order CDATA #IMPLIED
+	protocol CDATA #IMPLIED
+	user CDATA  #IMPLIED
+	password CDATA #IMPLIED>
+
+<!ELEMENT resourceinit (resourceinithandler*)>
+<!ELEMENT resourceinithandler EMPTY>
+<!ATTLIST resourceinithandler class CDATA #REQUIRED>
+
+<!--
+# Request handlers:
+# Request handlers are used for special requests that should NOT be mapped to a VFS resource.
+# See the JavaDoc of interface org.opencms.main.I_CmsRequestHandler for more details.
+-->
+<!ELEMENT requesthandlers (requesthandler*)>
+<!ELEMENT requesthandler EMPTY>
+<!ATTLIST requesthandler class CDATA #REQUIRED>
+
+<!--
+# Password handler:
+# Provides method for password encryption and password validation.
+# See the JavaDoc of interface org.opencms.security.I_CmsPasswordHandler for more details.
+-->
+<!ELEMENT passwordhandler (encoding, digest-type, param*)>
+<!ATTLIST passwordhandler class CDATA #REQUIRED>
+
+<!ELEMENT digest-type (#PCDATA)>
+
+<!--
+# Login manager:
+# The login manager counts the bad logins of a user and disables this user
+# for a given number of minutes in case a certain treshold is reached.
+-->
+<!ELEMENT loginmanager (disableMinutes, maxBadAttempts)>
+
+<!ELEMENT maxBadAttempts (#PCDATA)>
+<!ELEMENT disableMinutes (#PCDATA)>
+
+<!--
+# Login message:
+# This is a message which is displayed to each user upon login.
+# Also, the login can be forbidden for all non-Admin users.
+-->
+<!ELEMENT loginmessage (enabled, message, loginForbidden, timeStart?, timeEnd?)>
+
+<!ELEMENT enabled (#PCDATA)>
+<!ELEMENT message (#PCDATA)>
+<!ELEMENT loginForbidden (#PCDATA)>
+<!ELEMENT timeStart (#PCDATA)>
+<!ELEMENT timeEnd (#PCDATA)>
+
+<!--
+# Scheduler settings:
+# The scheduler settings provide information for the OpenCms scheduler. 
+# The OpenCms scheduler is comparable with the CRON facility in Unix systems.
+# 
+# The scheduler has a list of <job> subnodes.
+# Most important for a job is the <class> name to be executed,
+# and the <cronexpression> that controls the excution time. 
+-->
+
+<!ELEMENT scheduler (job*)>
+
+<!ELEMENT job (name?, class, reuseinstance?, active?, cronexpression, context, parameters?)>
+
+<!--
+# The job name is optional and used for information purposes only (e.g. in the log file).
+# If no job name is provided, the class name is used as the job name.
+-->
+<!ELEMENT name (#PCDATA)>
+
+<!--
+# The job class name to execute at the scheduled time.
+# This class _must_ implement the org.opencms.scheduler.I_CmsSchedulerJob interface.
+-->
+<!ELEMENT class (#PCDATA)>
+
+<!--
+# Optional configuration that controls if a new instance of the job class is created 
+# every time the job is run, or if an instance is created only for the first time and
+# re-used for every later job execution. 
+#
+# The #PCDATA value will be evaluated with Boolean.valueOf(#PCDATA).booleanValue().
+# If the result is "true", the class instance will be re-used.
+-->
+<!ELEMENT reuseinstance (#PCDATA)>
+
+<!--
+# Optional configuration that controls if the job is active or not. If a job is not
+# active, it is still kept in the job list, but not executed. This is intended for 
+# jobs that are frequently but not always used.
+# 
+# The #PCDATA value will be evaluated with Boolean.valueOf(#PCDATA).booleanValue().
+# If the result is "true", the class instance will be re-used.
+-->
+<!ELEMENT active (#PCDATA)>
+
+<!--
+# The cron expression to use for the job schedule.
+# Please refer to the JavaDoc of the class org.opencms.scheduler.CmsScheduledJob
+# for a full description of the possible options.
+-->
+<!ELEMENT cronexpression (#PCDATA)>
+
+<!--
+# Each job will be provided with an initialized instance of a CmsObject.
+# The settings in the <context> node control the request context settings of this object.
+# 
+# The defaults for the optional elements are:
+# siteroot:   /
+# requesturi: /
+# locale:     the first locale configured as default locale
+# encoding:   the configures system encoding
+# remoteaddr: 127.0.0.1
+-->
+<!ELEMENT context (user, project, siteroot?, requesteduri?, locale?, encoding?, remoteaddr?)>
+
+<!ELEMENT user (#PCDATA)>
+<!ELEMENT project (#PCDATA)>
+<!ELEMENT siteroot (#PCDATA)>
+<!ELEMENT requesteduri (#PCDATA)>
+<!ELEMENT encoding (#PCDATA)>
+<!ELEMENT remoteaddr (#PCDATA)>
+
+<!-- 
+Each job can have an optional list of parameters.
+-->
+
+<!ELEMENT parameters (param*)>
+
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param name CDATA #REQUIRED>
+
+<!--
+# Configuration that controls individual sites in OpenCms.
+# Each <site> subnode of <sites> defines a site with the server name
+# and the corresponding VFS uri in OpenCms.
+#
+# workplace-server: the default server of the OpenCms workplace
+# default-uri: the default uri marks the site that is used when 
+#              a request matches no defined site 
+# secure: an optional secure server for the site
+# alias:  alias servers for the site
+-->
+<!ELEMENT sites (workplace-server, default-uri, site+)>
+<!ELEMENT workplace-server (#PCDATA)>
+<!ELEMENT default-uri (#PCDATA)>
+<!ELEMENT site (secure?, alias*)>
+<!ATTLIST site 
+	server CDATA #REQUIRED
+	uri CDATA #REQUIRED>
+<!ELEMENT secure EMPTY>	
+<!ATTLIST secure
+	server CDATA #REQUIRED>
+<!ELEMENT alias EMPTY>	
+<!ATTLIST alias
+	server CDATA #REQUIRED>	
+	
+<!--
+# Optional configuration that controls some additional information as key/value param pairs
+# Parameters and values are stored as OpenCms runtime properties.
+-->
+<!ELEMENT runtimeproperties (param*)>
+
+<!--
+# Configuration to set the class name of the runtime info factory and system info.
+-->
+<!ELEMENT runtimeclasses (runtimeinfo)>
+<!ELEMENT runtimeinfo EMPTY>
+<!ATTLIST runtimeinfo class CDATA #REQUIRED>
+
+<!--
+# Default user/group names:
+# These names can not be changed after the initial OpenCms setup
+# Provides access to the names of the OpenCms default users and groups. 
+-->
+
+<!ELEMENT defaultusers (user-admin, user-guest, user-export, user-deletedresource?, group-administrators, group-projectmanagers, group-users, group-guests)>
+
+<!ELEMENT user-admin (#PCDATA)>
+<!ELEMENT user-guest (#PCDATA)>
+<!ELEMENT user-export (#PCDATA)>
+<!ELEMENT user-deletedresource (#PCDATA)>
+<!ELEMENT group-administrators (#PCDATA)>
+<!ELEMENT group-projectmanagers (#PCDATA)>
+<!ELEMENT group-users (#PCDATA)>
+<!ELEMENT group-guests (#PCDATA)>
+
+<!--
+#
+# Default encoding to use for generating HTTP responses.
+# It is recommended to change this only in special environments.
+# The default is "UTF-8", but in case you require only western european
+# char support you can e.g. change this to "ISO-8859-1".
+-->
+<!ELEMENT defaultcontentencoding (#PCDATA)>
+
+
+<!--
+#
+# MemoryMonitor configuration
+-->
+<!ELEMENT memorymonitor (maxusagepercent, log-interval, email-interval?, warning-interval, email-sender?, email-receiver?)>
+
+<!ELEMENT maxusagepercent (#PCDATA)>
+<!ELEMENT log-interval (#PCDATA)>
+<!ELEMENT email-interval (#PCDATA)>
+<!ELEMENT warning-interval (#PCDATA)>
+<!ELEMENT email-sender (#PCDATA)>
+<!ELEMENT email-receiver (receiver+)>
+<!ELEMENT receiver (#PCDATA)>
+
+
+<!--
+#
+# FlexCache configuration
+-->
+<!ELEMENT flexcache (cache-enabled, cache-offline, maxcachebytes, avgcachebytes, maxentrybytes, maxkeys)>
+
+<!--
+# Enable or disable the FlexCache here with the "cache-enabled" node.
+# In case you disable the FlexCache, you do not need to bother 
+# about the settings of the other Flex cache values.
+-->
+<!ELEMENT cache-enabled (#PCDATA)>
+
+<!--
+# In a development environment, we recommend to set the value of 
+# the "cache-offline" node to "true" so that you can test out the caching
+# behaviour of the application without publishing.
+# In a production environment you should set "cache-offline" node 
+# to "false".
+-->
+<!ELEMENT cache-offline (#PCDATA)>
+
+<!--
+# Sizing parameters for the cached "entries" (ie. pages) in the FlexCache. 
+# The amount of server memory available obviously is the 
+# critical factor here. The values below are set in byte size.
+# The default is 2mb memory for the cached pages _or_ a maximum of 4000
+# cached page variations in total.
+-->
+<!ELEMENT maxcachebytes (#PCDATA)>
+<!ELEMENT avgcachebytes (#PCDATA)>
+<!ELEMENT maxentrybytes (#PCDATA)>
+<!ELEMENT maxkeys (#PCDATA)>
+
+<!--
+#
+# HTTP basic authentication settings.
+-->
+<!ELEMENT http-authentication (browser-based, form-based?)>
+
+<!--
+# Enable or disable browser-based HTTP basic authentication.
+-->
+<!ELEMENT browser-based (#PCDATA)>
+
+<!--
+# If bowser-based HTTP basic authentication is disabled, the user gets
+# redirected to the OpenCms URI specified in this node for a form-based 
+# HTTP basic authentication.
+# Since this is a system wide setting, users are able to specify different
+# authentication forms by setting the property "login-form" on resources.
+-->
+<!ELEMENT form-based (#PCDATA)>
+
+
+<!--
+#
+# Driver manager cache settings.
+-->
+<!ELEMENT resultcache (
+	keygenerator,
+	size-users,
+	size-groups,
+	size-usergroups,
+	size-projects,
+	size-resources,
+	size-resourcelists,
+	size-properties,
+	size-accesscontrollists,
+	size-permissions)>
+
+<!--
+# The name of the class to generate cache keys.
+-->
+<!ELEMENT keygenerator (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for users.
+-->
+<!ELEMENT size-users (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for groups.
+-->
+<!ELEMENT size-groups (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for user/group relations.
+-->
+<!ELEMENT size-usergroups (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for projects.
+-->
+<!ELEMENT size-projects (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for resources.
+-->
+<!ELEMENT size-resources (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for lists of resources.
+-->
+<!ELEMENT size-resourcelists (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for properties.
+-->
+<!ELEMENT size-properties (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for ACLS.
+-->
+<!ELEMENT size-accesscontrollists (#PCDATA)>
+
+<!--
+# The size of the security manager's cache for permission checks.
+-->
+<!ELEMENT size-permissions (#PCDATA)>
+
+<!--
+# Content notification settings.
+-->
+<!ELEMENT content-notification (notification-time?, notification-project)>
+
+<!--
+# The duration after which responsibles will be notified about out-dated content (in days).
+-->
+<!ELEMENT notification-time (#PCDATA)>
+
+<!--
+# The project in which timestamps for the content notification are read
+-->
+<!ELEMENT notification-project (#PCDATA)>

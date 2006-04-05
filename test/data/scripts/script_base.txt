@@ -1,0 +1,33 @@
+#
+# Script: Setup base
+
+# Turn echo on
+echo on
+
+# Login the Admin user
+login Admin admin
+
+# Create the setup project
+createTempfileProject
+
+# Switch to the setup project
+setCurrentProject "_setupProject"
+
+# Initialize the default property definitions
+createPropertyDefinition Title
+createPropertyDefinition Description
+createPropertyDefinition Keywords
+createPropertyDefinition NavText
+createPropertyDefinition NavPos
+createPropertyDefinition export
+createPropertyDefinition exportname
+createPropertyDefinition default-file
+createPropertyDefinition content-encoding
+createPropertyDefinition internal
+createPropertyDefinition cache
+createPropertyDefinition stream
+createPropertyDefinition template
+createPropertyDefinition template-elements
+createPropertyDefinition locale
+
+

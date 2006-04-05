@@ -1,0 +1,35 @@
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+		
+	<xsd:element name="ContentNotifications" type="OpenCmsContentNotifications"/>
+	
+	<xsd:complexType name="OpenCmsContentNotifications">
+		<xsd:sequence>
+			<xsd:element name="ContentNotification" type="OpenCmsContentNotification" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsContentNotification">
+		<xsd:sequence>
+			<xsd:element name="Subject" type="OpenCmsString" />
+			<xsd:element name="Header" type="OpenCmsHtml"/>	
+			<xsd:element name="Footer" type="OpenCmsHtml"/>	
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>
+			<mappings>
+				<mapping element="Subject" mapto="property:Title" />
+			</mappings>
+			<defaults/>
+			<validationrules/>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

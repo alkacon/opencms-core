@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE name="description">
+<![CDATA[
+<HTML>
+
+<script language=JavaScript>
+<!--
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+</head>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='head_module2.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id=UEBERNEHMEN name=UEBERNEHMEN>
+<table cellspacing=0 cellpadding=0 border=2 width=400>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td colspan=4 class="head">]]><LABEL value="module.lable.moduledescription"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td colspan=4 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <tr>
+                <td class=dialogtxt>]]><LABEL value="label.modulname"/><![CDATA[:</td>
+                <td class=dialogtxt>]]><PROCESS>name</PROCESS><![CDATA[</td>
+
+                <td class=dialogtxt>]]><LABEL value="label.version"/><![CDATA[:</td>
+                <td class=dialogtxt>]]><PROCESS>version</PROCESS><![CDATA[</td>
+            </tr>
+            <tr>
+                <td class=dialogtxt valign=top>]]><LABEL value="module.lable.description"/><![CDATA[:</td>
+                <td class=dialogtxt colspan=3>]]><PROCESS>descriptiontext</PROCESS><![CDATA[&nbsp;</td>
+
+            </tr>
+
+            <tr>
+                <td class=dialogtxt>]]><LABEL value="label.author"/><![CDATA[:</td>
+                <td class=dialogtxt>]]><PROCESS>author</PROCESS><![CDATA[&nbsp;</td>
+
+                <td class=dialogtxt>]]><LABEL value="input.email"/><![CDATA[:</td>
+                <td class=dialogtxt><a href="mailto:]]><PROCESS>email</PROCESS><![CDATA[">]]><PROCESS>email</PROCESS><![CDATA[</a>&nbsp;</td>
+            </tr>
+
+            <tr>
+                <td class=dialogtxt>]]><LABEL value="label.modulecreatedate"/><![CDATA[:</td>
+                <td class=dialogtxt colspan=3>]]><PROCESS>createdate</PROCESS><![CDATA[</td>
+
+            </tr>
+
+            <tr>
+                <td class=dialogtxt>]]><LABEL value="module.lable.uploadfrom"/><![CDATA[: </td>
+                <td class=dialogtxt>]]><PROCESS>uploadfrom</PROCESS><![CDATA[&nbsp;</td>
+
+                <td class=dialogtxt>]]><LABEL value="label.uploaddate"/><![CDATA[:&nbsp;</td>
+                <td class=dialogtxt>]]><PROCESS>uploaddate</PROCESS><![CDATA[&nbsp;</td>
+            </tr>
+
+            <tr>
+                <td class=dialogtxt>]]><LABEL value="label.view"/><![CDATA[:</td>
+                <td class=dialogtxt>]]><PROCESS>view</PROCESS><![CDATA[&nbsp;</td>
+
+                <td class=dialogtxt>]]><LABEL value="module.lable.documentation"/><![CDATA[:</td>
+                <td class=dialogtxt><a href="]]><METHOD name="getServletPath"/><![CDATA[]]><PROCESS>documentation</PROCESS><![CDATA[" target=_blank>]]><PROCESS>documentation</PROCESS><![CDATA[</a></td>
+            </tr>
+
+            <tr>
+                <td class=dialogtxt valign=top>]]><LABEL value="module.lable.dependences"/><![CDATA[:</td>
+                <td class=dialogtxt><textarea rows=4 wrap=off readonly>]]><PROCESS>dependences</PROCESS><![CDATA[</textarea></td>
+
+                <td class=dialogtxt valign=top>]]><LABEL value="module.lable.repository"/><![CDATA[:</td>
+                <td class=dialogtxt><textarea rows=4 wrap=off readonly>]]><PROCESS>repository</PROCESS><![CDATA[</textarea></td>
+            </tr>
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td colspan=4 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt colspan=4>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='index.html'"></td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="module.lable.parameter"/><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='properties.html?view=parameter&module=]]><PROCESS>name</PROCESS><![CDATA['"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- Ende Buttonleiste-->
+            </table>
+    </td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="parameter">
+<![CDATA[
+<HTML>
+<script language=JavaScript>
+<!--
+
+function checkHowMuch(){
+    if(document.META.selectpara.selectedIndex<0){
+                document.META.CANCEL.disabled=true;
+    }else{
+        document.META.CANCEL.disabled=false;
+    }
+}
+
+
+//-->
+</script>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='head_module2.html';checkHowMuch();">
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id=META name="META" action="properties.html?view=changeparameter&module=]]><PROCESS>name</PROCESS><![CDATA[" method="post">
+<table cellspacing=0 cellpadding=0 border=2 width=500>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="module.lable.changeparameter"/><![CDATA[ ]]><PROCESS>name</PROCESS><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Inhalt-->
+            <tr>
+            <td class=dialogtxt %>
+                <table cellspacing=2 cellpadding=0 border=0 width=100%>
+                <tr>
+                    <td class=dialogtxt width=50%>]]><LABEL value="label.modulname"/><![CDATA[: ]]><PROCESS>name</PROCESS><![CDATA[</td>
+                    <td class=dialogtxt width=50%>]]><LABEL value="label.version"/><![CDATA[: ]]><PROCESS>version</PROCESS><![CDATA[</td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <tr><td class=dialogtxt>
+                <table border=1 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 width=100%>
+                            <tr><td class=dialogtxt>
+                            <select name="selectpara" size="10" width=480 style="width:480px" onClick="checkHowMuch();">
+                                ]]><PROCESS>allparameter</PROCESS><![CDATA[
+                            </select>
+                            </td></tr>
+                            <tr><td class=dialogtxt>
+
+                            </td></tr>
+                        </table>
+                    </td></tr>
+                </table>
+            </td></tr>
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='properties.html?view=description&module=]]><PROCESS>name</PROCESS><![CDATA['"></td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.edit" /><![CDATA[" id=CANCEL name=CANCEL></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+<parameterentry>
+    <![CDATA[ <option value="]]><PROCESS>paraname</PROCESS><![CDATA[">]]><PROCESS>paraname</PROCESS><![CDATA[: ]]><PROCESS>paravalue</PROCESS><![CDATA[
+    ]]>
+</parameterentry>
+
+
+
+<TEMPLATE name="changeparameter">
+<![CDATA[
+<HTML>
+<script language=JavaScript>
+<!--
+//-->
+</script>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id=UEBERNEHMEN name=UEBERNEHMEN action="properties.html?view=newvalue&module=]]><PROCESS>name</PROCESS><![CDATA[&parameter=]]><PROCESS>paraname</PROCESS><![CDATA[" method="post">
+<table cellspacing=0 cellpadding=0 border=2 width=400>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td colspan=4 class="head">]]><LABEL value="module.lable.moduleproperty"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td colspan=4 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <tr>
+                <td class=dialogtxt>]]><LABEL value="label.modulname"/><![CDATA[:</td>
+                <td class=dialogtxt width=50%>]]><PROCESS>name</PROCESS><![CDATA[</td>
+
+                <td class=dialogtxt>]]><LABEL value="label.version"/><![CDATA[:</td>
+                <td class=dialogtxt>]]><PROCESS>version</PROCESS><![CDATA[</td>
+            </tr>
+            <tr>
+                <td class=dialogtxt valign=top>]]><LABEL value="module.lable.parameter"/><![CDATA[:</td>
+                <td class=dialogtxt colspan=3>]]><PROCESS>paraname</PROCESS><![CDATA[</td>
+
+            </tr>
+            <tr>
+                <td class=dialogtxt valign=top>]]><LABEL value="module.lable.description"/><![CDATA[:</td>
+                <td class=dialogtxt colspan=3>]]><PROCESS>paratext</PROCESS><![CDATA[</td>
+            </tr>
+
+            <tr>
+                <td class=dialogtxt>]]><LABEL value="module.lable.type"/><![CDATA[:</td>
+                <td class=dialogtxt colspan=3>]]><PROCESS>paratype</PROCESS><![CDATA[</td>
+            </tr>
+
+            <tr>
+                <td class=dialogtxt>]]><LABEL value="module.lable.value"/><![CDATA[:</td>
+                <td class=dialogtxt colspan=3><input name="parawert" type=text maxsize=40 size=40 value="]]><PROCESS>paravalue</PROCESS><![CDATA["></td>
+            </tr>
+
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td colspan=4 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt colspan=4>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK></td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='properties.html?view=parameter&module=]]><PROCESS>name</PROCESS><![CDATA['"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- Ende Buttonleiste-->
+            </table>
+    </td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="done">
+<![CDATA[
+<HTML>
+<BODY onload="location.href='properties.html?view=parameter&module=]]><PROCESS>name</PROCESS><![CDATA[';">
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error">
+<ERRORPAGE title="module.error.parametertitle" message="module.error.parametermessage" reason="module.error.parameterreason" suggestion="error.suggestion.none" ref="properties.html?view=changeparameter&amp;fromerrorpage=true"><PROCESS>DETAILS</PROCESS></ERRORPAGE>
+</TEMPLATE>
+
+<TEMPLATE>
+<![CDATA[
+<HTML>
+ERROR: Der Parameter "view" wurde nicht uebergeben!
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>

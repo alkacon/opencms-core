@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+    <display-name>OpenCms</display-name>
+    
+    <description>
+        OpenCms, the Open Source Content Management System. 
+        (c) 2005 Alkacon Software GmbH with contributions from the OpenCms community.
+        For more details about OpenCms, please see http://www.opencms.org/.
+        For more details about Alkacon Software GmbH, please see http://www.alkacon.com/.    
+    </description>
+
+    <!--
+        Changing the servlet name from "opencms" to something else requires 3 changes in this file.        
+        For example, to change the servlet name to "mycms" you must:
+        
+        1. Change the <context-param> called "OpenCmsServlet" from "/opencms/*" to "/mycms/*"
+        2. Change the <servlet-mapping> for "OpenCmsServlet" from "/opencms/*" to "/mycms/*"
+        3. Change the <error-page> setting for the 404 error from "/opencms/handle404" to "/mycms/handle404"
+    -->
+
+    <context-param>
+        <param-name>OpenCmsServlet</param-name>
+        <param-value>/opencms/*</param-value>
+    </context-param>
+    
+    <context-param>
+        <param-name>DefaultWebApplication</param-name>
+        <param-value>ROOT</param-value>
+    </context-param>    
+    
+	<!-- 
+	    Uncomment this parameter in case you change the web application context using an application server 
+	    specific deployment descriptor. E.g. in Jboss, you could use the jboss-web.xml file to deploy opencms under the
+	    context 'myopencms' but still keep the files in the folder 'opencms.war'
+
+    <context-param>
+        <param-name>WebApplicationContext</param-name>
+        <param-value>myopencms</param-value>
+    </context-param>
+    -->
+
+    <listener>
+        <listener-class>org.opencms.main.OpenCmsListener</listener-class>
+    </listener>
+        
+    <servlet>
+        <servlet-name>OpenCmsServlet</servlet-name>
+        <description>
+            The main servlet that handles all requests to the OpenCms VFS.  
+        </description>
+        <servlet-class>org.opencms.main.OpenCmsServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>OpenCmsServletErrorHandler</servlet-name>
+        <description>
+            The error handling servlet, also servers as trigger for static export requests.  
+        </description>
+        <servlet-class>org.opencms.main.OpenCmsServletErrorHandler</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>    
+
+    <servlet-mapping>
+        <servlet-name>OpenCmsServlet</servlet-name>
+        <url-pattern>/opencms/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>OpenCmsServletErrorHandler</servlet-name>
+        <url-pattern>/opencms-errorhandler/*</url-pattern>
+    </servlet-mapping>
+    
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index_export.html</welcome-file>
+    </welcome-file-list>
+    
+    <error-page>
+        <error-code>404</error-code>
+        <location>/opencms-errorhandler/handle404</location>
+    </error-page>
+
+	<error-page>
+        <error-code>500</error-code>
+        <location>/opencms-errorhandler/system/handler/handle500.html</location>
+    </error-page>
+    
+    <taglib>
+        <taglib-uri>http://www.opencms.org/taglib/cms</taglib-uri>
+        <taglib-location>/WEB-INF/opencms.tld</taglib-location>
+    </taglib>
+
+</web-app>

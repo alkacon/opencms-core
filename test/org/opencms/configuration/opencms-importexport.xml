@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-importexport.dtd">
+
+<opencms>
+	<importexport>
+		<importexporthandlers>
+	        <importexporthandler class="com.opencms.legacy.CmsCosImportExportHandler"/>
+    	    <importexporthandler class="org.opencms.importexport.CmsVfsImportExportHandler"/>
+        	<importexporthandler class="org.opencms.module.CmsModuleImportExportHandler"/>
+        </importexporthandlers>        
+        <import>      
+        	<overwrite>true</overwrite>        	
+        	<convert>true</convert>
+        	<oldwebappurl>http://localhost:8080/opencms/opencms/</oldwebappurl>
+			<importversions>
+				<importversion class="com.opencms.legacy.CmsImportVersion1"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion2"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion3"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion4"/>	
+			</importversions>          	   	
+			<immutables>
+				<resource uri="/system/"/>
+				<resource uri="/system/bodies/"/>
+				<resource uri="/system/galleries/"/>
+				<resource uri="/system/galleries/download/"/>
+				<resource uri="/system/galleries/externallinks/"/>
+				<resource uri="/system/galleries/htmlgalleries/"/>
+				<resource uri="/system/galleries/pics/"/>
+				<resource uri="/system/login/"/>
+				<resource uri="/system/modules/"/>
+				<resource uri="/system/shared/"/>
+				<resource uri="/system/workplace/"/>
+				<resource uri="/system/workplace/action/"/>
+				<resource uri="/system/workplace/administration/"/>
+				<resource uri="/system/workplace/help/"/>
+				<resource uri="/system/workplace/locales/"/>
+				<resource uri="/system/workplace/resources/"/>
+				<resource uri="/system/workplace/restypes/"/>
+				<resource uri="/system/workplace/scripts/"/>
+				<resource uri="/system/workplace/templates/"/>
+				<resource uri="/channels/"/>
+				<resource uri="/sites/"/>
+			</immutables>
+			<principaltranslations>
+				<principaltranslation type="USER" from="Admin" to="cmsadmin" />
+				<principaltranslation type="GROUP" from="Administrators" to="cmsadministrators" />
+			</principaltranslations>
+        	<ignoredproperties>
+        		<property name="module"/>
+        	</ignoredproperties>     			
+		</import>
+	</importexport>      
+	<staticexport enabled="true">
+		<staticexporthandler>org.opencms.staticexport.CmsOnDemandStaticExportHandler</staticexporthandler>
+		<exportpath>export</exportpath>
+		<defaultpropertyvalue>true</defaultpropertyvalue>
+		<defaultsuffixes>
+			<suffix key=".jpg"/>
+			<suffix key=".gif"/>
+			<suffix key=".png"/>
+			<suffix key=".doc"/>
+			<suffix key=".xls"/>
+			<suffix key=".ppt"/>
+			<suffix key=".pdf"/>
+			<suffix key=".txt"/>
+			<suffix key=".css"/>
+			<suffix key=".zip"/>
+			<suffix key=".swf"/>
+		</defaultsuffixes>
+		<exportheaders>
+			<header>testheader:testvalue</header>
+			<header>testheader2:testvalue2</header>
+		</exportheaders>
+		<requestheaders>
+			<acceptlanguage>en-us,en;q=0.5</acceptlanguage>
+			<acceptcharset>ISO-8859-1,utf-8;q=0.7,*;q=0.7</acceptcharset>
+			<remoteaddr>127.0.0.1</remoteaddr>
+		</requestheaders>
+		<rendersettings>
+			<rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
+			<vfs-prefix>${CONTEXT_NAME}${SERVLET_NAME}</vfs-prefix>
+			<userelativelinks>false</userelativelinks>			
+			<exporturl>http://127.0.0.1:8080${CONTEXT_NAME}/handle404</exporturl>
+			<plainoptimization>true</plainoptimization>
+			<testresource uri="/system/shared/page.dtd"/>
+			<resourcestorender>
+				<regex>/sites/.*</regex>
+				<regex>/system/galleries/.*</regex>
+				<regex>/system/modules/.*/resources/.*</regex>
+                <export-rules>
+                    <export-rule>
+                        <name>rule for site one</name>
+                        <description>description of rule for site one</description>
+                        <modified-resources>
+                            <regex>/sites/site1/.*</regex>
+                            <regex>/system/modules/org.opencms.frontend.templateone/.*</regex>
+                        </modified-resources>
+                        <export-resources>
+                            <uri>/sites/site1/</uri>
+                        </export-resources>
+                    </export-rule>
+                    <export-rule>
+                        <name>rule for site two</name>
+                        <description>description of rule for site two</description>
+                        <modified-resources>
+                            <regex>/sites/site2/.*</regex>
+                            <regex>/system/modules/org.opencms.frontend.templateone/.*</regex>
+                        </modified-resources>
+                        <export-resources>
+                            <uri>/sites/site2/</uri>
+                        </export-resources>
+                    </export-rule>
+                </export-rules>
+			</resourcestorender>
+            <rfs-rules>
+                <rfs-rule>
+                    <name>rule for site default</name>
+                    <description>rule for site default</description>
+                    <source>/sites/default/</source>
+                    <rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
+                    <exportpath>export</exportpath>
+                    <related-system-res/>
+                </rfs-rule>
+                <rfs-rule>
+                    <name>rule for site one</name>
+                    <description>description of rule for site one</description>
+                    <source>/sites/site1/</source>
+                    <rfs-prefix>site1</rfs-prefix>
+                    <exportpath>c:/apache/site1</exportpath>
+                    <related-system-res>
+                        <regex>/system/modules/org.opencms.frontend.templateone/.*</regex>
+                        <regex>/system/modules/org.opencms.frontend.templateone.modules/.*</regex>
+                    </related-system-res>
+                </rfs-rule>
+                <rfs-rule>
+                    <name>rule for site two</name>
+                    <description>description of rule for site two</description>
+                    <source>/sites/site2/</source>
+                    <rfs-prefix>site2</rfs-prefix>
+                    <exportpath>c:/apache/site2</exportpath>
+        			<userelativelinks>true</userelativelinks>			
+                    <related-system-res>
+                        <regex>/system/modules/org.opencms.frontend.templateone/.*</regex>
+                        <regex>/system/modules/org.opencms.frontend.templateone.form/.*</regex>
+                    </related-system-res>
+                </rfs-rule>
+            </rfs-rules>
+		</rendersettings>
+	</staticexport>  
+</opencms>    

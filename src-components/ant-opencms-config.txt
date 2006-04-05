@@ -1,0 +1,7 @@
+Window -> Preferences... -> Ant -> Runtime -> Classpath -> Global Entries -> Add Jars...
+- ant-contrib
+- ant-opencms
+- commons-digester
+- commons-collections
+- commons-logging
+- commons-beanutils

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/navtopentry.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/navtopentry2.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/navtopentry3.xsd"/>
+	
+	<xsd:element name="TemplateOneNavtopLinks" type="OpenCmsTemplateOneNavtopLinks"/>
+	
+	<xsd:complexType name="OpenCmsTemplateOneNavtopLinks">
+		<xsd:sequence>
+			<xsd:element name="TemplateOneNavtopLink" type="OpenCmsTemplateOneNavtopLink" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsTemplateOneNavtopLink">
+		<xsd:sequence>
+			<xsd:element name="link" type="OpenCmsTemplateOneNavtopEntry" minOccurs="0" maxOccurs="10" />			
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+</xsd:schema>

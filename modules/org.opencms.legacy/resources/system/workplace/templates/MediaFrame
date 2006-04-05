@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<XMLTEMPLATE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<frameset cols="100%">
+ <frame src="showMedia]]><method name="getQueryString"/><![CDATA[" name="Content">
+</frameset>
+</html>
+]]>
+</TEMPLATE>
+</XMLTEMPLATE> 

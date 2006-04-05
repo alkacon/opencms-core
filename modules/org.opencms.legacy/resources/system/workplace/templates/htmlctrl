@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>OpenCms</title>
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<!-- End Style -->
+
+<!-- Beginn JavaScript -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_editbrowser.js</method><![CDATA["></SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+    // URL for pictures
+    var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
+    var page=parseInt(]]><PROCESS>page</PROCESS><![CDATA[);  // the actual page
+    var filter="]]><PROCESS>filter</PROCESS><![CDATA[";      // the actual filter
+    var maxpage=parseInt(]]><PROCESS>maxpage</PROCESS><![CDATA[);  // the maximum page number
+    list='htmllist';
+    ctrl='htmlctrl';
+    browser='htmlbrowser';
+    newurl='../administration/htmlgallery/administration_content_htmlgallery_new_snippet.html?initial=true&action=newhtml&lasturl=]]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/htmllist.html&folder=';
+</SCRIPT>
+
+<!-- Ende JavaScript -->
+
+
+</head>
+<body bgcolor="#C0C0C0" background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed  bgproperties=fixed>
+<form action="javascript:doEdit(DO_SEARCH)" method=post id=form1 name=form1>
+<table WIDTH=100% cellspacing=0 cellpadding=0 border=0>
+<TR>
+<td class=dialogtxt>]]><BUTTON href="javascript:doEdit(DO_PREV)" method="showBackButton" name="bt_back" action="" alt="back" /><![CDATA[ </td>
+<td class=dialogtxt>]]><BUTTON href="javascript:doEdit(DO_NEXT)" method="showNextButton" name="bt_forward" action="" alt="next" /><![CDATA[ </td>
+
+<td class=dialogtxt><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="32" height="1" alt="" border="0"></td>
+
+<td class=dialogtxt><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="32" height="1" alt="" border="0"></td>
+
+<td class=dialogtxt width=100%>&nbsp;</td>
+<td class=menubold>]]><LABEL value="input.gallery" /><![CDATA[:&nbsp;</td>
+<td class=dialogtxt>]]>
+    <SELECT class="textfeld1" name="galerie" width="200" method="getHtmlGalleryNames"
+            style="width:200px" onDblClick="" onchange="updateSelection();"/><![CDATA[
+</td>
+<td class=dialogtxt><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="32" height="32" alt="" border="0"></td>
+</tr>
+<tr>
+    <td class=dialogtxt colspan=4>&nbsp;</td>
+    <td class=dialogtxt width=100%>&nbsp;</td>
+    <td class="menubold">]]><LABEL value="input.search" /><![CDATA[:&nbsp;</td>
+    <td class=dialogtxt><INPUT class="textfeld1" ID="FilterInput" NAME="FilterInput" TYPE=TEXT SIZE=20 value="]]><PROCESS>filter</PROCESS><![CDATA["><IMG SRC="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" alt="" border=0 width=5 height=5></td>
+    <td class=dialogtxt><a href="javascript:doEdit(DO_SEARCH)" onMouseDown="ChPush('bt_search')" onMouseUp="ChOn('bt_search')" onMouseOver="ChOn('bt_search')" onMouseOut="ChOff('bt_search')"><IMG SRC="]]><METHOD name="resourcesUri">bt_search_off.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.search" /><![CDATA[" name="bt_search" border=0 width=32 height=32></a></td>
+</tr>
+</table>
+</form>
+</body>
+</html>
+
+]]>
+</TEMPLATE>
+</WORKPLACE>

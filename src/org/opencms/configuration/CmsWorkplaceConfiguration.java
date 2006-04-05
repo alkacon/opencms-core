@@ -1,0 +1,1642 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
+ * Date   : $Date: 2006/03/27 14:52:46 $
+ * Version: $Revision: 1.40 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.configuration;
+
+import org.opencms.db.CmsExportPoint;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRfsFileViewer;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.explorer.CmsExplorerContextMenu;
+import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
+import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.tools.CmsToolManager;
+import org.opencms.workplace.tools.CmsToolRootHandler;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.digester.Digester;
+
+import org.dom4j.Element;
+
+/**
+ * Import/Export master configuration class.<p>
+ * 
+ * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.40 $
+ * 
+ * @since 6.0.0
+ */
+public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+
+    /** The "autosetnavigation" attribute. */
+    public static final String A_AUTOSETNAVIGATION = "autosetnavigation";
+
+    /** The "autosettitle" attribute. */
+    public static final String A_AUTOSETTITLE = "autosettitle";
+
+    /** The "page" attribute. */
+    public static final String A_PAGE = "page";
+
+    /** The "permissions" attribute. */
+    public static final String A_PERMISSIONS = "permissions";
+
+    /** The "principal" attribute. */
+    public static final String A_PRINCIPAL = "principal";
+
+    /** The "reference" attribute. */
+    public static final String A_REFERENCE = "reference";
+
+    /** The "rules" attribute. */
+    public static final String A_RULES = "rules";
+
+    /** The "shownavigation" attribute. */
+    public static final String A_SHOWNAVIGATION = "shownavigation";
+
+    /** The "target" attribute. */
+    public static final String A_TARGET = "target";
+
+    /** The name of the DTD for this configuration. */
+    public static final String CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
+
+    /** The name of the default XML file for this configuration. */
+    public static final String DEFAULT_XML_FILE_NAME = "opencms-workplace.xml";
+
+    /** The name of the access control node. */
+    public static final String N_ACCESSCONTROL = "accesscontrol";
+
+    /** The name of the access entry node. */
+    public static final String N_ACCESSENTRY = "accessentry";
+
+    /** The name of the autolock node. */
+    public static final String N_AUTOLOCK = "autolock";
+
+    /** The node name of the buttonstyle node. */
+    public static final String N_BUTTONSTYLE = "buttonstyle";
+
+    /** The name of the context menu node. */
+    public static final String N_CONTEXTMENU = "contextmenu";
+
+    /** The node name of the datecreated column node. */
+    public static final String N_DATECREATED = "show-datecreated";
+
+    /** The node name of the date expired column node. */
+    public static final String N_DATEEXPIRED = "show-dateexpired";
+
+    /** The node name of the datelastmodified column node. */
+    public static final String N_DATELASTMODIFIED = "show-datelastmodified";
+
+    /** The node name of the date released  column node. */
+    public static final String N_DATERELEASED = "show-datereleased";
+
+    /** The name of the default access control node. */
+    public static final String N_DEFAULTACCESSCONTROL = "defaultaccesscontrol";
+
+    /** The name of the node for the default locale. */
+    public static final String N_DEFAULTLOCALE = "defaultlocale";
+
+    /** The node name of the default preferences node. */
+    public static final String N_DEFAULTPREFERENCES = "default-preferences";
+
+    /** The name of the default properties node. */
+    public static final String N_DEFAULTPROPERTIES = "defaultproperties";
+
+    /** The name of the default properties on structure node. */
+    public static final String N_DEFAULTPROPERTIESONSTRUCTURE = "defaultpropertiesonstructure";
+
+    /** The name of the default property node. */
+    public static final String N_DEFAULTPROPERTY = "defaultproperty";
+
+    /** Individual workplace handler node name. */
+    public static final String N_DIALOGHANDLER = "dialoghandler";
+
+    /** The main workplace handler node name. */
+    public static final String N_DIALOGHANDLERS = "dialoghandlers";
+
+    /** The node name of the dialogs defaultsettings node. */
+    public static final String N_DIALOGSDEFAULTSETTINGS = "dialogs-defaultsettings";
+
+    /** The node name of the dialogs preferences node. */
+    public static final String N_DIALOGSPREFERENCES = "dialogs-preferences";
+
+    /** The node name of the directedit style node. */
+    public static final String N_DIRECTEDITSTYLE = "directeditstyle";
+
+    /** The node name of the directpublish node. */
+    public static final String N_DIRECTPUBLISH = "directpublish";
+
+    /** The name of the edit options node. */
+    public static final String N_EDITOPTIONS = "editoptions";
+
+    /** The node name of the editor node. */
+    public static final String N_EDITOR = "editor";
+
+    /** The name of the editor action node. */
+    public static final String N_EDITORACTION = "editoraction";
+
+    /** The node name of the editors general options node. */
+    public static final String N_EDITORGENERALOPTIONS = "editors-generaloptions";
+
+    /** The name of the editor handler node. */
+    public static final String N_EDITORHANDLER = "editorhandler";
+
+    /** The node name of the editors preferences node. */
+    public static final String N_EDITORPREFERENCES = "editors-preferences";
+
+    /** The node name of the editors preferred editors node. */
+    public static final String N_EDITORPREFERREDEDITORS = "editors-preferrededitors";
+
+    /** The name of the "enable advanced property tabs" node. */
+    public static final String N_ENABLEADVANCEDPROPERTYTABS = "enableadvancedpropertytabs";
+
+    /** The subname of the rfsfilesettings/enabled node. */
+    public static final String N_ENABLED = "enabled";
+
+    /** The name of the "user management enabled" node. */
+    public static final String N_ENABLEUSERMGMT = "enableusermanagement";
+
+    /** The node name of the file entries node. */
+    public static final String N_ENTRIES = "entries";
+
+    /** The name of the entry node. */
+    public static final String N_ENTRY = "entry";
+
+    /** The name of the expand inherited permissions node. */
+    public static final String N_EXPANDPERMISSIONSINHERITED = "expand-permissionsinherited";
+
+    /** The name of the expand user permissions node. */
+    public static final String N_EXPANDPERMISSIONSUSER = "expand-permissionsuser";
+
+    /** The node name of the explorer displayoptions node. */
+    public static final String N_EXPLORERDISPLAYOPTIONS = "explorer-displayoptions";
+
+    /** The node name of the explorer generaloptions node. */
+    public static final String N_EXPLORERGENERALOPTIONS = "explorer-generaloptions";
+
+    /** The node name of the explorer preferences node. */
+    public static final String N_EXPLORERPREFERENCES = "explorer-preferences";
+
+    /** The name of the explorer type node. */
+    public static final String N_EXPLORERTYPE = "explorertype";
+
+    /** The name of the explorer types node. */
+    public static final String N_EXPLORERTYPES = "explorertypes";
+
+    /** The node name of the file copy node. */
+    public static final String N_FILECOPY = "filecopy";
+
+    /** The node name of the file deletion node. */
+    public static final String N_FILEDELETION = "filedeletion";
+
+    /** The subname of the rfsfilesettings/fileEncoding node. */
+    public static final String N_FILEENCODING = "fileEncoding";
+
+    /** The subname of the rfsfilesettings/filePath node. */
+    public static final String N_FILEPATH = "filePath";
+
+    /** The node name of the start folder node. */
+    public static final String N_FOLDER = "folder";
+
+    /** The node name of the folder copy node. */
+    public static final String N_FOLDERCOPY = "foldercopy";
+
+    /** The node name of the helptext node. */
+    public static final String N_HELPTEXT = "helptext";
+
+    /** The node name of the inform role members node. */
+    public static final String N_INFORMROLEMEMBERS = "informrolemembers";
+
+    /** The subname of the rfsfilesettings/isLogfile node. */
+    public static final String N_ISLOGFILE = "isLogfile";
+
+    /** The node name of the key node. */
+    public static final String N_KEY = "key";
+
+    /** The name of the "labeled folders" node. */
+    public static final String N_LABELEDFOLDERS = "labeledfolders";
+
+    /** The node name of the locale node. */
+    public static final String N_LOCALE = "locale";
+
+    /** The name of the "localized folders" node. */
+    public static final String N_LOCALIZEDFOLDERS = "localizedfolders";
+
+    /** The node name of the lockedby column node. */
+    public static final String N_LOCKEDBY = "show-lockedby";
+
+    /** The name of the "max file upload size" node. */
+    public static final String N_MAXUPLOADSIZE = "maxfileuploadsize";
+
+    /** The node name of the message-accepted node. */
+    public static final String N_MESSAGEACCEPTED = "message-accepted";
+
+    /** The node name of the message-completed node. */
+    public static final String N_MESSAGECOMPLETED = "message-completed";
+
+    /** The node name of the message-forwarded node. */
+    public static final String N_MESSAGEFORWARDED = "message-forwarded";
+
+    /** The name of the context menu node. */
+    public static final String N_MULTICONTEXTMENU = "multicontextmenu";
+
+    /** The name of the new resource node. */
+    public static final String N_NEWRESOURCE = "newresource";
+
+    /** The node name of the permissions column node. */
+    public static final String N_PERMISSIONS = "show-permissions";
+
+    /** The name of the inherit permissions on folder node. */
+    public static final String N_PERMISSIONSINHERITONFOLDER = "permissions-inheritonfolder";
+
+    /** The node name of the project node. */
+    public static final String N_PROJECT = "project";
+
+    /** The node name of the publish button appearance node. */
+    public static final String N_PUBLISHBUTTONAPPEARANCE = "publishbuttonappearance";
+
+    /** The node name of the report type node. */
+    public static final String N_REPORTTYPE = "reporttype";
+
+    /** The node name of the restrict explorer view node. */
+    public static final String N_RESTRICTEXPLORERVIEW = "restrictexplorerview";
+
+    /** The node name of the rfsfileviewsettings node. */
+    public static final String N_RFSFILEVIEWESETTINGS = "rfsfileviewsettings";
+
+    /** The node name of the root node. */
+    public static final String N_ROOT = "root";
+
+    /** The node name of the roots node. */
+    public static final String N_ROOTS = "roots";
+
+    /** The name of the separator node. */
+    public static final String N_SEPARATOR = "separator";
+
+    /** The node name of the show lock node. */
+    public static final String N_SHOWEXPORTSETTINGS = "showexportsettings";
+
+    /** The node name of the show lock node. */
+    public static final String N_SHOWLOCK = "showlock";
+
+    /** The node name of the show messages node. */
+    public static final String N_SHOWMESSAGES = "showmessages";
+
+    /** The node name of the showprojects node. */
+    public static final String N_SHOWPROJECTS = "showprojects";
+
+    /** The node name of the size column node. */
+    public static final String N_SIZE = "show-size";
+
+    /** The node name of the startupfilter node. */
+    public static final String N_STARTUPFILTER = "startupfilter";
+
+    /** The node name of the state column node. */
+    public static final String N_STATE = "show-state";
+
+    /** The node name of the title column node. */
+    public static final String N_TITLE = "show-title";
+
+    /** The node name of the tool-manager node. */
+    public static final String N_TOOLMANAGER = "tool-manager";
+
+    /** The node name of the type column node. */
+    public static final String N_TYPE = "show-type";
+
+    /** The node name of the uploadapplet node. */
+    public static final String N_UPLOADAPPLET = "uploadapplet";
+
+    /** The node name of the uri node. */
+    public static final String N_URI = "uri";
+
+    /** The node name of the user created node. */
+    public static final String N_USERCREATED = "show-usercreated";
+
+    /** The node name of the user lastmodified node. */
+    public static final String N_USERLASTMODIFIED = "show-userlastmodified";
+
+    /** The subname of the rfsfilesettings/windowSize node. */
+    public static final String N_WINDOWSIZE = "windowSize";
+
+    /** The node name of the workflow node. */
+    public static final String N_WORKFLOW = "workflow";
+
+    /** The node name of the workflow default settings node. */
+    public static final String N_WORKFLOWDEFAULTSETTINGS = "workflow-defaultsettings";
+
+    /** The node name of the workflow general options node. */
+    public static final String N_WORKFLOWGENERALOPTIONS = "workflow-generaloptions";
+
+    /** The node name of the workflow preferences node. */
+    public static final String N_WORKFLOWPREFERENCES = "workflow-preferences";
+
+    /** The node name of the master workplace node. */
+    public static final String N_WORKPLACE = "workplace";
+
+    /** The node name of the workplace general options node. */
+    public static final String N_WORKPLACEGENERALOPTIONS = "workplace-generaloptions";
+
+    /** The node name of the workplace preferences node. */
+    public static final String N_WORKPLACEPREFERENCES = "workplace-preferences";
+
+    /** The node name of the workplace startup settings node. */
+    public static final String N_WORKPLACESTARTUPSETTINGS = "workplace-startupsettings";
+
+    /** The node name of the view node. */
+    public static final String N_WORKPLACEVIEW = "workplaceview";
+
+    /** The configured workplace manager. */
+    private CmsWorkplaceManager m_workplaceManager;
+
+    /**
+     * Public constructor, will be called by configuration manager.<p> 
+     */
+    public CmsWorkplaceConfiguration() {
+
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_INIT_0));
+        }
+    }
+
+    /**
+     * Adds the explorer type rules to the given digester.<p>
+     * 
+     * @param digester the digester to add the rules to
+     */
+    public static void addExplorerTypeXmlRules(Digester digester) {
+
+        // add explorer type settings
+        digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
+        digester.addSetNext("*/" + N_EXPLORERTYPE, "addExplorerTypeSetting");
+
+        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 4);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 0, A_NAME);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 1, A_KEY);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 2, A_ICON);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 3, A_REFERENCE);
+
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceHandlerClassName", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_HANDLER);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceUri", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_URI);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceOrder", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_ORDER);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourcePage", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_PAGE);
+
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setAutoSetNavigation", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_AUTOSETNAVIGATION);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setAutoSetTitle", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_AUTOSETTITLE);
+
+        digester.addObjectCreate("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL, CmsExplorerTypeAccess.class);
+        digester.addSetNext("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL, "setAccess");
+
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, "addAccessEntry", 2);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 0, A_PRINCIPAL);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 1, A_PERMISSIONS);
+
+        digester.addCallMethod(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES,
+            "setPropertyDefaults",
+            2);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES, 0, A_ENABLED);
+        digester.addCallParam(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES,
+            1,
+            A_SHOWNAVIGATION);
+
+        digester.addCallMethod("*/"
+            + N_EXPLORERTYPE
+            + "/"
+            + N_EDITOPTIONS
+            + "/"
+            + N_DEFAULTPROPERTIES
+            + "/"
+            + N_PROPERTY, "addProperty", 1);
+        digester.addCallParam("*/"
+            + N_EXPLORERTYPE
+            + "/"
+            + N_EDITOPTIONS
+            + "/"
+            + N_DEFAULTPROPERTIES
+            + "/"
+            + N_PROPERTY, 0, A_NAME);
+
+        digester.addCallMethod("*/"
+            + N_EXPLORERTYPE
+            + "/"
+            + N_EDITOPTIONS
+            + "/"
+            + N_DEFAULTPROPERTIES
+            + "/"
+            + N_DEFAULTPROPERTY, "addProperty", 1);
+        digester.addCallParam("*/"
+            + N_EXPLORERTYPE
+            + "/"
+            + N_EDITOPTIONS
+            + "/"
+            + N_DEFAULTPROPERTIES
+            + "/"
+            + N_DEFAULTPROPERTY, 0, A_NAME);
+
+        digester.addCallMethod(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
+            "addContextMenuEntry",
+            5);
+        digester.addCallParam(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
+            0,
+            A_KEY);
+        digester.addCallParam(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
+            1,
+            A_URI);
+        digester.addCallParam(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
+            2,
+            A_RULES);
+        digester.addCallParam(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
+            3,
+            A_TARGET);
+        digester.addCallParam(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
+            4,
+            A_ORDER);
+
+        digester.addCallMethod(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR,
+            "addContextMenuSeparator",
+            1);
+        digester.addCallParam(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR,
+            0,
+            A_ORDER);
+
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU, "createContextMenu");
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS, "setEditOptions");
+    }
+
+    /**
+     * Creates the xml output for explorer type nodes.<p>
+     * 
+     * @param startNode the startnode to add all rescource types to
+     * @param explorerTypes the list of explorer types
+     * @param module true if the XML tree for the module config should be generated, false otherwise
+     */
+    public static void generateExplorerTypesXml(Element startNode, List explorerTypes, boolean module) {
+
+        // we need the default access node later to check if the explorer type is an individual setting
+        CmsExplorerTypeAccess defaultAccess = null;
+        if (OpenCms.getWorkplaceManager() != null) {
+            defaultAccess = OpenCms.getWorkplaceManager().getDefaultAccess();
+        }
+
+        Iterator i = explorerTypes.iterator();
+        while (i.hasNext()) {
+            // create an explorer type node
+            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
+
+            if (settings.isAddititionalModuleExplorerType() == module) {
+                Element explorerTypeElement = startNode.addElement(N_EXPLORERTYPE);
+                explorerTypeElement.addAttribute(A_NAME, settings.getName());
+                explorerTypeElement.addAttribute(A_KEY, settings.getKey());
+                explorerTypeElement.addAttribute(A_ICON, settings.getIcon());
+                if (settings.getReference() != null) {
+                    explorerTypeElement.addAttribute(A_REFERENCE, settings.getReference());
+                }
+                // create subnode <newresource>
+                Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
+                if (CmsStringUtil.isNotEmpty(settings.getNewResourcePage())) {
+                    newResElement.addAttribute(A_PAGE, settings.getNewResourcePage());
+                }
+                newResElement.addAttribute(A_HANDLER, settings.getNewResourceHandlerClassName());
+                newResElement.addAttribute(A_URI, settings.getNewResourceUri());
+                newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
+                newResElement.addAttribute(A_AUTOSETNAVIGATION, String.valueOf(settings.isAutoSetNavigation()));
+                newResElement.addAttribute(A_AUTOSETTITLE, String.valueOf(settings.isAutoSetTitle()));
+                // create subnode <accesscontrol>            
+                CmsExplorerTypeAccess access = settings.getAccess();
+                if (access != defaultAccess) {
+                    // don't output the node if this is in fact the default access settings
+                    List accessEntries = new ArrayList(access.getAccessEntries().keySet());
+                    // sort accessEntries
+                    Collections.sort(accessEntries);
+                    if (accessEntries.size() > 0) {
+                        Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
+                        Iterator k = accessEntries.iterator();
+                        while (k.hasNext()) {
+                            String key = (String)k.next();
+                            String value = (String)settings.getAccess().getAccessEntries().get(key);
+                            Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
+                            accessEntryElement.addAttribute(A_PRINCIPAL, key);
+                            accessEntryElement.addAttribute(A_PERMISSIONS, value);
+                        }
+                    }
+                }
+                // create subnode <editoptions>
+                if (settings.hasEditOptions()) {
+                    Element editOptionsElement = explorerTypeElement.addElement(N_EDITOPTIONS);
+                    Element defaultPropertiesElement = editOptionsElement.addElement(N_DEFAULTPROPERTIES);
+                    defaultPropertiesElement.addAttribute(A_ENABLED, String.valueOf(settings.isPropertiesEnabled()));
+                    defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, String.valueOf(settings.isShowNavigation()));
+                    Iterator m = settings.getProperties().iterator();
+                    String propNode = N_PROPERTY;
+                    if (module) {
+                        propNode = N_DEFAULTPROPERTY;
+                    }
+                    while (m.hasNext()) {
+                        defaultPropertiesElement.addElement(propNode).addAttribute(A_NAME, (String)m.next());
+                    }
+                    Element contextMenuElement = editOptionsElement.addElement(N_CONTEXTMENU);
+                    m = settings.getContextMenuEntries().iterator();
+                    while (m.hasNext()) {
+                        CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)m.next();
+                        Element itemElement;
+                        if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
+                            // create an <entry> node
+                            itemElement = contextMenuElement.addElement(N_ENTRY);
+                            itemElement.addAttribute(A_KEY, item.getKey());
+                            itemElement.addAttribute(A_URI, item.getUri());
+                            if (item.getTarget() != null) {
+                                itemElement.addAttribute(A_TARGET, item.getTarget());
+                            }
+                            itemElement.addAttribute(A_RULES, item.getRules());
+                        } else {
+                            // create a <separator> node
+                            itemElement = contextMenuElement.addElement(N_SEPARATOR);
+                        }
+                        itemElement.addAttribute(A_ORDER, "" + item.getOrder());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
+     */
+    public void addXmlDigesterRules(Digester digester) {
+
+        // add finish rule
+        digester.addCallMethod("*/" + N_WORKPLACE, "initializeFinished");
+
+        // creation of the import/export manager        
+        digester.addObjectCreate("*/" + N_WORKPLACE, CmsWorkplaceManager.class);
+        // import/export manager finished
+        digester.addSetNext("*/" + N_WORKPLACE, "setWorkplaceManager");
+
+        // add default locale rule
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_DEFAULTLOCALE, "setDefaultLocale", 0);
+
+        digester.addObjectCreate("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_DEFAULTACCESSCONTROL
+            + "/"
+            + N_ACCESSCONTROL, CmsExplorerTypeAccess.class);
+        digester.addSetNext("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_DEFAULTACCESSCONTROL
+            + "/"
+            + N_ACCESSCONTROL, "setDefaultAccess");
+
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_DEFAULTACCESSCONTROL
+            + "/"
+            + N_ACCESSCONTROL
+            + "/"
+            + N_ACCESSENTRY, "addAccessEntry", 2);
+        digester.addCallParam("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_DEFAULTACCESSCONTROL
+            + "/"
+            + N_ACCESSCONTROL
+            + "/"
+            + N_ACCESSENTRY, 0, A_PRINCIPAL);
+        digester.addCallParam("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_DEFAULTACCESSCONTROL
+            + "/"
+            + N_ACCESSCONTROL
+            + "/"
+            + N_ACCESSENTRY, 1, A_PERMISSIONS);
+
+        // add multi context menu
+        digester.addObjectCreate(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU,
+            CmsExplorerContextMenu.class);
+        digester.addSetNext(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU,
+            "setMultiContextMenu");
+
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            "addMenuEntry",
+            5);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            0,
+            A_KEY);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            1,
+            A_URI);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            2,
+            A_RULES);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            3,
+            A_TARGET);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            4,
+            A_ORDER);
+
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_MULTICONTEXTMENU
+            + "/"
+            + N_SEPARATOR, "addMenuSeparator", 1);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_SEPARATOR,
+            0,
+            A_ORDER);
+
+        // add default properties on structure setting
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_DEFAULTPROPERTIESONSTRUCTURE,
+            "setDefaultPropertiesOnStructure",
+            0);
+
+        // add default properties on structure setting
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_ENABLEADVANCEDPROPERTYTABS,
+            "setEnableAdvancedPropertyTabs",
+            0);
+
+        // add rules for dialog handlers
+        digester.addObjectCreate(
+            "*/" + N_WORKPLACE + "/" + N_DIALOGHANDLERS + "/" + N_DIALOGHANDLER,
+            A_CLASS,
+            CmsConfigurationException.class);
+        digester.addSetNext("*/" + N_WORKPLACE + "/" + N_DIALOGHANDLERS + "/" + N_DIALOGHANDLER, "addDialogHandler");
+
+        // add rules for editor handler
+        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORHANDLER, A_CLASS, CmsConfigurationException.class);
+        digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORHANDLER, "setEditorHandler");
+
+        // add rules for editor action handler
+        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORACTION, A_CLASS, CmsConfigurationException.class);
+        digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORACTION, "setEditorAction");
+
+        // add rules for the workplace export points 
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_EXPORTPOINTS + "/" + N_EXPORTPOINT, "addExportPoint", 2);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_EXPORTPOINTS + "/" + N_EXPORTPOINT, 0, A_URI);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_EXPORTPOINTS + "/" + N_EXPORTPOINT, 1, A_DESTINATION);
+
+        // add autolock rule
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_AUTOLOCK, "setAutoLock", 0);
+
+        // add user management enabled rule
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_ENABLEUSERMGMT, "setUserManagementEnabled", 0);
+
+        // add max file upload size rule
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_MAXUPLOADSIZE, "setFileMaxUploadSize", 0);
+
+        // add labeled folders rule
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, "addLabeledFolder", 1);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
+
+        // add localized folders rule
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_LOCALIZEDFOLDERS + "/" + N_RESOURCE,
+            "addLocalizedFolder",
+            1);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LOCALIZEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
+
+        // add workflow settings
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_WORKFLOW + "/" + N_SHOWMESSAGES, "setWorkflowMessage", 0);
+
+        // add fileViewSettings rules
+        digester.addObjectCreate("*/" + N_RFSFILEVIEWESETTINGS, CmsRfsFileViewer.class);
+        digester.addBeanPropertySetter("*/" + N_RFSFILEVIEWESETTINGS + "/" + N_FILEPATH);
+        digester.addBeanPropertySetter("*/" + N_RFSFILEVIEWESETTINGS + "/" + N_ENABLED);
+        digester.addBeanPropertySetter("*/" + N_RFSFILEVIEWESETTINGS + "/" + N_FILEENCODING);
+        digester.addBeanPropertySetter("*/" + N_RFSFILEVIEWESETTINGS + "/" + N_ISLOGFILE);
+        digester.addBeanPropertySetter("*/" + N_RFSFILEVIEWESETTINGS + "/" + N_WINDOWSIZE);
+
+        // Cms specific rule similar to SetNextRule with implicit first CmsObject argument (remains null). 
+        digester.addRule("*/" + N_RFSFILEVIEWESETTINGS, new CmsSetNextRule(
+            "setFileViewSettings",
+            CmsRfsFileViewer.class));
+
+        // add explorer type rules
+        addExplorerTypeXmlRules(digester);
+
+        // creation of the default user settings              
+        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES, CmsDefaultUserSettings.class);
+        digester.addSetNext("*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES, "setDefaultUserSettings");
+
+        // add workplace preferences generaloptions rules 
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACEGENERALOPTIONS
+            + "/"
+            + N_BUTTONSTYLE, "setWorkplaceButtonStyle", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACEGENERALOPTIONS
+            + "/"
+            + N_REPORTTYPE, "setWorkplaceReportType", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACEGENERALOPTIONS
+            + "/"
+            + N_UPLOADAPPLET, "setUploadApplet", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACEGENERALOPTIONS
+            + "/"
+            + N_PUBLISHBUTTONAPPEARANCE, "setPublishButtonAppearance", 0);
+
+        // add workplace preferences startupsettings rules 
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACESTARTUPSETTINGS
+            + "/"
+            + N_LOCALE, "setLocale", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACESTARTUPSETTINGS
+            + "/"
+            + N_PROJECT, "setStartProject", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACESTARTUPSETTINGS
+            + "/"
+            + N_WORKPLACEVIEW, "setStartView", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACESTARTUPSETTINGS
+            + "/"
+            + N_FOLDER, "setStartFolder", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACESTARTUPSETTINGS
+            + "/"
+            + N_SITE, "setStartSite", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACESTARTUPSETTINGS
+            + "/"
+            + N_RESTRICTEXPLORERVIEW, "setRestrictExplorerView", 0);
+
+        // add explorer preferences generaloptions rules 
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERGENERALOPTIONS
+            + "/"
+            + N_BUTTONSTYLE, "setExplorerButtonStyle", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERGENERALOPTIONS
+            + "/"
+            + N_ENTRIES, "setExplorerFileEntries", 0);
+
+        // add explorer display options rules 
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_TITLE, "setShowExplorerFileTitle", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_TYPE, "setShowExplorerFileType", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_DATELASTMODIFIED, "setShowExplorerFileDateLastModified", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_DATECREATED, "setShowExplorerFileDateCreated", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_LOCKEDBY, "setShowExplorerFileLockedBy", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_PERMISSIONS, "setShowExplorerFilePermissions", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_SIZE, "setShowExplorerFileSize", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_STATE, "setShowExplorerFileState", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_USERLASTMODIFIED, "setShowExplorerFileUserLastModified", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_USERCREATED, "setShowExplorerFileUserCreated", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_DATERELEASED, "setShowExplorerFileDateReleased", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_DATEEXPIRED, "setShowExplorerFileDateExpired", 0);
+
+        // add dialog preferences rules
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_DIALOGSPREFERENCES
+            + "/"
+            + N_DIALOGSDEFAULTSETTINGS
+            + "/"
+            + N_FILECOPY, "setDialogCopyFileMode", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_DIALOGSPREFERENCES
+            + "/"
+            + N_DIALOGSDEFAULTSETTINGS
+            + "/"
+            + N_FOLDERCOPY, "setDialogCopyFolderMode", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_DIALOGSPREFERENCES
+            + "/"
+            + N_DIALOGSDEFAULTSETTINGS
+            + "/"
+            + N_FILEDELETION, "setDialogDeleteFileMode", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_DIALOGSPREFERENCES
+            + "/"
+            + N_DIALOGSDEFAULTSETTINGS
+            + "/"
+            + N_DIRECTPUBLISH, "setDialogPublishSiblings", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_DIALOGSPREFERENCES
+            + "/"
+            + N_DIALOGSDEFAULTSETTINGS
+            + "/"
+            + N_SHOWLOCK, "setShowLockDialog", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_DIALOGSPREFERENCES
+            + "/"
+            + N_DIALOGSDEFAULTSETTINGS
+            + "/"
+            + N_SHOWEXPORTSETTINGS, "setShowExportSettingsDialog", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_DIALOGSPREFERENCES
+            + "/"
+            + N_DIALOGSDEFAULTSETTINGS
+            + "/"
+            + N_PERMISSIONSINHERITONFOLDER, "setDialogPermissionsInheritOnFolder", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_DIALOGSPREFERENCES
+            + "/"
+            + N_DIALOGSDEFAULTSETTINGS
+            + "/"
+            + N_EXPANDPERMISSIONSINHERITED, "setDialogExpandInheritedPermissions", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_DIALOGSPREFERENCES
+            + "/"
+            + N_DIALOGSDEFAULTSETTINGS
+            + "/"
+            + N_EXPANDPERMISSIONSUSER, "setDialogExpandUserPermissions", 0);
+
+        // add editor generaloptions rules
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EDITORPREFERENCES
+            + "/"
+            + N_EDITORGENERALOPTIONS
+            + "/"
+            + N_BUTTONSTYLE, "setEditorButtonStyle", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EDITORPREFERENCES
+            + "/"
+            + N_EDITORGENERALOPTIONS
+            + "/"
+            + N_DIRECTEDITSTYLE, "setDirectEditButtonStyle", 0);
+
+        // add editor preferrededitor rules
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EDITORPREFERENCES
+            + "/"
+            + N_EDITORPREFERREDEDITORS
+            + "/"
+            + N_EDITOR, "setPreferredEditor", 2);
+        digester.addCallParam("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EDITORPREFERENCES
+            + "/"
+            + N_EDITORPREFERREDEDITORS
+            + "/"
+            + N_EDITOR, 0, A_TYPE);
+        digester.addCallParam("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EDITORPREFERENCES
+            + "/"
+            + N_EDITORPREFERREDEDITORS
+            + "/"
+            + N_EDITOR, 1, A_VALUE);
+
+        // add workflow generaloptions rules
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKFLOWPREFERENCES
+            + "/"
+            + N_WORKFLOWGENERALOPTIONS
+            + "/"
+            + N_STARTUPFILTER, "setTaskStartupFilterDefault", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKFLOWPREFERENCES
+            + "/"
+            + N_WORKFLOWGENERALOPTIONS
+            + "/"
+            + N_SHOWPROJECTS, "setTaskShowAllProjects", 0);
+
+        // add workflow defaultsettings rules
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKFLOWPREFERENCES
+            + "/"
+            + N_WORKFLOWDEFAULTSETTINGS
+            + "/"
+            + N_MESSAGEACCEPTED, "setTaskMessageAccepted", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKFLOWPREFERENCES
+            + "/"
+            + N_WORKFLOWDEFAULTSETTINGS
+            + "/"
+            + N_MESSAGEFORWARDED, "setTaskMessageForwarded", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKFLOWPREFERENCES
+            + "/"
+            + N_WORKFLOWDEFAULTSETTINGS
+            + "/"
+            + N_MESSAGECOMPLETED, "setTaskMessageCompleted", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKFLOWPREFERENCES
+            + "/"
+            + N_WORKFLOWDEFAULTSETTINGS
+            + "/"
+            + N_INFORMROLEMEMBERS, "setTaskMessageMembers", 0);
+
+        // add tool-manager
+        String rulePath = "*/" + N_TOOLMANAGER;
+        digester.addObjectCreate(rulePath, CmsToolManager.class);
+        digester.addSetNext(rulePath, "setToolManager");
+        // add tool-manager roots
+        rulePath += "/" + N_ROOTS + "/" + N_ROOT;
+        digester.addObjectCreate(rulePath, CmsToolRootHandler.class);
+        digester.addSetNext(rulePath, "addToolRoot");
+        digester.addBeanPropertySetter(rulePath + "/" + N_KEY);
+        digester.addBeanPropertySetter(rulePath + "/" + N_URI);
+        digester.addBeanPropertySetter(rulePath + "/" + N_NAME);
+        digester.addBeanPropertySetter(rulePath + "/" + N_HELPTEXT, "helpText");
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#generateXml(org.dom4j.Element)
+     */
+    public Element generateXml(Element parent) {
+
+        // generate workplace node and subnodes
+        Element workplaceElement = parent.addElement(N_WORKPLACE);
+        Iterator i;
+
+        // add default locale
+        workplaceElement.addElement(N_DEFAULTLOCALE).setText(m_workplaceManager.getDefaultLocale().toString());
+
+        // add <localizedfolders> subnode
+        Element localizedElement = workplaceElement.addElement(N_LOCALIZEDFOLDERS);
+        Iterator localizedIterator = m_workplaceManager.getLocalizedFolders().iterator();
+        while (localizedIterator.hasNext()) {
+            // add <resource uri=""/> element(s)
+            localizedElement.addElement(N_RESOURCE).addAttribute(A_URI, (String)localizedIterator.next());
+        }
+
+        // add <dialoghandlers> subnode
+        Element dialogElement = workplaceElement.addElement(N_DIALOGHANDLERS);
+        Map dialogs = m_workplaceManager.getDialogHandler();
+        String[] keys = (String[])dialogs.keySet().toArray(new String[0]);
+        Arrays.sort(keys);
+
+        for (int j = 0; j < keys.length; j++) {
+            String name = keys[j];
+            dialogElement.addElement(N_DIALOGHANDLER).addAttribute(A_CLASS, dialogs.get(name).getClass().getName());
+        }
+
+        // add miscellaneous editor subnodes
+        workplaceElement.addElement(N_EDITORHANDLER).addAttribute(
+            A_CLASS,
+            m_workplaceManager.getEditorHandler().getClass().getName());
+        workplaceElement.addElement(N_EDITORACTION).addAttribute(
+            A_CLASS,
+            m_workplaceManager.getEditorActionHandler().getClass().getName());
+
+        // add <exportpoints> subnode
+        Element resourceloadersElement = workplaceElement.addElement(N_EXPORTPOINTS);
+        Set points = m_workplaceManager.getExportPoints();
+        i = points.iterator();
+        while (i.hasNext()) {
+            CmsExportPoint point = (CmsExportPoint)i.next();
+            resourceloadersElement.addElement(N_EXPORTPOINT).addAttribute(A_URI, point.getUri()).addAttribute(
+                A_DESTINATION,
+                point.getConfiguredDestination());
+        }
+
+        // add miscellaneous configuration nodes
+        workplaceElement.addElement(N_AUTOLOCK).setText(new Boolean(m_workplaceManager.autoLockResources()).toString());
+        workplaceElement.addElement(N_ENABLEUSERMGMT).setText(
+            new Boolean(m_workplaceManager.showUserGroupIcon()).toString());
+        workplaceElement.addElement(N_DEFAULTPROPERTIESONSTRUCTURE).setText(
+            new Boolean(m_workplaceManager.isDefaultPropertiesOnStructure()).toString());
+        workplaceElement.addElement(N_ENABLEADVANCEDPROPERTYTABS).setText(
+            new Boolean(m_workplaceManager.isEnableAdvancedPropertyTabs()).toString());
+        workplaceElement.addElement(N_MAXUPLOADSIZE).setText(
+            new Integer(m_workplaceManager.getFileMaxUploadSize()).toString());
+
+        // add <labeledfolders> resource list
+        Element labeledElement = workplaceElement.addElement(N_LABELEDFOLDERS);
+        i = m_workplaceManager.getLabelSiteFolders().iterator();
+        while (i.hasNext()) {
+            labeledElement.addElement(N_RESOURCE).addAttribute(A_URI, (String)i.next());
+        }
+
+        // add <workflow> node
+        if (m_workplaceManager.isEnableWorkflowMessages()) {
+            Element workflow = workplaceElement.addElement(N_WORKFLOW);
+            workflow.addElement(N_SHOWMESSAGES).setText(
+                new Boolean(m_workplaceManager.isEnableWorkflowMessages()).toString());
+        }
+
+        // add <rfsfileviewsettings> node
+        CmsRfsFileViewer viewSettings = m_workplaceManager.getFileViewSettings();
+        Element fileViewElement = workplaceElement.addElement(N_RFSFILEVIEWESETTINGS);
+        String filePath = viewSettings.getFilePath();
+        if (filePath != null) {
+            fileViewElement.addElement(N_FILEPATH).setText(filePath);
+        }
+        fileViewElement.addElement(N_ENABLED).setText(String.valueOf(viewSettings.isEnabled()));
+        fileViewElement.addElement(N_FILEENCODING).setText(viewSettings.getFileEncoding());
+        fileViewElement.addElement(N_ISLOGFILE).setText(String.valueOf(viewSettings.getIsLogfile()));
+        fileViewElement.addElement(N_WINDOWSIZE).setText(String.valueOf(viewSettings.getWindowSize()));
+
+        // add <explorertypes> node
+        Element explorerTypesElement = workplaceElement.addElement(N_EXPLORERTYPES);
+        List explorerTypes = m_workplaceManager.getExplorerTypeSettings();
+        generateExplorerTypesXml(explorerTypesElement, explorerTypes, false);
+
+        // add the <defaultaccesscontrol> node
+        Element defaultAccessControlElement = explorerTypesElement.addElement(N_DEFAULTACCESSCONTROL);
+        // create subnode <accesscontrol>            
+        List accessEntries = new ArrayList();
+        // sort accessEntries   
+        CmsExplorerTypeAccess access = m_workplaceManager.getDefaultAccess();
+        Iterator iter = access.getAccessEntries().keySet().iterator();
+        while (iter.hasNext()) {
+            accessEntries.add(iter.next());
+        }
+        Collections.sort(accessEntries);
+
+        if (accessEntries.size() > 0) {
+            Element accessControlElement = defaultAccessControlElement.addElement(N_ACCESSCONTROL);
+            Iterator k = accessEntries.iterator();
+
+            while (k.hasNext()) {
+                String key = (String)k.next();
+                String value = (String)m_workplaceManager.getDefaultAccess().getAccessEntries().get(key);
+                Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
+                accessEntryElement.addAttribute(A_PRINCIPAL, key);
+                accessEntryElement.addAttribute(A_PERMISSIONS, value);
+            }
+        }
+
+        // add the <multicontextmenu> node
+        i = m_workplaceManager.getMultiContextMenu().getAllEntries().iterator();
+        if (i.hasNext()) {
+            // only generate the node if entries are defined
+            Element contextMenuElement = explorerTypesElement.addElement(N_MULTICONTEXTMENU);
+            while (i.hasNext()) {
+                CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)i.next();
+                Element itemElement;
+                if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
+                    // create an <entry> node
+                    itemElement = contextMenuElement.addElement(N_ENTRY);
+                    itemElement.addAttribute(A_KEY, item.getKey());
+                    itemElement.addAttribute(A_URI, item.getUri());
+                    if (item.getTarget() != null) {
+                        itemElement.addAttribute(A_TARGET, item.getTarget());
+                    }
+                    String rules = item.getRules();
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(rules)) {
+                        rules = "";
+                    }
+                    itemElement.addAttribute(A_RULES, rules);
+                } else {
+                    // create a <separator> node
+                    itemElement = contextMenuElement.addElement(N_SEPARATOR);
+                }
+                itemElement.addAttribute(A_ORDER, "" + item.getOrder());
+            }
+        }
+
+        // add the <default-preferences> user settings main node
+        Element defaultPreferences = workplaceElement.addElement(N_DEFAULTPREFERENCES);
+        // add the <workplace-preferences> node
+        Element workplacePreferences = defaultPreferences.addElement(N_WORKPLACEPREFERENCES);
+        // add the <workplace-generaloptions> node
+        Element workplaceGeneraloptions = workplacePreferences.addElement(N_WORKPLACEGENERALOPTIONS);
+        // add the <buttonstyle> node
+        workplaceGeneraloptions.addElement(N_BUTTONSTYLE).setText(
+            m_workplaceManager.getDefaultUserSettings().getWorkplaceButtonStyleString());
+        // add the <reporttype> node
+        workplaceGeneraloptions.addElement(N_REPORTTYPE).setText(
+            m_workplaceManager.getDefaultUserSettings().getWorkplaceReportType());
+        // add the <uploadapplet> node
+        workplaceGeneraloptions.addElement(N_UPLOADAPPLET).setText(
+            m_workplaceManager.getDefaultUserSettings().getUploadAppletString());
+        // add the <publishbuttonappearance> node if not empty
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance())) {
+            workplaceGeneraloptions.addElement(N_PUBLISHBUTTONAPPEARANCE).setText(
+                m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance());
+        }
+        // add the <workplace-startupsettings> node
+        Element workplaceStartupsettings = workplacePreferences.addElement(N_WORKPLACESTARTUPSETTINGS);
+        // add the <locale> node
+        workplaceStartupsettings.addElement(N_LOCALE).setText(
+            m_workplaceManager.getDefaultUserSettings().getLocale().toString());
+        // add the <project> node
+        workplaceStartupsettings.addElement(N_PROJECT).setText(
+            m_workplaceManager.getDefaultUserSettings().getStartProject());
+        // add the <view> node
+        workplaceStartupsettings.addElement(N_WORKPLACEVIEW).setText(
+            m_workplaceManager.getDefaultUserSettings().getStartView());
+        // add the <folder> node
+        workplaceStartupsettings.addElement(N_FOLDER).setText(
+            m_workplaceManager.getDefaultUserSettings().getStartFolder());
+        // add the <site> node
+        workplaceStartupsettings.addElement(N_SITE).setText(m_workplaceManager.getDefaultUserSettings().getStartSite());
+        // add the <restrictexplorerview> node
+        workplaceStartupsettings.addElement(N_RESTRICTEXPLORERVIEW).setText(
+            m_workplaceManager.getDefaultUserSettings().getRestrictExplorerViewString());
+
+        // add the <explorer-preferences> node
+        Element explorerPreferences = defaultPreferences.addElement(N_EXPLORERPREFERENCES);
+        // add the <explorer-generaloptions> node
+        Element explorerGeneraloptions = explorerPreferences.addElement(N_EXPLORERGENERALOPTIONS);
+        // add the <buttonstyle> node
+        explorerGeneraloptions.addElement(N_BUTTONSTYLE).setText(
+            m_workplaceManager.getDefaultUserSettings().getExplorerButtonStyleString());
+        // add the <reporttype> node
+        explorerGeneraloptions.addElement(N_ENTRIES).setText(
+            "" + m_workplaceManager.getDefaultUserSettings().getExplorerFileEntries());
+        // add the <explorer-displayoption> node
+        Element explorerDisplayoptions = explorerPreferences.addElement(N_EXPLORERDISPLAYOPTIONS);
+        // add the <show-title> node
+        explorerDisplayoptions.addElement(N_TITLE).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileTitle());
+        // add the <show-type> node
+        explorerDisplayoptions.addElement(N_TYPE).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileType());
+        // add the <show-datelastmodified> node
+        explorerDisplayoptions.addElement(N_DATELASTMODIFIED).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateLastModified());
+        // add the <show-datecreated> node
+        explorerDisplayoptions.addElement(N_DATECREATED).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateCreated());
+        // add the <show-lockedby> node
+        explorerDisplayoptions.addElement(N_LOCKEDBY).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileLockedBy());
+        // add the <show-permissions> node
+        explorerDisplayoptions.addElement(N_PERMISSIONS).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFilePermissions());
+        // add the <show-size> node
+        explorerDisplayoptions.addElement(N_SIZE).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileSize());
+        // add the <show-state> node
+        explorerDisplayoptions.addElement(N_STATE).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileState());
+        // add the <show-userlastmodified> node
+        explorerDisplayoptions.addElement(N_USERLASTMODIFIED).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileUserLastModified());
+        // add the <show-usercreated> node
+        explorerDisplayoptions.addElement(N_USERCREATED).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileUserCreated());
+        // add the <show-datereleased> node
+        explorerDisplayoptions.addElement(N_DATERELEASED).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateReleased());
+        // add the <show-dateexpired> node
+        explorerDisplayoptions.addElement(N_DATEEXPIRED).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateExpired());
+
+        // add the <dialog-preferences> node
+        Element dialogPreferences = defaultPreferences.addElement(N_DIALOGSPREFERENCES);
+        // add the <dialog-defaultsettings> node
+        Element dialogDefaultSettings = dialogPreferences.addElement(N_DIALOGSDEFAULTSETTINGS);
+        // add the <filecopy> node
+        dialogDefaultSettings.addElement(N_FILECOPY).setText(
+            m_workplaceManager.getDefaultUserSettings().getDialogCopyFileModeString());
+        // add the <foldercopy> node
+        dialogDefaultSettings.addElement(N_FOLDERCOPY).setText(
+            m_workplaceManager.getDefaultUserSettings().getDialogCopyFolderModeString());
+        // add the <filedeletion> node
+        dialogDefaultSettings.addElement(N_FILEDELETION).setText(
+            m_workplaceManager.getDefaultUserSettings().getDialogDeleteFileModeString());
+        // add the <directpublish> node
+        dialogDefaultSettings.addElement(N_DIRECTPUBLISH).setText(
+            m_workplaceManager.getDefaultUserSettings().getDialogPublishSiblingsString());
+        // add the <showlock> node
+        dialogDefaultSettings.addElement(N_SHOWLOCK).setText(
+            m_workplaceManager.getDefaultUserSettings().getDialogShowLockString());
+        // add the <showexportsettings> node
+        dialogDefaultSettings.addElement(N_SHOWEXPORTSETTINGS).setText(
+            m_workplaceManager.getDefaultUserSettings().getDialogShowExportSettingsString());
+        // add the <expand-permissionsuser> node
+        dialogDefaultSettings.addElement(N_EXPANDPERMISSIONSUSER).setText(
+            m_workplaceManager.getDefaultUserSettings().getDialogExpandUserPermissionsString());
+        // add the <expand-permissionsinherited> node
+        dialogDefaultSettings.addElement(N_EXPANDPERMISSIONSINHERITED).setText(
+            m_workplaceManager.getDefaultUserSettings().getDialogExpandInheritedPermissionsString());
+        // add the <permissions-inheritonfolder> node
+        dialogDefaultSettings.addElement(N_PERMISSIONSINHERITONFOLDER).setText(
+            m_workplaceManager.getDefaultUserSettings().getDialogPermissionsInheritOnFolderString());
+
+        // add the <editors-preferences> node
+        Element editorsPreferences = defaultPreferences.addElement(N_EDITORPREFERENCES);
+        // add the <editors-generaloptions> node
+        Element editorGeneraloptions = editorsPreferences.addElement(N_EDITORGENERALOPTIONS);
+        // add the <buttonstyle> node
+        editorGeneraloptions.addElement(N_BUTTONSTYLE).setText(
+            m_workplaceManager.getDefaultUserSettings().getEditorButtonStyleString());
+        // add the <directedit> node
+        editorGeneraloptions.addElement(N_DIRECTEDITSTYLE).setText(
+            m_workplaceManager.getDefaultUserSettings().getDirectEditButtonStyleString());
+        // add the <editors-preferrededitors> node
+        Element editorPreferrededitors = editorsPreferences.addElement(N_EDITORPREFERREDEDITORS);
+        // add the <editor> nodes
+        Iterator editors = m_workplaceManager.getDefaultUserSettings().getEditorSettings().keySet().iterator();
+        while (editors.hasNext()) {
+            String type = (String)editors.next();
+            String value = m_workplaceManager.getDefaultUserSettings().getPreferredEditor(type);
+            Element editor = editorPreferrededitors.addElement(N_EDITOR);
+            editor.addAttribute(A_TYPE, type);
+            editor.addAttribute(A_VALUE, value);
+        }
+
+        // add the <workflow-prefernces> node
+        Element workflowPreferences = defaultPreferences.addElement(N_WORKFLOWPREFERENCES);
+        // add the <workflow-generaloptions> node
+        Element workflowGeneraloptions = workflowPreferences.addElement(N_WORKFLOWGENERALOPTIONS);
+        // add the <startupfilter> node
+        workflowGeneraloptions.addElement(N_STARTUPFILTER).setText(
+            m_workplaceManager.getDefaultUserSettings().getTaskStartupFilterDefault());
+        // add the <showprojects> node
+        workflowGeneraloptions.addElement(N_SHOWPROJECTS).setText(
+            m_workplaceManager.getDefaultUserSettings().getTaskShowAllProjectsString());
+        // add the <workflow-defaultsettings> node
+        Element workflowDefaultsettings = workflowPreferences.addElement(N_WORKFLOWDEFAULTSETTINGS);
+        // add the <message-accepted> node
+        workflowDefaultsettings.addElement(N_MESSAGEACCEPTED).setText(
+            m_workplaceManager.getDefaultUserSettings().getTaskMessageAcceptedString());
+        // add the <message-forwarded> node
+        workflowDefaultsettings.addElement(N_MESSAGEFORWARDED).setText(
+            m_workplaceManager.getDefaultUserSettings().getTaskMessageForwardedString());
+        // add the <message-completed> node
+        workflowDefaultsettings.addElement(N_MESSAGECOMPLETED).setText(
+            m_workplaceManager.getDefaultUserSettings().getTaskMessageCompletedString());
+        // add the <informrolemembers> node
+        workflowDefaultsettings.addElement(N_INFORMROLEMEMBERS).setText(
+            m_workplaceManager.getDefaultUserSettings().getTaskMessageMembersString());
+
+        Element toolManagerElement = workplaceElement.addElement(N_TOOLMANAGER);
+        Element rootsElement = toolManagerElement.addElement(N_ROOTS);
+        Iterator it = m_workplaceManager.getToolManager().getToolRoots().iterator();
+        while (it.hasNext()) {
+            CmsToolRootHandler root = (CmsToolRootHandler)it.next();
+            Element rootElement = rootsElement.addElement(N_ROOT);
+            rootElement.addElement(N_KEY).addText(root.getKey());
+            rootElement.addElement(N_URI).addText(root.getUri());
+            rootElement.addElement(N_NAME).addText(root.getName());
+            rootElement.addElement(N_HELPTEXT).addText(root.getHelpText());
+        }
+
+        // return the configured node
+        return workplaceElement;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdFilename()
+     */
+    public String getDtdFilename() {
+
+        return CONFIGURATION_DTD_NAME;
+    }
+
+    /**
+     * Returns the initialized workplace manager.<p>
+     * 
+     * @return the initialized workplace manager
+     */
+    public CmsWorkplaceManager getWorkplaceManager() {
+
+        return m_workplaceManager;
+    }
+
+    /**
+     * Will be called when configuration of this object is finished.<p> 
+     */
+    public void initializeFinished() {
+
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_FINISHED_0));
+        }
+    }
+
+    /**
+     * Sets the generated workplace manager.<p>
+     * 
+     * @param manager the workplace manager to set
+     */
+    public void setWorkplaceManager(CmsWorkplaceManager manager) {
+
+        m_workplaceManager = manager;
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_INIT_FINISHED_0));
+        }
+    }
+}

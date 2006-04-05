@@ -1,0 +1,57 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:element name="Widgets" type="OpenCmsWidgets"/>
+	
+	<xsd:complexType name="OpenCmsWidgets">
+		<xsd:sequence>
+			<xsd:element name="Widget" type="OpenCmsWidget" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsWidget">
+		<xsd:sequence>
+
+			<xsd:element name="String" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Html" type="OpenCmsHtml" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Locale" type="OpenCmsLocale" minOccurs="0" maxOccurs="2" />		
+			<xsd:element name="File" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Image" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Download" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Link" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="HtmlSnippet" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="TableSnippet" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Color" type="OpenCmsColor" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="DateTime" type="OpenCmsDateTime" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Boolean" type="OpenCmsBoolean" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Selector" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="MultiSelector" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Textarea" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Combobox" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="DisplayWidget" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<defaults>
+				<default element="DateTime" value="${currenttime}" />
+				<default element="Locale" value="${request.locale}" />
+				<default element="DisplayWidget" value="Value that is simply displayed and not editable." />
+			</defaults>
+			<layouts>
+				<layout element="Image" widget="ImageGalleryWidget" />
+				<layout element="Download" widget="DownloadGalleryWidget" />
+				<layout element="Link" widget="LinkGalleryWidget" />
+				<layout element="HtmlSnippet" widget="HtmlGalleryWidget" />
+				<layout element="TableSnippet" widget="TableGalleryWidget" />
+				<layout element="Selector" widget="SelectorWidget" configuration="Option 1|Option 2|Option 3|Option 4" />
+				<layout element="MultiSelector" widget="MultiSelectWidget" configuration="Option 1|Option 2|Option 3|Option 4" />
+				<layout element="Textarea" widget="TextareaWidget" />
+				<layout element="Combobox" widget="ComboWidget" configuration="value='Value 1' help='A help text for value 1'|value='Value 2' help='Another help text for the second value.'|value='Value 3' default='true' help='The help text vor value three.'|value='Value 4 which has a very long value text that needs to be displayed in the limited size input area' help='The is the help for value 4'" />
+				<layout element="DisplayWidget" widget="DisplayWidget" />
+			</layouts>	
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

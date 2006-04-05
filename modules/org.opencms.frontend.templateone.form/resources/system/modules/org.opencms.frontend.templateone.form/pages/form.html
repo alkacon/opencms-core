@@ -1,0 +1,97 @@
+<%@page buffer="none" session="false" import="org.opencms.i18n.*,org.opencms.frontend.templateone.form.*, java.util.*" %><%
+
+// initialize the form handler
+CmsFormHandler cms = new CmsFormHandler(pageContext, request, response);
+
+// get the localized messages to create the form
+CmsMessages messages = cms.getMessages();
+
+// get the template to display
+String template = cms.property("template", "search", "/system/modules/org.opencms.frontend.templateone/templates/main");
+
+// include the template head
+cms.include(template, "head");
+out.println("<div class=\"element\">");
+
+boolean showForm = cms.showForm();
+
+if (! showForm) {
+	// form has been submitted with correct values, decide further actions
+	if (cms.showCheck()) {
+		// show optional check page
+		request.setAttribute("formhandler", cms);
+		cms.include("../elements/check.jsp");
+	} else if (cms.getFormConfiguration().hasTargetUri()) {
+		response.sendRedirect(cms.link(cms.getFormConfiguration().getTargetUri()));
+	} else {
+		// try to send a notification email with the submitted form field values
+		if (cms.sendMail()) {
+			// successfully sent mail, show confirmation end page
+			request.setAttribute("formhandler", cms);
+			cms.include("../elements/confirmation.jsp");
+		} else {
+			// failure sending mail, show error output %>
+			<h2><%= messages.key("form.error.mail.headline") %></h2>
+			<p><%= messages.key("form.error.mail.text") %></p>
+
+			<!--
+			Error description: <%= (String)cms.getErrors().get("sendmail") %>
+			//--><%
+		}
+	}
+	
+} else {
+
+	// get the configured form elements
+	CmsForm formConfiguration = cms.getFormConfiguration();
+	List fields = formConfiguration.getFields();
+	
+	// show form text
+	out.print(formConfiguration.getFormText());
+	
+	// show global error message if validation failed
+	if (cms.hasValidationErrors()) {
+		out.print("<p>");
+		out.print(messages.key("form.html.label.error.start"));
+		out.print(messages.key("form.error.message"));
+		out.print(messages.key("form.html.label.error.start"));
+		out.println("</p>");
+	}
+
+	// create the form head 
+	%>	<form name="emailform" action="<%= cms.link(cms.getRequestContext().getUri()) %>" method="post" style="margin-top: 14px; margin-bottom: 0; padding: 0;">
+	<input type="hidden" name="<%= CmsFormHandler.PARAM_FORMACTION %>" value="<%= CmsFormHandler.ACTION_SUBMIT %>">
+	<%= messages.key("form.html.start") %><%= formConfiguration.getFormAttributes() %>>
+		<%
+	// create the html output to display the form fields
+	for( int i = 0, n = fields.size(); i < n; i++) {
+		
+		// loop through all form input fields 
+		I_CmsField field = (I_CmsField)fields.get(i);
+		String fieldType = field.getType();	
+		String fieldLabel = field.getLabel();	
+		String errorMessage = (String)cms.getErrors().get(field.getName());
+
+		out.println(field.buildHtml(cms, messages, errorMessage));
+	}
+	
+	// create the form foot 
+	if (formConfiguration.hasMandatoryFields()) {
+		%><%= messages.key("form.html.row.start") %>
+			<%= messages.key("form.html.button.start") %><%= messages.key("form.message.mandatory") %><%= messages.key("form.html.button.end") %>
+		<%= messages.key("form.html.row.end") %>
+		<%
+	}
+		%><%= messages.key("form.html.row.start") %>
+			<%= messages.key("form.html.button.start") %><input type="submit" value="<%= messages.key("form.button.submit") %>" class="formbutton">&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="<%= messages.key("form.button.reset") %>" class="formbutton"><%= messages.key("form.html.button.end") %>
+		<%= messages.key("form.html.row.end") %>
+	<%= messages.key("form.html.end") %>
+	</form><%
+	
+}
+
+out.println("</div>");
+// include the template foot
+cms.include(template, "foot");
+	
+%>

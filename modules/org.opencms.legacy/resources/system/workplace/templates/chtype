@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<HTML>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.chtype"/><![CDATA[';
+
+var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+
+</HEAD>
+
+<body bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 leftmargin=0 topmargin=0>
+
+<!-- Beginn neue Datei Anlegen -->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<form id="TYPE" name="TYPE">
+<table border=2 cellspacing=0 cellpadding=0 width=500>
+<tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+    <tr><td colspan=3 class=head>]]><LABEL value="title.chtype" /><![CDATA[:  ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td></tr>
+    <tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
+    <tr><td colspan=3 class=dialogtxt>]]><LABEL value="message.chtype" /><![CDATA[:</td></tr>
+    <tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
+    <tr>
+        <td class=leerzeile width=5%>&nbsp;</td>
+        <td class=leerzeile width=90%>
+            <table border=1 width=100%>
+                <tr><td class=wizard>
+                    <table border=0 width=100%>
+                    ]]><RADIOBUTTON name="R_NEU" method="getResources" /><![CDATA[
+                    </table>
+                </td></tr>
+            </table>
+        </td>
+        <td class=leerzeile width=5%>&nbsp;</td>
+    </tr>
+
+    <tr><td colspan=3 class=formular>
+            <table cellspacing=0 cellpadding=5 width=100%>
+            <tr>
+                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="loc=check_radio('TYPE','R_NEU',']]><PROCESS>RADIOSIZE</PROCESS><![CDATA[');location='chtype.html?newtype='+loc;"></td>
+                <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location.href=lasturl;"></td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+    </table>
+</td>
+</tr>
+</table>
+</form>
+</td></tr>
+</table>
+<!-- Ende neue Datei Anlegen -->
+
+</body>
+</HTML>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error">
+<ERRORPAGE title="error.title.chtype" message="error.message.chtype" reason="error.reason.chtype" suggestion="error.suggestion.chtype" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
+</TEMPLATE>
+
+</WORKPLACE>

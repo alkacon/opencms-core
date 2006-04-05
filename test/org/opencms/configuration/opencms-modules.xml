@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-modules.dtd">
+
+<opencms>
+    <modules>
+    	<module>
+    		<name>org.opencms.configuration.TestModule1</name>
+    		<nicename><![CDATA[OpenCms configuration test module]]></nicename>
+       		<class/>    		
+			<description><![CDATA[A module to test the OpenCms module configuration]]></description>
+			<version>1.0</version>
+			<authorname><![CDATA[Alexander Kandzior]]></authorname>
+			<authoremail><![CDATA[alex@opencms.org]]></authoremail>
+			<datecreated>Mon, 12 Jul 2004 10:00:00 GMT</datecreated>
+			<userinstalled>Admin</userinstalled>
+			<dateinstalled>Tue, 13 Jul 2004 11:00:00 GMT</dateinstalled>
+			<dependencies>
+				<dependency name="org.opencms.configuration.TestModule2" version="2.0" />
+			</dependencies>
+			<exportpoints>
+				<exportpoint uri="/system/modules/org.opencms.configuration.TestModule1/classes" destination="classes/"/>
+				<exportpoint uri="/system/modules/org.opencms.configuration.TestModule1/lib" destination="lib/"/>
+			</exportpoints>	
+			<resources>
+				<resource uri="/system/modules/org.opencms.configuration.TestModule1/"/>
+			</resources>		
+			<parameters>
+				<param name="additionalresources">/system/modules/org.opencms.configuration.TestModule1/</param>
+				<param name="param1">value1</param>
+				<param name="param2">value2</param>
+			</parameters>		
+            <resourcetypes>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="article" id="12">
+					<properties>
+						<property>
+							<name>Title</name>
+							<value><![CDATA[Test title]]></value>
+						</property>
+						<property>
+							<name>Description</name>
+							<value type="shared"><![CDATA[${currentuser.name}_${resource.site.path}_${resource.root.path}]]></value>
+						</property>						
+						<property>
+							<name>template-elements</name>
+							<value><![CDATA[/system/modules/org.opencms.frontend.templateone.form/pages/form.html]]></value>
+						</property>				
+					</properties>
+					<copy-resources>
+						<copy-resource source="/system/index.html" />
+						<copy-resource source="/system/index2.html" target="${resource.folder.path}" type="preserve" />
+						<copy-resource source="/system/index3.html" target="${resource.folder.path}" type="new" />
+					</copy-resources>					
+					<param name="schema">/sites/default/xmlcontent/article.xsd</param>
+				</type>	
+			</resourcetypes>		
+            <explorertypes>
+            	<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
+					<newresource uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25" autosetnavigation="false" autosettitle="false"/>
+           		</explorertype>	
+           </explorertypes>	
+    	</module>
+    </modules>  
+</opencms>    

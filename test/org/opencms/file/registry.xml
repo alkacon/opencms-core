@@ -1,0 +1,32 @@
+<registry>
+	<system>
+		<testnode>
+			
+			<key0></key0>
+									
+			<key1>value1</key1>
+			
+			<key2>value2-1</key2>
+			<key2>value2-2</key2>
+			
+			<key3>value3-1</key3>
+			<key3>value3-2</key3>
+			<key3>value3-3</key3>
+			
+			<key4>
+				<key4-1>value4-1</key4-1>
+				<key4-2>value4-2</key4-2>
+			</key4>
+
+			<key5>
+				<key5-1>value5-1a</key5-1>
+				<key5-2>value5-2a</key5-2>
+			</key5>
+			<key5>
+				<key5-1>value5-1b</key5-1>
+				<key5-2>value5-2b</key5-2>
+			</key5>
+						
+		</testnode>
+	</system>
+</registry>

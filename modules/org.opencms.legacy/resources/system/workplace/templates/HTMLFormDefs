@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<XMLTEMPLATE>	
+	<inputfield><![CDATA[<input class="]]><PROCESS>class</PROCESS><![CDATA[" value="]]><PROCESS>value</PROCESS><![CDATA[" size=]]><PROCESS>size</PROCESS><![CDATA[ maxlength=]]><PROCESS>length</PROCESS><![CDATA[ name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA[" ]]><PROCESS>action</PROCESS>></inputfield>
+	<password><![CDATA[<input type ="password" class="]]><PROCESS>class</PROCESS><![CDATA[" size=]]><PROCESS>size</PROCESS><![CDATA[ maxlength=]]><PROCESS>length</PROCESS><![CDATA[ name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA["]]>></password>
+	<selectbox>
+		<start><![CDATA[<select ]]><PROCESS>class</PROCESS><![CDATA[name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA[" width=]]><PROCESS>width</PROCESS><![CDATA[ style="width:]]><PROCESS>width</PROCESS><![CDATA[px" onchange="]]><PROCESS>onchange</PROCESS><![CDATA[" size="]]><PROCESS>size</PROCESS><![CDATA[">]]></start>
+		<end><![CDATA[</select>]]></end>
+		<class>class=<PROCESS>classname</PROCESS><![CDATA[ ]]></class>
+		<width>class="<PROCESS>widthname</PROCESS>"<![CDATA[ ]]></width>
+		<option><![CDATA[<option value="]]><PROCESS>value</PROCESS><![CDATA[">]]><PROCESS>name</PROCESS></option>
+		<seloption><![CDATA[<option selected value="]]><PROCESS>value</PROCESS><![CDATA[">]]><PROCESS>name</PROCESS></seloption>
+	</selectbox>
+	<radiobuttons>
+		<colentry><![CDATA[<tr align=left width=*>
+		<td valign=top align=left width=5><INPUT type ="radio" id=]]><PROCESS>radioname</PROCESS><![CDATA[ name=]]><PROCESS>radioname</PROCESS><![CDATA[ value="]]><PROCESS>link</PROCESS><![CDATA[" ]]><PROCESS>selectedentry</PROCESS><![CDATA[></td>
+		<td valign=top align=left width=5><p]]><PROCESS>class</PROCESS><![CDATA[>]]><PROCESS>name</PROCESS><![CDATA[</p></td>
+		<td valign=top align=500>&nbsp;</td>
+		</tr>]]>
+		</colentry>
+		<rowentry><![CDATA[
+		<td>&nbsp;&nbsp;&nbsp;</td>
+		<td align=left width=5><INPUT type ="radio" id=]]><PROCESS>radioname</PROCESS><![CDATA[ name=]]><PROCESS>radioname</PROCESS><![CDATA[ value="]]><PROCESS>link</PROCESS><![CDATA[" ]]><PROCESS>selectedentry</PROCESS><![CDATA[></td>
+		<td align=left nowrap><p]]><PROCESS>class</PROCESS><![CDATA[>]]><PROCESS>name</PROCESS><![CDATA[</p></td>
+		]]>
+		</rowentry>
+		<optionalselected>checked </optionalselected>
+		<class><![CDATA[ ]]>class=<PROCESS>classname</PROCESS></class>
+	</radiobuttons>		
+</XMLTEMPLATE>

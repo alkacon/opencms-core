@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+	<xsd:element name="Propertys" type="OpenCmsPropertys"/>
+	
+	<xsd:complexType name="OpenCmsPropertys">
+		<xsd:sequence>
+			<xsd:element name="Property" type="OpenCmsProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsProperty">
+		<xsd:sequence>
+			<xsd:element name="propertyname" type="OpenCmsString" />
+			<xsd:element name="type" type="OpenCmsString"  />
+			<xsd:element name="empty" type="OpenCmsBoolean" default="true" />
+			<xsd:element name="filename" type="OpenCmsBoolean" default="true" />
+			<xsd:element name="length" type="OpenCmsString"  />
+			<xsd:element name="value" type="OpenCmsString" minOccurs="0" maxOccurs="10" />
+
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.workplace.tools.content.workplace"/>
+			<layouts>
+				<layout element="type" widget="SelectorWidget" configuration="file*:${key.type.file}|folder:${key.type.folder}|both:${key.type.both}" />
+			</layouts>
+		</xsd:appinfo>
+	</xsd:annotation>  
+	
+</xsd:schema>

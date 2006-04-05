@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Modtests
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test6.xsd">
+  
+	<Modtest language="en">
+		<Test><![CDATA[Test]]></Test>
+		<Title><![CDATA[This is just a modification test]]></Title>
+		<Toast><![CDATA[Toast]]></Toast>
+	</Modtest>
+</Modtests>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<HTML>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+    <script language=JavaScript>
+        <!--
+            top.head.helpUrl=']]><LABEL value="help.administration.module_management.new"/><![CDATA[';
+        //-->
+    </script>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='head_module2.html';">
+    <!-- Tabelle um vertikal und horizontal zu zentrieren-->
+    <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+    <tr><td align=middle valign=center>
+
+    <!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+    <form id=MODCREATE name=MODCREATE action="module_create.html?action=export" method="post">
+    <table cellspacing=0 cellpadding=0 border=2 width=450>
+        <tr><td>
+            <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+                <!-- Beginn Tabellenkopf blau-->
+                <tr>
+                    <td class="head">]]><LABEL value="module.lable.modulecreate"/><![CDATA[</td>
+                </tr>
+                <!-- Ende Tabellenkopf blau-->
+
+                <!-- Beginn Leerzeile-->
+                <tr>
+                    <td class="leerzeile">&nbsp;</td>
+                </tr>
+                <!-- Ende Leerzeile-->
+
+                <!-- Beginn Inhalt-->
+                <tr><td class=dialogtxt>
+                    <table border=1 width=100%>
+                        <tr><td class=dialogtxt>
+                            <table border=0 width=100%>
+                                <tr>
+                                    <td class=formular>]]><LABEL value="module.lable.packetname"/><![CDATA[:</td>
+                                    <td class=dialogtxt align="left">
+                                    <input type="text" name="packetname"  class="textfeld5" style="width:270"  size=27 value="]]><PROCESS>packetname</PROCESS><![CDATA["  onSubmit="" >
+                                    </td>
+                                    <td class=formular> ]]><LABEL value="label.version"/><![CDATA[:</td>
+                                    <td class=dialogtxt align="left">
+                                    <input type="text" name="version" class="textfeld5" style="width:40"  size="4" value="]]><PROCESS>version</PROCESS><![CDATA[" >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="formular">]]><LABEL value="label.modulname"/><![CDATA[:</td>
+                                    <td class=dialogtxt align="left" colspan="3">
+                                        <input type="text" name="modulename"  class="textfeld5" style="width:390" size="39" value="]]><PROCESS>modulename</PROCESS><![CDATA[" onSubmit="" >
+                                    </td>
+                                </tr>
+                                <!-- Beginn Leerzeile-->
+                                <tr>
+                                    <td class="leerzeile" colspan=4>&nbsp;</td>
+                                </tr>
+                                <!-- Ende Leerzeile-->
+                                <tr>
+                                    <td class=formular>]]><LABEL value="module.lable.description"/><![CDATA[</td>
+                                </tr>
+                                <tr>
+                                    <td class=dialogtxt colspan="4" align="center">
+                                        <textarea name="description" id="description" style="width:470"  cols="47" rows="5" >]]><PROCESS>description</PROCESS><![CDATA[</textarea>
+                                    </td>
+                                <tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <table border="0" width="100%">
+                                        <tr>
+                                            <td class="formular" nowrap>
+                                                <input type="checkbox" name="moduletype" id="moduletype" ]]><PROCESS>moduletype</PROCESS><![CDATA[ value="checked">
+                                                ]]><LABEL value="module.lable.moduletype"/><![CDATA[
+                                            </td>                                        
+                                            <td class="formular" nowrap>
+                                                <input type="checkbox" name="adminpoint" id="adminpoint" ]]><PROCESS>adminpoint</PROCESS><![CDATA[ value="checked">
+                                                ]]><LABEL value="module.lable.adminpoint"/><![CDATA[
+                                            </td>
+                                            <td class="formular" nowrap>
+                                                <input type="checkbox" name="view" id="view" ]]><PROCESS>view</PROCESS><![CDATA[ value="checked">
+                                                ]]><LABEL value="label.view"/><![CDATA[
+                                            </td>                                            
+                                        </tr>     
+                                        <tr>
+                                            <td class="formular" nowrap>
+                                                <input type="checkbox" name="exportclasses" id="exportclasses" ]]><PROCESS>exportclasses</PROCESS><![CDATA[ value="checked">
+                                                ]]><LABEL value="module.lable.exportclasses"/><![CDATA[
+                                            </td>                                        
+                                            <td class="formular" nowrap>
+                                                <input type="checkbox" name="exportlib" id="exportlib" ]]><PROCESS>exportlib</PROCESS><![CDATA[ value="checked">
+                                                ]]><LABEL value="module.lable.exportlib"/><![CDATA[
+                                            </td>
+                                        </tr>                                                                        
+                                        <tr>
+                                            <td class=formular nowrap>]]><LABEL value="module.lable.maintenance"/><![CDATA[</td>
+                                            <td class="dialogtxt" colspan="2">
+                                                <input type="text" name="maintenance" id="maintenance" class="textfeld3" style="width=300" width="300" size="30" value="]]><PROCESS>maintenance</PROCESS><![CDATA[" >
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class=formular nowrap>]]><LABEL value="module.lable.publishclass"/><![CDATA[</td>
+                                            <td class="dialogtxt" colspan="2">
+                                                <input type="text" name="publishclass" id="publishclass" class="textfeld3" style="width=300" width="300" size="30" value="]]><PROCESS>publishclass</PROCESS><![CDATA[" >
+                                            </td>
+                                        </tr>                                        
+                                            <tr>
+                                                <td class=formular>]]><LABEL value="label.author"/><![CDATA[</td>
+                                                <td class="dialogtxt" colspan="2">
+                                                    <input type="text" name="author" id="author" class="textfeld3" style="width=300" width="300" size="30" value="]]><PROCESS>author</PROCESS><![CDATA[" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=formular>]]><LABEL value="input.email"/><![CDATA[</td>
+                                                <td class="dialogtxt" colspan="2">
+                                                    <input type="text" name="email" id="email" class="textfeld3" style="width=300" width="300" size="30" value="]]><PROCESS>email</PROCESS><![CDATA[" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=formular>]]><LABEL value="label.modulecreatedate"/><![CDATA[</td>
+                                                <td class="dialogtxt" colspan="2">
+                                                    <input type="text" name="date" id="date" class="textfeld3" style="width=300" width="300" size="30" value="]]><PROCESS>date</PROCESS><![CDATA[" >
+                                                </td>
+                                            </tr>
+
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- Beginn Leerzeile-->
+                                <tr>
+                                    <td class="leerzeile" colspan=3>&nbsp;</td>
+                                </tr>
+                                <!-- Ende Leerzeile-->
+                                </table>
+                        </td></tr>
+                    </table>
+                </td></tr>
+
+                <!-- Beginn Buttonleisete-->
+                <tr><td class=dialogtxt>
+                    <table cellspacing=0 cellpadding=5 width=100%>
+                    <tr>
+                        <td class=formular align=center width=50%>]]><SUBMITBUTTON class="button" name="step" value="ok" width="100" action="" /><![CDATA[</td>
+                        <td class=formular align=center width=50%><input type="button" class="button" width=100 value="]]><LABEL value="button.cancel" /><![CDATA[" name=CANCEL id=CANCEL onClick="location.href='index.html'"></td>
+                    </tr>
+                    </table>
+                </td>
+                </tr>
+                <!-- Ende Buttonleisete-->
+                </table>
+        </td></tr>
+    </table>
+    </form>
+    </td></tr>
+    </table>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errornoname">
+<![CDATA[
+]]><ERRORPAGE title="module.error.createtitle" message="module.error.createmessage" reason="module.error.createreason" suggestion="module.error.empty" ref="module_create.html?step=fromerrorpage" >no details</ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errorexists">
+<![CDATA[
+]]><ERRORPAGE title="module.error.createtitle" message="module.error.createmessage" reason="module.error.existsreason" suggestion="module.error.existsugg" ref="module_create.html?step=fromerrorpage" >no details</ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errorProject">
+<![CDATA[
+]]><ERRORPAGE title="module.error.createtitle" message="module.error.createmessage" reason="module.error.noprojectreason" suggestion="module.error.noprojectsugg" ref="index.html" ><PROCESS>details</PROCESS></ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+</WORKPLACE>

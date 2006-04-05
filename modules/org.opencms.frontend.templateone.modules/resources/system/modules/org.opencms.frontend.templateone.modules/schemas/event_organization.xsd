@@ -1,0 +1,37 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/externallink.xsd"/>
+		
+	<xsd:element name="EventOrganizations" type="OpenCmsEventOrganizations"/>
+	
+	<xsd:complexType name="OpenCmsEventOrganizations">
+		<xsd:sequence>
+			<xsd:element name="EventOrganization" type="OpenCmsEventOrganization" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsEventOrganization">
+		<xsd:sequence>
+			<xsd:element name="Registration" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Phone" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Fax" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Email" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Link" type="OpenCmsExternalLink" minOccurs="0" />
+			<xsd:element name="Consulting" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="ConPhone" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="ConFax" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="ConEmail" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="ConLink" type="OpenCmsExternalLink" minOccurs="0" />		
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<layouts>
+				<layout element="Link" widget="LinkGalleryWidget" />
+			</layouts>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

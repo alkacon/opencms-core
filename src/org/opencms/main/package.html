@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+
+ File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/package.html,v $
+ Date   : $Date: 2005/06/28 13:30:16 $
+ Version: $Revision: 1.8 $
+
+ This library is part of OpenCms -
+ the Open Source Content Mananagement System
+
+ Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ Lesser General Public License for more details.
+
+ For further information about Alkacon Software GmbH, please see the
+ company website: http://www.alkacon.com
+
+ For further information about OpenCms, please see the
+ project website: http://www.opencms.org
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+-->
+</head>
+<body bgcolor="white">
+
+Provides the main OpenCms "operating system".<p>
+
+There are 3 main ways to access resources in an OpenCms System:
+<ol>
+<li>Using the <code>{@link org.opencms.main.OpenCmsServlet}</code>. This is the default usage of the OpenCms system.</li>
+<li>Using the <code>{@link org.opencms.main.CmsShell}</code>. This is done for specific reasons, usually related to system configuration or setup.</li>
+<li>Using the <code>{@link org.opencms.main.OpenCms#initCmsObject(String)}</code> from an application to obtain an initialized OpenCms user context.</li>
+</ol>
+
+I all use cases, the access to the OpenCms VFS is only possible with an initialized OpenCms user context,
+this means by using a <code>{@link org.opencms.file.CmsObject}</code>.<p>
+
+<!-- Put @see and @since tags down here. -->
+
+@version $Revision: 1.8 $ 
+
+@since 6.0.0 
+
+@see org.opencms.main.OpenCmsServlet
+@see org.opencms.main.CmsShell
+@see org.opencms.main.OpenCms
+
+</body>
+</html>

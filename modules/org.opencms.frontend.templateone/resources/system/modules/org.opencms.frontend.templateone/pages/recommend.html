@@ -1,0 +1,19 @@
+<%@ page session="false" buffer="none" import="org.opencms.frontend.templateone.*" %><%--
+
+--%><jsp:useBean id="cms" class="org.opencms.frontend.templateone.CmsTemplateFormRecommend" scope="request"><%--
+--%><jsp:setProperty name="cms" property="*"/><%--
+--%></jsp:useBean><%
+
+// initialise Cms Action Element
+cms.init(pageContext, request, response);
+
+if (cms.isSubmitted() && cms.validate()) {
+	// send email(s) and display confirmation	
+	cms.include("recommend_confirm.html");
+	cms.sendMail();
+} else {
+	// create the input form
+	cms.include("recommend_input.html");
+}
+
+%>

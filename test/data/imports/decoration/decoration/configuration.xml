@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<DecorationConfigurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://sites/default/decoration/decorationconfiguration.xsd">
+  <DecorationConfiguration language="en">
+    <uselocale>true</uselocale>
+    <decoration>
+      <name><![CDATA[Abbr]]></name>
+      <markfirst>true</markfirst>
+      <pretext><![CDATA[<abbr>]]></pretext>
+      <posttext><![CDATA[</abbr>]]></posttext>
+      <pretextfirst><![CDATA[<abbr title="${decoration}" lang="${locale}">]]></pretextfirst>
+      <posttextfirst><![CDATA[</abbr>]]></posttextfirst>
+      <filename>/decoration/decorations_en.csv</filename>
+    </decoration>
+  </DecorationConfiguration>
+</DecorationConfigurations>

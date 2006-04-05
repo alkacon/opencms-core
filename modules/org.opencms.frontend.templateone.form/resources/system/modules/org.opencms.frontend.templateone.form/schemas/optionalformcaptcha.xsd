@@ -1,0 +1,32 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="FormCaptchas" type="OpenCmsFormCaptchas"/>
+	
+	<xsd:complexType name="OpenCmsFormCaptchas">
+		<xsd:sequence>
+			<xsd:element name="FormCaptcha" type="OpenCmsFormCaptcha" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsFormCaptcha">
+		<xsd:sequence>
+			<xsd:element name="FieldLabel" type="OpenCmsString" />			
+            <xsd:element name="Preset" type="OpenCmsString" minOccurs="0" maxOccurs="1" />	
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.form.workplace"/>
+			<layouts>
+				<layout element="Preset" widget="org.opencms.frontend.templateone.form.CmsSelectWidgetXmlcontentType" configuration="folder=/system/workplace/admin/captcha/|resourcetypeName=xmlcontent|displayOptionMacro=${property.Title}|sortMacro=${property.collector.priority}"/>
+			</layouts>
+			<defaults>
+				<default element="FieldLabel" value="${key.GUI_FORMCAPTCHA_LABEL_DEFAULT_0}" />
+			</defaults>
+		</xsd:appinfo>
+	</xsd:annotation>   
+</xsd:schema>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+
+<html>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+    return 'help/5.html';
+}
+//-->
+</script>
+
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+<title>OpenCms</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<!-- Ende Style -->
+
+</head>
+
+<body bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+<form id=NEWTASK name=NEWTASK action="tasks_content_detail.html?action=messageok" method="post">
+
+<!-- Tabellenaufbau fuer Neue Aufgabe-->
+<table border=2 cellspacing=0 cellpadding=0 width=500>
+<tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+
+    <!-- Beginn Ueberschrift blau-->
+    <tr><td class=head>]]><LABEL value="task.dialog.message.title" /><![CDATA[</td></tr>
+    <!-- Ende Ueberschrift blau-->
+
+    <!-- Beginn Leerzele-->
+    <tr><td class=leerzeile>&nbsp;</td></tr>
+    <!-- Ende Leerzeile-->
+
+    <!-- Beginn Inhalt -->
+    <tr>
+        <td class=formular nowrap>]]><LABEL value="task.dialog.message.head" /><![CDATA[ ]]><PROCESS>user</PROCESS><![CDATA[:</td>
+    </tr>
+    <tr>
+        <td class=dialogtxt><TEXTAREA cols=60 class="textarea1" id=DESCRIPTION name=DESCRIPTION rows=15></TEXTAREA>
+        </td>
+    </tr>
+    <!-- Ende Inhalt -->
+
+    <!-- Beginn Leerzele-->
+    <tr><td class=leerzeile>&nbsp;</td></tr>
+    <!-- Ende Leerzeile-->
+
+    <!-- Beginn Buttonleiste Zurueck inaktiv-->
+    <tr><td class=formular>
+            <table cellspacing=0 cellpadding=5 width=100%>
+            <tr>
+                <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="send" value="send" width="100" action="return( true );" /><![CDATA[</td>
+                <td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='tasks_content_detail.html'" /><![CDATA[</td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+    <!-- Ende Buttonleiste-->
+    </table>
+</td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+<!-- Ende Zentrierung -->
+</body>
+</html>
+
+]]>
+</TEMPLATE>
+
+
+<TEMPLATE name="query">
+<![CDATA[
+
+<html>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+    return 'help/4_4_8.html';
+}
+//-->
+</script>
+
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<title>OpenCms</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<!-- Ende Style -->
+
+</head>
+
+<body bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+<form id=NEWTASK name=NEWTASK action="tasks_content_detail.html?action=queryok" method="post">
+
+<!-- Tabellenaufbau fuer Neue Aufgabe-->
+<table border=2 cellspacing=0 cellpadding=0 width=500>
+<tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+
+    <!-- Beginn Ueberschrift blau-->
+    <tr><td class=head>]]><LABEL value="task.dialog.query.title" /><![CDATA[</td></tr>
+    <!-- Ende Ueberschrift blau-->
+
+    <!-- Beginn Leerzele-->
+    <tr><td class=leerzeile>&nbsp;</td></tr>
+    <!-- Ende Leerzeile-->
+
+    <!-- Beginn Inhalt -->
+    <tr>
+        <td class=formular nowrap>]]><LABEL value="task.dialog.query.head" /><![CDATA[ ]]><PROCESS>user</PROCESS><![CDATA[:</td>
+    </tr>
+    <tr>
+        <td class=dialogtxt><TEXTAREA cols=60 class="textarea1" id=DESCRIPTION name=DESCRIPTION rows=15></TEXTAREA>
+        </td>
+    </tr>
+    <!-- Ende Inhalt -->
+
+    <!-- Beginn Leerzele-->
+    <tr><td class=leerzeile>&nbsp;</td></tr>
+    <!-- Ende Leerzeile-->
+
+    <!-- Beginn Buttonleiste Zurueck inaktiv-->
+    <tr><td class=formular>
+            <table cellspacing=0 cellpadding=5 width=100%>
+            <tr>
+                <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="send" value="send" width="100" action="return( true );" /><![CDATA[</td>
+                <td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='tasks_content_detail.html'" /><![CDATA[</td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+    <!-- Ende Buttonleiste-->
+    </table>
+</td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+<!-- Ende Zentrierung -->
+</body>
+</html>
+
+]]>
+</TEMPLATE>
+
+
+</WORKPLACE>

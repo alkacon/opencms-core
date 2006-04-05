@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-vfs.dtd">
+
+<opencms>	
+	<vfs>
+		<resources>
+			<resourceloaders>
+				<loader class="com.opencms.legacy.CmsXmlTemplateLoader" />
+				<loader class="org.opencms.loader.CmsDumpLoader" />
+				<loader class="org.opencms.loader.CmsImageLoader" />				
+				<loader class="org.opencms.loader.CmsPointerLoader" />
+				<loader class="org.opencms.loader.CmsJspLoader" />
+				<loader class="org.opencms.loader.CmsXmlPageLoader" />
+				<loader class="org.opencms.loader.CmsXmlContentLoader" />
+				<loader class="org.opencms.flex.CmsFlexDummyLoader"/>
+			</resourceloaders>
+			<resourcetypes>
+				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0"/>
+				<type class="org.opencms.file.types.CmsResourceTypePlain" name="plain" id="1">
+					<mappings>
+						<mapping suffix=".txt" />
+						<mapping suffix=".html" />
+						<mapping suffix=".htm" />
+					</mappings>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeBinary" name="binary" id="2">
+					<mappings>
+						<mapping suffix=".pdf" />
+						<mapping suffix=".zip" />
+						<mapping suffix=".class" />
+						<mapping suffix=".ppt" />
+						<mapping suffix=".doc" />
+						<mapping suffix=".xls" />
+					</mappings>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeImage" name="image" id="3">
+					<mappings>
+						<mapping suffix=".jpeg" />
+						<mapping suffix=".jpg" />
+						<mapping suffix=".gif" />
+						<mapping suffix=".png" />
+						<mapping suffix=".tif" />
+						<mapping suffix=".tiff" />
+					</mappings>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeJsp" name="jsp" id="4">
+					<mappings>
+						<mapping suffix=".jsp" />
+					</mappings>
+					<properties>
+						<property>
+							<name>export</name>
+							<value type="shared"><![CDATA[false]]></value>
+						</property>
+						<property>
+							<name>content-encoding</name>
+							<value type="shared"><![CDATA[${opencms.default.encoding}]]></value>
+						</property>			
+					</properties>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypePointer" name="pointer" id="5"/>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" name="xmlpage" id="6"/>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlcontent" id="7"/>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsImageGallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="downloadgallery" id="9">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsDownloadGallery</param>
+				</type>	
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="linkgallery" id="10">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsLinkGallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="htmlgallery" id="11">
+					<copy-resources>
+						<copy-resource source="/folder1/index.html" target="${resource.folder.path}/newname.html" type="sibling" />
+						<copy-resource source="/types/" target="${resource.folder.path}/mytypes" />
+						<copy-resource source="/folder1/subfolder11/" type="preserve" />
+					</copy-resources>
+					<param name="folder.class">org.opencms.workplace.galleries.CmsHtmlGallery</param>
+				</type>	
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsTableGallery</param>
+				</type>									
+				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" name="XMLTemplate" id="99"/>					
+			</resourcetypes>
+			<collectors>
+				<collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
+				<collector class="org.opencms.file.collectors.CmsDefaultResourceCollector" order="110" />
+			</collectors>		
+		</resources>
+		<defaultfiles>
+			<defaultfile name="index.html" />
+			<defaultfile name="index.jsp" />
+		</defaultfiles>
+		<translations>
+			<filetranslations enabled="true">
+				<translation>s#[\s]+#_#g</translation>
+				<translation>s#\\#/#g</translation>
+				<translation>s#ä#ae#g</translation>
+				<translation>s#Ä#Ae#g</translation>
+				<translation>s#ö#oe#g</translation>
+				<translation>s#Ö#Oe#g</translation>
+				<translation>s#ü#ue#g</translation>
+				<translation>s#Ü#Ue#g</translation>
+				<translation>s#ß#ss#g</translation>
+				<translation>s#[^0-9a-zA-Z_$~\.\-\/]#!#g</translation>
+				<translation>s#!+#x#g</translation>
+			</filetranslations>
+			<foldertranslations enabled="false" />
+		</translations>
+		<xmlcontent>
+			<widgets>
+				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget"/>
+				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget"/>
+				<widget class="org.opencms.widgets.CmsCalendarWidget" alias="DateTimeWidget"/>
+				<widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" />
+				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />
+				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget"/>
+				<widget class="org.opencms.widgets.CmsImageGalleryWidget" alias="ImageGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />
+				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget"/>
+				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
+				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
+				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
+				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
+			</widgets>
+			<schematypes>
+				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlColorValue" defaultwidget="org.opencms.widgets.CmsColorpickerWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlDateTimeValue" defaultwidget="org.opencms.widgets.CmsCalendarWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlHtmlValue" defaultwidget="org.opencms.widgets.CmsHtmlWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlLocaleValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
+			</schematypes>
+		</xmlcontent>		
+	</vfs>
+</opencms>

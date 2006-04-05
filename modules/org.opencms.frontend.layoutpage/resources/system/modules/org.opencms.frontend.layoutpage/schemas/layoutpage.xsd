@@ -1,0 +1,33 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.layoutpage/schemas/layoutimage.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.layoutpage/schemas/layoutparagraph.xsd"/>
+		
+	<xsd:element name="LayoutPageDefinitions" type="OpenCmsLayoutPageDefinitions"/>
+	
+	<xsd:complexType name="OpenCmsLayoutPageDefinitions">
+		<xsd:sequence>
+			<xsd:element name="LayoutPageDefinition" type="OpenCmsLayoutPageDefinition" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsLayoutPageDefinition">
+		<xsd:sequence>
+			<xsd:element name="Paragraph" type="OpenCmsLayoutPageParagraph" minOccurs="1" maxOccurs="8" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.layoutpage.workplace"/>
+			<preview uri="${previewtempfile}" />
+			<mappings/>
+			<layouts/>
+			<validationrules/>
+			<defaults/>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

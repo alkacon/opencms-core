@@ -1,0 +1,9 @@
+#
+# Script: Publish the setup project
+
+# Switch to the setup project
+setCurrentProject "_setupProject"
+
+# Publish the project
+unlockCurrentProject
+publishProject

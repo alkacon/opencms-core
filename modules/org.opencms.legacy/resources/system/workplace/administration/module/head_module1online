@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript">
+    var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
+</SCRIPT>
+</head>
+
+<body bgcolor="#E0E0E0" background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed>
+
+<table cellspacing=0 cellpadding=0 border=0>
+    <tr valign=center>
+        <td class=menu nowrap width=32px><A href="#" onmousedown="ChPush('bt_back')" onmouseout="ChOff('bt_back')" onmouseover="ChOn('bt_back')" onmouseup="ChOn('bt_back');parent.frames[1].location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/'"><IMG alt="]]><LABEL value="button.back" /><![CDATA[" width=32 border=0 name=bt_back src="]]><METHOD name="resourcesUri">bt_back_off.gif</METHOD><![CDATA[" ></a></td>
+        <td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="resourcesUri">bt_upload2_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="module.lable.upload" /><![CDATA[" name="bt_upload2" border=0 width=32 heigth=32></a></td>
+        <td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="resourcesUri">bt_new_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="module.lable.modulecreate" /><![CDATA[" name="bt_new" border=0 width=32 heigth=32></a></td>
+    </tr>
+</table>
+</body>
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>

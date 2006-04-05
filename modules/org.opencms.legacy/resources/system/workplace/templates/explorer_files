@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+    return '2_1_2_2.html';
+}
+//-->
+</script>
+
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+
+<title>opencms</title>
+
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_choosebrowser.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_kontextmenu.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+</head>
+<body bgcolor="#ffffff" onLoad="start();">
+
+<table cellspacing=1 cellpadding=1 border=0 >
+]]><FILELIST method="getFiles" template="explorerFilelistTemplate"/><![CDATA[
+</table>
+</body>
+]]>
+<INCLUDE>/system/workplace/templates/explorer_files_contextmenu</INCLUDE>
+<![CDATA[
+</html>
+]]>
+
+</TEMPLATE>
+</WORKPLACE>

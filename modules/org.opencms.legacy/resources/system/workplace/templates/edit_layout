@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>]]><LABEL value="label.wptitle" /><![CDATA[ ]]><METHOD name="userName" /><![CDATA[</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+
+	]]><ELEMENT name="edit_options"/><![CDATA[
+	
+	<!-- OpenCms context prefix, required for page editor because no link replacement is done here -->
+	var linkEditorPrefix = "]]><PROCESS>OpenCmsContext</PROCESS><![CDATA[";
+
+	<!-- Sets the Document Source-Code for later including into the text editor -->
+	var text="]]><METHOD name="setText"/><![CDATA[";
+
+	<!-- URL for pictures -->
+	var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
+
+	<!-- Filename -->
+	var filename="]]><PROCESS>resource</PROCESS><![CDATA[";
+
+	<!-- Needed space for additional toolbar -->
+	var space=0;
+
+	var tbsize = 34;
+	
+	var NS = null;
+	var IE = null;
+	NS = (document.layers)? true:false;
+	IE = (document.all)? true:false;
+
+	var LANG_CUT = "]]><LABEL value="editor.context.cut"/><![CDATA[";
+	var LANG_COPY = "]]><LABEL value="editor.context.copy"/><![CDATA[";
+	var LANG_PASTE = "]]><LABEL value="editor.context.paste"/><![CDATA[";
+	var LANG_INSERTROW = "]]><LABEL value="editor.context.insertrow"/><![CDATA[";
+	var LANG_DELETEROW = "]]><LABEL value="editor.context.deleterow"/><![CDATA[";
+	var LANG_INSERTCOL = "]]><LABEL value="editor.context.insertcol"/><![CDATA[";
+	var LANG_DELETECOL = "]]><LABEL value="editor.context.deletecol"/><![CDATA[";
+	var LANG_INSERTCELL = "]]><LABEL value="editor.context.insertcell"/><![CDATA[";
+	var LANG_DELETECELL = "]]><LABEL value="editor.context.deletecell"/><![CDATA[";
+	var LANG_MERGECELL = "]]><LABEL value="editor.context.mergecell"/><![CDATA[";
+	var LANG_SPLITCELL = "]]><LABEL value="editor.context.splitcell"/><![CDATA[";
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri"/><PROCESS>jsfile</PROCESS><![CDATA["></SCRIPT>
+
+<!-- Update the Font display on change -->
+<SCRIPT LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="DisplayChanged">
+<!--
+	function displayChangedHandle()
+	{
+	if (IE==true) return DisplayChanged();
+	}
+	displayChangedHandle();
+	//-->
+</script>
+
+<!-- Show a context menu if the right mousebutton is clicked -->
+<script LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="ShowContextMenu">
+<!--
+	function showContextMenuHandle()
+	{
+	if (IE==true) return ShowContextMenu();
+	}
+	showContextMenuHandle();
+//-->
+</script>
+
+<!-- Invoke a context menu action -->
+<script LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="ContextMenuAction(itemIndex)">
+<!--
+	function contextMenuActionHandle()
+	{
+	if (IE==true) return ContextMenuAction(itemIndex);
+	}
+	contextMenuActionHandle();
+//-->
+</script>
+
+<!-- Ask user whether he really wants to leave Texteditor without saving -->
+<script LANGUAGE="javascript">
+<!--
+	function confirmExit()
+	{
+		if (EDITOR.edit1.IsModified(2)) {
+			if (confirm("]]><LABEL value="editor.message.exit" /><![CDATA[")) {
+				doEdit(1);
+			}
+		} else {
+				doEdit(1);
+		}
+	}
+//-->
+</script>
+
+<!-- Ask user whether he really wants to leave HTML-Editor without saving -->
+<script LANGUAGE="javascript">
+<!--
+	function confirmExitHTML()
+	{
+		
+		if (EDITOR.EDIT_HTML.IsDirty) {
+			if (confirm("]]><LABEL value="editor.message.exit" /><![CDATA[")) {
+				doEditHTML(1);
+			}
+		} else {
+				doEditHTML(1);
+		}
+	}
+//-->
+</script>
+
+</head>
+
+<body background="]]><METHOD name="resourcesUri">bg_grau2.gif</METHOD><![CDATA[" scroll=no onLoad="setText();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height="100%" class="toolbar">
+<form name=EDITOR id=EDITOR METHOD=POST>
+	<tr>
+		<td valign="top">]]><ELEMENT name="editor"/> <![CDATA[
+<INPUT TYPE=HIDDEN NAME="content">
+<INPUT TYPE=HIDDEN NAME="action">
+<INPUT TYPE=HIDDEN NAME="resource" value="]]><PROCESS>resource</PROCESS><![CDATA[">
+</form>
+</table>
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errorsave">
+<ERRORPAGE title="error.title.editorsave" message="error.message.editorsave" reason="error.reason.editorsave" suggestion="error.suggestion.editorsave" ref="" ><process>errordetail</process><process>errorlasturl</process></ERRORPAGE>
+</TEMPLATE>
+
+<ELEMENTDEF name="edit_options">
+	<CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
+	<TEMPLATE>/system/workplace/templates/edit_options</TEMPLATE>
+</ELEMENTDEF>
+
+<HELP_DISABLED />
+<HELP_ENABLED />
+
+</WORKPLACE>

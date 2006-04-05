@@ -1,0 +1,5 @@
+<cms:contentcheck ifexists="Image">
+<cms:contentloop element="Image">
+<p><img src="<cms:link><cms:contentshow element="Image" /></cms:link>" border="0" alt="<cms:contentshow element="Description" />"><br clear="all"><small><cms:contentshow element="Description" /></small></p>
+</cms:contentloop>
+</cms:contentcheck>

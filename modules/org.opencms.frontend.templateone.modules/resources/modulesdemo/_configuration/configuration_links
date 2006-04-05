@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TemplateOneLinks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/links.xsd">
+  <TemplateOneLink language="en">
+    <Headlink>
+      <link.url><![CDATA[/]]></link.url>
+      <link.text><![CDATA[START PAGE]]></link.text>
+      <link.target><![CDATA[_self]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.alkacon.com]]></link.url>
+      <link.text><![CDATA[ALKACON SOFTWARE GMBH]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org]]></link.url>
+      <link.text><![CDATA[OPENCMS.ORG]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org/opencms/en/support/references/index.html]]></link.url>
+      <link.text><![CDATA[REFERENCE SITES]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org/opencms/en/support/solution_providers/index.html]]></link.url>
+      <link.text><![CDATA[SOLUTION PROVIDERS]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+  </TemplateOneLink>
+  <TemplateOneLink language="de">
+    <Headlink>
+      <link.url><![CDATA[/]]></link.url>
+      <link.text><![CDATA[STARTSEITE]]></link.text>
+      <link.target><![CDATA[_self]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.alkacon.com]]></link.url>
+      <link.text><![CDATA[ALKACON SOFTWARE GMBH]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org]]></link.url>
+      <link.text><![CDATA[OPENCMS.ORG]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org/opencms/en/support/references/index.html]]></link.url>
+      <link.text><![CDATA[REFERENCE SITES]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org/opencms/en/support/solution_providers/index.html]]></link.url>
+      <link.text><![CDATA[SOLUTION PROVIDERS]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+  </TemplateOneLink>
+</TemplateOneLinks>

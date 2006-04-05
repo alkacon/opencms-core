@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/headlink.xsd"/>
+	
+	<xsd:element name="TemplateOneLinks" type="OpenCmsTemplateOneLinks"/>
+	
+	<xsd:complexType name="OpenCmsTemplateOneLinks">
+		<xsd:sequence>
+			<xsd:element name="TemplateOneLink" type="OpenCmsTemplateOneLink" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsTemplateOneLink">
+		<xsd:sequence>
+			<xsd:element name="Headlink" type="OpenCmsHeadlink" minOccurs="0" maxOccurs="10" />			
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+</xsd:schema>

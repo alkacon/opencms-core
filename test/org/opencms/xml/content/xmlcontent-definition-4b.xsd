@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- variation of schema 3 where the nested "Title" and "Cascade" node is NOT optional -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:include schemaLocation="http://www.opencms.org/test3b.xsd"/>
+
+	<xsd:element name="Cascadetests" type="OpenCmsCascadetests"/>
+	
+	<xsd:complexType name="OpenCmsCascadetests">
+		<xsd:sequence>
+			<xsd:element name="Cascadetest" type="OpenCmsCascadetest" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsCascadetest">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" minOccurs="1" maxOccurs="2" />
+			<xsd:element name="Cascade" type="OpenCmsHandlertest" minOccurs="1" maxOccurs="5" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<handler class="org.opencms.xml.content.TestXmlContentHandler" />		
+			<defaults>
+				<default element="Title" value="Test" />
+				<default element="Cascade/Option" value="Default value from outer content definition" />
+				<default element="Cascade/Option[2]" value="Default value from outer content definition (for option node 2)" />
+				<default element="Cascade/VfsLink" value="/default/for/all/from/outer.txt" />
+			</defaults>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

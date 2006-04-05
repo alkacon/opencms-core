@@ -1,0 +1,576 @@
+\chapter{The Idea of Content Definitions}
+\label{ideacontentdefinition}
+When writing a template class that produces the output  for a
+dynamically created element (e.g. a news element) there is always the
+problem where to get the actual content from. For the news example, lets
+consider that the news content is taken from a database table.
+
+The straight forward way to access this data would be to implement the
+JDBC-Database connection in the template class, but this approach has
+several disadvantages:
+\begin{itemize}
+\item If several template classes have to access the news database,
+the DB access code has to be written several times.
+\item A change in the DB structure would require changes in several
+Java classes.
+\item If the news content has to be read form a different kind of
+database (or maybe the VFS), the DB access in several template classes
+has to be changed.
+\end{itemize}
+
+To avoid these problems, the idea is to encapsulate the content and
+the access to it in a separate class, the so called Content Definition.
+
+\index{Content Definition}
+\index{Back Office}
+The Content Definition is an object that contains all fields of the
+content itself (in the news example, this would be headline, author,
+teaser and the article). This object provides a general interface for manipulating
+the data fields of an entry. It has {\meth get()} and {\meth set()} methods to access the data 
+in the Content Definition object and a {\meth write()} 
+and {\meth delete()} method to handle the data in the data source.
+The Content Definition object is used by the template classes to access 
+the required data in a general way. 
+Therefore, the data source can be modified without changing the template classes at all. 
+In addition, the Content Definition is also used to maintain the content
+data with an appropriate Backoffice module (see chapter \ref{Backoffice Modules}
+about Backoffice modules ).
+
+The way the Content Definition encapsulates the data is very similar to
+the way a Java Bean is defined. Because of this, the Content Definition
+can be written as a Java Bean as well, enabling its use in other
+components of the system.
+
+In a certain way, the CmsObject can be seen as the Content Definition of
+the OpenCms itself, it contains methods to access the data of the
+system, independent of the means how the data is actually stored.
+
+\section{Writing a simple Content Definition}
+Because of the nature of a Content Definition, there are several
+different ways how to implement it, especially the access to the data
+source always depends on the kind of data source and cannot be
+generalized. But the interface that is visible for the programmer using
+this Content Definition should be the same for different kind of data and
+data sources. This section will describe the purpose and signature 
+of the methods to access the data encapsulated in the Content Definition.
+This description is the proposal how to implement a Content Definition.
+There are other possibilities how to write a Content Definition, but
+it is highly recommended to follow the proposals of this document.
+
+A Content Definition object always contains the data of one single entry
+of the content type, for the news example already mentioned, this would
+be one single news entry, either representing a row in a database table
+or a file in the VFS. A news entry could be defined containing the
+following content values:
+
+\begin{itemize}
+\item ID
+\item Title
+\item Text
+\item Author
+\end{itemize}
+
+The simple Content Definition provides five ways to access the
+data:
+\begin{itemize}
+\item Constructors to read a data entry from the data source or to add
+a new entry to it.
+\item Set and get Methods to access the single data fields.
+\item A {\meth write()} method to update an entry in the data source.
+\item A {\meth delete()} method to delete an entry in the data source.
+\item Static methods that return groups of Content Definition objects.
+\end{itemize}
+
+To get a specified news entry, a new Content Definition object has to be
+created. This is done by a constructor that takes an argument that can
+be used to non-ambiguously select an entry from the data source. In case 
+of a database record this is usually the primary key of the table (in 
+most cases an integer value). \\
+Note: if the Content Definition should be used to manipulate the data in 
+the OpenCms Backoffice (from the OpenCms workplace) two constructors have to 
+exist.
+One that takes the {\class CmsObject} as a parameter and another one
+that take the {\class CmsObject} and an Integer object as parameters.
+For this reason it is necessary to have a numeric value as a primary key 
+in your database table (see section \ref{enhancements} 
+for details about adding OpenCms Backoffice functionality).
+
+\begin{java}
+\jtaba         /**\\
+\jtaba  \xspace * NewsContentDefinition constructor.\\
+\jtaba  \xspace * @param id The id of the news entry to be read.\\
+\jtaba  \xspace */\\
+\jtaba public NewsContentDefinition(CmsObject cms, Integer id) \{\\
+\jtabb  // read data from data source and\\
+\jtabb  // initialize the member variables here\\
+\jtaba \}\\
+\end{java}
+
+Creating a new entry is done with a constructor as well. In the next
+example, the constructor gets all the data of a news entry and creates 
+a new Content Definition object with this data:
+
+\begin{java}
+\jtaba         /**\\
+\jtaba  \xspace * NewsContentDefinition constructor.\\
+\jtaba  \xspace * @param title The title of the news entry.\\
+\jtaba  \xspace * @param text The text of the news entry.\\
+\jtaba  \xspace * @param author The author of the news entry.\\
+\jtaba  \xspace */\\
+\jtaba public NewsContentDefinition(String title, String text, String author)\\
+\jtaba \{\\
+\jtabb        // the object's members are initalized here\\
+\jtaba \}\\
+\end{java}
+
+This will only create a new Content Definition object, but no entry in
+the data source. To add the new entry in the data source, it must be
+written by using the {\meth write(}) method of the Content Definition.
+Of course the constructor NewsContentDefinition(CmsObject cms) can be
+used as well. The data can then be set afterwards by using the
+corresponding set-methods. 
+
+On this object, the data stored in the Content Definition can be
+accessed by using the different set and get methods, for example the
+title field of a news object could be modified or read like this:
+
+\begin{java}
+\jtaba          /**\\
+\jtaba   \xspace * sets the title of the CD\\
+\jtaba   \xspace */\\
+\jtaba public void setTitle(String title) \{\\
+\jtabb        m\_title=title;\\
+\jtaba \}\\[1ex]
+
+\jtaba         /**\\
+\jtaba  \xspace * gets the title of the CD\\
+\jtaba  \xspace */\\
+\jtaba public String getTitle() \{\\
+\jtabb        return m\_title;\\
+\jtaba \}\\
+\end{java}
+
+Set and get methods should be implemented for all data fields of the
+Content Definition.
+
+When updating the content of a data field, this data is only updated in
+the Content Definition itself. Therefore it is necessary to update the
+data source as well. This is done with the {\meth write()} method defined in the
+Content Definition which will update all data fields of the current
+Content Definition object in the data source.
+
+The {\meth write()} and {\meth delete()} methods to access the data in the
+data source have the following signature:
+\begin{java}
+\jtaba public void write(CmsObject cms);\\[1ex]
+\jtaba public void delete(CmsObject cms);\\
+\end{java}
+
+Both methods take the {\class CmsObject} as a parameter. This object 
+is used to access system-resources in OpenCms and will be used in this
+methods to check access rights or get information about the current user
+that can also be stored in the data source (for example the information
+who has last edited a record).
+
+As stated before, a Content Definition object always stores the data of
+a single entry of the content type. It is often required to get a list
+of Content Definition objects, e.g. a list of the 10 latest news
+entries. This can be achieved by adding static methods to the
+Content Definition which return multiple Content Definition objects
+(preferable stored in a Vector, Hashtable or an array).  The number
+and kind of methods that are implemented this way depends on the
+requirements of the stored content and the access to it.
+
+\section{Adding access control to a Content Definition}
+A Content Definition can provide a mechanism to control the access to 
+the data to prevent unauthorized people from manipulating it. In the news
+example every news entry could save access flags to control who has the
+rights to read or write a news entry. To use this functionality, information
+about the owner, group and access flags for a news entry have to be stored
+together with the data for every entry. Therefore three new fields in the data source
+and the ContentDefinition are necessary. The OpenCms
+provides an abstract class {\class A\_CmsContentDefinition} in the 
+{\code com.opencms.defaults} package where some of this functionality is
+already implemented. 
+This class has the member variable {\name m\_accessFlags} which stores the access rights
+for owner group and others in an integer value. The access information can be set with
+the method {\meth setAccessFlags(int accessFlags)}. The access right handling uses the
+bit-representation of the int-value. For example:
+\begin{verbatim} 
+access rights: r w v  r w v  r w v  i 
+               1 1 1  1 1 1  0 0 0  1 
+        value: 1 2 4  8 16     ->   512   = 575
+\end{verbatim}
+Thus, you have to set the access rights to 575 to get the above settings.
+Notice: for certain reasons the bit representation of the integers is just
+the other way round as normal!
+
+The class has also some methods to check the access rights for a user.
+To check if an entry can be read or write the methods
+{\meth isReadable()} and {\meth isWriteable()} are used. This is the default
+implementation in the abstract class {\class A\_CmsContentDefinition} of these 
+methods:
+
+\begin{java}
+\jtaba          /**\\
+\jtaba   \xspace * returns true if the CD is readable for the current user\\
+\jtaba   \xspace * @returns true\\
+\jtaba   \xspace */\\ 
+\jtaba public boolean isReadable() \{\\
+\jtabb    return true;\\
+\jtaba \}\\[1ex]
+
+\jtaba          /**\\
+\jtaba   \xspace * returns true if the CD is writeable for the current user\\
+\jtaba   \xspace * @returns true\\
+\jtaba   \xspace */\\
+\jtaba public boolean isWriteable() \{\\
+\jtabb    return true;\\
+\jtaba \}
+\end{java}
+
+As you can see the default implementation of these methods always return true.
+So if you want to implement access control in your Content Definition you have
+to override these methods and change their default behaviour. An easy way to do
+this is to use the already implemented methods {\meth hasReadAccess(CmsObject cms)}
+and {\meth hasWriteAccess(CmsObject cms)} of the class {\class A\_CmsContentDefinition}.
+These methods implement a standard OpenCms access control by using the already mentioned
+fields for user, group and access flags of the ContentDefinition. So you just have to call
+these methods in the {\meth isReadable()} and {\meth isWritable()} methods:
+
+\begin{java}
+\jtaba      /**\\
+\jtaba   \xspace * returns true if the CD is readable for the current user\\
+\jtaba   \xspace * @returns true\\
+\jtaba   \xspace */\\ 
+\jtaba public boolean isReadable() \{\\
+\jtabb    return hasReadAccess(m\_cms);\\
+\jtaba \}\\[1ex]
+
+\jtaba          /**\\
+\jtaba   \xspace * returns true if the CD is writeable for the current user\\
+\jtaba   \xspace * @returns true\\
+\jtaba   \xspace */\\
+\jtaba public boolean isWriteable() \{\\
+\jtabb    return hasWriteAcess(m\_cms);\\
+\jtaba \}
+\end{java}
+
+The variable m\_cms passed to the methods is a member variable of the
+Content Definition containing the {\class CmsObject}. This object should
+be initialized when creating the Content Definition object with the current
+{\class CmsObject}. Because a Content Definition object is usually never reused in 
+requests of different users it is save to store the {\class CmsObject} as a member
+of the Content Definition. The methods {\meth isReadable()} and {\meth isWritable()}
+should be used in the constructors and {\meth write()} and {\meth delete()} methods to check
+if the current user has the rights to access the resource.
+If you want to implement a different kind of access control
+you can do so by calling your own methods inside the {\meth isReadable()}
+and {\meth isWritable()} methods. If you want to check the access flags you can use
+the constants defined in the {\class I\_CmsConstants} interface. There are constants
+like  C\_ACCESS\_OWNER\_READ, C\-\_ACCESS\_GROUP\_READ, C\_ACCESS\_PUBLIC\_READ for the read flag for
+user, group and others. The constants for write access are named respectively. Take a look
+at the methods {\meth hasReadAccess(CmsObject)} and {\meth hasWriteAccess(CmsObject)}
+in the class \\
+{\class A\_CmsContentDefinition} to see how this constants can be used.
+
+\section{Content Definition enhancements}
+\label{enhancements}
+So far, it was shown how to write a simple Content Definition to access
+some encapsulated data. In most cases it is necessary to have a Backoffice 
+module to maintain the data of this Content Definition. To
+simplify the creation of such a Backoffice (see the chapter \ref{Backoffice Modules} about 
+Backoffice modules), the Content Definition must be enhanced to offer
+several methods that support the implementation of it. To do so, the
+Content Definition must extend the abstract class {\class com.opencms.defaults.A\_CmsContentDefinition}
+and override some of the methods defined in this class. Here is an excerpt of this
+class, showing how these methods are defined:
+
+\begin{java}
+public abstract class A\_CmsContentDefinition implements I\_CmsContent\{\\
+\jtaba ...\\[1ex]
+\jtaba        /**\\
+\jtaba \xspace * gets the getXXX methods\\
+\jtaba \xspace * @returns a Vector containing the methods\\
+\jtaba \xspace */\\
+\jtaba public static Vector getFieldMethods() \{\\
+\jtabb    return new Vector();\\
+\jtaba \}\\[1ex]
+
+\jtaba        /**\\
+\jtaba \xspace * gets the headlines of the columns\\
+\jtaba \xspace * @returns a Vector with the fields\\
+\jtaba \xspace */\\
+\jtaba public static Vector getFieldNames() \{\\
+\jtabb return new Vector();\\
+\jtaba \}\\[1ex]
+
+\jtaba        /**\\
+\jtaba \xspace * Gets the filter methods.\\
+\jtaba \xspace * You have to override this method in your content definition.\\
+\jtaba \xspace * @returns a Vector of FilterMethod objects containing the methods,\\
+\jtaba \xspace * names and default parameters\\
+\jtaba \xspace */\\
+\jtaba public static Vector getFilterMethods() \{\\
+\jtabb        return new Vector();\\
+\jtaba  \}\\[1ex]
+
+\jtaba        /**\\
+\jtaba \xspace * gets a unique id of a content definition object\\
+\jtaba \xspace */\\
+\jtaba public abstract String getUniqueId();\\
+\}
+\end{java}
+
+The five methods shown in this code snippet are used to provide some data required by
+the Backoffice module for generating the output. Lets consider
+the news example: a Backoffice tool would be necessary to add, edit or
+delete news entries. Therefore a list of available news entries must be
+shown where a single entry can be selected. As there can be a huge
+number of entries, this list can be configured with various filters.
+
+Since this kind of display is very common for many different kinds of
+content types (news, guestbooks etc.) OpenCms provides some general
+classes for generating Backoffice modules. Those classes depend on
+information given by Content Definition, like which filters are available
+or which labels the columns in the list should have. This information is
+provided by the methods that override those of the abstract class:
+
+\begin{itemize}
+\index{getFilterMethods()}
+\item {\meth getFilterMethods()}: Returns a vector of available filters for
+a Content Definition. The data for each filter is stored in an
+instance of FilterMethod. These instances carry the data: filtername,
+filtermethod and default-parameters for that filter. A filter method
+returns a group of Content Definition objects that are a subset of all
+available entries, filtered by a specified criteria.
+
+\index{getFieldNames()}
+\item {\name getFieldNames()}: This method returns the labels of the columns 
+for the list of Content Definition entries generated by the Backoffice classes.
+
+\index{getFieldMethods()}
+\item {\meth getFieldMethods()}: The methods of the Content Definition that
+return the values of the fields defined in the method above.
+
+\index{getUniqueId()}
+\item {\name getUniqueId()}: Returns the unique id of the Content Definition
+object. This id is used to identify a single Content Definition object.
+
+\index{isLockable()}
+\item {\name isLockable()}: Returns a boolean value indicating if the Content Definition
+object should be lockable in the Backoffice. When implementing locking the user-id of the 
+user that has locked a resource will be stored in the Content Definition and the data source.
+Therefore an additonal member variable and an additional field in the data source are necessary.
+Also a method  {\meth getLockstate()} and {\meth setLockstate()} has to be implemented in the 
+Content Definition to access the member variable of the Content Definition.
+The Backoffice rely upon the implementation of a {\meth getLockstate()} 
+and {\meth setLockstate()} method when the {\meth isLockable()} 
+method returns true.
+
+\end{itemize}
+
+Despite of these methods a Content Definition that supports the OpenCms
+Backoffice functionality has also to provide a constructor that takes the
+{\class CmsObject} and an Integer value as parameters. For a class NewsContentDefinition
+the constructor would look like this:
+
+\begin{java}
+\jtaba        /**\\
+\jtaba \xspace * Constructor\\
+\jtaba \xspace * @param id the unique id of the entry to read\\
+\jtaba \xspace */\\
+\jtaba public NewsContentDefinition (CmsObject cms, Integer id) \{\\
+\jtabb  // read data from data source and\\
+\jtabb  // initialize the member variables here\\
+\jtaba \}\\
+\end{java}
+
+This constructor is used by the Backoffice classes to create a Content
+Definition object when the user edits or deletes an object. So if this
+constructor is missing, the Backoffice class will fail to generate a
+Content Definition object.\\
+The general Backoffice classes are able to generate lists of the data
+provided by the Content Definitions.  Since those lists are created
+dynamically, the used filters and data fields to be shown must be
+defined by the Content Definition in a general way.
+
+The three methods {\meth getFieldNames()}, {\meth getFieldMethods()} and
+{\meth getFilterMethods()} are used by the Backoffice classes to generate
+the lists of entries. Now we will take a look how an implementation
+of these methods can look like. The method 
+{\meth getFieldNames()} returns a Vector of Strings that contains the labels 
+of the column headings of the created list.
+For our news example this method could be implemented this way:
+
+\begin{java}
+\jtaba public static Vector getFieldNames() \{\\
+\jtabb Vector columns = new Vector();\\
+\jtabb columns.addElement("id");\\
+\jtabb columns.addElement("title");\\
+\jtabb columns.addElement("author");\\
+\jtabb return columns;\\
+\jtaba \}\\
+\end{java}
+
+This would result in a creation of a list with three columns for the id,
+title and author in the Backoffice.\\
+Note: the Strings stored in the Vector
+are the names of the labels in the language-file of the module. So the exact
+text that will be shown is defined in a language-file and can easily be 
+changed without changing the code in the class. Also you can provide language-files
+for multiple languages to have different output when changing to another language in
+the workplace (at the moment only german and english is supported by the workplace).
+The labels in our language-file could look like this:
+
+\begin{xml}
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
+<LANGUAGE>\\
+\xtaba    <mypackage\_NewsBackoffice>\\   
+\xtabb      <label>\\
+\xtabc        <id>ID</id>\\
+\xtabc        <title>Title</title>\\
+\xtabc        <author>Author</author>\\
+\xtabb      </label>\\
+\xtaba    </mypackage\_NewsBackoffice>\\
+\xtaba    ...\\
+</LANGUAGE>\\   
+\end{xml}
+
+The labels have to be defined inside a tag named after the Backoffice class that
+creates the lists (fully qualified names with underscores as seperator).
+In this example the tag is named \texttt{<mypackage\_NewsBackoffice>}. So the corresponding
+class would have the name {\class mypackage.NewsBackoffice} (see chapter \ref{Backoffice Modules} 
+about how to implement Backoffice classes).\\
+The content of the columns is generated by invoking the methods that are returned
+by the method {\meth getFieldMethods()}. In our news example this method could be implemented
+this way:
+
+\begin{java}
+\jtaba public static Vector getFieldMethods() \{\\
+\jtabb        Vector methods = new Vector();\\
+\jtabb        Class cd = NewsContentDefinition.class;\\
+\jtabb        try \{\\
+\jtabc                methods.addElement(cd.getMethod("getTitle", null));\\
+\jtabc                methods.addElement(cd.getMethod("getText", null));\\
+\jtabc                methods.addElement(cd.getMethod("getAuthor", null));\\
+\jtabb        \} catch(NoSuchMethodException exc) \{\\
+\jtabc                // ignore the exception\\
+\jtabb        \}\\
+\jtabb        return methods;\\
+\jtaba \}\\
+\end{java}
+
+The {\meth getFieldMethods} method returns a Vector of {\class java.lang.reflect.Method} objects.
+These objects are used by the Backoffice class to invoke the get methods that return
+the values for the columns. The caught {\class NoSuchMethodException} will only 
+be thrown if one of the method's names is not typed correctly.\\
+
+As stated before a Content Definition should provide filter-methods that show a 
+subset of the available data. For a Content Definition of a news-module you could have for example 
+filters that show the entries sorted by the title or a filter that shows
+all entries that have an id greater than a given number. The Backoffice class can
+generate the list of entries, if it knows about these different filter-methods and
+what parameters they have. This information about the filter-methods is given by the
+method {\meth getFilterMethods()}. This method returns a Vector of objects of type 
+{\class CmsFilterMethod}:\\
+
+\begin{java}
+\jtaba public static Vector getFilterMethods(CmsObject cms) \{\\
+\jtabb   Vector filter = new Vector();\\
+\jtabb   String titleFilter = null;\\
+\jtabb   String idFilter = null;\\
+\jtabb   try \{\\
+\jtabc     CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);\\
+\jtabd     titleFilter = lang.getLanguageValue(\\
+\jtabe       "mypackage\_CmsNewsBackoffice.label.titlefilter");\\
+\jtabd     idFilter = lang.getLanguageValue(\\
+\jtabe       "mypackage\_CmsNewsBackoffice.label.idfilter");\\
+\jtabb   \}catch(Exception e) \{\\
+\jtabc    // handle exception that might be thrown \\
+\jtabc    // when accessing the language file \\
+\jtabb   \}\\
+\jtabb   filter.addElement(\\
+\jtabc     new CmsFilterMethod(\\
+\jtabd      titleFilter,\\
+\jtabd       NewsContentDefinition.class.getMethod(\\
+\jtabe         "newsByTitle",\\
+\jtabe         new Class[] \{CmsObject.class\}\\
+\jtabd       ),\\
+\jtabd       new Object[0]\\
+\jtabc     )\\
+\jtabb   );\\
+\jtabb   filter.addElement(\\
+\jtabc     new CmsFilterMethod(\\
+\jtabd       idFilter,\\
+\jtabd       NewsContentDefinition.class.getMethod(\\
+\jtabe         "newsById",\\
+\jtabe         new Class[] \{CmsObject.class, String.class\}\\
+\jtabd       ),\\
+\jtabd       new Object[0],\\
+\jtabd       "1"\\
+\jtabc     )\\
+\jtabb   );\\
+\jtabb   return filter;\\
+\jtaba \}
+\end{java}
+
+Inside the {\meth getFilterMethods()} two objects of type {\class CmsFilterMethod}
+are created and added to a Vector which is then returned. The class
+{\class CmsFilterMethod} has two constructors:
+
+\begin{java}
+\jtaba public CmsFilterMethod(String filterName, Method filterMethod,\\
+\jtabc    Object[] filterParameters)\\[1ex]
+\jtaba public CmsFilterMethod(String filterName, Method filterMethod,\\
+\jtabc    Object[] filterParameters, String defaultFilterParam)
+\end{java}
+
+The parameters of the constructors have the following meanings:\\
+\begin{description}
+\item[filtername] - the description of the filter as it will appear
+in a select-box in the Backoffice. This description can either be defined
+in a language-file and then read from there like in the example above, or 
+directly coded inside the class. The first approach has the advantage that
+it can be changed later without having to change the Java code.
+\item[filterMethod] - an instance of {\class java.lang.reflect.Method}
+that describes the filtermethod of the Content Definition. You have to give
+the name and the type of the parameters as an array of class objects to create
+this object.
+\item[filterParameters] - this is an array of parameters that will be passed
+to the method when it is invoked by the Backoffice class. The parameter of type 
+{\class CmsObject} has to be omitted if it is the first parameter of the filtermethod,
+it will then be passed automatically to the method. These parameters are useful if you have
+a filtermethod that can be used for different filters available in the Backoffice. You can
+pass a parameter to control the output and so create multiple filter-entries with one method.
+For example you could have an filter that gives back all news entries belonging to a certain
+news-category. The filtermethod could have a parameter indicating which category to search for
+and by passing a String parameter to the method you could select the category. Normally
+you will pass an empty array of objects here if your filtermethod doesn't take a parameter
+to "customize" its output.
+\item[defaultFilterParam] - the filtermethod can have a user-parameter that is typed 
+in an input-field in the Backoffice and then passed to the method. This parameter is a default
+value for this parameter, that will be used if the Backoffice list is generated for the first
+time when the user couldn't have provided any value for the parameter.\\[1ex]
+\textbf{Note:} the Backoffice class checks whether the filtermethod has a user-parameter by comparing
+the actual number of parameters of the method as provided by the {\class java.lang.reflect.Method}
+object with the number of parameters that should be passed to the method. These are the parameters
+given by the parameter \textbf{filterParameters} and additional the {\class CmsObject} 
+(if it is the first parameter of the method). If the method has more than these parameters, it is assumed
+that a user-parameter is used to provide this parameter.
+\end{description}
+
+The filtermethods in the Content Definition for our example would have the following signature:
+\begin{java}
+\jtaba public Vector newsByTitle (CmsObject cms) \{ .... \}\\[1ex]
+\jtaba public Vector newsById (CmsObject cms, String id) \{ ... \}\\
+\end{java}
+
+
+
+
+
+
+      
+
+

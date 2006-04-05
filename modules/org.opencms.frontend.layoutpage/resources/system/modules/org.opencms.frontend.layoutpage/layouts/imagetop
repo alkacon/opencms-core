@@ -1,0 +1,3 @@
+<div class="element">${layout.headline}${layout.image}<br clear="all"/>
+${layout.text}
+</div>

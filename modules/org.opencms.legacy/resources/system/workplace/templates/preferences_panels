@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+
+<TEMPLATE>
+Other Preference input forms will be added here
+</TEMPLATE>
+
+<TEMPLATE name="explorer">
+<![CDATA[
+<table cellspacing=0 cellpadding=0 border=0 width=100%>	
+<tr><td colspan=4 class=dialogtxt>
+	<table border=0 cellspacing=0 cellpadding=5 width=100% height=200>
+	<tr>
+			<td colspan=4 class=formular>]]><LABEL value="label.preferencesexplorer" /><![CDATA[</td>
+	</tr>
+	<tr> 
+		<td class=dialogtxt width=5%><INPUT type="checkbox" id=CBTITLE name=CBTITLE ]]><PROCESS>CHECKTITLE</PROCESS><![CDATA[></td>
+		<td class=dialogtxt width=45%>]]><LABEL value="input.title" /><![CDATA[</td>
+		<td class=dialogtxt><INPUT type="checkbox" id=CBCHANGED name=CBCHANGED ]]><PROCESS>CHECKCHANGED</PROCESS><![CDATA[></td>
+		<td class=dialogtxt>]]><LABEL value="input.datelastmodified" /><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt><INPUT type="checkbox" id=CBTYPE name=CBTYPE ]]><PROCESS>CHECKTYPE</PROCESS><![CDATA[></td>
+		<td class=dialogtxt>]]><LABEL value="input.type" /><![CDATA[</td>
+		<td class=dialogtxt><INPUT type="checkbox" id=CBUSERLASTMODIFIED name=CBUSERLASTMODIFIED ]]><PROCESS>CHECKUSERLASTMODIFIED</PROCESS><![CDATA[></td>
+		<td class=dialogtxt>]]><LABEL value="input.userlastmodified" /><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt><INPUT type="checkbox" id=CBSIZE name=CBSIZE ]]><PROCESS>CHECKSIZE</PROCESS><![CDATA[></td>
+		<td class=dialogtxt>]]><LABEL value="input.size" /><![CDATA[</td>
+		<td class=dialogtxt><INPUT type="checkbox" id=CBDATECREATED name=CBDATECREATED ]]><PROCESS>CHECKDATECREATED</PROCESS><![CDATA[></td>
+		<td class=dialogtxt>]]><LABEL value="input.datecreated" /><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt><INPUT type="checkbox" id=CBACCESS name=CBACCESS ]]><PROCESS>CHECKACCESS</PROCESS><![CDATA[></td>
+		<td class=dialogtxt>]]><LABEL value="input.permissions" /><![CDATA[</td>
+		<td class=dialogtxt width=5%><INPUT type="checkbox" id=CBOWNER name=CBOWNER ]]><PROCESS>CHECKOWNER</PROCESS><![CDATA[></td>
+		<td class=dialogtxt width=45%>]]><LABEL value="input.usercreated" /><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt><INPUT type="checkbox" id=CBSTATE name=CBSTATE ]]><PROCESS>CHECKSTATE</PROCESS><![CDATA[></td>
+		<td class=dialogtxt>]]><LABEL value="input.state" /><![CDATA[</td>
+		<td class=dialogtxt><INPUT type="checkbox" id=CBLOCKEDBY name=CBLOCKEDBY ]]><PROCESS>CHECKLOCKEDBY</PROCESS><![CDATA[></td>
+		<td class=dialogtxt>]]><LABEL value="input.lockedby" /><![CDATA[</td>
+	</tr>	
+	<tr>
+        <td class=dialogtxt colspan=4><INPUT type="submit" class=button width = 100 value="]]><LABEL value="button.default" /><![CDATA[" id=DEFAULT name=DEFAULT onclick="javascript:selectPanel(']]><METHOD name="setPanel"></METHOD><![CDATA[');""></td>
+	</tr>
+	</table>
+</td></tr>
+</table>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="task">
+<![CDATA[
+<table border=0 cellspacing=0 cellpadding=0 width=100% height=210>
+	<tr><td class=leerzeile colspan=4>&nbsp;</td></tr>
+	<tr>
+		<td colspan=4 class=formular><p class=einzug>]]><LABEL value="label.preferencesexplorer" /><![CDATA[</p></td>
+	</tr>
+	<tr>
+		<td class=formular><p class=einzug>]]><LABEL value="input.taskfilter" /><![CDATA[:</p> </td>
+		<td colspan=2 class=dialogtxt>
+		]]><SELECT class="textfeld" name="filter" width="210" method="getFilters" /><![CDATA[                            
+		</td>
+		<td class=dialogtxt>
+			<input type="checkbox" name=CBALL id=CBALL ]]><PROCESS>CHVIEWALL</PROCESS><![CDATA[>]]><LABEL value="input.allprojects" /><![CDATA[
+		</td>
+	</tr>
+	<tr>
+		<td colspan=4 class=formular><p class=einzug>]]><LABEL value="input.defaulttasks" /><![CDATA[</p>  </td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=4>
+		<INPUT type="checkbox"  id=CBMSGACCEPTED name=CBMSGACCEPTED ]]><PROCESS>CHMESSAGEACCEPTED</PROCESS><![CDATA[> ]]><LABEL value="input.messageaccept" /><![CDATA[
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=4>
+			<INPUT type="checkbox"  id=CBMSGFORWAREDED name=CBMSGFORWAREDED ]]><PROCESS>CHMESSAGEFORWARDED</PROCESS><![CDATA[> ]]><LABEL value="input.messageforward" /><![CDATA[
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=4>
+			<INPUT type="checkbox"  id=CBMSGCOMPLETED name=CBMSGCOMPLETED ]]><PROCESS>CHMESSAGECOMPLETED</PROCESS><![CDATA[>]]><LABEL value="input.messagecompleted" /><![CDATA[
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=4>
+			<INPUT type="checkbox"  id=CBMSGMEMBERS name=CBMSGMEMBERS ]]><PROCESS>CHMESSAGEMEMEBERS</PROCESS><![CDATA[> ]]><LABEL value="input.messagemembers" /><![CDATA[
+		</td>
+	</tr>
+</table>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="start">
+<![CDATA[
+<table border=0 cellspacing=0 cellpadding=5 width=100% height=200px>
+	]]><PROCESS>LANG_SELECT</PROCESS><![CDATA[
+	<tr>
+		<td class=formular width=30%>]]><LABEL value="input.startupproject" /><![CDATA[:</td>
+		<td class=dialogtxt>
+			]]><SELECT class="textfeld" name="project" width="150" method="getProjects" /><![CDATA[
+		</td>
+	</tr>
+	<tr>
+		<td class=formular>]]><LABEL value="input.startupview" /><![CDATA[:</td>
+		<td class=dialogtxt>
+			]]><SELECT class="textfeld" name="view" width="150" method="getViews" /><![CDATA[
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt>
+			<input type=checkbox name="lockdialog" ]]><PROCESS>checklockdialog</PROCESS><![CDATA[>
+			]]><LABEL value="input.showlockdialog" /><![CDATA[
+		</td>
+    	<td class=dialogtxt>
+			<input type=checkbox name="uploadapplet" ]]><PROCESS>checkuploadappeltdialog</PROCESS><![CDATA[>
+			]]><LABEL value="input.uploadapplet" /><![CDATA[
+		</td>
+		
+	</tr>
+</table>		
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="user">
+<![CDATA[
+<table border=0 cellspacing=0 cellpadding=5 width=100% height=200>
+<tr>
+	<td colspan=4 class=formular>]]><LABEL value="label.preferencesuser" /><![CDATA[</td>
+</tr>
+<tr>
+	<td class=dialogtxt width=25%>]]><LABEL value="input.user" /><![CDATA[:</td>
+	<td class=dialogtxt width=25%>]]><PROCESS>USER</PROCESS><![CDATA[</td>
+	<td class=dialogtxt width=10%>]]><LABEL value="input.email" /><![CDATA[</td>
+	<td class=dialogtxt width=40%>]]><PROCESS>EMAIL</PROCESS><![CDATA[</td>
+</tr>
+<tr>
+	<td class=dialogtxt>]]><LABEL value="input.lastname" /><![CDATA[:</td>
+	<td class=dialogtxt>]]><PROCESS>LASTNAME</PROCESS><![CDATA[</td>
+	<td class=dialogtxt rowspan=2 valign=top>]]><LABEL value="input.adress" /><![CDATA[:</td>
+	<td class=dialogtxt rowspan=2 valign=top>]]><PROCESS>ADRESS</PROCESS><![CDATA[</td>
+</tr>
+<tr>
+	<td class=dialogtxt>]]><LABEL value="input.firstname" /><![CDATA[:</td>
+	<td class=dialogtxt>]]><PROCESS>FIRSTNAME</PROCESS><![CDATA[</td>
+</tr>
+<tr>
+	<td class=dialogtxt>]]><LABEL value="input.description" /><![CDATA[:</td>
+	<td class=dialogtxt colspan=3>]]><PROCESS>DESCRIPTION</PROCESS><![CDATA[</td>
+</tr>
+<tr>
+	<td colspan=4 class=formular>]]><LABEL value="input.settings" /><![CDATA[</td>
+</tr>
+<tr>
+	<td class=formular>]]><LABEL value="input.currentgroup" /><![CDATA[:</td>
+	<td class=dialogtxt>
+	<!-- ]]><SELECT class="textfeld" name="group" width="150" method="getGroups" /><![CDATA[ -->
+	]]><PROCESS>CURRENTGROUP</PROCESS><![CDATA[
+	</td>
+	<td class=dialogtxt colspan=2><INPUT type="button" class=button width = 100 value="]]><LABEL value="button.changepasswd" /><![CDATA[" id=PWD name=PWD onclick="location.href='chpwd.html';"></td>
+</tr>
+</table>
+]]>
+</TEMPLATE>
+
+<LANG_SELECT>
+<PROCESS>LANG_ENABLED</PROCESS>
+</LANG_SELECT>
+
+<LANG_ENABLED>
+	<![CDATA[
+	<tr>
+		<td class=formular>]]><LABEL value="input.lang" /><![CDATA[:</td>
+		<td class=dialogtxt>
+			]]><SELECT class="textfeld" name="LANGUAGE" width="150" method="getLanguageFiles" /><![CDATA[                            
+		</td>
+	</tr>
+	]]>
+</LANG_ENABLED>
+
+<LANG_DISABLED>
+	<![CDATA[
+	<input type="hidden" name="LANGUAGE" value="en">
+	]]>
+</LANG_DISABLED>
+
+</WORKPLACE>

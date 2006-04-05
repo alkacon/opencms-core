@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyChecks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/admin/contenttools/check/plugin/propertycheck/propertycheck.xsd">
+  <PropertyCheck language="de"/>
+  <PropertyCheck language="en">
+    <error>
+      <propertyname><![CDATA[Title]]></propertyname>
+      <type><![CDATA[file]]></type>
+      <empty>true</empty>
+      <filename>false</filename>
+      <length/>
+      <value/>
+    </error>
+    <warning>
+      <propertyname><![CDATA[Title]]></propertyname>
+      <type><![CDATA[folder]]></type>
+      <empty>true</empty>
+      <filename>true</filename>
+      <length><![CDATA[5]]></length>
+      <value/>
+    </warning>
+    <warning>
+      <propertyname><![CDATA[Title]]></propertyname>
+      <type><![CDATA[file]]></type>
+      <empty>false</empty>
+      <filename>true</filename>
+      <length><![CDATA[5]]></length>
+      <value/>
+    </warning>
+  </PropertyCheck>
+</PropertyChecks>

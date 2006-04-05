@@ -1,0 +1,31 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/externallink.xsd"/>
+		
+	<xsd:element name="EventAddresss" type="OpenCmsEventAddresss"/>
+	
+	<xsd:complexType name="OpenCmsEventAddresss">
+		<xsd:sequence>
+			<xsd:element name="EventAddress" type="OpenCmsEventAddress" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsEventAddress">
+		<xsd:sequence>
+			<xsd:element name="Company" type="OpenCmsString" />
+			<xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="RoomOrDirection" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Street" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="ZIP" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="City" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Country" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Phone" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Fax" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Email" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="ExternalLink" type="OpenCmsExternalLink" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+ 
+</xsd:schema>

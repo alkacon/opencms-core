@@ -1,0 +1,287 @@
+<%@ page session="false" import="org.opencms.jsp.*, org.opencms.util.*, java.util.*, org.opencms.frontend.templateone.modules.*" %><%--
+--%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
+--%><%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><%--
+--%><%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %><%
+
+CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
+
+cms.include("../elements/seturi.jsp");
+if (cms.isUriChanged()) {
+	pageContext.setAttribute("detailfile", cms.getOriginalUri());
+} else {
+	pageContext.setAttribute("detailfile", cms.getRequestContext().getUri());
+}
+
+// get currently active locale to initialize message bundle
+String locale = cms.getRequestContext().getLocale().toString();
+pageContext.setAttribute("locale", locale);
+
+%><fmt:setLocale value="${locale}" /><%--
+--%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
+
+--%><cms:include property="template" element="head" />
+<div class="element">
+
+<cms:contentload collector="singleFile" param="${pageContext.detailfile}" editable="true">
+
+<table border="0">
+<tr><td colspan="2">
+<h1><cms:contentshow element="Title" /></h1>
+<cms:contentcheck ifexists="SubTitle"><p><span style="font-weight: bold;"><cms:contentshow element="SubTitle" /></span></p></cms:contentcheck>
+
+<%-- begin short description --%>
+<cms:contentcheck ifexists="ShortDescription"><b><cms:contentshow element="ShortDescription" /></b></cms:contentcheck>
+<hr noshade="noshade" size="1">
+<%-- end short description --%>
+</td></tr>
+
+<%-- begin date --%>
+<cms:contentcheck ifexists="EventDates/EventDate">
+<c:set var="startdateString">
+	<cms:contentshow element="EventDates/EventDate" />
+</c:set>
+<%
+	cms.setDate("startdateString");
+%>
+<tr>
+	<td class="nowrap">
+		<c:set var="showTime" value="true"/>
+		<c:set var="dateType" value="both"/>
+		<cms:contentcheck ifexists="EventDates/ShowTime">
+			<c:set var="showTime"><cms:contentshow element="EventDates/ShowTime" /></c:set>
+			<c:if test="${showTime == 'false' || showTime == ''}">
+				<c:set var="dateType" value="date"/>
+			</c:if>
+		</cms:contentcheck>
+		<fmt:message key="eventarticle.eventdate" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="${dateType}" /><c:if test="${dateType == 'both'}"><fmt:message key="eventarticle.eventtime" /></c:if>
+		<cms:contentcheck ifexists="EventDates/EventEndDate">
+		<c:set var="enddateString">
+			<cms:contentshow element="EventDates/EventEndDate" />
+		</c:set>
+		<fmt:message key="eventarticle.eventend" /> 
+		<%
+			boolean showTime = Boolean.valueOf((String)pageContext.getAttribute("showTime")).booleanValue();
+			cms.setDate("enddateString");
+			if (showTime && cms.isSameDate("startdateString", "enddateString")) {
+				%><fmt:formatDate value="${date}" timeStyle="short" type="time" /><%
+			} else {
+				%><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="${dateType}" /><%
+			}
+		%><c:if test="${dateType == 'both'}"><fmt:message key="eventarticle.eventtime" /></c:if>
+		</cms:contentcheck>
+	</td>
+</tr>
+</cms:contentcheck>
+<%-- end date --%>
+
+<%-- begin additional dates --%>
+<cms:contentcheck ifexistsone="EventDates/AdditionalDate">
+<tr><td class="nowrap"><fmt:message key="label.EventDate.AdditionalDate" />:&nbsp;</td><td><cms:contentloop element="EventDates/AdditionalDate"><%--
+--%><c:set var="startdateString"><%--
+	--%><cms:contentshow element="StartDate" /><%--
+--%></c:set><%
+	cms.setDate("startdateString");
+%><c:if test="${next == 'true'}">;<br></c:if><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><fmt:message key="eventarticle.eventtime" /><c:set var="next" value="true" /><%--
+--%><cms:contentcheck ifexists="EndDate"> <fmt:message key="eventarticle.eventend" /> <%--
+
+--%><c:set var="enddateString"><%--
+	--%><cms:contentshow element="EndDate" /><%--
+--%></c:set><%
+	cms.setDate("enddateString");
+	if (cms.isSameDate("startdateString", "enddateString")) {
+		%><fmt:formatDate value="${date}" timeStyle="short" type="time" /><%
+	} else {
+		%><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><%
+	}
+%><fmt:message key="eventarticle.eventtime" /><%--
+
+--%></cms:contentcheck></cms:contentloop></td></tr>
+</cms:contentcheck>
+<%-- end additional dates --%>
+
+<%-- begin date remark --%>
+<cms:contentcheck ifexists="EventDates/DateRemark">
+<tr><td class="nowrap">&nbsp;</td><td><cms:contentshow element="EventDates/DateRemark" /></td></tr>
+</cms:contentcheck>
+<%-- end date remark --%>
+
+<%-- begin "end of registration" --%>
+<cms:contentcheck ifexists="EventDates/RegistrationClose">
+<c:set var="dateString">
+	<cms:contentshow element="EventDates/RegistrationClose" />
+</c:set><%
+	cms.setDate("dateString");
+%>
+<tr><td class="nowrap"><fmt:message key="label.EventDate.RegistrationClose" />:&nbsp;</td><td><fmt:formatDate value="${date}" dateStyle="long" /></td></tr>
+</cms:contentcheck>
+<%-- end "end of registration" --%>
+
+<%-- begin event number --%>
+<cms:contentcheck ifexists="Extended/Number">
+<tr><td class="nowrap"><fmt:message key="label.EventExtended.Number" />:&nbsp;</td><td><cms:contentshow element="Extended/Number" /></td></tr>
+</cms:contentcheck>
+<%-- end event number --%>
+
+<%-- begin event referent --%>
+<cms:contentcheck ifexists="Extended/Referent">
+<tr><td class="nowrap"><fmt:message key="label.EventExtended.Referent" />:&nbsp;</td><td><cms:contentshow element="Extended/Referent" /></td></tr>
+</cms:contentcheck>
+<%-- end event referent --%>
+
+<%-- begin long description --%>
+<tr><td colspan="2">
+<hr noshade="noshade" size="1">
+<cms:contentshow element="LongDescription" />
+<hr noshade="noshade" size="1">
+</td></tr>
+<%-- end long description --%>
+
+<cms:contentcheck ifexistsone="Extended/TargetGroup, Extended/ParticipantPrecondition">
+
+<%-- begin target group --%>
+<cms:contentcheck ifexists="Extended/TargetGroup">
+<tr><td class="nowrap"><fmt:message key="label.EventExtended.TargetGroup" />:&nbsp;</td><td>
+<cms:contentshow element="Extended/TargetGroup" />
+</td></tr>
+</cms:contentcheck>
+<%-- end target group --%>
+
+<%-- begin precondition --%>
+<cms:contentcheck ifexists="Extended/ParticipantPrecondition">
+<tr><td class="nowrap"><fmt:message key="label.EventExtended.ParticipantPrecondition" />:&nbsp;</td><td>
+<cms:contentshow element="Extended/ParticipantPrecondition" />
+</td></tr>
+</cms:contentcheck>
+<%-- end precondition --%>
+
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="Extended/EventCharges">
+<cms:contentloop element="Extended/EventCharges">
+
+<%-- begin price --%>
+<cms:contentcheck ifexists="Price">
+<tr><td class="nowrap"><fmt:message key="label.EventCharge.Price" />:&nbsp;</td><td>
+<cms:contentshow element="Price" />
+</td></tr>
+</cms:contentcheck>
+<%-- end price --%>
+
+<%-- begin price remark --%>
+<cms:contentcheck ifexists="Remark">
+<tr><td>&nbsp;</td><td>
+<cms:contentshow element="Remark" />
+</td></tr>
+</cms:contentcheck>
+<%-- end price remark --%>
+
+<%-- begin price link --%>
+<cms:contentcheck ifexists="InternalLink">
+<tr><td>&nbsp;</td><td>
+<cms:contentloop element="InternalLink">
+<c:set var="linkTarget">
+	<cms:contentshow element="NewWin" />
+</c:set>
+<c:set var="desc">
+	<cms:contentshow element="Description" />
+</c:set>
+<c:set var="href">
+	<cms:contentshow element="Href" />
+</c:set>
+<%= cms.getAnchor("href", "desc", "linkTarget") %>
+</cms:contentloop>
+</td></tr>
+</cms:contentcheck>
+<%-- end price link --%>
+
+</cms:contentloop>
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+
+<%-- begin event location --%>
+<cms:contentcheck ifexists="Extended/EventLocation">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="detail.label.EventArticle.EventLocation" />:&nbsp;</td><td>
+<cms:contentloop element="Extended/EventLocation">
+<%@ include file="../elements/detail-element-eventaddress.txt" %>
+</cms:contentloop>
+</td></tr>
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+<%-- end event location --%>
+
+<%-- begin event director --%>
+<cms:contentcheck ifexists="Extended/EventDirector">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="detail.label.EventArticle.EventDirector" />:&nbsp;</td><td>
+<cms:contentloop element="Extended/EventDirector">
+<%@ include file="../elements/detail-element-eventaddress.txt" %>
+</cms:contentloop>
+</td></tr>
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+<%-- end event director --%>
+
+<%-- begin event organization --%>
+<cms:contentcheck ifexists="Extended/EventOrganization">
+<cms:contentloop element="Extended/EventOrganization">
+
+<cms:contentcheck ifexistsone="Registration,Phone,Fax,Email,Link">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="label.EventOrganization.Registration" />:&nbsp;</td><td>
+<cms:contentcheck ifexists="Registration"><cms:contentshow element="Registration" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="Phone"><fmt:message key="label.EventOrganization.Phone" />:&nbsp;<cms:contentshow element="Phone" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="Fax"><fmt:message key="label.EventOrganization.Fax" />:&nbsp;<cms:contentshow element="Fax" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="Email"><fmt:message key="label.EventOrganization.Email" />:&nbsp;<a href="mailto:<cms:contentshow element="Email" />"><cms:contentshow element="Email" /></a><br></cms:contentcheck>
+<cms:contentcheck ifexists="Link">
+<cms:contentloop element="Link">
+<%@ include file="../elements/detail-element-eventlink.txt" %>
+</cms:contentloop>
+</td></tr>
+</cms:contentcheck>
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+
+<cms:contentcheck ifexistsone="Consulting,ConPhone,ConFax,ConEmail,ConLink">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="label.EventOrganization.Consulting" />:&nbsp;</td><td>
+<cms:contentcheck ifexists="Consulting"><cms:contentshow element="Consulting" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="ConPhone"><fmt:message key="label.EventOrganization.ConPhone" />:&nbsp;<cms:contentshow element="ConPhone" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="ConFax"><fmt:message key="label.EventOrganization.ConFax" />:&nbsp;<cms:contentshow element="ConFax" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="ConEmail"><fmt:message key="label.EventOrganization.ConEmail" />:&nbsp;<a href="mailto:<cms:contentshow element="ConEmail" />"><cms:contentshow element="ConEmail" /></a><br></cms:contentcheck>
+<cms:contentcheck ifexists="ConLink">
+<cms:contentloop element="ConLink">
+<%@ include file="../elements/detail-element-eventlink.txt" %>
+</cms:contentloop>
+</td></tr>
+</cms:contentcheck>
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+
+</cms:contentloop>
+</cms:contentcheck>
+<%-- end event organization --%>
+
+<tr><td colspan="2">
+
+<%-- begin images --%>
+<%@ include file="../elements/detail-element-image.txt" %>
+<%-- end images --%>
+
+<%-- begin external links --%>
+<cms:contentcheck ifexistsone="ExternalLink">
+<p><fmt:message key="detail.label.EventArticle.ExternalLink" />:</p>
+<%@ include file="../elements/detail-element-externallink.txt" %>
+</cms:contentcheck>
+<%-- end external links --%>
+
+</td></tr>
+<% if (cms.isUriChanged()) { %>
+<tr>
+	<td colspan="2">&nbsp;<br><form action="<cms:link><c:out value="${param.uri}" /></cms:link>" style="margin: 0; padding: 0"><input class="formbutton" type="submit" value="<fmt:message key="modules.button.back" />"></form></td>
+</tr>
+<% } %>
+</table>
+
+</cms:contentload>
+</div>
+
+<cms:include property="template" element="foot" /><%--
+--%></fmt:bundle>

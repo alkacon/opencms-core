@@ -1,0 +1,83 @@
+\chapter{Components used by OpenCms}
+\label{components}
+
+This chapter describes all external parts required to run OpenCms.
+If you want to prepare an installation, please collect all
+components listed here. If you download a major release of OpenCms
+(e.g. version 5.x) the MySQL connector, Xerces, JavaMail, Fesi, 
+Jakarta-ORO and JTidy will be shipped with the distribution.
+
+\section{Operating System}
+OpenCms is implemented in 100\% Java. Since Java should be platform independent, OpenCms should run
+on all operating systems supporting Java. Currently, we have installations running on
+Red Hat Linux 7.2 (\rqhttp{http://www.redhat.com}{http://www.redhat.com}). Other
+Linux or Unix brands should work without problems. We also have installations on
+Windows NT 4.0, Windows 2000 and Windows XP.
+
+\section{Webserver}
+The reference webserver for OpenCms is, of course, the excellent Apache webserver \\
+(\rqhttp{http://www.apache.org}{http://www.apache.org}).
+Apache is the clear market leader with more than 50\% market share,
+it is used by IBM as webserver for their operating systems, and it is also Open Source and
+free of charge. We have been using OpenCms with Apache since version 1.3.6 on Linux and Windows.
+For Windows systems, the Microsoft IIS (\rqhttp{http://www.microsoft.com/
+iis}{http://www.microsoft.com/\\
+iis})
+has also been successfully tested with OpenCms. 
+Other web servers should also be working without problems.
+
+\section{Servlet runtime engine}
+The Java Servlet API (JSDK) 2.3 and a servlet engine are needed by
+the webserver to start up Java programs on http requests. The
+servlet standard has been developed by SUN, see
+\rqhttp{http://java.sun.com/products/servlet/index.html}{http://java.sun.com/products/servlet/index.html}.
+We are most often using TOMCAT as a Java Servlets and Java Server
+Pages reference implementation from the Apache Foundation. Please use
+Tomcat 4.x or later. See
+\rqhttp{http://jakarta.apache.org/}{http://jakarta.apache.org/}
+
+For a Microsoft IIS installation, we have successfully used Jrun from Allaire \\
+(\rqhttp{http://www.allaire.com/Products/Jrun/}{http://www.allaire.com/Products/Jrun/}).\\
+Since servlets are a standard API which is part of the J2EE specification,
+other servlet engines should be working without problems.
+
+\section{Java VM}
+To run servlets, a Java Virtual Machine (VM) is needed. For development we are currently using
+a version 1.4 compliant JDK, like the one provided \\
+by SUN (\rqhttp{http://java.sun.com/j2se/1.4/}{http://java.sun.com/j2se/1.4/})\\
+or IBM (\rqhttp{http://www.ibm.com/java/jdk/index.html}{http://www.ibm.com/java/jdk/index.html}).\\
+For running systems we recommend using a Java VM version 1.4 or higher.
+
+\section{Database}
+The OpenCms architecture allows to use any SQL capable database that offers a JDBC connector.
+These include enterprise databases like e.g. Oracle (\rqhttp{http://www.oracle.com}{http://www.oracle.com}),
+but also Open Source databases like MySQL (\rqhttp{http://www.mysql.com}{http://www.mysql.com}).
+The reference installation uses MySQL. For development we are currently using version 3.23 or version 4.0 of 
+MySQL and version 2.0.14 of the MySQL Connector/J driver.
+
+\section{XML Parser}
+OpenCms makes heavy use of XML to store content and template data. For XML parsing, we make use of
+the excellent Xerces developed by the Apache Foundation\\
+(\rqhttp{http://xml.apache.org/xerces-j/index.html}{http://xml.apache.org/xerces-j/index.html}).
+We recommend using version 1.4.4.
+
+\section{Mail API}
+The integrated task management is able to send mails when task events occur.
+To enable this feature you will need the JavaMail 1.2 API available at \\
+\rqhttp{http://www.javasoft.com/products/javamail/index.html}{http://www.javasoft.com/products/javamail/index.html}
+ and the activation Java\-Bean
+(\rqhttp{http://www.javasoft.com/beans/glasgow/jaf.html}{http://www.javasoft.com/beans/glasgow/jaf.html}).
+
+\section{FESI (a Free EcmaScript Interpreter)}
+OpenCms uses FESI as Interpreter for EcmaScript. This interpreter is used by OpenCms if you start the cmsshell in
+ExmaScript mode.
+(\rqhttp{http://home.worldcom.ch/jmlugrin/fesi}{http://home.worldcom.ch/jmlugrin/fesi})
+
+\section{JTidy}
+OpenCms uses JTidy release 7 to cleanup and parse HTML-fragments produced by the HTML-Control. 
+(\rqhttp{http://sourceforge.net/projects/jtidy}{http://sourceforge.net/projects/jtidy})
+
+\section{Jakarta-ORO}
+OpenCms uses regular expressions for linkreplacements in case of static export. Therefor jakarta-oro-2.0.6.jar
+is used.
+(\rqhttp{http://jakarta.apache.org/oro/index.html}{http://jakarta.apache.org/oro/index.html})

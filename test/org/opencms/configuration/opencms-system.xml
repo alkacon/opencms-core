@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-system.dtd">
+
+<opencms>
+	<system>
+	   	<internationalization> 	
+			<localehandler class="org.opencms.i18n.CmsDefaultLocaleHandler"/>	
+			<localesconfigured>
+				<locale>en</locale>
+				<locale>de</locale>
+			</localesconfigured>
+			<localesdefault>
+				<locale>en</locale>
+				<locale>de</locale>		
+			</localesdefault>
+		</internationalization>
+		<mail>
+			<mailfrom>nobody@nowhere.com</mailfrom>
+			<mailhost name="my.smtp.server" order="10" protocol="smtp" user="username" password="secure"/>
+			<mailhost name="alternative.smtp.server" order="20" protocol="smtp"/>
+			<mailhost name="another.alternative.smtp.server" order="30" protocol="smtp"/>
+		</mail>
+		<scheduler>
+			<job>
+				<name>Test job name</name>
+				<class>org.opencms.scheduler.TestScheduledJob</class>
+				<reuseinstance>false</reuseinstance>
+				<active>true</active>
+				<cronexpression><![CDATA[0/2 * * * * ?]]></cronexpression>
+				<context>
+					<user>Admin</user>
+					<project>Offline</project>
+					<siteroot>/sites/default</siteroot>
+					<requesteduri>/index.html</requesteduri>
+					<locale>en</locale>
+					<encoding>UTF-8</encoding>
+					<remoteaddr>127.0.0.1</remoteaddr>
+				</context>
+				<parameters>
+					<param name="param1">value1</param>
+					<param name="param2">value2</param>
+				</parameters>
+			</job>		
+			<job>
+				<name>Another job name</name>
+				<class>org.opencms.scheduler.TestScheduledJob</class>
+				<reuseinstance>true</reuseinstance>
+				<active>false</active>
+				<cronexpression><![CDATA[0/10 * * * * ?]]></cronexpression>
+				<context>
+					<user>Admin</user>
+					<project>Offline</project>
+					<siteroot>/sites/default</siteroot>
+					<requesteduri>/index.html</requesteduri>
+					<locale>en</locale>
+					<encoding>UTF-8</encoding>
+					<remoteaddr>127.0.0.1</remoteaddr>
+				</context>
+			</job>			
+		</scheduler>			
+	   	<versionhistory enabled="true" count="10"/>
+		<resourceinit>
+			<resourceinithandler class="org.opencms.configuration.CmsTestDummyResourceInit" />
+		</resourceinit>
+		<requesthandlers/>
+		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
+			<encoding>UTF-8</encoding>
+			<digest-type>MD5</digest-type>
+			<param name="compatibility.convert.digestencoding">false</param>
+		</passwordhandler>
+		<loginmanager>	
+			<disableMinutes>20</disableMinutes>
+			<maxBadAttempts>3</maxBadAttempts>
+		</loginmanager>	
+		<loginmessage>
+			<enabled>false</enabled>
+			<message><![CDATA[This is just a test login message]]></message>
+			<loginForbidden>false</loginForbidden>
+		</loginmessage>
+		<sites>
+			<workplace-server>http://localhost:8080</workplace-server>
+			<default-uri>/sites/default/</default-uri>
+			<site server="http://localhost:8080" uri="/sites/default/">
+              <secure server="http://www.mysecureserver.com"/>			
+              <alias server="http://www.aliasserver.com"/>              			
+              <alias server="http://www.yetanotheraliasserver.com"/>			
+			</site>
+		</sites>
+		<runtimeproperties>
+			<param name="compatibility.support.oldlocales">false</param>
+			<param name="compatibility.support.webAppNames">/opencms/opencms/</param>
+		</runtimeproperties>
+		<runtimeclasses>
+			<runtimeinfo class="org.opencms.db.CmsDbContextFactory" />
+		</runtimeclasses>	
+		<defaultusers>
+			<user-admin>Admin</user-admin>
+			<user-guest>Guest</user-guest>
+			<user-export>Export</user-export>
+			<group-administrators>Administrators</group-administrators>
+			<group-projectmanagers>Projectmanagers</group-projectmanagers>
+			<group-users>Users</group-users>
+			<group-guests>Guests</group-guests>
+		</defaultusers>		
+		<defaultcontentencoding>UTF-8</defaultcontentencoding>
+		<memorymonitor>
+			<maxusagepercent>90</maxusagepercent>
+			<log-interval>2</log-interval>
+			<email-interval>43200</email-interval>
+			<warning-interval>43200</warning-interval>
+		</memorymonitor>
+		<flexcache>
+			<cache-enabled>true</cache-enabled>
+			<cache-offline>false</cache-offline>
+			<maxcachebytes>8000000</maxcachebytes>
+			<avgcachebytes>6000000</avgcachebytes>
+			<maxentrybytes>400000</maxentrybytes>
+			<maxkeys>2000</maxkeys>
+		</flexcache>
+		<http-authentication>
+			<browser-based>true</browser-based>
+			<form-based>/system/login/index.html</form-based>
+		</http-authentication>	
+		<resultcache>
+			<keygenerator>org.opencms.db.CmsCacheKey</keygenerator>
+			<size-users>64</size-users>
+			<size-groups>64</size-groups>
+			<size-usergroups>256</size-usergroups>
+			<size-projects>32</size-projects>
+			<size-resources>8192</size-resources>
+			<size-resourcelists>256</size-resourcelists>
+			<size-properties>128</size-properties>
+			<size-accesscontrollists>1024</size-accesscontrollists>	
+			<size-permissions>1024</size-permissions>
+		</resultcache>		
+		<content-notification>
+            <notification-time>365</notification-time>
+            <notification-project>Offline</notification-project>
+        </content-notification>					
+	</system>
+</opencms>    

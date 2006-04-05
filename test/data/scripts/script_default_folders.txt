@@ -1,0 +1,17 @@
+#
+# Script: Create the default folder strcuture and permissions
+
+# Switch to the root context
+setSiteRoot "/"
+
+# Create folder structure
+createFolder "/" "system/"
+createFolder "/" "sites/"
+createFolder "/" "channels/"
+createFolder "/sites/" "default/"
+
+# Apply folder permissions
+chacc "/" "group" "Administrators" "+v+w+r+c+d+i"
+chacc "/" "group" "Projectmanagers" "+v+w+r+c+d+i"
+chacc "/" "group" "Users" "+v+w+r+c+i"
+chacc "/" "group" "Guests" "+v+r+i"

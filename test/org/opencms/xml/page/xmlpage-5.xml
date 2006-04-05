@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+
+	<page language="en">
+		<element name="body">
+			<links>
+				<link name="link0" type="A" internal="true">
+					<target><![CDATA[/sites/default/test.html]]></target>
+				</link>
+			</links>
+			<content><![CDATA[English! Link: <a href="${link0}" >Test</a>
+
+<a href="">Link without content</a>
+
+]]></content>
+		</element>  
+	</page>  
+</pages>

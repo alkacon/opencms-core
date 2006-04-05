@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/homelink.xsd"/>
+	
+	<xsd:element name="configurations" type="OpenCmsConfigurations"/>
+	
+	<xsd:complexType name="OpenCmsConfigurations">
+		<xsd:sequence>
+			<xsd:element name="configuration" type="OpenCmsConfiguration" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsConfiguration">
+		<xsd:sequence>
+			<xsd:element name="area.name" type="OpenCmsString" />
+			<xsd:element name="layout.version" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="navigation.startfolder" type="OpenCmsVfsFile" />
+			<xsd:element name="headnav.menus" type="OpenCmsBoolean" default="true" />
+			<xsd:element name="headnav.menudepth" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="headnav.menuclick" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="headnav.markcurrent" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="headnav.images" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="headnav.homelink" type="OpenCmsHomelink" minOccurs="0" />
+			<xsd:element name="headnav.manual" type="OpenCmsBoolean" minOccurs="0" />		
+			<xsd:element name="navleft.showselected" type="OpenCmsBoolean" />
+			<xsd:element name="login.uri" type="OpenCmsVfsFile" />
+			<xsd:element name="help.uri" type="OpenCmsVfsFile" />
+			<xsd:element name="page.form.letter" type="OpenCmsVfsFile" />
+			<xsd:element name="page.form.recommend" type="OpenCmsVfsFile" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.workplace"/>
+			<layouts>
+				<layout element="layout.version" widget="SelectorWidget" configuration="accessible*:${key.layout.version.accessible}|common:${key.layout.version.classic}" />
+				<layout element="headnav.menudepth" widget="SelectorWidget" configuration="1*|2|3|4|5|6|7|8|9|10" />
+			</layouts>
+		</xsd:appinfo>
+	</xsd:annotation>  
+	
+</xsd:schema>

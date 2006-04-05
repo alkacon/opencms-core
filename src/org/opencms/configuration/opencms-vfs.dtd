@@ -1,0 +1,126 @@
+<!-- 
+# The root configuration node is called <opencms> for all OpenCms configurations.
+-->
+<!ELEMENT opencms (vfs)>
+
+<!--
+# <vfs> configuration:
+#
+# The configuration of the 'virtual file system' is done here.
+-->
+
+<!ELEMENT vfs (
+	resources,
+	defaultfiles,
+	translations?, 
+	xmlcontent?)>
+
+<!ELEMENT resources (
+	resourceloaders, 
+	resourcetypes,
+	collectors? )>
+
+<!ELEMENT resourceloaders (loader+)>
+<!ELEMENT loader (param*)>
+<!ATTLIST loader class CDATA #REQUIRED>
+
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param name CDATA #REQUIRED>
+
+<!--
+# Collectors for gathering Lists of resources from the VFS.	
+-->
+<!ELEMENT collectors (collector+)>
+<!ELEMENT collector EMPTY>
+<!ATTLIST collector class CDATA #REQUIRED order CDATA #REQUIRED>
+
+<!--
+# Default file names for directories.
+#
+# These are the default files that are read when a folder name 
+# is requested by the user in a http request.
+-->
+<!ELEMENT defaultfiles (defaultfile+)>
+<!ELEMENT defaultfile EMPTY>
+<!ATTLIST defaultfile name CDATA #REQUIRED>
+
+<!--
+# Translations for file and folder names.
+-->
+<!ELEMENT translations (filetranslations?, foldertranslations?)>
+<!ELEMENT translation (#PCDATA)>
+
+<!--
+# Filename translation is used when creating new files to automatically 
+# replace chars not allowed in the OpenCms VFS into allowed ones.
+# This is done using Perl5 regular search & replace expression translation rules.
+# One of the most important uses is e.g. replacement of space with "_".
+# So if a user uploads a file "my file.txt" the name will be translated to "my_file.txt".
+# All of the translation rules are applied to the filename in the given order.
+#
+# By setting the "enabled" attibute to "false" you can disable filename translation.
+# It is enabled by default. It's recommended to leave this enabled.
+#
+# Filename translation is only applied to: 
+#   - File uploads (the name of the uploaded file is translated)
+#   - Zip-File uploads (all filenames in the Zip are translated)
+-->
+
+<!ELEMENT filetranslations (translation*)>
+<!ATTLIST filetranslations enabled (TRUE|true|FALSE|false) #REQUIRED>
+
+<!--
+# Folder translation can be used to maintain compatibility with older
+# OpenCms installations, e.g. with version before the 5.0 (beta 2) release.
+# This is done using Perl5 regular search & replace expression rules.
+# All read and write access to a OpenCms VFS folder that matches one of given
+# translation rules is automatically translated to the new name.
+# Translation is stopped after the first match was found.
+#
+# The attribute "enabled" controls if folder translation is enabled.
+# The default is "not enabled". Use this feature only if you have specific 
+# reasons because it might hurt performance.
+-->
+
+<!ELEMENT foldertranslations (translation*)>
+<!ATTLIST foldertranslations enabled (TRUE|true|FALSE|false) #REQUIRED>
+
+<!--
+# XML content definitions that are used to build XML content items.
+#
+# The configured widget classes must implement the interface 
+# "org.openmcms.workplace.xmlwidgets.I_CmsXmlWidget".
+#
+# Each XML content schema type configuration requires a class that implements
+# the interface "org.opencms.xml.types.I_CmsXmlSchemaType". This type defines 
+# the basic behaviour of the XML content item data. For creating the 
+# XML content editor, a default widget class must be given that implements the 
+# interface "org.opencms.workplace.xmltypes.I_CmsXmlWidget". 
+# The configured widget class must also be listed in the "widgets" node.
+-->
+<!ELEMENT xmlcontent (widgets, schematypes)>
+
+<!ELEMENT widgets (widget*)>
+<!ELEMENT widget EMPTY>
+<!ATTLIST widget class CDATA #REQUIRED alias CDATA #IMPLIED>
+
+<!ELEMENT schematypes (schematype*)>
+<!ELEMENT schematype EMPTY>
+<!ATTLIST schematype class CDATA #REQUIRED defaultwidget CDATA #REQUIRED>
+
+<!--
+# Individual resource types. 
+-->
+
+<!--
+# Name for the property node (see below), this node already exists in opencms-modules.xml
+-->
+
+<!ELEMENT name (#PCDATA)>
+
+
+<!--
+# Include the resource types DTD.
+-->
+<!ENTITY % opencms-resourcetypes SYSTEM "http://www.opencms.org/dtd/6.0/opencms-resourcetypes.dtd"> 
+%opencms-resourcetypes;

@@ -1,0 +1,51 @@
+body {
+	background-color: #ffffff;
+}
+
+body, p, td { 
+	color: #000000; 
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 14px;
+}
+
+.note { 
+	font-size: 12px;
+    background-color: #cccccc;
+    border: 1px solid black; 
+    line-height: 1.5em;	
+    padding: 3px;
+}
+
+.high { 
+    background-color: #ffcccc;
+    border: 1px solid black; 
+    padding: 3px;
+}
+
+.small { 
+	font-size: 10px;
+}
+
+a:link, a:visited, a:active { 
+	color: #ee0055;
+	text-decoration: none;
+} 
+
+a:hover {
+	text-decoration: underline;
+}
+
+pre.code {
+    font-family: "courier new", courier, monospace; 
+    border: 1px;
+    border-style: solid;
+    border-color: #000000;
+    padding: 5px 5px 5px 5px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.white {
+	background-color: #ffffff;
+	display: block;
+}

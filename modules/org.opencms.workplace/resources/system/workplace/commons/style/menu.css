@@ -1,0 +1,1368 @@
+<%@ page import="org.opencms.jsp.*,java.net.*,org.opencms.workplace.*" %>
+
+<%
+
+    // Create a JSP action element 
+    CmsJspActionElement cms = new CmsJspActionElement(pageContext,request,response);
+
+
+    // up to now, the possible styles are "new_admin", "workplace", "menu", "popup" and "onlinehelp"
+    String uri = request.getRequestURL().toString();
+
+    // find out the name of the sibling. This is the stylename
+    int dot = uri.lastIndexOf('.');
+    int sep = uri.lastIndexOf('/');
+    int style = 0;
+    
+    final int WORKPLACE = 0;
+    final int NEW_ADMIN = 1;
+    final int MENU = 2;
+    final int POPUP = 3;
+    final int ONLINEHELP = 4;
+    
+    String stylestring = uri.substring(sep + 1, dot);
+    if(stylestring.equals("workplace")) {
+      style = WORKPLACE;
+    } else if (stylestring.equals("new_admin")) {
+      style = NEW_ADMIN;
+    } else if (stylestring.equals("menu")) {
+      style = MENU;
+    } else if (stylestring.equals("popup")) {
+      style = POPUP;
+    } else if (stylestring.equals("onlinehelp")) {
+      style = ONLINEHELP;
+    }
+               
+    /* style definitions valid only for MENU-style */
+%>
+
+<% if(style == MENU || style == NEW_ADMIN) { %>
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: WindowText;
+   <% if (style == NEW_ADMIN) { %>
+	background-color: Window;     
+	padding-bottom: 20px;
+   <% } else {%>
+	padding: 0 12px;
+	margin: 0;
+	background-color: ThreeDFace; 
+	background-image: url(<%=CmsWorkplace.getSkinUri()%>admin/images/border.gif);
+	background-position: right;
+	background-repeat: repeat-y;
+	background-attachment: fixed;
+  <% } %>
+}
+
+img {
+  border: none;
+}
+
+/* --- loader ---*/
+
+#loader {
+  width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#loader td {
+  padding: 0px;
+  background: Window;
+  border: 1px solid black;
+}
+
+#loader p {
+  border-top: 3px solid ThreeDHighlight;
+  border-left: 3px solid ThreeDHighlight;
+  border-right: 3px solid ThreeDShadow;
+  border-bottom: 3px solid ThreeDShadow;
+  padding: 10px;
+  margin: 0;
+  background: ThreeDFace;
+}
+
+#loader img {
+  float: left;
+  margin-right: 12px;
+}
+
+#loader strong {
+  display: block;
+  margin-bottom: 3px;
+}
+
+#loaderContainer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  height: expression(document.documentElement.clientHeight+'px');
+}
+
+#loaderContainer td {
+	padding-top: 150px;
+	vertical-align: top;
+	text-align: center;
+	background-image: url(<%=CmsWorkplace.getSkinUri()%>admin/images/semi-transparent.gif);
+}
+
+#loaderContainer td td {
+	padding-top: 0px;
+	text-align: left;
+}
+
+/* ---------- links ------------ */
+.link,
+.link a {
+  display: inline;
+  background: none;
+  background-color: transparent;
+  vertical-align: middle;
+  cursor: hand;
+  cursor: pointer;
+  color: WindowText;
+  text-decoration: none;
+}
+
+.link:hover a,
+.link a:hover {
+  text-decoration: underline;
+  color: #000088;
+}
+
+.link:hover img,
+.link img:hover { 
+  text-decoration: none;
+}
+
+.linkdisabled {
+  color: GrayText;
+  text-decoration: none;
+  cursor: default;
+}
+
+.link img {
+  width: 20px;
+  height: 20px;
+  display: inline;
+  vertical-align: middle;
+  text-decoration: none;
+}
+
+/* ---------- big icon buttons  --------- */
+.bigLink {
+  width: 128px;
+  height: 62px;
+  float: left;
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 2px;
+  padding-right: 2px;
+  padding-left: 2px;
+}
+
+.bigLink .link img {
+  width: 32px;
+  height: 32px;
+  display: inline;
+  vertical-align: middle;
+  padding-bottom: 1px;
+  padding-right: 1px;
+  padding-left: 1px;
+  text-decoration: none;
+}
+
+<% } 
+
+   if(style == MENU) { %>
+
+/* navegation area */
+
+#navArea img {
+  display: block;
+  margin: 0;
+}
+
+#navArea {
+  padding-top: 12px;
+  padding-bottom: 60px;
+}
+
+.navOpened,
+.navClosed {
+  border-top: 2px solid ThreeDHighlight;
+  border-left: 2px solid ThreeDHighlight;
+  border-right: 2px solid ThreeDShadow;
+  border-bottom: 2px solid ThreeDShadow;
+}
+
+#navArea .node img,
+#navArea .nodeActive img {
+  display: inline;
+  vertical-align: middle;
+  margin: 0px;
+}
+
+/* opened tab */
+
+.navOpened {
+  margin-bottom: 15px;
+  background-color: ActiveCaption;
+}
+
+.navTitle,
+.navTitleOver {
+  cursor: pointer;
+  cursor: hand;
+  -moz-user-select: none;
+}
+
+.titleBorder {
+   border: 3px solid ThreeDFace;  
+   border-bottom: 0px solid ThreeDFace; 
+ }
+
+.treeBorder {
+   border: 3px solid ThreeDFace;  
+ }
+
+.navOpened .navTitle,
+.navOpened .navTitleOver {
+  height: 22px;
+}
+
+.navOpened .navTitle .titleText {
+  font-weight: bold;
+  vertical-align: middle;
+  color: CaptionText;
+}
+
+.navOpened .navTitleOver .titleText {
+  font-weight: bold;
+  vertical-align: middle;
+  color: InactiveCaptionText;
+}
+
+.navClosed {
+  background-position: right;
+  background-repeat: repeat-y;
+  margin-bottom: 15px;
+  background-color: InactiveCaption;
+}
+
+.navClosed .navTitle,
+.navClosed .navTitleOver {
+  height: 22px;
+}
+
+.navClosed .navTitle .titleText,
+.navClosed .navTitleOver .titleText {
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.titleText {
+  padding-left: 20px;
+  padding-top: 3px;
+}
+
+.navClosed .navTitle .titleText {
+  color: InactiveCaptiontext;
+}
+
+.navClosed .navTitleOver .titleText {
+  color: CaptionText;
+}
+
+div.tree {
+  padding: 2px;
+  padding-top: 3px;
+  padding-bottom: 10px;
+  background-color: Window; 
+  border: 1px solid WindowText;
+}
+
+.navOpened .tree {
+  display: block;
+}
+
+.navClosed .tree {
+  display: none;
+}
+
+.node,
+.nodeActive {
+  padding-top: 4px;
+  padding-left: 5px;
+  vertical-align: middle;
+}
+
+#contexthelp {
+  height: 100px;
+  width: 164px;
+  overflow: hidden;
+}
+
+<% /* style definitions valid only for NEW_ADMIN style */ %>
+<% } else if(style == NEW_ADMIN) { %>
+
+body, form {
+  margin: 0;
+  padding: 0;
+}
+
+.inputButton{
+  background-color: #D4D0C8;
+  padding: 1px 9px 1px 9px;
+  text-align: center;
+  /* for firefox:*/
+  /* border: 2px solid #808080; */
+  /* for ie:*/
+  border: 2px solid #C0C0C0; 
+  border-style: outset;
+  margin-right: 1px;
+  font-family: Arial, Helvetica, sans-serif; 
+  font-size: 9pt; 
+  text-decoration: none;
+  color: black;    
+}
+ 
+.list {
+	border-collapse: collapse;
+}
+	 
+.list td {
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.list th { 
+  vertical-align: middle;
+  text-align: center;
+  background-color:ThreedFace; 
+  border-right: 1px solid ThreedDarkShadow; 
+  border-top: 1px solid ThreeDHighlight; 
+  border-bottom: 1px solid ThreedDarkShadow; 
+  border-left: 1px solid ThreeDHighlight; 
+} 
+
+.list th a:link, 
+.list th a:visited, 
+.list th a:active {
+  color: WindowText;
+  text-decoration: none;
+}
+
+.evenrowbg {
+	background-color: ButtonFace; 
+}
+
+.oddrowbg {
+	background-color: Window;
+}
+ 
+.pathbar {
+   padding-top: 10px;
+   padding-left: 10px;
+   background-color: ThreeDFace;
+}
+
+.screenBody {
+  margin: 0 10px;
+}
+
+.uplevel {
+  text-align: right;
+}
+
+.screenTitle {
+  margin: 0;
+  vertical-align: middle;
+  background-color: ThreeDFace;
+  border-bottom: 1px solid ActiveBorder;
+}
+
+.screenTitle td {
+  padding: 3px 12px 5px 11px;
+  vertical-align: middle;
+  font-size: 18px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: WindowText;
+}
+
+p, hr {
+  margin: 5px 0;
+}
+
+hr {
+  clear: both;
+}
+
+.misc {
+  text-align: right;
+}
+
+.main input {
+	margin-right: 7px;
+}
+
+.misc input {
+  text-align: left;
+}
+
+.toolsArea {
+  padding: 8px 0 0 0;
+}
+
+.iconblock {
+    margin: auto; 
+    width: 95%;
+}
+
+td.listdetailhead {
+	vertical-align: top;
+	font-size: 10px;
+}
+
+td.listdetailitem {
+	padding-left: 10px;
+	font-size: 10px;
+	color: ThreeDShadow;
+}
+
+<%
+/* style definitions valid for WORKLACE, NEW_ADMIN and POPUP style */
+} if(!(style == MENU) && !(style == ONLINEHELP)) { 
+%>
+
+/* Default font settings for all standard p, td elements */
+p, td, div, span {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+/* Default font settings for all form elements */
+input, select, option, textarea {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+/* headline of dialog window */
+.dialoghead {
+   <% if(style == POPUP || style==NEW_ADMIN) { %>
+	visibility: hidden;
+	display: none;   
+	<% } else if(style == WORKPLACE) { %>
+	background-color: ActiveCaption;
+	<% } %>
+	margin-bottom: 8px;
+	padding: 2px;
+	color: CaptionText;
+	font-size: 12px;
+	font-weight: bold;
+	width: 100%;
+	white-space: nowrap;	
+}
+
+
+/* outer table of complete dialog window */
+table.dialog {
+	<% if(style == POPUP || style == NEW_ADMIN) { %>
+	margin: auto;
+	width: 100%;
+	<% } else if(style == WORKPLACE) { %>
+        margin: 20px auto;
+	width: 85%;
+	border-left: 1px solid ThreeDLightShadow;
+	border-top: 1px solid ThreeDLightShadow;
+	border-right: 1px solid ThreedDarkShadow;
+	border-bottom: 1px solid ThreedDarkShadow;
+   <% } %>
+}
+
+body.dialogpopup {
+	margin: 0 auto;
+	<% if(!(style == NEW_ADMIN)) { %>
+	background-color: ThreeDFace;
+	<% } %>
+}
+
+/* inner table of complete dialog window */
+table.dialogbox {
+	width: 100%;
+	<% if(!(style == NEW_ADMIN)) { %>
+	background-color: ThreeDFace;
+	<% } %>
+	<% if(style == NEW_ADMIN) { %>
+	padding-top: 10px;	
+	<% } %>
+        <% if(style == WORKPLACE) { %>
+	background-color: ThreeDFace;
+	border-left: 1px solid ThreeDHighlight;
+	border-top: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+	padding-top: 1px;	
+	<% } %>
+}
+
+/* Button - Horizontal Separator line */
+.horseparator {
+	width: 100%;
+	<% if(!(style == NEW_ADMIN)) { %>
+	background-color: ThreeDHighlight;
+	<% } %>
+	border-top: 1px solid ThreeDShadow;
+}
+
+body.dialog {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	padding: 0;
+	margin: 0;
+	<% if(style == POPUP) { %>
+	background-color: ThreeDFace;
+	<% } %>
+}
+
+/* Button - Text button wrapper  */
+span.txtbutton {
+	display: block;
+	height: 17px;
+	white-space: nowrap;
+	padding-top: 3px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+/* Button - Image button wrapper */
+span.imgbutton {
+	padding-left: 1px;
+	padding-right: 5px;
+}
+
+/* Button - Combined image and text button wrapper */
+span.combobutton {
+	display: block;
+	height: 17px;
+	white-space: nowrap;
+	padding-top: 3px;
+	padding-left: 21px;
+	padding-right: 5px;
+	background-repeat: no-repeat;
+}
+
+/* Button - Image button in image style */
+img.button {
+	height: 20px;
+	width: 20px;
+	border: 0px none;
+	vertical-align: middle;
+}
+
+/* Button - Link (href) style */
+a.button {
+	color: ButtonText;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* Button - Normal style (inactive) */
+span.norm {
+	display: block;
+	border: 1px solid ThreeDFace;
+}
+
+/* Button - Hover style */
+span.over {
+	display: block;
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDShadow;
+}
+
+/* Button - Push style */
+span.push {
+	display: block;
+	border-top: 1px solid ThreeDShadow;
+	border-left: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDHighlight;
+}
+
+/* Button - Disabled style */
+span.disabled {
+	display: block;
+	border: 1px solid ThreeDFace;
+	color: GrayText;
+}
+
+/* Button - Tart tab */
+span.starttab {
+	display: block;
+	height: 16px;
+	width: 1px;
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDShadow;
+}
+
+/* Button - Separator */
+span.separator {
+	display: block;
+	height: 18px;
+	width: 0px;
+	border-top: 0px;
+	border-left: 1px solid ThreeDShadow;
+	border-bottom: 0px;
+	border-right: 1px solid ThreeDHighlight;
+}
+
+/* final button row of dialog window */
+.dialogbuttons {
+	padding: 3px 8px 5px;
+	text-align: center;
+	<% if(style == NEW_ADMIN) { %>
+	background: #ffffff;
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+	<% } %>
+}
+
+
+/* Subheadline used in content area */
+.dialogsubheader {
+	font-weight: bold;
+	margin: 12px 0 5px 0;
+}
+
+.dialogcontent {
+	<% if(!(style == NEW_ADMIN)) { %>
+	border-left: 1px solid ThreeDHighlight;
+	border-top: 1px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	border-bottom: 2px solid ThreeDShadow;
+	margin: 8px;
+	padding: 15px;
+	<% } %>
+	<% if(style == NEW_ADMIN) { %>
+    width: 95%;
+    margin: auto;
+	<% } %>
+}
+
+/* one content line of dialog (e.g. text and input field) without breaks */
+.dialogrow {
+	margin-bottom: 5px;
+	display: block;
+	white-space: nowrap;
+}
+
+/* 3D block outer border definition */
+div.dialogblockborderheadline {
+	margin-top: 10px;
+}
+
+/* 3D block outer border definition without headline */
+div.dialogblockborder {
+	border-left: 1px solid ThreeDShadow;
+	border-top: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDHighlight;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+/* 3D block main style */
+div.dialogblock {
+	position: relative;
+	padding: 8px;
+	border-left: 1px solid ThreeDHighlight;
+	border-top: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+/* 3D block headline, positioned "inside" border */
+span.dialogblockhead {
+	font-weight: bold;
+	position:absolute;
+	top: -7px;
+	left: 5px;
+	<% if(style == WORKPLACE) { %>
+	background-color: ThreeDFace;
+	<% } else if(style == NEW_ADMIN) { %>
+	background-color: Window;
+	<% } %>
+	padding: 0 3px;
+	white-space: nowrap;
+}
+
+
+/* outer border of white inner box */
+.dialoginnerboxborder {
+	border-left: 1px solid ThreeDShadow;
+	border-top: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDHighlight;
+	padding: 0;
+}
+
+/* white inner box for dialogs */
+.dialoginnerbox {
+   <% if(style != NEW_ADMIN) { %>
+	background-color: Window;
+   <% } %>
+	border-left: 1px solid ThreedDarkShadow;
+	border-top: 1px solid ThreedDarkShadow;
+	border-right: 1px solid ThreeDLightShadow;
+	border-bottom: 1px solid ThreeDLightShadow;
+	padding: 2px;
+}
+
+/* separator line */
+.dialogseparator {
+	border-top: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDHighlight;
+	margin: 5px 0;
+}
+
+/* separator line */
+.dialogspacer {
+	height: 10px;
+}
+
+/* error messages style */
+.dialogerror {
+	color: #c03;
+}
+
+
+/* Submit and other buttons */
+input.dialogbutton {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+   <% if(style != NEW_ADMIN) { %>
+	background-color: ButtonFace;
+   <% } %>
+	width: 100px;
+	height: 20px;
+	padding: 0 5px;
+	margin-left: 12px;
+	overflow: visible;
+}
+
+/* Special input field for property dialog */
+input.dialogmarkedfield {
+	width: 100%;
+	background-color: #E9E9E9;
+}
+
+/* row marked as selected */
+.dialogmarked {
+	background-color: ActiveCaption;
+	color: CaptionText;
+	display: block;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+/* an unmarked row */
+.dialogunmarked {
+	display: block;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+/* empty dummy style */
+.empty {}
+
+/* bold text */
+.textbold {
+	font-weight: bold;
+}
+
+/* centered text */
+.textcenter {
+	text-align: center;
+}
+
+/* maximum width for td, input field, etc. */
+.maxwidth {
+	width: 100%;
+}
+
+/* no border for elements */
+.noborder {
+	border-style: none;
+}
+
+/* element without margin and padding */
+.nomargin {
+	padding: 0;
+	margin: 0;
+}
+
+/* hide a block */
+.hide {
+	display: none;
+	visibility: hidden;
+}
+
+/* show a block */
+.show {
+	display: inline;
+	visibility: visible;
+}
+
+/* special definitions for permission dialog */
+table.dialogpermissiondetails {
+	table-layout: fixed;
+	width: 420px;
+	margin-left: 15px;
+}
+
+td.dialogpermissioncell {
+	width: 140px;
+	overflow: hidden;
+}
+
+div.dialogpermissioninherit {
+	width: 420px;
+	overflow: auto;
+	margin-left: 17px;
+}
+
+/* definitions for "tab-style" dialogs */
+.dialogtab {
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	background-color: ThreeDFace;
+	text-align: center;
+	color: #000;
+	white-space: nowrap;
+}
+
+.dialogtabactive {
+	border-top: 2px solid ThreeDHighlight;
+	border-left: 2px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	background-color: ThreeDFace;
+	text-align: center;
+	color: CaptionText;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.dialogtabstart {
+	padding: 15px;
+	margin: 8px;
+}
+
+.dialogtabrow {
+	height: 1px;
+	<% if(!(style == NEW_ADMIN)) { %>
+	background-color: ThreeDHighlight;
+	<% } %>
+}
+
+.dialogtabcontent {
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	border-bottom: 2px solid ThreeDShadow;
+	padding: 15px;
+	margin-top: -1px;
+}
+
+a.tab {
+	color: WindowText;
+	text-decoration: none;
+	display: block;
+	padding: 4px;
+}
+
+a.tab:hover {
+	color: GrayText;
+}
+
+span.tabactive {
+	color: WindowText;
+	text-decoration: none;
+	display: block;
+	padding: 4px;
+}
+
+<% if(!(style == NEW_ADMIN)) { %>
+body.report {
+	background-color: Window;
+}
+<% } %>
+
+/* style definitions for WORKPLACE only */
+<% } if(style == WORKPLACE) { %>
+
+/* classes used only on the login screen */
+table.logindialog {
+    margin: 20px auto;
+	width: 550px;
+	border-left: 1px solid ThreeDLightShadow;
+	border-top: 1px solid ThreeDLightShadow;
+	border-right: 1px solid ThreedDarkShadow;
+	border-bottom: 1px solid ThreedDarkShadow;
+}
+
+input.loginbutton {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	width: 150px;
+	height: 20px;
+	padding: 0 5px;
+	margin: 0px;
+	overflow: visible;
+}
+
+/* style definitions for WORKPLACE and NEW_ADMIN style */
+<% } if(style == WORKPLACE || style == NEW_ADMIN) { %>
+
+ /* Body used for workplace head (top_head.html) */
+body.buttons-head {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	padding: 0px;
+	margin: 0px;
+	background-color: ThreeDFace;
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDShadow;
+}
+
+/* Body used for workplace foot (top_foot.html) */
+body.buttons-foot {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	padding: 0px;
+	margin: 0px;
+	background-color: ThreeDFace;
+	border-top: 1px solid ThreeDLightShadow;
+	border-left: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDShadow;
+}
+
+/* ########## Dialog styles ########## */
+
+body.dialogadmin {
+	margin-top: 0;
+	margin-left: auto;
+	margin-right: auto;
+	/*background-color: Window;
+	border-top: 1px solid ThreedDarkShadow;*/
+}
+
+.texteditor {
+	font-family: fixedsys, monospace, sans-serif;
+	font-size: 11px;
+}
+
+.buttonbackground {
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+	padding: 1px;
+	background-color: ThreeDFace;	
+}
+
+.editorbuttonbackground {<%
+	if (style == NEW_ADMIN) { %>
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+	padding: 1px;
+	background-color: ThreeDFace;<% } %>
+}
+
+/* definitions for xmlcontent editor form */
+.xmlTable { 
+	width:100%; 
+}
+
+.xmlTableNested { 
+	width:100%;
+	border: 2px outset ThreeDHighlight;
+}
+
+.xmlTd    { 
+	width: 100%; 
+	height: 22px;
+	padding: 3px;
+}
+
+.xmlTdDisabled {
+	font-style: italic; 
+	border-right: 1px dotted ThreeDShadow;
+	padding: 3px;
+}
+
+.xmlTdErrorHeader {
+	font-size: 14px;
+	font-weight: bold;
+	color: #B40000;
+	text-align: center;
+}
+
+.xmlTdError {
+	font-style: normal;
+	font-weight: bold;
+	color: #B40000;
+	padding: 3px;
+}
+
+.xmlTdWarning {
+	font-style: normal;
+	font-weight: bold;
+	color: #EE7700;
+	padding: 3px;
+}
+
+.xmlLabel { 
+	white-space: nowrap;
+}
+
+.xmlLabelDisabled {
+	font-style: italic; 
+	white-space: nowrap;
+}
+
+.xmlInput { 
+	border: 1px solid WindowFrame;<%
+	if (style == NEW_ADMIN) { %>
+	margin: 0;
+	padding: 0;<% } %>
+}
+
+.xmlInputError {
+	background-color: #FFCCCC;
+}
+
+.xmlInputSmall { 
+	width: 200px; 
+	border: 1px solid WindowFrame; 
+}
+
+.xmlInputMedium { 
+	width: 400px;
+	border: 1px solid WindowFrame;
+}
+
+.xmlHtmlGallery {
+	overflow: auto;
+	border: 1px solid WindowFrame;<%
+	if (style == NEW_ADMIN) { %>
+	margin: 0;
+	padding: 0;<% } %>
+}
+
+.xmlButtons {
+	color: WindowText; 
+	position: absolute; 
+	top: 0px; 
+	left: 0px; 
+	width: 90px; 
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+	padding: 2px;
+	background-color: ThreeDFace; 
+	visibility: hidden; 
+	font-size: 8pt;
+}
+
+.textInput {<%
+	if (style != NEW_ADMIN) { %>
+	width: 100%;
+	<% } else { %>
+	width: 99.9%;
+        <% } %>
+}
+
+div.widgetcombo {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 0px;
+    width: 300px;
+    overflow: hidden;
+    border: 1px solid WindowFrame; 
+    background-color: Window;
+    visibility: hidden;
+}
+
+button.widgetcombobutton {
+	height: 17px;
+	width: 17px;
+}
+
+div.widgetcombo a {
+	text-decoration: none;
+	display:block;
+	background-color: Window;
+	color: WindowText;
+	width: 100%;
+}
+
+div.widgetcombo a:hover {
+	background-color: Highlight;
+	color: HighlightText;
+}
+
+<% } 
+
+   if (style == ONLINEHELP) { %>
+   
+body, h1, h2, h3, h4, h5, h6, p, td, caption, th, ul, ol, dl, li, dd, dt {
+	font-family: Verdana, Arial, Helvetica, sans-serif; 
+	color: WindowText; 
+	font-size: 11px;
+}
+
+body { 
+	background-color: Window;
+	margin: 0;
+	padding: 0;
+}
+
+pre	{ 
+	font-family: Courier, monospace; 
+	font-size: 11px; 
+	margin-left: 6px; 
+}
+
+h1          { font-size: 18px; margin-top: 5px; margin-bottom: 1px }	
+h2          { font-size: 14px; margin-top: 15px; margin-bottom: 3px }
+h3          { font-size: 12px; margin-top: 15px; margin-bottom: 3px }
+h4          { font-size: 12px; margin-top: 15px; margin-bottom: 3px; font-style: italic }
+p           { margin-top: 10px; margin-bottom: 10px }
+ul	     	{ margin-top: 2px; margin-bottom: 2px }
+li	     	{ margin-top: 2px; margin-bottom: 2px } 
+ol	     	{ margin-top: 2px; margin-bottom: 2px }
+strong	    { font-weight: bold; }
+.definition	{ margin-top: 0px; margin-left: 30px; margin-bottom: 0px; margin-right: 0px; }
+
+/* common links (navigation and page) */
+a, a:link, a:visited {
+	color: #CC0000; 
+	text-decoration: none;
+}
+
+a:hover, a:active { 
+	text-decoration: underline;
+}
+
+/* main content table */
+table.helpcontent {
+	width: 100%;
+	height: 100%;
+	empty-cells: show;
+}
+
+/* navigation cell */
+td.helpnav { 
+	background-color: ThreeDFace; 
+	border-right: 1px solid ThreeDShadow; 
+	padding: 5px;
+	vertical-align: top;
+	width: 30%;
+}
+
+/* content cell */
+td.helpcontent { 
+	background-color: Window; 
+	padding: 5px 5px 5px 15px; 
+	vertical-align: top;
+	width: 70%;
+}
+
+/* navigation headline */
+a.navhelphead, a.navhelphead:link, a.navhelphead:visited {
+	-moz-box-sizing: border-box; 
+	color: #000000;
+	background-color: ThreeDFace; 
+	width: 100%; 
+	margin-bottom: 5px; 
+	padding: 2px; 
+	display: block; 
+	text-align: left; 
+	border: 1px solid WindowFrame;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	text-decoration: none;
+}
+
+a.navhelphead:hover, a.navhelphead:active {
+	color: #000088;
+	text-decoration: underline;
+}
+
+/* navigation links */
+/* common links (navigation and page) */
+a.navhelp, a.navhelp:link, a.navhelp:visited {
+	color: #000000; 
+	text-decoration: none;
+}
+
+a.navhelp:hover, a.navhelp:active {
+	color: #000088;
+	text-decoration: underline;
+}
+
+.navhelp {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	float: left;
+	background-image: url(<%=cms.link("/system/modules/org.opencms.workplace.help/resources/nav_i.gif")%>);
+	padding-left: 10px; 
+  background-position: 0px 1px;
+	background-repeat:no-repeat;
+}
+
+/* current navigation item */
+.navhelpcurrent {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	float: left;
+	background-image: url(<%=cms.link("/system/modules/org.opencms.workplace.help/resources/nav_a.gif")%>);
+	background-repeat:no-repeat;
+}
+
+/* error messages style */
+.dialogerror {
+	color: #c03;
+	background-color: infobackground;
+	border: 1px solid threedshadow;
+	padding: 4px;
+	display:block;
+}
+	
+.searchResult {
+	color: #000000; 
+	font-weight:bold;
+	background-color: infobackground;
+	border: 1px solid threedshadow;
+	padding: 4px;
+	margin-bottom:4px;
+	display:block;
+}
+ 
+.searchExcerpt {
+	color: #999999; 
+	font-weight:normal;
+	background-color: infobackground;
+	border: 0;
+	padding: 4px;
+	display:block;
+}
+ 
+<% }
+   // for ONLINEHELP and NEW_ADMIN (search results)
+   if (style == ONLINEHELP || style == NEW_ADMIN) { %>
+.searchResult {
+	color: #000000; 
+	font-weight:bold;
+	background-color: infobackground;
+	border: 1px solid threedshadow;
+	padding: 4px;
+	margin-bottom:4px;
+	display:block;
+}
+ 
+.searchExcerpt {
+	color: #999999; 
+	font-weight:normal;
+	background-color: infobackground;
+	border: 0;
+	padding: 4px;
+	display:block;
+}
+/* navigation links and search result links for online help */
+/* search result links for  new admin searchindex tool */
+a.navhelp, a.navhelp:link, a.navhelp:visited {
+	color: #000000; 
+	text-decoration: none;
+}
+
+a.navhelp:hover, a.navhelp:active {
+	color: #000088;
+	text-decoration: underline;
+}
+
+.navhelp {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	float: left;
+	background-image: url(<%=cms.link("/system/modules/org.opencms.workplace.help/resources/nav_i.gif")%>);
+	padding-left: 10px; 
+  background-position: 0px 1px;
+	background-repeat:no-repeat;
+}
+
+/* navigation page links for online help and admin searchindex tool */
+a.searchlink, a.searchlink:link, a.searchlink:visited {
+	color: #CC0000; 
+	text-decoration: none;
+}
+a.searchlink:hover, a.searchlink:active { 
+	text-decoration: underline;
+}
+
+a.searchcategory, a.searchcategory:link, a.searchcategory:visited {
+	color: #CC0000; 
+	text-decoration: none;
+  font-weight: bold;
+}
+
+a.searchcategory:hover, a.searchcategory:active {
+  text-decoration: underline;
+}
+
+<% }
+
+   // for all styles except onlinehelp!!
+   if (style != ONLINEHELP) {
+%>
+
+.help { 
+    color: InfoText; 
+    position: absolute; 
+    top: 0px; 
+    left: 0px; 
+    padding: 5px; 
+    width: 200px; 
+    border: 1px solid WindowFrame; 
+    background-color: InfoBackground; 
+    visibility: hidden; 
+    font-size: 8pt; 
+} 
+
+<% } // close !ONLINEHELP
+	if (style != NEW_ADMIN && style != ONLINEHELP) { %>
+
+/* special definition for IE bug displaying horizontal scroll bar in STRICT mode,
+   this must ALWAYS stay at the end of the css! */
+body.dialog { voice-family: "\"}\""; voice-family: inherit; width: expression(document.documentElement.clientWidth - 20); }
+
+  <% } %> 

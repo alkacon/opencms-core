@@ -1,0 +1,174 @@
+<%@ page session="false" buffer="none" import="org.opencms.frontend.templateone.*" %><%--
+
+--%><jsp:useBean id="cms3" class="org.opencms.frontend.templateone.CmsTemplateFormLetter" scope="request"><%--
+--%><jsp:setProperty name="cms3" property="*"/><%--
+--%></jsp:useBean><%
+
+// initialise Cms Action Element
+cms3.init(pageContext, request, response);
+
+if (cms3.template("html")) {
+
+CmsTemplateStyleSheet style = new CmsTemplateStyleSheet(pageContext, request, response);
+
+String mainBorder = style.getConfigValue("main.border", "#000000");
+boolean showMainBorder = true;
+if ("none".equals(mainBorder)) {
+	showMainBorder = false;
+}
+String mainFontFamily = style.getConfigValue("main.font.family", "Verdana, Arial, Helvetica, sans-serif;");
+String mainSidesBg = style.getConfigValue("main.sides.bg", "#FFFFFF");
+
+String headNavBg = style.getConfigValue("head.nav.bg", "#660033");
+String headNavFont = style.getConfigValue("head.nav.font", "#FFFFFF");
+
+String contentFont = style.getConfigValue("content.font", "#000000");
+String contentLink = style.getConfigValue("content.link", "#cc0033");
+String contentLinkHover = style.getConfigValue("content.link_hover", "#cc0033");
+String contentLinkActive = style.getConfigValue("content.link.active", contentLink);
+String contentLinkVisited = style.getConfigValue("content.link.visited", contentLink);
+
+
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="<%= cms3.getRequestContext().getLocale() %>">
+<head>
+	<style type="text/css">
+		<!--
+		body { background-color: <%= mainSidesBg %>; margin: 10px; }
+		body,ul,ol,li,td,p,div,span { font-family: <%= mainFontFamily %>; font-size: 10pt; color: <%= contentFont %>; }		
+		h1			{ font-size: 10pt; font-weight: bold; padding: 2px; width: 100%; background-color: <%= headNavBg %>; color: <%= headNavFont %>; }
+		a			{ color: <%= contentLink %>; text-decoration: none; }
+		a:link		{ color: <%= contentLink %>; text-decoration: none; }
+		a:visited	{ color: <%= contentLinkVisited %>; text-decoration: none; }
+		a:hover		{ color: <%= contentLinkHover %>; text-decoration: none; }
+		a:active	{ color: <%= contentLinkActive %>; text-decoration: none; }
+		div.mail	{ <% 
+	
+			if (showMainBorder) {
+				out.print("border: 1px solid " + mainBorder + "; ");
+			} 
+	
+			%>margin-top: 10px; width: 100%; padding: 2px; }
+		//-->
+	</style>
+</head>
+<body>
+<h1><%= cms3.key("letter.mail.title") %></h1>
+<p>
+	<%= cms3.getFormText("mail_head", false) %>
+</p>
+<div class="mail">
+<p>
+	<%= cms3.key("letter.text.page") %>
+	<a href="<%= cms3.getPageUrl() %>"><%= cms3.getPageTitle() %></a><br />
+	<%= cms3.key("letter.text.url") %> <%= cms3.getFormattedString(cms3.getPageUrl(), '/', 80, "<br>") %>
+</p>
+<p>
+	<%= cms3.key("letter.form.concern.title") %> <%= cms3.key("letter.form.concern." + cms3.getConcern()) %><%
+	if ("other".equals(cms3.getConcern())) {
+		out.print("<br>" + cms3.getConcernDetail());
+	}
+	%>
+</p>
+<p>
+	<%= cms3.getMessage() %>
+</p>
+<p>
+	<%= cms3.key("letter.mail.contactdata") %>
+</p>
+<table border="0" cellpadding="2" cellspacing="0" style="font-size: 1.0em;">
+<tr>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.salutation.title") %></td>
+	<td><% 
+			if (!"".equals(cms3.getContactSalutation())) {
+				out.print(cms3.key("letter.form.salutation." + cms3.getContactSalutation()));
+			}
+		%></td>
+</tr>
+<tr>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.title") %></td>
+	<td><%= cms3.getContactTitle() %></td>
+</tr>
+<tr>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.firstname") %></td>
+	<td><%= cms3.getContactFirstName() %></td>
+</tr>
+<tr>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.lastname") %></td>
+	<td><%= cms3.getContactLastName() %></td>
+</tr>
+<tr>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.email") %></td>
+	<td><a href="mailto:<%= cms3.getContactEmail() %>"><%= cms3.getContactEmail() %></a></td>
+</tr>
+<tr>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.phone") %></td>
+	<td><%= cms3.getContactPhone() %></td>
+</tr>
+<tr>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.street") %></td>
+	<td style="white-space: nowrap;"><%= cms3.getContactStreet() %> <%= cms3.getContactNumber() %></td>
+</tr>
+<tr>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.city") %></td>
+	<td style="white-space: nowrap;"><%= cms3.getContactZip() %> <%= cms3.getContactCity() %></td>
+</tr>
+<tr>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.country") %></td>
+	<td><%= cms3.getContactCountry() %></td>
+</tr>
+</table>
+
+<p>
+	<%= cms3.key("letter.mail.text.url") %><br>
+	<a href="<%= cms3.getPageUrl() %>"><%= cms3.getFormattedString(cms3.getPageUrl(), '/', 80, "<br>") %></a>
+</p>
+</div>
+<p>
+	<%= cms3.getFormText("mail_foot", false) %>
+</p>
+</body>
+</html>
+<%
+}
+
+if (cms3.template("text")) {
+%><%= cms3.key("letter.mail.title") %>
+
+<%= cms3.getFormText("mail_head", true) %>
+
+---------------------------------------------------------------------
+<%= cms3.key("letter.text.page") %> <%= cms3.getPageTitle() %>
+<%= cms3.key("letter.text.url") %> <%= cms3.getPageUrl() %>
+
+<%= cms3.key("letter.form.concern.title") %> <%= cms3.key("letter.form.concern." + cms3.getConcern()) %><%
+	if ("other".equals(cms3.getConcern())) {
+		out.print("\n" + cms3.getConcernDetail());
+	}
+	%>
+
+<%= cms3.getMessage() %>
+
+<%= cms3.key("letter.mail.contactdata") %>
+<%= cms3.key("letter.form.salutation.title") %> <% 
+	if (!"".equals(cms3.getContactSalutation())) {
+		out.print(cms3.key("letter.form.salutation." + cms3.getContactSalutation()));
+	}
+	%>
+<%= cms3.key("letter.form.title") %> <%= cms3.getContactTitle() %>
+<%= cms3.key("letter.form.firstname") %> <%= cms3.getContactFirstName() %>
+<%= cms3.key("letter.form.lastname") %> <%= cms3.getContactLastName() %>
+<%= cms3.key("letter.form.email") %> <%= cms3.getContactEmail() %>
+<%= cms3.key("letter.form.phone") %> <%= cms3.getContactPhone() %>
+<%= cms3.key("letter.form.street") %> <%= cms3.getContactStreet() %> <%= cms3.getContactNumber() %>
+<%= cms3.key("letter.form.city") %> <%= cms3.getContactZip() %> <%= cms3.getContactCity() %>
+<%= cms3.key("letter.form.country") %> <%= cms3.getContactCountry() %>
+
+<%= cms3.key("letter.mail.text.url") %>
+<%= cms3.getPageUrl() %>
+---------------------------------------------------------------------
+
+<%= cms3.getFormText("mail_foot", true) %>
+<%
+}
+%>

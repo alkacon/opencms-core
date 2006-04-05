@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>]]><LABEL value="label.linklist" /><![CDATA[ </title>
+<SCRIPT LANGUAGE="JavaScript">
+    var selectedGallery=0;
+</SCRIPT>
+</head>
+
+<!-- Beginn Aufbau der Frames Task -->
+<frameset rows="70,*" border=0 frameborder=0 framespacing=0>
+    <frame name="edit_html_linklist_head" src="linkctrl.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[" marginwidth=1 marginheight=5 leftmargin=1 topmargin=1 noresize scrolling=no>
+    <frame name="edit_html_linklist_content" src="linklist.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[" marginwidth=8 marginheight=8 leftmargin=8 topmargin=8>
+</frameset>
+<!-- Ende Definition Frames Task -->
+
+<body>
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error">
+<ERRORPAGE title="error.title.linkbrowser" message="error.message.linkbrowser" reason="error.reason.linkbrowser" suggestion="error.suggestion.linkbrowser" ref="javascript:top.close()"><PROCESS>ERRORDETAILS</PROCESS></ERRORPAGE> 
+</TEMPLATE>
+
+<TEMPLATE name="error_no_gallery">
+<ERRORPAGE title="error.title.linkbrowser" message="error.message.linkbrowser" reason="error.reason.linknogallery" suggestion="error.suggestion.linknogallery" ref="javascript:top.close()"></ERRORPAGE> 
+</TEMPLATE>
+</WORKPLACE>

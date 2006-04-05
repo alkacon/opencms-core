@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/navtopentry2.xsd"/>
+	
+	<xsd:element name="TemplateOneNavtopEntries" type="OpenCmsTemplateOneNavtopEntries"/>
+	
+	<xsd:complexType name="OpenCmsTemplateOneNavtopEntries">
+		<xsd:sequence>
+			<xsd:element name="TemplateOneNavtopEntry" type="OpenCmsTemplateOneNavtopEntry" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsTemplateOneNavtopEntry">
+		<xsd:sequence>
+			<xsd:element name="link.url" type="OpenCmsString" />
+			<xsd:element name="link.text" type="OpenCmsString" />
+			<xsd:element name="link.target" type="OpenCmsString" />
+			<xsd:element name="link.image" type="OpenCmsVfsFile" minOccurs="0" />
+			<xsd:element name="menu" type="OpenCmsTemplateOneNavtopEntry2" minOccurs="0" maxOccurs="30" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<layouts>
+				<layout element="link.url" widget="org.opencms.widgets.CmsVfsFileWidget" />
+				<layout element="link.image" widget="ImageGalleryWidget" />
+				<layout element="link.target" widget="SelectorWidget" configuration="_self:${key.link.target.self}|_blank:${key.link.target.blank}" />
+			</layouts>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+</xsd:schema>
