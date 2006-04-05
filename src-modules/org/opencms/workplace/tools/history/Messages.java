@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Messages.java,v $
- * Date   : $Date: 2006/04/05 11:48:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/04/05 11:54:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -49,7 +49,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_DATE_1 = "ERR_INVALID_DATE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_MESSAGE_INVALIDCLEARHISTORYDATA_0="ERR_MESSAGE_INVALIDCLEARHISTORYDATA_0";
+    public static final String ERR_MESSAGE_DATAMISSING_0 = "ERR_MESSAGE_DATAMISSING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MESSAGE_INVALIDCLEARHISTORYDATA_0 = "ERR_MESSAGE_INVALIDCLEARHISTORYDATA_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_INT_ENTERED_0 = "ERR_NO_INT_ENTERED_0";
@@ -101,16 +104,16 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_HISTNUMBER_0 = "GUI_INPUT_HISTNUMBER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_HISTORY_CLEAR_DATE_0 = "GUI_INPUT_HISTORY_CLEAR_DATE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_HISTORY_CLEAR_DISABLEDINFO_0 = "GUI_INPUT_HISTORY_CLEAR_DISABLEDINFO_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_HISTORY_CLEAR_NUMBER_0 = "GUI_INPUT_HISTORY_CLEAR_NUMBER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_HISTORY_CLEAR_SELECT_0 = "GUI_INPUT_HISTORY_CLEAR_SELECT_0";
 
@@ -119,7 +122,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_HISTORY_CLEAR_VERSIONINFO_1 = "GUI_INPUT_HISTORY_CLEAR_VERSIONINFO_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_ADMIN_HISTORY_CLEAR_0 = "GUI_LABEL_ADMIN_HISTORY_CLEAR_0";
 
