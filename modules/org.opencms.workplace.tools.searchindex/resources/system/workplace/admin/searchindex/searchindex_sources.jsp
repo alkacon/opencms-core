@@ -1,5 +1,8 @@
-<%@ page import="org.opencms.workplace.tools.searchindex.*, org.opencms.workplace.CmsWidgetDialog, org.opencms.workplace.CmsDialog, org.opencms.workplace.list.*" %>
-<%     
+<%@ page import="
+	org.opencms.workplace.tools.searchindex.*,
+	org.opencms.workplace.CmsWidgetDialog,
+	org.opencms.workplace.list.*
+"%><%     
 	// initialize index view
     CmsWidgetDialog wp = new CmsOverviewSearchIndexDialog(pageContext, request, response);
 	// perform the widget actions

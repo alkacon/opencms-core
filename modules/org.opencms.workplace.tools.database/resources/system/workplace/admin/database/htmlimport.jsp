@@ -1,20 +1,14 @@
-<%@ page import ="org.opencms.jsp.CmsJspActionElement,
-  				 	 	org.opencms.file.CmsObject,
-				 		java.util.*,
-				 		org.opencms.workplace.*,
-						org.opencms.workplace.commons.*,
-				 		org.opencms.workplace.editors.CmsDialogElements,
-				 		org.opencms.workplace.tools.database.*,
-				 		org.opencms.workplace.*, 
-						org.opencms.workplace.administration.*" %>
-										 
-<%	
+<%@ page import ="
+	org.opencms.jsp.CmsJspActionElement,
+	org.opencms.file.CmsObject,
+	org.opencms.workplace.*,
+	org.opencms.workplace.tools.database.*
+"%><%	
 	// initialise Cms Action Element
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
     
 	// Collect the objects required to access the OpenCms VFS from the request
 	CmsObject cmsObject = cms.getCmsObject();
-	String uri = cmsObject.getRequestContext().getUri(); 
 	String errorMessage = "";	
 	
 	// initialize the workplace class
@@ -27,7 +21,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsHtmlImportReport.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
@@ -65,15 +59,15 @@ default:
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <% if(errorMessage.length()>0) { %>
 <%= wp.dialogBlockStart(null) %>
 <table border="0" cellpadding="4" cellspacing="0">
 	<tr>
-		<td style="vertical-align: middle;"><img src="<%=wp.getSkinUri() %>commons/error.png" border="0"></td>
+		<td style="vertical-align: middle;"><img src="<%= CmsWorkplace.getSkinUri() %>commons/error.png" border="0"></td>
 		<td style="vertical-align: middle;"><%= errorMessage %></td> 
 	</tr> 
 </table>

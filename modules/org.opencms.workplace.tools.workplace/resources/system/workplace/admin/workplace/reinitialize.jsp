@@ -1,8 +1,6 @@
 <%@ page import="
-
 	org.opencms.workplace.*,
 	org.opencms.workplace.tools.workplace.*
-
 "%><%	
 
 	// initialize the workplace class
@@ -48,9 +46,9 @@ function init() {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <%= wp.key("messagebox.reinitworkplace") %>
 

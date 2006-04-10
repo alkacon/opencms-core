@@ -1,4 +1,7 @@
-<%@ page import="org.opencms.workplace.tools.workplace.rfsfile.*,org.opencms.workplace.CmsDialog" %><%	
+<%@ page import="
+	org.opencms.workplace.tools.workplace.rfsfile.*,
+	org.opencms.workplace.CmsDialog
+"%><%	
 
 	// initialize the workplace class
 	CmsRfsFileDownloadDialog wp = new CmsRfsFileDownloadDialog(pageContext, request, response);
@@ -17,7 +20,7 @@ switch (wp.getAction()) {
 
     case CmsDialog.ACTION_DEFAULT:
     default:
-	wp.setParamAction(wp.DIALOG_CANCEL);
+	wp.setParamAction(CmsDialog.DIALOG_CANCEL);
 
 %><%= wp.htmlStart("administration/index.html") %>
 
@@ -25,10 +28,10 @@ switch (wp.getAction()) {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <% if (wp.getParamFramename()==null) { %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 <%  } %>
 
 

@@ -1,14 +1,18 @@
-<%@ page import="org.opencms.main.*,
-							org.opencms.search.*,
-							org.opencms.file.*,
-							org.opencms.jsp.*,
-							org.opencms.workplace.administration.*,
-							org.opencms.workplace.*,
-							java.util.*,
-							java.io.*"
-%>
-<%!
+<%@ page import="
+	org.opencms.main.*,
+	org.opencms.search.*,
+	org.opencms.jsp.*,
+	org.opencms.workplace.*,
+	java.util.*,
+	java.io.*
+"%><%!
   
+	/**
+	 * Helper method to print the stack trace to a String.<p>
+     *
+     * @param e the Exception to print the stack trace of
+     * @return the stack trace as a String
+	 */
 	public static String getStackTrace(Exception e) {
 		Writer result = new StringWriter();
     	PrintWriter printWriter = new PrintWriter(result);

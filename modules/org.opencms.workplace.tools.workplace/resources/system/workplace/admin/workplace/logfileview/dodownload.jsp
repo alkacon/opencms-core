@@ -1,10 +1,8 @@
 <%@ page import="
 	org.opencms.main.*,
-	org.opencms.workplace.tools.workplace.rfsfile.*,
 	org.opencms.util.*,
-	org.opencms.workplace.*,
 	java.io.*
-" %><% // cannot use new_admin style, link class shifts vertical-align from baseline (firefox looks awful). %>
+"%><% // cannot use new_admin style, link class shifts vertical-align from baseline (firefox looks awful). %>
 <style type="text/css">
 body, table {
   font-size: 11px;

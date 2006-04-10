@@ -1,29 +1,26 @@
-<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
-<%@ page import="
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%@ page import="
 	org.opencms.i18n.*,
 	org.opencms.cache.*,
 	org.opencms.flex.*,
 	org.opencms.main.*,
 	org.opencms.workplace.CmsDialog,
-        org.opencms.jsp.CmsJspActionElement,
+	org.opencms.jsp.CmsJspActionElement,
 	java.util.*"  
-%>
-<%
+%><%
 	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
-        CmsDialog wp = new CmsDialog(jsp);
+	CmsDialog wp = new CmsDialog(jsp);
         
-        if (wp.getAction()==CmsDialog.ACTION_CANCEL) {
-            /////////////////// ACTION: cancel button pressed: redirect to closelink
-            wp.actionCloseDialog();
-            return;
-        }        
+	if (wp.getAction()==CmsDialog.ACTION_CANCEL) {
+		/////////////////// ACTION: cancel button pressed: redirect to closelink
+		wp.actionCloseDialog();
+		return;
+	}        
 %>
-    <%= wp.htmlStart("administration/index.html") %>
-    <%= wp.bodyStart(null) %>
+<%= wp.htmlStart("administration/index.html") %>
+<%= wp.bodyStart(null) %>
 
-    <%= wp.dialogStart() %>
-    <%= wp.dialogContentStart(wp.key("flexcache.admin.heading")) %>
-
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.key("flexcache.admin.heading")) %>
 <%
     int sizeEntries = 0;
     int sizeKeys = 0;
@@ -32,12 +29,10 @@
     int maxCacheByteSize = 0;
     int avgCacheByteSize = 0;
     int currentCacheByteSize = 0;
-    int currentCacheObjectCount = 0;
     CmsLruCache entryLruCache = null;
     
     out = pageContext.getOut();
 	
-    String locale = "en";
     CmsFlexController controller = (CmsFlexController)request.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
 
     cache = controller.getCmsCache();
@@ -86,7 +81,6 @@
             maxCacheByteSize = entryLruCache.getMaxCacheCosts();
             avgCacheByteSize = entryLruCache.getAvgCacheCosts();
             currentCacheByteSize = entryLruCache.getObjectCosts();
-            currentCacheObjectCount = entryLruCache.size();
         }
     }
 %>
@@ -201,7 +195,7 @@
                 Iterator i = set.iterator();
                 while(i.hasNext()) {
                     String resource = (String)i.next();
-                    if (resource.endsWith(cache.CACHE_OFFLINESUFFIX)) {
+                    if (resource.endsWith(CmsFlexCache.CACHE_OFFLINESUFFIX)) {
                         offline.add(resource);
                     } else {
                         online.add(resource);
@@ -219,7 +213,9 @@
                         Set variations = cache.getCachedVariations(resource, cms);
                         if (variations.size() > 0) {
 	                        List outlist = new ArrayList();
-                            for(Iterator j = variations.iterator(); j.hasNext(); outlist.add(j.next()));
+                            for(Iterator j = variations.iterator(); j.hasNext(); outlist.add(j.next())) {
+                                // noop
+                            }
                             Collections.sort(outlist);
                             Iterator s = outlist.iterator();
                             while (s.hasNext()) {
@@ -240,7 +236,9 @@
                         Set variations = cache.getCachedVariations(resource, cms);
                         if (variations.size() > 0) {
 	                        List outlist = new ArrayList();
-                            for(Iterator j = variations.iterator(); j.hasNext(); outlist.add(j.next()));
+                            for(Iterator j = variations.iterator(); j.hasNext(); outlist.add(j.next())) {
+                                // noop
+                            }
                             Collections.sort(outlist);
                             Iterator s = outlist.iterator();
                             while (s.hasNext()) {
@@ -265,7 +263,9 @@
                         Set variations = cache.getCachedVariations(resource, cms);
                         if (variations.size() > 0) {
 	                        List outlist = new ArrayList();
-                            for(Iterator j = variations.iterator(); j.hasNext(); outlist.add(j.next()));
+                            for(Iterator j = variations.iterator(); j.hasNext(); outlist.add(j.next())) {
+                                // noop
+                            }
                             Collections.sort(outlist);
                             Iterator s = outlist.iterator();
                             while (s.hasNext()) {
