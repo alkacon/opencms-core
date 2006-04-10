@@ -5,12 +5,12 @@
 	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test1.xsd">
   
 	<Multitest language="en">
-		<String><![CDATA[Multitest 1]]></String>
+		<Locale>en_EN</Locale>
 		<DateTime>-58254180000</DateTime>
+		<String><![CDATA[Multitest 1]]></String>
 		<Html>
 			<links />
 			<content><![CDATA[<p>This is some Html</p>]]></content>
 		</Html>
-		<Locale>en_EN</Locale>
 	</Multitest>
 </Multitests>

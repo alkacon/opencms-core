@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/04/10 11:20:03 $
+ * Version: $Revision: 1.36.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.xml.sax.InputSource;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.36.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -671,6 +671,53 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         // return a data structure with the collected values
         return definition.new CmsXmlComplexTypeSequence(name, sequence, hasLanguageAttribute);
+    }
+
+    /**
+     * Adds the missing default XML according to this content definition to the given document element.<p>  
+     * 
+     * In case the root element already contains subnodes, only missing subnodes are added.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param document the document where the XML is added in (required for default XML generation)
+     * @param root the root node to add the missing XML for
+     * @param locale the locale to add the XML for
+     * 
+     * @return the given root element with the missing content added
+     */
+    public Element addDefaultXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
+
+        Iterator i = m_typeSequence.iterator();
+        int currentPos = 0;
+        List allElements = root.elements();
+
+        while (i.hasNext()) {
+            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
+
+            // check how many elements of this type already exist in the XML
+            String elementName = type.getName();
+            List elements = root.elements(elementName);
+
+            currentPos += elements.size();
+            for (int j = elements.size(); j < type.getMinOccurs(); j++) {
+                // append the missing elements
+                Element typeElement = type.generateXml(cms, document, root, locale);
+                // need to check for default value again because the of appinfo "mappings" node
+                I_CmsXmlContentValue value = type.createValue(document, typeElement, locale);
+                String defaultValue = document.getContentDefinition().getContentHandler().getDefault(cms, value, locale);
+                if (defaultValue != null) {
+                    // only if there is a default value available use it to overwrite the initial default
+                    value.setStringValue(cms, defaultValue);
+                }
+
+                // re-sort elements as they have been appended to the end of the XML root, not at the correct position
+                typeElement.detach();
+                allElements.add(currentPos, typeElement);
+                currentPos++;
+            }
+        }
+
+        return root;
     }
 
     /**

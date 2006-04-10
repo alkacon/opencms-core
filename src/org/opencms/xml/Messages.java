@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/04/10 11:20:03 $
+ * Version: $Revision: 1.12.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,6 +66,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CD_ROOT_ELEMENT_COUNT_1 = "ERR_CD_ROOT_ELEMENT_COUNT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CORRECT_NO_CONTENT_DEF_3 = "ERR_CORRECT_NO_CONTENT_DEF_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EL_ATTRIBUTE_TOOFEW_3 = "ERR_EL_ATTRIBUTE_TOOFEW_3";
@@ -225,7 +228,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_XMLPAGE_DTD_NOT_FOUND_1 = "LOG_XMLPAGE_DTD_NOT_FOUND_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_XMLPAGE_XSD_NOT_FOUND_1 = "LOG_XMLPAGE_XSD_NOT_FOUND_1";
 

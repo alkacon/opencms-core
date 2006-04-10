@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2006/03/27 14:52:36 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/04/10 11:20:03 $
+ * Version: $Revision: 1.36.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,17 +79,26 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.36.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
+
+    /** The name of the XML content auto correction runtime attribute, this must always be a Boolean. */
+    public static final String AUTO_CORRECTION_ATTRIBUTE = CmsXmlContent.class.getName() + ".autoCorrectionEnabled";
 
     /** The property to set to enable xerces schema validation. */
     public static final String XERCES_SCHEMA_PROPERTY = "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContent.class);
+
+    /** Flag to control if auto correction is enabled when saving this XML content. */
+    protected boolean m_autoCorrectionEnabled;
+
+    /** The XML content definition object (i.e. XML schema) used by this content. */
+    protected CmsXmlContentDefinition m_contentDefinition;
 
     /**
      * Hides the public constructor.<p>
@@ -327,6 +336,14 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     }
 
     /**
+     * @see org.opencms.xml.A_CmsXmlDocument#isAutoCorrectionEnabled()
+     */
+    public boolean isAutoCorrectionEnabled() {
+
+        return m_autoCorrectionEnabled;
+    }
+
+    /**
      * Removes an existing XML content value of the given element name and locale at the given index position
      * from this XML content document.<p> 
      * 
@@ -367,6 +384,16 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // iterate through all initialized value nodes in this XML content
         CmsXmlContentMappingVisitor visitor = new CmsXmlContentMappingVisitor(cms, this);
         visitAllValuesWith(visitor);
+    }
+
+    /**
+     * Sets the flag to control if auto correction is enabled when saving this XML content.<p>
+     *
+     * @param value the flag to control if auto correction is enabled when saving this XML content
+     */
+    public void setAutoCorrectionEnabled(boolean value) {
+
+        m_autoCorrectionEnabled = value;
     }
 
     /**
@@ -638,8 +665,8 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 }
             } else {
                 // unknown XML node name according to schema
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
                         name,
                         definition.getSchemaLocation()));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/AllTests.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/04/10 11:20:03 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
  * Main test suite for the package <code>{@link org.opencms.xml.content}</code>.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.8.1 $
  * 
  * @since 6.0
  */
@@ -67,6 +67,7 @@ public final class AllTests {
         suite.addTest(new TestSuite(TestCmsXmlContent.class));
         suite.addTest(new TestSuite(TestCmsXmlContentDefinition.class));
         suite.addTest(TestCmsXmlContentWithVfs.suite());
+        suite.addTest(TestCmsXmlContentSchemaModifications.suite());
         //$JUnit-END$
         return suite;
     }

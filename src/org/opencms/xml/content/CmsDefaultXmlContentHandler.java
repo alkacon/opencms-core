@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:36 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2006/04/10 11:20:03 $
+ * Version: $Revision: 1.46.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.46.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,11 +155,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Default message for validation errors. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation.path}: "
-        + "${key." + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_2 + "|${validation.value}|[${validation.regex}]}";
+        + "${key."
+        + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_2
+        + "|${validation.value}|[${validation.regex}]}";
 
     /** Default message for validation warnings. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_WARNING = "${validation.path}: "
-        + "${key." + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2 + "|${validation.value}|[${validation.regex}]}";
+        + "${key."
+        + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2
+        + "|${validation.value}|[${validation.regex}]}";
 
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map m_configurationValues;
@@ -353,9 +357,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     public CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException {
 
-        // validate the xml structure before writing the file         
-        // an exception will be thrown if the structure is invalid
-        content.validateXmlStructure(new CmsXmlEntityResolver(cms));
+        if (!content.isAutoCorrectionEnabled()) {
+            // check if the XML should be corrected automatically (if not already set)
+            Object attribute = cms.getRequestContext().getAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE);
+            // set the auto correction mode as required
+            boolean autoCorrectionEnabled = (attribute != null) && ((Boolean)attribute).booleanValue();
+            content.setAutoCorrectionEnabled(autoCorrectionEnabled);
+        }
+        // validate the xml structure before writing the file if required                 
+        if (!content.isAutoCorrectionEnabled()) {
+            // an exception will be thrown if the structure is invalid
+            content.validateXmlStructure(new CmsXmlEntityResolver(cms));
+        }
         // read the content-conversion property
         String contentConversion = CmsHtmlConverter.getConversionSettings(cms, file);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(contentConversion)) {
@@ -363,14 +376,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             contentConversion = CmsHtmlConverter.PARAM_XHTML;
         }
         content.setConversion(contentConversion);
-        // correct the HTML structure 
+        // correct the HTML structure
         file = content.correctXmlStructure(cms);
         content.setFile(file);
         // resolve the file mappings
         content.resolveMappings(cms);
         // ensure all property mappings of deleted optional values are removed
         removeEmptyMappings(cms, content);
-
+        // return the result
         return file;
     }
 

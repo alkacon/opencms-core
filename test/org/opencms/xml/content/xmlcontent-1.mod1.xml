@@ -6,11 +6,13 @@
   
 	<Multitest language="en">
 		<String><![CDATA[Multitest 1]]></String>
+		<String/>
 		<DateTime>-58254180000</DateTime>
 		<Html>
-			<links />
+			<links/>
 			<content><![CDATA[<p>This is some Html</p>]]></content>
 		</Html>
+		<String2><![CDATA[Default Data]]></String2>
 		<Locale>en_EN</Locale>
 	</Multitest>
 </Multitests>
