@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContent.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/04/10 16:51:20 $
+ * Version: $Revision: 1.10.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestCase;
  * Tests for generating an XML content.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.10.4.1 $
  */
 public class TestCmsXmlContent extends TestCase {
 
@@ -104,7 +104,7 @@ public class TestCmsXmlContent extends TestCase {
     /**
      * Tests moving elements up and down in the XML content.<p>
      * 
-     * @throws Exception
+     * @throws Exception in case the test fails
      */
     public void testMoveUpDown() throws Exception {
         

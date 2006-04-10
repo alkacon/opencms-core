@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Cascadetests 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test4.xsd">
+  
+  <Cascadetest language="en">
+    <Title><![CDATA[This is a cascade test]]></Title>
+    <Cascade>
+      <MyString/>
+      <VfsLink>/sites/default/index.html</VfsLink>
+      <VfsLink>/sites/default/test.html</VfsLink>
+      <Html>
+        <links>
+          <link name="link2" type="A" internal="true">
+            <target><![CDATA[/sites/default/folder1/index.html]]></target>
+            <anchor><![CDATA[anchor]]></anchor>
+            <query><![CDATA[a=b&c=d]]></query>
+          </link>
+          <link name="link0" type="A" internal="false">
+            <target><![CDATA[http://www.alkacon.com]]></target>
+          </link>
+          <link name="link1" type="A" internal="true">
+            <target><![CDATA[/sites/default/index.html]]></target>
+          </link>
+        </links>
+        <content><![CDATA[<a href="${link0}">Alkacon</a> 
+<a href="${link1}">Index page</a> 
+<a href="${link2}">Index page</a>]]></content>
+      </Html>
+    </Cascade>
+    <Cascade>
+      <MyString/>
+      <VfsLink>/sites/default/index.jsp</VfsLink>
+      <Html>
+        <links/>
+        <content><![CDATA[This is Cascade 2]]></content>
+      </Html>
+    </Cascade>
+  </Cascadetest>
+</Cascadetests>

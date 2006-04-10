@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Cascadetests 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test4.xsd">
+  
+  <Cascadetest language="en">
+    <Title><![CDATA[This is a cascade test]]></Title>
+    <Cascade>
+      <VfsLink>/sites/default/index.html</VfsLink>
+      <VfsLink>/sites/default/test.html</VfsLink>
+    </Cascade>
+    <Cascade>
+      <VfsLink>/sites/default/index.jsp</VfsLink>
+    </Cascade>
+  </Cascadetest>
+</Cascadetests>

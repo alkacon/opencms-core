@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentSchemaModifications.java,v $
- * Date   : $Date: 2006/04/10 11:20:03 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/04/10 16:51:20 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * Tests for XML content schema changes.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
@@ -89,6 +89,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentSchemaModifications("testRemoveSchemaNodes"));
         suite.addTest(new TestCmsXmlContentSchemaModifications("testReArrangeSchemaNodes"));
         suite.addTest(new TestCmsXmlContentSchemaModifications("testCombinedChangeSchemaNodes"));
+        suite.addTest(new TestCmsXmlContentSchemaModifications("testNestedChangeSchemaNodes"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -151,6 +152,44 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
     }
 
     /**
+     * Combined modification test for a nested XML schema.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testNestedChangeSchemaNodes() throws Exception {
+
+        echo("Combined modification test for a nested XML schema");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(getCmsObject());
+        
+        cacheSchema(
+            resolver,
+            "http://www.opencms.org/test3.xsd",
+            "org/opencms/xml/content/xmlcontent-definition-3.xsd");
+        
+        cacheSchema(
+            resolver,
+            "http://www.opencms.org/test4.xsd",
+            "org/opencms/xml/content/xmlcontent-definition-4.xsd");
+        
+        runTestWithChangedSchema(
+            "http://www.opencms.org/test3.xsd",
+            "/testCombinedNestedSchemaNodesA.html",
+            "xmlcontent-definition-3.xsd",
+            "xmlcontent-4.xml",
+            "xmlcontent-definition-3.mod1.xsd",
+            "xmlcontent-4.mod1.xml");
+
+        runTestWithChangedSchema(
+            "http://www.opencms.org/test3.xsd",
+            "/testCombinedNestedSchemaNodesB.html",
+            "xmlcontent-definition-3.mod1.xsd",
+            "xmlcontent-4.mod1.xml",
+            "xmlcontent-definition-3.mod2.xsd",
+            "xmlcontent-4.mod2.xml");
+    }
+    
+    /**
      * Test re-arranging nodes in the XML schema.<p>
      * 
      * @throws Exception in case the test fails
@@ -189,7 +228,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
     /**
      * Demo test for using the XML content correcting API.<p>
      * 
-     * @throws Exception
+     * @throws Exception in case the test fails
      */
     public void testUsageDemo() throws Exception {
 
