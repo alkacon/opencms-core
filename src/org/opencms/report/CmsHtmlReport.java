@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2006/04/11 10:12:43 $
+ * Version: $Revision: 1.32.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.32.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -248,7 +248,7 @@ public class CmsHtmlReport extends A_CmsReport {
     }
 
     /**
-     * Returns the corrent linebreak notation depending on the output style of thsi report.
+     * Returns the corrent linebreak notation depending on the output style of this report.
      * 
      * @return the corrent linebreak notation
      */
@@ -272,19 +272,20 @@ public class CmsHtmlReport extends A_CmsReport {
      */
     private StringBuffer getExceptionElement(Throwable throwable) {
 
-        StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer(256);
 
         if (!m_writeHtml) {
             if (m_showExceptionStackTracke) {
                 buf.append("aT('");
                 buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
-                exception = CmsStringUtil.escapeJavaScript(exception);
+                StringBuffer excBuffer = new StringBuffer(exception.length() + 50);
                 StringTokenizer tok = new StringTokenizer(exception, "\r\n");
                 while (tok.hasMoreTokens()) {
-                    buf.append(tok.nextToken());
-                    buf.append(getLineBreak());
+                    excBuffer.append(tok.nextToken());
+                    excBuffer.append(getLineBreak());
                 }
+                buf.append(CmsStringUtil.escapeJavaScript(excBuffer.toString()));
                 buf.append("'); ");
                 m_content.add(buf);
             } else {
@@ -299,12 +300,13 @@ public class CmsHtmlReport extends A_CmsReport {
                 buf.append("<span class='throw'>");
                 buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
-                exception = CmsStringUtil.escapeJavaScript(exception);
+                StringBuffer excBuffer = new StringBuffer(exception.length() + 50);
                 StringTokenizer tok = new StringTokenizer(exception, "\r\n");
                 while (tok.hasMoreTokens()) {
-                    buf.append(tok.nextToken());
-                    buf.append(getLineBreak());
+                    excBuffer.append(tok.nextToken());
+                    excBuffer.append(getLineBreak());
                 }
+                buf.append(CmsStringUtil.escapeJavaScript(excBuffer.toString()));
                 buf.append("</span>");
             } else {
                 buf.append("<span class='throw'>");
