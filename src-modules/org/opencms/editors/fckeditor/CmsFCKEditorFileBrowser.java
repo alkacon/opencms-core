@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorFileBrowser.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/04/11 09:12:34 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.7
  */
@@ -496,11 +496,11 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
         CmsResourceFilter filter;
         if (includeFiles) {
             // create filter to get folders and files
-            filter = CmsResourceFilter.DEFAULT;
+            filter = CmsResourceFilter.DEFAULT.addRequireVisible();
             files = getDocument().getRootElement().addElement(NODE_FILES);
         } else {
             // create filter to get only folders
-            filter = CmsResourceFilter.DEFAULT_FOLDERS;
+            filter = CmsResourceFilter.DEFAULT_FOLDERS.addRequireVisible();
         }
 
         try {
