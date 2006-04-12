@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2006/04/12 09:54:13 $
+ * Version: $Revision: 1.40.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.40.4.1 $
  * 
  * @since 6.0.0
  */
@@ -381,6 +381,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the view node. */
     public static final String N_WORKPLACEVIEW = "workplaceview";
+    
+    /** The name of the xmlcontentautocorrection node. */
+    public static final String N_XMLCONTENTAUTOCORRECTION = "xmlcontentautocorrection";
 
     /** The configured workplace manager. */
     private CmsWorkplaceManager m_workplaceManager;
@@ -756,6 +759,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
         // add autolock rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_AUTOLOCK, "setAutoLock", 0);
+        
+        // add XML content auto correction rule
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_XMLCONTENTAUTOCORRECTION, "setXmlContentAutoCorrect", 0);
 
         // add user management enabled rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_ENABLEUSERMGMT, "setUserManagementEnabled", 0);
@@ -1321,6 +1327,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
         // add miscellaneous configuration nodes
         workplaceElement.addElement(N_AUTOLOCK).setText(new Boolean(m_workplaceManager.autoLockResources()).toString());
+        workplaceElement.addElement(N_XMLCONTENTAUTOCORRECTION).setText(
+            new Boolean(m_workplaceManager.isXmlContentAutoCorrect()).toString());
         workplaceElement.addElement(N_ENABLEUSERMGMT).setText(
             new Boolean(m_workplaceManager.showUserGroupIcon()).toString());
         workplaceElement.addElement(N_DEFAULTPROPERTIESONSTRUCTURE).setText(

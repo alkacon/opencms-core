@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2006/03/28 16:48:21 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2006/04/12 09:54:13 $
+ * Version: $Revision: 1.76.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76 $ 
+ * @version $Revision: 1.76.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -202,6 +202,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The workflow settings. */
     private boolean m_workflowMessage;
 
+    /** The XML content auto correction flag. */
+    private boolean m_xmlContentAutoCorrect;
+
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
      */
@@ -214,6 +217,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_labelSiteFolders = new ArrayList();
         m_localizedFolders = new ArrayList();
         m_autoLockResources = true;
+        m_xmlContentAutoCorrect = true;
         m_showUserGroupIcon = true;
         m_dialogHandler = new HashMap();
         m_views = new ArrayList();
@@ -872,6 +876,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         return m_workflowMessage;
     }
 
+    /**
+     * Returns if XML content is automatically corrected when opened with the editor.<p>
+     * 
+     * @return true if XML content is automatically corrected when opened with the editor, otherwise false
+     */
+    public boolean isXmlContentAutoCorrect() {
+        
+        return m_xmlContentAutoCorrect;
+    }
+
     /** 
      * Removes the list of explorer type settings from the given module.<p>
      * 
@@ -1128,6 +1142,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 m_workflowMessage ? Messages.INIT_WORKFLOW_MESSAGES_SHOW_MESSAGE_0
                 : Messages.INIT_WORKFLOW_MESSAGES_HIDE_MESSAGE_0));
+        }
+    }
+
+    /**
+     * Sets the auto correction of XML contents when they are opened with the editor.<p>
+     * 
+     * @param xmlContentAutoCorrect if "true", the content will be corrected without notification, otherwise a confirmation is needed
+     */
+    public void setXmlContentAutoCorrect(String xmlContentAutoCorrect) {
+
+        m_xmlContentAutoCorrect = Boolean.valueOf(xmlContentAutoCorrect).booleanValue();
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                m_xmlContentAutoCorrect ? Messages.INIT_XMLCONTENT_AUTOCORRECT_ENABLED_0
+                : Messages.INIT_XMLCONTENT_AUTOCORRECT_DISABLED_0));
         }
     }
 

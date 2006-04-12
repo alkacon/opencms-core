@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/03/28 07:53:23 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2006/04/12 09:54:13 $
+ * Version: $Revision: 1.68.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -51,6 +52,7 @@ import org.opencms.widgets.I_CmsWidgetDialog;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
@@ -64,10 +66,12 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -82,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68 $ 
+ * @version $Revision: 1.68.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,23 +95,35 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /** Action for checking content before executing the direct edit action. */
     public static final int ACTION_CHECK = 151;
 
+    /** Action for confirming the XML content structure correction. */
+    public static final int ACTION_CONFIRMCORRECTION = 152;
+
+    /** Action for correction of the XML content structure confirmed. */
+    public static final int ACTION_CORRECTIONCONFIRMED = 153;
+
     /** Action for optional element creation. */
-    public static final int ACTION_ELEMENT_ADD = 152;
+    public static final int ACTION_ELEMENT_ADD = 154;
 
     /** Action for element move down operation. */
-    public static final int ACTION_ELEMENT_MOVE_DOWN = 154;
+    public static final int ACTION_ELEMENT_MOVE_DOWN = 155;
 
     /** Action for element move up operation. */
-    public static final int ACTION_ELEMENT_MOVE_UP = 153;
+    public static final int ACTION_ELEMENT_MOVE_UP = 156;
 
     /** Action for optional element removal. */
-    public static final int ACTION_ELEMENT_REMOVE = 155;
+    public static final int ACTION_ELEMENT_REMOVE = 157;
 
     /** Action for new file creation. */
-    public static final int ACTION_NEW = 156;
+    public static final int ACTION_NEW = 158;
 
     /** Indicates that the content should be checked before executing the direct edit action. */
     public static final String EDITOR_ACTION_CHECK = "check";
+    
+    /** Indicates that the correction of the XML content structure should be confirmed. */
+    public static final String EDITOR_ACTION_CONFIRMCORRECTION = "confirmcorrect";
+
+    /** Indicates that the correction of the XML content structure was confirmed by the user. */
+    public static final String EDITOR_CORRECTIONCONFIRMED = "correctconfirmed";
 
     /** Indicates an optional element should be created. */
     public static final String EDITOR_ACTION_ELEMENT_ADD = "addelement";
@@ -1021,6 +1037,22 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             return;
         } else if (EDITOR_PREVIEW.equals(getParamAction())) {
             setAction(ACTION_PREVIEW);
+        } else if (EDITOR_CORRECTIONCONFIRMED.equals(getParamAction())) {
+            setAction(ACTION_SHOW);
+            try {
+                // correct the XML structure before showing the form
+                correctXmlStructure();
+            } catch (CmsException e) {
+                // error during correction
+                try {
+                    showErrorPage(this, e);
+                } catch (JspException exc) {
+                    // should usually never happen
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(exc);
+                    }
+                }
+            }
         } else {
             // initial call of editor
             setAction(ACTION_DEFAULT);
@@ -1038,6 +1070,24 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // initialize a content object from the created temporary file
                 m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
                 m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
+
+                // fire event to clear the entity cache
+                int todo = 0;
+                OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, null);
+                // check the XML content against the given XSD
+                try {
+                    m_content.validateXmlStructure(new CmsXmlEntityResolver(getCms()));
+                } catch (CmsXmlException eXml) {
+                    // validation failed, check the settings for handling the correction
+                    if (OpenCms.getWorkplaceManager().isXmlContentAutoCorrect()) {
+                        // correct the XML structure automatically according to the XSD
+                        correctXmlStructure();
+                    } else {
+                        // show correction confirmation dialog
+                        setAction(ACTION_CONFIRMCORRECTION);
+                    }
+                }    
+
             } catch (CmsException e) {
                 // error during initialization
                 try {
@@ -1055,7 +1105,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
         }
     }
-
+    
     /**
      * Returns the html for the element operation buttons add, move, remove.<p>
      * 
@@ -1160,6 +1210,19 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         }
 
         return result;
+    }
+
+    /**
+     * Corrects the XML structure of the edited content according to the XSD.<p>
+     * 
+     * @throws CmsException if the correction fails
+     */
+    private void correctXmlStructure() throws CmsException {
+        
+        m_content.setAutoCorrectionEnabled(true);
+        m_content.correctXmlStructure(getCms());
+        // write the corrected temporary file
+        writeContent();
     }
 
     /**

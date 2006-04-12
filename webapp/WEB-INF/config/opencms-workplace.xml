@@ -19,6 +19,7 @@
       <exportpoint uri="/system/workplace/resources/" destination="resources/"/>
     </exportpoints>
     <autolock>true</autolock>
+	<xmlcontentautocorrection>true</xmlcontentautocorrection>
     <enableusermanagement>true</enableusermanagement>
     <defaultpropertiesonstructure>true</defaultpropertiesonstructure>
     <enableadvancedpropertytabs>true</enableadvancedpropertytabs>

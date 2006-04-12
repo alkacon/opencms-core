@@ -31,6 +31,45 @@ case CmsEditor.ACTION_EXIT:
 	wp.actionExit();
 
 break;
+case CmsXmlContentEditor.ACTION_CONFIRMCORRECTION:
+//////////////////// ACTION: show confirm dialog to correct the XML structure
+
+	// XML content not valid, create necessary html to show correction confirmation
+	%><html>
+	<head>
+	<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>edit.js"></script>
+	<script type="text/javascript">
+	<!--
+		var actionExit = "<%= CmsEditor.EDITOR_EXIT %>";
+		var actionCorrectXml = "<%= CmsXmlContentEditor.EDITOR_CORRECTIONCONFIRMED %>";
+
+		function confirmCorrection() {
+			var check = confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_XMLCONTENT_CONFIRM_CORRECTION_0) %>");
+			if (check) {
+				// correct the XML structure
+				buttonAction(12);
+			} else {
+				// exit editor in top frame 
+				buttonAction(1);
+			}
+		}
+	//-->
+	</script>
+	</head>
+	<body class="buttons-head" unselectable="on" onload="confirmCorrection();">
+	<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp") %>">
+	<input type="hidden" name="<%= CmsDialog.PARAM_ACTION %>" value="">
+	<input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+	<input type="hidden" name="<%= CmsEditor.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
+	<input type="hidden" name="<%= CmsEditor.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
+	<input type="hidden" name="<%= CmsEditor.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
+	<input type="hidden" name="<%= CmsEditor.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
+	</form>
+	</body>
+	</html>	
+	<%
+	break;
+
 case CmsEditor.ACTION_SAVEEXIT:
 //////////////////// ACTION: save the modified content and exit the editor
 
@@ -141,6 +180,7 @@ var actionSaveExit = "<%= CmsEditor.EDITOR_SAVEEXIT %>";
 var actionSave = "<%= CmsEditor.EDITOR_SAVE %>";
 var actionMoveElementDown = "<%= CmsXmlContentEditor.EDITOR_ACTION_ELEMENT_MOVE_DOWN %>";
 var actionMoveElementUp = "<%= CmsXmlContentEditor.EDITOR_ACTION_ELEMENT_MOVE_UP %>";
+var actionCorrectXml = "<%= CmsXmlContentEditor.EDITOR_CORRECTIONCONFIRMED %>";
 
 // Localized button labels
 var LANG_BT_DELETE = "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0) %>";

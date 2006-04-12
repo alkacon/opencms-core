@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/04/12 09:54:13 $
+ * Version: $Revision: 1.11.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -285,7 +285,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_MESSAGE_SELECTION_0 = "GUI_EDITOR_MESSAGE_SELECTION_0";
 
-    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_TITLE_HTMLAREA_0 = "GUI_EDITOR_TITLE_HTMLAREA_0";
 
@@ -306,6 +305,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_TITLE_SIMPLETEXT_0 = "GUI_EDITOR_TITLE_SIMPLETEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_XMLCONTENT_CONFIRM_CORRECTION_0 = "GUI_EDITOR_XMLCONTENT_CONFIRM_CORRECTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_XMLCONTENT_ELEMENT_BUTTONS_0 = "GUI_EDITOR_XMLCONTENT_ELEMENT_BUTTONS_0";

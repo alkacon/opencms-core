@@ -16,7 +16,8 @@
 	editorhandler, 
 	editoraction, 
 	exportpoints, 
-	autolock?, 	
+	autolock?, 
+	xmlcontentautocorrection?,	
 	enableusermanagement?, 	
 	defaultpropertiesonstructure,
 	enableadvancedpropertytabs,
@@ -119,6 +120,14 @@
 # locking of the resource is required.
 -->
 <!ELEMENT autolock (#PCDATA)>
+
+<!--
+# Enables or disables the auto correction of XML content resources in the editor if the XML Schema Definition has changed.
+# If this is set to "true" (the default) the XML content editor corrects automatically the edited content
+# without notifying the user. If this is set to "false", the user gets a confirmation dialog before the
+# content is adjusted.
+-->
+<!ELEMENT xmlcontentautocorrection (#PCDATA)>
 
 <!--
 # Enables or disables the icons for editing users and groups 

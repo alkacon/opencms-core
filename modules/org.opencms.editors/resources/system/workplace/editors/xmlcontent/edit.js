@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2006/04/02 06:45:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/04/12 09:54:13 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -109,6 +109,11 @@ function buttonAction(para) {
 		_form.action.value = actionMoveElementUp;
 		_form.submit();
 		break;
+	case 12:
+		// correct the XML structure
+		_form.action.value = actionCorrectXml;
+		_form.submit();
+		break;
 	default:
 		alert("No action defined for this button!");
 		break;
@@ -196,8 +201,8 @@ function submitSaveAction() {
 		setTimeout('submitSaveAction()', 20);
 		return;
 	}
-	if (stringsPresent) {
-		if (stringsInserted) {
+	if (stringsPresent == true) {
+		if (stringsInserted == true) {
 			buttonAction(9);
 		} else {
 			setTimeout('submitSaveAction()', 20);
