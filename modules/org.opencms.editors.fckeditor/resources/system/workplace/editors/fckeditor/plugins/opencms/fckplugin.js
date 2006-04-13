@@ -179,7 +179,8 @@ function createLink(linkInformation) {
     if (a) {
     	// link present, manipulate it
         FCK.Selection.SelectNode(a);
-        a.href= linkInformation["href"]; 
+        //a.href= linkInformation["href"];
+		a = FCK.CreateLink(linkInformation["href"]);
     } else {
     	// new link, create it
         a = FCK.CreateLink(linkInformation["href"]);
