@@ -180,7 +180,7 @@ function createLink(linkInformation) {
     	// link present, manipulate it
         FCK.Selection.SelectNode(a);
         //a.href= linkInformation["href"];
-		a = FCK.CreateLink(linkInformation["href"]);
+	a = FCK.CreateLink(linkInformation["href"]);
     } else {
     	// new link, create it
         a = FCK.CreateLink(linkInformation["href"]);
@@ -253,7 +253,7 @@ linkCommand.prototype.Execute = function() {
     openLinkDialog("<%= wp.key(org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0) %>");
 }
 FCKCommands.RegisterCommand('oc-link', new linkCommand());
-FCKToolbarItems.RegisterItem('oc-link', new FCKToolbarButton('oc-link','<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_LINKTO_0) %>', null, null, true)); 
+FCKToolbarItems.RegisterItem('oc-link', new FCKToolbarButton('oc-link','<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_LINKTO_0) %>', null, null, false)); 
 
 // OpenCms help button
 var helpCommand = function() { this.Name = 'OcmsHelp'; }
