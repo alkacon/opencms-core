@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/04/12 09:54:13 $
- * Version: $Revision: 1.68.4.1 $
+ * Date   : $Date: 2006/04/13 08:38:41 $
+ * Version: $Revision: 1.68.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -66,12 +65,10 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -86,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68.4.1 $ 
+ * @version $Revision: 1.68.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -1071,9 +1068,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
                 m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
 
-                // fire event to clear the entity cache
-                int todo = 0;
-                OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, null);
                 // check the XML content against the given XSD
                 try {
                     m_content.validateXmlStructure(new CmsXmlEntityResolver(getCms()));

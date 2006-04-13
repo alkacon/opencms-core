@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Attic/CmsXmlContentRepairThread.java,v $
- * Date   : $Date: 2006/04/12 09:54:13 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/04/13 08:38:41 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsEventListener;
-import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -57,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  */
 public class CmsXmlContentRepairThread extends A_CmsReportThread {
@@ -157,10 +155,6 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
         // set the report counters
         int count = 0;
         int resSize = resources.size();
-        
-        // clear caches to prevent validation issues
-        int todo = 0;
-        OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, null);
 
         // create an entity resolver to use
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(getCms());
