@@ -19,14 +19,16 @@
       <exportpoint uri="/system/workplace/resources/" destination="resources/"/>
     </exportpoints>
     <autolock>true</autolock>
-	<xmlcontentautocorrection>true</xmlcontentautocorrection>
-    <enableusermanagement>true</enableusermanagement>
-    <defaultpropertiesonstructure>true</defaultpropertiesonstructure>
-    <enableadvancedpropertytabs>true</enableadvancedpropertytabs>
-    <maxfileuploadsize>-1</maxfileuploadsize>
+	<xmlcontentautocorrection>false</xmlcontentautocorrection>
+    <enableusermanagement>false</enableusermanagement>
+    <defaultpropertiesonstructure>false</defaultpropertiesonstructure>
+    <enableadvancedpropertytabs>false</enableadvancedpropertytabs>
+    <maxfileuploadsize>1234567</maxfileuploadsize>
     <labeledfolders/>
     <rfsfileviewsettings>
       <enabled>true</enabled>
+      <fileEncoding>windows-1252</fileEncoding>
+      <isLogfile>true</isLogfile>
       <windowSize>200</windowSize>
     </rfsfileviewsettings>
     <explorertypes>

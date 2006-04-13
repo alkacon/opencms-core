@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2006/04/13 08:01:21 $
+ * Version: $Revision: 1.43.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,10 +67,10 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Tests the link resolver for XML contents.<p>
+ * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.43.4.1 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 

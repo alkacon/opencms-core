@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/04/13 08:01:21 $
+ * Version: $Revision: 1.24.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -389,14 +389,23 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
         Object o;
         o = m_cacheTemporary.remove(getCacheKey(systemId, false));
-        if ((null != o) && LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_UNCACHED_SYS_ID_1, getCacheKey(systemId, false)));
-        }
-        o = m_cacheContentDefinitions.remove(getCacheKey(systemId, false));
-        if ((null != o) && LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_ER_UNCACHED_CONTENT_DEF_1,
-                getCacheKey(systemId, false)));
+        if (null != o) {
+            // if an object was removed from the tomporary cache, all XML content definitions must be cleared
+            // because this may be a nested subschema 
+            m_cacheContentDefinitions.clear();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_ER_UNCACHED_SYS_ID_1,
+                    getCacheKey(systemId, false)));
+            }
+        } else {
+            // check if a cached content definition has to be removed based on the system id
+            o = m_cacheContentDefinitions.remove(getCacheKey(systemId, false));
+            if ((null != o) && LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_ER_UNCACHED_CONTENT_DEF_1,
+                    getCacheKey(systemId, false)));
+            }
         }
     }
 }

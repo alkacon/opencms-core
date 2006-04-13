@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/04/12 09:54:13 $
- * Version: $Revision: 1.40.4.1 $
+ * Date   : $Date: 2006/04/13 08:01:21 $
+ * Version: $Revision: 1.40.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.1 $
+ * @version $Revision: 1.40.4.2 $
  * 
  * @since 6.0.0
  */
@@ -381,7 +381,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the view node. */
     public static final String N_WORKPLACEVIEW = "workplaceview";
-    
+
     /** The name of the xmlcontentautocorrection node. */
     public static final String N_XMLCONTENTAUTOCORRECTION = "xmlcontentautocorrection";
 
@@ -759,7 +759,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
         // add autolock rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_AUTOLOCK, "setAutoLock", 0);
-        
+
         // add XML content auto correction rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_XMLCONTENTAUTOCORRECTION, "setXmlContentAutoCorrect", 0);
 
@@ -1326,17 +1326,15 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         }
 
         // add miscellaneous configuration nodes
-        workplaceElement.addElement(N_AUTOLOCK).setText(new Boolean(m_workplaceManager.autoLockResources()).toString());
+        workplaceElement.addElement(N_AUTOLOCK).setText(String.valueOf(m_workplaceManager.autoLockResources()));
         workplaceElement.addElement(N_XMLCONTENTAUTOCORRECTION).setText(
-            new Boolean(m_workplaceManager.isXmlContentAutoCorrect()).toString());
-        workplaceElement.addElement(N_ENABLEUSERMGMT).setText(
-            new Boolean(m_workplaceManager.showUserGroupIcon()).toString());
+            String.valueOf(m_workplaceManager.isXmlContentAutoCorrect()));
+        workplaceElement.addElement(N_ENABLEUSERMGMT).setText(String.valueOf(m_workplaceManager.showUserGroupIcon()));
         workplaceElement.addElement(N_DEFAULTPROPERTIESONSTRUCTURE).setText(
-            new Boolean(m_workplaceManager.isDefaultPropertiesOnStructure()).toString());
+            String.valueOf(m_workplaceManager.isDefaultPropertiesOnStructure()));
         workplaceElement.addElement(N_ENABLEADVANCEDPROPERTYTABS).setText(
-            new Boolean(m_workplaceManager.isEnableAdvancedPropertyTabs()).toString());
-        workplaceElement.addElement(N_MAXUPLOADSIZE).setText(
-            new Integer(m_workplaceManager.getFileMaxUploadSize()).toString());
+            String.valueOf(m_workplaceManager.isEnableAdvancedPropertyTabs()));
+        workplaceElement.addElement(N_MAXUPLOADSIZE).setText(String.valueOf(m_workplaceManager.getFileMaxUploadSize()));
 
         // add <labeledfolders> resource list
         Element labeledElement = workplaceElement.addElement(N_LABELEDFOLDERS);
@@ -1348,8 +1346,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add <workflow> node
         if (m_workplaceManager.isEnableWorkflowMessages()) {
             Element workflow = workplaceElement.addElement(N_WORKFLOW);
-            workflow.addElement(N_SHOWMESSAGES).setText(
-                new Boolean(m_workplaceManager.isEnableWorkflowMessages()).toString());
+            workflow.addElement(N_SHOWMESSAGES).setText(String.valueOf(m_workplaceManager.isEnableWorkflowMessages()));
         }
 
         // add <rfsfileviewsettings> node
