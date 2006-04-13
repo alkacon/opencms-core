@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2006/03/28 10:20:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/04/13 15:55:15 $
+ * Version: $Revision: 1.17.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -282,7 +282,7 @@ public class CmsAdminHistoryClear extends CmsReport {
         String paramDate = request.getParameter("date");
 
         // check the submitted values        
-        int versions = 0;
+        int versions = -1;
         long timeStamp = 0;
         boolean useVersions = false;
         try {
@@ -292,7 +292,7 @@ public class CmsAdminHistoryClear extends CmsReport {
             // no int value submitted, check date fields
             try {
                 timeStamp = getCalendarDate(paramDate, false);
-            } catch (ParseException ex) {
+                    } catch (ParseException ex) {
                 // no date values submitted, throw exception
 
                 throw new CmsIllegalArgumentException(
@@ -301,9 +301,9 @@ public class CmsAdminHistoryClear extends CmsReport {
             }
         }
 
-        // set the timeStamp one day to the future to delete versions
+        // set the timeStamp to 0 if use Version
         if (useVersions) {
-            timeStamp = System.currentTimeMillis() + 86400000;
+            timeStamp = 0;
         }
         if (DEBUG) {
             System.err.println("Versions: " + versions + "\nDate: " + timeStamp);
