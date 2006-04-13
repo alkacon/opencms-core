@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2006/04/13 16:00:45 $
+ * Version: $Revision: 1.146.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146 $
+ * @version $Revision: 1.146.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -687,8 +687,9 @@ public final class CmsObject {
      * 
      * Deletion will delete file header, content and properties. <p>
      * 
-     * @param timestamp timestamp which defines the date after which backup resources must be deleted
-     * @param versions the number of versions per file which should kept in the system
+     * @param timestamp timestamp which defines the date after which backup resources must be deleted.
+     * This parameter must be 0 if the backup should be deleted by number of version
+     * @param versions the number of versions per file which should kept in the system. 
      * @param report the report for output logging
      * 
      * @throws CmsException if something goes wrong
