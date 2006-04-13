@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/04/02 09:59:56 $
- * Version: $Revision: 1.570 $
+ * Date   : $Date: 2006/04/13 15:50:10 $
+ * Version: $Revision: 1.570.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2120,15 +2120,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Deletes the versions from the backup tables that are older then the given timestamp  and/or number of remaining versions.<p>
+     * Deletes the versions from the backup tables that are older then the given timestamp or number of remaining versions.<p>
      * 
-     * The number of verions always wins, i.e. if the given timestamp would delete more versions than given in the
-     * versions parameter, the timestamp will be ignored.<p>
-     * 
-     * Deletion will delete file header, content and properties.<p>
+     * Deletion will delete file header, content, publish history and properties.<p>
      * 
      * @param dbc the current database context
      * @param timestamp timestamp which defines the date after which backup resources must be deleted
+     * <code>This parameter must be 0 if the backup should be deleted by number of version</code> <p>
      * @param versions the number of versions per file which should kept in the system
      * @param report the report for output logging
      * 
@@ -2136,50 +2134,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void deleteBackups(CmsDbContext dbc, long timestamp, int versions, I_CmsReport report) throws CmsException {
 
-        // get all resources from the backup table
-        // do only get one version per resource
-        List allBackupFiles = m_backupDriver.readBackupFileHeaders(dbc);
-        int counter = 1;
-        int size = allBackupFiles.size();
-        // get the tagId of the oldest Backupproject which will be kept in the database
-        int maxTag = m_backupDriver.readBackupProjectTag(dbc, timestamp);
-        Iterator i = allBackupFiles.iterator();
-        while (i.hasNext()) {
-            // now check get a single backup resource
-            CmsBackupResource res = (CmsBackupResource)i.next();
+        if (timestamp > 0) {
+            report.print(Messages.get().container(Messages.RPT_DELETE_VERSIONS_0), I_CmsReport.FORMAT_NOTE);
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                String.valueOf(counter),
-                String.valueOf(size)), I_CmsReport.FORMAT_NOTE);
-            report.print(Messages.get().container(Messages.RPT_CHECKING_0), I_CmsReport.FORMAT_NOTE);
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                res.getRootPath()));
-
-            // now delete all versions of this resource that have more than the maximun number
-            // of allowed versions and which are older then the maximum backup date
-            int resVersions = m_backupDriver.readBackupMaxVersion(dbc, res.getResourceId());
-            int versionsToDelete = resVersions - versions;
-
-            // now we know which backup versions must be deleted, so remove them now
-            if (versionsToDelete > 0) {
-                report.print(Messages.get().container(Messages.RPT_DELETE_VERSIONS_0), I_CmsReport.FORMAT_NOTE);
-                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-                m_backupDriver.deleteBackup(dbc, res, maxTag, versionsToDelete);
-            } else {
-                report.print(Messages.get().container(Messages.RPT_DELETE_NOTHING_0), I_CmsReport.FORMAT_NOTE);
-                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-            }
+            m_backupDriver.deleteBackup(dbc, null, m_backupDriver.readBackupProjectTag(dbc, timestamp), -1);
 
             report.println(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                 I_CmsReport.FORMAT_OK);
-            counter++;
 
-            // TODO: delete the old backup projects as well
-            int todo = 0;
-            m_projectDriver.deletePublishHistory(dbc, dbc.currentProject().getId(), maxTag);
+        } else {
+            report.print(Messages.get().container(Messages.RPT_DELETE_VERSIONS_0), I_CmsReport.FORMAT_NOTE);
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
+            m_backupDriver.deleteBackup(dbc, null, 0, versions);
+
+            report.println(
+                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                I_CmsReport.FORMAT_OK);
         }
     }
 
