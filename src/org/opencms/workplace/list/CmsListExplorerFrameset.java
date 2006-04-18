@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2006/03/28 13:10:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.4.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -44,7 +43,6 @@ import org.opencms.workplace.tools.CmsTool;
 import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolMacroResolver;
 import org.opencms.workplace.tools.CmsToolManager;
-
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -63,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,14 +152,14 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         html.append(getToolManager().generateNavBar(toolPath, this));
 
         // check if page switch needed
-        int size = 1;
+        int items = 0;
         try {
-            size = getSettings().getCollector().getResults(getCms()).size()
-                / getSettings().getUserSettings().getExplorerFileEntries()
-                + 1;
+            items = getSettings().getCollector().getResults(getCms()).size();
         } catch (CmsException e) {
             // ignore
         }
+
+        int size = (int)Math.ceil((double)items / getSettings().getUserSettings().getExplorerFileEntries());
         // build title
         html.append("<div class='screenTitle'>\n");
         html.append("\t<table width='100%' cellspacing='0'>\n");
@@ -172,8 +170,32 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         html.append("\t\t\t<td class='uplevel'>\n");
         // if page switch needed
         if (size > 1) {
-            html.append("<form name='page_switch' method='post' target='admin_content' action='");
+            html.append("<form name='page_switch' method='post' target='_parent' action='");
             html.append(getJsp().link(A_CmsListExplorerDialog.PATH_EXPLORER_LIST)).append("'>\n");
+
+            Map params = new HashMap(getJsp().getRequest().getParameterMap());
+            params.remove(CmsListExplorerFrameset.PARAM_PAGE);
+            Iterator it = params.keySet().iterator();
+            while (it.hasNext()) {
+                String param = (String)it.next();
+                String[] value = (String[])params.get(param);
+                for (int i = 0; i < value.length; i++) {
+                    html.append("<input type=\"hidden\" name=\"");
+                    html.append(param);
+                    html.append("\" value=\"");
+                    html.append(value[i]);
+                    html.append("\">\n");
+                }
+            }
+
+            html.append("<select name='explorer_page' class='location' onchange='this.form.submit()'>\n");
+            html.append(CmsHtmlList.htmlPageSelector(
+                size,
+                getSettings().getUserSettings().getExplorerFileEntries(),
+                items,
+                getSettings().getExplorerPage(),
+                getLocale()));
+            html.append("</select>\n");
         }
         // list view button
         CmsMessages messages = Messages.get().getBundle(getLocale());
@@ -188,36 +210,6 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             null,
             "openPage('" + listLevelLink + "');"));
         html.append("\n");
-        // if page switch needed
-        if (size > 1) {
-            Map params = new HashMap(getJsp().getRequest().getParameterMap());
-            params.remove(CmsListExplorerFrameset.PARAM_PAGE);
-            Iterator it = params.keySet().iterator();
-            while (it.hasNext()) {
-                String param = (String)it.next();
-                String[] value = (String[])params.get(param);
-                for (int i = 0; i < value.length; i++) {
-                    html.append("<input type=\"hidden\" name=\"");
-                    html.append(param);
-                    html.append("\" value=\"");
-                    String encoded = CmsEncoder.encode(value[i], getCms().getRequestContext().getEncoding());
-                    html.append(encoded);
-                    html.append("\">\n");
-                }
-            }
-
-            html.append("<span class='menu'>&nbsp;&nbsp;Page:&nbsp;</span>\n");
-            html.append("<select name='explorer_page' class='location' onchange='this.form.submit()'>\n");
-            for (int i = 1; i <= size; i++) {
-                String selected = "";
-                if (getSettings().getExplorerPage() == i) {
-                    selected = " selected";
-                }
-                html.append("<option value='").append(i).append("'").append(selected).append(">");
-                html.append(i).append("</option>\n");
-            }
-            html.append("</select>\n");
-        }
         // uplevel button only if needed
         if (getParentPath() != toolPath) {
             html.append(A_CmsHtmlIconButton.defaultButtonHtml(
@@ -240,7 +232,9 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         html.append("\t\t</tr>\n");
         html.append("\t</table>\n");
         html.append("</div>\n");
-        return CmsToolMacroResolver.resolveMacros(html.toString(), this);
+
+        String code = html.toString().replaceAll("openPage\\('([^']+)'\\)", "openPageIn('$1', parent)");
+        return CmsToolMacroResolver.resolveMacros(code, this);
     }
 
     /**
@@ -274,6 +268,11 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         if (getJsp().getRequest().getParameter(CmsListExplorerFrameset.PARAM_PAGE) != null) {
             int page = Integer.parseInt(getJsp().getRequest().getParameter(CmsListExplorerFrameset.PARAM_PAGE));
             getSettings().setExplorerPage(page);
+
+            if (getSettings().getCollector() instanceof I_CmsListResourceCollector) {
+                I_CmsListResourceCollector collector = (I_CmsListResourceCollector)getSettings().getCollector();
+                collector.setPage(page);
+            }
         }
         JspWriter out = getJsp().getJspContext().getOut();
         out.print(defaultActionHtml());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/03/28 12:22:36 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.17.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,41 +31,39 @@
 
 package org.opencms.workplace.tools.projects;
 
+import org.opencms.db.CmsProjectResourcesDisplayMode;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
+import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListMetadata;
-import org.opencms.workplace.list.CmsListResourcesCollector;
+import org.opencms.workplace.list.I_CmsListResourceCollector;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Explorer dialog for the project files view.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
+
+    /** list independent action constant. */
+    public static final String LIST_IACTION_FILTER = "if";
 
     /** list id constant. */
     public static final String LIST_ID = "lpr";
@@ -73,8 +71,8 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /** Request parameter name for the show explorer flag. */
     public static final String PARAM_SHOW_EXPLORER = "showexplorer";
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsProjectFilesDialog.class);
+    /** The internal collector instance. */
+    private I_CmsListResourceCollector m_collector;
 
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
@@ -105,6 +103,23 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
+     */
+    public void executeListIndepActions() {
+
+        if (getParamListAction().equals(LIST_IACTION_FILTER)) {
+            // forward to the editor
+            CmsProjectFilterIAction filterAction = (CmsProjectFilterIAction)getList().getMetadata().getIndependentAction(
+                LIST_IACTION_FILTER);
+            filterAction.toggle();
+            refreshList();
+            m_collector = null;
+        } else {
+            super.executeListIndepActions();
+        }
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
     public void executeListMultiActions() {
@@ -118,6 +133,35 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
+     */
+    public I_CmsListResourceCollector getCollector() {
+
+        if (m_collector == null) {
+            int projectId = new Integer(getProject().getId()).intValue();
+            int state = CmsResource.STATE_KEEP;
+            CmsHtmlList list = getList();
+            if (list != null && list == null) { // TODO: check this
+                CmsProjectFilterIAction filterAction = (CmsProjectFilterIAction)list.getMetadata().getIndependentAction(
+                    LIST_IACTION_FILTER);
+                if (getSettings().getCollector() != null) {
+                    getSettings().setCollector(null);
+                    filterAction.setFilter(CmsProjectResourcesDisplayMode.ALL_CHANGES);
+                }
+                if (filterAction.getFilter().getMode().equals("new")) {
+                    state = CmsResource.STATE_NEW;
+                } else if (filterAction.getFilter().getMode().equals("changed")) {
+                    state = CmsResource.STATE_CHANGED;
+                } else if (filterAction.getFilter().getMode().equals("deleted")) {
+                    state = CmsResource.STATE_DELETED;
+                }
+            }
+            m_collector = new CmsProjectFilesCollector(this, projectId, state);
+        }
+        return m_collector;
     }
 
     /**
@@ -169,22 +213,6 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
-     */
-    protected List getListItems() throws CmsException {
-
-        int projectId = new Integer(getProject().getId()).intValue();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_PROJECT_VIEW_START_0));
-        }
-        List resources = getCms().readProjectView(projectId, CmsResource.STATE_KEEP);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_PROJECT_VIEW_END_1, new Integer(resources.size())));
-        }
-        return getListItemsFromResources(resources);
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getProject()
      */
     protected CmsProject getProject() {
@@ -218,29 +246,6 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
         // this to show first the exlorer view
         if (Boolean.valueOf(getParamShowexplorer()).booleanValue()) {
             int projectId = getProject().getId();
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_PROJECT_VIEW_START_0));
-            }
-            List resources;
-            try {
-                resources = getCms().readProjectView(projectId, CmsResource.STATE_KEEP);
-                Iterator itRes = resources.iterator();
-                while (itRes.hasNext()) {
-                    CmsResource resource = (CmsResource)itRes.next();
-                    if (!resource.getRootPath().startsWith(getJsp().getRequestContext().getSiteRoot())
-                        && !resource.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
-                        itRes.remove();
-                    }
-                }
-            } catch (CmsException e) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(e.getMessage(), e);
-                }
-                resources = new ArrayList();
-            }
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_PROJECT_VIEW_END_1, new Integer(resources.size())));
-            }
             Map params = new HashMap();
             // set action parameter to initial dialog call
             params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
@@ -248,7 +253,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
             getSettings().setExplorerProjectId(projectId);
             getSettings().setExplorerPage(1);
-            getSettings().setCollector(new CmsListResourcesCollector(resources));
+            getSettings().setCollector(getCollector());
             getSettings().setExplorerMode(CmsExplorer.VIEW_LIST);
             try {
                 getToolManager().jspForwardPage(this, PATH_DIALOGS + "list-explorer.jsp", params);
@@ -256,6 +261,16 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        // TODO: check this
+        // metadata.addIndependentAction(new CmsProjectFilterIAction(LIST_IACTION_FILTER));
+        super.setIndependentActions(metadata);
     }
 
     /**

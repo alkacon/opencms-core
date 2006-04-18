@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListOpenResourceAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,7 +132,7 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
      * 
      * @return the most possible right resource name
      */
-    private String getResourceName() {
+    protected String getResourceName() {
 
         String resource = getItem().get(m_resColumnPathId).toString();
         if (!m_cms.existsResource(resource, CmsResourceFilter.DEFAULT)) {

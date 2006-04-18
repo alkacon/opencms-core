@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.15.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -253,7 +253,6 @@ public class CmsProjectsList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             getToolManager().jspForwardTool(this, "/projects/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_FILES)) {
-            getSettings().setCollector(new CmsProjectFilesCollector());
             getToolManager().jspForwardTool(this, "/projects/files", params);
         } else if (getParamListAction().equals(LIST_ACTION_PUBLISH_ENABLED)) {
             getToolManager().jspForwardTool(this, "/projects/publish", params);

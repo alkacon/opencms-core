@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/I_CmsEditorHandler.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.7.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 
 /**
  * Provides a method for selecting an individual file editor.<p>
@@ -42,7 +43,7 @@ import org.opencms.jsp.CmsJspActionElement;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,8 +54,11 @@ public interface I_CmsEditorHandler {
      * 
      * @param resource the selected resource
      * @param jsp the CmsJspActionElement
-     * @return the absolute path to the editor that will be displayed
+     * 
+     * @return the absolute path to the editor that will be displayed or <code>null</code> if resource is not editable
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    String getEditorUri(String resource, CmsJspActionElement jsp);
+    String getEditorUri(String resource, CmsJspActionElement jsp) throws CmsException;
 
 }

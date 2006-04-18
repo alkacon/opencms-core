@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.86.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.86 $ 
+ * @version $Revision: 1.86.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,20 +81,23 @@ public class CmsFrameset extends CmsWorkplace {
     public static final List FRAMES_LIST = Arrays.asList(FRAMES);
 
     /** Path to the JSP workplace frame loader file. */
-    public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_WORKPLACE + "views/workplace.jsp";
+    public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp";
+
+    /** The request parameter for the selection of the frame. */
+    public static final String PARAM_WP_FRAME = "wpFrame";
 
     /** The request parameter for the workplace start selection. */
     public static final String PARAM_WP_START = "wpStart";
 
     /** The request parameter for the workplace view selection. */
     public static final String PARAM_WP_VIEW = "wpView";
-    
+
     /** Publish button appearance: show always. */
     public static final String PUBLISHBUTTON_SHOW_ALWAYS = "always";
-    
+
     /** Publish button appearance: show auto (only if user has publish permissions). */
     public static final String PUBLISHBUTTON_SHOW_AUTO = "auto";
-    
+
     /** Publish button appearance: show never. */
     public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
@@ -103,9 +106,6 @@ public class CmsFrameset extends CmsWorkplace {
 
     /** Indicates if a reload of the main body frame is required. */
     private boolean m_reloadRequired;
-
-    /** The request parameter for the selection of the frame. */
-    public static final String PARAM_WP_FRAME = "wpFrame";
 
     /**
      * Public constructor.<p>
@@ -264,14 +264,24 @@ public class CmsFrameset extends CmsWorkplace {
 
         if (PUBLISHBUTTON_SHOW_AUTO.equals(publishButton)) {
             if (getCms().isManagerOfProject()) {
-                return button("../commons/publishproject.jsp", "body", "publish.png", Messages.GUI_BUTTON_PUBLISH_0 , buttonStyle);
+                return button(
+                    "../commons/publishproject.jsp",
+                    "body",
+                    "publish.png",
+                    Messages.GUI_BUTTON_PUBLISH_0,
+                    buttonStyle);
             } else {
                 return "";
             }
         }
 
         if (getCms().isManagerOfProject()) {
-            return (button("../commons/publishproject.jsp", "body", "publish.png", Messages.GUI_BUTTON_PUBLISH_0, buttonStyle));
+            return (button(
+                "../commons/publishproject.jsp",
+                "body",
+                "publish.png",
+                Messages.GUI_BUTTON_PUBLISH_0,
+                buttonStyle));
         } else {
             return (button(null, null, "publish_in.png", Messages.GUI_BUTTON_PUBLISH_0, buttonStyle));
         }
@@ -422,7 +432,6 @@ public class CmsFrameset extends CmsWorkplace {
         return (siteCount > 1);
     }
 
-    
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
@@ -439,14 +448,14 @@ public class CmsFrameset extends CmsWorkplace {
             // top frame requested - execute special reload actions
             topFrameReload(settings);
         }
-        
+
         // check if a startup page has been set
         String startup = CmsRequestUtil.getNotEmptyDecodedParameter(request, CmsFrameset.PARAM_WP_START);
         if (startup != null) {
             m_reloadRequired = true;
             settings.setViewStartup(startup);
         }
-        
+
         // check if the user requested a view change
         String view = request.getParameter(CmsFrameset.PARAM_WP_VIEW);
         if (view != null) {
@@ -456,7 +465,7 @@ public class CmsFrameset extends CmsWorkplace {
             settings.getFrameUris().put("body", view);
             settings.getFrameUris().put("admin_content", "/system/workplace/action/administration_content_top.html");
         }
-        
+
         m_reloadRequired = initSettings(settings, request) || m_reloadRequired;
     }
 

@@ -5,7 +5,11 @@
 %><%
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsExplorer wp = new CmsExplorer(cms);
-
+    String paramUri = request.getParameter("uri");
+    String body = "explorer_body_fs.jsp";
+    if (paramUri != null) {
+       body += "?uri=" + paramUri;
+    }
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 
@@ -15,7 +19,7 @@
 
 <frameset rows="24,*" border="0" frameborder="0" framespacing="0">
     <frame name="explorer_head" src="<%= CmsWorkplace.getSkinUri() %>commons/empty.html" noresize scrolling="no">
-    <frame <%= wp.getFrameSource("explorer_body", cms.link("explorer_body_fs.jsp")) %> noresize scrolling="no">
+    <frame <%= wp.getFrameSource("explorer_body", cms.link(body)) %> noresize scrolling="no">
 </frameset>
 
 </html>

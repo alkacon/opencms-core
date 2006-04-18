@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.35.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.35.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -188,6 +188,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /** The column to search the list. */
     private String m_searchColId;
+
+    /** cached List state in case of {@link #refreshList()} method call. */
+    private CmsListState m_listState;
 
     /**
      * Public constructor.<p>
@@ -552,13 +555,28 @@ public abstract class A_CmsListDialog extends CmsDialog {
         if (getList() == null) {
             return;
         }
-        CmsListState ls = getList().getState();
+        m_listState = getList().getState();
         getList().clear(getLocale());
         fillList();
-        getList().setState(ls, getLocale());
+        getList().setState(m_listState, getLocale());
+        m_listState = null;
         listSave();
     }
 
+    /**
+     * Returns the current list state.<p>
+     * 
+     * @return the current list state
+     */
+    protected CmsListState getListState() {
+
+        if (m_listState != null) {
+            // in case of refreshList call
+            return m_listState;
+        }
+        return getList().getState();
+    }
+    
     /**
      * Removes the list from the workplace settings.<p>
      * 

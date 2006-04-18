@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckCollector.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,20 +32,26 @@
 package org.opencms.workplace.tools.content.check;
 
 import org.opencms.file.CmsObject;
-import org.opencms.workplace.list.CmsListResourcesCollector;
+import org.opencms.util.CmsResourceUtil;
+import org.opencms.workplace.list.A_CmsListResourceCollector;
+import org.opencms.workplace.list.A_CmsListExplorerDialog;
+import org.opencms.workplace.list.CmsListItem;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Collector for receiving CmsResources from a CmsContentCheckResult.<p>
+ * Collector for receiving {@link org.opencms.file.CmsResource} objects from a {@link CmsContentCheckResult}.<p>
  * 
  * @author Michael Emmerich
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.2 
  */
-public class CmsContentCheckCollector extends CmsListResourcesCollector {
+public class CmsContentCheckCollector extends A_CmsListResourceCollector {
 
     /** Parameter of the default collector name. */
     public static final String COLLECTOR_NAME = "checkresources";
@@ -64,13 +70,15 @@ public class CmsContentCheckCollector extends CmsListResourcesCollector {
 
     /**
      * Constructor, creates a new CmsContentCheckCollector.<p>
+     * 
+     * @param wp the workplace object
+     * 
      * @param results a CmsContentCheckResult object, containing the results of the content check.
      */
-    public CmsContentCheckCollector(CmsContentCheckResult results) {
+    public CmsContentCheckCollector(A_CmsListExplorerDialog wp, CmsContentCheckResult results) {
 
-        super(null);
-        setDefaultCollectorName(COLLECTOR_NAME);
-        setDefaultCollectorParam(PARAM_ALL);
+        super(wp);
+        m_collectorParameter += SEP_PARAM + PARAM_ALL;
         m_results = results;
     }
 
@@ -79,33 +87,33 @@ public class CmsContentCheckCollector extends CmsListResourcesCollector {
      */
     public List getCollectorNames() {
 
-        List names = super.getCollectorNames();
+        List names = new ArrayList();
         names.add(COLLECTOR_NAME);
         return names;
     }
 
     /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject)
+     * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
-    public List getResults(CmsObject cms) {
+    public List getResources(CmsObject cms, Map params) {
 
-        return getResults(cms, COLLECTOR_NAME, getDefaultCollectorParam());
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public List getResults(CmsObject cms, String collectorName, String param) {
-
-        if (param.equals(PARAM_ERROR)) {
+        if (params.containsKey(PARAM_ERROR)) {
             return m_results.getErrorResources();
-        } else if (param.equals(PARAM_WARNING)) {
+        } else if (params.containsKey(PARAM_WARNING)) {
             return m_results.getWarningResources();
-        } else if (param.equals(PARAM_ALL)) {
+        } else if (params.containsKey(PARAM_ALL)) {
             return m_results.getAllResources();
         } else {
             // the default is to return all resources
             return m_results.getAllResources();
         }
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.util.CmsResourceUtil)
+     */
+    protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
+
+        // no-op
     }
 }

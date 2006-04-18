@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/03/28 16:48:21 $
- * Version: $Revision: 1.156 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.156.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156 $ 
+ * @version $Revision: 1.156.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -168,25 +168,25 @@ public abstract class CmsWorkplace {
     public static final String VFS_PATH_VIEWS = VFS_PATH_WORKPLACE + "views/";
 
     /** Constant for the JSP common files (e.g. error page) path. */
-    protected static final String DIALOG_PATH_COMMON = PATH_DIALOGS + "includes/";
+    public static final String DIALOG_PATH_COMMON = PATH_DIALOGS + "includes/";
 
     /** Constant for the JSP common close dialog page. */
-    protected static final String FILE_DIALOG_CLOSE = DIALOG_PATH_COMMON + "closedialog.jsp";
+    public static final String FILE_DIALOG_CLOSE = DIALOG_PATH_COMMON + "closedialog.jsp";
 
     /** Constant for the JSP common confirmation dialog. */
-    protected static final String FILE_DIALOG_SCREEN_CONFIRM = DIALOG_PATH_COMMON + "confirmation.jsp";
+    public static final String FILE_DIALOG_SCREEN_CONFIRM = DIALOG_PATH_COMMON + "confirmation.jsp";
 
     /** Constant for the JSP common error dialog. */
-    protected static final String FILE_DIALOG_SCREEN_ERROR = DIALOG_PATH_COMMON + "error.jsp";
+    public static final String FILE_DIALOG_SCREEN_ERROR = DIALOG_PATH_COMMON + "error.jsp";
 
     /** Constant for the JSP common error dialog. */
-    protected static final String FILE_DIALOG_SCREEN_ERRORPAGE = DIALOG_PATH_COMMON + "errorpage.jsp";
+    public static final String FILE_DIALOG_SCREEN_ERRORPAGE = DIALOG_PATH_COMMON + "errorpage.jsp";
 
     /** Constant for the JSP common wait screen. */
-    protected static final String FILE_DIALOG_SCREEN_WAIT = DIALOG_PATH_COMMON + "wait.jsp";
+    public static final String FILE_DIALOG_SCREEN_WAIT = DIALOG_PATH_COMMON + "wait.jsp";
 
     /** Constant for the JSP common report page. */
-    protected static final String FILE_REPORT_OUTPUT = DIALOG_PATH_COMMON + "report.jsp";
+    public static final String FILE_REPORT_OUTPUT = DIALOG_PATH_COMMON + "report.jsp";
 
     /** Key name for the request attribute to indicate a multipart request was already parsed. */
     protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsWorkplace.MULTIPART";

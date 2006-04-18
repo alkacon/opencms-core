@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorSelector.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.8.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,16 @@ package org.opencms.workplace.editors;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceException;
+
+import javax.servlet.jsp.JspException;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Selects the dialog which should be displayed by OpenCms depending on the configuration value.<p>
@@ -49,7 +56,7 @@ import org.opencms.workplace.CmsWorkplace;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.8.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -57,8 +64,13 @@ import org.opencms.workplace.CmsWorkplace;
  */
 public class CmsEditorSelector {
 
-    // necessary member variables
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEditorSelector.class);
+
+    /** The jsp context. */
     private CmsJspActionElement m_jsp;
+
+    /** The name of the resource to get the editor for. */
     private String m_paramResource;
 
     /**
@@ -70,6 +82,26 @@ public class CmsEditorSelector {
 
         setJsp(jsp);
         setParamResource(jsp.getRequest().getParameter(CmsDialog.PARAM_RESOURCE));
+    }
+
+    /**
+     * Shows the error dialog when no valid editor is found and returns null for the editor URI.<p>
+     * 
+     * @param jsp the instanciated CmsJspActionElement
+     * @param t a throwable object, can be null
+     */
+    private static void showErrorDialog(CmsJspActionElement jsp, Throwable t) {
+
+        CmsDialog wp = new CmsDialog(jsp);
+        wp.setParamMessage(Messages.get().getBundle(wp.getLocale()).key(Messages.ERR_NO_EDITOR_FOUND_0));
+        wp.fillParamValues(jsp.getRequest());
+        try {
+            wp.includeErrorpage(wp, t);
+        } catch (JspException e) {
+            LOG.debug(org.opencms.workplace.commons.Messages.get().getBundle().key(
+                org.opencms.workplace.commons.Messages.LOG_ERROR_INCLUDE_FAILED_1,
+                CmsWorkplace.FILE_DIALOG_SCREEN_ERRORPAGE), e);
+        }
     }
 
     /**
@@ -90,7 +122,17 @@ public class CmsEditorSelector {
             return CmsWorkplace.FILE_EXPLORER_FILELIST;
         }
         // get the dialog URI from the class defined in the configuration 
-        return editorClass.getEditorUri(resource, getJsp());
+        String editorUri = null;
+        try {
+            editorUri = editorClass.getEditorUri(resource, getJsp());
+            if (editorUri == null) {
+                // no valid editor was found, show the error dialog
+                throw new CmsWorkplaceException(Messages.get().container(Messages.ERR_NO_EDITOR_FOUND_0));
+            }
+        } catch (CmsException e) {
+            showErrorDialog(getJsp(), e);
+        }
+        return editorUri;
     }
 
     /**

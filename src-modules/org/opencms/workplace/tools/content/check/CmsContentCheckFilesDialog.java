@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckFilesDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.Iterator;
 import java.util.List;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.2 
  */
@@ -69,6 +70,9 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
 
     /** The results of the content check. */
     CmsContentCheckResult m_results;
+
+    /** The internal collector instance. */
+    private I_CmsListResourceCollector m_collector;
 
     /**
      * Public constructor.<p>
@@ -109,6 +113,25 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
+     */
+    public I_CmsListResourceCollector getCollector() {
+
+        if (m_collector == null) {
+            // get the content check result object
+            Map objects = (Map)getSettings().getDialogObject();
+            Object o = objects.get(CmsContentCheckDialog.class.getName());
+            if ((o != null) && (o instanceof CmsContentCheck)) {
+                m_results = ((CmsContentCheck)o).getResults();
+            } else {
+                m_results = new CmsContentCheckResult();
+            }
+            m_collector = new CmsContentCheckCollector(this, m_results);
+        }
+        return m_collector;
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
     protected void fillDetails(String detailId) {
@@ -118,7 +141,7 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
         Iterator i = resourceNames.iterator();
         while (i.hasNext()) {
             CmsListItem item = (CmsListItem)i.next();
-            CmsResource res = getResource(item);
+            CmsResource res = getCollector().getResource(getCms(), item);
             // check if errors are enabled
             StringBuffer html = new StringBuffer();
             // error detail is enabled
@@ -150,22 +173,6 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
                 }
             }
         }
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
-     */
-    protected List getListItems() {
-
-        // get the content check result object
-        Map objects = (Map)getSettings().getDialogObject();
-        Object o = objects.get(CmsContentCheckDialog.class.getName());
-        if ((o != null) && (o instanceof CmsContentCheck)) {
-            m_results = ((CmsContentCheck)o).getResults();
-        } else {
-            m_results = new CmsContentCheckResult();
-        }
-        return getListItemsFromResources(m_results.getAllResources());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/04/18 16:14:04 $
+ * Version: $Revision: 1.17.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,17 +43,17 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
 
     /** Postfix for melp message locale. */
-    static final String HELP_POSTFIX = ".help";
+    public static final String HELP_POSTFIX = ".help";
 
     /** Prefix for message locales. */
-    static final String LABEL_PREFIX = "label.";
+    public static final String LABEL_PREFIX = "label.";
 
     /** The configuration options of this widget. */
     private String m_configuration;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.35.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.35.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,6 +122,38 @@ public class CmsHtmlList {
         m_name = name;
         m_metadata = metadata;
         m_currentPage = 1;
+    }
+
+    /**
+     * Generates the list of html option elements for a html select control to select a page of a list.<p>
+     * 
+     * @param nrPages the total number of pages
+     * @param itemsPage the maximum number of items per page
+     * @param nrItems the total number of items
+     * @param curPage the current page
+     * @param locale the locale
+     * 
+     * @return html code
+     */
+    public static String htmlPageSelector(int nrPages, int itemsPage, int nrItems, int curPage, Locale locale) {
+
+        StringBuffer html = new StringBuffer(256);
+        for (int i = 0; i < nrPages; i++) {
+            int displayedFrom = i * itemsPage + 1;
+            int displayedTo = (i + 1) * itemsPage < nrItems ? (i + 1) * itemsPage : nrItems;
+            html.append("\t\t\t\t<option value='");
+            html.append(i + 1);
+            html.append("'");
+            html.append((i + 1) == curPage ? " selected" : "");
+            html.append(">");
+            html.append(Messages.get().getBundle(locale).key(
+                Messages.GUI_LIST_PAGE_ENTRY_3,
+                new Integer(i + 1),
+                new Integer(displayedFrom),
+                new Integer(displayedTo)));
+            html.append("</option>\n");
+        }
+        return html.toString();
     }
 
     /**
@@ -1054,29 +1086,23 @@ public class CmsHtmlList {
         html.append("\t\t\t<select name='listPageSet' id='id-page_set' onChange =\"listSetPage('");
         html.append(getId());
         html.append("', this.value);\" style='vertical-align: bottom;'>\n");
-        for (int i = 0; i < getNumberOfPages(); i++) {
-            int displayedFrom = i * getMaxItemsPerPage() + 1;
-            int displayedTo = (i + 1) * getMaxItemsPerPage() < getSize() ? (i + 1) * getMaxItemsPerPage() : getSize();
-            html.append("\t\t\t\t<option value='");
-            html.append(i + 1);
-            html.append("'");
-            html.append((i + 1) == getCurrentPage() ? " selected" : "");
-            html.append(">");
-            html.append(displayedFrom);
-            html.append(" - ");
-            html.append(displayedTo);
-            html.append("</option>\n");
-        }
+        html.append(htmlPageSelector(
+            getNumberOfPages(),
+            getMaxItemsPerPage(),
+            getSize(),
+            getCurrentPage(),
+            wp.getLocale()));
         html.append("\t\t\t</select>\n");
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
-            html.append(messages.key(
-                Messages.GUI_LIST_PAGING_TEXT_2,
-                new Object[] {m_name.key(wp.getLocale()), new Integer(getTotalSize())}));
+            html.append(messages.key(Messages.GUI_LIST_PAGING_TEXT_2, new Object[] {
+                m_name.key(wp.getLocale()),
+                new Integer(getTotalSize())}));
         } else {
-            html.append(messages.key(
-                Messages.GUI_LIST_PAGING_FILTER_TEXT_3,
-                new Object[] {m_name.key(wp.getLocale()), new Integer(getSize()), new Integer(getTotalSize())}));
+            html.append(messages.key(Messages.GUI_LIST_PAGING_FILTER_TEXT_3, new Object[] {
+                m_name.key(wp.getLocale()),
+                new Integer(getSize()),
+                new Integer(getTotalSize())}));
         }
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");

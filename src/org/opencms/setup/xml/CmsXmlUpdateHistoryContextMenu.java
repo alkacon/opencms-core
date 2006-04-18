@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlUpdateHistoryContextMenu.java,v $
- * Date   : $Date: 2006/03/29 16:39:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.4.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.4.1 $ 
  * 
  * @since 6.1.8 
  */
@@ -118,7 +118,6 @@ public class CmsXmlUpdateHistoryContextMenu extends A_CmsSetupXmlUpdate {
                     xp + "/" + CmsWorkplaceConfiguration.N_HELPTEXT,
                     "${key.GUI_ADMIN_VIEW_ROOT_HELP_0}");
 
-                // TODO: check this
                 xp = CmsStringUtil.substitute(xp, "admin", "explorer");
                 CmsSetupXmlHelper.setValue(document, xp + "/" + CmsWorkplaceConfiguration.N_KEY, "explorer");
                 CmsSetupXmlHelper.setValue(

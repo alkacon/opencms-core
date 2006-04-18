@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckResult.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.2 
  */
@@ -63,7 +63,7 @@ public class CmsContentCheckResult {
 
     /** 
      * Map containing all all collected errors. Resourcenames are used as keys,
-     * lists are used as values 
+     * lists are used as values.
      */
     private Map m_errors;
 
@@ -75,12 +75,12 @@ public class CmsContentCheckResult {
 
     /** 
      * Map containing all all collected warnings. Resourcenames are used as keys,
-     * lists are used as values 
+     * lists are used as values. 
      */
     private Map m_warnings;
 
     /**
-     * Constructor, creates an empty CmsContentCheckResult.<p>     *
+     * Constructor, creates an empty CmsContentCheckResult.<p>
      */
     public CmsContentCheckResult() {
 
@@ -124,7 +124,7 @@ public class CmsContentCheckResult {
      */
     public List getAllCheckResources() {
 
-        return m_allResources;
+        return m_allCheckResources;
     }
 
     /**

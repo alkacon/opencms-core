@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerColumn.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.workplace.CmsWorkplace;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,10 +89,10 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
         StringBuffer result = new StringBuffer(256);
         result.append("<style type='text/css'>\n");
         result.append(".fc, .fc .link a { color: #b40000; }\n");
-        result.append(".fn, .fn .link a  { color: #0000aa; }\n");
-        result.append(".fd, .fd .link a  { color: #000000; text-decoration: line-through; }\n");
-        result.append(".fp, .fp .link a  { color: #888888; }\n");
-        result.append(".nf, .nf .link a  { color:#000000; }\n");
+        result.append(".fn, .fn .link a { color: #0000aa; }\n");
+        result.append(".fd, .fd .link a { color: #000000; text-decoration: line-through; }\n");
+        result.append(".fp, .fp .link a { color: #888888; }\n");
+        result.append(".nf, .nf .link a { color:#000000; }\n");
         result.append("</style>");
         return result.toString();
     }

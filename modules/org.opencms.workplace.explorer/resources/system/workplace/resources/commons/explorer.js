@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/03/29 14:51:36 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/04/18 16:14:04 $
+ * Version: $Revision: 1.13.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ var buttonType=1;
 var link_newresource="/system/workplace/commons/newresource.jsp";
 var link_uploadresource="/system/workplace/commons/newresource_upload.jsp";
 var link_showresource="/system/workplace/commons/displayresource.jsp";
+var link_searchresource="/system/workplace/views/admin/admin-main.jsp?root=explorer&path=%2Fsearch";
 var last_id=-1;
 var active_mouse_id=-1;
 var active_from_text=false;
@@ -227,15 +228,23 @@ function updateWindowStore() {
 
 	if ((mode == "listview") || (mode == "galleryview")) {
                 var theDoc = null;
-                if (window.body.admin_content.tool_content) {
-                   theDoc = window.body.admin_content.tool_content;
+                if (window.body.admin_content) {
+                   if (window.body.admin_content.tool_content) {
+                      theDoc = window.body.admin_content.tool_content;
+                   } else {
+                      theDoc = window.body.admin_content;
+                   }
                 } else {
-                   theDoc = window.body.admin_content;
+                   if (window.body.explorer_body.explorer_files.tool_content) {
+                      theDoc = window.body.explorer_body.explorer_files.tool_content;
+                   } else {
+                      theDoc = window.body.explorer_body.explorer_files;
+                   }
                 }
                 if (window.body.admin_head) {
- 			win = new windowStore(window.body.document, window.body.admin_head.document, theTree, theDoc);
+                   win = new windowStore(window.body.document, window.body.admin_head.document, theTree, theDoc);
                 } else {
- 			win = new windowStore(window.body.document, null, theTree, theDoc);
+                   win = new windowStore(window.body.document, null, theTree, theDoc);
                 }
 	} else {
 		try {
@@ -1153,6 +1162,7 @@ function displayHead(doc, pages, actpage){
 	var btUp = "";
 	var btWizard = "";
 	var btUpload = "";
+	var btSearch = "";
 	var pageSelect = "";
 
 	if(vr.actDirectory == getRootFolder()) {
@@ -1168,6 +1178,8 @@ function displayHead(doc, pages, actpage){
 		btWizard = button(null, null, "wizard_in.png", vr.langnew, buttonType);
 		btUpload = button(null, null, "upload_in.png", vr.langupload, buttonType);
 	}
+
+	btSearch = button(vr.servpath + link_searchresource, "explorer_files", "ex_search.png", vr.langsearch, buttonType);
 
 	if(pages > 1){
 		pageSelect=
@@ -1212,6 +1224,7 @@ function displayHead(doc, pages, actpage){
 	+ buttonSep(0, 0, 0)
 	+ button("javascript:top.histGoBack();", null, "back.png", vr.langback, buttonType)
 	+ btUpload
+	+ btSearch
 	+ btWizard
 	+ btUp
 

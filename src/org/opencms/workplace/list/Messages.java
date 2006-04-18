@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.16.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.16 $ 
+ * @author Michael Moossen
+ * 
+ * @version $Revision: 1.16.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +76,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ACTION_PRINT_NAME_0 = "GUI_ACTION_PRINT_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITRESOURCE_ACTION_HELP_0 = "GUI_EDITRESOURCE_ACTION_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITRESOURCE_ACTION_NAME_0 = "GUI_EDITRESOURCE_ACTION_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITRESOURCE_DISABLED_ACTION_HELP_0 = "GUI_EDITRESOURCE_DISABLED_ACTION_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITRESOURCE_DISABLED_ACTION_NAME_0 = "GUI_EDITRESOURCE_DISABLED_ACTION_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LIST_ACTION_INPROJECT_NAME_1 = "GUI_EXPLORER_LIST_ACTION_INPROJECT_NAME_1";
 
     /** Message contant for key in the resource bundle. */
@@ -93,6 +107,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LIST_ACTION_UNLOCK_NAME_0 = "GUI_EXPLORER_LIST_ACTION_UNLOCK_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_COLS_EDIT_0 = "GUI_EXPLORER_LIST_COLS_EDIT_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_COLS_EDIT_HELP_0 = "GUI_EXPLORER_LIST_COLS_EDIT_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LIST_COLS_ICON_0 = "GUI_EXPLORER_LIST_COLS_ICON_0";
@@ -191,6 +211,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LIST_EMPTY_0 = "GUI_LIST_EMPTY_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_PAGE_ENTRY_3 = "GUI_LIST_PAGE_ENTRY_3";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_PAGING_FILTER_TEXT_3 = "GUI_LIST_PAGING_FILTER_TEXT_3";
 
     /** Message contant for key in the resource bundle. */
@@ -233,15 +256,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_OPENRESOURCE_ACTION_HELP_0 = "GUI_OPENRESOURCE_ACTION_HELP_0";
 
     /** Message contant for key in the resource bundle. */
-    
     public static final String GUI_OPENRESOURCE_ACTION_NAME_0 = "GUI_OPENRESOURCE_ACTION_NAME_0";
-    
 
     /** Message contant for key in the resource bundle. */
-    public static final String LOG_PROCESS_PROJECT_VIEW_END_1 = "LOG_PROCESS_PROJECT_VIEW_END_1";
+    public static final String LOG_COLLECTOR_GET_RESULTS_END_1 = "LOG_COLLECTOR_GET_RESULTS_END_1";
 
     /** Message contant for key in the resource bundle. */
-    public static final String LOG_PROCESS_PROJECT_VIEW_START_1 = "LOG_PROCESS_PROJECT_VIEW_START_1";
+    public static final String LOG_COLLECTOR_GET_RESULTS_START_0 = "LOG_COLLECTOR_GET_RESULTS_START_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_COLLECTOR_PROCESS_ITEMS_END_1 = "LOG_COLLECTOR_PROCESS_ITEMS_END_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_COLLECTOR_PROCESS_ITEMS_START_1 = "LOG_COLLECTOR_PROCESS_ITEMS_START_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.list.messages";

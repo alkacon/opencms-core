@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListState.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.7.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,20 +45,20 @@ package org.opencms.workplace.list;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListState {
 
     /** Current sorted column. */
-    private final String m_column;
+    private String m_column;
     /** Current search filter. */
-    private final String m_filter;
+    private String m_filter;
     /** Current sort order. */
-    private final CmsListOrderEnum m_order;
+    private CmsListOrderEnum m_order;
     /** Current visible page. */
-    private final int m_page;
+    private int m_page;
 
     /**
      * Default Constructor.<p>
@@ -71,6 +71,17 @@ public class CmsListState {
         m_filter = list.getSearchFilter();
         m_page = list.getCurrentPage();
         m_order = list.getCurrentSortOrder();
+    }
+
+    /**
+     * Empty constructor, with default values.<p>
+     */
+    public CmsListState() {
+
+        m_page = 1;
+        m_order = CmsListOrderEnum.ORDER_ASCENDING;
+        m_filter = "";
+        m_column = "";
     }
 
     /**
@@ -111,6 +122,46 @@ public class CmsListState {
     public int getPage() {
 
         return m_page;
+    }
+
+    /**
+     * Sets the column.<p>
+     *
+     * @param column the column to set
+     */
+    public void setColumn(String column) {
+
+        m_column = column;
+    }
+
+    /**
+     * Sets the filter.<p>
+     *
+     * @param filter the filter to set
+     */
+    public void setFilter(String filter) {
+
+        m_filter = filter;
+    }
+
+    /**
+     * Sets the order.<p>
+     *
+     * @param order the order to set
+     */
+    public void setOrder(CmsListOrderEnum order) {
+
+        m_order = order;
+    }
+
+    /**
+     * Sets the page.<p>
+     *
+     * @param page the page to set
+     */
+    public void setPage(int page) {
+
+        m_page = page;
     }
 
 }

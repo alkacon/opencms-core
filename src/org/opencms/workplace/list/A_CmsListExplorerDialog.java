@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2006/03/28 13:10:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.4.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,35 +34,31 @@ package org.opencms.workplace.list;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.util.CmsResourceUtil;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorer;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Provides a list dialog for resources.<p> 
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
+
+    /** List action id constant. */
+    public static final String LIST_ACTION_EDIT = "eae";
 
     /** List action id constant. */
     public static final String LIST_ACTION_LOCKICON = "eal";
@@ -84,6 +80,9 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /** List column id constant. */
     public static final String LIST_COLUMN_DATEREL = "ecdr";
+
+    /** List column id constant. */
+    public static final String LIST_COLUMN_EDIT = "ece";
 
     /** List column id constant. */
     public static final String LIST_COLUMN_LOCKEDBY = "eclb";
@@ -126,9 +125,6 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /** Explorer list JSP path. */
     public static final String PATH_EXPLORER_LIST = PATH_DIALOGS + "list-explorer.jsp";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsListExplorerDialog.class);
 
     /** Column visibility flags container. */
     private Map m_colVisibilities;
@@ -180,7 +176,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
             params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
             params.putAll(getToolManager().getCurrentTool(this).getHandler().getParameters(this));
 
-            getSettings().setCollector(new CmsListResourcesCollector(getResources()));
+            getSettings().setCollector(getCollector());
             getSettings().setExplorerMode(CmsExplorer.VIEW_LIST);
             getSettings().setExplorerProjectId(getProject().getId());
             try {
@@ -188,9 +184,17 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        } else {
+            super.executeListIndepActions();
         }
-        super.executeListIndepActions();
     }
+
+    /**
+     * Returns the collector to use to display the resources.<p>
+     * 
+     * @return the collector to use to display the resources
+     */
+    public abstract I_CmsListResourceCollector getCollector();
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getList()
@@ -204,10 +208,15 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
             if (colName != null) {
                 ((CmsListOpenResourceAction)colName.getDefaultAction(LIST_DEFACTION_OPEN)).setCms(getCms());
             }
+            CmsListColumnDefinition col = list.getMetadata().getColumnDefinition(LIST_COLUMN_EDIT);
+            if (col != null) {
+                ((CmsListEditResourceAction)col.getDirectAction(LIST_ACTION_EDIT)).setWp(this);
+                ((CmsListEditResourceAction)col.getDirectAction(LIST_ACTION_EDIT + "d")).setWp(this);
+            }
             Iterator it = list.getMetadata().getColumnDefinitions().iterator();
             while (it.hasNext()) {
-                CmsListColumnDefinition col = (CmsListColumnDefinition)it.next();
-                Iterator itActs = col.getDirectActions().iterator();
+                CmsListColumnDefinition column = (CmsListColumnDefinition)it.next();
+                Iterator itActs = column.getDirectActions().iterator();
                 while (itActs.hasNext()) {
                     I_CmsListDirectAction action = (I_CmsListDirectAction)itActs.next();
                     if (action instanceof CmsListExplorerDirectAction) {
@@ -217,22 +226,6 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
             }
         }
         return list;
-    }
-
-    /**
-     * Returns the resource for the given item.<p>
-     * 
-     * @param item the item
-     * 
-     * @return the resource
-     */
-    public CmsResource getResource(CmsListItem item) {
-
-        try {
-            return getCms().readResource((String)item.get(LIST_COLUMN_NAME), CmsResourceFilter.ALL);
-        } catch (CmsException e) {
-            return null;
-        }
     }
 
     /**
@@ -259,28 +252,8 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     public CmsResourceUtil getResourceUtil(CmsListItem item) {
 
         CmsResourceUtil resUtil = getResourceUtil();
-        resUtil.setResource(getResource(item));
+        resUtil.setResource(getCollector().getResource(getCms(), item));
         return resUtil;
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#refreshList()
-     */
-    public synchronized void refreshList() {
-
-        if (getList() == null) {
-            return;
-        }
-        CmsListState ls = getList().getState();
-        getList().clear(getLocale());
-        fillList();
-        getList().setState(ls, getLocale());
-        try {
-            getList().setCurrentPage(getSettings().getExplorerPage());
-        } catch (Throwable e) {
-            // ignore
-        }
-        listSave();
     }
 
     /**
@@ -290,6 +263,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         setColumnVisibilities();
         CmsListMetadata metadata = getList().getMetadata();
+        metadata.getColumnDefinition(LIST_COLUMN_EDIT).setVisible(isColumnVisible(LIST_COLUMN_EDIT.hashCode()));
         metadata.getColumnDefinition(LIST_COLUMN_TYPEICON).setVisible(isColumnVisible(LIST_COLUMN_TYPEICON.hashCode()));
         metadata.getColumnDefinition(LIST_COLUMN_LOCKICON).setVisible(isColumnVisible(LIST_COLUMN_LOCKICON.hashCode()));
         metadata.getColumnDefinition(LIST_COLUMN_PROJSTATEICON).setVisible(
@@ -342,49 +316,57 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     }
 
     /**
-     * Returns a list of list items from a list of resources.<p>
-     * 
-     * @param resources a list of {@link CmsResource} objects
-     * 
-     * @return a list of {@link CmsListItem} objects
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillList()
      */
-    protected List getListItemsFromResources(List resources) {
+    protected void fillList() {
 
-        List ret = new ArrayList();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROCESS_PROJECT_VIEW_START_1, new Integer(resources.size())));
+        getListState().setPage(getSettings().getExplorerPage());
+        super.fillList();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
+     */
+    protected List getListItems() throws CmsException {
+
+        return getCollector().getListItems(null);
+    }
+
+    /**
+     * Returns the list state for initializing the collector.<p>
+     * 
+     * @return the list state
+     */
+    protected CmsListState getListStateForCollector() {
+
+        CmsListState lstate = new CmsListState();
+        if (getList() != null) {
+            lstate = getListState();
         }
-        CmsResourceUtil resUtil = getResourceUtil();
-        applyColumnVisibilities();
-        // get content
-        Iterator itRes = resources.iterator();
-        while (itRes.hasNext()) {
-            CmsResource resource = (CmsResource)itRes.next();
-            if (!resource.getRootPath().startsWith(getJsp().getRequestContext().getSiteRoot())
-                && !resource.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
-                continue;
-            }
-            resUtil.setResource(resource);
-            CmsListItem item = getList().newItem(resource.getResourceId().toString());
-            item.set(LIST_COLUMN_NAME, getCms().getSitePath(resource));
-            item.set(LIST_COLUMN_TITLE, resUtil.getTitle());
-            item.set(LIST_COLUMN_TYPE, resUtil.getResourceTypeName());
-            item.set(LIST_COLUMN_SIZE, resUtil.getSizeString());
-            item.set(LIST_COLUMN_PERMISSIONS, resUtil.getPermissions());
-            item.set(LIST_COLUMN_DATELASTMOD, new Date(resource.getDateLastModified()));
-            item.set(LIST_COLUMN_USERLASTMOD, resUtil.getUserLastModified());
-            item.set(LIST_COLUMN_DATECREATE, new Date(resource.getDateCreated()));
-            item.set(LIST_COLUMN_USERCREATE, resUtil.getUserCreated());
-            item.set(LIST_COLUMN_DATEREL, new Date(resource.getDateReleased()));
-            item.set(LIST_COLUMN_DATEEXP, new Date(resource.getDateExpired()));
-            item.set(LIST_COLUMN_STATE, resUtil.getStateName());
-            item.set(LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
-            ret.add(item);
+        switch (getAction()) {
+            //////////////////// ACTION: default actions
+            case ACTION_LIST_SEARCH:
+                if (getParamSearchFilter() == null) {
+                    setParamSearchFilter("");
+                }
+                if (getParamSearchFilter().equals(lstate.getFilter())) {
+                    lstate.setOrder(CmsListOrderEnum.ORDER_DESCENDING);
+                } else {
+                    lstate.setOrder(CmsListOrderEnum.ORDER_ASCENDING);
+                }
+                lstate.setFilter(getParamSearchFilter());
+                break;
+            case ACTION_LIST_SORT:
+                lstate.setColumn(getParamSortCol());
+                break;
+            case ACTION_LIST_SELECT_PAGE:
+                int page = Integer.valueOf(getParamPage()).intValue();
+                lstate.setPage(page);
+                break;
+            default:
+        // no op
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROCESS_PROJECT_VIEW_END_1, new Integer(ret.size())));
-        }
-        return ret;
+        return lstate;
     }
 
     /**
@@ -395,26 +377,6 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     protected CmsProject getProject() {
 
         return getCms().getRequestContext().currentProject();
-    }
-
-    /**
-     * Returns the list of resources to show in the explorer view.<p>
-     * 
-     * @return a list of {@link org.opencms.file.CmsResource} objects
-     */
-    protected List getResources() {
-
-        List ret = new ArrayList(getList().getContent().size());
-        Iterator it = getList().getContent().iterator();
-        while (it.hasNext()) {
-            CmsListItem item = (CmsListItem)it.next();
-            try {
-                ret.add(getCms().readResource((String)item.get(LIST_COLUMN_NAME)));
-            } catch (CmsException e) {
-                // ignore
-            }
-        }
-        return ret;
     }
 
     /**
@@ -445,7 +407,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         setColumnVisibilities();
 
-        // position 1: icon
+        // position 0: icon
         CmsListColumnDefinition typeIconCol = new CmsListColumnDefinition(LIST_COLUMN_TYPEICON);
         typeIconCol.setName(Messages.get().container(Messages.GUI_EXPLORER_LIST_COLS_ICON_0));
         typeIconCol.setHelpText(Messages.get().container(Messages.GUI_EXPLORER_LIST_COLS_ICON_HELP_0));
@@ -458,6 +420,23 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         resourceTypeIconAction.setEnabled(false);
         typeIconCol.addDirectAction(resourceTypeIconAction);
         metadata.addColumn(typeIconCol);
+
+        // position 1: edit button
+        CmsListColumnDefinition editIconCol = new CmsListColumnDefinition(LIST_COLUMN_EDIT);
+        editIconCol.setName(Messages.get().container(Messages.GUI_EXPLORER_LIST_COLS_EDIT_0));
+        editIconCol.setHelpText(Messages.get().container(Messages.GUI_EXPLORER_LIST_COLS_EDIT_HELP_0));
+        editIconCol.setWidth("20");
+        editIconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+
+        // add enabled edit action
+        CmsListDirectAction editAction = new CmsListEditResourceAction(LIST_ACTION_EDIT, this, LIST_COLUMN_NAME);
+        editAction.setEnabled(true);
+        editIconCol.addDirectAction(editAction);
+        // add disabled edit action
+        CmsListDirectAction noEditAction = new CmsListEditResourceAction(LIST_ACTION_EDIT + "d", this, LIST_COLUMN_NAME);
+        noEditAction.setEnabled(false);
+        editIconCol.addDirectAction(noEditAction);
+        metadata.addColumn(editIconCol);
 
         // position 2: lock icon
         CmsListColumnDefinition lockIconCol = new CmsListColumnDefinition(LIST_COLUMN_LOCKICON);
@@ -601,14 +580,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         m_colVisibilities.put(new Integer(LIST_COLUMN_LOCKICON.hashCode()), Boolean.TRUE);
         m_colVisibilities.put(new Integer(LIST_COLUMN_PROJSTATEICON.hashCode()), Boolean.TRUE);
         m_colVisibilities.put(new Integer(LIST_COLUMN_NAME.hashCode()), Boolean.TRUE);
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setIndependentActions(CmsListMetadata metadata) {
-
-        metadata.addIndependentAction(CmsListIndependentAction.getDefaultExplorerSwitchAction());
+        m_colVisibilities.put(new Integer(LIST_COLUMN_EDIT.hashCode()), Boolean.FALSE);
     }
 
     /**
@@ -617,10 +589,18 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      * @param colFlag the flag that identifies the column to set the flag for
      * @param prefs the user preferences
      */
-    private void setColumnVisibility(int colFlag, int prefs) {
+    protected void setColumnVisibility(int colFlag, int prefs) {
 
         Integer key = new Integer(colFlag);
         Boolean value = new Boolean((prefs & colFlag) > 0);
         m_colVisibilities.put(key, value);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        metadata.addIndependentAction(CmsListIndependentAction.getDefaultExplorerSwitchAction());
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsSetupXmlHelper.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/04/18 16:14:03 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.setup.xml;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
@@ -47,6 +48,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -65,7 +68,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.8 
  */
@@ -142,6 +145,9 @@ public class CmsSetupXmlHelper {
         }
     }
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSetupXmlHelper.class);
+
     /**
      * Sets the given value in all nodes identified by the given xpath of the given xml file.<p>
      * 
@@ -184,8 +190,8 @@ public class CmsSetupXmlHelper {
                     if (!it.hasNext()) {
                         currentNode.setText(value);
                     }
-                } else {
-                    Element elem = (Element)currentNode; // TODO: is this safe?
+                } else if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element elem = (Element)currentNode;
                     if (!nodeName.startsWith("@")) {
                         // if node is no attribute, create a new node
                         String childName = null;
@@ -221,11 +227,17 @@ public class CmsSetupXmlHelper {
                         elem.addAttribute(nodeName.substring(1), value);
                     }
                     currentNode = elem;
+                } else {
+                    // should never happen
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.ERR_XML_SET_VALUE_2, xPath, value));
+                    }
+                    break;
                 }
             }
             return 1;
         }
-        
+
         // if found 
         while (itNodes.hasNext()) {
             Node node = (Node)itNodes.next();

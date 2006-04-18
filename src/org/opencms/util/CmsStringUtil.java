@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/03/28 12:14:36 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2006/04/18 16:14:04 $
+ * Version: $Revision: 1.39.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.39.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,7 +165,8 @@ public final class CmsStringUtil {
      * 
      * @throws CmsIllegalArgumentException if the check fails (generated from the given key and bundle)
      */
-    public static void checkName(String name, String contraints, String key, I_CmsMessageBundle bundle) {
+    public static void checkName(String name, String contraints, String key, I_CmsMessageBundle bundle)
+    throws CmsIllegalArgumentException {
 
         int l = name.length();
         for (int i = 0; i < l; i++) {
@@ -778,6 +779,36 @@ public final class CmsStringUtil {
             result.add(trim ? source.substring(i).trim() : source.substring(i));
         }
         return result;
+    }
+
+    /**
+     * Splits a String into substrings along the provided <code>paramDelim</code> delimiter,
+     * then each substring is treat as a key-value pair delimited by <code>keyValDelim</code>.
+     * 
+     * @param source the string to split
+     * @param paramDelim the string to delimit each key-value pair
+     * @param keyValDelim the string to delimit key and value
+     * 
+     * @return a map of splitted key-value pairs
+     */
+    public static Map splitAsMap(String source, String paramDelim, String keyValDelim) {
+
+        Map params = new HashMap();
+        Iterator itParams = CmsStringUtil.splitAsList(source, paramDelim, true).iterator();
+        while (itParams.hasNext()) {
+            String param = (String)itParams.next();
+            int pos = param.indexOf(keyValDelim);
+            String key = param;
+            String value = "";
+            if (pos > 0) {
+                key = param.substring(0, pos);
+                if (pos + keyValDelim.length() < param.length()) {
+                    value = param.substring(pos + 1);
+                }
+            }
+            params.put(key, value);
+        }
+        return params;
     }
 
     /**
