@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.141 $
+ * Date   : $Date: 2006/04/18 07:43:40 $
+ * Version: $Revision: 1.141.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.141 $
+ * @version $Revision: 1.141.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -184,65 +184,75 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     public void deleteBackup(CmsDbContext dbc, CmsBackupResource resource, int tag, int versions)
     throws CmsDataAccessException {
 
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        PreparedStatement stmt1 = null;
-        PreparedStatement stmt2 = null;
-        PreparedStatement stmt3 = null;
-        PreparedStatement stmt4 = null;
-        Connection conn = null;
-        List backupIds = new ArrayList();
-
-        // first get all backup ids of the entries which should be deleted
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_READ_BACKUPID_FOR_DELETION");
-            stmt.setString(1, resource.getStructureId().toString());
-            stmt.setString(2, resource.getResourceId().toString());
-            stmt.setInt(3, versions);
-            stmt.setInt(4, tag);
-            res = stmt.executeQuery();
-            // now collect all backupId's for deletion
-            while (res.next()) {
-                backupIds.add(res.getString(1));
+        if (resource == null) {
+            if (tag > 0) {
+                deleteBackupByMaxTag(dbc, tag);
+            } else {
+                deleteByVersionsCountWithSibling(dbc, versions);
+                deleteByVersionsCountWithoutSibling(dbc, versions);
             }
-            // we have all the nescessary information, so we can delete the old backups
-            stmt1 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_STRUCTURE_BYBACKUPID");
-            stmt2 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCES_BYBACKUPID");
-            stmt3 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_CONTENTS_BYBACKUPID");
-            stmt4 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_PROPERTIES_BYBACKUPID");
-            Iterator i = backupIds.iterator();
-            while (i.hasNext()) {
-                String backupId = (String)i.next();
-                //delete the structure              
-                stmt1.setString(1, backupId);
-                stmt1.addBatch();
-                //delete the resource
-                stmt2.setString(1, backupId);
-                stmt2.addBatch();
-                //delete the file
-                stmt3.setString(1, backupId);
-                stmt3.addBatch();
-                //delete the properties
-                stmt4.setString(1, backupId);
-                stmt4.addBatch();
-            }
-            // excecute them
-            stmt1.executeBatch();
-            stmt2.executeBatch();
-            stmt3.executeBatch();
-            stmt4.executeBatch();
+        } else {
 
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-            m_sqlManager.closeAll(dbc, null, stmt1, null);
-            m_sqlManager.closeAll(dbc, null, stmt2, null);
-            m_sqlManager.closeAll(dbc, null, stmt3, null);
-            m_sqlManager.closeAll(dbc, null, stmt4, null);
+            ResultSet res = null;
+            PreparedStatement stmt = null;
+            PreparedStatement stmt1 = null;
+            PreparedStatement stmt2 = null;
+            PreparedStatement stmt3 = null;
+            PreparedStatement stmt4 = null;
+            Connection conn = null;
+            List backupIds = new ArrayList();
+
+            // first get all backup ids of the entries which should be deleted
+            try {
+                conn = m_sqlManager.getConnection(dbc);
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_READ_BACKUPID_FOR_DELETION");
+                stmt.setString(1, resource.getStructureId().toString());
+                stmt.setString(2, resource.getResourceId().toString());
+                stmt.setInt(3, versions);
+                stmt.setInt(4, tag);
+                res = stmt.executeQuery();
+                // now collect all backupId's for deletion
+                while (res.next()) {
+                    backupIds.add(res.getString(1));
+                }
+                // we have all the nescessary information, so we can delete the old backups
+                stmt1 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_STRUCTURE_BYBACKUPID");
+                stmt2 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCES_BYBACKUPID");
+                stmt3 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_CONTENTS_BYBACKUPID");
+                stmt4 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_PROPERTIES_BYBACKUPID");
+                Iterator i = backupIds.iterator();
+                while (i.hasNext()) {
+                    String backupId = (String)i.next();
+                    //delete the structure              
+                    stmt1.setString(1, backupId);
+                    stmt1.addBatch();
+                    //delete the resource
+                    stmt2.setString(1, backupId);
+                    stmt2.addBatch();
+                    //delete the file
+                    stmt3.setString(1, backupId);
+                    stmt3.addBatch();
+                    //delete the properties
+                    stmt4.setString(1, backupId);
+                    stmt4.addBatch();
+                }
+                // excecute them
+                stmt1.executeBatch();
+                stmt2.executeBatch();
+                stmt3.executeBatch();
+                stmt4.executeBatch();
+
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(Messages.get().container(
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, res);
+                m_sqlManager.closeAll(dbc, null, stmt1, null);
+                m_sqlManager.closeAll(dbc, null, stmt2, null);
+                m_sqlManager.closeAll(dbc, null, stmt3, null);
+                m_sqlManager.closeAll(dbc, null, stmt4, null);
+            }
         }
     }
 
@@ -377,7 +387,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().getName()));
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1,
+                    getClass().getName()));
             }
         }
     }
@@ -1098,7 +1110,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     stmt.setInt(8, resource.getState());
                     stmt.setInt(9, resource.getLength());
                     stmt.setInt(10, dbc.currentProject().getId());
-                    stmt.setInt(11, 1);
+                    stmt.setInt(11, resource.getSiblingCount());
                     stmt.setInt(12, tagId);
                     stmt.setInt(13, versionId);
                     stmt.setString(14, backupPkId.toString());
@@ -1259,6 +1271,293 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     }
 
     /**
+     * Deleted old backup entries oldest then tag.<p> 
+     * 
+     * @param dbc the current database context
+     * @param tag publish_tag - all oldest backup entries will be deleted
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     * 
+     * @see org.opencms.db.generic#deleteBackup(CmsDbContext dbc, CmsBackupResource resource, int tag, int versions)
+     */
+    private void deleteBackupByMaxTag(CmsDbContext dbc, int tag) throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        PreparedStatement stmt1 = null;
+        PreparedStatement stmt2 = null;
+        PreparedStatement stmt3 = null;
+        PreparedStatement stmt4 = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_STRUCTURE_BYPUBLISH_TAG");
+
+            stmt1 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCES_BYPUBLISH_TAG");
+            stmt2 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_CONTENTS_BYPUBLISH_TAG");
+            stmt3 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_PROPERTIES_BYPUBLISH_TAG");
+            stmt4 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_PUBLISHHISTORY_BYPUBLISH_TAG");
+            stmt.setInt(1, tag);
+            stmt1.setInt(1, tag);
+            stmt2.setInt(1, tag);
+            stmt3.setInt(1, tag);
+            stmt4.setInt(1, tag);
+            stmt.executeUpdate();
+            stmt1.executeUpdate();
+            stmt2.executeUpdate();
+            stmt3.executeUpdate();
+            stmt4.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+            m_sqlManager.closeAll(dbc, null, stmt1, null);
+            m_sqlManager.closeAll(dbc, null, stmt2, null);
+            m_sqlManager.closeAll(dbc, null, stmt3, null);
+            m_sqlManager.closeAll(dbc, null, stmt4, null);
+        }
+    }
+
+    /**
+     * This method deletes old backup entries for resources without siblings 
+     * that have more then <code>versions</code> entries.<p> 
+     * 
+     * It loop up only resource ohne sibling.
+     * It’s slow in compare to deleteBackupByMaxTag because it needs to loop over database for 
+     * all resources having such number of version.<p>
+     * 
+     * @param dbc the current database context
+     * @param versions how many versions to keep
+     * 
+     * @throws CmsDataAccessException
+     * 
+     * @see org.opencms.db.generic#deleteBackup(CmsDbContext dbc, CmsBackupResource resource, int tag, int versions)
+     */
+    private void deleteByVersionsCountWithoutSibling(CmsDbContext dbc, int versions) throws CmsDataAccessException {
+
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt1 = null;
+        PreparedStatement stmt2 = null;
+        PreparedStatement stmt3 = null;
+        PreparedStatement stmt4 = null;
+        PreparedStatement stmt5 = null;
+        PreparedStatement stmt6 = null;
+        Connection conn = null;
+        int publishTag = 0;
+
+        String backupId = null;
+        String resourceId = null;
+        Map structureVersionsId = new HashMap();
+        Set structIdSet = new HashSet();
+
+        // first get all resource ids of the entries which has more version as need.
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_READ_ALL_RESOURCES_TO_DELETE_BY_VERSION_NOSIBLING");
+
+            stmt2 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_CONTENT_BYRESOURCEID_AND_VERSION");
+            stmt3 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_STRUCTURE_BYRESOURCEID_AND_VERSION");
+            stmt4 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCES_BYRESOURCEID_AND_VERSION");
+            stmt6 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_PROPERTIES_BYBACKUPID");
+
+            stmt5 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_PUBLISHHISTORY_BYPUBLISHTAG_AND_RESID");
+            stmt1 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_READ_ALL_BACKUP_ID_BY_STRUCTURE_ID");
+            stmt.setInt(1, versions);
+            stmt.setInt(2, versions);
+            res = stmt.executeQuery();
+
+            // now collect all structureId with latest  versionsId to save.
+            while (res.next()) {
+                structureVersionsId.put(res.getString(1), new Integer(res.getInt(2)));
+            }
+            structIdSet = structureVersionsId.keySet();
+            if (structIdSet.size() > 0) {
+                Iterator structIdIter = structIdSet.iterator();
+
+                while (structIdIter.hasNext()) {
+                    String structureId = (String)structIdIter.next();
+                    Integer maxDeletedVersion = (Integer)structureVersionsId.get(structureId);
+                    int maxVersion = maxDeletedVersion.intValue();
+
+                    stmt1.setString(1, structureId);
+                    stmt1.setInt(2, maxVersion);
+                    res = stmt1.executeQuery();
+
+                    while (res.next()) {
+                        backupId = res.getString(1);
+                        publishTag = res.getInt(2);
+                        resourceId = res.getString(3);
+                        //delete from properties
+
+                        stmt6.setString(1, backupId);
+                        stmt6.addBatch();
+                        //delete from publishhistory
+                        stmt5.setString(1, structureId);
+                        stmt5.setInt(2, publishTag);
+                        stmt5.addBatch();
+
+                    }
+
+                    //delete from resource
+                    stmt4.setInt(1, maxVersion);
+                    stmt4.setString(2, resourceId);
+                    stmt4.addBatch();
+
+                    //delete from content
+                    stmt2.setInt(1, maxVersion);
+                    stmt2.setString(2, resourceId);
+                    stmt2.addBatch();
+
+                    //delete from structure
+                    stmt3.setInt(1, maxVersion);
+                    stmt3.setString(2, resourceId);
+                    stmt3.addBatch();
+
+                }
+
+                stmt2.executeBatch();
+                stmt3.executeBatch();
+                stmt4.executeBatch();
+                stmt5.executeBatch();
+                stmt6.executeBatch();
+            }
+
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+            m_sqlManager.closeAll(dbc, null, stmt1, null);
+            m_sqlManager.closeAll(dbc, null, stmt2, null);
+            m_sqlManager.closeAll(dbc, null, stmt3, null);
+            m_sqlManager.closeAll(dbc, null, stmt4, null);
+            m_sqlManager.closeAll(dbc, null, stmt5, null);
+            m_sqlManager.closeAll(dbc, null, stmt6, null);
+        }
+
+    }
+
+    /**
+     * This method deletes old backup entries for resources with siblings 
+     * that have more then <code>versions</code> entries.<p> 
+     *
+     * It looks up only resource with sibling.
+     * It’s slow in compare to {@link #deleteBackupByMaxTag} because it needs to loop over database for all resources having such number of version.
+     * 
+     * TODO: Changes in DB schema. Add column structure_id in tables cms_backup_contents, cms_backup_properties, cms_backup_resource. This action eliminated
+     * the loop and number of DELETE statement will not depend from number deleted version
+     * 
+     * @param dbc the current database context
+     * @param versions how many versions to keep
+     * @throws CmsDataAccessException
+     * @see org.opencms.db.generic#deleteBackup(CmsDbContext dbc, CmsBackupResource resource, int tag, int versions)
+     */
+    private void deleteByVersionsCountWithSibling(CmsDbContext dbc, int versions) throws CmsDataAccessException {
+
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt1 = null;
+        PreparedStatement stmt2 = null;
+        PreparedStatement stmt3 = null;
+        PreparedStatement stmt4 = null;
+        PreparedStatement stmt5 = null;
+        PreparedStatement stmt6 = null;
+        Connection conn = null;
+        int publishTag = 0;
+
+        String backupId = null;
+        Map structureVersionsId = new HashMap();
+        Set structIdSet = new HashSet();
+       
+        // first get all resource ids of the entries which has more version as need
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(
+                conn,
+                "C_BACKUP_READ_ALL_RESOURCES_TO_DELETE_BY_VERSION_WITHSIBLING");
+
+            stmt2 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_CONTENTS_BYBACKUPID");
+            stmt3 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_STRUCTURE_BYBACKUPID");
+            stmt4 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCES_BYBACKUPID");
+            stmt6 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_PROPERTIES_BYBACKUPID");
+
+            stmt5 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_PUBLISHHISTORY_BYPUBLISHTAG_AND_RESID");
+            stmt1 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_READ_ALL_BACKUP_ID_BY_STRUCTURE_ID");
+            stmt.setInt(1, versions);
+            stmt.setInt(2, versions);
+            res = stmt.executeQuery();
+
+            // now collect all structureId with latest versionsId to save
+            while (res.next()) {
+                structureVersionsId.put(res.getString(1), new Integer(res.getInt(2)));
+            }
+            structIdSet = structureVersionsId.keySet();
+            if (structIdSet.size() > 0) {
+                Iterator structIdIter = structIdSet.iterator();
+
+                while (structIdIter.hasNext()) {
+                    String structureId = (String)structIdIter.next();
+                    Integer maxDeletedVersion = (Integer)structureVersionsId.get(structureId);
+                    int maxVersion = maxDeletedVersion.intValue();
+
+                    stmt1.setString(1, structureId);
+                    stmt1.setInt(2, maxVersion);
+                    res = stmt1.executeQuery();
+
+                    while (res.next()) {
+                        backupId = res.getString(1);
+                        publishTag = res.getInt(2);
+                        // delete from content
+                        stmt2.setString(1, backupId);
+                        stmt2.addBatch();
+
+                        // delete from structure
+                        stmt3.setString(1, backupId);
+                        stmt3.addBatch();
+
+                        // delete from resource
+                        stmt4.setString(1, backupId);
+                        stmt4.addBatch();
+
+                        //delete from properties
+                        stmt6.setString(1, backupId);
+                        stmt6.addBatch();
+
+                        // delete from publish history
+                        stmt5.setString(1, structureId);
+                        stmt5.setInt(2, publishTag);
+                        stmt5.addBatch();
+                    }
+                }
+
+                stmt2.executeBatch();
+                stmt3.executeBatch();
+                stmt4.executeBatch();
+                stmt5.executeBatch();
+                stmt6.executeBatch();
+            }
+
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+            m_sqlManager.closeAll(dbc, null, stmt1, null);
+            m_sqlManager.closeAll(dbc, null, stmt2, null);
+            m_sqlManager.closeAll(dbc, null, stmt3, null);
+            m_sqlManager.closeAll(dbc, null, stmt4, null);
+            m_sqlManager.closeAll(dbc, null, stmt5, null);
+            m_sqlManager.closeAll(dbc, null, stmt6, null);
+        }
+    }
+
+    /**
      * Gets the next version id for a given backup resource. <p>
      * 
      * @param dbc the current database context
@@ -1300,6 +1599,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * 
      * @return true if the resource already exists, false otherweise
      * @throws CmsDataAccessException if something goes wrong.
+     * 
      */
     private boolean internalValidateBackupResource(CmsDbContext dbc, CmsResource resource, int tagId)
     throws CmsDataAccessException {
@@ -1327,5 +1627,4 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         }
         return exists;
     }
-
 }
