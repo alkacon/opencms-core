@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/04/19 08:36:59 $
+ * Version: $Revision: 1.6.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,11 +55,11 @@ import org.apache.lucene.search.SortField;
  * well as support for creation of restrictions of several search query parameter sets. <p>
  * 
  *   
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.4.1 $
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -281,7 +281,7 @@ public class CmsSearchParameters {
      */
     public boolean getSearchFieldContent() {
 
-        return m_fields.contains(I_CmsDocumentFactory.DOC_META);
+        return m_fields.contains(I_CmsDocumentFactory.DOC_CONTENT);
     }
 
     /**
