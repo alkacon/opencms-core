@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/04/19 08:22:59 $
- * Version: $Revision: 1.17.4.2 $
+ * Date   : $Date: 2006/04/19 11:05:33 $
+ * Version: $Revision: 1.17.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
-import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
@@ -56,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.2 $ 
+ * @version $Revision: 1.17.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,16 +144,16 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
             int projectId = new Integer(getProject().getId()).intValue();
             int state = CmsResource.STATE_KEEP;
             CmsProjectResourcesDisplayMode filter = getSettings().getUserSettings().getProjectSettings().getProjectFilesMode();
-            CmsHtmlList list = getList();
-            if (list != null) {
-                CmsProjectFilterIAction filterAction = (CmsProjectFilterIAction)list.getMetadata().getIndependentAction(
-                    LIST_IACTION_FILTER);
-                if (getSettings().getCollector() != null) {
-                    getSettings().setCollector(null);
-                    filterAction.setFilter(filter);
-                }
-                filter = filterAction.getFilter();
-            }
+//            CmsHtmlList list = getList();
+//            if (list != null) {
+//                CmsProjectFilterIAction filterAction = (CmsProjectFilterIAction)list.getMetadata().getIndependentAction(
+//                    LIST_IACTION_FILTER);
+//                if (getSettings().getCollector() != null) {
+//                    getSettings().setCollector(null);
+//                    filterAction.setFilter(filter);
+//                }
+//                filter = filterAction.getFilter();
+//            }
             if (filter.getMode().equals("new")) {
                 state = CmsResource.STATE_NEW;
             } else if (filter.getMode().equals("changed")) {
@@ -285,7 +284,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        metadata.addIndependentAction(new CmsProjectFilterIAction(LIST_IACTION_FILTER));
+        // metadata.addIndependentAction(new CmsProjectFilterIAction(LIST_IACTION_FILTER));
         super.setIndependentActions(metadata);
     }
 
