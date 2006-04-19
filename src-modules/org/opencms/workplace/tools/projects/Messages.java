@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Messages.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.8.4.1 $
+ * Date   : $Date: 2006/04/19 08:22:59 $
+ * Version: $Revision: 1.8.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8.4.1 $ 
+ * @version $Revision: 1.8.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,18 +143,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PROJECT_HISTORY_ADMIN_TOOL_NAME_0 = "GUI_PROJECT_HISTORY_ADMIN_TOOL_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_PROJECT_MODE_ALLCHANGES_0 = "GUI_PROJECT_MODE_ALLCHANGES_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_PROJECT_MODE_DELFILES_0 = "GUI_PROJECT_MODE_DELFILES_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_PROJECT_MODE_MODFILES_0 = "GUI_PROJECT_MODE_MODFILES_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_PROJECT_MODE_NEWFILES_0 = "GUI_PROJECT_MODE_NEWFILES_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PROJECT_SETTINGS_ADMIN_TOOL_GROUP_0 = "GUI_PROJECT_SETTINGS_ADMIN_TOOL_GROUP_0";

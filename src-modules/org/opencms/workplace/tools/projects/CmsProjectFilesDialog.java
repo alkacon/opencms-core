@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.17.4.1 $
+ * Date   : $Date: 2006/04/19 08:22:59 $
+ * Version: $Revision: 1.17.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.1 $ 
+ * @version $Revision: 1.17.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,8 +112,9 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
             CmsProjectFilterIAction filterAction = (CmsProjectFilterIAction)getList().getMetadata().getIndependentAction(
                 LIST_IACTION_FILTER);
             filterAction.toggle();
-            refreshList();
+            getList().setCurrentPage(1);
             m_collector = null;
+            refreshList();
         } else {
             super.executeListIndepActions();
         }
@@ -143,21 +144,23 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
         if (m_collector == null) {
             int projectId = new Integer(getProject().getId()).intValue();
             int state = CmsResource.STATE_KEEP;
+            CmsProjectResourcesDisplayMode filter = getSettings().getUserSettings().getProjectSettings().getProjectFilesMode();
             CmsHtmlList list = getList();
-            if (list != null && list == null) { // TODO: check this
+            if (list != null) {
                 CmsProjectFilterIAction filterAction = (CmsProjectFilterIAction)list.getMetadata().getIndependentAction(
                     LIST_IACTION_FILTER);
                 if (getSettings().getCollector() != null) {
                     getSettings().setCollector(null);
-                    filterAction.setFilter(CmsProjectResourcesDisplayMode.ALL_CHANGES);
+                    filterAction.setFilter(filter);
                 }
-                if (filterAction.getFilter().getMode().equals("new")) {
-                    state = CmsResource.STATE_NEW;
-                } else if (filterAction.getFilter().getMode().equals("changed")) {
-                    state = CmsResource.STATE_CHANGED;
-                } else if (filterAction.getFilter().getMode().equals("deleted")) {
-                    state = CmsResource.STATE_DELETED;
-                }
+                filter = filterAction.getFilter();
+            }
+            if (filter.getMode().equals("new")) {
+                state = CmsResource.STATE_NEW;
+            } else if (filter.getMode().equals("changed")) {
+                state = CmsResource.STATE_CHANGED;
+            } else if (filter.getMode().equals("deleted")) {
+                state = CmsResource.STATE_DELETED;
             }
             m_collector = new CmsProjectFilesCollector(this, projectId, state);
         }
@@ -182,6 +185,20 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     public String getParamShowexplorer() {
 
         return m_paramShowexplorer;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#refreshList()
+     */
+    public synchronized void refreshList() {
+
+        if (LIST_IACTION_FILTER.equals(getParamListAction())) {
+            if (m_collector != null) {
+                // refresh only if really necessary
+                return;
+            }
+        }
+        super.refreshList();
     }
 
     /**
@@ -268,8 +285,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // TODO: check this
-        // metadata.addIndependentAction(new CmsProjectFilterIAction(LIST_IACTION_FILTER));
+        metadata.addIndependentAction(new CmsProjectFilterIAction(LIST_IACTION_FILTER));
         super.setIndependentActions(metadata);
     }
 

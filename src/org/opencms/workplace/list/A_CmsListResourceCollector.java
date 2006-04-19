@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/04/19 08:22:59 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.0 
  */
@@ -242,11 +242,6 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             }
             ret.add(item);
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_COLLECTOR_PROCESS_ITEMS_END_1,
-                new Integer(ret.size())));
-        }
         CmsListMetadata metadata = list.getMetadata();
         if (metadata != null) {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(state.getFilter())) {
@@ -264,6 +259,11 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                     }
                 }
             }
+        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_COLLECTOR_PROCESS_ITEMS_END_1,
+                new Integer(ret.size())));
         }
         return ret;
     }
