@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchDialog.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/04/19 09:05:00 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -70,7 +70,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     private static final String[] PAGES = {"page1"};
 
     /** the search data. */
-    private CmsSearchParameters m_search;
+    private CmsSearchWorkplaceBean m_search;
 
     /**
      * Default constructor.<p>
@@ -101,11 +101,12 @@ public class CmsSearchDialog extends CmsWidgetDialog {
 
         List errors = new ArrayList();
         try {
+            m_search.validate();
             Map params = new HashMap();
             params.put(CmsSearchResultsList.PARAM_QUERY, m_search.getQuery());
-            params.put(CmsSearchResultsList.PARAM_SORT_ORDER, m_search.getSortName());
-            params.put(CmsSearchResultsList.PARAM_FIELD_CONTENT, "" + m_search.getSearchFieldContent());
-            params.put(CmsSearchResultsList.PARAM_FIELD_META, "" + m_search.getSearchFieldMeta());
+            params.put(CmsSearchResultsList.PARAM_SORT_ORDER, m_search.getSortOrder());
+            params.put(CmsSearchResultsList.PARAM_FIELD_CONTENT, "" + m_search.getFieldContent());
+            params.put(CmsSearchResultsList.PARAM_FIELD_META, "" + m_search.getFieldMeta());
             params.put(CmsDialog.PARAM_ACTION, A_CmsListDialog.LIST_SELECT_PAGE);
             params.put(A_CmsListDialog.PARAM_PAGE, "1");
             params.put(CmsToolDialog.PARAM_ROOT, "explorer");
@@ -156,9 +157,9 @@ public class CmsSearchDialog extends CmsWidgetDialog {
 
         initParams();
         addWidget(new CmsWidgetDialogParameter(m_search, "query", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_search, "sortName", PAGES[0], new CmsSelectWidget(getSortNamesConf())));
-        addWidget(new CmsWidgetDialogParameter(m_search, "searchFieldContent", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_search, "searchFieldMeta", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_search, "sortOrder", PAGES[0], new CmsSelectWidget(getSortNamesConf())));
+        addWidget(new CmsWidgetDialogParameter(m_search, "fieldContent", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_search, "fieldMeta", PAGES[0], new CmsCheckboxWidget()));
     }
 
     /**
@@ -229,15 +230,15 @@ public class CmsSearchDialog extends CmsWidgetDialog {
             o = getDialogObject();
         }
 
-        if (!(o instanceof CmsSearchParameters)) {
+        if (!(o instanceof CmsSearchWorkplaceBean)) {
             // read params from config
-            m_search = new CmsSearchParameters();
-            m_search.setSearchFieldContent(true);
-            m_search.setSearchFieldMeta(true);
-            m_search.setSortName(CmsSearchParameters.SORT_NAMES[0]);
+            m_search = new CmsSearchWorkplaceBean();
+            m_search.setFieldContent(true);
+            m_search.setFieldMeta(true);
+            m_search.setSortOrder(CmsSearchParameters.SORT_NAMES[0]);
         } else {
             // reuse params stored in session
-            m_search = (CmsSearchParameters)o;
+            m_search = (CmsSearchWorkplaceBean)o;
         }
     }
 }
