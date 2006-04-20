@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.218 $
+ * Date   : $Date: 2006/04/20 12:06:32 $
+ * Version: $Revision: 1.219 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218 $ 
+ * @version $Revision: 1.219 $ 
  * 
  * @since 6.0.0 
  */
@@ -2122,7 +2122,7 @@ public final class OpenCmsCore {
             // resolve the login form link using the link manager
             redirectURL = m_linkManager.substituteLink(adminCms, redirectURL);
             if (LOG.isDebugEnabled()) {
-                Messages.get().getBundle().key(Messages.LOG_AUTHENTICATE_PROPERTY_2, redirectURL, path);
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_AUTHENTICATE_PROPERTY_2, redirectURL, path));
             }
             // finally redirect to the login form
             res.sendRedirect(redirectURL);
