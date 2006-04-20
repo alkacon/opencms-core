@@ -415,7 +415,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_SEARCH_EXPLORER_RESULTS_TOOL_NAME_0}]]></value>
+					<value><![CDATA[${key.GUI_SEARCH_EXPLORER_RESULTS_TOOL_NAME_0}:${key.GUI_SEARCH_EXPLORER_RESULTS_TOOL_NAVNAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
