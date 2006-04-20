@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResultsList.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/04/20 11:31:16 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.workplace.list.CmsListExplorerColumn;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.I_CmsListFormatter;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
@@ -65,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,7 +118,13 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
      */
     public CmsSearchResultsList(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_SEARCH_LIST_NAME_0));
+        super(
+            jsp,
+            LIST_ID,
+            Messages.get().container(Messages.GUI_SEARCH_LIST_NAME_0),
+            A_CmsListExplorerDialog.LIST_COLUMN_NAME,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            null);
     }
 
     /**

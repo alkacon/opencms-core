@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/Messages.java,v $
- * Date   : $Date: 2006/04/19 09:05:00 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/04/20 11:31:16 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -36,12 +36,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.2.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_VALIDATE_SEARCH_PARAMS_0 = "ERR_VALIDATE_SEARCH_PARAMS_0";
 
@@ -71,6 +71,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SEARCH_EXPLORER_RESULTS_TOOL_NAME_0 = "GUI_SEARCH_EXPLORER_RESULTS_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCH_EXPLORER_RESULTS_TOOL_NAVNAME_0 = "GUI_SEARCH_EXPLORER_RESULTS_TOOL_NAVNAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SEARCH_EXPLORER_TOOL_GROUP_0 = "GUI_SEARCH_EXPLORER_TOOL_GROUP_0";

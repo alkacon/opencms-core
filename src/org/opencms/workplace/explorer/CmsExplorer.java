@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.32.4.1 $
+ * Date   : $Date: 2006/04/20 11:31:16 $
+ * Version: $Revision: 1.32.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.1 $ 
+ * @version $Revision: 1.32.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,6 +120,12 @@ public class CmsExplorer extends CmsWorkplace {
     /** The "showlinks" parameter. */
     private static final String PARAMETER_SHOWLINKS = "showlinks";
 
+    /** The "uri" parameter. */
+    private static final String PARAMETER_URI = "uri";
+
+    /** The 'uri' parameter value. */
+    private String m_uri;
+
     /**
      * Public constructor.<p>
      * 
@@ -128,6 +134,38 @@ public class CmsExplorer extends CmsWorkplace {
     public CmsExplorer(CmsJspActionElement jsp) {
 
         super(jsp);
+    }
+
+    /**
+     * Returns the explorer body frame content uri.<p>
+     * 
+     * Used by the explorer_fs.jsp.<p>
+     * 
+     * @return the explorer body frame content uri
+     */
+    public String getExplorerBodyUri() {
+
+        String body = "explorer_body_fs.jsp";
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_uri)) {
+            body += "?" + PARAMETER_URI + "=" + m_uri;
+        }
+        return getJsp().link(body);
+    }
+
+    /**
+     * Returns the explorer files frame content uri.<p>
+     * 
+     * Used by the explorer_body_fs.jsp.<p>
+     * 
+     * @return the explorer files frame content uri
+     */
+    public String getExplorerFilesUri() {
+
+        String body = "explorer_files.jsp?mode=explorerview";
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_uri)) {
+            body = m_uri;
+        }
+        return getJsp().link(body);
     }
 
     /**
@@ -273,7 +311,7 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showDateExpired) {
 
         // TODO: use a CmsResourceUtil object here
-        
+
         CmsLock lock = null;
         String path = getCms().getSitePath(resource);
 
@@ -756,6 +794,8 @@ public class CmsExplorer extends CmsWorkplace {
                 settings.setExplorerMode(VIEW_EXPLORER);
             }
         }
+
+        m_uri = request.getParameter(PARAMETER_URI);
 
         boolean showLinks = Boolean.valueOf(request.getParameter(PARAMETER_SHOWLINKS)).booleanValue();
 
