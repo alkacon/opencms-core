@@ -12,6 +12,7 @@
 	internationalization,
 	mail,
 	scheduler,
+	events?,
 	versionhistory,
 	resourceinit?,
 	requesthandlers?,
@@ -191,6 +192,18 @@ Each job can have an optional list of parameters.
 
 <!ELEMENT param (#PCDATA)>
 <!ATTLIST param name CDATA #REQUIRED>
+
+<!--
+# Event settings:
+# It is possible to replace the default event manager with a custom implementation 
+# by configuring the name of the event manager class. The event manager class must
+# always be extended from org.opencms.main.CmsEventManager.
+-->
+
+<!ELEMENT events (eventmanager?)>
+
+<!ELEMENT eventmanager EMPTY>
+<!ATTLIST eventmanager class CDATA #REQUIRED>
 
 <!--
 # Configuration that controls individual sites in OpenCms.

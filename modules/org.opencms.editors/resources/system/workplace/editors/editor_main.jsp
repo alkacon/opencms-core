@@ -1,8 +1,7 @@
-<%@ page import="
+<%@ page session="false" import="
 	org.opencms.workplace.editors.*,
-	org.opencms.jsp.*"
-	session="false"
-%><%
+	org.opencms.jsp.*
+"%><%
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	
 	// initialize the workplace class
@@ -12,5 +11,4 @@
 	if (editorUri != null) {
 		cms.include(editorUri, null, request.getParameterMap());
 	}
-
 %>

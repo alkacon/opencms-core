@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2006/04/20 11:00:13 $
+ * Version: $Revision: 1.58.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.58.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,7 +127,7 @@ public final class OpenCms {
      */
     public static void addCmsEventListener(I_CmsEventListener listener) {
 
-        OpenCmsCore.getInstance().addCmsEventListener(listener);
+        OpenCmsCore.getInstance().getEventManager().addCmsEventListener(listener);
     }
 
     /**
@@ -138,7 +138,7 @@ public final class OpenCms {
      */
     public static void addCmsEventListener(I_CmsEventListener listener, int[] eventTypes) {
 
-        OpenCmsCore.getInstance().addCmsEventListener(listener, eventTypes);
+        OpenCmsCore.getInstance().getEventManager().addCmsEventListener(listener, eventTypes);
     }
 
     /**
@@ -148,7 +148,7 @@ public final class OpenCms {
      */
     public static void fireCmsEvent(CmsEvent event) {
 
-        OpenCmsCore.getInstance().fireCmsEvent(event);
+        OpenCmsCore.getInstance().getEventManager().fireEvent(event);
     }
 
     /**
@@ -161,7 +161,7 @@ public final class OpenCms {
      */
     public static void fireCmsEvent(int type, Map data) {
 
-        OpenCms.fireCmsEvent(new CmsEvent(type, data));
+        OpenCmsCore.getInstance().getEventManager().fireEvent(type, data);
     }
 
     /**
@@ -184,6 +184,16 @@ public final class OpenCms {
     public static CmsDefaultUsers getDefaultUsers() {
 
         return OpenCmsCore.getInstance().getDefaultUsers();
+    }
+
+    /**
+     * Returns the event manger that handles all OpenCms events.<p>
+     * 
+     * @return the event manger that handles all OpenCms events
+     */
+    public static CmsEventManager getEventManager() {
+
+        return OpenCmsCore.getInstance().getEventManager();
     }
 
     /**
@@ -580,7 +590,7 @@ public final class OpenCms {
      */
     public static void removeCmsEventListener(I_CmsEventListener listener) {
 
-        OpenCmsCore.getInstance().removeCmsEventListener(listener);
+        OpenCmsCore.getInstance().getEventManager().removeCmsEventListener(listener);
     }
 
     /**       

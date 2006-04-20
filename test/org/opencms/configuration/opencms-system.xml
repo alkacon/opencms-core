@@ -57,7 +57,10 @@
 					<remoteaddr>127.0.0.1</remoteaddr>
 				</context>
 			</job>			
-		</scheduler>			
+		</scheduler>
+		<events>
+			<eventmanager class="org.opencms.main.CmsTestEventManager"/>
+		</events>	
 	   	<versionhistory enabled="true" count="10"/>
 		<resourceinit>
 			<resourceinithandler class="org.opencms.configuration.CmsTestDummyResourceInit" />
@@ -138,4 +141,4 @@
             <notification-project>Offline</notification-project>
         </content-notification>					
 	</system>
-</opencms>    
+</opencms>
