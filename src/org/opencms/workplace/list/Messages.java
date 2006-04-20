@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.16.4.1 $
+ * Date   : $Date: 2006/04/20 09:20:28 $
+ * Version: $Revision: 1.16.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16.4.1 $ 
+ * @version $Revision: 1.16.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -269,6 +269,42 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_COLLECTOR_PROCESS_ITEMS_START_1 = "LOG_COLLECTOR_PROCESS_ITEMS_START_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_END_ACTION_LIST_2 = "LOG_END_ACTION_LIST_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_END_DETAILS_LIST_2 = "LOG_END_DETAILS_LIST_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_END_INIT_LIST_1 = "LOG_END_INIT_LIST_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_END_METADATA_LIST_1 = "LOG_END_METADATA_LIST_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_END_REFRESH_LIST_1 = "LOG_END_REFRESH_LIST_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_END_WRITE_LIST_1 = "LOG_END_WRITE_LIST_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_START_ACTION_LIST_2 = "LOG_START_ACTION_LIST_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_START_DETAILS_LIST_2 = "LOG_START_DETAILS_LIST_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_START_INIT_LIST_1 = "LOG_START_INIT_LIST_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_START_METADATA_LIST_1 = "LOG_START_METADATA_LIST_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_START_REFRESH_LIST_1 = "LOG_START_REFRESH_LIST_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_START_WRITE_LIST_1 = "LOG_START_WRITE_LIST_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.list.messages";

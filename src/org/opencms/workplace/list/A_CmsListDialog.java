@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.35.4.1 $
+ * Date   : $Date: 2006/04/20 09:20:28 $
+ * Version: $Revision: 1.35.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.list;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -52,12 +53,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.35.4.1 $ 
+ * @version $Revision: 1.35.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,6 +159,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** Request parameter key for the column to sort the list. */
     public static final String PARAM_SORT_COL = "sortcol";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsListDialog.class);
+
     /** metadata map for all used list metadata objects. */
     private static Map m_metadatas = new HashMap();
 
@@ -167,6 +173,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /** The id of the list. */
     private String m_listId;
+
+    /** Cached List state in case of {@link #refreshList()} method call. */
+    private CmsListState m_listState;
 
     /** The displayed page. */
     private String m_paramFormName;
@@ -189,11 +198,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** The column to search the list. */
     private String m_searchColId;
 
-    /** cached List state in case of {@link #refreshList()} method call. */
-    private CmsListState m_listState;
-
     /**
      * Public constructor.<p>
+     * 
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -210,6 +217,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
         String searchableColId) {
 
         super(jsp);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_INIT_LIST_1, listId));
+        }
         // set list id
         m_listId = listId;
         // set active flag for 2 lists dialog
@@ -237,6 +248,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
             }
             // save the current state of the list
             listSave();
+        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_INIT_LIST_1, listId));
         }
     }
 
@@ -291,6 +305,13 @@ public abstract class A_CmsListDialog extends CmsDialog {
         }
         // TODO: check the need for this, improve caching
         refreshList();
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_START_ACTION_LIST_2,
+                getListId(),
+                new Integer(getAction())));
+        }
         switch (getAction()) {
             //////////////////// ACTION: default actions
             case ACTION_LIST_SEARCH:
@@ -320,6 +341,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
             default:
                 // ACTION: show dialog (default)
                 setParamAction(DIALOG_INITIAL);
+        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_END_ACTION_LIST_2,
+                getListId(),
+                new Integer(getAction())));
         }
     }
 
@@ -555,28 +582,20 @@ public abstract class A_CmsListDialog extends CmsDialog {
         if (getList() == null) {
             return;
         }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_REFRESH_LIST_1, getListId()));
+        }
         m_listState = getList().getState();
         getList().clear(getLocale());
         fillList();
         getList().setState(m_listState, getLocale());
         m_listState = null;
         listSave();
-    }
-
-    /**
-     * Returns the current list state.<p>
-     * 
-     * @return the current list state
-     */
-    protected CmsListState getListState() {
-
-        if (m_listState != null) {
-            // in case of refreshList call
-            return m_listState;
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_REFRESH_LIST_1, getListId()));
         }
-        return getList().getState();
     }
-    
+
     /**
      * Removes the list from the workplace settings.<p>
      * 
@@ -687,8 +706,14 @@ public abstract class A_CmsListDialog extends CmsDialog {
         if (isForwarded()) {
             return;
         }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_WRITE_LIST_1, getListId()));
+        }
         JspWriter out = getJsp().getJspContext().getOut();
         out.print(defaultActionHtml());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_WRITE_LIST_1, getListId()));
+        }
     }
 
     /**
@@ -859,6 +884,20 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected abstract List getListItems() throws CmsException;
 
     /**
+     * Returns the current list state.<p>
+     * 
+     * @return the current list state
+     */
+    protected CmsListState getListState() {
+
+        if (m_listState != null) {
+            // in case of refreshList call
+            return m_listState;
+        }
+        return getList().getState();
+    }
+
+    /**
      * Should generate the metadata definition for the list, and return the 
      * corresponding <code>{@link CmsListMetadata}</code> object.<p>
      * 
@@ -870,6 +909,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected synchronized CmsListMetadata getMetadata(String listDialogName, String listId) {
 
         if (m_metadatas.get(listDialogName) == null || ((CmsListMetadata)m_metadatas.get(listDialogName)).isVolatile()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_METADATA_LIST_1, getListId()));
+            }
             CmsListMetadata metadata = new CmsListMetadata(listId);
 
             setColumns(metadata);
@@ -880,6 +922,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
             setMultiActions(metadata);
             metadata.checkIds();
             m_metadatas.put(listDialogName, metadata);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_METADATA_LIST_1, getListId()));
+            }
         }
         return (CmsListMetadata)m_metadatas.get(listDialogName);
     }
@@ -1033,7 +1078,16 @@ public abstract class A_CmsListDialog extends CmsDialog {
             if (!getList().getAllContent().isEmpty()) {
                 // if the detail column has not been previously initialized
                 if (((CmsListItem)getList().getAllContent().get(0)).get(detailId) == null) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_START_DETAILS_LIST_2,
+                            getListId(),
+                            detailId));
+                    }
                     fillDetails(detailId);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_DETAILS_LIST_2, getListId(), detailId));
+                    }
                 }
             }
         }
