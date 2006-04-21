@@ -117,6 +117,15 @@ img {
 }
 
 /* ---------- links ------------ */
+.link p {
+  display: inline;
+  background: none;
+  background-color: transparent;
+  vertical-align: middle;
+  color: WindowText;
+  cursor: auto;
+  text-decoration: none;
+}
 .link,
 .link a {
   display: inline;

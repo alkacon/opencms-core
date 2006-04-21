@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/04/20 11:30:27 $
- * Version: $Revision: 1.17.4.4 $
+ * Date   : $Date: 2006/04/21 15:10:41 $
+ * Version: $Revision: 1.17.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,14 +36,19 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.A_CmsWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
+import org.opencms.workplace.list.CmsHtmlList;
+import org.opencms.workplace.list.CmsListDropdownAction;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,14 +60,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.4 $ 
+ * @version $Revision: 1.17.4.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
     /** list independent action constant. */
-    public static final String LIST_IACTION_FILTER = "if";
+    public static final String LIST_IACTION_FILTER = "iaf";
 
     /** list id constant. */
     public static final String LIST_ID = "lpr";
@@ -72,6 +77,9 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;
+
+    /** Stores the value of the request parameter for the resource filter. */
+    private String m_filter;
 
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
@@ -102,6 +110,21 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
+     */
+    public void executeListIndepActions() {
+
+        if (getParamListAction().equals(LIST_IACTION_FILTER)) {
+            // forward to the editor
+            getList().setCurrentPage(1);
+            m_collector = null;
+            refreshList();
+        } else {
+            super.executeListIndepActions();
+        }
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
     public void executeListMultiActions() {
@@ -125,17 +148,45 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
         if (m_collector == null) {
             int projectId = new Integer(getProject().getId()).intValue();
             int state = CmsResource.STATE_KEEP;
-            CmsProjectResourcesDisplayMode filter = getSettings().getUserSettings().getProjectSettings().getProjectFilesMode();
-            if (filter.getMode().equals("new")) {
+            CmsHtmlList list = getList();
+            if (list != null) {
+                if (getSettings().getCollector() != null) {
+                    getSettings().setCollector(null);
+                }
+            }
+            if (m_filter.equals("new")) {
                 state = CmsResource.STATE_NEW;
-            } else if (filter.getMode().equals("changed")) {
+            } else if (m_filter.equals("changed")) {
                 state = CmsResource.STATE_CHANGED;
-            } else if (filter.getMode().equals("deleted")) {
+            } else if (m_filter.equals("deleted")) {
                 state = CmsResource.STATE_DELETED;
             }
             m_collector = new CmsProjectFilesCollector(this, projectId, state);
         }
         return m_collector;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#getList()
+     */
+    public CmsHtmlList getList() {
+
+        CmsHtmlList list = super.getList();
+        if (list != null) {
+            // get parameter
+            m_filter = getJsp().getRequest().getParameter(LIST_IACTION_FILTER + CmsListDropdownAction.SUFFIX_PARAM);
+            CmsListDropdownAction listAction = ((CmsListDropdownAction)list.getMetadata().getIndependentAction(LIST_IACTION_FILTER));
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_filter)) {
+                // if no param, get old value
+                m_filter = listAction.getSelection();
+            }             
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_filter)) {
+                // if first call, use default value
+                m_filter = getSettings().getUserSettings().getProjectSettings().getProjectFilesMode().getMode();
+            }
+            listAction.setSelection(m_filter);
+        }
+        return list;
     }
 
     /**
@@ -249,6 +300,23 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        CmsListDropdownAction filterAction = new CmsListDropdownAction(LIST_IACTION_FILTER);
+        filterAction.setName(Messages.get().container(Messages.GUI_PROJECT_FILES_FILTER_ACTION_NAME_0));
+        filterAction.setHelpText(Messages.get().container(Messages.GUI_PROJECT_FILES_FILTER_ACTION_HELP_0));
+        Iterator it = CmsProjectResourcesDisplayMode.VALUES.iterator();
+        while (it.hasNext()) {
+            CmsProjectResourcesDisplayMode mode = (CmsProjectResourcesDisplayMode)it.next();
+            filterAction.addItem(mode.getMode(), Messages.get().container(A_CmsWidget.LABEL_PREFIX + mode.getMode()));
+        }
+        metadata.addIndependentAction(filterAction);
+        super.setIndependentActions(metadata);
     }
 
     /**

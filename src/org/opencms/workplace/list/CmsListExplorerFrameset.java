@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.4.4.1 $
+ * Date   : $Date: 2006/04/21 15:10:41 $
+ * Version: $Revision: 1.4.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.list;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
@@ -45,6 +46,8 @@ import org.opencms.workplace.tools.CmsToolMacroResolver;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,7 +55,6 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
@@ -61,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.1 $ 
+ * @version $Revision: 1.4.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +71,9 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
 
     /** Page parameter name. */
     public static final String PARAM_PAGE = "explorer_page";
+
+    /** Title uri parameter name. */
+    public static final String PARAM_TITLE_URI = "title_uri";
 
     /**
      * Public constructor with JSP action element.<p>
@@ -100,10 +105,11 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     public String defaultActionHtml() {
 
         String params = allParamsAsRequest();
-        String titleSrc = getFrameSource("tool_title", getJsp().link(
-            CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/list-title.jsp")
-            + "?"
-            + params);
+        String titleUri = getJsp().getRequest().getParameter(PARAM_TITLE_URI);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(titleUri)) {
+            titleUri = CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/list-title.jsp";
+        }
+        String titleSrc = getFrameSource("tool_title", getJsp().link(titleUri + "?" + params));
         String contentSrc = getFrameSource("tool_content", getJsp().link(
             CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/list-explorer.jsp")
             + "?"
@@ -168,27 +174,13 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         html.append(getAdminTool().getHandler().getName());
         html.append("\n\t\t\t</td>\n");
         html.append("\t\t\t<td class='uplevel'>\n");
+        html.append("<form name='title-form' method='post' target='_parent' action='");
+        html.append(getJsp().link(A_CmsListExplorerDialog.PATH_EXPLORER_LIST)).append("'>\n");
+        html.append(getFormContent());
         // if page switch needed
         if (size > 1) {
-            html.append("<form name='page_switch' method='post' target='_parent' action='");
-            html.append(getJsp().link(A_CmsListExplorerDialog.PATH_EXPLORER_LIST)).append("'>\n");
-
-            Map params = new HashMap(getJsp().getRequest().getParameterMap());
-            params.remove(CmsListExplorerFrameset.PARAM_PAGE);
-            Iterator it = params.keySet().iterator();
-            while (it.hasNext()) {
-                String param = (String)it.next();
-                String[] value = (String[])params.get(param);
-                for (int i = 0; i < value.length; i++) {
-                    html.append("<input type=\"hidden\" name=\"");
-                    html.append(param);
-                    html.append("\" value=\"");
-                    html.append(value[i]);
-                    html.append("\">\n");
-                }
-            }
-
-            html.append("<select name='explorer_page' class='location' onchange='this.form.submit()'>\n");
+            html.append("<select name='").append(PARAM_PAGE);
+            html.append("' class='location' onchange='this.form.submit()'>\n");
             html.append(CmsHtmlList.htmlPageSelector(
                 size,
                 getSettings().getUserSettings().getExplorerFileEntries(),
@@ -224,10 +216,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
                 null,
                 "openPage('" + upLevelLink + "');"));
         }
-        // if page switch needed
-        if (size > 1) {
-            html.append("</form>");
-        }
+        html.append("</form>");
         html.append("\n\t\t\t</td>\n");
         html.append("\t\t</tr>\n");
         html.append("\t</table>\n");
@@ -237,6 +226,41 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         return CmsToolMacroResolver.resolveMacros(code, this);
     }
 
+    /**
+     * Returns the form contents.<p>
+     * 
+     * @return the form contents
+     */
+    protected String getFormContent() {
+
+        return paramsAsHidden(Collections.singleton(PARAM_PAGE));
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden(java.util.Collection)
+     */
+    public String paramsAsHidden(Collection excludes) {
+    
+        StringBuffer result = new StringBuffer(512);
+        Map params = new HashMap(getJsp().getRequest().getParameterMap());
+        params.remove(CmsListExplorerFrameset.PARAM_PAGE);
+        Iterator it = params.keySet().iterator();
+        while (it.hasNext()) {
+            String param = (String)it.next();
+            if ((excludes == null) || (!excludes.contains(param))) {
+                String[] value = (String[])params.get(param);
+                for (int i = 0; i < value.length; i++) {
+                    result.append("<input type=\"hidden\" name=\"");
+                    result.append(param);
+                    result.append("\" value=\"");
+                    result.append(value[i]);
+                    result.append("\">\n");
+                }
+            }
+        }
+        return result.toString();
+    }
+    
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 
@@ -252,18 +276,9 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     /**
      * Validates the needed parameters and display the frameset.<p>
      * 
-     * @throws JspException if close action fail
      * @throws IOException in case of errros displaying to the required page
      */
-    public void displayFrameSet() throws JspException, IOException {
-
-        try {
-            // validate parameters
-        } catch (Exception e) {
-            setAction(ACTION_CANCEL);
-            actionCloseDialog();
-            return;
-        }
+    public void displayFrameSet() throws IOException {
 
         if (getJsp().getRequest().getParameter(CmsListExplorerFrameset.PARAM_PAGE) != null) {
             int page = Integer.parseInt(getJsp().getRequest().getParameter(CmsListExplorerFrameset.PARAM_PAGE));

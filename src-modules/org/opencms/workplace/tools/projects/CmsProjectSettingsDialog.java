@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/CmsProjectSettingsDialog.java,v $
- * Date   : $Date: 2006/04/19 08:22:59 $
- * Version: $Revision: 1.13.4.1 $
+ * Date   : $Date: 2006/04/21 15:10:41 $
+ * Version: $Revision: 1.13.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13.4.1 $ 
+ * @version $Revision: 1.13.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -263,6 +263,10 @@ public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
      */
     private List getSelectModes() {
 
+        CmsProjectResourcesDisplayMode defFilter = getSettings().getUserSettings().getProjectSettings().getProjectFilesMode();
+        if (defFilter == null) {
+            defFilter = CmsProjectResourcesDisplayMode.ALL_CHANGES;
+        }
         List retVal = new ArrayList();
         CmsMessages messages = Messages.get().getBundle(getLocale());
         Iterator it = CmsProjectResourcesDisplayMode.VALUES.iterator();
@@ -270,7 +274,7 @@ public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
             CmsProjectResourcesDisplayMode mode = (CmsProjectResourcesDisplayMode)it.next();
             retVal.add(new CmsSelectWidgetOption(
                 mode.getMode(),
-                mode == CmsProjectResourcesDisplayMode.ALL_CHANGES,
+                mode == defFilter,
                 messages.key(A_CmsWidget.LABEL_PREFIX + mode.getMode())));
         }
         return retVal;
