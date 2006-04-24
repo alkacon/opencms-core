@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/04/24 13:43:39 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.8 
  */
@@ -67,6 +67,7 @@ public class CmsSetupXmlManager {
      */
     public CmsSetupXmlManager() {
 
+        m_selectedPlugins = new ArrayList();
         m_plugins = new ArrayList();
         // put the plugins here in chronological order (or first remove then add)
 
