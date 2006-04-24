@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/04/20 11:00:13 $
- * Version: $Revision: 1.218.4.1 $
+ * Date   : $Date: 2006/04/24 11:02:08 $
+ * Version: $Revision: 1.218.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.1 $ 
+ * @version $Revision: 1.218.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -1985,7 +1985,7 @@ public final class OpenCmsCore {
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
             // resolve the login form link using the link manager
-            redirectURL = m_linkManager.substituteLink(adminCms, redirectURL);
+            redirectURL = m_linkManager.substituteLink(adminCms, redirectURL, null, true);
             if (LOG.isDebugEnabled()) {
                 Messages.get().getBundle().key(Messages.LOG_AUTHENTICATE_PROPERTY_2, redirectURL, path);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2006/04/24 11:02:07 $
+ * Version: $Revision: 1.60.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.60.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -380,9 +380,34 @@ public class CmsLinkManager {
      * @param cms the cms context
      * @param link the link to process (must be a valid link to a VFS resource with optional parameters)
      * @param siteRoot the site root of the link
+     * 
      * @return the substituted link
      */
     public String substituteLink(CmsObject cms, String link, String siteRoot) {
+
+        return substituteLink(cms, link, siteRoot, false);
+    }
+
+    /**
+     * Substitutes the contents of a link by adding the context path and 
+     * servlet name, and in the case of the "online" project also according
+     * to the configured static export settings.<p>
+     * 
+     * A server prefix is prepended if
+     * <ul>
+     *   <li>the link points to another site</li>
+     *   <li>the link is contained in a normal document and the link references a secure document</li>
+     *   <li>the link is contained in a secure document and the link references a normal document</li>
+     * </ul>
+     * 
+     * @param cms the cms context
+     * @param link the link to process (must be a valid link to a VFS resource with optional parameters)
+     * @param siteRoot the site root of the link
+     * @param forceSecure if <code>true</code> generates always an absolute url (with protocoll and server name) for secure links
+     * 
+     * @return the substituted link
+     */
+    public String substituteLink(CmsObject cms, String link, String siteRoot, boolean forceSecure) {
 
         if (CmsStringUtil.isEmpty(link)) {
             // not a valid link parameter, return an empty String
@@ -480,9 +505,6 @@ public class CmsLinkManager {
                 if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
 
                     int linkType = -1;
-                    // check the secure property of the link
-                    boolean secureLink = exportManager.isSecureLink(cms, vfsName, targetSite.getSiteRoot());
-                    boolean secureRequest = exportManager.isSecureLink(cms, cms.getRequestContext().getUri());
                     try {
                         // read the linked resource 
                         linkType = cms.readResource(vfsName).getTypeId();
@@ -504,9 +526,12 @@ public class CmsLinkManager {
 
                     // images are always referenced without a server prefix
                     if (linkType != CmsResourceTypeImage.getStaticTypeId()) {
+                        // check the secure property of the link
+                        boolean secureLink = exportManager.isSecureLink(cms, vfsName, targetSite.getSiteRoot());
+                        boolean secureRequest = exportManager.isSecureLink(cms, cms.getRequestContext().getUri());
                         // if we are on a normal server, and the requested resource is secure, 
                         // the server name has to be prepended                        
-                        if (secureLink && !secureRequest) {
+                        if (forceSecure || (secureLink && !secureRequest)) {
                             serverPrefix = targetSite.getSecureUrl();
                         } else if (!secureLink && secureRequest) {
                             serverPrefix = targetSite.getUrl();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/04/24 11:02:07 $
+ * Version: $Revision: 1.19.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -315,7 +315,8 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         login(userName, password, projectName);
         if (m_loginException == null) {
             if (redirectUri != null) {
-                getResponse().sendRedirect(link(redirectUri));
+                getResponse().sendRedirect(
+                    OpenCms.getLinkManager().substituteLink(getCmsObject(), redirectUri, null, true));
             } else {
                 getResponse().sendRedirect(getFormLink());
             }

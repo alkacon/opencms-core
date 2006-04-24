@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2006/04/24 11:02:07 $
+ * Version: $Revision: 1.25.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,7 +80,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.25.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -781,6 +782,21 @@ public class CmsJspActionElement extends CmsJspBean {
         } else {
             return defaultValue;
         }
+    }
+
+    /**
+     * Redirects the response to the target link.<p>
+     * 
+     * Use this method instead of {@link javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)}
+     * to avoid relative links with secure sites (and issues with apache).<p>
+     * 
+     * @param target the target link
+     * 
+     * @throws IOException if something goes wrong during redirection
+     */
+    public void redirect(String target) throws IOException {
+
+        getResponse().sendRedirect(OpenCms.getLinkManager().substituteLink(getCmsObject(), target, null, true));
     }
 
     /**
