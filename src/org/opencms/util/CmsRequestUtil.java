@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/04/24 11:21:22 $
+ * Version: $Revision: 1.18.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.18.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -572,6 +572,22 @@ public final class CmsRequestUtil {
             }
         }
         return parameterMap;
+    }
+
+    /**
+     * Redirects the response to the target link.<p>
+     * 
+     * Use this method instead of {@link javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)}
+     * to avoid relative links with secure sites (and issues with apache).<p>
+     * 
+     * @param jsp the jsp context
+     * @param target the target link
+     * 
+     * @throws IOException if something goes wrong during redirection
+     */
+    public static void redirectRequestSecure(CmsJspActionElement jsp, String target) throws IOException {
+
+        jsp.getResponse().sendRedirect(OpenCms.getLinkManager().substituteLink(jsp.getCmsObject(), target, null, true));
     }
 
     /** 
