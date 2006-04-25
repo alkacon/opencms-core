@@ -291,7 +291,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:projectid=${param.projectid}&projectname=${param.projectname}&action=initial|path:/projects/files]]></value>
+					<value><![CDATA[params:projectid=${param.projectid}&aif-sel=${param.aif-sel}&projectname=${param.projectname}&action=initial|path:/projects/files]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

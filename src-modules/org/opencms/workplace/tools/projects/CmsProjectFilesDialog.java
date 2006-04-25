@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/04/21 15:10:41 $
- * Version: $Revision: 1.17.4.5 $
+ * Date   : $Date: 2006/04/25 13:05:49 $
+ * Version: $Revision: 1.17.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.5 $ 
+ * @version $Revision: 1.17.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -172,18 +172,24 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     public CmsHtmlList getList() {
 
         CmsHtmlList list = super.getList();
+        // get parameter
+        m_filter = getJsp().getRequest().getParameter(LIST_IACTION_FILTER + CmsListDropdownAction.SUFFIX_PARAM);
+        CmsListDropdownAction listAction = null;
         if (list != null) {
-            // get parameter
-            m_filter = getJsp().getRequest().getParameter(LIST_IACTION_FILTER + CmsListDropdownAction.SUFFIX_PARAM);
-            CmsListDropdownAction listAction = ((CmsListDropdownAction)list.getMetadata().getIndependentAction(LIST_IACTION_FILTER));
+            listAction = ((CmsListDropdownAction)list.getMetadata().getIndependentAction(LIST_IACTION_FILTER));
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_filter)) {
                 // if no param, get old value
                 m_filter = listAction.getSelection();
-            }             
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_filter)) {
-                // if first call, use default value
-                m_filter = getSettings().getUserSettings().getProjectSettings().getProjectFilesMode().getMode();
             }
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_filter)) {
+            // if first call, use default value
+            m_filter = getSettings().getUserSettings().getProjectSettings().getProjectFilesMode().getMode();
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_filter)) {
+            m_filter = CmsProjectResourcesDisplayMode.ALL_CHANGES.getMode();
+        }
+        if (listAction != null) {
             listAction.setSelection(m_filter);
         }
         return list;
