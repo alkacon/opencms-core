@@ -83,8 +83,8 @@
 		<sites>
 			<workplace-server>http://localhost:8080</workplace-server>
 			<default-uri>/sites/default/</default-uri>
-			<site server="http://localhost:8080" uri="/sites/default/">
-              <secure server="http://www.mysecureserver.com"/>			
+			<site server="http://localhost:8080" uri="/sites/default/" >
+              <secure server="http://www.mysecureserver.com" exclusive="true" error="true" />			
               <alias server="http://www.aliasserver.com"/>              			
               <alias server="http://www.yetanotheraliasserver.com"/>			
 			</site>

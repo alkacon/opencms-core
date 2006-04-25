@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/04/20 11:00:13 $
- * Version: $Revision: 1.36.4.1 $
+ * Date   : $Date: 2006/04/25 14:43:20 $
+ * Version: $Revision: 1.36.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,11 +75,17 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.1 $
+ * @version $Revision: 1.36.4.2 $
  * 
  * @since 6.0.0
  */
 public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+
+    /** The "error" attribute. */
+    public static final String A_ERROR = "error";
+
+    /** The "exclusive" attribute. */
+    public static final String A_EXCLUSIVE = "exclusive";
 
     /** The "server" attribute. */
     public static final String A_SERVER = "server";
@@ -775,10 +781,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
 
         // add site configuration rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 3);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 5);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 0, A_SERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 1, A_URI);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 2, A_SERVER);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 3, A_EXCLUSIVE);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 4, A_ERROR);
 
         // add an alias to the currently configured site
         digester.addCallMethod(
@@ -1065,7 +1073,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             siteElement.addAttribute(A_URI, site.getSiteRoot().concat("/"));
             // create <secure server=""/> subnode            
             if (site.hasSecureServer()) {
-                siteElement.addElement(N_SECURE).addAttribute(A_SERVER, site.getSecureUrl());
+                Element secureElem = siteElement.addElement(N_SECURE);
+                secureElem.addAttribute(A_SERVER, site.getSecureUrl());
+                secureElem.addAttribute(A_EXCLUSIVE, "" + site.isExclusiveUrl());
+                secureElem.addAttribute(A_ERROR, "" + site.isExclusiveError());
             }
             // create <alias server=""/> subnode(s)            
             Iterator aliasIterator = site.getAliases().iterator();

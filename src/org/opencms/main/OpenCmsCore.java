@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/04/24 11:02:08 $
- * Version: $Revision: 1.218.4.2 $
+ * Date   : $Date: 2006/04/25 14:43:20 $
+ * Version: $Revision: 1.218.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.2 $ 
+ * @version $Revision: 1.218.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1126,12 +1126,13 @@ public final class OpenCmsCore {
      * that was found and returned.<p>
      * 
      * Implementing and configuring an <code>{@link I_CmsResourceInit}</code> handler 
-     * allows to customize the process of default resouce selection.<p>
+     * allows to customize the process of default resource selection.<p>
      *
      * @param cms the current users OpenCms context
      * @param resourceName the path of the requested resource in the OpenCms VFS
      * @param req the current http request
      * @param res the current http response
+     * 
      * @return the requested resource read from the VFS
      * 
      * @throws CmsException in case the requested file does not exist or the user has insufficient access permissions
@@ -1207,6 +1208,39 @@ public final class OpenCmsCore {
                 throw new CmsException(Messages.get().container(
                     Messages.ERR_READ_INTERNAL_RESOURCE_1,
                     cms.getRequestContext().getUri()));
+            }
+
+            // check online project
+            if (cms.getRequestContext().currentProject().isOnlineProject()) {
+                // check if resource is secure
+                boolean secure = Boolean.valueOf(
+                    cms.readPropertyObject(cms.getSitePath(resource), CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
+                if (secure) {
+                    // resource is secure, check site config
+                    CmsSite site = CmsSiteManager.getCurrentSite(cms);
+                    // check the secure url
+                    boolean usingSec = req.getRequestURL().toString().toUpperCase().startsWith(
+                        site.getSecureUrl().toUpperCase());
+                    if (site.isExclusiveUrl() && !usingSec) {
+                        resource = null;
+                        // secure resource without secure protocol, check error config
+                        if (site.isExclusiveError()) {
+                            // trigger 404 error
+                            throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                                Messages.ERR_REQUEST_SECURE_RESOURCE_0));
+                        } else {
+                            // redirect
+                            String uri = req.getRequestURL().toString();
+                            String target = site.getSecureUrl()
+                                + uri.substring(uri.indexOf("/", uri.indexOf("//") + 2));
+                            try {
+                                res.sendRedirect(target);
+                            } catch (Exception e) {
+                                // ignore, but should never happen
+                            }
+                        }
+                    }
+                }
             }
         }
 
