@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/04/26 09:08:34 $
+ * Version: $Revision: 1.18.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.18.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,10 +74,14 @@ public final class CmsEncoder {
     /** Constant for the standard <code>ISO-8859-1</code> encoding. */
     public static final String ENCODING_ISO_8859_1 = "ISO-8859-1";
 
-    /** Default encoding for JavaScript decodeUriComponent methods is <code>US-ASCII</code> by w3c standard. */
+    /** Constant for the standard <code>US-ASCII</code> encoding. */
     public static final String ENCODING_US_ASCII = "US-ASCII";
 
-    /** Default encoding for JavaScript decodeUriComponent methods is <code>UTF-8</code> by w3c standard. */
+    /** 
+     * Constant for the standard <code>UTF-8</code> encoding.<p>
+     * 
+     * Default encoding for JavaScript decodeUriComponent methods is <code>UTF-8</code> by w3c standard. 
+     */
     public static final String ENCODING_UTF_8 = "UTF-8";
 
     /** The regex pattern to match HTML entities. */
