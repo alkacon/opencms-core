@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/04/26 13:52:11 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.tidy.Tidy;
  * @author Michael Emmerich 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,6 +117,9 @@ public class CmsHtmlConverter {
 
     /** The tidy to use. */
     Tidy m_tidy;
+
+    /** The length of the line separator. */
+    private int m_lineSeparatorLength;
 
     /** Indicates if this converter is enabled or not. */
     private boolean m_modeEnabled;
@@ -319,8 +322,8 @@ public class CmsHtmlConverter {
                 // now use tidy to parse and format the html
                 workHtml = parse(workHtml, m_encoding);
                 if (m_modeWord) {
-                    // cut off the last 2 chars in word mode, always appends \r\n
-                    workHtml = workHtml.substring(0, workHtml.length() - 2);
+                    // cut off the line separator, which is always appended
+                    workHtml = workHtml.substring(0, workHtml.length() - m_lineSeparatorLength);
                 }
 
                 if (workHtml.length() == oldSize) {
@@ -472,6 +475,9 @@ public class CmsHtmlConverter {
 
         // set the encoding
         m_encoding = encoding;
+
+        // get line separator length
+        m_lineSeparatorLength = System.getProperty("line.separator").length();
 
         // we need this only if the conversion is enabled
         if (m_modeEnabled) {
