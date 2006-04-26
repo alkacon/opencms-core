@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/04/20 11:00:13 $
- * Version: $Revision: 1.717.2.3 $
+ * Date   : $Date: 2006/04/26 09:10:50 $
+ * Version: $Revision: 1.717.2.4 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,7 @@ OpenCms 6.3.0 - April xxx, 2006
 ! Added new "auto correct XML" content tool
 * Fixed issue with old version of cached content definition after a nested XML subschema was changed
 ! Moved event handling code to new class org.opencms.main.CmsEventManager
+* Fixed issues with special characters in help texts of XML content editor
 
 OpenCms 6.2.0 - March 31, 2006
 * Fixed issue #1105: Added entry for MS IE 7 in editor_configuration.xml
