@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/04/26 09:21:56 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +43,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,10 +189,10 @@ public abstract class A_CmsWidget implements I_CmsWidget {
                 // static divs are used in admin
                 result.append(getJsHelpMouseHandler(widgetDialog, locKey, null));
             } else {
+                // can't use method in CmsEncoder because we need to keep < > for HTML in help text
+                locValue = CmsStringUtil.substitute(locValue, "\"", "&quot;");
                 // dynamic help texts in xml content editor
-                result.append(getJsHelpMouseHandler(widgetDialog, locKey, CmsEncoder.escape(
-                    locValue,
-                    cms.getRequestContext().getEncoding())));
+                result.append(getJsHelpMouseHandler(widgetDialog, locKey, CmsStringUtil.escapeJavaScript(locValue)));
             }
             result.append("></td>");
             return result.toString();

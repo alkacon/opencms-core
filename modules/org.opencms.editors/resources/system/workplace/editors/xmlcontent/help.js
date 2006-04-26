@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/help.js,v $
- * Date   : $Date: 2006/03/27 14:52:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/04/26 09:21:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ function showHelpText(imgId, textValue) {
 	    }
 	} else {
 		var elem = document.getElementById("helpText");
-		elem.innerHTML = decodeURIComponent(textValue);
+		elem.innerHTML = textValue;
 		showHelpX(imgId, "Text");
 	}
 }

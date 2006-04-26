@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/04/10 11:20:54 $
- * Version: $Revision: 1.718 $
+ * Date   : $Date: 2006/04/26 09:21:56 $
+ * Version: $Revision: 1.719 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,6 +22,7 @@ Legend:
 OpenCms 6.2.1 - April xxx, 2006
 * Added fix for "concurrent resource creation" issue
 * Added new test case utility classes for concurrent tests with the CmsObject
+* Fixed issues with special characters in help texts of XML content editor
 
 OpenCms 6.2.0 - March 31, 2006
 * Fixed issue #1105: Added entry for MS IE 7 in editor_configuration.xml
