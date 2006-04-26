@@ -152,7 +152,7 @@
             <property name="Description"/>
           </defaultproperties>
           <contextmenu>
-            <entry key=" GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
             <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
             <separator order="40"/>
