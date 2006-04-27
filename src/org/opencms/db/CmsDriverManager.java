@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/04/20 09:20:03 $
- * Version: $Revision: 1.570.2.2 $
+ * Date   : $Date: 2006/04/27 15:36:16 $
+ * Version: $Revision: 1.570.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -6437,7 +6437,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         resource.setUserLastModified(dbc.currentUser().getId());
 
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE);
 
         // clear the cache
         clearResourceCache();
@@ -6466,6 +6466,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // modify the last modification date
         resource.setDateLastModified(dateLastModified);
         if (resource.getState() == CmsResource.STATE_UNCHANGED) {
+            resource.setState(CmsResource.STATE_CHANGED);
+        } else if ((resource.getState() == CmsResource.STATE_NEW) && (resource.getSiblingCount() > 1)) {
+            // in case of new resources with siblings make sure the state is correct
             resource.setState(CmsResource.STATE_CHANGED);
         }
         resource.setUserLastModified(dbc.currentUser().getId());
@@ -6503,7 +6506,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         resource.setUserLastModified(dbc.currentUser().getId());
 
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE);
 
         // clear the cache
         clearResourceCache();
@@ -7411,7 +7414,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // access was granted - write the resource
         resource.setUserLastModified(dbc.currentUser().getId());
 
-        m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE_STATE);
+        m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_STATE);
 
         // make sure the written resource has the state corretly set
         if (resource.getState() == CmsResource.STATE_UNCHANGED) {
