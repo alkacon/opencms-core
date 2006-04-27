@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2005/08/10 14:44:25 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/04/27 15:32:45 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
@@ -52,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -81,6 +82,7 @@ public class TestSiblings extends OpenCmsTestCase {
         suite.addTest(new TestSiblings("testSiblingsCreate"));
         suite.addTest(new TestSiblings("testSiblingIssueAfterImport"));
         suite.addTest(new TestSiblings("testDeleteAllSiblings"));
+        suite.addTest(new TestSiblings("testSiblingStateIssue"));        
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -304,6 +306,113 @@ public class TestSiblings extends OpenCmsTestCase {
     */
     
     /**
+     * Tests if setting the flags of a sibling will do any modifications to other siblings.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingStateIssue() throws Throwable {
+        
+        echo("Tests issue with resource state and siblings");
+        CmsObject cms = getCmsObject();
+        
+        // part 1: changes to the fields that are part of the resource table
+        String resource1 = "/folder1/page1.html";
+        String sibling1 = "/folder1/sibling1.html";
+        
+        // create a sibling 
+        cms.copyResource(resource1, sibling1, CmsResource.COPY_AS_SIBLING);
+        
+        // verify the state of the resources
+        assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+        
+        // now set the flags for the sibling
+        cms.chflags(sibling1, 1024);
+        cms.chtype(sibling1, CmsResourceTypeBinary.getStaticTypeId());
+        
+        // verify the state of the resources after the change
+        assertState(cms, resource1, CmsResource.STATE_CHANGED);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+
+        
+        // part 2: now the same operation with a new copy
+        String copy1 = "/folder1/copy1.html";
+        sibling1 = "/folder1/siblingofcopy1.html";
+
+        // create a copy 
+        cms.copyResource(resource1, copy1, CmsResource.COPY_AS_NEW);
+        cms.copyResource(copy1, sibling1, CmsResource.COPY_AS_SIBLING);
+        
+        // verify the state of the resources
+        assertState(cms, copy1, CmsResource.STATE_NEW);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+        
+        // now set the flags for the sibling
+        cms.chflags(sibling1, 1024);
+        cms.chtype(sibling1, CmsResourceTypeBinary.getStaticTypeId());
+        
+        // verify the state of the resources after the change
+        assertState(cms, copy1, CmsResource.STATE_NEW);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);        
+        
+        
+        // part 3: changes to the fields that are part of the structure table
+        resource1 = "/folder1/page2.html";
+        sibling1 = "/folder1/sibling2.html";
+        
+        // create a sibling 
+        cms.copyResource(resource1, sibling1, CmsResource.COPY_AS_SIBLING);
+        
+        // verify the state of the resources
+        assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+        
+        // after changes of dates the resource states must be the same        
+        cms.setDateExpired(sibling1, System.currentTimeMillis() + 1000, false);
+        cms.setDateReleased(sibling1, System.currentTimeMillis() - 1000, false);
+
+        // verify the state of the resources after the change
+        assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+        
+        
+        // step 4: changes to the fields that are part of the resource table
+        cms.setDateLastModified(sibling1, System.currentTimeMillis(), false);
+        
+        // verify the state of the resources after the change
+        assertState(cms, resource1, CmsResource.STATE_CHANGED);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+        
+        
+        // part 5: now the same operation with a new copy
+        copy1 = "/folder1/copy2.html";
+        sibling1 = "/folder1/siblingofcopy2.html";
+        
+        // create a copy
+        cms.copyResource(resource1, copy1, CmsResource.COPY_AS_NEW);
+        cms.copyResource(copy1, sibling1, CmsResource.COPY_AS_SIBLING);
+        
+        // verify the state of the resources
+        assertState(cms, copy1, CmsResource.STATE_NEW);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+        
+        // change date of last modification
+        cms.setDateLastModified(sibling1, System.currentTimeMillis(), false);
+        
+        // verify the state of the resources after the change
+        assertState(cms, copy1, CmsResource.STATE_NEW);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);  
+        
+        // modifiy release info
+        cms.setDateExpired(sibling1, System.currentTimeMillis() + 1000, false);
+        cms.setDateReleased(sibling1, System.currentTimeMillis() - 1000, false);
+        
+        // verify the state of the resources after the change
+        assertState(cms, copy1, CmsResource.STATE_NEW);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);               
+    }
+    
+    /**
      * Tests deletion of a resource together with all siblings.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -345,5 +454,4 @@ public class TestSiblings extends OpenCmsTestCase {
             fail("Sibling " + sib3Name + " has not been deleted!");
         }
     }
-
 }

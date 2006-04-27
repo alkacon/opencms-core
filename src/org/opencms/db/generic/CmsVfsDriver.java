@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.258 $
+ * Date   : $Date: 2006/04/27 15:32:44 $
+ * Version: $Revision: 1.259 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258 $
+ * @version $Revision: 1.259 $
  * 
  * @since 6.0.0 
  */
@@ -2319,12 +2319,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
 
-                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RELEASE_EXPIRED");
-                stmt.setLong(1, resource.getDateReleased());
-                stmt.setLong(2, resource.getDateExpired());
-                stmt.setString(3, resource.getStructureId().toString());
-                stmt.executeUpdate();
-                m_sqlManager.closeAll(dbc, null, stmt, null);
             }
 
             if (changed == CmsDriverManager.UPDATE_RESOURCE_STATE || changed == CmsDriverManager.UPDATE_ALL) {
@@ -2343,6 +2337,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setInt(1, resource.getState());
                 stmt.setString(2, resource.getStructureId().toString());
                 stmt.executeUpdate();
+                
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RELEASE_EXPIRED");
+                stmt.setLong(1, resource.getDateReleased());
+                stmt.setLong(2, resource.getDateExpired());
+                stmt.setString(3, resource.getStructureId().toString());
+                stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
             }
 
         } catch (SQLException e) {
