@@ -12,12 +12,10 @@
         </link>
       </links>
       <content><![CDATA[<h1>Release Notes for OpenCms 6.2.1</h1>
-<p>April&nbsp;28, 2006: This is the public final release of OpenCms 6.2.1. OpenCms 6.2.1 is a
-maintenance release which fixes several issues reported in OpenCms 6.2.0.
-<br /></p>
-<h2>Whats new in version 6.2.1 compared to the 6.0 version:</h2>
+<p>April&nbsp;28, 2006: This is the public release of OpenCms 6.2.1. OpenCms 6.2.1 is a maintenance
+release which fixes several issues reported in OpenCms 6.2.0.</p>
 <p>
-<strong>Major new features</strong>
+<strong>Major new features (in OpenCms&nbsp;6.2)</strong>
 </p>
 <ul>
 <li>Multiple selections and operations in the Workplace Explorer</li>
@@ -29,37 +27,7 @@ maintenance release which fixes several issues reported in OpenCms 6.2.0.
 <li>More options for generating accessible website content</li>
 </ul>
 <p>
-<strong>Additional improvements
-<br /></strong>
-</p>
-<ul>
-<li>New frontend module to display photo albums conveniently on a website</li>
-<li>New frontend module containing the new resource type "layout pattern page" that allows content
-editors
-<br />to easily create new web pages from predefined paragraph layouts</li>
-<li>New Content check tool to validate file contents and properties</li>
-<li>All list displays in the Workplace offer a print version</li>
-<li>Image galleries now show a thumbnail of all the images in the gallery</li>
-<li>In the Workplace Explorer, it is now possible to select resources by right-clicking on the
-resource name</li>
-<li>The Workplace Explorer tree now shows the resource state for new and changed resources</li>
-<li>It's possible to enable Link or Gallery dialogs in XML content WYSIWYG fields</li>
-<li>XML content WYSIWYG fields use the user configured editor (if possible)</li>
-<li>Improved XML content editor dynamic HTML generation for element operation buttons and localized
-help texts</li>
-<li>Added &lt;cms:img&gt; tag that automatically generates HTML for scaled images</li>
-<li>Added &lt;cms:decorate&gt; tag for parsing and decorating HTML content</li>
-<li>It is now possible to select 'individual' or 'shared' property mappings for XML content</li>
-<li>Workplace Explorer resources to display can now be configured using a Collector</li>
-<li>New project file list</li>
-<li>New option to export webuser data</li>
-<li>New option to export a folder recursively or not</li>
-<li>Project resources can now be modified in the Project Management "Edit project" dialog</li>
-<li>Added "before publish" event</li>
-<li>Added several new mime type settings to the "mimetypes.properties" file</li>
-</ul>
-<p>
-<strong>Resolved Issues compared to the 6.2.0 release</strong>
+<strong>Resolved Issues in 6.2.1 compared to the 6.2.0 release</strong>
 </p>
 <ul>
 <li>Added fix for "concurrent resource creation" issue</li>
@@ -78,19 +46,11 @@ siblings</li>
 download)</li>
 <li>Fixed issue #1138: custom JSP error handler page now return the original error status code</li>
 </ul>
-<p>
-<strong>Support of new database versions</strong>
-</p>
-<ul>
-<li>MySQL 5.0.x</li>
-<li>Oracle 10g</li>
-<li>MS SQL Server (contributed by Andras Balogh, experimental)</li>
-</ul>
 <h2>Backward compatibility</h2>
 <p>We recommend everyone who uses an earlier version of OpenCms to update to this 6.2.1 release. In
 case you are using one of the previous versions (OpenCms 6.0.x, 6.2 beta or 6.2.0), there have been
-a lot of issues fixed in this final 6.2.1 release. If you still use OpenCms 5.0.x, you should
-definitely consider an update since the 6.2.1 version is much more advanced and stable.</p>
+several issues fixed in this 6.2.1 release. If you still use OpenCms 5.0.x, you should definitely
+consider an update since the 6.2 version is much more advanced and stable.</p>
 <p>OpenCms 6.2.1 should be highly backward compatible with all 6.0 versions. Certain minor API
 changes have been made, so some adjustments may have to be done for code that uses more advanced
 API functions. All Templates should be backward compatible without changes.</p>
@@ -98,11 +58,11 @@ API functions. All Templates should be backward compatible without changes.</p>
 easy to use upgrade wizard is provided.
 <br /></p>
 <h2>Compatibility with Java versions, Servlet containers and Databases</h2>
-<p>OpenCms 6.2.1 requires Java 1.4.x or Java 1.5.x. It won't work with Java 1.3.x. We have tested
+<p>OpenCms 6.2 requires Java 1.4.x or Java 1.5.x. It won't work with Java 1.3.x. We have tested
 only with SUNs version of the JDK. However, OpenCms has no dependencies to sun.* packages so it
 should in theory run with all compliant JVMs.</p>
 <p>We have tested this release on the Tomcat servlet engine and to some extend on JBoss 4.0.
-OpenCms 6.2.1 works "out of the box" with Tomcat 5.0.x and Tomcat 5.5.x. Others have reported
+OpenCms 6.2 works "out of the box" with Tomcat 5.0.x and Tomcat 5.5.x. Others have reported
 deploying 6.x versions successfully on other servlet containers like BEA Weblogic and SunONE.</p>
 <p>On the database side, we have tested with MySQL 4.0, MySQL 4.1, MySQL 5.0, Oracle 9.x and Oracle
 10.x. PostgresSQL support has been contributed thanks to Antonio Core and Ivan Codarin. maxDB
@@ -112,14 +72,14 @@ the stability of the PostgreSQL, maxDB and MS SQL server releases.
 <br /></p>
 <h2>Regarding version numbers and CVS build tags</h2>
 <p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS
-tag for the 6.2.1 release is "build_6_2_1". Development of further releases will be done in the CVS
-HEAD until further notice. Upcoming development version will use the version numbers 6.3.x and will
-be likewise tagged in the CVS.</p>
+tag for the 6.2.1 release is "build_6_2_1". Development of the next OpenCms release is done in the
+"DEV_7_0" branch. Upcoming development version will use the version numbers 6.3.x for the next time
+and will be likewise tagged in the CVS.</p>
 <h2>How you can help</h2>
 <p>Contributions to the OpenCms core development are most welcome. Please contact the core
 development team on the 
 <a target="_self" href="${link0}">opencms-dev</a> mailing list in
-case you are interested in supporting the development of OpenCms 6.2.1.</p>
+case you are interested in supporting the development of OpenCms.</p>
 <p>Please use our Bugzilla to report bugs in this release: 
 <a target="extern" href="${link1}">http://www.opencms.org/bugzilla/
 <br /></a></p>
