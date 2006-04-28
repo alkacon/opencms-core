@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/04/28 12:38:28 $
- * Version: $Revision: 1.717.2.6 $
+ * Date   : $Date: 2006/04/28 15:17:02 $
+ * Version: $Revision: 1.717.2.7 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,9 @@ OpenCms 6.3.0 - April 28, 2006
 * Fixed some small issues with the update wizard
 * Fixed issue #1150: binary distribution usable only with Java 1.5 (with new special Java 1.4 download)
 * Fixed issue #1138: custom JSP error handler page now return the original error status code
+! Improved DB performance when deleting old history versions
+! Added new event for clearing only the user caches
+* Fixed issue with CmsUUID serialization
 
 OpenCms 6.2.0 - March 31, 2006
 * Fixed issue #1105: Added entry for MS IE 7 in editor_configuration.xml
