@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/04/28 13:58:09 $
+ * Version: $Revision: 1.16.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +69,9 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
 
     /** Option values for editor view select boxes. */
     public static final String[] SELECTBOX_EDITORVIEWS = {"edithtml", "edit"};
+    
+    /** Option localization keys for editor view select boxes. */
+    public static final String[] SELECTBOX_EDITORVIEWKEYS ={Messages.GUI_EDITOR_MODE_WYSIWYG_0, Messages.GUI_EDITOR_MODE_SOURCE_0};
 
     /** values for editor view select boxes. */
     public static final int[] SELECTBOX_EDITORVIEWS_ALLOWED = {3, 2};
@@ -94,16 +97,16 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         Vector names = new Vector();
         Vector values = new Vector();
         // get the available views fron the constant
-        String[] contents = CmsMSDHtmlEditor.SELECTBOX_EDITORVIEWS;
+        String[] contents = SELECTBOX_EDITORVIEWS; 
         for (int i = 0; i < contents.length; i++) {
             String value = contents[i];
             values.addElement(value);
-            String s = keyDefault("select." + value, value);
+            String s = keyDefault(SELECTBOX_EDITORVIEWKEYS[i], value);
             names.addElement(s);
         }
         int browserId = 0;
         int loop = 1;
-        int allowedEditors = CmsMSDHtmlEditor.SELECTBOX_EDITORVIEWS_ALLOWED[browserId];
+        int allowedEditors = SELECTBOX_EDITORVIEWS_ALLOWED[browserId];
         if ("script".equals(getParamElementname())) {
             allowedEditors = allowedEditors & 510;
         }
