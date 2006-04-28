@@ -67,6 +67,7 @@ default:
 
 <link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
 
+
 <script language="JavaScript" for="EDIT_HTML" event="DisplayChanged">
 // EVENT HANDLER: Update the font display on change
 return DisplayChanged();
@@ -286,6 +287,7 @@ if ("edit".equals(wp.getParamEditormode())) {
 } else {
 	%><script type="text/javascript" src="<%= wp.getEditorResourceUri() %>edithtml.js"></script>
 
+
 <script LANGUAGE="vbscript">
 ' Ugly VB Script that sets the contents of the "Format" selection
 ' These _must_ be localized or the MS DHTML will not work
@@ -375,7 +377,7 @@ out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", org.openc
 <%= wp.buttonBarHorizontalLine() %>
 
 <%	
-	if ("edit".equals(wp.getParamEditormode())) {
+	if (!"edit".equals(wp.getParamEditormode())) {
 	    // display the WYSIWYG html editor
 	    
 %>
@@ -526,19 +528,19 @@ if (options.showElement("button.customized", displayOptions)) {
 	%><td><%= wp.buttonActionDirectEdit("doEdit(4);", buttonStyle) %></td><%
 }
 %>
-<%= wp.button("javascript:doEdit(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
-<%= wp.button("javascript:doEdit(3);", null, "save", "button.save", buttonStyle) %>
+<%= wp.button("javascript:doEdit(2);", null, "save_exit", org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0, buttonStyle) %>
+<%= wp.button("javascript:doEdit(3);", null, "save", org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0, buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEdit(7);", null, "cut", "button.cut", buttonStyle) %>
-<%= wp.button("javascript:doEdit(8);", null, "copy", "button.copy", buttonStyle) %>
-<%= wp.button("javascript:doEdit(9);", null, "paste", "button.paste", buttonStyle) %>
+<%= wp.button("javascript:doEdit(7);", null, "cut", org.opencms.workplace.editors.Messages.GUI_BUTTON_CUT_0, buttonStyle) %>
+<%= wp.button("javascript:doEdit(8);", null, "copy", org.opencms.workplace.editors.Messages.GUI_BUTTON_COPY_0, buttonStyle) %>
+<%= wp.button("javascript:doEdit(9);", null, "paste", org.opencms.workplace.editors.Messages.GUI_BUTTON_PASTE_0, buttonStyle) %>
 <%			
 if (wp.isHelpEnabled()) {%>
 	<%= wp.buttonBarSeparator(5, 5) %>
-	<%= wp.button("javascript:openOnlineHelp('/editors/msdhtmltext');", null, "help.png", "button.help", buttonStyle) %><%
+	<%= wp.button("javascript:openOnlineHelp('/editors/msdhtmltext');", null, "help.png", org.opencms.workplace.editors.Messages.GUI_BUTTON_HELP_0, buttonStyle) %><%
 } %>
 <td class="maxwidth">&nbsp;</td>
-<%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
+<%= wp.button("javascript:confirmExit();", null, "exit", org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0, buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 <%= wp.buttonBar(CmsWorkplace.HTML_END) %>
 
