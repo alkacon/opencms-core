@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2006/03/27 14:52:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/04/28 08:49:28 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,11 +61,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.2.0 
  */
 public class CmsImageLoader extends CmsDumpLoader {
+
+    /** The configuration parameter for the OpenCms XML configuration to set the image downscale operation. */
+    public static final String CONFIGURATION_DOWNSCALE = "image.scaling.downscale";
 
     /** The configuration parameter for the OpenCms XML configuration to set the image cache respository. */
     public static final String CONFIGURATION_IMAGE_FOLDER = "image.folder";
@@ -88,20 +91,23 @@ public class CmsImageLoader extends CmsDumpLoader {
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsImageLoader.class);
 
+    /** The (optional) image downscale parameters for image write operations. */
+    protected static String m_downScaleParams;
+
     /** Indicates if image scaling is active. */
-    private static boolean m_enabled;
+    protected static boolean m_enabled;
 
-    /** The name of the configured image cache repository. */
-    private static String m_imageRepositoryFolder;
-
-    /** The maximum image size (width * height) to apply image blurring when downscaling (setting this to high may case "out of memory" errors). */
-    private static int m_maxBlurSize = CmsImageScaler.SCALE_DEFAULT_MAX_BLUR_SIZE;
-
-    /** The maximum image size (width or height) to allow when upscaling an image using request parameters. */
-    private static int m_maxScaleSize = CmsImageScaler.SCALE_DEFAULT_MAX_SIZE;
+    /** The maximum image size (width * height) to apply image blurring when downscaling (setting this to high may cause "out of memory" errors). */
+    protected static int m_maxBlurSize = CmsImageScaler.SCALE_DEFAULT_MAX_BLUR_SIZE;
 
     /** The disk cache to use for saving scaled image versions. */
-    private static CmsVfsNameBasedDiskCache m_vfsDiskCache;
+    protected static CmsVfsNameBasedDiskCache m_vfsDiskCache;
+
+    /** The name of the configured image cache repository. */
+    protected String m_imageRepositoryFolder;
+
+    /** The maximum image size (width or height) to allow when upscaling an image using request parameters. */
+    protected int m_maxScaleSize = CmsImageScaler.SCALE_DEFAULT_MAX_SIZE;
 
     /**
      * Creates a new image loader.<p>
@@ -112,13 +118,40 @@ public class CmsImageLoader extends CmsDumpLoader {
     }
 
     /**
-     * Returns the path of the image cache repository folder in the RFS.<p>
+     * Returns the image downscale paramerters, 
+     * which is set with the {@link #CONFIGURATION_DOWNSCALE} configuration option.<p> 
+     * 
+     * If no downscale parameters have been set in the configuration, this will return <code>null</code>.
+     * 
+     * @return the image downscale paramerters
+     */
+    public static String getDownScaleParams() {
+
+        return m_downScaleParams;
+    }
+
+    /**
+     * Returns the path of the image cache repository folder in the RFS,
+     * which is set with the {@link #CONFIGURATION_IMAGE_FOLDER} configuration option.<p> 
      * 
      * @return the path of the image cache repository folder in the RFS
      */
     public static String getImageRepositoryPath() {
 
         return m_vfsDiskCache.getRepositoryPath();
+    }
+
+    /**
+     * The maximum blur size for image rescale operations, 
+     * which is set with the {@link #CONFIGURATION_MAX_BLUR_SIZE} configuration option.<p>
+     * 
+     * The default is 2500 * 2500 pixel.<p>
+     * 
+     * @return the maximum blur size for image rescale operations
+     */
+    public static int getMaxBlurSize() {
+
+        return m_maxBlurSize;
     }
 
     /**
@@ -161,6 +194,9 @@ public class CmsImageLoader extends CmsDumpLoader {
                     paramValue,
                     CmsImageScaler.SCALE_DEFAULT_MAX_BLUR_SIZE,
                     paramName);
+            }
+            if (CONFIGURATION_DOWNSCALE.equals(paramName)) {
+                m_downScaleParams = paramValue.trim();
             }
         }
         super.addConfigurationParameter(paramName, paramValue);
@@ -267,10 +303,7 @@ public class CmsImageLoader extends CmsDumpLoader {
     throws IOException, CmsException {
 
         String cacheParam = scaler.isValid() ? scaler.toString() : null;
-        String cacheName = m_vfsDiskCache.getCacheName(
-            resource,
-            cms.getRequestContext().currentProject().isOnlineProject(),
-            cacheParam);
+        String cacheName = m_vfsDiskCache.getCacheName(resource, cacheParam);
         byte[] content = m_vfsDiskCache.getCacheContent(cacheName);
 
         CmsFile file;

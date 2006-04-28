@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/04/28 08:49:28 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.2.0 
  */
@@ -159,7 +159,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
             // read the image properties for the selected resource
             CmsImageScaler original = new CmsImageScaler(cms, imageRes);
             if (original.isValid()) {
-                scaler = new CmsImageScaler(original, scaler);
+                scaler = original.getReScaler(scaler);
             }
         }
 

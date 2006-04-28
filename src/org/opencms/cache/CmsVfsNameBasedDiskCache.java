@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsNameBasedDiskCache.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/04/28 08:49:28 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,18 @@ import java.io.IOException;
  * Implements a name based RFS file based disk cache, that handles parameter based versions of VFS files, 
  * providing a cache for the "online" and another for the "offline" project.<p>
  * 
- * This RFS cache operates only on the file names, not on the RFS "date last modified" information. 
+ * This RFS cache operates on file names, plus a hashcode calculated from 
+ * {@link org.opencms.file.CmsResource#getDateLastModified()}, {@link org.opencms.file.CmsResource#getDateCreated()} 
+ * and {@link org.opencms.file.CmsResource#getLength()}. Optional parameters can be appended to this name, 
+ * which will be added as a second hashcode. This way a file can have multiple versions based on different parameters.<p> 
+ * 
+ * This cache should be usable for resources from the online AND the offline project at the same time, 
+ * because any change to a resource will result in a changed hashcode. This means a resource changed in the offline
+ * project will have a new hashcode compared to the online project.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.2.0
  */
@@ -95,16 +102,15 @@ public class CmsVfsNameBasedDiskCache {
     /**
      * Returns the RFS name to use for caching the given VFS resource with parameters in the disk cache.<p>  
      * 
-     * @param online if true, the online disk cache is used, the offline disk cache otherwise
-     * @param parameters the parameters of the request to the VFS resource
      * @param resource the VFS resource to generate the cache name for
+     * @param parameters the parameters of the request to the VFS resource
      * 
      * @return the RFS name to use for caching the given VFS resource with parameters 
      */
-    public String getCacheName(CmsResource resource, boolean online, String parameters) {
+    public String getCacheName(CmsResource resource, String parameters) {
 
-        // calculate the base cache path for the resource
-        String rfsName = CmsFileUtil.getRepositoryName(m_rfsRepository, resource.getRootPath(), online);
+        // calculate the base cache path for the resource        
+        String rfsName = m_rfsRepository + resource.getRootPath();
         String extension = CmsFileUtil.getFileExtension(rfsName);
 
         // create a StringBuffer for the result

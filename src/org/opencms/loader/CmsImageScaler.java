@@ -32,7 +32,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.2.0
  */
@@ -161,42 +161,14 @@ public class CmsImageScaler {
      * Creates a new image scaler that is a recale from the original size to the given scaler.<p> 
      * 
      * @param original the scaler that holds the original image dimensions
-     * @param scaler the image scaler to be used for rescaling this image scaler
+     * @param target the image scaler to be used for rescaling this image scaler
+     * 
+     * @deprecated use {@link #getReScaler(CmsImageScaler)} on the <code>original</code> scaler instead
      */
-    public CmsImageScaler(CmsImageScaler original, CmsImageScaler scaler) {
+    public CmsImageScaler(CmsImageScaler original, CmsImageScaler target) {
 
-        int height = scaler.getHeight();
-        int width = scaler.getWidth();
-
-        if ((width > 0) && (original.getWidth() > 0)) {
-            // width is known, calculate height
-            float scale = (float)width / (float)original.getWidth();
-            height = Math.round(original.getHeight() * scale);
-        } else if ((height > 0) && (original.getHeight() > 0)) {
-            // height is known, calculate width
-            float scale = (float)height / (float)original.getHeight();
-            width = Math.round(original.getWidth() * scale);
-        } else if (original.isValid() && !scaler.isValid()) {
-            // scaler is not valid but original is, so use original size of image
-            width = original.getWidth();
-            height = original.getHeight();
-        }
-
-        if ((scaler.getType() == 1) && (!scaler.isValid())) {
-            // "no upscale" has been requested, only one target dimension was given
-            if ((scaler.getWidth() > 0) && (original.getWidth() < width)) {
-                // target width was given, target image should have this width 
-                height = original.getHeight();
-            } else if ((scaler.getHeight() > 0) && (original.getHeight() < height)) {
-                // target height was given, target image should have this height
-                width = original.getWidth();
-            }
-        }
-
-        // now initialize the values of this scaler
+        CmsImageScaler scaler = original.getReScaler(target);
         initValuesFrom(scaler);
-        setWidth(width);
-        setHeight(height);
     }
 
     /**
@@ -328,6 +300,59 @@ public class CmsImageScaler {
         return result.toString();
     }
 
+    /**
+     * Returns a new image scaler that is a downscale from the size of <code>this</code> scaler 
+     * to the given scaler size.<p>
+     * 
+     * If no downscale from this to the given scaler is required according to
+     * {@link #isDownScaleRequired(CmsImageScaler)}, then <code>null</code> is returned.<p> 
+     * 
+     * @param downScaler the image scaler that holds the downscaled target image dimensions
+     * 
+     * @return a new image scaler that is a downscale from the size of <code>this</code> scaler 
+     *      to the given target scaler size, or <code>null</code>
+     */
+    public CmsImageScaler getDownScaler(CmsImageScaler downScaler) {
+
+        if (!isDownScaleRequired(downScaler)) {
+            // no downscaling is required
+            return null;
+        }
+
+        int downHeight = downScaler.getHeight();
+        int downWidth = downScaler.getWidth();
+
+        int height = getHeight();
+        int width = getWidth();
+
+        if (((height > width) && (downHeight < downWidth)) || ((width > height) && (downWidth < downHeight))) {
+            // adjust orientation
+            downHeight = downWidth;
+            downWidth = downScaler.getHeight();
+        }
+
+        if (width > downWidth) {
+            // width is too large, re-calculate width
+            float scale = (float)downWidth / (float)width;
+            downHeight = Math.round(height * scale);
+        } else if (height > downHeight) {
+            // height is too large, re-calculate height
+            float scale = (float)downHeight / (float)height;
+            downWidth = Math.round(width * scale);
+        } else {
+            // something is wrong, don't downscale
+            return null;
+        }
+
+        // now create and initialize the result scaler
+        CmsImageScaler result = new CmsImageScaler();
+        result.initValuesFrom(downScaler);
+        result.setWidth(downWidth);
+        result.setHeight(downHeight);
+
+        return result;
+    }
+
     /** 
      * Returns the list of image filter names (Strings) to be applied to the image.<p> 
      * 
@@ -390,6 +415,34 @@ public class CmsImageScaler {
     }
 
     /**
+     * Returns the maximum image size (width * height) to apply image blurring when downscaling images.<p>
+     * 
+     * Image blurring is required to achive the best results for downscale operatios when the target image size 
+     * is 2 times or more smaller then the original image size. This parameter controls the maximum size (width * height) of an 
+     * image that is blurred before it is downscaled. If the image is larger, no blurring is done. 
+     * However, image blurring is an expensive operation in both CPU usage and memory consumption. 
+     * Setting the blur size to large may case "out of memory" errors.<p>
+     * 
+     * @return the maximum image size (width * height) to apply image blurring when downscaling images
+     */
+    public int getMaxBlurSize() {
+
+        return m_maxBlurSize;
+    }
+
+    /**
+     * Returns the image pixel count, that is the image with multiplied by the image height.<p>
+     * 
+     * If this scalier is not valid (see {@link #isValid()}) the result is undefined.<p>
+     * 
+     * @return the image pixel count, that is the image with multiplied by the image height
+     */
+    public int getPixelCount() {
+
+        return m_width * m_height;
+    }
+
+    /**
      * Returns the position.<p>
      *
      * @return the position
@@ -429,6 +482,58 @@ public class CmsImageScaler {
     public int getRenderMode() {
 
         return m_renderMode;
+    }
+
+    /**
+     * Returns a new image scaler that is a rescaler from the <code>this</code> scaler 
+     * size to the given target scaler size.<p>
+     * 
+     * The height of the target image is calculated in proportion 
+     * to the original image width. If the width of the the original image is not known, 
+     * the target image width is calculated in proportion to the original image height.<p>
+     * 
+     * @param target the image scaler that holds the target image dimensions
+     * 
+     * @return a new image scaler that is a rescale from the <code>this</code> scaler 
+     *      size to the given target scaler size.<p>
+     */
+    public CmsImageScaler getReScaler(CmsImageScaler target) {
+
+        int height = target.getHeight();
+        int width = target.getWidth();
+
+        if ((width > 0) && (getWidth() > 0)) {
+            // width is known, calculate height
+            float scale = (float)width / (float)getWidth();
+            height = Math.round(getHeight() * scale);
+        } else if ((height > 0) && (getHeight() > 0)) {
+            // height is known, calculate width
+            float scale = (float)height / (float)getHeight();
+            width = Math.round(getWidth() * scale);
+        } else if (isValid() && !target.isValid()) {
+            // scaler is not valid but original is, so use original size of image
+            width = getWidth();
+            height = getHeight();
+        }
+
+        if ((target.getType() == 1) && (!target.isValid())) {
+            // "no upscale" has been requested, only one target dimension was given
+            if ((target.getWidth() > 0) && (getWidth() < width)) {
+                // target width was given, target image should have this width 
+                height = getHeight();
+            } else if ((target.getHeight() > 0) && (getHeight() < height)) {
+                // target height was given, target image should have this height
+                width = getWidth();
+            }
+        }
+
+        // now create and initialize the result scaler
+        CmsImageScaler result = new CmsImageScaler();
+        result.initValuesFrom(target);
+        result.setWidth(width);
+        result.setHeight(height);
+
+        return result;
     }
 
     /**
@@ -495,6 +600,54 @@ public class CmsImageScaler {
     }
 
     /**
+     * Returns <code>true</code> if this image scaler must be downscaled when compared to the
+     * given "downscale" image scaler.<p>
+     *
+     * If either <code>this</code> scaler or the given <code>downScaler</code> is invalid according to
+     * {@link #isValid()}, then <code>false</code> is returned.<p>
+     * 
+     * The use case: <code>this</code> scaler represents an image (that is contains width and height of 
+     * an image). The <code>downScaler</code> represents the maximum wanted image. The scalers
+     * are compared and if the image represented by <code>this</code> scaler is too large,
+     * <code>true</code> is returned. Image orientation is ignored, so for example an image with 600x800 pixel 
+     * will NOT be downscaled if the target size is 800x600 but kept unchanged.<p>
+     * 
+     * @param downScaler the downscaler to compare this image scaler with
+     * 
+     * @return <code>true</code> if this image scaler must be downscaled when compared to the
+     *      given "downscale" image scaler
+     */
+    public boolean isDownScaleRequired(CmsImageScaler downScaler) {
+
+        if ((downScaler == null) || !isValid() || !downScaler.isValid()) {
+            // one of the scalers is invalid
+            return false;
+        }
+
+        if (getPixelCount() < (downScaler.getPixelCount() / 2)) {
+            // the image has much less pixels then the target, so don't downscale
+            return false;
+        }
+
+        int downWidth = downScaler.getWidth();
+        int downHeight = downScaler.getHeight();
+        if (downHeight > downWidth) {
+            // normalize image orientation - the width should always be the large side
+            downWidth = downHeight;
+            downHeight = downScaler.getWidth();
+        }
+        int height = getHeight();
+        int width = getWidth();
+        if (height > width) {
+            // normalize image orientation - the width should always be the large side
+            width = height;
+            height = getWidth();
+        }
+
+        return (width > downWidth) || (height > downHeight);
+    }
+
+    /**
      * Returns <code>true</code> if all required parameters are available.<p>
      * 
      * Required parameters are "h" (height), and "w" (width).<p>
@@ -507,15 +660,16 @@ public class CmsImageScaler {
     }
 
     /**
-     * Returns a scaled version of the given image file according this image scalers parameters.<p>
+     * Returns a scaled version of the given image byte content according this image scalers parameters.<p>
      *  
-     * @param file the image file to scale
+     * @param content the image byte content to scale
+     * @param rootPath the root path of the image file in the VFS
      * 
-     * @return a scaled version of the given image file according to the provided scaler parameters
+     * @return a scaled version of the given image byte content according to the provided scaler parameters
      */
-    public byte[] scaleImage(CmsFile file) {
+    public byte[] scaleImage(byte[] content, String rootPath) {
 
-        byte[] result = file.getContents();
+        byte[] result = content;
 
         RenderSettings renderSettings;
         if ((m_renderMode == 0) && (m_quality == 0)) {
@@ -533,10 +687,10 @@ public class CmsImageScaler {
         // new create the scaler
         Simapi scaler = new Simapi(renderSettings);
         // calculate a valid image type supported by the imaging libary (e.g. "JPEG", "GIF")
-        String imageType = Simapi.getImageType(file.getRootPath());
+        String imageType = Simapi.getImageType(rootPath);
         if (imageType == null) {
             // no type given, maybe the name got mixed up
-            String mimeType = OpenCms.getResourceManager().getMimeType(file.getName(), null, null);
+            String mimeType = OpenCms.getResourceManager().getMimeType(rootPath, null, null);
             // check if this is another known mime type, if so DONT use it (images should not be named *.pdf)
             if (mimeType == null) {
                 // no mime type found, use JPEG format to write images to the cache         
@@ -546,15 +700,12 @@ public class CmsImageScaler {
         if (imageType == null) {
             // unknown type, unable to scale the image
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.ERR_UNABLE_TO_SCALE_IMAGE_2,
-                    file.getRootPath(),
-                    toString()));
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, rootPath, toString()));
             }
             return result;
         }
         try {
-            BufferedImage image = Simapi.read(file.getContents());
+            BufferedImage image = Simapi.read(content);
 
             Color color = getColor();
 
@@ -618,13 +769,22 @@ public class CmsImageScaler {
             result = scaler.getBytes(image, imageType);
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.ERR_UNABLE_TO_SCALE_IMAGE_2,
-                    file.getRootPath(),
-                    toString()), e);
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, rootPath, toString()), e);
             }
         }
         return result;
+    }
+
+    /**
+     * Returns a scaled version of the given image file according this image scalers parameters.<p>
+     *  
+     * @param file the image file to scale
+     * 
+     * @return a scaled version of the given image file according to the provided scaler parameters
+     */
+    public byte[] scaleImage(CmsFile file) {
+
+        return scaleImage(file.getContents(), file.getRootPath());
     }
 
     /**
@@ -683,6 +843,18 @@ public class CmsImageScaler {
     public void setHeight(int height) {
 
         m_height = height;
+    }
+
+    /**
+     * Sets the maximum image size (width * height) to apply image blurring when downscaling images.<p> 
+     * 
+     * @param maxBlurSize the maximum image blur size to set
+     * 
+     * @see #getMaxBlurSize() for a more detailed description about this parameter
+     */
+    public void setMaxBlurSize(int maxBlurSize) {
+
+        m_maxBlurSize = maxBlurSize;
     }
 
     /**
@@ -856,7 +1028,7 @@ public class CmsImageScaler {
         m_quality = 0;
         m_color = Color.WHITE;
         m_filters = new ArrayList();
-        m_maxBlurSize = SCALE_DEFAULT_MAX_BLUR_SIZE;
+        m_maxBlurSize = CmsImageLoader.getMaxBlurSize();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/04/26 09:10:50 $
- * Version: $Revision: 1.717.2.4 $
+ * Date   : $Date: 2006/04/28 08:49:28 $
+ * Version: $Revision: 1.717.2.5 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,6 +27,10 @@ OpenCms 6.3.0 - April xxx, 2006
 * Fixed issue with old version of cached content definition after a nested XML subschema was changed
 ! Moved event handling code to new class org.opencms.main.CmsEventManager
 * Fixed issues with special characters in help texts of XML content editor
+! Added "image.scaling.downscale" option to image loader, which will downscale large images automatically in the VFS
+* Fixed issue in CmsHtmlConverter with variable line separator length in UNIX / Win environments
+* Fixed issue with missing "Lock" entry in context menu for image resources
+* Fixed issue with VFS resource state being set wrong in combination with operations on new siblings
 
 OpenCms 6.2.0 - March 31, 2006
 * Fixed issue #1105: Added entry for MS IE 7 in editor_configuration.xml

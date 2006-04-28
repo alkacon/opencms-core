@@ -14,8 +14,9 @@
 				<loader class="org.opencms.loader.CmsDumpLoader" />
 				<loader class="org.opencms.loader.CmsImageLoader">
 					<param name="image.folder">/WEB-INF/imagecache/</param>		
-					<param name="image.scaling.enabled">true</param>		
-				</loader>													
+					<param name="image.scaling.downscale">w:800,h:600,t:1,q:80</param>
+					<param name="image.scaling.enabled">true</param>
+				</loader>
 				<loader class="org.opencms.loader.CmsPointerLoader" />
 				<loader class="org.opencms.loader.CmsJspLoader">
 					<param name="jsp.errorpage.committed">true</param>
