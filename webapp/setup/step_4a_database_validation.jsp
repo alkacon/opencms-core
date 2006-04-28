@@ -99,30 +99,30 @@ Alkacon OpenCms Setup Wizard - Validate database connection
 							<%= Bean.getHtmlPart("C_BLOCK_END") %>
 							<%
 						}					
-						if (db.noErrors() || chkVars != null)	{ %>
+						if (!db.noErrors() || chkVars != null)	{ %>
 							<%= Bean.getHtmlPart("C_BLOCK_START", "Validating Database Server Configuration") %>
 							<table border="0" cellpadding="0" cellspacing="0"><%
-							if (chkVars != null) {
-							    boolean isError = (chkVars.indexOf("16Mb")>-1);
-								enableContinue = enableContinue && !isError; %>
+						    boolean isError = !db.noErrors();
+							enableContinue = enableContinue && !isError;
+							if (chkVars != null) {%>
 								<tr>
-									<td><img src="resources/<%=isError?"error":"warning"%>.png" border="0"></td>
+									<td><img src="resources/warning.png" border="0"></td>
 									<td>&nbsp;&nbsp;</td>
 									<td><%=chkVars%></td>
 								</tr><%
 							}
 							if (!db.noErrors()) {%>
 								<tr>
-									<td><img src="resources/warning.png" border="0"></td>
+									<td><img src="resources/error.png" border="0"></td>
 									<td>&nbsp;&nbsp;</td>
 									<td style="width: 100%;">
 										<div style="width: 100%; height:80px; overflow: auto;">
 										<p style="margin-bottom: 4px;">Error while checking the server configuration!</p>
 										<%
+										out.println("-------------------------------------------" + "<br>");
 										Vector errors = db.getErrors();
 										for (int i = 0; i < errors.size(); i++)	{
 											out.println(errors.elementAt(i) + "<br>");
-											out.println("-------------------------------------------" + "<br>");
 										}
 										db.clearErrors();
 										%>
