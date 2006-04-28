@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/04/24 11:02:07 $
- * Version: $Revision: 1.60.4.1 $
+ * Date   : $Date: 2006/04/28 08:45:56 $
+ * Version: $Revision: 1.60.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.1 $ 
+ * @version $Revision: 1.60.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -531,7 +531,7 @@ public class CmsLinkManager {
                         boolean secureRequest = exportManager.isSecureLink(cms, cms.getRequestContext().getUri());
                         // if we are on a normal server, and the requested resource is secure, 
                         // the server name has to be prepended                        
-                        if (forceSecure || (secureLink && !secureRequest)) {
+                        if (secureLink && (forceSecure || !secureRequest)) {
                             serverPrefix = targetSite.getSecureUrl();
                         } else if (!secureLink && secureRequest) {
                             serverPrefix = targetSite.getUrl();
