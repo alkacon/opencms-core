@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.msdhtml/resources/system/workplace/editors/msdhtml/Attic/edithtml.js,v $
- * Date   : $Date: 2006/04/02 07:07:11 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,12 +23,12 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 var foundRange = null;
 var foundLink = null;
 
@@ -41,15 +41,15 @@ function hasSelectedText() {
 	    // if this is undefined, the selection is a MS IE "ControlSelection", which can not be used
 	    selectedRange = range;
 	}
-	
+
 	if ((selectedRange == null) || (selectedRange.htmlText == null) || (selectedRange.htmlText == "") || (selectedRange.htmlText.search(/<P>&nbsp;<\/P>/) != -1)) {
-		// no text selected, check if an image is selected		
+		// no text selected, check if an image is selected
 		try {
 			range = range.item(0);
 			if (typeof(range.tagName) != 'undefined') {
 				var imgTag = range.tagName;
 				if (imgTag == "IMG" || imgTag == "img") {
-					return true;	
+					return true;
 				}
 			}
 		} catch (e) {}
@@ -60,7 +60,7 @@ function hasSelectedText() {
 	}
 }
 
-// pastes the html content at the current cursor position 
+// pastes the html content at the current cursor position
 function insertHtml(htmlContent) {
 	document.EDIT_HTML.focus();
 	document.EDIT_HTML.DOM.selection.createRange().pasteHTML(htmlContent);
@@ -88,12 +88,12 @@ function createLink(linkInformation) {
 				}
 	   			el.name = linkInformation["name"];
 	    		el.removeAttribute("HREF", false);
-	
+
 	  			if (USE_LINKSTYLEINPUTS) {
 	      			if (linkInformation["style"].length > 0) {
 	          			el.style.cssText = linkInformation["style"];
 	      			}
-	
+
 		      		if (linkInformation["class"].length > 0) {
 		          		el.className = linkInformation["class"];
 	    	  		}
@@ -101,18 +101,18 @@ function createLink(linkInformation) {
 			}
 		} else {
 			// image link
-			var el = foundRange.item(0);	
+			var el = foundRange.item(0);
 			var thelink = "<a ";
-			thelink += "name='"+linkInformation["name"]+"' ";				  
+			thelink += "name='"+linkInformation["name"]+"' ";
 			if (USE_LINKSTYLEINPUTS) {
-				if(linkInformation["style"].length > 0) {		  
+				if(linkInformation["style"].length > 0) {
 					thelink += "style='"+linkInformation["style"]+"' ";
-				}					  
-				if(linkInformation["class"].length > 0) {		  
+				}
+				if(linkInformation["class"].length > 0) {
 					thelink += "class='"+linkInformation["class"]+"' ";
 				}
-			}	
-			thelink += ">" + el.outerHTML + "</a>";					  
+			}
+			thelink += ">" + el.outerHTML + "</a>";
 			if(el.parentElement.tagName == "A") {
 		    	el.parentElement.outerHTML = thelink;
 		  	} else {
@@ -125,7 +125,7 @@ function createLink(linkInformation) {
 			// common text link
 			if (linkInformation["href"].length > 0) {
 				foundRange.execCommand("CreateLink", false, "/");
-	
+
 				var el = foundRange.parentElement();
 				while ((el.tagName != "BODY") && (el.tagName != "A")) {
 	  				if (el.tagName == "IMG") {
@@ -134,30 +134,30 @@ function createLink(linkInformation) {
 	  				}
 	  				el = el.parentElement;
 				}
-	
-	  			if (linkInformation["href"].length > 0) {	
+
+	  			if (linkInformation["href"].length > 0) {
 	      			el.setAttribute("HREF", linkInformation["href"], 0);
 	  			} else {
 	      			el.removeAttribute("HREF", false);
 	  			}
-	  			
-	  			if (linkInformation["title"].length > 0) {	
+
+	  			if (linkInformation["title"].length > 0) {
 	      			el.setAttribute("TITLE", linkInformation["title"], 0);
 	  			} else {
 	      			el.removeAttribute("TITLE", false);
 	  			}
-	
+
 	  			if ((linkInformation["target"].length > 0) && (linkInformation["href"].length > 0)) {
 	      			el.target = linkInformation["target"];
 	  			} else {
 	      			el.removeAttribute("TARGET", false);
 	  			}
-	
+
 	  			if (USE_LINKSTYLEINPUTS) {
 	      			if (linkInformation["style"].length > 0) {
 	          			el.style.cssText = linkInformation["style"];
 	      			}
-	
+
 		      		if (linkInformation["class"].length > 0) {
 		          		el.className = linkInformation["class"];
 	    	  		}
@@ -165,33 +165,33 @@ function createLink(linkInformation) {
 			}
 		} else {
 			// image link
-			var el = foundRange.item(0);	
+			var el = foundRange.item(0);
 			var thelink = "<a ";
 			if(linkInformation["href"].length > 0) {
 				thelink += "href='"+linkInformation["href"]+"' ";
 			}
-			if((linkInformation["target"].length > 0) && (linkInformation["href"].length > 0)) {			  
+			if((linkInformation["target"].length > 0) && (linkInformation["href"].length > 0)) {
 				thelink += "target='"+linkInformation["target"]+"' ";
-			}					  
-			if (linkInformation["title"].length > 0) { 
+			}
+			if (linkInformation["title"].length > 0) {
 				thelink += "title='"+linkInformation["title"]+"' ";
 			}
 			if (USE_LINKSTYLEINPUTS) {
-				if(linkInformation["style"].length > 0) {		  
+				if(linkInformation["style"].length > 0) {
 					thelink += "style='"+linkInformation["style"]+"' ";
-				}					  
-				if(linkInformation["class"].length > 0) {		  
+				}
+				if(linkInformation["class"].length > 0) {
 					thelink += "class='"+linkInformation["class"]+"' ";
 				}
-			}	
-			thelink += ">" + el.outerHTML + "</a>";					  
+			}
+			thelink += ">" + el.outerHTML + "</a>";
 			if(el.parentElement.tagName == "A") {
 		    	el.parentElement.outerHTML = thelink;
 		  	} else {
 	        	el.outerHTML = thelink;
 	      	}
 		}
-	}		
+	}
 }
 
 function getSelectedLink() {
@@ -208,19 +208,19 @@ function getSelectedLink() {
 
 	// Create a range on the current selection
 	var range = linkEditorSelection.createRange();
-	
-	
-		
+
+
+
 	if (typeof(range.text) != 'undefined') {
-	    // if this is undefined, the selection is a MS IE "ControlSelection", which can not be used for adding a link	
+	    // if this is undefined, the selection is a MS IE "ControlSelection", which can not be used for adding a link
 	    for (i = 0; i < allLinks.length; i++) {
-	
+
 	        // create range on whole text
 	        var mainrange = linkEditorRange;
-			
+
 	        // move range to the current A-element
 	        mainrange.moveToElementText(allLinks[i]);
-	
+
 	        // compare the selection with the current range, and expand if neccessary
 	        if (mainrange.inRange(range)) {
 	            foundRange = mainrange;
@@ -239,7 +239,7 @@ function getSelectedLink() {
 	                foundRange.setEndPoint("StartToStart", mainrange);
 	            }
 	        }
-	
+
 	        // Finally fill the link object
 	        if (foundRange != null) {
 	            // Use expanded selection to fill input areas
@@ -257,13 +257,13 @@ function getSelectedLink() {
 	            break;
 	        }
 	    }
-	    
+
 	    if (foundLink == null) {
 	    	foundRange = range;
 	    }
 	} else if ("Control" == linkEditorSelection.type) {
 		var el = range.item(0);
-		if (el.tagName == "IMG" || el.tagName == "img") {		
+		if (el.tagName == "IMG" || el.tagName == "img") {
 			if(el.parentElement.tagName == "A") {
 				link = new Object();
 	            foundLink = el.parentElement;
@@ -277,7 +277,7 @@ function getSelectedLink() {
 	            }
 			}
 			foundRange = range;
-		}	
+		}
 	}
 	return link;
 }
@@ -387,22 +387,22 @@ function ShowContextMenu() {
 	var state;
 	var i
 	var idx = 0;
-	
+
 	// Rebuild the context menu.
 	ContextMenu.length = 0;
-	
+
 	// Always show general menu
 	for (i=0; i<GeneralContextMenu.length; i++) {
 		ContextMenu[idx++] = GeneralContextMenu[i];
 	}
-	
+
 	// Is the selection inside a table? Add table menu if so
 	if (document.all.EDIT_HTML.QueryStatus(DECMD_INSERTROW) != DECMDF_DISABLED) {
 		for (i=0; i<TableContextMenu.length; i++) {
 			ContextMenu[idx++] = TableContextMenu[i];
 		}
 	}
-	
+
 	// Set up the actual arrays that get passed to SetContextMenu
 	for (i=0; i<ContextMenu.length; i++) {
 		menuStrings[i] = ContextMenu[i].string;
@@ -457,7 +457,7 @@ function DisplayChanged() {
 		document.all.FONTSIZE.disabled = true;
 	} else {
 		var value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTSIZE, OLECMDEXECOPT_DODEFAULT);
-		if ((value != null) && USE_FONTSIZE)) {
+		if ((value != null) && USE_FONTSIZE) {
 	    		document.all.FONTSIZE.disabled = false;
 			document.all.FONTSIZE.value = value;
 		} else {
@@ -475,7 +475,7 @@ function checkPopup() {
 		try {
 			openWindow.focus();
 		} catch(e) {
-			
+
 		}
 		focusCount = 0;
 	}
@@ -499,7 +499,7 @@ function doEditHTML(para) {
 	var _form = document.EDITOR;
 	var _editor = _form.EDIT_HTML;
 
-	switch (para) {	
+	switch (para) {
 	case 1:
 		// exit
 		_form.action.value = actionExit;
@@ -620,7 +620,7 @@ function doEditHTML(para) {
 		SelColor = showModalDialog(skinUri + "components/js_colorpicker/index.html", colorPicker, "resizable: yes; help: no; status: no; scroll: no;");
 		if (SelColor != null) {
 			ColorSelected = 1;
-		}		
+		}
 		break;
 	case 40:
 		checkTableSelection();
@@ -663,7 +663,7 @@ function doEditHTML(para) {
 					params += "&style=" + linkInformation["style"];
 					params += "&class=" + linkInformation["class"];
 				}
-			}			
+			}
 		openWindow = window.open('dialogs/link.jsp' + params,'SetLink', "width=480, height=" + winheight + ", scrollbars=no, location=no, menubar=no, toolbar=no, status=no, dependent=yes, resizable=yes, top=300, left=250");
 		focusCount = 1;
 		openWindow.focus();
@@ -688,7 +688,7 @@ function doEditHTML(para) {
 					params += "&style=" + linkInformation["style"];
 					params += "&class=" + linkInformation["class"];
 				}
-			}			
+			}
 			openWindow  = window.open('dialogs/anchor.jsp' + params, 'SetAnchor', "width=350, height=" + winheight + ", scrollbars=no, location=no, menubar=no, toolbar=no, status=no, dependent=yes, resizable=yes, top=300, left=250");
 			focusCount = 1;
 			openWindow.focus();
@@ -764,27 +764,27 @@ function checkTableSelection() {
 
 			// get table properties
 			var args1 = new Array();
-	
+
 			if (range.border != "" && range.border.length > 0) {
 				args1["BorderLineWidth"] = range.border;
 			}
-	
+
 			if (range.cellPadding != "" && range.cellPadding.length > 0) {
 				args1["CellPadding"] = range.cellPadding;
 			}
-	
+
 			if (range.cellSpacing != "" && range.cellSpacing.length > 0) {
 				args1["CellSpacing"] = range.cellSpacing;
 			}
-	
+
 			if (range.bgColor != "" && range.bgColor.length > 0) {
 				args1["TableColor"] = range.bgColor;
 			}
-	
+
 			//get new attributes
 			var args2 = new Array();
 			args2 = showModalDialog("dialogs/table_new.jsp?titleType=edit", args1, "dialogWidth:600px; resizable: yes; help: no; status: no; scroll: no;");
-	
+
 			// set the new attributes
 			if (args2 != null) {
 				for ( elem in args2 ) {
@@ -805,9 +805,9 @@ function checkTableSelection() {
 	}
 }
 
-// Checks if a table row or cell element is selected 
+// Checks if a table row or cell element is selected
 function checkTableElSelection(type) {
-	
+
 	var editor = document.all.EDIT_HTML;
 	var sel = editor.DOM.selection;
 	var sel2 = null;
@@ -920,11 +920,11 @@ function InsertTable() {
 	var pVar = document.all.ObjTableInfo;
 	var args = new Array();
 	var arr = null;
-	
+
 	document.all.ObjTableInfo.TableAttrs =" ";
 	document.all.ObjTableInfo.CellAttrs =" ";
 
-	// Preset values for the table dialog. 
+	// Preset values for the table dialog.
 	// Data is stored in an array that is submitted to the dialog.
 	args["NumRows"] = document.all.ObjTableInfo.NumRows;
 	args["NumCols"] = document.all.ObjTableInfo.NumCols;
@@ -1029,7 +1029,7 @@ function deleteEmptyATags() {
 
 	for(var i = 0; i < allLinks.length; i++) {
 		if (allLinks[i].innerText == "") {
-			allImgLinks = allLinks[i].all.tags("IMG"); 
+			allImgLinks = allLinks[i].all.tags("IMG");
 			if (allImgLinks.length == 0) {
 				allLinks[i].removeNode();
 			}

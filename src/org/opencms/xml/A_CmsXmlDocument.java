@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,14 +59,11 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
-
-    /** The XML content definition object (i.e. XML schema) used by this content. */
-    protected CmsXmlContentDefinition m_contentDefinition;
 
     /** The content conversion to use for this xml document. */
     protected String m_conversion;
@@ -157,7 +154,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         rootNode.add(sourceElement);
 
         // re-initialize the document bookmarks
-        initDocument(m_document, m_encoding, m_contentDefinition);
+        initDocument(m_document, m_encoding, getContentDefinition());
     }
 
     /**
@@ -395,7 +392,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public void initDocument() {
 
-        initDocument(m_document, m_encoding, m_contentDefinition);
+        initDocument(m_document, m_encoding, getContentDefinition());
     }
 
     /**
@@ -459,7 +456,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         }
 
         // re-initialize the document bookmarks
-        initDocument(m_document, m_encoding, m_contentDefinition);
+        initDocument(m_document, m_encoding, getContentDefinition());
     }
 
     /**

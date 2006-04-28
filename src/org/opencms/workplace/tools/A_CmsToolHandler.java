@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2006/03/28 13:10:02 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,10 +116,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /** Small icon path (16x16). */
     private String m_smallIconPath;
 
-
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsToolHandler.class);
-    
+
     /**
      * Returns the confirmation Message.<p>
      *
@@ -527,9 +526,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
                 while (itArgs.hasNext()) {
                     String arg = "";
                     try {
-                    arg = (String)itArgs.next();
-                    int pos = arg.indexOf(VALUE_SEPARATOR);
-                    argsMap.put(arg.substring(0, pos), arg.substring(pos + 1));
+                        arg = (String)itArgs.next();
+                        int pos = arg.indexOf(VALUE_SEPARATOR);
+                        argsMap.put(arg.substring(0, pos), arg.substring(pos + 1));
                     } catch (StringIndexOutOfBoundsException e) {
                         LOG.error("sep: " + VALUE_SEPARATOR + "arg: " + arg);
                         throw e;

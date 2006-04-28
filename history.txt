@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/04/26 09:21:56 $
- * Version: $Revision: 1.719 $
+ * Date   : $Date: 2006/04/28 15:20:57 $
+ * Version: $Revision: 1.720 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,10 @@ OpenCms 6.2.1 - April xxx, 2006
 * Added fix for "concurrent resource creation" issue
 * Added new test case utility classes for concurrent tests with the CmsObject
 * Fixed issues with special characters in help texts of XML content editor
+* Fixed issue #1129: DB Table name lenght for project name was to short
+* Fixed issue with secure site in SSL and redirects
+* Fixed some small issues with the update wizard
+* Fixed issue #1150: binary distribution usable only with Java 1.5 (with new special Java 1.4 download)
 
 OpenCms 6.2.0 - March 31, 2006
 * Fixed issue #1105: Added entry for MS IE 7 in editor_configuration.xml

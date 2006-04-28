@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2006/03/27 14:52:36 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,6 +90,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContent.class);
+
+    /** The XML content definition object (i.e. XML schema) used by this content. */
+    protected CmsXmlContentDefinition m_contentDefinition;
 
     /**
      * Hides the public constructor.<p>
@@ -638,8 +641,8 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 }
             } else {
                 // unknown XML node name according to schema
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
                         name,
                         definition.getSchemaLocation()));

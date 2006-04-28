@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  * 
@@ -134,6 +134,13 @@ public interface I_CmsEventListener {
      * Not thrown by the core classes, but might be used in modules.
      */
     int EVENT_CLEAR_CACHES = 5;
+
+    /** 
+     * Event "all caches related to user and groups must be cleared".<p>
+     *
+     * Not thrown by the core classes, but might be used in modules.
+     */
+    int EVENT_CLEAR_PRINCIPAL_CACHES = 6;
 
     /** 
      * Event "delete all JSP pages in the "real" file system 

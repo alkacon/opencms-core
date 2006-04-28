@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminFrameset.java,v $
- * Date   : $Date: 2006/03/28 13:10:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/04/28 15:20:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,8 @@
 package org.opencms.workplace.administration;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.tools.CmsToolDialog;
-import org.opencms.workplace.tools.CmsToolManager;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,16 +81,6 @@ public class CmsAdminFrameset extends CmsToolDialog {
     public String getParamMenu() {
 
         return m_paramMenu;
-    }
-
-    /**
-     * Returns the admin manager.<p>
-     * 
-     * @return the admin manager
-     */
-    public CmsToolManager getToolManager() {
-
-        return OpenCms.getWorkplaceManager().getToolManager();
     }
 
     /**

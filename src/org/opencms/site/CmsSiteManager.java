@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 6.0.0 
  */
@@ -275,10 +275,15 @@ public final class CmsSiteManager implements Cloneable {
      * 
      * @param server the Server
      * @param uri the vfs path
-     * @param secureServer a secure server, can be null
+     * @param secureServer a secure server, can be <code>null</code>
+     * @param exclusive if set to <code>true</code>, secure resources will only be available using the configured secure url
+     * @param error if exclusive, and set to <code>true</code> will generate a 404 error, 
+     *                             if set to <code>false</code> will redirect to secure url
+     * 
      * @throws CmsConfigurationException if the site contains a servername, that is already assigned
      */
-    public void addSite(String server, String uri, String secureServer) throws CmsConfigurationException {
+    public void addSite(String server, String uri, String secureServer, String exclusive, String error)
+    throws CmsConfigurationException {
 
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
@@ -289,6 +294,8 @@ public final class CmsSiteManager implements Cloneable {
         if (CmsStringUtil.isNotEmpty(secureServer)) {
             matcher = new CmsSiteMatcher(secureServer);
             site.setSecureServer(matcher);
+            site.setExclusiveUrl(Boolean.valueOf(exclusive).booleanValue());
+            site.setExclusiveError(Boolean.valueOf(error).booleanValue());
             addServer(matcher, site);
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/04/27 15:32:45 $
- * Version: $Revision: 1.571 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.572 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -566,6 +566,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         org.opencms.main.OpenCms.addCmsEventListener(driverManager, new int[] {
             I_CmsEventListener.EVENT_UPDATE_EXPORTS,
             I_CmsEventListener.EVENT_CLEAR_CACHES,
+            I_CmsEventListener.EVENT_CLEAR_PRINCIPAL_CACHES,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT});
 
         // return the configured driver manager
@@ -999,7 +1000,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 break;
 
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                clearcache();
+                clearcache(false);
+                break;
+            case I_CmsEventListener.EVENT_CLEAR_PRINCIPAL_CACHES:
+                clearcache(true);
                 break;
             default:
         // noop
@@ -4484,7 +4488,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 OpenCms.fireCmsEvent(beforePublishEvent);
 
                 // clear the cache
-                clearcache();
+                clearcache(false);
 
                 m_projectDriver.publishProject(
                     dbc,
@@ -4519,7 +4523,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             } finally {
                 // clear the cache again
-                clearcache();
+                clearcache(false);
 
                 // fire an event that a project has been published
                 Map eventData = new HashMap();
@@ -7583,7 +7587,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     protected void finalize() throws Throwable {
 
         try {
-            clearcache();
+            clearcache(false);
 
             try {
                 m_projectDriver.destroy();
@@ -7730,18 +7734,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /**
      * Clears all internal caches.<p>
+     * 
+     * @param principalsOnly clear group and user caches only flag 
      */
-    private void clearcache() {
+    private void clearcache(boolean principalsOnly) {
 
         m_userCache.clear();
-        m_groupCache.clear();
+        m_groupCache.clear();        
         m_userGroupsCache.clear();
-        m_projectCache.clear();
-        m_resourceCache.clear();
-        m_resourceListCache.clear();
-        m_propertyCache.clear();
         m_accessControlListCache.clear();
         m_securityManager.clearPermissionCache();
+
+        if (!principalsOnly) {
+            m_projectCache.clear();
+            m_resourceCache.clear();
+            m_resourceListCache.clear();
+            m_propertyCache.clear();
+        }
     }
 
     /**

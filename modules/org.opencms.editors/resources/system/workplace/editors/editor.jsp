@@ -1,8 +1,7 @@
-<%@ page import="
+<%@ page session="false" import="
 	org.opencms.workplace.editors.*,
-	org.opencms.jsp.*"
-	session="false"
-%><%
+	org.opencms.jsp.*
+"%><%
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsEditorFrameset wp = new CmsEditorFrameset(cms);
 

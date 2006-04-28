@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/03/28 12:14:36 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,7 +165,8 @@ public final class CmsStringUtil {
      * 
      * @throws CmsIllegalArgumentException if the check fails (generated from the given key and bundle)
      */
-    public static void checkName(String name, String contraints, String key, I_CmsMessageBundle bundle) {
+    public static void checkName(String name, String contraints, String key, I_CmsMessageBundle bundle)
+    throws CmsIllegalArgumentException {
 
         int l = name.length();
         for (int i = 0; i < l; i++) {

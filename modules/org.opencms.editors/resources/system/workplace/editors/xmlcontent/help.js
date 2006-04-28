@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/help.js,v $
- * Date   : $Date: 2006/04/26 09:21:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ var browser = new Browser();
 function showHelpText(imgId, textValue) {
 	if (imgId == null || imgId == "") {
 		var elem = document.getElementById("helpText");
-		if (elem.style.visibility == "visible") {
+	    if (elem.style.visibility == "visible") {
 	        return;
 	    } else {
 	    	elem.style.visibility = "visible";
@@ -80,22 +80,34 @@ function showHelpX(id, helpId) {
     	xOffset = 50;
     }
 
+    try {
     selectY = showEditorElement(text, icon, xOffset, 8, false);
     hideSelectBoxes(text, selectY);
+    } catch (e)  {
+    	// ignore
+}
 }
 
 function hideHelpText() {
 	var text = document.getElementById("helpText");
+	try {
     text.style.visibility = "hidden";
     showSelectBoxes();
+    } catch (e)  {
+    	// ignore
+}
 }
 
 function hideHelp(id) {
     var text = document.getElementById("help" + id);
+	try {
     text.style.visibility = "hidden";
     text.style.left = "0px";
     text.style.top =  "0px";
     showSelectBoxes();
+    } catch (e)  {
+    	// ignore
+}
 }
 
 // hide select boxes which are in help or combo area to avoid display issues

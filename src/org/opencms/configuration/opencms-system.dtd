@@ -12,6 +12,7 @@
 	internationalization,
 	mail,
 	scheduler,
+	events?,
 	versionhistory,
 	resourceinit?,
 	requesthandlers?,
@@ -193,6 +194,18 @@ Each job can have an optional list of parameters.
 <!ATTLIST param name CDATA #REQUIRED>
 
 <!--
+# Event settings:
+# It is possible to replace the default event manager with a custom implementation 
+# by configuring the name of the event manager class. The event manager class must
+# always be extended from org.opencms.main.CmsEventManager.
+-->
+
+<!ELEMENT events (eventmanager?)>
+
+<!ELEMENT eventmanager EMPTY>
+<!ATTLIST eventmanager class CDATA #REQUIRED>
+
+<!--
 # Configuration that controls individual sites in OpenCms.
 # Each <site> subnode of <sites> defines a site with the server name
 # and the corresponding VFS uri in OpenCms.
@@ -200,7 +213,10 @@ Each job can have an optional list of parameters.
 # workplace-server: the default server of the OpenCms workplace
 # default-uri: the default uri marks the site that is used when 
 #              a request matches no defined site 
-# secure: an optional secure server for the site
+# secure: an optional secure server for the site:
+#     exclusive: if set to true, secure resources will only be available using the given secure url
+#                do not forget to configure an additional tomcat connector using proxyPort="443" scheme="https" secure="false"
+#     error: if exclusive, and set to true will generate a 404 error, if set to false will redirect to secure url
 # alias:  alias servers for the site
 -->
 <!ELEMENT sites (workplace-server, default-uri, site+)>
@@ -212,7 +228,9 @@ Each job can have an optional list of parameters.
 	uri CDATA #REQUIRED>
 <!ELEMENT secure EMPTY>	
 <!ATTLIST secure
-	server CDATA #REQUIRED>
+	server CDATA #REQUIRED
+	exclusive (true|false) "false"
+	error (true|false) "false">
 <!ELEMENT alias EMPTY>	
 <!ATTLIST alias
 	server CDATA #REQUIRED>	

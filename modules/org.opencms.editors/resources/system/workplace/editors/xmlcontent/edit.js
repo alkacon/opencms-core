@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2006/04/02 06:45:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -196,8 +196,8 @@ function submitSaveAction() {
 		setTimeout('submitSaveAction()', 20);
 		return;
 	}
-	if (stringsPresent) {
-		if (stringsInserted) {
+	if (stringsPresent == true) {
+		if (stringsInserted == true) {
 			buttonAction(9);
 		} else {
 			setTimeout('submitSaveAction()', 20);

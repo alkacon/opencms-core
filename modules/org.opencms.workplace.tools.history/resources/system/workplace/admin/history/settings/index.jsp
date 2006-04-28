@@ -1,12 +1,13 @@
-<%@ page 
-	import="org.opencms.workplace.tools.history.*" %>
-<%	
+<%@ page import="
+	org.opencms.workplace.*,
+	org.opencms.workplace.tools.history.*
+"%><%	
 	// initialize the workplace class
 	CmsAdminHistorySettings wp = new CmsAdminHistorySettings(pageContext, request, response);
 		
 //////////////////// start of switch statement 
 switch (wp.getAction()) {
-    case CmsAdminHistorySettings.ACTION_CANCEL:
+    case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 	wp.actionCloseDialog();
 	break;
@@ -16,10 +17,10 @@ switch (wp.getAction()) {
 	wp.actionEdit(request);
 	break;
 
-    case CmsAdminHistorySettings.ACTION_DEFAULT:
+    case CmsDialog.ACTION_DEFAULT:
     default:
 //////////////////// ACTION: show history settings dialog (default)
-	wp.setParamAction(wp.DIALOG_SAVE_EDIT);
+	wp.setParamAction(CmsAdminHistorySettings.DIALOG_SAVE_EDIT);
 %>
 
     <%= wp.htmlStart("administration/index.html") %>
@@ -28,10 +29,10 @@ switch (wp.getAction()) {
     <%= wp.dialogStart() %>
     <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <% if (wp.getParamFramename()==null) { %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 <%  } %>
 
 <%= wp.buildSettingsForm() %>

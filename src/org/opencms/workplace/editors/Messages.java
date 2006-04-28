@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -285,7 +285,12 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_MESSAGE_SELECTION_0 = "GUI_EDITOR_MESSAGE_SELECTION_0";
 
-    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_MODE_SOURCE_0 = "GUI_EDITOR_MODE_SOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_MODE_WYSIWYG_0 = "GUI_EDITOR_MODE_WYSIWYG_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_TITLE_HTMLAREA_0 = "GUI_EDITOR_TITLE_HTMLAREA_0";
 

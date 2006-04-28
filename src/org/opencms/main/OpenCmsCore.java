@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/04/20 12:06:32 $
- * Version: $Revision: 1.219 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.220 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,14 +132,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.219 $ 
+ * @version $Revision: 1.220 $ 
  * 
  * @since 6.0.0 
  */
 public final class OpenCmsCore {
-
-    /** Required as template for event list generation. */
-    private static final I_CmsEventListener[] EVENT_LIST = new I_CmsEventListener[0];
 
     /** Lock object for synchronization. */
     private static final Object LOCK = new Object();
@@ -162,8 +159,8 @@ public final class OpenCmsCore {
     /** The default user and group names. */
     private CmsDefaultUsers m_defaultUsers;
 
-    /** Stores the active event listeners. */
-    private Map m_eventListeners;
+    /** The event manager for the event handling. */
+    private CmsEventManager m_eventManager;
 
     /** The set of configured export points. */
     private Set m_exportPoints;
@@ -307,45 +304,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Add a cms event listener that listens to all events.<p>
-     *
-     * @param listener the listener to add
-     */
-    protected void addCmsEventListener(I_CmsEventListener listener) {
-
-        addCmsEventListener(listener, null);
-    }
-
-    /**
-     * Add a cms event listener.<p>
-     *
-     * @param listener the listener to add
-     * @param eventTypes the events to listen for
-     */
-    protected void addCmsEventListener(I_CmsEventListener listener, int[] eventTypes) {
-
-        synchronized (m_eventListeners) {
-            if (eventTypes == null) {
-                // no event types given - register the listener for all event types
-                eventTypes = new int[] {I_CmsEventListener.LISTENERS_FOR_ALL_EVENTS.intValue()};
-            }
-            for (int i = 0; i < eventTypes.length; i++) {
-                // register the listener for all configured event types
-                Integer eventType = new Integer(eventTypes[i]);
-                List listeners = (List)m_eventListeners.get(eventType);
-                if (listeners == null) {
-                    listeners = new ArrayList();
-                    m_eventListeners.put(eventType, listeners);
-                }
-                if (!listeners.contains(listener)) {
-                    // add listerner only if it is not already registered
-                    listeners.add(listener);
-                }
-            }
-        }
-    }
-
-    /**
      * Adds the specified request handler to the Map of OpenCms request handlers. <p>
      * 
      * @param handler the handler to add
@@ -370,28 +328,6 @@ public final class OpenCmsCore {
                     handler.getClass().getName()));
             }
         }
-    }
-
-    /**
-     * Notify all event listeners that a particular event has occurred.<p>
-     *
-     * @param event a CmsEvent
-     */
-    protected void fireCmsEvent(CmsEvent event) {
-
-        fireCmsEventHandler((List)m_eventListeners.get(event.getTypeInteger()), event);
-        fireCmsEventHandler((List)m_eventListeners.get(I_CmsEventListener.LISTENERS_FOR_ALL_EVENTS), event);
-    }
-
-    /**
-     * Notify all event listeners that a particular event has occurred.<p>
-     * 
-     * @param type event type
-     * @param data event data
-     */
-    protected void fireCmsEvent(int type, Map data) {
-
-        fireCmsEvent(new CmsEvent(type, data));
     }
 
     /**
@@ -424,6 +360,16 @@ public final class OpenCmsCore {
     protected CmsDefaultUsers getDefaultUsers() {
 
         return m_defaultUsers;
+    }
+
+    /**
+     * Returns the OpenCms event manager.<p>
+     * 
+     * @return the OpenCms event manager
+     */
+    protected CmsEventManager getEventManager() {
+
+        return m_eventManager;
     }
 
     /**
@@ -855,6 +801,11 @@ public final class OpenCmsCore {
         // get the system configuration
         CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)m_configurationManager.getConfiguration(CmsSystemConfiguration.class);
 
+        // get the event manager from the configuration and initialize it with the events already registered
+        CmsEventManager configuredEventManager = systemConfiguration.getEventManager();
+        configuredEventManager.initialize(m_eventManager);
+        m_eventManager = configuredEventManager;
+
         // check if the encoding setting is valid
         String setEncoding = systemConfiguration.getDefaultContentEncoding();
         String defaultEncoding = CmsEncoder.lookupEncoding(setEncoding, null);
@@ -912,7 +863,7 @@ public final class OpenCmsCore {
                 e);
         }
 
-        // get Site Manager
+        // get the site manager from the configuration
         m_siteManager = systemConfiguration.getSiteManager();
 
         // get the VFS / resource configuration
@@ -1150,7 +1101,6 @@ public final class OpenCmsCore {
 
         synchronized (LOCK) {
             m_resourceInitHandlers = new ArrayList();
-            m_eventListeners = new HashMap();
             m_requestHandlers = new HashMap();
             m_systemInfo = new CmsSystemInfo();
             m_exportPoints = Collections.EMPTY_SET;
@@ -1158,6 +1108,8 @@ public final class OpenCmsCore {
             m_localeManager = new CmsLocaleManager(Locale.ENGLISH);
             m_sessionManager = new CmsSessionManager();
             m_runtimeProperties = new Hashtable();
+            // the default event manager must be available because the configuration already registers events 
+            m_eventManager = new CmsEventManager();
         }
     }
 
@@ -1174,12 +1126,13 @@ public final class OpenCmsCore {
      * that was found and returned.<p>
      * 
      * Implementing and configuring an <code>{@link I_CmsResourceInit}</code> handler 
-     * allows to customize the process of default resouce selection.<p>
+     * allows to customize the process of default resource selection.<p>
      *
      * @param cms the current users OpenCms context
      * @param resourceName the path of the requested resource in the OpenCms VFS
      * @param req the current http request
      * @param res the current http response
+     * 
      * @return the requested resource read from the VFS
      * 
      * @throws CmsException in case the requested file does not exist or the user has insufficient access permissions
@@ -1256,6 +1209,39 @@ public final class OpenCmsCore {
                     Messages.ERR_READ_INTERNAL_RESOURCE_1,
                     cms.getRequestContext().getUri()));
             }
+
+            // check online project
+            if (cms.getRequestContext().currentProject().isOnlineProject()) {
+                // check if resource is secure
+                boolean secure = Boolean.valueOf(
+                    cms.readPropertyObject(cms.getSitePath(resource), CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
+                if (secure) {
+                    // resource is secure, check site config
+                    CmsSite site = CmsSiteManager.getCurrentSite(cms);
+                    // check the secure url
+                    boolean usingSec = req.getRequestURL().toString().toUpperCase().startsWith(
+                        site.getSecureUrl().toUpperCase());
+                    if (site.isExclusiveUrl() && !usingSec) {
+                        resource = null;
+                        // secure resource without secure protocol, check error config
+                        if (site.isExclusiveError()) {
+                            // trigger 404 error
+                            throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                                Messages.ERR_REQUEST_SECURE_RESOURCE_0));
+                        } else {
+                            // redirect
+                            String uri = req.getRequestURL().toString();
+                            String target = site.getSecureUrl()
+                                + uri.substring(uri.indexOf("/", uri.indexOf("//") + 2));
+                            try {
+                                res.sendRedirect(target);
+                            } catch (Exception e) {
+                                // ignore, but should never happen
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         // test if this file has to be checked or modified
@@ -1300,22 +1286,6 @@ public final class OpenCmsCore {
                     CmsStringUtil.formatRuntime(getSystemInfo().getRuntime())));
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LINE_0));
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
-            }
-        }
-    }
-
-    /**
-     * Removes a cms event listener.<p>
-     *
-     * @param listener the listener to remove
-     */
-    protected void removeCmsEventListener(I_CmsEventListener listener) {
-
-        synchronized (m_eventListeners) {
-            Iterator it = m_eventListeners.keySet().iterator();
-            while (it.hasNext()) {
-                List listeners = (List)m_eventListeners.get(it.next());
-                listeners.remove(listener);
             }
         }
     }
@@ -1749,77 +1719,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Fires the specified event to a list of event listeners.<p>
-     * 
-     * @param listeners the listeners to fire
-     * @param event the event to fire
-     */
-    private void fireCmsEventHandler(List listeners, CmsEvent event) {
-
-        if (!LOG.isDebugEnabled()) {
-            // no logging required            
-            if ((listeners != null) && (listeners.size() > 0)) {
-                // handle all event listeners that listen to this event type
-                I_CmsEventListener[] list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
-                // loop through all registered event listeners
-                for (int i = 0; i < list.length; i++) {
-                    // fire the event
-                    list[i].cmsEvent(event);
-                }
-            }
-        } else {
-            // add lots of event debug output (this should usually be disabled)
-            // repeat event handling code to avoid multiple "is log enabled" checks in normal operation
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_EVENT_1, event.toString()));
-            if ((listeners != null) && (listeners.size() > 0)) {
-                // handle all event listeners that listen to this event type
-                I_CmsEventListener[] list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
-                // log the event data
-                if (event.getData() != null) {
-                    Iterator i = event.getData().keySet().iterator();
-                    while (i.hasNext()) {
-                        String key = (String)i.next();
-                        Object value = event.getData().get(key);
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_DEBUG_EVENT_VALUE_3,
-                            key,
-                            value,
-                            event.toString()));
-                    }
-                } else {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_NO_EVENT_VALUE_1, event.toString()));
-                }
-                // log all the registered event listeners
-                for (int j = 0; j < list.length; j++) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_EVENT_LISTENERS_3,
-                        list[j],
-                        new Integer(j),
-                        event.toString()));
-                }
-                // loop through all registered event listeners
-                for (int i = 0; i < list.length; i++) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_EVENT_START_LISTENER_3,
-                        list[i],
-                        new Integer(i),
-                        event.toString()));
-                    // fire the event
-                    list[i].cmsEvent(event);
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_EVENT_END_LISTENER_3,
-                        list[i],
-                        new Integer(i),
-                        event.toString()));
-                }
-            } else {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_EVENT_NO_LISTENER_1, event.toString()));
-            }
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_EVENT_COMPLETE_1, event.toString()));
-        }
-    }
-
-    /**
      * Initializes a CmsObject with the given context information.<p>
      * 
      * @param contextInfo the information for the CmsObject context to create
@@ -2120,9 +2019,9 @@ public final class OpenCmsCore {
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
             // resolve the login form link using the link manager
-            redirectURL = m_linkManager.substituteLink(adminCms, redirectURL);
+            redirectURL = m_linkManager.substituteLink(adminCms, redirectURL, null, true);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_AUTHENTICATE_PROPERTY_2, redirectURL, path));
+                Messages.get().getBundle().key(Messages.LOG_AUTHENTICATE_PROPERTY_2, redirectURL, path);
             }
             // finally redirect to the login form
             res.sendRedirect(redirectURL);

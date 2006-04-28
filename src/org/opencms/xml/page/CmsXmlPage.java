@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2006/03/27 14:53:06 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2006/04/28 15:20:57 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,12 +102,6 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /** Name of the type attribute of the elements node. */
     public static final String ATTRIBUTE_TYPE = "type";
-
-    /** Property to check if relative links are allowed. */
-    public static final String PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
-
-    /** The DTD address of the OpenCms xmlpage. */
-    public static final String XMLPAGE_XSD_SYSTEM_ID = CmsConfigurationManager.DEFAULT_DTD_PREFIX + "xmlpage.xsd";
 
     /** Name of the anchor node. */
     public static final String NODE_ANCHOR = "anchor";
@@ -136,11 +130,17 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     /** Name of the target node. */
     public static final String NODE_TARGET = "target";
 
+    /** Property to check if relative links are allowed. */
+    public static final String PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
+
+    /** The DTD address of the OpenCms xmlpage. */
+    public static final String XMLPAGE_XSD_SYSTEM_ID = CmsConfigurationManager.DEFAULT_DTD_PREFIX + "xmlpage.xsd";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlPage.class);
 
     /** The XML page content definition is static. */
-    private static CmsXmlContentDefinition m_contentDefinition;
+    private static CmsXmlContentDefinition m_xmlPageContentDefinition;
 
     /** Name of the element node. */
     private static final String NODE_ELEMENT = "element";
@@ -158,7 +158,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      */
     public CmsXmlPage(Document document, String encoding) {
 
-        initDocument(document, encoding, null);
+        initDocument(document, encoding, getContentDefinition());
     }
 
     /**
@@ -173,7 +173,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      */
     public CmsXmlPage(Locale locale, String encoding) {
 
-        initDocument(CmsXmlPageFactory.createDocument(locale), encoding, null);
+        initDocument(CmsXmlPageFactory.createDocument(locale), encoding, getContentDefinition());
     }
 
     /**
@@ -187,7 +187,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         // add element node for Locale
         getContentDefinition().createLocale(cms, this, m_document.getRootElement(), locale);
         // re-initialize the bookmarks
-        initDocument(m_document, m_encoding, null);
+        initDocument(m_document, m_encoding, getContentDefinition());
     }
 
     /**
@@ -262,27 +262,23 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     }
 
     /**
-     * @throws CmsRuntimeException if unmarshalling of the xmlpage DTD fails
-     * 
-     * @return the unmarshalled content definition for this xmlpage 
      * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition()
-     * 
      */
     public CmsXmlContentDefinition getContentDefinition() throws CmsRuntimeException {
 
-        if (m_contentDefinition == null) {
+        if (m_xmlPageContentDefinition == null) {
             // since XML page schema is cached anyway we don't need an CmsObject instance
             CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
             InputSource source;
             try {
                 source = resolver.resolveEntity(null, XMLPAGE_XSD_SYSTEM_ID);
                 // store content definition in static variable
-                m_contentDefinition = CmsXmlContentDefinition.unmarshal(source, XMLPAGE_XSD_SYSTEM_ID, resolver);
+                m_xmlPageContentDefinition = CmsXmlContentDefinition.unmarshal(source, XMLPAGE_XSD_SYSTEM_ID, resolver);
             } catch (CmsXmlException e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_PAGE_UNMARSHAL_CONTENDDEF_0), e);
             }
         }
-        return m_contentDefinition;
+        return m_xmlPageContentDefinition;
     }
 
     /**
@@ -408,7 +404,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         element.addAttribute(ATTRIBUTE_NAME, newValue);
 
         // re-initialize the document to update the bookmarks
-        initDocument(m_document, m_encoding, m_contentDefinition);
+        initDocument(m_document, m_encoding, getContentDefinition());
     }
 
     /**
@@ -510,6 +506,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
                     // create an element type from the XML node                    
                     CmsXmlHtmlValue value = new CmsXmlHtmlValue(this, element, locale);
+                    value.setContentDefinition(definition);
 
                     // add the element type bookmark
                     addBookmark(CmsXmlUtils.createXpathElement(name, 1), locale, enabled, value);

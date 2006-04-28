@@ -1,9 +1,12 @@
-<%@ page import="org.opencms.main.*, org.opencms.search.*, org.opencms.file.*, 
-                               org.opencms.jsp.*,  org.opencms.workplace.*, org.opencms.workplace.administration.*, org.opencms.workplace.tools.content.*, java.util.*" 
-%>
+<%@ page import="
+	org.opencms.main.*, 
+	org.opencms.search.*, 
+	org.opencms.jsp.*,
+	org.opencms.workplace.*,
+	org.opencms.workplace.tools.content.*,
+	java.util.*
+"%><%
 
-<%   
-    
     // initialize the workplace class
     CmsDialog wp = new CmsPropertyChange(pageContext, request, response);
 

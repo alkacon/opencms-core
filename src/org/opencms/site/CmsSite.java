@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,14 +42,20 @@ import java.util.List;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsSite implements Cloneable {
-    
+
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
     private List m_aliases;
+
+    /** If exclusive, and set to true will generate a 404 error, if set to false will redirect to secure url. */
+    private boolean m_exclusiveError;
+
+    /** If set to true, secure resources will only be available using the configured secure url. */
+    private boolean m_exclusiveUrl;
 
     /** The Url of the secure server. */
     private CmsSiteMatcher m_secureServer;
@@ -230,6 +236,48 @@ public final class CmsSite implements Cloneable {
     public boolean hasSecureServer() {
 
         return m_secureServer != null;
+    }
+
+    /**
+     * Returns the exclusive error flag.<p>
+     * 
+     * @return <code>true</code> will generate a 404 error, 
+     *      or <code>false</code> will redirect to secure url.
+     */
+    public boolean isExclusiveError() {
+
+        return m_exclusiveError;
+    }
+
+    /**
+     * Returns the exclusive protocol flag.<p>
+     * 
+     * @return <code>true</code> secure resources will only be available using the configured secure url, 
+     *      or <code>false</code> if the uri (protocol + servername) does not really matter.
+     */
+    public boolean isExclusiveUrl() {
+
+        return m_exclusiveUrl;
+    }
+
+    /**
+     * Sets the exclusive error flag.<p>
+     * 
+     * @param error the exclusive error flag
+     */
+    public void setExclusiveError(boolean error) {
+
+        m_exclusiveError = error;
+    }
+
+    /**
+     * Sets the exclusive protocol flag.<p>
+     * 
+     * @param exclusive the exclusive protocol flag
+     */
+    public void setExclusiveUrl(boolean exclusive) {
+
+        m_exclusiveUrl = exclusive;
     }
 
     /**

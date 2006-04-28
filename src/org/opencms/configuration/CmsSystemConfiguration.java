@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/04/28 15:20:52 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.mail.CmsMailHost;
 import org.opencms.mail.CmsMailSettings;
 import org.opencms.main.CmsContextInfo;
+import org.opencms.main.CmsEventManager;
 import org.opencms.main.CmsHttpAuthenticationSettings;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsRequestHandler;
@@ -74,11 +75,17 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 6.0.0
  */
 public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+
+    /** The "error" attribute. */
+    public static final String A_ERROR = "error";
+
+    /** The "exclusive" attribute. */
+    public static final String A_EXCLUSIVE = "exclusive";
 
     /** The "server" attribute. */
     public static final String A_SERVER = "server";
@@ -151,6 +158,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The node name for the context encoding. */
     public static final String N_ENCODING = "encoding";
+
+    /** The node name for the request handler classes. */
+    public static final String N_EVENTMANAGER = "eventmanager";
+
+    /** The node name for the events node. */
+    public static final String N_EVENTS = "events";
 
     /** The node name for the flexcache node. */
     public static final String N_FLEXCACHE = "flexcache";
@@ -380,6 +393,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The default content encoding. */
     private String m_defaultContentEncoding;
 
+    /** The configured OpenCms event manager. */
+    private CmsEventManager m_eventManager;
+
     /** The HTTP basic authentication settings. */
     private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;
 
@@ -444,6 +460,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_requestHandlers = new ArrayList();
         m_configuredJobs = new ArrayList();
         m_runtimeProperties = new HashMap();
+        m_eventManager = new CmsEventManager();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
         }
@@ -455,6 +472,38 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         m_runtimeProperties.put(paramName, paramValue);
+    }
+
+    /**
+     * Adds the event manager class.<p>
+     * 
+     * @param clazz the class name of event manager class  to instanciate and add
+     */
+    public void addEventManager(String clazz) {
+
+        Object initClass;
+        try {
+            initClass = Class.forName(clazz).newInstance();
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_EVENTMANAGER_CLASS_INVALID_2,
+                clazz,
+                m_resourceInitHandlers.getClass().getName()), t);
+            return;
+        }
+        if (initClass instanceof CmsEventManager) {
+            m_eventManager = (CmsEventManager)initClass;
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EVENTMANAGER_CLASS_SUCCESS_1, initClass));
+            }
+        } else {
+            if (CmsLog.INIT.isErrorEnabled()) {
+                CmsLog.INIT.error(Messages.get().getBundle().key(
+                    Messages.INIT_EVENTMANAGER_CLASS_INVALID_2,
+                    initClass,
+                    m_resourceInitHandlers.getClass().getName()));
+            }
+        }
     }
 
     /**
@@ -682,6 +731,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 1);
 
+        // add event classes
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_EVENTS + "/" + N_EVENTMANAGER, "addEventManager", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_EVENTS + "/" + N_EVENTMANAGER, 0, A_CLASS);
+
         // add resource init classes
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER,
@@ -728,10 +781,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
 
         // add site configuration rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 3);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 5);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 0, A_SERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 1, A_URI);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 2, A_SERVER);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 3, A_EXCLUSIVE);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 4, A_ERROR);
 
         // add an alias to the currently configured site
         digester.addCallMethod(
@@ -935,6 +990,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             }
         }
 
+        // <events> node
+        Element eventsElement = systemElement.addElement(N_EVENTS);
+        Element eventManagerElement = eventsElement.addElement(N_EVENTMANAGER);
+        eventManagerElement.addAttribute(A_CLASS, m_eventManager.getClass().getName());
+
         // version history
         systemElement.addElement(N_VERSIONHISTORY).addAttribute(
             A_ENABLED,
@@ -1013,7 +1073,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             siteElement.addAttribute(A_URI, site.getSiteRoot().concat("/"));
             // create <secure server=""/> subnode            
             if (site.hasSecureServer()) {
-                siteElement.addElement(N_SECURE).addAttribute(A_SERVER, site.getSecureUrl());
+                Element secureElem = siteElement.addElement(N_SECURE);
+                secureElem.addAttribute(A_SERVER, site.getSecureUrl());
+                secureElem.addAttribute(A_EXCLUSIVE, "" + site.isExclusiveUrl());
+                secureElem.addAttribute(A_ERROR, "" + site.isExclusiveError());
             }
             // create <alias server=""/> subnode(s)            
             Iterator aliasIterator = site.getAliases().iterator();
@@ -1209,6 +1272,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public String getDtdFilename() {
 
         return CONFIGURATION_DTD_NAME;
+    }
+
+    /**
+     * Returns the configured OpenCms event manager instance.<p>
+     * 
+     * @return the configured OpenCms event manager instance
+     */
+    public CmsEventManager getEventManager() {
+
+        return m_eventManager;
     }
 
     /**
