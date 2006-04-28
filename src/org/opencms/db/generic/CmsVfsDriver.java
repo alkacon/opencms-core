@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2006/04/27 15:32:44 $
- * Version: $Revision: 1.259 $
+ * Date   : $Date: 2006/04/28 12:49:41 $
+ * Version: $Revision: 1.260 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.259 $
+ * @version $Revision: 1.260 $
  * 
  * @since 6.0.0 
  */
@@ -2337,6 +2337,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setInt(1, resource.getState());
                 stmt.setString(2, resource.getStructureId().toString());
                 stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
                 
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RELEASE_EXPIRED");
                 stmt.setLong(1, resource.getDateReleased());
