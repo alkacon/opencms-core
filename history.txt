@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/04/28 15:20:57 $
- * Version: $Revision: 1.720 $
+ * Date   : $Date: 2006/04/28 15:45:35 $
+ * Version: $Revision: 1.721 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,14 +19,20 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.2.1 - April xxx, 2006
+OpenCms 6.2.1 - April 28, 2006
 * Added fix for "concurrent resource creation" issue
-* Added new test case utility classes for concurrent tests with the CmsObject
+! Added new test case utility classes for concurrent tests with the CmsObject
+* Fixed issue with old version of cached content definition after a nested XML subschema was changed
+! Moved event handling code to new class org.opencms.main.CmsEventManager
 * Fixed issues with special characters in help texts of XML content editor
+* Fixed issue in CmsHtmlConverter with variable line separator length in UNIX / Win environments
+* Fixed issue with missing "Lock" entry in context menu for image resources
+* Fixed issue with VFS resource state being set wrong in combination with operations on new siblings
 * Fixed issue #1129: DB Table name lenght for project name was to short
 * Fixed issue with secure site in SSL and redirects
 * Fixed some small issues with the update wizard
 * Fixed issue #1150: binary distribution usable only with Java 1.5 (with new special Java 1.4 download)
+* Fixed issue #1138: custom JSP error handler page now return the original error status code
 
 OpenCms 6.2.0 - March 31, 2006
 * Fixed issue #1105: Added entry for MS IE 7 in editor_configuration.xml
