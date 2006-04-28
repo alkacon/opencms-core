@@ -2,7 +2,7 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="6.2.1" />    
+    <property name="version.number"             		value="6.2.0" />    
     
 	<property name="app.name" 							value="opencms" />
 	<property name="src.all.comps" 						value="src-modules,src-components,modules,test,webapp" />
@@ -282,8 +282,7 @@ ${opencms.inputlib.textextraction}
             debug="on"
             optimize="on"
             deprecation="on"
-       		source="1.4"
-    		target="1.4">
+       		source="1.4">
        		<!-- compilerarg value="-Xlint:unchecked"/ -->
        	</javac>
 		
@@ -716,8 +715,7 @@ ${opencms.inputlib.textextraction}
             debug="on"
             optimize="on"
             deprecation="on" 
-       		source="1.4"
-    		target="1.4"/>
+       		source="1.4"/>
 		
         <copy todir="${opencms.output.tests}">
             <fileset dir="${opencms.input}/test" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd" excludes="${excludes},**/data/**"/>

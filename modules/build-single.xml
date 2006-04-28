@@ -274,7 +274,7 @@
 				<if>
 					<equals arg1="${src.mode}" arg2="shared" />
 					<then>
-						<javac srcdir="${module.input.src.shared}" destdir="${module.output.classes}" debug="on" optimize="on" deprecation="on" includes="${module.package}/*.java" source="1.4" target="1.4">
+						<javac srcdir="${module.input.src.shared}" destdir="${module.output.classes}" debug="on" optimize="on" deprecation="on" includes="${module.package}/*.java" source="1.4">
 							<classpath>
 								<fileset dir="${opencms.input.libs}">
 									<include name="**/*.jar" />
@@ -303,7 +303,7 @@
 												<var name="package.dir" value="${package.dir}@{package}/" />
 											</sequential>
 										</for>
-										<javac srcdir="${module.input.src.shared}" destdir="${module.output.classes}" debug="on" optimize="on" deprecation="on" includes="${package.dir}/*.java" source="1.4" target="1.4">
+										<javac srcdir="${module.input.src.shared}" destdir="${module.output.classes}" debug="on" optimize="on" deprecation="on" includes="${package.dir}/*.java" source="1.4">
 											<classpath>
 												<fileset dir="${opencms.input.libs}">
 													<include name="**/*.jar" />
@@ -322,7 +322,7 @@
 								</for>
 							</then>
 							<else>
-								<javac srcdir="${module.input.src.single}" destdir="${module.output.classes}" debug="on" optimize="on" deprecation="on" source="1.4" target="1.4">
+								<javac srcdir="${module.input.src.single}" destdir="${module.output.classes}" debug="on" optimize="on" deprecation="on" source="1.4">
 									<exclude name="**/test/**/*.java" />
 									<classpath>
 										<fileset dir="${opencms.input.libs}">
