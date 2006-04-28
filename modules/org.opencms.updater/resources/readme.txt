@@ -27,7 +27,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_6.2.0.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_to_6.2.x.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'

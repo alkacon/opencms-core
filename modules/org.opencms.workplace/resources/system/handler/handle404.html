@@ -1,4 +1,6 @@
-<%@ page session="false" isErrorPage="true" contentType="text/html" import="java.util.*, org.opencms.jsp.util.*" %><%
+<%@ page session="false" isErrorPage="true" contentType="text/html" import="
+	org.opencms.jsp.util.*
+"%><%
 
 // initialize instance of status bean
 CmsJspStatusBean cms = new CmsJspStatusBean(pageContext, request, response, exception);
@@ -38,4 +40,10 @@ if (cms.showException() && cms.getException() != null) {
 
 // include the template foot part
 cms.includeTemplatePart(template, "foot");
+
+// set the original error status code for the returned page
+Integer status = cms.getStatusCode();
+if (status != null) {
+	cms.setStatus(status.intValue());
+}
 %>
