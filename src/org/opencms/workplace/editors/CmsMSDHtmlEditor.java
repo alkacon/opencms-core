@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2006/04/28 13:58:09 $
- * Version: $Revision: 1.16.4.1 $
+ * Date   : $Date: 2006/04/28 14:00:46 $
+ * Version: $Revision: 1.16.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.1 $ 
+ * @version $Revision: 1.16.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,19 +62,21 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     public static final String EDITOR_TYPE = "msdhtml";
 
+    /** Option localization keys for editor view select boxes. */
+    public static final String[] SELECTBOX_EDITORVIEWKEYS = {
+        Messages.GUI_EDITOR_MODE_WYSIWYG_0,
+        Messages.GUI_EDITOR_MODE_SOURCE_0};
+
+    /** Option values for editor view select boxes. */
+    public static final String[] SELECTBOX_EDITORVIEWS = {"edithtml", "edit"};
+
+    /** values for editor view select boxes. */
+    public static final int[] SELECTBOX_EDITORVIEWS_ALLOWED = {3, 2};
+
     /** regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags. */
     private static final Pattern REGEX_LINKS = Pattern.compile(
         "<(img|a)(\\s+)(.*?)(src|href)=(\"|\')(.*?)(\"|\')(.*?)>",
         Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-
-    /** Option values for editor view select boxes. */
-    public static final String[] SELECTBOX_EDITORVIEWS = {"edithtml", "edit"};
-    
-    /** Option localization keys for editor view select boxes. */
-    public static final String[] SELECTBOX_EDITORVIEWKEYS ={Messages.GUI_EDITOR_MODE_WYSIWYG_0, Messages.GUI_EDITOR_MODE_SOURCE_0};
-
-    /** values for editor view select boxes. */
-    public static final int[] SELECTBOX_EDITORVIEWS_ALLOWED = {3, 2};
 
     /**
      * Public constructor.<p>
@@ -97,7 +99,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         Vector names = new Vector();
         Vector values = new Vector();
         // get the available views fron the constant
-        String[] contents = SELECTBOX_EDITORVIEWS; 
+        String[] contents = SELECTBOX_EDITORVIEWS;
         for (int i = 0; i < contents.length; i++) {
             String value = contents[i];
             values.addElement(value);
