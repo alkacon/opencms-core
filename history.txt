@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/04/28 15:45:35 $
- * Version: $Revision: 1.721 $
+ * Date   : $Date: 2006/04/28 15:53:21 $
+ * Version: $Revision: 1.722 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@ OpenCms 6.2.1 - April 28, 2006
 * Fixed issue in CmsHtmlConverter with variable line separator length in UNIX / Win environments
 * Fixed issue with missing "Lock" entry in context menu for image resources
 * Fixed issue with VFS resource state being set wrong in combination with operations on new siblings
-* Fixed issue #1129: DB Table name lenght for project name was to short
+* Fixed issue #1129: DB Table name length for project name was too short
 * Fixed issue with secure site in SSL and redirects
 * Fixed some small issues with the update wizard
 * Fixed issue #1150: binary distribution usable only with Java 1.5 (with new special Java 1.4 download)
