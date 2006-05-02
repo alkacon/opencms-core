@@ -4,7 +4,7 @@
     <property name="opencms.output" value="${opencms.input}../BuildCms/"/>
     <property name="srcdir" value="${opencms.input}/src"/>
     <property name="imgdir" value="${opencms.input}/doc/javadoc/logos"  />
-    <property name="partname"   value="core-dev" />
+    <property name="partname"   value="core" />
  
     <!-- dont change this property! -->
     <property name="destdir" value="${opencms.output}/doc/${partname}"  />
