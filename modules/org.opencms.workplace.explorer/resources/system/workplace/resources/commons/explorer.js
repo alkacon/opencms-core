@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/04/18 16:14:04 $
- * Version: $Revision: 1.13.4.1 $
+ * Date   : $Date: 2006/05/02 09:26:05 $
+ * Version: $Revision: 1.13.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -241,11 +241,13 @@ function updateWindowStore() {
                       theDoc = window.body.explorer_body.explorer_files;
                    }
                 }
-                if (window.body.admin_head) {
-                   win = new windowStore(window.body.document, window.body.admin_head.document, theTree, theDoc);
-                } else {
-                   win = new windowStore(window.body.document, null, theTree, theDoc);
-                }
+        if (window.body.admin_head) {
+ 			win = new windowStore(window.body.document, window.body.admin_head.document, theTree, theDoc);
+        } else if (window.body.explorer_head) {
+ 			win = new windowStore(window.body.document, window.body.explorer_head.document, theTree, theDoc);
+        } else {
+ 			win = new windowStore(window.body.document, null, theTree, theDoc);
+        }
 	} else {
 		try {
 			win = new windowStore(window.body.document, window.body.explorer_head.document, theTree, window.body.explorer_body.explorer_files);
