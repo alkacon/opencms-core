@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 6.0.x (or 6.2 beta) to OpenCms 6.2
+     Instructions for updating OpenCms 6.0.x (or 6.2 final/beta) to OpenCms 6.2.1
 
 
                                     WARNING:
@@ -17,7 +17,8 @@ IMPORTANT: Before using this upgrade wizard, make sure you have a full backup
 of your OpenCms installation and database.
 
 
-Follow the following steps to update from OpenCms 6.0.x (or 6.2 beta) to OpenCms 6.0.4:
+Follow the following steps to update from OpenCms 6.0.x (or 6.2 final/beta) to 
+OpenCms 6.2.1:
 
 
 1. Shutdown your OpenCms servlet container
@@ -27,7 +28,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_6.2.x.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_to_6.2.1.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
