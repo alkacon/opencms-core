@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/04/28 15:53:21 $
- * Version: $Revision: 1.722 $
+ * Date   : $Date: 2006/05/02 08:59:39 $
+ * Version: $Revision: 1.723 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.2.1 - April 28, 2006
+OpenCms 6.2.1 - May 2, 2006
 * Added fix for "concurrent resource creation" issue
 ! Added new test case utility classes for concurrent tests with the CmsObject
 * Fixed issue with old version of cached content definition after a nested XML subschema was changed
