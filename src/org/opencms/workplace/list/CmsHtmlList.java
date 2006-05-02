@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.35.4.1 $
+ * Date   : $Date: 2006/05/02 14:47:46 $
+ * Version: $Revision: 1.35.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.1 $ 
+ * @version $Revision: 1.35.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,7 +92,7 @@ public class CmsHtmlList {
     private CmsListMetadata m_metadata;
 
     /** Display Name of the list. */
-    private final CmsMessageContainer m_name;
+    private CmsMessageContainer m_name;
 
     /** Really content of the list. */
     private final List m_originalItems = new ArrayList();
@@ -807,6 +807,16 @@ public class CmsHtmlList {
     public void setMaxItemsPerPage(int maxItemsPerPage) {
 
         this.m_maxItemsPerPage = maxItemsPerPage;
+    }
+
+    /**
+     * Sets the name of the list.<p>
+     * 
+     * @param name the name of the list
+     */
+    public void setName(CmsMessageContainer name) {
+
+        m_name = name;
     }
 
     /**
