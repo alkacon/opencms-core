@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerInit.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/05/08 08:15:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -91,13 +91,13 @@ public class CmsExplorerInit extends CmsWorkplace {
                     getCms(),
                     settings,
                     resTypeId,
-                    getSettings().getUserSettings().getLocale()));
+                    getMessages()));
             }
         }
         
         result.append("\n");
         // add generic multi context menu to JS
-        result.append(OpenCms.getWorkplaceManager().getMultiContextMenu().getJSEntries(getCms(), null, -1, getLocale()));
+        result.append(OpenCms.getWorkplaceManager().getMultiContextMenu().getJSEntries(getCms(), null, -1, getMessages()));
 
         return result.toString();
     }
