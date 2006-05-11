@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaSettings.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/05/11 07:30:36 $
+ * Version: $Revision: 1.6.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,14 +36,16 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -55,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.4.1 $
  */
 public final class CmsCaptchaSettings implements Cloneable {
 
@@ -182,6 +184,9 @@ public final class CmsCaptchaSettings implements Cloneable {
 
     /** The flag that decides wethter a background image or a background color is used. */
     private boolean m_useBackgroundImage = true;
+
+    /** The map of request parameters. */
+    private Map m_parameterMap;
 
     /**
      * Private constructor for the clone method.
@@ -396,100 +401,121 @@ public final class CmsCaptchaSettings implements Cloneable {
      */
     public void init(CmsJspActionElement jsp) {
 
-        HttpServletRequest request = jsp.getRequest();
-
+        List mulipartFileItems = CmsRequestUtil.readMultipartFileItems(jsp.getRequest());
+        m_parameterMap = new HashMap(); 
+        if (mulipartFileItems != null) {
+            m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(jsp.getRequestContext().getEncoding(), mulipartFileItems);
+        } 
+        
         // image width
-        String stringValue = request.getParameter(C_PARAM_IMAGE_WIDTH);
+        String stringValue = getParameter(C_PARAM_IMAGE_WIDTH);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_imageWidth = Integer.parseInt(stringValue);
         }
 
         // image height
-        stringValue = request.getParameter(C_PARAM_IMAGE_HEIGHT);
+        stringValue = getParameter(C_PARAM_IMAGE_HEIGHT);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_imageHeight = Integer.parseInt(stringValue);
         }
 
         // min. phrase length
-        stringValue = request.getParameter(C_PARAM_MIN_PHRASE_LENGTH);
+        stringValue = getParameter(C_PARAM_MIN_PHRASE_LENGTH);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_minPhraseLength = Integer.parseInt(stringValue);
         }
 
         // max. phrase length
-        stringValue = request.getParameter(C_PARAM_MAX_PHRASE_LENGTH);
+        stringValue = getParameter(C_PARAM_MAX_PHRASE_LENGTH);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_maxPhraseLength = Integer.parseInt(stringValue);
         }
 
         // min. font size
-        stringValue = request.getParameter(C_PARAM_MIN_FONT_SIZE);
+        stringValue = getParameter(C_PARAM_MIN_FONT_SIZE);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_minFontSize = Integer.parseInt(stringValue);
         }
 
         // max. font size
-        stringValue = request.getParameter(C_PARAM_MAX_FONT_SIZE);
+        stringValue = getParameter(C_PARAM_MAX_FONT_SIZE);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_maxFontSize = Integer.parseInt(stringValue);
         }
 
         // font color
-        stringValue = request.getParameter(C_PARAM_FONT_COLOR);
+        stringValue = getParameter(C_PARAM_FONT_COLOR);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             stringValue = CmsEncoder.unescape(stringValue, jsp.getRequestContext().getEncoding());
             setFontColor(stringValue);
         }
 
         // background color
-        stringValue = request.getParameter(C_PARAM_BACKGROUND_COLOR);
+        stringValue = getParameter(C_PARAM_BACKGROUND_COLOR);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             stringValue = CmsEncoder.unescape(stringValue, jsp.getRequestContext().getEncoding());
         }
         setBackgroundColor(stringValue);
 
         // holes per glyph
-        stringValue = request.getParameter(C_PARAM_HOLES_PER_GLYPH);
+        stringValue = getParameter(C_PARAM_HOLES_PER_GLYPH);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setHolesPerGlyph(Integer.parseInt(stringValue));
         }
 
         // filter amplitude
-        stringValue = request.getParameter(C_PARAM_FILTER_AMPLITUDE);
+        stringValue = getParameter(C_PARAM_FILTER_AMPLITUDE);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setFilterAmplitude(Integer.parseInt(stringValue));
         }
 
         // filter wave length
-        stringValue = request.getParameter(C_PARAM_FILTER_WAVE_LENGTH);
+        stringValue = getParameter(C_PARAM_FILTER_WAVE_LENGTH);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setFilterWaveLength(Integer.parseInt(stringValue));
         }
         // flag for generation of background image (vs. background color)
-        stringValue = request.getParameter(C_PARAM_USE_BACKGROUND_IMAGE);
+        stringValue = getParameter(C_PARAM_USE_BACKGROUND_IMAGE);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setUseBackgroundImage(Boolean.valueOf(stringValue).booleanValue());
         }
 
         // characters to use for word generation:
-        stringValue = request.getParameter(C_PARAM_CHARACTERS);
+        stringValue = getParameter(C_PARAM_CHARACTERS);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setCharacterPool(stringValue);
         }
         // characters to use for word generation:
-        stringValue = request.getParameter(C_PARAM_CHARACTERS);
+        stringValue = getParameter(C_PARAM_CHARACTERS);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setCharacterPool(stringValue);
         }
 
         // just for logging comfort (find misconfigured presets):
-        stringValue = request.getParameter(C_PARAM_PRESET);
+        stringValue = getParameter(C_PARAM_PRESET);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_presetPath = stringValue;
         }
 
     }
 
+
+    /**
+     * Returns the request parameter with the specified name.<p>
+     * 
+     * @param parameter the parameter to return
+     * 
+     * @return the parameter value
+     */
+    private String getParameter(String parameter) {
+        
+        try {
+            return ((String[])m_parameterMap.get(parameter))[0];
+        } catch (NullPointerException e) {
+            return "";
+        }
+    }
+    
     /**
      * Configures the instance with overridden values from the given XML content.
      * <p>
