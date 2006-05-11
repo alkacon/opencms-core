@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2006/05/11 10:53:23 $
- * Version: $Revision: 1.24.4.2 $
+ * Date   : $Date: 2006/05/11 14:20:43 $
+ * Version: $Revision: 1.24.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.24.4.2 $ 
+ * @version $Revision: 1.24.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -305,12 +305,7 @@ public class CmsFormHandler extends CmsJspActionElement {
         } else {
             m_parameterMap = new HashMap(); 
         }   
-        
-        String formAction = getParameter(PARAM_FORMACTION);
-        setErrors(new HashMap());
-        m_isValidatedCorrect = null;
-        setInitial(CmsStringUtil.isEmpty(formAction));
-
+    
         if (m_mulipartFileItems != null) {
             Map fileUploads = (Map)req.getSession().getAttribute(ATTRIBUTE_FILEITEMS);
             if (fileUploads == null) {
@@ -330,7 +325,10 @@ public class CmsFormHandler extends CmsJspActionElement {
         } else {
             req.getSession().removeAttribute(ATTRIBUTE_FILEITEMS);
         }
-        
+        String formAction = getParameter(PARAM_FORMACTION);
+        setErrors(new HashMap());
+        m_isValidatedCorrect = null;
+        setInitial(CmsStringUtil.isEmpty(formAction));
         // get the localized messages
         setMessages(new CmsMessages("/org/opencms/frontend/templateone/form/workplace", getRequestContext().getLocale()));
         // get the form configuration
@@ -524,7 +522,7 @@ public class CmsFormHandler extends CmsJspActionElement {
         boolean result = false;
         
         if (isInitial()) {
-            // inital call
+            // initial call
             result = true;
         } else if (ACTION_CORRECT_INPUT.equalsIgnoreCase(getParameter(PARAM_FORMACTION))) {
             // user decided to modify his inputs
