@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/04/27 15:36:16 $
- * Version: $Revision: 1.570.2.3 $
+ * Date   : $Date: 2006/05/11 13:20:05 $
+ * Version: $Revision: 1.570.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4034,7 +4034,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // read the user from the driver to avoid the cache
             newUser = m_userDriver.readUser(dbc, userName, password, remoteAddress, userType);
         } catch (CmsDbEntryNotFoundException e) {
-            // this incicates that the username / password combination does not exist
+            // this indicates that the username / password combination does not exist
             // any other exception indicates database issues, these are not catched here
 
             // check if a user with this name exists at all 
