@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldFactory.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/05/11 07:30:53 $
+ * Version: $Revision: 1.5.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * A factory to create form field instances of a specified type.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.5.4.1 $
  */
 public final class CmsFieldFactory {
 
@@ -77,6 +77,7 @@ public final class CmsFieldFactory {
         // register all the standard OpenCms field types
         registerFieldType(CmsCheckboxField.getStaticType(), CmsCheckboxField.class.getName());
         registerFieldType(CmsEmailField.getStaticType(), CmsEmailField.class.getName());
+        registerFieldType(CmsFileUploadField.getStaticType(), CmsFileUploadField.class.getName());
         registerFieldType(CmsHiddenField.getStaticType(), CmsHiddenField.class.getName());
         registerFieldType(CmsRadioButtonField.getStaticType(), CmsRadioButtonField.class.getName());
         registerFieldType(CmsSelectionField.getStaticType(), CmsSelectionField.class.getName());
