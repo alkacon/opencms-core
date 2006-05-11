@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2006/05/11 07:10:52 $
+ * Version: $Revision: 1.33.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.33.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -473,7 +473,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         // read the module from the import file
         CmsModule importedModule = readModuleFromImport(importResource);
 
-        // check if the module is already istalled
+        // check if the module is already installed
         if (OpenCms.getModuleManager().hasModule(importedModule.getName())) {
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_MOD_ALREADY_INSTALLED_1,
