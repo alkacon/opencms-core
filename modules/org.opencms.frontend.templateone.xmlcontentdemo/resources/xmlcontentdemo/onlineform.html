@@ -85,6 +85,13 @@
       <FieldDefault><![CDATA[i0:Contributing to OpenCms|i1:Alkacon OpenCms services|i2:Alkacon company information|i3*:OpenCms is so great, I want to donate all my money to the project]]></FieldDefault>
     </InputField>
     <InputField>
+      <FieldType><![CDATA[file]]></FieldType>
+      <FieldLabel><![CDATA[Attachment:]]></FieldLabel>
+      <FieldMandatory>false</FieldMandatory>
+      <FieldValidation><![CDATA[<500kb]]></FieldValidation>
+      <FieldErrorMessage><![CDATA[The Size of the attachment is limited to 500kb]]></FieldErrorMessage>
+    </InputField>
+    <InputField>
       <FieldType><![CDATA[textarea]]></FieldType>
       <FieldLabel><![CDATA[Your Message:]]></FieldLabel>
       <FieldMandatory>false</FieldMandatory>
