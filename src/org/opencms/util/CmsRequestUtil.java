@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2006/04/24 11:21:22 $
- * Version: $Revision: 1.18.4.1 $
+ * Date   : $Date: 2006/05/11 07:28:43 $
+ * Version: $Revision: 1.18.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.18.4.1 $ 
+ * @version $Revision: 1.18.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -568,7 +568,18 @@ public final class CmsRequestUtil {
                     LOG.error(Messages.get().getBundle().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
                     value = item.getString();
                 }
-                parameterMap.put(name, new String[] {value});
+                if (parameterMap.containsKey(name)) {
+
+                    // append value to parameter values array
+                    String[] oldValues = (String[])parameterMap.get(name);
+                    String[] newValues = new String[oldValues.length + 1];
+                    System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
+                    newValues[oldValues.length] = value;
+                    parameterMap.put(name, newValues);
+
+                } else {
+                    parameterMap.put(name, new String[] {value});
+                }
             }
         }
         return parameterMap;
