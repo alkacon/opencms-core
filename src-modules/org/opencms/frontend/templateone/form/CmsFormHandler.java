@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2006/05/11 07:33:29 $
- * Version: $Revision: 1.24.4.1 $
+ * Date   : $Date: 2006/05/11 10:53:23 $
+ * Version: $Revision: 1.24.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.24.4.1 $ 
+ * @version $Revision: 1.24.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,7 +95,7 @@ public class CmsFormHandler extends CmsJspActionElement {
     public static final String PARAM_FORMACTION = "formaction";
 
     /** Name of the file item session attribute. */
-    public static final String ATTRIBUTE_FILEITEM = "fileitem";
+    public static final String ATTRIBUTE_FILEITEMS = "fileitems";
     
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormHandler.class);
@@ -296,29 +296,41 @@ public class CmsFormHandler extends CmsJspActionElement {
      * @param formConfigUri URI of the form configuration file, if not provided, current URI is used for configuration
      * @throws Exception if creating the form configuration objects fails
      */
-    public void init(HttpServletRequest req, String formConfigUri) throws Exception {
-
+    public void init(HttpServletRequest req, String formConfigUri) throws Exception { 
+        
         m_mulipartFileItems = CmsRequestUtil.readMultipartFileItems(req);  
         
         if (m_mulipartFileItems != null) {
-            
-            m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(getRequestContext().getEncoding(), m_mulipartFileItems);            
-            // check, if there are any attachments
-            Iterator i = m_mulipartFileItems.iterator();
-            while (i.hasNext()) {
-                FileItem fileItem = (FileItem)i.next(); 
-                if (CmsStringUtil.isNotEmpty(fileItem.getName())) {
-                    req.getSession().setAttribute(ATTRIBUTE_FILEITEM, fileItem);
-                    m_parameterMap.put(fileItem.getFieldName(), new String[]{fileItem.getName()});
-                }
-            }            
+            m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(getRequestContext().getEncoding(), m_mulipartFileItems);                 
         } else {
             m_parameterMap = new HashMap(); 
-        }
+        }   
+        
         String formAction = getParameter(PARAM_FORMACTION);
         setErrors(new HashMap());
         m_isValidatedCorrect = null;
         setInitial(CmsStringUtil.isEmpty(formAction));
+
+        if (m_mulipartFileItems != null) {
+            Map fileUploads = (Map)req.getSession().getAttribute(ATTRIBUTE_FILEITEMS);
+            if (fileUploads == null) {
+                fileUploads = new HashMap();
+            }              
+            // check, if there are any attachments
+            Iterator i = m_mulipartFileItems.iterator();
+            while (i.hasNext()) {
+                FileItem fileItem = (FileItem)i.next();
+                if (CmsStringUtil.isNotEmpty(fileItem.getName())) {
+                    // append file upload to the map of file items
+                    fileUploads.put(fileItem.getFieldName(), fileItem);
+                    m_parameterMap.put(fileItem.getFieldName(), new String[] {fileItem.getName()});
+                }
+            }
+            req.getSession().setAttribute(ATTRIBUTE_FILEITEMS, fileUploads);
+        } else {
+            req.getSession().removeAttribute(ATTRIBUTE_FILEITEMS);
+        }
+        
         // get the localized messages
         setMessages(new CmsMessages("/org/opencms/frontend/templateone/form/workplace", getRequestContext().getLocale()));
         // get the form configuration
@@ -421,14 +433,22 @@ public class CmsFormHandler extends CmsJspActionElement {
                 theMail.setHtmlMsg(createMailTextFromFields(true, false));
                 theMail.setTextMsg(createMailTextFromFields(false, false));
                 
-                FileItem attachment = (FileItem)getRequest().getSession().getAttribute(ATTRIBUTE_FILEITEM);
-                if (attachment != null) {
-                    String filename = attachment.getName().substring(
-                        attachment.getName().lastIndexOf(File.separator) + 1);
-                    theMail.attach(new CmsByteArrayDataSource(filename, attachment.get(), OpenCms.getResourceManager().getMimeType(
-                        filename,
-                        null,
-                        "application/octet-stream")), filename, filename);                  
+                // attach file uploads
+                Map fileUploads = (Map)getRequest().getSession().getAttribute(ATTRIBUTE_FILEITEMS);
+                Iterator i = fileUploads.values().iterator();
+                while (i.hasNext()) {
+                    FileItem attachment = (FileItem)i.next();
+                    if (attachment != null) {
+                        String filename = attachment.getName().substring(
+                            attachment.getName().lastIndexOf(File.separator) + 1);
+                        theMail.attach(
+                            new CmsByteArrayDataSource(
+                                filename,
+                                attachment.get(),
+                                OpenCms.getResourceManager().getMimeType(filename, null, "application/octet-stream")),
+                            filename,
+                            filename);
+                    }
                 }
                 
                 // send the mail

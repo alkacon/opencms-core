@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2006/05/11 07:35:21 $
- * Version: $Revision: 1.27.4.1 $
+ * Date   : $Date: 2006/05/11 10:53:23 $
+ * Version: $Revision: 1.27.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Thomas Weckert 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.27.4.1 $ 
+ * @version $Revision: 1.27.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -1246,6 +1246,7 @@ public class CmsForm {
         List fieldValues = content.getValues(NODE_INPUTFIELD, locale);
         int fieldValueSize = fieldValues.size();
         CmsFieldFactory fieldFactory = CmsFieldFactory.getSharedInstance();
+        Map fileUploads = (Map)jsp.getRequest().getSession().getAttribute(CmsFormHandler.ATTRIBUTE_FILEITEMS);
         
         for (int i = 0; i < fieldValueSize; i++) {
             I_CmsXmlContentValue inputField = (I_CmsXmlContentValue)fieldValues.get(i);
@@ -1299,9 +1300,11 @@ public class CmsForm {
                     field.setValidationExpression(getConfigurationValue(stringValue, ""));
                 }
                 if (CmsFileUploadField.class.isAssignableFrom(field.getClass())) {
-                    FileItem attachment = (FileItem)jsp.getRequest().getSession().getAttribute(CmsFormHandler.ATTRIBUTE_FILEITEM);
-                    if (attachment != null) {
-                        ((CmsFileUploadField)field).setFileSize(attachment.get().length); 
+                    if (fileUploads != null) {
+                        FileItem attachment = (FileItem)fileUploads.get(field.getName());
+                        if (attachment != null) {
+                            ((CmsFileUploadField)field).setFileSize(attachment.get().length);
+                        }
                     }
                 }
                 // get the field mandatory flag
