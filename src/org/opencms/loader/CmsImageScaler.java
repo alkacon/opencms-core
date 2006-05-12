@@ -32,7 +32,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  * 
  * @since 6.2.0
  */
@@ -216,9 +216,9 @@ public class CmsImageScaler {
         if (CmsStringUtil.isNotEmpty(parameters)) {
             parseParameters(parameters);
             if (isValid()) {
-                // valid parameters, check if scale size is not to big
+                // valid parameters, check if scale size is not too big
                 if ((getWidth() > maxScaleSize) || (getHeight() > maxScaleSize)) {
-                    // scale size is to big, reset scaler
+                    // scale size is too big, reset scaler
                     init();
                 }
             }
@@ -236,6 +236,20 @@ public class CmsImageScaler {
         if (CmsStringUtil.isNotEmpty(parameters)) {
             parseParameters(parameters);
         }
+    }
+
+    /**
+     * Creates a new image scaler based on the given base scaler and the given width and height.<p>
+     * 
+     * @param base the base scaler to initialize the values with
+     * @param width the width to set for this scaler
+     * @param height the height to set for this scaler
+     */
+    protected CmsImageScaler(CmsImageScaler base, int width, int height) {
+
+        initValuesFrom(base);
+        setWidth(width);
+        setHeight(height);
     }
 
     /**
@@ -332,11 +346,11 @@ public class CmsImageScaler {
         }
 
         if (width > downWidth) {
-            // width is too large, re-calculate width
+            // width is too large, re-calculate height
             float scale = (float)downWidth / (float)width;
             downHeight = Math.round(height * scale);
         } else if (height > downHeight) {
-            // height is too large, re-calculate height
+            // height is too large, re-calculate width
             float scale = (float)downHeight / (float)height;
             downWidth = Math.round(width * scale);
         } else {
@@ -345,12 +359,7 @@ public class CmsImageScaler {
         }
 
         // now create and initialize the result scaler
-        CmsImageScaler result = new CmsImageScaler();
-        result.initValuesFrom(downScaler);
-        result.setWidth(downWidth);
-        result.setHeight(downHeight);
-
-        return result;
+        return new CmsImageScaler(downScaler, downWidth, downHeight);
     }
 
     /** 
@@ -528,12 +537,7 @@ public class CmsImageScaler {
         }
 
         // now create and initialize the result scaler
-        CmsImageScaler result = new CmsImageScaler();
-        result.initValuesFrom(target);
-        result.setWidth(width);
-        result.setHeight(height);
-
-        return result;
+        return new CmsImageScaler(target, width, height);
     }
 
     /**
@@ -589,6 +593,38 @@ public class CmsImageScaler {
     public int getWidth() {
 
         return m_width;
+    }
+
+    /**
+     * Returns a new image scaler that is a width based downscale from the size of <code>this</code> scaler 
+     * to the given scaler size.<p>
+     * 
+     * If no downscale from this to the given scaler is required because the width of <code>this</code>
+     * scaler is not larger than the target width, then the image dimensions of <code>this</code> scaler 
+     * are unchanged in the result scaler. No upscaling is done!<p>
+     * 
+     * @param downScaler the image scaler that holds the downscaled target image dimensions
+     * 
+     * @return a new image scaler that is a downscale from the size of <code>this</code> scaler 
+     *      to the given target scaler size
+     */
+    public CmsImageScaler getWidthScaler(CmsImageScaler downScaler) {
+
+        int width = downScaler.getWidth();
+        int height;
+
+        if (getWidth() > width) {
+            // width is too large, re-calculate height
+            float scale = (float)width / (float)getWidth();
+            height = Math.round(getHeight() * scale);
+        } else {
+            // width is ok
+            width = getWidth();
+            height = getHeight();
+        }
+
+        // now create and initialize the result scaler
+        return new CmsImageScaler(downScaler, width, height);
     }
 
     /**

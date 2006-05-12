@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/layoutpage/CmsLayoutPageBean.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/05/12 10:02:45 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,28 +31,23 @@
 
 package org.opencms.frontend.layoutpage;
 
-import com.alkacon.simapi.Simapi;
-
-import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
 
@@ -63,92 +58,173 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.9 
  */
-public class CmsLayoutPageBean extends CmsJspActionElement {
+public class CmsLayoutPageBean {
 
-    /** Default align type: paragraph with image on bottom, text above. */
-    public static final String ALIGN_TYPE_BOTTOM = "imagebottom";
+    /** Columns layout: one column. */
+    public static final String COLUMNS_LAYOUT_1 = "1col";
 
-    /** Default align type: paragraph with image to the left. */
-    public static final String ALIGN_TYPE_IMAGE_LEFT = "imageleft";
+    /** Columns layout: two columns. */
+    public static final String COLUMNS_LAYOUT_2 = "2col";
 
-    /** Default align type: paragraph with image left, text to the right. */
-    public static final String ALIGN_TYPE_IMAGE_LEFT_TEXT_RIGHT = "imageleft_textright";
+    /** Image Link variant: provide link to larger version. */
+    public static final String IMG_LINK_LARGER = "linklarger";
 
-    /** Default align type: paragraph with image to the right. */
-    public static final String ALIGN_TYPE_IMAGE_RIGHT = "imageright";
+    /** Image Link variant: no link to larger version. */
+    public static final String IMG_LINK_NONE = "nolink";
 
-    /** Default align type: paragraph with image right, text to the left. */
-    public static final String ALIGN_TYPE_IMAGE_RIGHT_TEXT_LEFT = "imageright_textleft";
+    /** Image width variant name for large images. */
+    public static final String IMG_WIDTH_LARGE = "large";
 
-    /** Default align type: paragraph without image. */
-    public static final String ALIGN_TYPE_TEXT_ONLY = "textonly";
+    /** Image width variant name for medium images. */
+    public static final String IMG_WIDTH_MEDIUM = "medium";
 
-    /** Align type: paragraph with image on top, text below. */
-    public static final String ALIGN_TYPE_TOP = "imagetop";
-
-    /** Default width for large images. */
-    public static final int IMG_WIDTH_LARGE = 737;
-
-    /** Default width for medium images. */
-    public static final int IMG_WIDTH_MEDIUM = 200;
-
-    /** Default width for small images. */
-    public static final int IMG_WIDTH_SMALL = 100;
+    /** Image width variant name for small images. */
+    public static final String IMG_WIDTH_SMALL = "small";
 
     /** Macro name for the image description macro. */
-    public static final String MACRO_DESCRIPTION = "layout.description";
+    public static final String MACRO_DESCRIPTION = "description";
 
     /** Macro name for the headline macro. */
-    public static final String MACRO_HEADLINE = "layout.headline";
+    public static final String MACRO_HEADLINE = "headline";
 
     /** Macro name for the image macro. */
-    public static final String MACRO_IMAGE = "layout.image";
+    public static final String MACRO_IMAGE = "image";
+
+    /** Macro name for the image width macro. */
+    public static final String MACRO_IMAGE_WIDTH = "imagewidth";
+
+    /** Macro name for the target macro. */
+    public static final String MACRO_TARGET = "target";
 
     /** Macro name for the text macro. */
-    public static final String MACRO_TEXT = "layout.text";
+    public static final String MACRO_TEXT = "text";
 
-    /** Name of the frontend module in OpenCms. */
+    /** Macro name for the title macro. */
+    public static final String MACRO_TITLE = "title";
+
+    /** The name of the module. */
     public static final String MODULE_NAME = "org.opencms.frontend.layoutpage";
 
-    /** Name of the align node. */
-    public static final String NODE_ALIGN = "Align";
+    /** Paragraph type: paragraph with image on bottom, text above. */
+    public static final String PARAGRAPH_TYPE_BOTTOM = "imagebottom";
 
-    /** Name of the description node. */
-    public static final String NODE_DESCRIPTION = "Description";
+    /** Paragraph type: paragraph with image on bottom and description, text above. */
+    public static final String PARAGRAPH_TYPE_BOTTOM_DESCRIPTION = "imagebottom_desc";
 
-    /** Name of the headline node. */
-    public static final String NODE_HEADLINE = "Headline";
+    /** Paragraph type: paragraph with image to the left. */
+    public static final String PARAGRAPH_TYPE_IMAGE_LEFT = "imageleft";
 
-    /** Name of the Image node. */
-    public static final String NODE_IMAGE = "Image";
+    /** Paragraph type: paragraph with image to the left and image description. */
+    public static final String PARAGRAPH_TYPE_IMAGE_LEFT_DESCRIPTION = "imageleft_desc";
 
-    /** Name of the paragraph node. */
-    public static final String NODE_PARAGRAPH = "Paragraph";
+    /** Paragraph type: paragraph with image left, text to the right. */
+    public static final String PARAGRAPH_TYPE_IMAGE_LEFT_TEXT_RIGHT = "imageleft_textright";
 
-    /** Name of the text node. */
-    public static final String NODE_TEXT = "Text";
+    /** Paragraph type: paragraph with image left, text to the right and image description. */
+    public static final String PARAGRAPH_TYPE_IMAGE_LEFT_TEXT_RIGHT_DESCRIPTION = "imageleft_textright_desc";
+
+    /** Paragraph type: paragraph with image to the right. */
+    public static final String PARAGRAPH_TYPE_IMAGE_RIGHT = "imageright";
+
+    /** Paragraph type: paragraph with image to the right and image description. */
+    public static final String PARAGRAPH_TYPE_IMAGE_RIGHT_DESCRIPTION = "imageright_desc";
+
+    /** Paragraph type: paragraph with image right, text to the left. */
+    public static final String PARAGRAPH_TYPE_IMAGE_RIGHT_TEXT_LEFT = "imageright_textleft";
+
+    /** Paragraph type: paragraph with image right, text to the left and image description. */
+    public static final String PARAGRAPH_TYPE_IMAGE_RIGHT_TEXT_LEFT_DESCRIPTION = "imageright_textleft_desc";
+
+    /** Paragraph type: paragraph without image. */
+    public static final String PARAGRAPH_TYPE_TEXT_ONLY = "textonly";
+
+    /** Paragraph type: paragraph with image on top, text below. */
+    public static final String PARAGRAPH_TYPE_TOP = "imagetop";
+
+    /** Paragraph type: paragraph with image on top and description, text below. */
+    public static final String PARAGRAPH_TYPE_TOP_DESCRIPTION = "imagetop_desc";
 
     /** Default VFS path to the html snippet files to include to render the layout paragraphs. */
     public static final String VFS_PATH_LAYOUTELEMENTS = CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/layouts/";
 
+    /** Name of the align node. */
+    protected static final String NODE_ALIGN = "Align";
+
+    /** Name of the columns layout node. */
+    protected static final String NODE_COLUMNS_LAYOUT = "ColumnsLayout";
+
+    /** Name of the description node. */
+    protected static final String NODE_DESCRIPTION = "Description";
+
+    /** Name of the headline node. */
+    protected static final String NODE_HEADLINE = "Headline";
+
+    /** Name of the Image node. */
+    protected static final String NODE_IMAGE = "Image";
+
+    /** Name of the ImageOptions node. */
+    protected static final String NODE_IMAGEOPTIONS = "ImageOptions";
+
+    /** Name of the paragraph node. */
+    protected static final String NODE_PARAGRAPH = "Paragraph";
+
+    /** Name of the text node. */
+    protected static final String NODE_TEXT = "Text";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLayoutPageBean.class);
 
-    /** The XML content that stores the layout. */
+    /** The width of the content area of the template. */
+    private int m_bodyWdith;
+
+    /** The padding of the columns in the content area. */
+    private int m_colPadding;
+
+    /** The spacing of the columns in the content area. */
+    private int m_colSpacing;
+
+    /** The column layout variant of the parapgraphs. */
+    private String m_columnLayout;
+
+    /** The calculated width of a single paragraph column. */
+    private int m_columnWidth;
+
+    /** The XML content that configures the layout. */
     private CmsXmlContent m_content;
 
-    /** Stores the possible layout patterns. */
+    /** Indicates if the layout images should be fixed or calculated from the content area width. */
+    private boolean m_fixedImageSize;
+
+    /** The image width to use for large images in fixed image size mode. */
+    private int m_imgWidthLarge;
+
+    /** The image width to use for medium images in fixed image size mode. */
+    private int m_imgWidthMedium;
+
+    /** The image width to use for small images in fixed image size mode. */
+    private int m_imgWidthSmall;
+
+    /** The JSP action element to get access to the OpenCms API. */
+    private CmsJspActionElement m_jspActionElement;
+
+    /** The possible patterns to show with corresponding image widths to use. */
     private Map m_layoutPatterns;
 
     /** The VFS path to the html snippet files.  */
     private String m_pathLayoutElements;
 
+    /** The layout variant to show, e.g. "common", "print" or "accessibe". */
+    private String m_variant;
+
     /**
      * Empty constructor, required for every JavaBean.<p>
+     * 
+     * It is required to call either the init() method or set the members manually before you can use the 
+     * instance of this bean.
      */
     public CmsLayoutPageBean() {
 
@@ -160,25 +236,61 @@ public class CmsLayoutPageBean extends CmsJspActionElement {
      * 
      * Use this constructor for the template.<p>
      * 
-     * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
+     * @param jsp the current JSP action element
+     * @param content the XML content that configures the layout
+     * @param variant the layout variant to show, e.g. "common", "print" or "accessibe"
+     * @param bodyWith the width of the content area of the template
+     * @param colPadding the padding of the columns in the content area
+     * @param colSpacing the spacing of the columns in the content area
      */
-    public CmsLayoutPageBean(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsLayoutPageBean(
+        CmsJspActionElement jsp,
+        CmsXmlContent content,
+        String variant,
+        int bodyWith,
+        int colPadding,
+        int colSpacing) {
 
         super();
-        init(context, req, res);
+        init(jsp, content, variant, bodyWith, colPadding, colSpacing);
     }
 
     /**
-     * Adds a pattern with the provided name and image width to the possible patterns to show.<p>
+     * Returns the HTML for the large image to show in a popup window with a desired width of 600px.<p>
+     * 
+     * @param cms the initialized JSP action element
+     * @param imgUri the URI of the image to link to
+     * @param imgSize the image size property value containing the original image information
+     * @return the HTML for the large image to show in a popup window
+     */
+    public static String buildLargeImageTag(CmsJspActionElement cms, String imgUri, String imgSize) {
+
+        // create scaler instance of original image
+        CmsImageScaler origImage = new CmsImageScaler(imgSize);
+        // create scaler with desired image width
+        CmsImageScaler scaler = new CmsImageScaler();
+        scaler.setWidth(600);
+        // return scaler with result image width
+        CmsImageScaler resultScaler = origImage.getWidthScaler(scaler);
+        return cms.img(imgUri, resultScaler, null);
+    }
+
+    /**
+     * Adds a paragraph layout pattern with the provided name and image width variant name to the possible patterns to show.<p>
+     * 
+     * Possible image width variants are:<p>
+     * <ul>
+     * <li>{@link #IMG_WIDTH_SMALL}: small image</li>
+     * <li>{@link #IMG_WIDTH_MEDIUM}: medium image</li>
+     * <li>{@link #IMG_WIDTH_LARGE}: large image</li>
+     * </ul>
      * 
      * @param patternName the name of the pattern layout
-     * @param imgWidth the image width to use
+     * @param imgWidthVariant the image width variant name to use
      */
-    public void addLayoutPattern(String patternName, int imgWidth) {
+    public void addLayoutPattern(String patternName, String imgWidthVariant) {
 
-        m_layoutPatterns.put(patternName, new Integer(imgWidth));
+        m_layoutPatterns.put(patternName, imgWidthVariant);
     }
 
     /**
@@ -189,8 +301,51 @@ public class CmsLayoutPageBean extends CmsJspActionElement {
     public String buildHtmlParagraphs() {
 
         StringBuffer result = new StringBuffer(16384);
-        Locale locale = getRequestContext().getLocale();
+        Locale locale = getCmsObject().getRequestContext().getLocale();
+
+        // first calculate the column width
+        calculateColumnWidth();
+
+        // get the macros
+        I_CmsMacroWrapper macros = null;
+        try {
+            macros = getMacroWrapper();
+        } catch (Exception e) {
+            // log error and stop output
+            if (!(e instanceof CmsException)) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getMessage());
+                }
+            }
+            return "";
+        }
+
+        // determine if two columns should be shown
+        boolean showTwoCols = getColumnLayout().indexOf(COLUMNS_LAYOUT_2) != -1;
+        // determine if image links to larger image version should be shown
+        boolean showImgLinks = IMG_LINK_LARGER.equals(m_content.getStringValue(
+            getCmsObject(),
+            NODE_IMAGEOPTIONS,
+            locale));
+
+        // determine localized image link title
+        String imgLinkTitleLocalized = "";
+        if (showImgLinks) {
+            CmsMessages messages = getCmsJspActionElement().getMessages(
+                "org/opencms/frontend/layoutpage/frontendmessages",
+                locale);
+            imgLinkTitleLocalized = messages.keyDefault("link.image.original", "");
+        }
+
+        // get the paragraph nodes from the XML content
         Iterator i = m_content.getValues(NODE_PARAGRAPH, locale).iterator();
+
+        // open column table
+        result.append(macros.getResult("content_start"));
+
+        // set variables needed in loop to determine correct column to show
+        boolean firstInRow = true;
+
         while (i.hasNext()) {
             // loop all paragraph nodes
             I_CmsXmlContentValue value = (I_CmsXmlContentValue)i.next();
@@ -200,75 +355,247 @@ public class CmsLayoutPageBean extends CmsJspActionElement {
             String headline = "";
             if (m_content.hasValue(xPath + NODE_HEADLINE, locale)) {
                 headline = m_content.getStringValue(getCmsObject(), xPath + NODE_HEADLINE, locale);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(headline)) {
-                    headline = "<h2 class=\"lp_headline\">" + headline + "</h2>\n";
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(headline)) {
+                    headline = "";
                 }
             }
 
-            // get the text value
+            // get the paragraph text value
             String textValue = m_content.getStringValue(getCmsObject(), xPath + NODE_TEXT, locale);
 
             // process optional image
             xPath += NODE_IMAGE + "/";
             String imgDesc = "";
-            String imgAlign = "";
+            String paragraphType = "";
             String imgTag = "";
+            String imgUrl = "";
+            int imgWidth = getColumnWidth();
+            boolean imagePresent = false;
+
             if (m_content.hasValue(xPath, locale)) {
-                // image node found, check VFS presence
+                // image node found, check VFS presence by reading image size property
                 String imgUri = m_content.getStringValue(getCmsObject(), xPath + NODE_IMAGE, locale);
-                if (getCmsObject().existsResource(imgUri)) {
+                String imgSize = null;
+                try {
+                    imgSize = getCmsObject().readPropertyObject(
+                        imgUri,
+                        CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
+                        false).getValue();
+                } catch (CmsException e) {
+                    // file property not found, ignore
+                }
+                if (imgSize != null) {
                     // image exists, create image tag to show
+                    imagePresent = true;
                     if (m_content.hasValue(xPath + NODE_DESCRIPTION, locale)) {
                         // get image description
                         imgDesc = m_content.getStringValue(getCmsObject(), xPath + NODE_DESCRIPTION, locale);
                     }
-                    imgAlign = m_content.getStringValue(getCmsObject(), xPath + NODE_ALIGN, locale);
-                    CmsImageScaler scaler = getImageScaler(imgAlign);
-                    // create image tag with additional "alt" and "title" attributes
-                    Map attrs = new HashMap(5);
-                    attrs.put("alt", imgDesc);
-                    attrs.put("title", imgDesc);
-                    imgTag = img(imgUri, scaler, attrs);
+                    paragraphType = m_content.getStringValue(getCmsObject(), xPath + NODE_ALIGN, locale);
+                    // get initialized image scaler for the image                   
+                    CmsImageScaler scaler = getImageScaler(paragraphType, imgSize);
+                    imgWidth = scaler.getWidth();
+
+                    // determine image description String to show
+                    String imgTitle = imgDesc;
+                    if (showImgLinks) {
+                        // append localized note for large image link to description
+                        StringBuffer tempImgTitle = new StringBuffer(128);
+                        tempImgTitle.append(imgDesc);
+                        if (CmsStringUtil.isNotEmpty(imgDesc)) {
+                            tempImgTitle.append(" ");
+                        }
+                        tempImgTitle.append(imgLinkTitleLocalized);
+                        imgTitle = tempImgTitle.toString();
+                    }
+
+                    // create image tag with additional "alt", "title" and "border" attributes
+                    Map attrs = new HashMap(4);
+                    attrs.put("alt", imgTitle);
+                    attrs.put("title", imgTitle);
+                    attrs.put("border", "0");
+                    imgTag = getCmsJspActionElement().img(imgUri, scaler, attrs);
+
+                    // create link around image if configured
+                    macros.putContextVariable(MACRO_IMAGE, imgTag);
+                    if (showImgLinks) {
+                        // use macro with link
+                        imgUrl = getLinkToLargeImage(imgUri, imgSize);
+                        macros.putContextVariable(MACRO_TITLE, imgTitle);
+                        macros.putContextVariable(MACRO_TARGET, imgUrl);
+                        imgTag = macros.getResult("image_with_link");
+                    } else {
+                        // use macro without link
+                        imgTag = macros.getResult("image_without_link");
+                    }
+
                 }
             }
 
-            if (CmsStringUtil.isEmpty(imgAlign)) {
-                // set default display type (in case no image was found)
-                imgAlign = ALIGN_TYPE_TEXT_ONLY;
+            macros.putContextVariable(MACRO_DESCRIPTION, imgDesc);
+            if (imagePresent && showImgLinks) {
+                // use description with link to image
+                macros.putContextVariable(MACRO_TITLE, imgLinkTitleLocalized);
+                macros.putContextVariable(MACRO_TARGET, imgUrl);
+                imgDesc = macros.getResult("description_with_link");
+            } else {
+                // use description without link to image
+                imgDesc = macros.getResult("description_without_link");
             }
 
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(imgDesc)) {
-                // format image description string
-                imgDesc = "<p class=\"lp_imgdesc\">" + imgDesc + "</p>";
+            if (CmsStringUtil.isEmpty(paragraphType)) {
+                // set default paragraph display type (in case no image was found)
+                paragraphType = PARAGRAPH_TYPE_TEXT_ONLY;
             }
 
-            // get the HTML layout containing macros to use for this paragraph
-            String elementContent = getContent(m_pathLayoutElements + imgAlign);
-            CmsMacroResolver resolver = CmsMacroResolver.newInstance();
-            // fill in macro values
-            resolver.addMacro(MACRO_HEADLINE, headline);
-            resolver.addMacro(MACRO_TEXT, textValue);
-            resolver.addMacro(MACRO_IMAGE, imgTag);
-            resolver.addMacro(MACRO_DESCRIPTION, imgDesc);
+            // create paragraph output
 
-            // add resolved layout element to result
-            result.append(resolver.resolveMacros(elementContent));
+            if (firstInRow || !showTwoCols) {
+                // open row (tr) 
+                result.append(macros.getResult("row_start"));
+            }
+
+            // open td
+            result.append(macros.getResult("element_start"));
+
+            // put macro variables in context to use for this paragraph
+            macros.putContextVariable(MACRO_HEADLINE, headline);
+            macros.putContextVariable(MACRO_TEXT, textValue);
+            macros.putContextVariable(MACRO_IMAGE, imgTag);
+            macros.putContextVariable(MACRO_IMAGE_WIDTH, new Integer(imgWidth));
+            macros.putContextVariable(MACRO_DESCRIPTION, imgDesc);
+            // add resolved macro layout paragraph to result
+            result.append(macros.getResult(paragraphType));
+
+            // close td
+            result.append(macros.getResult("element_end"));
+
+            if (!showTwoCols || !firstInRow || (firstInRow && !i.hasNext())) {
+                if (showTwoCols && firstInRow && !i.hasNext()) {
+                    // append additional empty dummy element in two column mode
+                    result.append(macros.getResult("element_start"));
+                    result.append(macros.getResult("element_end"));
+                }
+                // close row (tr)
+                result.append(macros.getResult("row_end"));
+            }
+
+            firstInRow = !firstInRow;
         }
+
+        // close column table
+        result.append(macros.getResult("content_end"));
 
         return result.toString();
     }
 
     /**
-     * Fills the default layout patterns to show.<p>
+     * Fills the default paragraph layout patterns to show.<p>
      */
     public void createDefaultLayoutPatterns() {
 
-        m_layoutPatterns.put(ALIGN_TYPE_BOTTOM, new Integer(IMG_WIDTH_LARGE));
-        m_layoutPatterns.put(ALIGN_TYPE_TOP, new Integer(IMG_WIDTH_LARGE));
-        m_layoutPatterns.put(ALIGN_TYPE_IMAGE_LEFT, new Integer(IMG_WIDTH_MEDIUM));
-        m_layoutPatterns.put(ALIGN_TYPE_IMAGE_RIGHT, new Integer(IMG_WIDTH_MEDIUM));
-        m_layoutPatterns.put(ALIGN_TYPE_IMAGE_LEFT_TEXT_RIGHT, new Integer(IMG_WIDTH_SMALL));
-        m_layoutPatterns.put(ALIGN_TYPE_IMAGE_RIGHT_TEXT_LEFT, new Integer(IMG_WIDTH_SMALL));
+        m_layoutPatterns.put(PARAGRAPH_TYPE_BOTTOM, IMG_WIDTH_LARGE);
+        m_layoutPatterns.put(PARAGRAPH_TYPE_BOTTOM_DESCRIPTION, IMG_WIDTH_LARGE);
+        m_layoutPatterns.put(PARAGRAPH_TYPE_TOP, IMG_WIDTH_LARGE);
+        m_layoutPatterns.put(PARAGRAPH_TYPE_TOP_DESCRIPTION, IMG_WIDTH_LARGE);
+        m_layoutPatterns.put(PARAGRAPH_TYPE_IMAGE_LEFT, IMG_WIDTH_MEDIUM);
+        m_layoutPatterns.put(PARAGRAPH_TYPE_IMAGE_LEFT_DESCRIPTION, IMG_WIDTH_MEDIUM);
+        m_layoutPatterns.put(PARAGRAPH_TYPE_IMAGE_RIGHT, IMG_WIDTH_MEDIUM);
+        m_layoutPatterns.put(PARAGRAPH_TYPE_IMAGE_RIGHT_DESCRIPTION, IMG_WIDTH_MEDIUM);
+        m_layoutPatterns.put(PARAGRAPH_TYPE_IMAGE_LEFT_TEXT_RIGHT, IMG_WIDTH_SMALL);
+        m_layoutPatterns.put(PARAGRAPH_TYPE_IMAGE_LEFT_TEXT_RIGHT_DESCRIPTION, IMG_WIDTH_SMALL);
+        m_layoutPatterns.put(PARAGRAPH_TYPE_IMAGE_RIGHT_TEXT_LEFT, IMG_WIDTH_SMALL);
+        m_layoutPatterns.put(PARAGRAPH_TYPE_IMAGE_RIGHT_TEXT_LEFT_DESCRIPTION, IMG_WIDTH_SMALL);
+    }
+
+    /**
+     * Returns the width of the content area of the template.<p>
+     *
+     * @return the width of the content area of the template
+     */
+    public int getBodyWidth() {
+
+        return m_bodyWdith;
+    }
+
+    /**
+     * Returns the padding of the columns in the content area.<p>
+     *
+     * @return the padding of the columns in the content area
+     */
+    public int getColPadding() {
+
+        return m_colPadding;
+    }
+
+    /**
+     * Returns the spacing of the columns in the content area.<p>
+     *
+     * @return the spacing of the columns in the content area
+     */
+    public int getColSpacing() {
+
+        return m_colSpacing;
+    }
+
+    /**
+     * Returns the column layout of the parapgraphs in the content area.<p>
+     *
+     * @return the column layout of the parapgraphs in the content area
+     */
+    public String getColumnLayout() {
+
+        return m_columnLayout;
+    }
+
+    /**
+     * Returns the calculated width of a single paragraph column.<p>
+     *
+     * @return the calculated width of a single paragraph column
+     */
+    public int getColumnWidth() {
+
+        return m_columnWidth;
+    }
+
+    /**
+     * Returns the XML content that stores the layout.<p>
+     *
+     * @return the XML content that stores the layout
+     */
+    public CmsXmlContent getContent() {
+
+        return m_content;
+    }
+
+    /**
+     * Returns the image width to use for large images in fixed image size mode.<p>
+     *
+     * @return the image width to use for large images in fixed image size mode
+     */
+    public int getImgWidthLarge() {
+
+        return m_imgWidthLarge;
+    }
+
+    /**
+     * Returns the image width to use for medium images in fixed image size mode.<p>
+     *
+     * @return the image width to use for medium images in fixed image size mode
+     */
+    public int getImgWidthMedium() {
+
+        return m_imgWidthMedium;
+    }
+
+    /**
+     * Returns the image width to use for small images in fixed image size mode.<p>
+     *
+     * @return the image width to use for small images in fixed image size mode
+     */
+    public int getImgWidthSmall() {
+
+        return m_imgWidthSmall;
     }
 
     /**
@@ -292,38 +619,178 @@ public class CmsLayoutPageBean extends CmsJspActionElement {
     }
 
     /**
-     * Initialize this bean with the current page context, request and response.<p>
-     * 
-     * It is required to call one of the init() methods before you can use the 
-     * instance of this bean.
-     * 
-     * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
+     * Returns the layout variant to show, e.g. "common", "print" or "accessibe".<p>
+     *
+     * @return the layout variant to show, e.g. "common", "print" or "accessibe"
      */
-    public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public String getVariant() {
 
-        super.init(context, req, res);
-        // set default path to html snippet files to use
-        m_pathLayoutElements = VFS_PATH_LAYOUTELEMENTS;
-        // read layout configuration XML content file
-        try {
-            CmsFile file = getCmsObject().readFile(getRequestContext().getUri());
-            m_content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
-        } catch (CmsException e) {
-            // log error if reading resource fails
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_VFS_RESOURCE_1, getRequestContext().getUri()));
-            }
-        }
-        // initialize pattern Map
-        m_layoutPatterns = new HashMap(10);
+        return m_variant;
     }
 
     /**
-     * Sets the layout patterns with the layout name as key, the value is the corresponding image width.<p>
+     * Initialize this bean with the OpenCms user context, the XML content, the layout variant and width information.<p>
      * 
-     * @param layoutPatterns the layout patterns with the layout name as key, the value is the corresponding image width
+     * It is required to call either the init() method or set the members manually before you can use the 
+     * instance of this bean.
+     * 
+     * @param jsp the current JSP action element
+     * @param content the XML content that configures the layout
+     * @param variant the layout variant to show, e.g. "common", "print" or "accessibe"
+     * @param bodyWith the width of the content area of the template
+     * @param colPadding the padding of the columns in the content area
+     * @param colSpacing the spacing of the columns in the content area
+     */
+    public void init(
+        CmsJspActionElement jsp,
+        CmsXmlContent content,
+        String variant,
+        int bodyWith,
+        int colPadding,
+        int colSpacing) {
+
+        // set default path to html snippet files to use
+        setPathLayoutElements(VFS_PATH_LAYOUTELEMENTS);
+        // set CmsObject
+        setCmsJspActionElement(jsp);
+        // set layout configuration XML content file
+        setContent(content);
+        // set the variant to display
+        setVariant(variant);
+
+        // set column layout defined in content
+        String layout = m_content.getStringValue(
+            getCmsObject(),
+            NODE_COLUMNS_LAYOUT,
+            jsp.getRequestContext().getLocale());
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(layout)) {
+            layout = COLUMNS_LAYOUT_1;
+        }
+        setColumnLayout(layout);
+
+        // set the size information values
+        setColPadding(colPadding);
+        setColSpacing(colSpacing);
+        setBodyWidth(bodyWith);
+
+        // initialize pattern Map
+        setLayoutPatterns(new HashMap(16));
+    }
+
+    /**
+     * Returns if the layout images should be fixed or calculated from the content area width.<p>
+     *
+     * @return if the layout images should be fixed or calculated from the content area width
+     */
+    public boolean isFixedImageSize() {
+
+        return m_fixedImageSize;
+    }
+
+    /**
+     * Sets the width of the content area of the template.<p>
+     *
+     * @param bodyWidth the width of the content area of the template
+     */
+    public void setBodyWidth(int bodyWidth) {
+
+        m_bodyWdith = bodyWidth;
+    }
+
+    /**
+     * Sets the JSP action element to get access to the OpenCms API.<p>
+     *
+     * @param jsp the JSP action element to get access to the OpenCms API
+     */
+    public void setCmsJspActionElement(CmsJspActionElement jsp) {
+
+        m_jspActionElement = jsp;
+    }
+
+    /**
+     * Sets the padding of the columns in the content area.<p>
+     *
+     * @param colPadding the padding of the columns in the content area
+     */
+    public void setColPadding(int colPadding) {
+
+        m_colPadding = colPadding;
+    }
+
+    /**
+     * Sets the spacing of the columns in the content area.<p>
+     *
+     * @param colSpacing the spacing of the columns in the content area
+     */
+    public void setColSpacing(int colSpacing) {
+
+        m_colSpacing = colSpacing;
+    }
+
+    /**
+     * Sets the column layout of the parapgraphs in the content area.<p>
+     *
+     * @param colLayout the column layout of the parapgraphs in the content area
+     */
+    public void setColumnLayout(String colLayout) {
+
+        m_columnLayout = colLayout;
+    }
+
+    /**
+     * Sets the XML content that stores the layout.<p>
+     *
+     * @param content the XML content that stores the layout
+     */
+    public void setContent(CmsXmlContent content) {
+
+        m_content = content;
+    }
+
+    /**
+     * Sets if the layout images should be fixed or calculated from the content area width.<p>
+     *
+     * @param fixedImageSize if the layout images should be fixed or calculated from the content area width
+     */
+    public void setFixedImageSize(boolean fixedImageSize) {
+
+        m_fixedImageSize = fixedImageSize;
+    }
+
+    /**
+     * Sets the image width to use for large images in fixed image size mode.<p>
+     *
+     * @param largeImgWidth the image width to use for large images in fixed image size mode
+     */
+    public void setImgWidthLarge(int largeImgWidth) {
+
+        m_imgWidthLarge = largeImgWidth;
+    }
+
+    /**
+     * Sets the image width to use for medium images in fixed image size mode.<p>
+     *
+     * @param mediumImgWidth the image width to use for medium images in fixed image size mode
+     */
+    public void setImgWidthMedium(int mediumImgWidth) {
+
+        m_imgWidthMedium = mediumImgWidth;
+    }
+
+    /**
+     * Sets the image width to use for small images in fixed image size mode.<p>
+     *
+     * @param smallImgWidth the image width to use for small images in fixed image size mode
+     */
+    public void setImgWidthSmall(int smallImgWidth) {
+
+        m_imgWidthSmall = smallImgWidth;
+    }
+
+    /**
+     * Sets the paragraph layout patterns with the layout name as key, the value is the corresponding image width.<p>
+     * 
+     * @param layoutPatterns the paragraph layout patterns with the layout name as key, the value is the corresponding image width
      */
     public void setLayoutPatterns(Map layoutPatterns) {
 
@@ -341,29 +808,170 @@ public class CmsLayoutPageBean extends CmsJspActionElement {
     }
 
     /**
+     * Sets the layout variant to show, e.g. "common", "print" or "accessibe".<p>
+     *
+     * @param variant the layout variant to show, e.g. "common", "print" or "accessibe"
+     */
+    public void setVariant(String variant) {
+
+        m_variant = variant;
+    }
+
+    /**
+     * Calculates the actual column width to show depending on the chosen layout.<p>
+     */
+    protected void calculateColumnWidth() {
+
+        // calculate the actual column width to show depending on the layout
+        if (getColumnLayout().indexOf(COLUMNS_LAYOUT_2) != -1) {
+            // 2 column layout
+            setColumnWidth(((getBodyWidth() - getColSpacing()) / 2) - (2 * getColPadding()));
+        } else {
+            // 1 colummn layout
+            setColumnWidth(getBodyWidth() - (2 * getColPadding()));
+        }
+    }
+
+    /**
+     * Returns the desired image width depending on the given image variant and the image mode (fixed or not).<p>
+     * 
+     * @param imgWidthVariant the image width variant to use from the paragraph layout pattern Map
+     * @return the desired image width depending on the given image variant and the image mode (fixed or not)
+     */
+    protected int calculateImageWidth(String imgWidthVariant) {
+
+        if (imgWidthVariant.equals(IMG_WIDTH_LARGE)) {
+            // large image
+            if (isFixedImageSize() && getImgWidthLarge() > 0) {
+                return getImgWidthLarge();
+            }
+            return getColumnWidth();
+        } else if (imgWidthVariant.equals(IMG_WIDTH_SMALL)) {
+            // small image
+            if (isFixedImageSize() && getImgWidthSmall() > 0) {
+                return getImgWidthSmall();
+            }
+            return (getColumnWidth() / 4);
+        } else {
+            // medium image
+            if (isFixedImageSize() && getImgWidthMedium() > 0) {
+                return getImgWidthMedium();
+            }
+            return (int)Math.round(getColumnWidth() / 2.3);
+        }
+    }
+
+    /**
+     * Returns the JSP action element to get access to the OpenCms API.<p>
+     *
+     * @return the JSP action element to get access to the OpenCms API
+     */
+    protected CmsJspActionElement getCmsJspActionElement() {
+
+        return m_jspActionElement;
+    }
+
+    /**
+     * Returns the OpenCms user context to use.<p>
+     *
+     * @return the OpenCms user context to use
+     */
+    protected CmsObject getCmsObject() {
+
+        return m_jspActionElement.getCmsObject();
+    }
+
+    /**
      * Returns an initialized image scaler depending on the image align to use.<p>
      * 
-     * @param imgAlign the image align to use for a paragraph
+     * @param paragraphType the paragraph type to show
+     * @param imgSize the image size property value containing the original image information
      * @return an initialized image scaler depending on the image align to use
      */
-    protected CmsImageScaler getImageScaler(String imgAlign) {
+    protected CmsImageScaler getImageScaler(String paragraphType, String imgSize) {
 
-        // create scaler instance
-        CmsImageScaler scaler = new CmsImageScaler();
-        scaler.setType(1);
-        scaler.setPosition(Simapi.POS_DOWN_LEFT);
-
-        // get the image width from layout pattern Map
-        Integer imgWidth = (Integer)getLayoutPatterns().get(imgAlign);
-        if (imgWidth != null) {
-            // found a width value
-            scaler.setWidth(imgWidth.intValue());
-        } else {
+        // get the image width variant to use from the paragraph layout pattern Map
+        String imgWidthVariant = (String)getLayoutPatterns().get(paragraphType);
+        if (CmsStringUtil.isEmpty(imgWidthVariant)) {
             // did not find a value, provide a default width
-            scaler.setWidth(IMG_WIDTH_MEDIUM);
+            imgWidthVariant = IMG_WIDTH_MEDIUM;
         }
 
-        return scaler;
+        // caculate image width to use depending on the column width
+        int imgWidth = calculateImageWidth(imgWidthVariant);
+
+        // create scaler instance of original image
+        CmsImageScaler origImage = new CmsImageScaler(imgSize);
+        // create scaler with desired image width
+        CmsImageScaler scaler = new CmsImageScaler();
+        scaler.setWidth(imgWidth);
+        // return scaler with result image width
+        return origImage.getWidthScaler(scaler);
+    }
+
+    /**
+     * Creates a valid JavaScript link to open a larger image version in a new popup window.<p>
+     * 
+     * @param imgUri the URI of the image to link to
+     * @param imgSize the image size property value containing the original image information
+     * @return a valid JavaScript link to open a larger image version in a new popup window
+     */
+    protected String getLinkToLargeImage(String imgUri, String imgSize) {
+
+        StringBuffer elementLink = new StringBuffer(128);
+        elementLink.append(CmsWorkplace.VFS_PATH_MODULES);
+        elementLink.append(MODULE_NAME);
+        elementLink.append("/elements/popup-image.html?uri=");
+        elementLink.append(imgUri);
+        elementLink.append("&imgsize=");
+        elementLink.append(imgSize);
+        elementLink.append("&");
+        elementLink.append(CmsLocaleManager.PARAMETER_LOCALE);
+        elementLink.append("=");
+        elementLink.append(getCmsObject().getRequestContext().getLocale());
+        StringBuffer tempLink = new StringBuffer(256);
+        tempLink.append("javascript:window.open('");
+        tempLink.append(getCmsJspActionElement().link(elementLink.toString()));
+        tempLink.append("', 'largeImage', ");
+        tempLink.append("'width=620,height=400,location=no,menubar=no,toolbar=no,status=no,scrollbars=yes,resizable=yes');");
+        return tempLink.toString();
+    }
+
+    /**
+     * Returns an initialized macro wrapper that can be used for the paragraph output.<p>
+     * 
+     * @return an initialized macro wrapper that can be used for the paragraph output
+     * @throws Exception if the initialization of the wrapper fails
+     */
+    protected I_CmsMacroWrapper getMacroWrapper() throws Exception {
+
+        // create path to macro file to use
+        StringBuffer macroFile = new StringBuffer(256);
+        macroFile.append(getPathLayoutElements());
+        macroFile.append(getColumnLayout());
+        macroFile.append("_");
+        macroFile.append(getVariant());
+        macroFile.append(".");
+        macroFile.append(CmsMacroWrapperFreeMarker.FILE_SUFFIX);
+        String fileName = macroFile.toString();
+        if (!getCmsObject().existsResource(fileName)) {
+            // macro file not found, log error and throw exception
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_VFS_RESOURCE_1, fileName));
+            }
+            throw new CmsException(Messages.get().container(Messages.LOG_ERR_VFS_RESOURCE_1, fileName));
+        }
+        return new CmsMacroWrapperFreeMarker(getCmsObject(), fileName);
+    }
+
+    /**
+     * Sets the calculated width of a single paragraph column.<p>
+     *
+     * @param columnWidth the calculated width of a single paragraph column
+     */
+    protected void setColumnWidth(int columnWidth) {
+
+        m_columnWidth = columnWidth;
     }
 
 }

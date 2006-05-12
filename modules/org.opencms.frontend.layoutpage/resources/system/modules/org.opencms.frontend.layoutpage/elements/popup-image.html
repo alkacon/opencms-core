@@ -1,0 +1,16 @@
+<%@page import="org.opencms.jsp.*, org.opencms.frontend.layoutpage.*" %><%
+
+CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+
+String imgUri = request.getParameter("uri");
+String imgSize = request.getParameter("imgsize");
+
+String img = CmsLayoutPageBean.buildLargeImageTag(cms, imgUri, imgSize);
+
+%><html>
+<body style="margin: 10px 0; padding: 0; background-color: #FFF;">
+<div style="text-align: center">
+<%= img %>
+</div>
+</body>
+</html>
