@@ -71,6 +71,7 @@
 			<digest-type>MD5</digest-type>
 			<param name="compatibility.convert.digestencoding">false</param>
 		</passwordhandler>
+		<validationhandler class="org.opencms.security.CmsDefaultValidationHandler" />	
 		<loginmanager>	
 			<disableMinutes>20</disableMinutes>
 			<maxBadAttempts>3</maxBadAttempts>

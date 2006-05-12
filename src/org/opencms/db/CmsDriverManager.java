@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/05/11 13:20:05 $
- * Version: $Revision: 1.570.2.4 $
+ * Date   : $Date: 2006/05/12 15:52:36 $
+ * Version: $Revision: 1.570.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1323,7 +1323,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsIllegalArgumentException, CmsDataAccessException {
 
         // check the groupname
-        CmsGroup.checkGroupName(name);
+        OpenCms.getValidationHandler().checkGroupName(name);
         // trim the name
         name = name.trim();
         // create the group
@@ -3648,7 +3648,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // no space before or after the name
         name = name.trim();
         // check the username
-        CmsUser.checkUserName(name);
+        OpenCms.getValidationHandler().checkUserName(name);
 
         CmsUser newUser = m_userDriver.importUser(
             dbc,
@@ -7713,7 +7713,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     private void clearcache(boolean principalsOnly) {
 
         m_userCache.clear();
-        m_groupCache.clear();        
+        m_groupCache.clear();
         m_userGroupsCache.clear();
         m_accessControlListCache.clear();
         m_securityManager.clearPermissionCache();
@@ -7757,7 +7757,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @return the created user
      * 
-     * @see CmsObject#createUser(String, String, String, Map, int)
+     * @see CmsObject#createUser(String, String, String, Map)
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the name for the user is not valid
@@ -7773,7 +7773,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // no space before or after the name
         name = name.trim();
         // check the username
-        CmsUser.checkUserName(name);
+        OpenCms.getValidationHandler().checkUserName(name);
         // check the password
         validatePassword(password);
 

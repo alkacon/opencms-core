@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2006/03/28 12:14:36 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2006/05/12 15:52:36 $
+ * Version: $Revision: 1.32.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,16 +69,13 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.32.4.1 $
  * 
  * @since 6.0.0
  * 
  * @see CmsGroup 
  */
 public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
-
-    /** The name constraints when generating new users. */
-    public static final String NAME_CONSTRAINTS = "-._~$@";
 
     /** Identifies the system user type. */
     public static final int USER_TYPE_SYSTEMUSER = 0;
@@ -114,7 +111,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      * Defines if the user is of type "syetem user" or a "web user".<p>
      * 
      * Use {@link #USER_TYPE_SYSTEMUSER} for system users, or 
-     * {@link USER_TYPE_WEBUSER} for web usera.
+     * {@link #USER_TYPE_WEBUSER} for web usera.
      */
     private int m_type;
 
@@ -198,57 +195,6 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Validates an email address.<p>
-     * 
-     * That means, the parameter should only be composed by digits and standard english letters, points, underscores and exact one "At" symbol.<p>
-     * 
-     * @param email the email to validate
-     */
-    public static void checkEmail(String email) {
-
-        if (!CmsStringUtil.validateRegex(
-            email,
-            "^([a-zA-Z0-9_\\.\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$",
-            false)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));
-        }
-    }
-
-    /**
-     * Checks if the provided user name is a valid user name, 
-     * that is contains only valid characters.<p>
-     *
-     * A user name can only be composed of digits, 
-     * standard ASCII letters and the symbols defined in {@link #NAME_CONSTRAINTS}.<p>
-     * 
-     * @param name the user name to check
-     * 
-     * @throws CmsIllegalArgumentException if the given user name is not valid
-     */
-    public static void checkUserName(String name) throws CmsIllegalArgumentException {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USERNAME_EMPTY_0, name));
-        }
-
-        CmsStringUtil.checkName(name, NAME_CONSTRAINTS, Messages.ERR_BAD_USERNAME_4, Messages.get());
-    }
-
-    /**
-     * Validates a zip code.<p>
-     * 
-     * That means, the parameter should only be composed by digits and standard english letters.<p>
-     * 
-     * @param zipcode the zipcode to validate
-     */
-    public static void checkZipCode(String zipcode) {
-
-        if (!CmsStringUtil.validateRegex(zipcode, "[\\w]*", true)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_ZIPCODE_VALIDATION_1, zipcode));
-        }
-    }
-
-    /**
      * Returns the "full" name of the given user in the format <code>"{firstname} {lastname} ({username})"</code>,
      * or the empty String <code>""</code> if the user is null.<p>
      * 
@@ -296,14 +242,11 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      * 
      * @param name the user name to check
      * 
-     * @see #checkUserName(String)
-     * 
      * @throws CmsIllegalArgumentException if the check fails
      */
-    public void checkName(String name) {
+    public void checkName(String name) throws CmsIllegalArgumentException {
 
-        // use static validation method
-        checkUserName(name);
+        OpenCms.getValidationHandler().checkUserName(name);
     }
 
     /**
@@ -645,7 +588,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public void setEmail(String email) {
 
-        checkEmail(email);
+        OpenCms.getValidationHandler().checkEmail(email);
         m_email = email;
     }
 
@@ -718,7 +661,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public void setZipcode(String zipcode) {
 
-        checkZipCode(zipcode);
+        OpenCms.getValidationHandler().checkZipCode(zipcode);
         zipcode = zipcode.toUpperCase();
         setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE, zipcode);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2006/04/20 11:00:13 $
- * Version: $Revision: 1.14.4.1 $
+ * Date   : $Date: 2006/05/12 15:52:36 $
+ * Version: $Revision: 1.14.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.4.1 $
+ * @version $Revision: 1.14.4.2 $
  * 
  * @since 6.0.0
  */
@@ -227,6 +227,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MAIL_SETTINGS_1 = "LOG_MAIL_SETTINGS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_VALIDATION_HANDLER_1 = "LOG_VALIDATION_HANDLER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_REMOVE_CONFIG_FILE_1 = "LOG_REMOVE_CONFIG_FILE_1";

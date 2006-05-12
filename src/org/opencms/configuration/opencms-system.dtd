@@ -17,6 +17,7 @@
 	resourceinit?,
 	requesthandlers?,
 	passwordhandler,
+	validationhandler?,
 	loginmanager?,
 	loginmessage?,
 	sites,
@@ -80,13 +81,21 @@
 
 <!--
 # Password handler:
-# Provides method for password encryption and password validation.
+# Provides methods for password encryption and password validation.
 # See the JavaDoc of interface org.opencms.security.I_CmsPasswordHandler for more details.
 -->
 <!ELEMENT passwordhandler (encoding, digest-type, param*)>
 <!ATTLIST passwordhandler class CDATA #REQUIRED>
 
 <!ELEMENT digest-type (#PCDATA)>
+
+<!--
+# Validation handler:
+# Provides all kind of validation methods.
+# See the JavaDoc of interface org.opencms.security.I_CmsValidationHandler for more details.
+-->
+<!ELEMENT validationhandler EMPTY>
+<!ATTLIST validationhandler class CDATA #REQUIRED>
 
 <!--
 # Login manager:
