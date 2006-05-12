@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2006/05/12 16:05:48 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.security.CmsDefaultValidationHandler;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.I_CmsPasswordHandler;
+import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
@@ -75,7 +77,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 6.0.0
  */
@@ -363,6 +365,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the context user name. */
     public static final String N_USERNAME = "user";
 
+    /** The node name for the validation handler. */
+    public static final String N_VALIDATIONHANDLER = "validationhandler";
+
     /** The node name for the version history. */
     public static final String N_VERSIONHISTORY = "versionhistory";
 
@@ -442,6 +447,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The temporary file project id. */
     private int m_tempFileProjectId;
 
+    /** The configured validation handler. */
+    private I_CmsValidationHandler m_validationHandler;
+
     /** Indicates if the version history is enabled. */
     private boolean m_versionHistoryEnabled;
 
@@ -461,6 +469,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_configuredJobs = new ArrayList();
         m_runtimeProperties = new HashMap();
         m_eventManager = new CmsEventManager();
+        m_validationHandler = new CmsDefaultValidationHandler();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
         }
@@ -760,6 +769,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER + "/" + N_DIGESTTYPE, "digestType");
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, "setPasswordHandler");
 
+        // add validation handler creation rules
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, A_CLASS, CmsDefaultValidationHandler.class);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, "setValidationHandler");
+
         // add login manager creation rules
         digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 2);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_DISABLEMINUTES, 0);
@@ -1036,6 +1049,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
                 paramNode.addAttribute(A_NAME, name);
                 paramNode.addText(value);
             }
+        }
+
+        // validation handler
+        if (m_validationHandler != null) {
+            Element valHandlerElem = systemElement.addElement(N_VALIDATIONHANDLER);
+            valHandlerElem.addAttribute(A_CLASS, m_validationHandler.getClass().getName());
         }
 
         // login manager
@@ -1443,6 +1462,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Returns an instance of the configured validation handler.<p>
+     * 
+     * @return an instance of the configured validation handler
+     */
+    public I_CmsValidationHandler getValidationHandler() {
+
+        return m_validationHandler;
+    }
+
+    /**
      * Returns the maximum number of versions that are kept per file in the VFS version history.<p>
      * 
      * If the versin history is disabled, this setting has no effect.<p>
@@ -1736,6 +1765,19 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_TEMPFILE_PROJECT_ID_1,
                 new Integer(m_tempFileProjectId)));
+        }
+    }
+
+    /**
+     * Sets the validation handler.<p>
+     * 
+     * @param validationHandler the validation handler to set.
+     */
+    public void setValidationHandler(I_CmsValidationHandler validationHandler) {
+
+        m_validationHandler = validationHandler;
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_VALIDATION_HANDLER_1, validationHandler));
         }
     }
 

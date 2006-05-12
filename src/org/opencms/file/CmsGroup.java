@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2006/03/28 12:14:36 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/05/12 16:05:48 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
@@ -43,7 +44,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.0.0 
  * 
@@ -81,23 +82,6 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
     }
 
     /**
-     * Checks if the provided group name is a valid group name, 
-     * that is contains only valid characters.<p>
-     * 
-     * A group name must not be empty or whitespace only.<p>
-     *
-     * @param name the group name to check
-     * 
-     * @throws CmsIllegalArgumentException if the given group name is not valid
-     */
-    public static void checkGroupName(String name) throws CmsIllegalArgumentException {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_GROUPNAME_EMPTY_0));
-        }
-    }
-
-    /**
      * Checks if the provided group name is valid and can be used as an argument value 
      * for {@link #setName(String)}.<p> 
      * 
@@ -105,12 +89,11 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
      * 
      * @param name the group name to check
      * 
-     * @see #checkGroupName(String)
+     * @see org.opencms.security.I_CmsValidationHandler#checkGroupName(String)
      */
     public void checkName(String name) {
 
-        // use static validation method
-        checkGroupName(name);
+        OpenCms.getValidationHandler().checkGroupName(name);
     }
 
     /**

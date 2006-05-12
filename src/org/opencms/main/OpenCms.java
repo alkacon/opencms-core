@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2006/05/12 16:05:48 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPasswordHandler;
+import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
@@ -91,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 6.0.0 
  */
@@ -448,6 +449,16 @@ public final class OpenCms {
     public static CmsThreadStore getThreadStore() {
 
         return OpenCmsCore.getInstance().getThreadStore();
+    }
+
+    /**
+     * Returns the runtime validation handler.<p>
+     * 
+     * @return the validation handler
+     */
+    public static I_CmsValidationHandler getValidationHandler() {
+
+        return OpenCmsCore.getInstance().getValidationHandler();
     }
 
     /**

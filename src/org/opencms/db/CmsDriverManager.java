@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.572 $
+ * Date   : $Date: 2006/05/12 16:05:48 $
+ * Version: $Revision: 1.573 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1323,7 +1323,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsIllegalArgumentException, CmsDataAccessException {
 
         // check the groupname
-        CmsGroup.checkGroupName(name);
+        OpenCms.getValidationHandler().checkGroupName(name);
         // trim the name
         name = name.trim();
         // create the group
@@ -3675,7 +3675,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // no space before or after the name
         name = name.trim();
         // check the username
-        CmsUser.checkUserName(name);
+        OpenCms.getValidationHandler().checkUserName(name);
 
         CmsUser newUser = m_userDriver.importUser(
             dbc,
@@ -4061,7 +4061,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // read the user from the driver to avoid the cache
             newUser = m_userDriver.readUser(dbc, userName, password, remoteAddress, userType);
         } catch (CmsDbEntryNotFoundException e) {
-            // this incicates that the username / password combination does not exist
+            // this indicates that the username / password combination does not exist
             // any other exception indicates database issues, these are not catched here
 
             // check if a user with this name exists at all 
@@ -7784,7 +7784,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @return the created user
      * 
-     * @see CmsObject#createUser(String, String, String, Map, int)
+     * @see CmsObject#createUser(String, String, String, Map)
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the name for the user is not valid
@@ -7800,7 +7800,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // no space before or after the name
         name = name.trim();
         // check the username
-        CmsUser.checkUserName(name);
+        OpenCms.getValidationHandler().checkUserName(name);
         // check the password
         validatePassword(password);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.220 $
+ * Date   : $Date: 2006/05/12 16:05:48 $
+ * Version: $Revision: 1.221 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,6 +73,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPasswordHandler;
+import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
@@ -132,7 +133,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.220 $ 
+ * @version $Revision: 1.221 $ 
  * 
  * @since 6.0.0 
  */
@@ -227,6 +228,9 @@ public final class OpenCmsCore {
 
     /** The thread store. */
     private CmsThreadStore m_threadStore;
+
+    /** The runtime validation handler. */
+    private I_CmsValidationHandler m_validationHandler;
 
     /** The workplace manager contains information about the global workplace settings. */
     private CmsWorkplaceManager m_workplaceManager;
@@ -605,6 +609,16 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns the runtime validation handler.<p>
+     * 
+     * @return the validation handler
+     */
+    protected I_CmsValidationHandler getValidationHandler() {
+
+        return m_validationHandler;
+    }
+
+    /**
      * Returns the initialized workplace manager, 
      * which contains information about the global workplace settings.<p> 
      * 
@@ -927,6 +941,9 @@ public final class OpenCmsCore {
 
         // get the password handler
         m_passwordHandler = systemConfiguration.getPasswordHandler();
+
+        // get the validation handler
+        m_validationHandler = systemConfiguration.getValidationHandler();
 
         // get the login manager
         m_loginManager = systemConfiguration.getLoginManager();
@@ -2021,7 +2038,7 @@ public final class OpenCmsCore {
             // resolve the login form link using the link manager
             redirectURL = m_linkManager.substituteLink(adminCms, redirectURL, null, true);
             if (LOG.isDebugEnabled()) {
-                Messages.get().getBundle().key(Messages.LOG_AUTHENTICATE_PROPERTY_2, redirectURL, path);
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_AUTHENTICATE_PROPERTY_2, redirectURL, path));
             }
             // finally redirect to the login form
             res.sendRedirect(redirectURL);
