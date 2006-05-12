@@ -41,7 +41,9 @@ toolbar.append(",'-','Cut','Copy','Paste','PasteText','PasteWord'");
 
 toolbar.append(",'-','Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'");
 
-toolbar.append(",'-','JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'");
+toolbar.append("],[");
+
+toolbar.append("'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'");
 
 toolbar.append(",'-','OrderedList','UnorderedList'");
 
