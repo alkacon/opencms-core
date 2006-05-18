@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2006/05/12 15:52:36 $
- * Version: $Revision: 1.32.4.1 $
+ * Date   : $Date: 2006/05/18 11:13:39 $
+ * Version: $Revision: 1.32.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.32.4.1 $
+ * @version $Revision: 1.32.4.2 $
  * 
  * @since 6.0.0
  * 
@@ -192,6 +192,30 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
         m_additionalInfo = additionalInfo;
         m_address = address;
         m_type = type;
+    }
+
+    /**
+     * Validates an email address.<p>
+     * 
+     * That means, the parameter should only be composed by digits and standard english letters, points, underscores and exact one "At" symbol.<p>
+     * 
+     * @param email the email to validate
+     */
+    public static void checkEmail(String email) {
+
+        OpenCms.getValidationHandler().checkEmail(email);
+    }
+
+    /**
+     * Validates a zip code.<p>
+     * 
+     * That means, the parameter should only be composed by digits and standard english letters.<p>
+     * 
+     * @param zipcode the zipcode to validate
+     */
+    public static void checkZipCode(String zipcode) {
+
+        OpenCms.getValidationHandler().checkZipCode(zipcode);
     }
 
     /**
@@ -588,7 +612,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public void setEmail(String email) {
 
-        OpenCms.getValidationHandler().checkEmail(email);
+        checkEmail(email);
         m_email = email;
     }
 
@@ -661,7 +685,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public void setZipcode(String zipcode) {
 
-        OpenCms.getValidationHandler().checkZipCode(zipcode);
+        checkZipCode(zipcode);
         zipcode = zipcode.toUpperCase();
         setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE, zipcode);
     }
