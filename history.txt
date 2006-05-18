@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/05/02 08:59:39 $
- * Version: $Revision: 1.723 $
+ * Date   : $Date: 2006/05/18 14:19:24 $
+ * Version: $Revision: 1.724 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,11 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 6.2.2 - xxxx, 2006
+! Added configurable validation handler for user and group name
+* Fixed issue with workplace localization that required all explorer related key to be in a single package
+* Fixed issue with Oracle DB contraints that prevented a proper OpenCms setup
 
 OpenCms 6.2.1 - May 2, 2006
 * Added fix for "concurrent resource creation" issue
