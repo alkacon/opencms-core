@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/05/19 08:34:49 $
+ * Version: $Revision: 1.24.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -527,7 +527,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         if (galleries != null && galleries.size() == 1) {
             // exactly one gallery present
             CmsResource res = (CmsResource)galleries.get(0);
-            StringBuffer result = new StringBuffer(32);
+            StringBuffer result = new StringBuffer(128);
             String path = getCms().getSitePath(res);
             String title = "";
             try {
@@ -579,7 +579,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
             return buildSelect(attrs, options, values, selectedIndex);
         } else {
             // no gallery present, create hidden input field to avoid JS errors
-            StringBuffer result = new StringBuffer(4);
+            StringBuffer result = new StringBuffer(128);
             result.append(key(Messages.getGalleryNotFoundKey(getGalleryTypeName())));
             result.append("\r\n<input type=\"hidden\" name=\"");
             result.append(PARAM_GALLERYPATH);
@@ -915,7 +915,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public String getNoGalleryErrorMsg() {
 
-        return key("error.reason.no." + getGalleryTypeName());
+        return key(Messages.getGalleryNotFoundKey(getGalleryTypeName()));
     }
 
     /**
