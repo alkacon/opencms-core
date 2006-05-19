@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/layoutpage/CmsLayoutPageBean.java,v $
- * Date   : $Date: 2006/05/12 10:02:45 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/05/19 07:51:40 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.1.9 
  */
@@ -897,7 +897,7 @@ public class CmsLayoutPageBean {
             imgWidthVariant = IMG_WIDTH_MEDIUM;
         }
 
-        // caculate image width to use depending on the column width
+        // calculate image width to use depending on the column width
         int imgWidth = calculateImageWidth(imgWidthVariant);
 
         // create scaler instance of original image
