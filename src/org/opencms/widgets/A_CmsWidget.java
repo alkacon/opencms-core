@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/05/19 08:34:36 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,14 +173,16 @@ public abstract class A_CmsWidget implements I_CmsWidget {
         StringBuffer result = new StringBuffer(128);
         String locKey = getHelpKey(param);
         String locValue = widgetDialog.getMessages().key(locKey, true);
+        if (!widgetDialog.useNewStyle()) {
+            // use real ID for XML contents to avoid display issues
+            locKey = param.getId();
+        }
         if (locValue == null) {
             // there was no help message found for this key, so return a spacer cell
             return widgetDialog.dialogHorizontalSpacer(16);
         } else {
             result.append("<td>");
-            result.append("<img name=\"img");
-            result.append(locKey);
-            result.append("\" id=\"img");
+            result.append("<img id=\"img");
             result.append(locKey);
             result.append("\" src=\"");
             result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.png"));
