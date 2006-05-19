@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsComboWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/05/19 08:34:35 $
+ * Version: $Revision: 1.10.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Iterator;
@@ -53,7 +54,7 @@ import java.util.List;
  * @author Andreas Zahner 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +127,9 @@ public class CmsComboWidget extends A_CmsSelectWidget {
                 result.append("\"");
                 if (option.getHelp() != null) {
                     // create help text mousevent attributes
-                    result.append(getJsHelpMouseHandler(widgetDialog, itemId, CmsEncoder.escape(option.getHelp(), cms.getRequestContext().getEncoding())));
+                    // can't use method in CmsEncoder because we need to keep < > for HTML in help text
+                    String locValue = CmsStringUtil.substitute(option.getHelp(), "\"", "&quot;");
+                    result.append(getJsHelpMouseHandler(widgetDialog, itemId, CmsStringUtil.escapeJavaScript(locValue)));
                 }
                 result.append(">");
                 result.append(option.getValue());
