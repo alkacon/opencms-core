@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/05/24 14:37:00 $
+ * Version: $Revision: 1.18.4.1 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.18.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,7 +125,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
                 while (it.hasNext()) {
                     I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
                     if (action instanceof CmsGroupStateAction) {
-                        ((CmsGroupStateAction)action).setUserName(m_paramUsername);
+                        ((CmsGroupStateAction)action).setUserName(getParamUsername());
                     }
                 }
             }
@@ -144,9 +144,9 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the User name parameter.<p>
+     * Returns the User name parameter value.<p>
      *
-     * @return the User name paramter
+     * @return the User name parameter value
      */
     public String getParamUsername() {
 
@@ -161,6 +161,16 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     public void setParamUserid(String userId) {
 
         m_paramUserid = userId;
+    }
+
+    /**
+     * Sets the User name parameter value.<p>
+     * 
+     * @param username the username to set
+     */
+    public void setParamUsername(String username) {
+
+        m_paramUsername = username;
     }
 
     /**
