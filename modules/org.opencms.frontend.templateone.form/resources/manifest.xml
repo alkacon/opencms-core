@@ -560,7 +560,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;no-params]]></value>
+					<value><![CDATA[never]]></value>
 				</property>
 				<property>
 					<name>Title</name>
