@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultValidationHandler.java,v $
- * Date   : $Date: 2006/05/12 15:52:36 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/06/08 09:38:46 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.3.0 
  */
@@ -104,6 +104,26 @@ public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
 
         if (!CmsStringUtil.validateRegex(zipcode, ZIPCODE_REGEX, true)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_ZIPCODE_VALIDATION_1, zipcode));
+        }
+    }
+
+    /**
+     * @see org.opencms.security.I_CmsValidationHandler#checkFirstname(java.lang.String)
+     */
+    public void checkFirstname(String firstname) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(firstname)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_FIRSTNAME_EMPTY_0));
+        }
+    }
+
+    /**
+     * @see org.opencms.security.I_CmsValidationHandler#checkLastname(java.lang.String)
+     */
+    public void checkLastname(String lastname) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(lastname)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LASTNAME_EMPTY_0));
         }
     }
 

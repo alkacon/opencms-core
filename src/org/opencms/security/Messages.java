@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2006/05/12 15:52:36 $
- * Version: $Revision: 1.20.4.1 $
+ * Date   : $Date: 2006/06/08 09:38:46 $
+ * Version: $Revision: 1.20.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.1 $ 
+ * @version $Revision: 1.20.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,6 +61,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EMAIL_VALIDATION_1 = "ERR_EMAIL_VALIDATION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_FIRSTNAME_EMPTY_0 = "ERR_FIRSTNAME_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_NEWPWD_0 = "ERR_INVALID_NEWPWD_0";
 
     /** Message constant for key in the resource bundle. */
@@ -74,6 +77,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_USER_PWD_1 = "ERR_INVALID_USER_PWD_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LASTNAME_EMPTY_0 = "ERR_LASTNAME_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_FAILED_3 = "ERR_LOGIN_FAILED_3";
