@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsWebusersList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/06/08 09:29:41 $
+ * Version: $Revision: 1.4.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,8 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsMultiException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -41,6 +43,7 @@ import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,9 +98,23 @@ public class CmsWebusersList extends A_CmsUsersList {
             getJsp().getRequest().getParameter(A_CmsEditUserDialog.PARAM_USERID),
             CmsHtmlList.ITEM_SEPARATOR,
             true).iterator();
+        CmsUUID guestId = null;
+        try {
+            getCms().readUser(OpenCms.getDefaultUsers().getUserGuest()).getId();
+        } catch (Exception e) {
+            // ignore, use default
+        }
+        List exceptions = new ArrayList();
         while (itUsers.hasNext()) {
             CmsUUID id = new CmsUUID(itUsers.next().toString());
-            getCms().deleteWebUser(id);
+            try {
+                getCms().deleteUser(id, guestId);
+            } catch (CmsException e) {
+                exceptions.add(e);
+            }
+        }
+        if (!exceptions.isEmpty()) {            
+            throw new CmsMultiException(exceptions);
         }
         refreshList();
         actionCloseDialog();
