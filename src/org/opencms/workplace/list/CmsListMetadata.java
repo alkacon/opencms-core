@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/06/08 09:33:01 $
+ * Version: $Revision: 1.22.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +71,10 @@ public class CmsListMetadata {
     /** Search action. */
     private CmsListSearchAction m_searchAction;
 
-    /** <code>true</code> if this metadata object should not be cached.<p>. */
+    /** if the data is self managed (sorted and filtered by {@link A_CmsListDialog#getListItems()} method). */
+    private boolean m_selfManaged = false;
+
+    /** if this metadata object should not be cached.<p>. */
     private boolean m_volatile = false;
 
     /**
@@ -105,7 +108,7 @@ public class CmsListMetadata {
             listColumn.setPrintable(true);
         } else {
             listColumn.setPrintable(listColumn.isSorteable());
-        }        
+        }
         m_columns.addIdentifiableObject(listColumn.getId(), listColumn);
     }
 
@@ -131,7 +134,7 @@ public class CmsListMetadata {
             listColumn.setPrintable(true);
         } else {
             listColumn.setPrintable(listColumn.isSorteable());
-        }        
+        }
         m_columns.addIdentifiableObject(listColumn.getId(), listColumn, position);
     }
 
@@ -672,6 +675,16 @@ public class CmsListMetadata {
     }
 
     /**
+     * Returns the self Managed flag.<p>
+     *
+     * @return the self Managed flag
+     */
+    public boolean isSelfManaged() {
+
+        return m_selfManaged;
+    }
+
+    /**
      * Returns <code>true</code> if any column is sorteable.<p>
      * 
      * @return <code>true</code> if any column is sorteable
@@ -707,6 +720,16 @@ public class CmsListMetadata {
 
         m_searchAction = searchAction;
         m_searchAction.setListId(getListId());
+    }
+
+    /**
+     * Sets the self Managed flag.<p>
+     *
+     * @param selfManaged the self Managed flag to set
+     */
+    public void setSelfManaged(boolean selfManaged) {
+
+        this.m_selfManaged = selfManaged;
     }
 
     /**

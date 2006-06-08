@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2006/05/02 14:47:46 $
- * Version: $Revision: 1.35.4.2 $
+ * Date   : $Date: 2006/06/08 09:33:01 $
+ * Version: $Revision: 1.35.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.2 $ 
+ * @version $Revision: 1.35.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -836,7 +836,9 @@ public class CmsHtmlList {
             m_searchFilter = "";
             getMetadata().getSearchAction().getShowAllAction().setVisible(false);
         } else {
-            m_filteredItems = getMetadata().getSearchAction().filter(getAllContent(), searchFilter);
+            if (!m_metadata.isSelfManaged()) {
+                m_filteredItems = getMetadata().getSearchAction().filter(getAllContent(), searchFilter);
+            }
             m_searchFilter = searchFilter;
             getMetadata().getSearchAction().getShowAllAction().setVisible(true);
         }
@@ -874,14 +876,16 @@ public class CmsHtmlList {
         }
         // reset view
         setCurrentPage(1);
-        // only reverse order if the to sort column is already sorted
+        // only reverse order if the column to sort is already sorted
         if (sortedColumn.equals(m_sortedColumn)) {
             if (m_currentSortOrder == CmsListOrderEnum.ORDER_ASCENDING) {
                 m_currentSortOrder = CmsListOrderEnum.ORDER_DESCENDING;
             } else {
                 m_currentSortOrder = CmsListOrderEnum.ORDER_ASCENDING;
             }
-            Collections.reverse(m_filteredItems);
+            if (!m_metadata.isSelfManaged()) {
+                Collections.reverse(m_filteredItems);
+            }
             return;
         }
         // sort new column
@@ -891,7 +895,9 @@ public class CmsHtmlList {
         if (m_filteredItems == null) {
             m_filteredItems = new ArrayList(getAllContent());
         }
-        Collections.sort(m_filteredItems, c.getComparator(sortedColumn, locale));
+        if (!m_metadata.isSelfManaged()) {
+            Collections.sort(m_filteredItems, c.getComparator(sortedColumn, locale));
+        }
     }
 
     /**
@@ -904,6 +910,10 @@ public class CmsHtmlList {
      */
     public void setState(CmsListState listState, Locale locale) {
 
+        m_filteredItems = null;
+        if (m_visibleItems != null) {
+            m_visibleItems.clear();
+        }
         setSearchFilter(listState.getFilter(), locale);
         setSortedColumn(listState.getColumn(), locale);
         if (listState.getOrder() == CmsListOrderEnum.ORDER_DESCENDING) {
