@@ -211,8 +211,6 @@ public class CmsListDemo15b extends A_CmsListDialog {
         } else if (LIST_ACTION_DELETE.equals(getParamListAction())) {
             // do not really delete the user in the demo
             //getCms().deleteUser(userId);
-            // but remove from the list
-            getList().removeItem(userId.toString(), getLocale());
         } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
             // execute the activate action
             try {

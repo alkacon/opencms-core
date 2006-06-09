@@ -140,8 +140,6 @@ public class CmsListDemo6 extends A_CmsListDialog {
             CmsUUID userId = new CmsUUID(item.getId());
             // do not really delete the user in the demo
             //getCms().deleteUser(userId);
-            // but remove from the list
-            getList().removeItem(userId.toString(), getLocale());
         } else {
             throwListUnsupportedActionException();
         }

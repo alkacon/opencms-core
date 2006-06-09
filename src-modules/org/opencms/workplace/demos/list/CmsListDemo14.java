@@ -105,7 +105,7 @@ public class CmsListDemo14 extends A_CmsListDialog {
      */
     public String defaultActionHtmlStart() {
 
-        return getList().listJs(getLocale()) + dialogContentStart(getParamTitle());
+        return getList().listJs() + dialogContentStart(getParamTitle());
     }
 
     /**
