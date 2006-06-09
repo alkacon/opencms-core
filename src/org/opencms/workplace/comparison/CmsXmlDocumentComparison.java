@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsXmlDocumentComparison.java,v $
- * Date   : $Date: 2006/03/30 09:30:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/06/09 12:14:28 $
+ * Version: $Revision: 1.4.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
             // only add simple types
             if (value.isSimpleType()) {
                 m_elementPaths.add(new CmsXmlContentElementComparison(
-                    value.getLocale().toString(),
+                    value.getLocale(),
                     value.getPath(),
                     value.getTypeName()));
             }
@@ -140,7 +140,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         while (i.hasNext()) {
             CmsElementComparison elem = (CmsElementComparison)i.next();
             elem.setStatus(CmsResourceComparison.TYPE_REMOVED);
-            String value = resource1.getValue(elem.getName(), new Locale(elem.getLocale())).getStringValue(cms);
+            String value = resource1.getValue(elem.getName(), elem.getLocale()).getStringValue(cms);
             elem.setVersion1(value);
             elem.setVersion2("");
         }
@@ -151,7 +151,8 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
             CmsElementComparison elem = (CmsElementComparison)i.next();
             elem.setStatus(CmsResourceComparison.TYPE_ADDED);
             elem.setVersion1("");
-            String value = resource2.getValue(elem.getName(), new Locale(elem.getLocale())).getStringValue(cms);
+            I_CmsXmlContentValue contentValue = resource2.getValue(elem.getName(), elem.getLocale());
+            String value = contentValue.getStringValue(cms);
             elem.setVersion2(value);
         }
         List union = new ArrayList(elements1);
@@ -161,8 +162,8 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         i = new ArrayList(union).iterator();
         while (i.hasNext()) {
             CmsElementComparison elem = (CmsElementComparison)i.next();
-            String value1 = resource1.getValue(elem.getName(), new Locale(elem.getLocale())).getStringValue(cms);
-            String value2 = resource2.getValue(elem.getName(), new Locale(elem.getLocale())).getStringValue(cms);
+            String value1 = resource1.getValue(elem.getName(), elem.getLocale()).getStringValue(cms);
+            String value2 = resource2.getValue(elem.getName(), elem.getLocale()).getStringValue(cms);
             if (value1 == null) {
                 value1 = "";
             }
@@ -206,7 +207,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
             Iterator elementNames = xmlPage.getNames(locale).iterator();
             while (elementNames.hasNext()) {
                 String elementName = (String)elementNames.next();
-                elements.add(new CmsElementComparison(locale.toString(), elementName));
+                elements.add(new CmsElementComparison(locale, elementName));
             }
         }
         return elements;

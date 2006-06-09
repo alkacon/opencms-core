@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparison.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/06/09 12:14:28 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.workplace.comparison;
 
+import java.util.Locale;
+
 /**
  * Comparison of two xml page elements.<p>
  * 
@@ -39,7 +41,7 @@ package org.opencms.workplace.comparison;
 public class CmsElementComparison extends CmsAttributeComparison {
 
     /** The element locale.<p> */
-    private String m_locale;
+    private Locale m_locale;
 
     /** 
      * Creates a new element comparison.<p> 
@@ -47,7 +49,7 @@ public class CmsElementComparison extends CmsAttributeComparison {
      * @param locale the locale of the comparison
      * @param name the name of the element
      */
-    public CmsElementComparison(String locale, String name) {
+    public CmsElementComparison(Locale locale, String name) {
 
         m_locale = locale;
         setName(name);
@@ -71,7 +73,7 @@ public class CmsElementComparison extends CmsAttributeComparison {
      *
      * @return the locale
      */
-    public String getLocale() {
+    public Locale getLocale() {
 
         return m_locale;
     }
@@ -90,7 +92,7 @@ public class CmsElementComparison extends CmsAttributeComparison {
      *
      * @param locale the locale to set
      */
-    public void setLocale(String locale) {
+    public void setLocale(Locale locale) {
 
         m_locale = locale;
     }

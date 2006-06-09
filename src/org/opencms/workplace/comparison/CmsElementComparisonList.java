@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2006/03/30 08:58:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/06/09 12:14:28 $
+ * Version: $Revision: 1.5.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -387,7 +387,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         Iterator diffs = new CmsXmlDocumentComparison(getCms(), resource1, resource2).getElements().iterator();
         while (diffs.hasNext()) {
             CmsElementComparison comparison = (CmsElementComparison)diffs.next();
-            String locale = comparison.getLocale();
+            String locale = comparison.getLocale().toString();
             String attribute = comparison.getName();
             CmsListItem item = getList().newItem(locale + attribute);
             item.set(LIST_COLUMN_LOCALE, locale);
