@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListOpenResourceAction.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.site.CmsSiteManager;
@@ -40,29 +39,13 @@ import org.opencms.util.CmsStringUtil;
 /**
  * Opens the selected resource in a new window.<p>
  * 
- * Be sure your list updates the cms context, overriding the {@link org.opencms.workplace.list.A_CmsListDialog#getList()} method, like:
- * <pre>
- *       // assure we have the right cms
- *       CmsHtmlList list = super.getList();
- *       if (list != null) {
- *           CmsListColumnDefinition col = list.getMetadata().getColumnDefinition(LIST_COLUMN_NAME);
- *           if (col != null) {
- *               ((CmsListOpenResourceAction)col.getDefaultAction(LIST_DEFACTION_OPEN)).setCms(getCms());
- *           }
- *       }
- *       return list;
- * </pre>
- * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3.4.1 $ 
+ * @version $Revision: 1.3.4.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
-
-    /** Cms context. */
-    private CmsObject m_cms;
 
     /** Id of the column with the resource root path. */
     private final String m_resColumnPathId;
@@ -71,14 +54,12 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
      * Default Constructor.<p>
      * 
      * @param id the unique id
-     * @param cms the cms context
      * @param resColumnPathId the id of the column with the resource root path
      */
-    public CmsListOpenResourceAction(String id, CmsObject cms, String resColumnPathId) {
+    public CmsListOpenResourceAction(String id, String resColumnPathId) {
 
         super(id);
         m_resColumnPathId = resColumnPathId;
-        m_cms = cms;
         setName(Messages.get().container(Messages.GUI_OPENRESOURCE_ACTION_NAME_0));
         setHelpText(Messages.get().container(Messages.GUI_OPENRESOURCE_ACTION_HELP_0));
     }
@@ -118,16 +99,6 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
     }
 
     /**
-     * Sets the cms context.<p>
-     *
-     * @param cms the cms context to set
-     */
-    public void setCms(CmsObject cms) {
-
-        m_cms = cms;
-    }
-
-    /**
      * Returns the most possible right resource name.<p>
      * 
      * @return the most possible right resource name
@@ -135,12 +106,12 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
     protected String getResourceName() {
 
         String resource = getItem().get(m_resColumnPathId).toString();
-        if (!m_cms.existsResource(resource, CmsResourceFilter.DEFAULT)) {
+        if (!getWp().getCms().existsResource(resource, CmsResourceFilter.DEFAULT)) {
             String siteRoot = CmsSiteManager.getSiteRoot(resource);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)) {
                 resource = resource.substring(siteRoot.length());
             }
-            if (!m_cms.existsResource(resource, CmsResourceFilter.DEFAULT)) {
+            if (!getWp().getCms().existsResource(resource, CmsResourceFilter.DEFAULT)) {
                 resource = null;
             }
         }

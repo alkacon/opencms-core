@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupRemoveAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
 import org.opencms.workplace.list.CmsListDefaultAction;
 
 import java.util.List;
@@ -42,33 +41,25 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsGroupRemoveAction extends CmsListDefaultAction {
 
-    /** The cms context. */
-    private final CmsObject m_cms;
-
     /** The direct group flag. */
     private final boolean m_direct;
-
-    /** The user name. */
-    private String m_userName;
 
     /**
      * Default Constructor.<p>
      * 
      * @param id the unique id
-     * @param cms the cms context
      * @param direct the direct group flag
      */
-    public CmsGroupRemoveAction(String id, CmsObject cms, boolean direct) {
+    public CmsGroupRemoveAction(String id, boolean direct) {
 
         super(id);
         m_direct = direct;
-        m_cms = cms;
     }
 
     /**
@@ -89,8 +80,8 @@ public class CmsGroupRemoveAction extends CmsListDefaultAction {
         if (getItem() != null) {
             String groupName = (String)getItem().get(A_CmsUserGroupsList.LIST_COLUMN_NAME);
             try {
-                List dGroups = m_cms.getDirectGroupsOfUser(m_userName);
-                CmsGroup group = m_cms.readGroup(groupName);
+                List dGroups = getWp().getCms().getDirectGroupsOfUser(((A_CmsUserGroupsList)getWp()).getParamUsername());
+                CmsGroup group = getWp().getCms().readGroup(groupName);
                 if (isDirect()) {
                     return dGroups.contains(group);
                 } else {
@@ -101,15 +92,5 @@ public class CmsGroupRemoveAction extends CmsListDefaultAction {
             }
         }
         return super.isVisible();
-    }
-
-    /**
-     * Sets the userName.<p>
-     *
-     * @param userName the userName to set
-     */
-    public void setUserName(String userName) {
-
-        m_userName = userName;
     }
 }

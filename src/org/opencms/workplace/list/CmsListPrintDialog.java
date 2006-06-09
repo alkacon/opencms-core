@@ -137,7 +137,7 @@ public class CmsListPrintDialog extends CmsDialog {
         result.append(bodyStart("dialog", null));
         result.append(dialogStart());
         result.append(dialogContentStart(getParamTitle()));
-        result.append(m_list.printableHtml(this));
+        result.append(m_list.printableHtml());
         result.append(dialogContentEnd());
         result.append(dialogEnd());
         result.append(bodyEnd());

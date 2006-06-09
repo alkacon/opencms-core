@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerDirectAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,19 +52,14 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
     /** The current resource util object. */
     private CmsResourceUtil m_resourceUtil;
 
-    /** The current workplace context. */
-    private A_CmsListExplorerDialog m_wp;
-
     /**
      * Default Constructor.<p>
      * 
      * @param id the unique id
-     * @param wp the current workplace context
      */
-    public CmsListExplorerDirectAction(String id, A_CmsListExplorerDialog wp) {
+    public CmsListExplorerDirectAction(String id) {
 
         super(id);
-        m_wp = wp;
     }
 
     /**
@@ -89,32 +84,12 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
     }
 
     /**
-     * Returns used the dialog.<p>
-     * 
-     * @return the used dialog
-     */
-    public A_CmsListExplorerDialog getWp() {
-
-        return m_wp;
-    }
-
-    /**
      * @see org.opencms.workplace.list.I_CmsListDirectAction#setItem(org.opencms.workplace.list.CmsListItem)
      */
     public void setItem(CmsListItem item) {
 
-        m_resourceUtil = m_wp.getResourceUtil(item);
+        m_resourceUtil = ((A_CmsListExplorerDialog)getWp()).getResourceUtil(item);
         super.setItem(item);
-    }
-
-    /**
-     * Sets the workplace dialog.<p>
-     * 
-     * @param wp the workplace dialog
-     */
-    public void setWp(A_CmsListExplorerDialog wp) {
-
-        m_wp = wp;
     }
 
     /**

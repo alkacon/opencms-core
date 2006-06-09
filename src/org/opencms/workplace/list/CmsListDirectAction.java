@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.19.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -160,15 +160,15 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsListDirectAction#confirmationTextHtml(org.opencms.workplace.CmsWorkplace)
+     * @see org.opencms.workplace.list.I_CmsListDirectAction#confirmationTextHtml()
      */
-    public String confirmationTextHtml(CmsWorkplace wp) {
+    public String confirmationTextHtml() {
 
         StringBuffer html = new StringBuffer(512);
-        String cm = getConfirmationMessage().key(wp.getLocale());
-        String confMessage = new MessageFormat(cm, wp.getLocale()).format(new Object[] {""});
+        String cm = getConfirmationMessage().key(getWp().getLocale());
+        String confMessage = new MessageFormat(cm, getWp().getLocale()).format(new Object[] {""});
         if (getColumnForTexts() == null
-            || confMessage.equals(new MessageFormat(cm, wp.getLocale()).format(new Object[] {getItem().get(getColumnForTexts())}))) {
+            || confMessage.equals(new MessageFormat(cm, getWp().getLocale()).format(new Object[] {getItem().get(getColumnForTexts())}))) {
             html.append(A_CmsListAction.defaultConfirmationHtml(getId(), confMessage));
         }
         return html.toString();
@@ -191,15 +191,15 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsListDirectAction#helpTextHtml(org.opencms.workplace.CmsWorkplace)
+     * @see org.opencms.workplace.list.I_CmsListDirectAction#helpTextHtml()
      */
-    public String helpTextHtml(CmsWorkplace wp) {
+    public String helpTextHtml() {
 
         StringBuffer html = new StringBuffer(512);
-        String ht = getHelpText().key(wp.getLocale());
-        String helptext = new MessageFormat(ht, wp.getLocale()).format(new Object[] {""});
+        String ht = getHelpText().key(getWp().getLocale());
+        String helptext = new MessageFormat(ht, getWp().getLocale()).format(new Object[] {""});
         if (getColumnForTexts() == null
-            || helptext.equals(new MessageFormat(ht, wp.getLocale()).format(new Object[] {getItem().get(getColumnForTexts())}))) {
+            || helptext.equals(new MessageFormat(ht, getWp().getLocale()).format(new Object[] {getItem().get(getColumnForTexts())}))) {
             html.append(A_CmsHtmlIconButton.defaultHelpHtml(getId(), helptext));
         }
         return html.toString();

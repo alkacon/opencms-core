@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsDocumentTypeRemoveList.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.0.0
  */
@@ -193,7 +193,6 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
                 listItem = (CmsListItem)itItems.next();
                 doctype = (String)listItem.get(LIST_COLUMN_NAME);
                 idxsrc.removeDocumentType(doctype);
-                getList().removeItem(listItem.getId(), getLocale());
             }
             writeConfiguration(false);
             refreshList();
@@ -213,7 +212,6 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
             CmsListItem item = getSelectedItem();
             String doctypeName = (String)item.get(LIST_COLUMN_NAME);
             idxsrc.removeDocumentType(doctypeName);
-            getList().removeItem(item.getId(), getLocale());
             refreshList();
             writeConfiguration(false);
         }

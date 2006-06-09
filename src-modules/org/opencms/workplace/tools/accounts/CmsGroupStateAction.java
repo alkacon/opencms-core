@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupStateAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.11.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListDefaultAction;
 
 import java.util.List;
@@ -42,14 +43,14 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsGroupStateAction extends CmsListDefaultAction {
 
-    /** Cms context. */
-    private final CmsObject m_cms;
+    /** The cms context. */
+    private CmsObject m_cms;
 
     /** Direct group flag. */
     private final boolean m_direct;
@@ -61,14 +62,58 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
      * Default constructor.<p>
      * 
      * @param id the id of the action
+     * @param direct the direct group flag
+     */
+    public CmsGroupStateAction(String id, boolean direct) {
+
+        super(id);
+        m_direct = direct;
+    }
+
+    /**
+     * Default constructor.<p>
+     * 
+     * @param id the id of the action
      * @param cms the cms context
      * @param direct the direct group flag
+     * 
+     * @Deprecated cms object no longer needed 
      */
     public CmsGroupStateAction(String id, CmsObject cms, boolean direct) {
 
         super(id);
         m_cms = cms;
         m_direct = direct;
+    }
+
+    /**
+     * Returns the cms context.<p>
+     *
+     * @return the cms context
+     */
+    public CmsObject getCms() {
+
+        return m_cms;
+    }
+
+    /**
+     * Returns the user Name.<p>
+     *
+     * @return the user Name
+     */
+    public String getUserName() {
+
+        return m_userName;
+    }
+
+    /**
+     * Returns the direct group flag.<p>
+     *
+     * @return the direct group flag
+     */
+    public boolean isDirect() {
+
+        return m_direct;
     }
 
     /**
@@ -91,16 +136,6 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
     }
 
     /**
-     * Returns the user Name.<p>
-     *
-     * @return the user Name
-     */
-    public String getUserName() {
-
-        return m_userName;
-    }
-
-    /**
      * Sets the user Name.<p>
      *
      * @param userName the user Name to set
@@ -111,22 +146,12 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
     }
 
     /**
-     * Returns the cms context.<p>
-     *
-     * @return the cms context
+     * @see org.opencms.workplace.list.I_CmsListAction#setWp(org.opencms.workplace.list.A_CmsListDialog)
      */
-    public CmsObject getCms() {
+    public void setWp(A_CmsListDialog wp) {
 
-        return m_cms;
-    }
-
-    /**
-     * Returns the direct group flag.<p>
-     *
-     * @return the direct group flag
-     */
-    public boolean isDirect() {
-
-        return m_direct;
+        super.setWp(wp);
+        m_cms = wp.getCms();
+        m_userName = ((A_CmsUserGroupsList)getWp()).getParamUsername();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
- * Date   : $Date: 2006/06/08 09:33:01 $
- * Version: $Revision: 1.12.8.1 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.12.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12.8.1 $ 
+ * @version $Revision: 1.12.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,5 +141,16 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
     public List getColumns() {
 
         return Collections.unmodifiableList(m_columns);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsListAction#setWp(org.opencms.workplace.list.A_CmsListDialog)
+     */
+    public void setWp(A_CmsListDialog wp) {
+
+        super.setWp(wp);
+        if (getShowAllAction() != null) {
+            getShowAllAction().setWp(wp);
+        }
     }
 }

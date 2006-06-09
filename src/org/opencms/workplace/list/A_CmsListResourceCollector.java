@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2006/04/19 08:22:59 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsResourceUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.0 
  */
@@ -196,7 +194,6 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             parameter = m_collectorParameter;
         }
         Map params = CmsStringUtil.splitAsMap(parameter, SEP_PARAM, SEP_KEYVAL);
-        CmsListState state = getState(params);
         List resources = getInternalResources(getWp().getCms(), params);
         List ret = new ArrayList();
         if (LOG.isDebugEnabled()) {
@@ -212,7 +209,6 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
         while (itRes.hasNext()) {
             Object obj = itRes.next();
             if (!(obj instanceof CmsResource)) {
-                ret.add(getDummyListItem(list));
                 continue;
             }
             CmsResource resource = (CmsResource)obj;
@@ -241,24 +237,6 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 m_liCache.put(resource.getResourceId().toString(), item);
             }
             ret.add(item);
-        }
-        CmsListMetadata metadata = list.getMetadata();
-        if (metadata != null) {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(state.getFilter())) {
-                // filter
-                ret = metadata.getSearchAction().filter(ret, state.getFilter());
-            }
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(state.getColumn())) {
-                if (metadata.getColumnDefinition(state.getColumn()) != null
-                    && metadata.getColumnDefinition(state.getColumn()).isSorteable()) {
-                    // sort
-                    I_CmsListItemComparator c = metadata.getColumnDefinition(state.getColumn()).getListItemComparator();
-                    Collections.sort(ret, c.getComparator(state.getColumn(), getWp().getLocale()));
-                    if (state.getOrder().equals(CmsListOrderEnum.ORDER_DESCENDING)) {
-                        Collections.reverse(ret);
-                    }
-                }
-            }
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
@@ -424,32 +402,6 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
     }
 
     /**
-     * Returns a dummy list item.<p>
-     * 
-     * @param list the list object to create the entry for
-     * 
-     * @return a dummy list item
-     */
-    protected CmsListItem getDummyListItem(CmsHtmlList list) {
-
-        CmsListItem item = list.newItem(CmsUUID.getNullUUID().toString());
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_NAME, "");
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, "");
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_TYPE, "");
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_SIZE, "");
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS, "");
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATELASTMOD, new Date());
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERLASTMOD, "");
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATECREATE, new Date());
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERCREATE, "");
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEREL, new Date());
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEEXP, new Date());
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_STATE, "");
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, "");
-        return item;
-    }
-
-    /**
      * Wrapper method for caching the result of {@link #getResources(CmsObject, Map)}.<p>
      * 
      * @param cms the cms object
@@ -464,6 +416,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
         synchronized (this) {
             if (m_resources == null) {
                 m_resources = getResources(cms, params);
+                m_resCache.clear();
                 Iterator it = m_resources.iterator();
                 while (it.hasNext()) {
                     CmsResource resource = (CmsResource)it.next();

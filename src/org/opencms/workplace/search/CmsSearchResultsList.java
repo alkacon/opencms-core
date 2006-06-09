@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResultsList.java,v $
- * Date   : $Date: 2006/04/20 11:31:16 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -274,7 +274,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
 
         StringBuffer result = new StringBuffer(2048);
         result.append(htmlStart(null));
-        result.append(getList().listJs(getLocale()));
+        result.append(getList().listJs());
         result.append(CmsListExplorerColumn.getExplorerStyleDef());
         result.append("<script language='JavaScript'>\n");
         result.append(new CmsExplorer(getJsp()).getInitializationHeader());

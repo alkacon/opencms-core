@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesCollector.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,12 +50,12 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 /**
- * Collector for receiving {@link org.opencms.file.CmsResource} objects from a project.<p>
+ * Collector for {@link org.opencms.file.CmsResource} objects from a project.<p>
  * 
  * @author Michael Moossen
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.1.0 
  */
@@ -121,6 +121,8 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
 
         // show files in the selected project with the selected status
         List resources = cms.readProjectView(projectId, state);
+        
+        // remove not visible files
         Iterator itRes = resources.iterator();
         while (itRes.hasNext()) {
             CmsResource resource = (CmsResource)itRes.next();

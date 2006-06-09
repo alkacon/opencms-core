@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserGroupsList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.12.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,7 +113,7 @@ public class CmsShowUserGroupsList extends A_CmsUserGroupsList {
      */
     protected String defaultActionHtmlStart() {
 
-        return getList().listJs(getLocale()) + dialogContentStart(getParamTitle());
+        return getList().listJs() + dialogContentStart(getParamTitle());
     }
 
     /**
@@ -138,7 +138,7 @@ public class CmsShowUserGroupsList extends A_CmsUserGroupsList {
     protected void setIconAction(CmsListColumnDefinition iconCol) {
 
         // adds a direct group icon
-        CmsListDirectAction dirAction = new CmsGroupStateAction(LIST_ACTION_ICON_DIRECT, getCms(), true);
+        CmsListDirectAction dirAction = new CmsGroupStateAction(LIST_ACTION_ICON_DIRECT, true);
         dirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_NAME_0));
         dirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_HELP_0));
         dirAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group.png");
@@ -146,7 +146,7 @@ public class CmsShowUserGroupsList extends A_CmsUserGroupsList {
         iconCol.addDirectAction(dirAction);
 
         // adds an indirect group icon
-        CmsListDirectAction indirAction = new CmsGroupStateAction(LIST_ACTION_ICON_INDIRECT, getCms(), false);
+        CmsListDirectAction indirAction = new CmsGroupStateAction(LIST_ACTION_ICON_INDIRECT, false);
         indirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_NAME_0));
         indirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_HELP_0));
         indirAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group_indirect.png");

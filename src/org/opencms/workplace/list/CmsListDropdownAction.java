@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDropdownAction.java,v $
- * Date   : $Date: 2006/04/21 15:10:41 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,32 +44,12 @@ import java.util.List;
 /**
  * Independent action to switch the resource state filter.<p>
  * 
- * Do not forget to add parameter evaluation code overwritting the A_CmsListDialog#getList() method, like:
- * <pre>
- *  public CmsHtmlList getList() {
- *
- *      CmsHtmlList list = super.getList();
- *      if (list != null) {
- *          // get parameter
- *          m_sel = getJsp().getRequest().getParameter(LIST_IACTION_ID + CmsListDropdownAction.SUFFIX_PARAM);
- *          CmsListDropdownAction listAction = ((CmsListDropdownAction)list.getMetadata().getIndependentAction(LIST_IACTION_ID));
- *          if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_sel)) {
- *              // if no param, get old value
- *              m_sel = listAction.getSelection();
- *          }             
- *          if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_sel)) {
- *              // if first call, use default value
- *              m_sel = some_default_value;
- *          }
- *          listAction.setSelection(m_sel);
- *      }
- *      return list;
- *  }
- * </pre>
+ * Do not forget to add parameter evaluation code overwritting the A_CmsListDialog#getList() method, 
+ * like in <tt>CmsProjectFilesDialog</tt>.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */

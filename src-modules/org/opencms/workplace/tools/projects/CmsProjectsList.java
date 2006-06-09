@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.15.4.1 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.15.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
+import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDateMacroFormatter;
@@ -69,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15.4.1 $ 
+ * @version $Revision: 1.15.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -211,8 +212,6 @@ public class CmsProjectsList extends A_CmsListDialog {
                 }
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DELETE_SELECTED_PROJECTS_0), e);
-            } finally {
-                getList().removeAllItems(removedItems, getLocale());
             }
         } else if (getParamListAction().equals(LIST_MACTION_UNLOCK)) {
             // execute the unlock multiaction
@@ -248,7 +247,7 @@ public class CmsProjectsList extends A_CmsListDialog {
 
         if (getParamListAction().equals(LIST_DEFACTION_FILES)) {
             // forward to the project files dialog
-            params.put(CmsProjectFilesDialog.PARAM_SHOW_EXPLORER, Boolean.TRUE.toString());
+            params.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, Boolean.TRUE.toString());
             getToolManager().jspForwardTool(this, "/projects/files", params);
         } else if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             getToolManager().jspForwardTool(this, "/projects/edit", params);
@@ -260,7 +259,6 @@ public class CmsProjectsList extends A_CmsListDialog {
             // execute the delete action
             try {
                 getCms().deleteProject(projectId.intValue());
-                getList().removeItem(projectId.toString(), getLocale());
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DELETE_PROJECT_1, projectName), e);
             }

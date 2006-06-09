@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2006/03/30 09:31:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/06/09 15:16:14 $
+ * Version: $Revision: 1.5.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.4.1 $ 
  * 
  * @since 6.0.2 
  */
@@ -87,6 +87,7 @@ public class CmsHistoryList extends A_CmsListDialog {
      */
     public static class CmsVersionWrapper implements Comparable {
         
+        /** the version. */
         private Object m_version;
         
         /** 
@@ -294,7 +295,7 @@ public class CmsHistoryList extends A_CmsListDialog {
      */
     protected String defaultActionHtmlStart() {
 
-        return getList().listJs(getLocale()) + dialogContentStart(getParamTitle());
+        return getList().listJs() + dialogContentStart(getParamTitle());
     }
     
     /**

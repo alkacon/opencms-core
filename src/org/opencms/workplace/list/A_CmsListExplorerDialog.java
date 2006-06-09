@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.4.4.1 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.4.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.explorer.CmsExplorer;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +50,7 @@ import java.util.Map;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4.4.1 $ 
+ * @version $Revision: 1.4.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,6 +121,9 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /** List default action id constant. */
     public static final String LIST_DEFACTION_OPEN = "edo";
+
+    /** Request parameter name for the show explorer flag. */
+    public static final String PARAM_SHOW_EXPLORER = "showexplorer";
 
     /** Explorer list JSP path. */
     public static final String PATH_EXPLORER_LIST = PATH_DIALOGS + "list-explorer.jsp";
@@ -197,38 +199,6 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     public abstract I_CmsListResourceCollector getCollector();
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getList()
-     */
-    public CmsHtmlList getList() {
-
-        // assure we have the cms object
-        CmsHtmlList list = super.getList();
-        if (list != null) {
-            CmsListColumnDefinition colName = list.getMetadata().getColumnDefinition(LIST_COLUMN_NAME);
-            if (colName != null) {
-                ((CmsListOpenResourceAction)colName.getDefaultAction(LIST_DEFACTION_OPEN)).setCms(getCms());
-            }
-            CmsListColumnDefinition col = list.getMetadata().getColumnDefinition(LIST_COLUMN_EDIT);
-            if (col != null) {
-                ((CmsListEditResourceAction)col.getDirectAction(LIST_ACTION_EDIT)).setWp(this);
-                ((CmsListEditResourceAction)col.getDirectAction(LIST_ACTION_EDIT + "d")).setWp(this);
-            }
-            Iterator it = list.getMetadata().getColumnDefinitions().iterator();
-            while (it.hasNext()) {
-                CmsListColumnDefinition column = (CmsListColumnDefinition)it.next();
-                Iterator itActs = column.getDirectActions().iterator();
-                while (itActs.hasNext()) {
-                    I_CmsListDirectAction action = (I_CmsListDirectAction)itActs.next();
-                    if (action instanceof CmsListExplorerDirectAction) {
-                        ((CmsListExplorerDirectAction)action).setWp(this);
-                    }
-                }
-            }
-        }
-        return list;
-    }
-
-    /**
      * Returns an appropiate initialized resource util object.<p>
      * 
      * @return a resource util object
@@ -298,7 +268,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         StringBuffer result = new StringBuffer(2048);
         result.append(htmlStart(null));
-        result.append(getList().listJs(getLocale()));
+        result.append(getList().listJs());
         result.append(CmsListExplorerColumn.getExplorerStyleDef());
         result.append(bodyStart("dialog", null));
         result.append(dialogStart());
@@ -416,7 +386,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         typeIconCol.setListItemComparator(new CmsListItemActionIconComparator());
 
         // add resource icon action
-        CmsListDirectAction resourceTypeIconAction = new CmsListResourceTypeIconAction(LIST_ACTION_TYPEICON, this);
+        CmsListDirectAction resourceTypeIconAction = new CmsListResourceTypeIconAction(LIST_ACTION_TYPEICON);
         resourceTypeIconAction.setEnabled(false);
         typeIconCol.addDirectAction(resourceTypeIconAction);
         metadata.addColumn(typeIconCol);
@@ -429,11 +399,11 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         editIconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
 
         // add enabled edit action
-        CmsListDirectAction editAction = new CmsListEditResourceAction(LIST_ACTION_EDIT, this, LIST_COLUMN_NAME);
+        CmsListDirectAction editAction = new CmsListEditResourceAction(LIST_ACTION_EDIT, LIST_COLUMN_NAME);
         editAction.setEnabled(true);
         editIconCol.addDirectAction(editAction);
         // add disabled edit action
-        CmsListDirectAction noEditAction = new CmsListEditResourceAction(LIST_ACTION_EDIT + "d", this, LIST_COLUMN_NAME);
+        CmsListDirectAction noEditAction = new CmsListEditResourceAction(LIST_ACTION_EDIT + "d", LIST_COLUMN_NAME);
         noEditAction.setEnabled(false);
         editIconCol.addDirectAction(noEditAction);
         metadata.addColumn(editIconCol);
@@ -446,7 +416,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         lockIconCol.setListItemComparator(new CmsListItemActionIconComparator());
 
         // add lock icon action
-        CmsListDirectAction resourceLockIconAction = new CmsListResourceLockAction(LIST_ACTION_LOCKICON, this);
+        CmsListDirectAction resourceLockIconAction = new CmsListResourceLockAction(LIST_ACTION_LOCKICON);
         resourceLockIconAction.setEnabled(false);
         lockIconCol.addDirectAction(resourceLockIconAction);
         metadata.addColumn(lockIconCol);
@@ -457,9 +427,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         projStateIconCol.setWidth("20");
 
         // add resource icon action
-        CmsListDirectAction resourceProjStateAction = new CmsListResourceProjStateAction(
-            LIST_ACTION_PROJSTATEICON,
-            this);
+        CmsListDirectAction resourceProjStateAction = new CmsListResourceProjStateAction(LIST_ACTION_PROJSTATEICON);
         resourceProjStateAction.setEnabled(false);
         projStateIconCol.addDirectAction(resourceProjStateAction);
         metadata.addColumn(projStateIconCol);
@@ -472,7 +440,6 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         // add resource open action
         CmsListDefaultAction resourceOpenDefAction = new CmsListOpenResourceAction(
             LIST_DEFACTION_OPEN,
-            getCms(),
             LIST_COLUMN_NAME);
         resourceOpenDefAction.setEnabled(true);
         nameCol.addDefaultAction(resourceOpenDefAction);

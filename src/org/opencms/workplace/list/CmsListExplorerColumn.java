@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerColumn.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,14 +33,13 @@ package org.opencms.workplace.list;
 
 import org.opencms.util.CmsResourceUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
 
 /**
  * For adding text style to the columns in the explorer list.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,14 +56,14 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
     }
 
     /**
-     * @see org.opencms.workplace.list.CmsListColumnDefinition#htmlCell(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.CmsWorkplace, boolean)
+     * @see org.opencms.workplace.list.CmsListColumnDefinition#htmlCell(org.opencms.workplace.list.CmsListItem, boolean)
      */
-    public String htmlCell(CmsListItem item, CmsWorkplace wp, boolean isPrintable) {
+    public String htmlCell(CmsListItem item, boolean isPrintable) {
 
         if (isPrintable) {
-            return super.htmlCell(item, wp, isPrintable);
+            return super.htmlCell(item, isPrintable);
         }
-        CmsResourceUtil resUtil = ((A_CmsListExplorerDialog)wp).getResourceUtil(item);
+        CmsResourceUtil resUtil = ((A_CmsListExplorerDialog)getWp()).getResourceUtil(item);
         StringBuffer html = new StringBuffer(128);
         html.append("<table cellpadding='0' cellspacing='0' border='0'><tr><td class='");
         html.append(resUtil.getStyleClassName());
@@ -74,7 +73,7 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
             html.append("'");
         }
         html.append("'>");
-        html.append(super.htmlCell(item, wp, isPrintable));
+        html.append(super.htmlCell(item, isPrintable));
         html.append("</td></tr></table>");
         return html.toString();
     }

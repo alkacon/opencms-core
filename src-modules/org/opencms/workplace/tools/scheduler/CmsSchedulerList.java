@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2006/06/09 15:16:14 $
+ * Version: $Revision: 1.27.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.27.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,8 +199,6 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 throw new CmsRuntimeException(Messages.get().container(
                     Messages.ERR_UNSCHEDULE_JOB_1,
                     (listItem == null) ? (Object)"?" : new Integer(listItem.getId())), e);
-            } finally {
-                getList().removeAllItems(removedItems, getLocale());
             }
         } else if (getParamListAction().equals(LIST_MACTION_ACTIVATE)
             || getParamListAction().equals(LIST_MACTION_DEACTIVATE)) {
@@ -284,7 +282,6 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 OpenCms.getScheduleManager().unscheduleJob(getCms(), jobId);
                 // update the XML configuration
                 writeConfiguration(false);
-                getList().removeItem(jobId, getLocale());
             } catch (CmsRoleViolationException e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DELETE_JOB_1, jobId), e);

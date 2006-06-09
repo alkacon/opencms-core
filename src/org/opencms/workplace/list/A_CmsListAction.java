@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListAction.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.16.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,6 +52,9 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
 
     /** The id of the associated list. */
     private String m_listId;
+
+    /** The related workplace dialog object. */
+    private A_CmsListDialog m_wp;
 
     /**
      * Default Constructor.<p>
@@ -66,7 +69,7 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
         }
         setConfirmationMessage(null);
     }
-
+    
     /**
      * Generates html for the confirmation message when having one confirmation message
      * for several actions.<p>
@@ -88,6 +91,14 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
     }
 
     /**
+     * @see org.opencms.workplace.list.I_CmsListAction#buttonHtml()
+     */
+    public String buttonHtml() {
+    
+        return buttonHtml(getWp());
+    }
+
+    /**
      * @see org.opencms.workplace.list.I_CmsListAction#getConfirmationMessage()
      */
     public CmsMessageContainer getConfirmationMessage() {
@@ -101,6 +112,14 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
     public String getListId() {
 
         return m_listId;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsListAction#getWp()
+     */
+    public A_CmsListDialog getWp() {
+
+        return m_wp;
     }
 
     /**
@@ -125,5 +144,13 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
                 "listId"));
         }
         m_listId = listId;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsListAction#setWp(org.opencms.workplace.list.A_CmsListDialog)
+     */
+    public void setWp(A_CmsListDialog wp) {
+
+        m_wp = wp;
     }
 }

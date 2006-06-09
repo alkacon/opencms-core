@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsListDirectAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.10.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,13 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.workplace.CmsWorkplace;
-
 /**
  * Interface for list direct action, that is an action that may be applied
  * directly on a list item.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -49,11 +47,9 @@ public interface I_CmsListDirectAction extends I_CmsListAction {
      * Generates a confirmation text div tag, to use in lists where all items use 
      * the same confirmation text.<p>
      * 
-     * @param wp the workplace instance
-     * 
      * @return html code
      */
-    String confirmationTextHtml(CmsWorkplace wp);
+    String confirmationTextHtml();
 
     /**
      * Returns the id of the column to use as parameter for the helptext and confirmation message.<p>
@@ -72,11 +68,9 @@ public interface I_CmsListDirectAction extends I_CmsListAction {
     /**
      * Generates a help text div tag, to use in lists where all items use the same help text.<p>
      * 
-     * @param wp the workplace instance
-     * 
      * @return html code
      */
-    String helpTextHtml(CmsWorkplace wp);
+    String helpTextHtml();
 
     /**
      * Sets the id of the column to use as parameter for the helptext and confirmation message.<p>

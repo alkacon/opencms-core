@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexSourceAddList.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.0.0
  */
@@ -199,7 +199,6 @@ public class CmsSearchIndexSourceAddList extends A_CmsEmbeddedListDialog {
                 item = (CmsListItem)itItems.next();
                 indexSource = (String)item.get(LIST_COLUMN_NAME);
                 idx.addSourceName(indexSource);
-                getList().removeItem(item.getId(), getLocale());
             }
             try {
                 idx.initialize();
@@ -230,7 +229,6 @@ public class CmsSearchIndexSourceAddList extends A_CmsEmbeddedListDialog {
 
             CmsSearchIndex idx = searchManager.getIndex(getParamIndexName());
             idx.addSourceName(indexsourceName);
-            getList().removeItem(item.getId(), getLocale());
             try {
                 idx.initialize();
             } catch (CmsSearchException e) {

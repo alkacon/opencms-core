@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesDependenciesList.java,v $
- * Date   : $Date: 2006/03/27 14:52:53 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.15.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -390,6 +390,5 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
                 dependencyName,
                 module.getName()), re);
         }
-        getList().removeItem(dependencyName, getLocale());
     }
 }

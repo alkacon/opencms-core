@@ -75,7 +75,7 @@ public class CmsListCsvExportDialog extends CmsDialog {
     public String generateCsv() throws ClassNotFoundException {
         
         CmsHtmlList list = A_CmsListDialog.getListObject(Class.forName(getParamListclass()), getSettings());
-        return list.listCsv(this);
+        return list.listCsv();
     }
     
     /**

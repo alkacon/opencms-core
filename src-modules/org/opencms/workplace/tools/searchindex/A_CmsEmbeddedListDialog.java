@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsEmbeddedListDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.opencms.workplace.list.CmsListOrderEnum;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.0.0
  */
@@ -118,6 +118,6 @@ public abstract class A_CmsEmbeddedListDialog extends A_CmsListDialog {
      */
     public String defaultActionHtmlStart() {
 
-        return new StringBuffer(getList().listJs(getLocale())).append(dialogContentStart(getParamTitle())).toString();
+        return new StringBuffer(getList().listJs()).append(dialogContentStart(getParamTitle())).toString();
     }
 }

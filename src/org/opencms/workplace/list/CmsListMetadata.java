@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2006/06/08 09:33:01 $
- * Version: $Revision: 1.22.4.1 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.22.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,11 +34,9 @@ package org.opencms.workplace.list;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -47,7 +45,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22.4.1 $ 
+ * @version $Revision: 1.22.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,6 +74,9 @@ public class CmsListMetadata {
 
     /** if this metadata object should not be cached.<p>. */
     private boolean m_volatile = false;
+
+    /** The related workplace dialog object. */
+    private transient A_CmsListDialog m_wp;
 
     /**
      * Default Constructor.<p>
@@ -204,11 +205,9 @@ public class CmsListMetadata {
     /**
      * Returns the csv output for the header of the list.<p>
      * 
-     * @param wp the workplace instance
-     * 
      * @return csv output
      */
-    public String csvHeader(CmsWorkplace wp) {
+    public String csvHeader() {
 
         StringBuffer csv = new StringBuffer(1024);
         Iterator itCols = m_columns.elementList().iterator();
@@ -217,7 +216,7 @@ public class CmsListMetadata {
             if (!col.isVisible()) {
                 continue;
             }
-            csv.append(col.csvHeader(wp));
+            csv.append(col.csvHeader());
             csv.append("\t");
         }
         csv.append("\n\n");
@@ -228,11 +227,10 @@ public class CmsListMetadata {
      * Returns the csv output for a list item.<p>
      * 
      * @param item the list item to render
-     * @param wp the workplace context
      * 
      * @return csv output
      */
-    public String csvItem(CmsListItem item, CmsWorkplace wp) {
+    public String csvItem(CmsListItem item) {
 
         StringBuffer csv = new StringBuffer(1024);
         Iterator itCols = m_columns.elementList().iterator();
@@ -241,7 +239,7 @@ public class CmsListMetadata {
             if (!col.isVisible()) {
                 continue;
             }
-            csv.append(col.csvCell(item, wp));
+            csv.append(col.csvCell(item));
             csv.append("\t");
         }
         csv.append("\n");
@@ -367,6 +365,16 @@ public class CmsListMetadata {
     }
 
     /**
+     * Returns the related workplace dialog.<p>
+     *
+     * @return the related workplace dialog
+     */
+    public A_CmsListDialog getWp() {
+
+        return m_wp;
+    }
+
+    /**
      * Returns <code>true</code> if the list definition contains an action.<p>
      * 
      * @return <code>true</code> if the list definition contains an action
@@ -423,11 +431,9 @@ public class CmsListMetadata {
     /**
      * Returns the html code for the action bar.<p>
      * 
-     * @param wp the workplace context
-     * 
      * @return html code
      */
-    public String htmlActionBar(CmsWorkplace wp) {
+    public String htmlActionBar() {
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<td class='misc'>\n");
@@ -436,7 +442,7 @@ public class CmsListMetadata {
         while (itDetails.hasNext()) {
             I_CmsListAction detailAction = ((CmsListItemDetails)itDetails.next()).getAction();
             html.append("\t\t");
-            html.append(detailAction.buttonHtml(wp));
+            html.append(detailAction.buttonHtml());
             if (itDetails.hasNext()) {
                 html.append("&nbsp;&nbsp;");
             }
@@ -447,7 +453,7 @@ public class CmsListMetadata {
             I_CmsListAction indepAction = (I_CmsListAction)itActions.next();
             html.append("\t\t");
             html.append("&nbsp;&nbsp;");
-            html.append(indepAction.buttonHtml(wp));
+            html.append(indepAction.buttonHtml());
             html.append("\n");
         }
         html.append("\t</div>\n");
@@ -458,18 +464,16 @@ public class CmsListMetadata {
     /**
      * Generates the hml code for an empty table.<p>
      * 
-     * @param locale for localization
-     * 
      * @return html code
      */
-    public String htmlEmptyTable(Locale locale) {
+    public String htmlEmptyTable() {
 
         StringBuffer html = new StringBuffer(512);
         html.append("<tr class='oddrowbg'>\n");
         html.append("\t<td align='center' colspan='");
         html.append(getWidth());
         html.append("'>\n");
-        html.append(Messages.get().getBundle(locale).key(Messages.GUI_LIST_EMPTY_0));
+        html.append(Messages.get().getBundle(getWp().getLocale()).key(Messages.GUI_LIST_EMPTY_0));
         html.append("\t</td>\n");
         html.append("</tr>\n");
         return html.toString();
@@ -479,11 +483,10 @@ public class CmsListMetadata {
      * Returns the html code for the header of the list.<p>
      * 
      * @param list the list to generate the code for
-     * @param wp the workplace instance
      * 
      * @return html code
      */
-    public String htmlHeader(CmsHtmlList list, CmsWorkplace wp) {
+    public String htmlHeader(CmsHtmlList list) {
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<tr>\n");
@@ -491,7 +494,7 @@ public class CmsListMetadata {
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
             if (!list.isPrintable() || col.isPrintable()) {
-                html.append(col.htmlHeader(list, wp));
+                html.append(col.htmlHeader(list));
             }
         }
         if (!list.isPrintable() && hasCheckMultiActions()) {
@@ -509,13 +512,12 @@ public class CmsListMetadata {
      * Returns the html code for a list item.<p>
      * 
      * @param item the list item to render
-     * @param wp the workplace context
      * @param odd if the position is odd or even
      * @param isPrintable if the list is to be printed
      * 
      * @return html code
      */
-    public String htmlItem(CmsListItem item, CmsWorkplace wp, boolean odd, boolean isPrintable) {
+    public String htmlItem(CmsListItem item, boolean odd, boolean isPrintable) {
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<tr ");
@@ -553,7 +555,7 @@ public class CmsListMetadata {
                 html.append("'");
             }
             html.append(">\n");
-            html.append(col.htmlCell(item, wp, isPrintable));
+            html.append(col.htmlCell(item, isPrintable));
             html.append("</td>\n");
         }
         if (!isPrintable && hasCheckMultiActions()) {
@@ -601,7 +603,7 @@ public class CmsListMetadata {
                 html.append("<td colspan='");
                 html.append(spanCols);
                 html.append("' style='padding-left: 20px; white-space:normal;'>\n");
-                html.append(lid.htmlCell(item, wp, isPrintable));
+                html.append(lid.htmlCell(item, isPrintable));
                 html.append("\n</td>\n");
                 html.append("\n");
                 html.append("</tr>\n");
@@ -613,11 +615,9 @@ public class CmsListMetadata {
     /**
      * Returns the html code for the multi action bar.<p>
      * 
-     * @param wp the workplace context
-     * 
      * @return html code
      */
-    public String htmlMultiActionBar(CmsWorkplace wp) {
+    public String htmlMultiActionBar() {
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<td class='misc'>\n");
@@ -626,7 +626,7 @@ public class CmsListMetadata {
         while (itActions.hasNext()) {
             CmsListMultiAction multiAction = (CmsListMultiAction)itActions.next();
             html.append("\t\t");
-            html.append(multiAction.buttonHtml(wp));
+            html.append(multiAction.buttonHtml());
             if (itActions.hasNext()) {
                 html.append("&nbsp;&nbsp;");
             }
@@ -640,11 +640,9 @@ public class CmsListMetadata {
     /**
      * Generates the html code for the search bar.<p>
      * 
-     * @param wp the workplace context
-     * 
      * @return html code
      */
-    public String htmlSearchBar(CmsWorkplace wp) {
+    public String htmlSearchBar() {
 
         if (!isSearchable()) {
             return "";
@@ -653,11 +651,11 @@ public class CmsListMetadata {
         html.append("<td class='main'>\n");
         html.append("\t<div>\n");
         html.append("\t\t<input type='text' name='listSearchFilter' value='' size='20' maxlength='245' style='vertical-align: bottom;'>\n");
-        html.append(m_searchAction.buttonHtml(wp));
+        html.append(m_searchAction.buttonHtml());
         I_CmsListAction showAllAction = m_searchAction.getShowAllAction();
         if (showAllAction != null) {
             html.append("&nbsp;&nbsp;");
-            html.append(showAllAction.buttonHtml(wp));
+            html.append(showAllAction.buttonHtml());
         }
         html.append("\t</div>\n");
         html.append("</td>\n");
@@ -719,7 +717,9 @@ public class CmsListMetadata {
     public void setSearchAction(CmsListSearchAction searchAction) {
 
         m_searchAction = searchAction;
-        m_searchAction.setListId(getListId());
+        if (m_searchAction != null) {
+            m_searchAction.setListId(getListId());
+        }
     }
 
     /**
@@ -740,6 +740,39 @@ public class CmsListMetadata {
     public void setVolatile(boolean volatileFlag) {
 
         m_volatile = volatileFlag;
+    }
+
+    /**
+     * Sets the related workplace dialog.<p>
+     *
+     * @param wp the related workplace dialog to set
+     */
+    public void setWp(A_CmsListDialog wp) {
+
+        m_wp = wp;
+        Iterator itCols = getColumnDefinitions().iterator();
+        while (itCols.hasNext()) {
+            CmsListColumnDefinition column = (CmsListColumnDefinition)itCols.next();
+            column.setWp(wp);
+        }
+        Iterator itDets = getItemDetailDefinitions().iterator();
+        while (itDets.hasNext()) {
+            CmsListItemDetails detail = (CmsListItemDetails)itDets.next();
+            detail.setWp(wp);
+        }
+        Iterator itMultiActs = getMultiActions().iterator();
+        while (itMultiActs.hasNext()) {
+            CmsListMultiAction action = (CmsListMultiAction)itMultiActs.next();
+            action.setWp(wp);
+        }
+        Iterator itIndActs = getIndependentActions().iterator();
+        while (itIndActs.hasNext()) {
+            I_CmsListAction action = (I_CmsListAction)itIndActs.next();
+            action.setWp(wp);
+        }
+        if (m_searchAction != null) {
+            m_searchAction.setWp(wp);
+        }
     }
 
     /**

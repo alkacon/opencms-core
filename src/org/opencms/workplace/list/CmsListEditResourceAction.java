@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListEditResourceAction.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,22 +41,9 @@ import org.opencms.util.CmsStringUtil;
 /**
  * Opens the selected resource in a new window.<p>
  * 
- * Be sure your list updates the cms context, overriding the {@link org.opencms.workplace.list.A_CmsListDialog#getList()} method, like:
- * <pre>
- *       // assure we have the right cms
- *       CmsHtmlList list = super.getList();
- *       if (list != null) {
- *           CmsListColumnDefinition col = list.getMetadata().getColumnDefinition(LIST_COLUMN_EDIT);
- *           if (col != null) {
- *               ((CmsListEditResourceAction)col.getDirectAction(LIST_ACTION_EDIT)).setWp(this);
- *           }
- *       }
- *       return list;
- * </pre>
- * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,21 +55,16 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
     /** The current resource util object. */
     private CmsResourceUtil m_resourceUtil;
 
-    /** The current workplace context. */
-    private A_CmsListExplorerDialog m_wp;
-
     /**
      * Default Constructor.<p>
      * 
      * @param id the unique id
-     * @param wp the current workplace context
      * @param resColumnPathId the id of the column with the resource root path
      */
-    public CmsListEditResourceAction(String id, A_CmsListExplorerDialog wp, String resColumnPathId) {
+    public CmsListEditResourceAction(String id, String resColumnPathId) {
 
         super(id);
         m_resColumnPathId = resColumnPathId;
-        m_wp = wp;
     }
 
     /**
@@ -134,16 +116,6 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
     }
 
     /**
-     * Returns used the dialog.<p>
-     * 
-     * @return the used dialog
-     */
-    public A_CmsListExplorerDialog getWp() {
-
-        return m_wp;
-    }
-
-    /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
      */
     public boolean isVisible() {
@@ -171,18 +143,8 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
      */
     public void setItem(CmsListItem item) {
 
-        m_resourceUtil = m_wp.getResourceUtil(item);
+        m_resourceUtil = ((A_CmsListExplorerDialog)getWp()).getResourceUtil(item);
         super.setItem(item);
-    }
-
-    /**
-     * Sets the workplace dialog.<p>
-     * 
-     * @param wp the workplace dialog
-     */
-    public void setWp(A_CmsListExplorerDialog wp) {
-
-        m_wp = wp;
     }
 
     /**

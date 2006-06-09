@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexList.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/06/09 15:16:14 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.0.0
  */
@@ -223,7 +223,6 @@ public class CmsSearchIndexList extends A_CmsListDialog {
                 CmsListItem listItem = (CmsListItem)itItems.next();
                 searchManager.removeSearchIndex(searchManager.getIndex((String)listItem.get(LIST_COLUMN_NAME)));
                 removedItems.add(listItem.getId());
-                getList().removeItem(listItem.getId(), getLocale());
             }
             writeConfiguration(false);
         } else if (getParamListAction().equals(LIST_MACTION_REBUILD)) {
@@ -257,7 +256,6 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         String action = getParamListAction();
         if (action.equals(LIST_ACTION_DELETE)) {
             searchManager.removeSearchIndex(searchManager.getIndex(index));
-            getList().removeItem(index, getLocale());
             writeConfiguration(false);
         } else if (action.equals(LIST_ACTION_REBUILD)) {
             // forward to the rebuild index screen   

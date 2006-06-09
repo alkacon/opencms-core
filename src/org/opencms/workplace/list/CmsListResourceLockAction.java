@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceLockAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.lock.CmsLock;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -49,11 +49,10 @@ public class CmsListResourceLockAction extends CmsListExplorerDirectAction {
      * Default Constructor.<p>
      * 
      * @param id the unique id
-     * @param wp the workplace context
      */
-    public CmsListResourceLockAction(String id, A_CmsListExplorerDialog wp) {
+    public CmsListResourceLockAction(String id) {
 
-        super(id, wp);
+        super(id);
     }
 
     /**

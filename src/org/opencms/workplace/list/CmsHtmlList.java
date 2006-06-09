@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2006/06/08 09:33:01 $
- * Version: $Revision: 1.35.4.3 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.35.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
@@ -52,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.3 $ 
+ * @version $Revision: 1.35.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,7 +94,7 @@ public class CmsHtmlList {
     private CmsMessageContainer m_name;
 
     /** Really content of the list. */
-    private final List m_originalItems = new ArrayList();
+    private List m_originalItems = new ArrayList();
 
     /** printable flag. */
     private boolean m_printable;
@@ -103,11 +102,20 @@ public class CmsHtmlList {
     /** Search filter text. */
     private String m_searchFilter;
 
+    /** The filtered content size, only used if data self managed. */
+    private int m_size;
+
     /** Column name to be sorted. */
     private String m_sortedColumn;
 
+    /** The total size, only used is data self managed. */
+    private int m_totalSize;
+
     /** Items currently displayed. */
     private List m_visibleItems;
+
+    /** The related workplace dialog object. */
+    private transient A_CmsListDialog m_wp;
 
     /**
      * Default Constructor.<p>
@@ -157,50 +165,18 @@ public class CmsHtmlList {
     }
 
     /**
-     * Adds a collection new list items to the content of the list.<p>
-     * 
-     * If you need to add or remove items from or to the list at a later step, use the
-     * <code>{@link #insertAllItems(Collection, Locale)}</code> or 
-     * <code>{@link #removeAllItems(Collection, Locale)}</code> methods.<p>
-     * 
-     * @param listItems the collection of list items to add
-     * 
-     * @see List#addAll(Collection)
-     */
-    public void addAllItems(Collection listItems) {
-
-        m_originalItems.addAll(listItems);
-    }
-
-    /**
-     * Adds a new item to the content of the list.<p>
-     * 
-     * If you need to add or remove an item from or to the list at a later step, use the
-     * <code>{@link #insertItem(CmsListItem, Locale)}</code> or
-     * <code>{@link #removeItem(String, Locale)}</code> methods.<p> 
-     * 
-     * @param listItem the list item
-     * 
-     * @see List#add(Object)
-     */
-    public void addItem(CmsListItem listItem) {
-
-        m_originalItems.add(listItem);
-    }
-
-    /**
      * This method resets the content of the list (no the metadata).<p>
-     * 
-     * @param locale the locale for sorting/searching
      */
-    public void clear(Locale locale) {
+    public void clear() {
 
-        m_originalItems.clear();
+        if (m_originalItems != null) {
+            m_originalItems.clear();
+        }
         m_filteredItems = null;
         if (m_visibleItems != null) {
             m_visibleItems.clear();
         }
-        setSearchFilter("", locale);
+        setSearchFilter("");
         m_sortedColumn = null;
     }
 
@@ -211,7 +187,19 @@ public class CmsHtmlList {
      */
     public List getAllContent() {
 
-        return Collections.unmodifiableList(m_originalItems);
+        if (m_metadata.isSelfManaged()) {
+            if (m_filteredItems != null) {
+                return Collections.unmodifiableList(m_filteredItems);
+            } else {
+                return Collections.EMPTY_LIST;
+            }
+        } else {
+            if (m_originalItems != null) {
+                return Collections.unmodifiableList(m_originalItems);
+            } else {
+                return Collections.EMPTY_LIST;
+            }
+        }
     }
 
     /**
@@ -250,6 +238,9 @@ public class CmsHtmlList {
         if (getSize() == 0) {
             return Collections.EMPTY_LIST;
         }
+        if (m_metadata.isSelfManaged()) {
+            return getContent();
+        }
         return Collections.unmodifiableList(getContent().subList(displayedFrom() - 1, displayedTo()));
     }
 
@@ -284,7 +275,7 @@ public class CmsHtmlList {
      */
     public CmsListItem getItem(String id) {
 
-        Iterator it = m_originalItems.iterator();
+        Iterator it = getAllContent().iterator();
         while (it.hasNext()) {
             CmsListItem item = (CmsListItem)it.next();
             if (item.getId().equals(id)) {
@@ -355,6 +346,9 @@ public class CmsHtmlList {
      */
     public int getSize() {
 
+        if (m_metadata.isSelfManaged() && m_size != 0) {
+            return m_size;
+        }
         return getContent().size();
     }
 
@@ -385,7 +379,7 @@ public class CmsHtmlList {
      */
     public int getTotalNumberOfPages() {
 
-        return (int)Math.ceil((double)getAllContent().size() / getMaxItemsPerPage());
+        return (int)Math.ceil((double)getTotalSize() / getMaxItemsPerPage());
     }
 
     /**
@@ -395,59 +389,20 @@ public class CmsHtmlList {
      */
     public int getTotalSize() {
 
+        if (m_metadata.isSelfManaged() && m_totalSize != 0) {
+            return m_totalSize;
+        }
         return getAllContent().size();
     }
 
     /**
-     * Inserts a collection of list items in an already initialized list.<p>
-     * 
-     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
-     * 
-     * @param listItems the collection of list items to insert
-     * @param locale the locale
+     * Returns the workplace dialog object.<p>
+     *
+     * @return the workplace dialog object
      */
-    public void insertAllItems(Collection listItems, Locale locale) {
+    public A_CmsListDialog getWp() {
 
-        CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
-            state = getState();
-        }
-        addAllItems(listItems);
-        if (m_filteredItems != null) {
-            m_filteredItems.addAll(listItems);
-        }
-        if (m_visibleItems != null) {
-            m_visibleItems.addAll(listItems);
-        }
-        if (state != null) {
-            setState(state, locale);
-        }
-    }
-
-    /**
-     * Inserts an item in an already initialized list.<p>
-     * 
-     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
-     * 
-     * @param listItem the list item to insert
-     * @param locale the locale
-     */
-    public void insertItem(CmsListItem listItem, Locale locale) {
-
-        CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
-            state = getState();
-        }
-        addItem(listItem);
-        if (m_filteredItems != null) {
-            m_filteredItems.add(listItem);
-        }
-        if (m_visibleItems != null) {
-            m_visibleItems.add(listItem);
-        }
-        if (state != null) {
-            setState(state, locale);
-        }
+        return m_wp;
     }
 
     /**
@@ -463,38 +418,34 @@ public class CmsHtmlList {
     /**
      * Generates the csv output for the list.<p>
      * 
-     * Synchronized to not collide with <code>{@link #listHtml(CmsWorkplace)}</code>.<p> 
-     * 
-     * @param wp the workplace object
+     * Synchronized to not collide with <code>{@link #listHtml()}</code>.<p> 
      * 
      * @return csv output
      */
-    public synchronized String listCsv(CmsWorkplace wp) {
+    public synchronized String listCsv() {
 
         StringBuffer csv = new StringBuffer(5120);
-        csv.append(m_metadata.csvHeader(wp));
+        csv.append(m_metadata.csvHeader());
         if (getContent().isEmpty()) {
             csv.append(m_metadata.csvEmptyList());
         } else {
             Iterator itItems = getContent().iterator();
             while (itItems.hasNext()) {
                 CmsListItem item = (CmsListItem)itItems.next();
-                csv.append(m_metadata.csvItem(item, wp));
+                csv.append(m_metadata.csvItem(item));
             }
         }
-        return wp.resolveMacros(csv.toString());
+        return getWp().resolveMacros(csv.toString());
     }
 
     /**
      * Generates the html code for the list.<p>
      * 
-     * Synchronized to not collide with <code>{@link #printableHtml(CmsWorkplace)}</code>.<p> 
-     * 
-     * @param wp the workplace object
+     * Synchronized to not collide with <code>{@link #printableHtml()}</code>.<p> 
      * 
      * @return html code
      */
-    public synchronized String listHtml(CmsWorkplace wp) {
+    public synchronized String listHtml() {
 
         if (isPrintable()) {
             m_visibleItems = new ArrayList(getContent());
@@ -503,10 +454,10 @@ public class CmsHtmlList {
         }
 
         StringBuffer html = new StringBuffer(5120);
-        html.append(htmlBegin(wp));
+        html.append(htmlBegin());
         if (!isPrintable()) {
-            html.append(htmlTitle(wp));
-            html.append(htmlToolBar(wp));
+            html.append(htmlTitle());
+            html.append(htmlToolBar());
         } else {
             html.append("<style type='text/css'>\n");
             html.append("td.listdetailitem, \n");
@@ -522,37 +473,35 @@ public class CmsHtmlList {
             html.append("</style>");
         }
         html.append("<table width='100%' cellpadding='1' cellspacing='0' class='list'>\n");
-        html.append(m_metadata.htmlHeader(this, wp));
+        html.append(m_metadata.htmlHeader(this));
         if (m_visibleItems.isEmpty()) {
-            html.append(m_metadata.htmlEmptyTable(wp.getLocale()));
+            html.append(m_metadata.htmlEmptyTable());
         } else {
             Iterator itItems = m_visibleItems.iterator();
             boolean odd = true;
             while (itItems.hasNext()) {
                 CmsListItem item = (CmsListItem)itItems.next();
-                html.append(m_metadata.htmlItem(item, wp, odd, isPrintable()));
+                html.append(m_metadata.htmlItem(item, odd, isPrintable()));
                 odd = !odd;
             }
         }
         html.append("</table>\n");
         if (!isPrintable()) {
-            html.append(htmlPagingBar(wp));
+            html.append(htmlPagingBar());
         }
-        html.append(htmlEnd(wp));
-        return wp.resolveMacros(html.toString());
+        html.append(htmlEnd());
+        return getWp().resolveMacros(html.toString());
     }
 
     /**
      * Generate the need js code for the list.<p>
      * 
-     * @param locale the locale
-     * 
      * @return js code
      */
-    public String listJs(Locale locale) {
+    public String listJs() {
 
         StringBuffer js = new StringBuffer(1024);
-        CmsMessages messages = Messages.get().getBundle(locale);
+        CmsMessages messages = Messages.get().getBundle(getWp().getLocale());
         js.append("<script type='text/javascript' src='");
         js.append(CmsWorkplace.getSkinUri());
         js.append("admin/javascript/list.js'></script>\n");
@@ -597,187 +546,32 @@ public class CmsHtmlList {
     /**
      * Returns html code for printing the list.<p>
      * 
-     * Synchronized to not collide with <code>{@link #listHtml(CmsWorkplace)}</code>.<p>
+     * Synchronized to not collide with <code>{@link #listHtml()}</code>.<p>
      *  
-     * @param wp the workplace object
-     * 
      * @return html code
      */
-    public synchronized String printableHtml(CmsWorkplace wp) {
+    public synchronized String printableHtml() {
 
         m_printable = true;
-        String html = listHtml(wp);
+        String html = listHtml();
         m_printable = false;
         return html;
     }
 
     /**
-     * Removes a collection of list items from the list.<p> 
+     * Sets the list item to display in the list.<p>
      * 
-     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
-     * 
-     * Try to use it instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
-     * 
-     * @param ids the collection of ids of the items to remove
-     * @param locale the locale
-     * 
-     * @return the list of removed list items
+     * @param listItems a collection of {@link CmsListItem} objects
      */
-    public List removeAllItems(Collection ids, Locale locale) {
+    public void setContent(Collection listItems) {
 
-        List removedItems = new ArrayList();
-        Iterator itItems = m_originalItems.iterator();
-        while (itItems.hasNext()) {
-            CmsListItem listItem = (CmsListItem)itItems.next();
-            if (ids.contains(listItem.getId())) {
-                removedItems.add(listItem);
-            }
+        if (m_metadata.isSelfManaged()) {
+            m_filteredItems = new ArrayList(listItems);
+            m_originalItems = null;
+        } else {
+            m_filteredItems = null;
+            m_originalItems = new ArrayList(listItems);
         }
-        if (removedItems.isEmpty()) {
-            return removedItems;
-        }
-        CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
-            state = getState();
-        }
-        m_originalItems.removeAll(removedItems);
-        if (m_filteredItems != null) {
-            m_filteredItems.removeAll(removedItems);
-        }
-        if (m_visibleItems != null) {
-            m_visibleItems.removeAll(removedItems);
-        }
-        if (state != null) {
-            setState(state, locale);
-        }
-        return removedItems;
-    }
-
-    /**
-     * Removes an item from the list.<p> 
-     * 
-     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
-     * 
-     * Try to use it instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
-     * 
-     * @param id the id of the item to remove
-     * @param locale the locale
-     * 
-     * @return the removed list item
-     */
-    public CmsListItem removeItem(String id, Locale locale) {
-
-        CmsListItem item = null;
-        Iterator itItems = m_originalItems.iterator();
-        while (itItems.hasNext()) {
-            CmsListItem listItem = (CmsListItem)itItems.next();
-            if (listItem.getId().equals(id)) {
-                item = listItem;
-                break;
-            }
-        }
-        if (item == null) {
-            return null;
-        }
-        CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
-            state = getState();
-        }
-        m_originalItems.remove(item);
-        if (m_filteredItems != null) {
-            m_filteredItems.remove(item);
-        }
-        if (m_visibleItems != null) {
-            m_visibleItems.remove(item);
-        }
-        if (state != null) {
-            setState(state, locale);
-        }
-        return item;
-    }
-
-    /**
-     * Replace a list of items in the list.<p> 
-     * 
-     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
-     * 
-     * If the list already contains an item with the id of a given list item, it will be removed and
-     * replaced by the new list item. if not, this method is the same as the 
-     * <code>{@link #insertAllItems(Collection, Locale)}</code> method.
-     * 
-     * Try to use it instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
-     * 
-     * @param listItems the list of <code>{@link CmsListItem}</code>s to replace
-     * @param locale the locale
-     * 
-     * @return the removed list item, or <code>null</code>
-     */
-    public List replaceAllItems(List listItems, Locale locale) {
-
-        List removedItems = new ArrayList();
-        Iterator itItems = m_originalItems.iterator();
-        while (itItems.hasNext()) {
-            CmsListItem listItem = (CmsListItem)itItems.next();
-            Iterator itNewItems = listItems.iterator();
-            while (itNewItems.hasNext()) {
-                if (listItem.equals(((CmsListItem)itNewItems.next()).getId())) {
-                    removedItems.add(listItem);
-                }
-            }
-        }
-        CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
-            state = getState();
-        }
-        if (!removedItems.isEmpty()) {
-            m_originalItems.removeAll(removedItems);
-        }
-        addAllItems(listItems);
-        if (state != null) {
-            setState(state, locale);
-        }
-        return removedItems;
-    }
-
-    /**
-     * Replace an item in the list.<p> 
-     * 
-     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
-     * 
-     * If the list already contains an item with the id of the given list item, it will be removed and
-     * replaced by the new list item. if not, this method is the same as the 
-     * <code>{@link #insertItem(CmsListItem, Locale)}</code> method.
-     * 
-     * Try to use it instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
-     * 
-     * @param listItem the listItem to replace
-     * @param locale the locale
-     * 
-     * @return the removed list item, or <code>null</code>
-     */
-    public CmsListItem replaceItem(CmsListItem listItem, Locale locale) {
-
-        CmsListItem item = null;
-        Iterator itItems = m_originalItems.iterator();
-        while (itItems.hasNext()) {
-            CmsListItem tmp = (CmsListItem)itItems.next();
-            if (tmp.getId().equals(listItem.getId())) {
-                item = tmp;
-                break;
-            }
-        }
-        CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
-            state = getState();
-        }
-        if (item != null) {
-            m_originalItems.remove(item);
-        }
-        addItem(listItem);
-        if (state != null) {
-            setState(state, locale);
-        }
-        return item;
     }
 
     /**
@@ -823,16 +617,17 @@ public class CmsHtmlList {
      * Sets the search filter.<p>
      *
      * @param searchFilter the search filter to set
-     * @param locale the used locale for searching/sorting
      */
-    public void setSearchFilter(String searchFilter, Locale locale) {
+    public void setSearchFilter(String searchFilter) {
 
         if (!m_metadata.isSearchable()) {
             return;
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchFilter)) {
             // reset content if filter is empty
-            m_filteredItems = null;
+            if (!m_metadata.isSelfManaged()) {
+                m_filteredItems = null;
+            }
             m_searchFilter = "";
             getMetadata().getSearchAction().getShowAllAction().setVisible(false);
         } else {
@@ -846,23 +641,32 @@ public class CmsHtmlList {
         m_sortedColumn = "";
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sCol)) {
             CmsListOrderEnum order = getCurrentSortOrder();
-            setSortedColumn(sCol, locale);
+            setSortedColumn(sCol);
             if (order == CmsListOrderEnum.ORDER_DESCENDING) {
-                setSortedColumn(sCol, locale);
+                setSortedColumn(sCol);
             }
         }
         setCurrentPage(1);
     }
 
     /**
+     * Sets the current filtered size, only used if data self managed.<p>
+     *
+     * @param size the size to set
+     */
+    public void setSize(int size) {
+
+        m_size = size;
+    }
+
+    /**
      * Sets the sorted column.<p>
      *
      * @param sortedColumn the sorted column to set
-     * @param locale the used locale for sorting
      * 
      * @throws CmsIllegalArgumentException if the <code>sortedColumn</code> argument is invalid
      */
-    public void setSortedColumn(String sortedColumn, Locale locale) throws CmsIllegalArgumentException {
+    public void setSortedColumn(String sortedColumn) throws CmsIllegalArgumentException {
 
         if (getMetadata().getColumnDefinition(sortedColumn) == null
             || !getMetadata().getColumnDefinition(sortedColumn).isSorteable()) {
@@ -891,12 +695,12 @@ public class CmsHtmlList {
         // sort new column
         m_sortedColumn = sortedColumn;
         m_currentSortOrder = CmsListOrderEnum.ORDER_ASCENDING;
-        I_CmsListItemComparator c = getMetadata().getColumnDefinition(sortedColumn).getListItemComparator();
-        if (m_filteredItems == null) {
-            m_filteredItems = new ArrayList(getAllContent());
-        }
         if (!m_metadata.isSelfManaged()) {
-            Collections.sort(m_filteredItems, c.getComparator(sortedColumn, locale));
+            if (m_filteredItems == null) {
+                m_filteredItems = new ArrayList(getAllContent());
+            }
+            I_CmsListItemComparator c = getMetadata().getColumnDefinition(sortedColumn).getListItemComparator();
+            Collections.sort(m_filteredItems, c.getComparator(sortedColumn, getWp().getLocale()));
         }
     }
 
@@ -906,18 +710,19 @@ public class CmsHtmlList {
      * This may involve sorting, filtering and paging.<p>
      * 
      * @param listState the state to be set
-     * @param locale the locale
      */
-    public void setState(CmsListState listState, Locale locale) {
+    public void setState(CmsListState listState) {
 
-        m_filteredItems = null;
+        if (!m_metadata.isSelfManaged()) {
+            m_filteredItems = null;
+        }
         if (m_visibleItems != null) {
             m_visibleItems.clear();
         }
-        setSearchFilter(listState.getFilter(), locale);
-        setSortedColumn(listState.getColumn(), locale);
+        setSearchFilter(listState.getFilter());
+        setSortedColumn(listState.getColumn());
         if (listState.getOrder() == CmsListOrderEnum.ORDER_DESCENDING) {
-            setSortedColumn(listState.getColumn(), locale);
+            setSortedColumn(listState.getColumn());
         }
         if (listState.getPage() > 0) {
             if (listState.getPage() <= getNumberOfPages()) {
@@ -926,6 +731,27 @@ public class CmsHtmlList {
                 setCurrentPage(1);
             }
         }
+    }
+
+    /**
+     * Sets the total Size, only used if data self managed.<p>
+     *
+     * @param totalSize the total Size to set
+     */
+    public void setTotalSize(int totalSize) {
+
+        m_totalSize = totalSize;
+    }
+
+    /**
+     * Sets the workplace dialog object.<p>
+     *
+     * @param wp the workplace dialog object to set
+     */
+    public void setWp(A_CmsListDialog wp) {
+
+        m_wp = wp;
+        m_metadata.setWp(wp);
     }
 
     /**
@@ -979,11 +805,9 @@ public class CmsHtmlList {
     /**
      * Generates the initial html code.<p>
      *
-     * @param wp the workplace context
-     *  
      * @return html code
      */
-    private String htmlBegin(CmsWorkplace wp) {
+    private String htmlBegin() {
 
         StringBuffer html = new StringBuffer(512);
         // help & confirmation text for actions if needed
@@ -995,21 +819,21 @@ public class CmsHtmlList {
                 while (actions.hasNext()) {
                     I_CmsListDirectAction action = (I_CmsListDirectAction)actions.next();
                     action.setItem((CmsListItem)m_visibleItems.get(0));
-                    html.append(action.helpTextHtml(wp));
-                    html.append(action.confirmationTextHtml(wp));
+                    html.append(action.helpTextHtml());
+                    html.append(action.confirmationTextHtml());
                 }
                 Iterator defActions = col.getDefaultActions().iterator();
                 while (defActions.hasNext()) {
                     I_CmsListDirectAction action = (I_CmsListDirectAction)defActions.next();
                     action.setItem((CmsListItem)m_visibleItems.get(0));
-                    html.append(action.helpTextHtml(wp));
-                    html.append(action.confirmationTextHtml(wp));
+                    html.append(action.helpTextHtml());
+                    html.append(action.confirmationTextHtml());
                 }
             }
         }
         // start list code
         html.append("<div class='listArea'>\n");
-        html.append(((CmsDialog)wp).dialogBlock(CmsWorkplace.HTML_START, m_name.key(wp.getLocale()), false));
+        html.append(getWp().dialogBlock(CmsWorkplace.HTML_START, m_name.key(getWp().getLocale()), false));
         html.append("\t\t<table width='100%' cellspacing='0' cellpadding='0' border='0'>\n");
         html.append("\t\t\t<tr><td>\n");
         return html.toString();
@@ -1018,16 +842,14 @@ public class CmsHtmlList {
     /**
      * Generates the need html code for ending a lsit.<p>
      * 
-     * @param wp the workplace context
-     * 
      * @return html code
      */
-    private String htmlEnd(CmsWorkplace wp) {
+    private String htmlEnd() {
 
         StringBuffer html = new StringBuffer(512);
         html.append("\t\t\t</td></tr>\n");
         html.append("\t\t</table>\n");
-        html.append(((CmsDialog)wp).dialogBlock(CmsWorkplace.HTML_END, m_name.key(wp.getLocale()), false));
+        html.append(getWp().dialogBlock(CmsWorkplace.HTML_END, m_name.key(getWp().getLocale()), false));
         html.append("</div>\n");
         if (!isPrintable() && getMetadata().isSearchable()) {
             html.append("<script type='text/javascript'>\n");
@@ -1045,17 +867,15 @@ public class CmsHtmlList {
     /**
      * Generates the needed html code for the paging bar.<p>
      * 
-     * @param wp the workplace instance
-     * 
      * @return html code
      */
-    private String htmlPagingBar(CmsWorkplace wp) {
+    private String htmlPagingBar() {
 
         if (getNumberOfPages() < 2) {
             return "";
         }
         StringBuffer html = new StringBuffer(1024);
-        CmsMessages messages = Messages.get().getBundle(wp.getLocale());
+        CmsMessages messages = Messages.get().getBundle(getWp().getLocale());
         html.append("<table width='100%' cellspacing='0' style='margin-top: 5px;'>\n");
         html.append("\t<tr>\n");
         html.append("\t\t<td class='main'>\n");
@@ -1070,7 +890,7 @@ public class CmsHtmlList {
         }
         String onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() - 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getJsp(),
+            getWp().getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
             name,
@@ -1091,7 +911,7 @@ public class CmsHtmlList {
         }
         onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() + 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getJsp(),
+            getWp().getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
             name,
@@ -1111,16 +931,16 @@ public class CmsHtmlList {
             getMaxItemsPerPage(),
             getSize(),
             getCurrentPage(),
-            wp.getLocale()));
+            getWp().getLocale()));
         html.append("\t\t\t</select>\n");
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
             html.append(messages.key(Messages.GUI_LIST_PAGING_TEXT_2, new Object[] {
-                m_name.key(wp.getLocale()),
+                m_name.key(getWp().getLocale()),
                 new Integer(getTotalSize())}));
         } else {
             html.append(messages.key(Messages.GUI_LIST_PAGING_FILTER_TEXT_3, new Object[] {
-                m_name.key(wp.getLocale()),
+                m_name.key(getWp().getLocale()),
                 new Integer(getSize()),
                 new Integer(getTotalSize())}));
         }
@@ -1133,14 +953,12 @@ public class CmsHtmlList {
     /**
      * returns the html for the title of the list.<p>
      * 
-     * @param wp the workplace context
-     * 
      * @return html code
      */
-    private String htmlTitle(CmsWorkplace wp) {
+    private String htmlTitle() {
 
         StringBuffer html = new StringBuffer(512);
-        CmsMessages messages = Messages.get().getBundle(wp.getLocale());
+        CmsMessages messages = Messages.get().getBundle(getWp().getLocale());
         html.append("<table width='100%' cellspacing='0'>");
         html.append("\t<tr>\n");
         html.append("\t\t<td align='left'>\n");
@@ -1148,13 +966,13 @@ public class CmsHtmlList {
         if (getTotalNumberOfPages() > 1) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
                 html.append(messages.key(Messages.GUI_LIST_TITLE_TEXT_4, new Object[] {
-                    m_name.key(wp.getLocale()),
+                    m_name.key(getWp().getLocale()),
                     new Integer(displayedFrom()),
                     new Integer(displayedTo()),
                     new Integer(getTotalSize())}));
             } else {
                 html.append(messages.key(Messages.GUI_LIST_TITLE_FILTERED_TEXT_5, new Object[] {
-                    m_name.key(wp.getLocale()),
+                    m_name.key(getWp().getLocale()),
                     new Integer(displayedFrom()),
                     new Integer(displayedTo()),
                     new Integer(getSize()),
@@ -1163,18 +981,18 @@ public class CmsHtmlList {
         } else {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
                 html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_TEXT_2, new Object[] {
-                    m_name.key(wp.getLocale()),
+                    m_name.key(getWp().getLocale()),
                     new Integer(getTotalSize())}));
             } else {
                 html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3, new Object[] {
-                    m_name.key(wp.getLocale()),
+                    m_name.key(getWp().getLocale()),
                     new Integer(getSize()),
                     new Integer(getTotalSize())}));
             }
         }
         html.append("\n");
         html.append("\t\t</td>\n\t\t");
-        html.append(getMetadata().htmlActionBar(wp));
+        html.append(getMetadata().htmlActionBar());
         html.append("\n\t</tr>\n");
         html.append("</table>\n");
         return html.toString();
@@ -1183,17 +1001,15 @@ public class CmsHtmlList {
     /**
      * Returns the html code for the toolbar (search bar + multiactions bar).<p>
      * 
-     * @param wp the workplace context
-     * 
      * @return html code
      */
-    private String htmlToolBar(CmsWorkplace wp) {
+    private String htmlToolBar() {
 
         StringBuffer html = new StringBuffer(512);
         html.append("<table width='100%' cellspacing='0' style='margin-bottom: 5px'>\n");
         html.append("\t<tr>\n");
-        html.append(m_metadata.htmlSearchBar(wp));
-        html.append(m_metadata.htmlMultiActionBar(wp));
+        html.append(m_metadata.htmlSearchBar());
+        html.append(m_metadata.htmlMultiActionBar());
         html.append("\t</tr>\n");
         html.append("</table>\n");
         return html.toString();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2006/04/20 09:20:28 $
- * Version: $Revision: 1.35.4.2 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.35.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.35.4.2 $ 
+ * @version $Revision: 1.35.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -241,14 +241,16 @@ public abstract class A_CmsListDialog extends CmsDialog {
             getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
             // sort the list
             if (sortedColId != null && getList().getMetadata().getColumnDefinition(sortedColId) != null) {
-                getList().setSortedColumn(sortedColId, getLocale());
+                getList().setWp(this);
+                getList().setSortedColumn(sortedColId);
                 if (sortOrder != null && sortOrder == CmsListOrderEnum.ORDER_DESCENDING) {
-                    getList().setSortedColumn(sortedColId, getLocale());
+                    getList().setSortedColumn(sortedColId);
                 }
             }
             // save the current state of the list
             listSave();
         }
+        getList().setWp(this);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_INIT_LIST_1, listId));
         }
@@ -303,7 +305,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
         if (isForwarded()) {
             return;
         }
-        // TODO: check the need for this, improve caching
         refreshList();
 
         if (LOG.isDebugEnabled()) {
@@ -586,9 +587,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_REFRESH_LIST_1, getListId()));
         }
         m_listState = getList().getState();
-        getList().clear(getLocale());
+        getList().clear();
         fillList();
-        getList().setState(m_listState, getLocale());
+        getList().setState(m_listState);
         m_listState = null;
         listSave();
         if (LOG.isDebugEnabled()) {
@@ -744,6 +745,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected String defaultActionHtml() {
 
         if (getList() != null && getList().getAllContent().isEmpty()) {
+            // TODO: check the need for this
             refreshList();
         }
         StringBuffer result = new StringBuffer(2048);
@@ -780,7 +782,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         result.append(">\n");
         result.append(allParamsAsHidden());
         result.append("\n");
-        result.append(getList().listHtml(this));
+        result.append(getList().listHtml());
         result.append("\n</form>\n");
         return result.toString();
     }
@@ -808,7 +810,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
         StringBuffer result = new StringBuffer(2048);
         result.append(htmlStart(null));
-        result.append(getList().listJs(getLocale()));
+        result.append(getList().listJs());
         result.append(bodyStart("dialog", null));
         result.append(dialogStart());
         result.append(dialogContentStart(getParamTitle()));
@@ -821,7 +823,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void executeSearch() {
 
-        getList().setSearchFilter(getParamSearchFilter(), getLocale());
+        getList().setSearchFilter(getParamSearchFilter());
     }
 
     /**
@@ -840,13 +842,13 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void executeSort() {
 
-        getList().setSortedColumn(getParamSortCol(), getLocale());
+        getList().setSortedColumn(getParamSortCol());
     }
 
     /**
      * Lazy initialization for detail data.<p>
      * 
-     * Should fill the given detail column for every list item in <code>{@link CmsHtmlList#getAllContent()}</code>
+     * Should fill the given detail column for every list item in <code>{@link CmsHtmlList#getContent()}</code>
      * 
      * Should not throw any kind of exception.<p>
      * 
@@ -860,7 +862,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected void fillList() {
 
         try {
-            getList().addAllItems(getListItems());
+            getList().setContent(getListItems());
             // initialize detail columns
             Iterator itDetails = getList().getMetadata().getItemDetailDefinitions().iterator();
             while (itDetails.hasNext()) {
@@ -1075,7 +1077,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         // if detail column visible
         if (getList().getMetadata().getItemDetailDefinition(detailId).isVisible()) {
             // if the list is not empty
-            if (!getList().getAllContent().isEmpty()) {
+            if (getList().getTotalSize() > 0) {
                 // if the detail column has not been previously initialized
                 if (((CmsListItem)getList().getAllContent().get(0)).get(detailId) == null) {
                     if (LOG.isDebugEnabled()) {

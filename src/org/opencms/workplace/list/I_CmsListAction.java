@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsListAction.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,21 @@ import org.opencms.workplace.tools.I_CmsHtmlIconButton;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.8.1 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsListAction extends I_CmsHtmlIconButton {
 
+    /**
+     * The same using {@link #getWp()}.<p>
+     * 
+     * @return the buttons html code
+     * 
+     * @see I_CmsHtmlIconButton#buttonHtml(org.opencms.workplace.CmsWorkplace)
+     */
+    String buttonHtml();
+    
     /**
      * Returns an optional confirmation message for the action.<p>
      * 
@@ -62,6 +71,13 @@ public interface I_CmsListAction extends I_CmsHtmlIconButton {
     String getListId();
 
     /**
+     * Returns the related workplace dialog object, to be able to access dynamic data.<p>
+     * 
+     * @return the related workplace dialog object
+     */
+    A_CmsListDialog getWp();
+
+    /**
      * Sets the confirmation message.<p>
      *
      * @param confirmationMsg the confirmation message to set
@@ -74,4 +90,11 @@ public interface I_CmsListAction extends I_CmsHtmlIconButton {
      * @param listId the id of the list to set
      */
     void setListId(String listId);
+
+    /**
+     * Sets the workplace dialog object.<p>
+     * 
+     * @param wp the workplace dialog object
+     */
+    void setWp(A_CmsListDialog wp);
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsTwoListsDialogsWOStart.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/06/09 15:16:15 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.workplace.list;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,7 +58,7 @@ public class CmsTwoListsDialogsWOStart extends CmsTwoListsDialog {
      */
     protected String defaultActionHtmlStart() {
 
-        return getActiveWp().getList().listJs(getActiveWp().getLocale())
+        return getActiveWp().getList().listJs()
             + getActiveWp().dialogContentStart(getActiveWp().getParamTitle());
     }
 }
