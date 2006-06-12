@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2006/06/12 10:13:14 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/06/12 10:30:30 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.1.0 
  */
@@ -223,7 +223,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             CmsListItem item = (CmsListItem)m_liCache.get(resource.getStructureId().toString());
             if (item == null) {
                 resUtil.setResource(resource);
-                item = list.newItem(resource.getResourceId().toString());
+                item = list.newItem(resource.getStructureId().toString());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_NAME, getWp().getCms().getSitePath(resource));
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, resUtil.getTitle());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_TYPE, resUtil.getResourceTypeName());
@@ -467,7 +467,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 Iterator it = m_resources.iterator();
                 while (it.hasNext()) {
                     CmsResource resource = (CmsResource)it.next();
-                    m_resCache.put(resource.getResourceId().toString(), resource);
+                    m_resCache.put(resource.getStructureId().toString(), resource);
                 }
             }
         }

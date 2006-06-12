@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResourcesCollector.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/06/12 10:30:30 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.0 
  */
@@ -140,8 +140,8 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
         while (it.hasNext()) {
             CmsSearchResult sr = (CmsSearchResult)it.next();
             CmsResource resource = cms.readResource(sr.getPath().substring(siteLen), CmsResourceFilter.ALL);
-            m_resCache.put(resource.getResourceId().toString(), resource);
-            m_srCache.put(resource.getResourceId().toString(), sr);
+            m_resCache.put(resource.getStructureId().toString(), resource);
+            m_srCache.put(resource.getStructureId().toString(), sr);
             objs[from] = resource;
             from++;
         }
@@ -149,15 +149,15 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     }
 
     /**
-     * Returns the search result object for the given resource id.<p>
+     * Returns the search result object for the given structure id.<p>
      * 
-     * @param resourceId the resource id
+     * @param structureId the structure id
      * 
      * @return the resource
      */
-    public CmsSearchResult getSearchResult(String resourceId) {
+    public CmsSearchResult getSearchResult(String structureId) {
 
-        return (CmsSearchResult)m_srCache.get(resourceId);
+        return (CmsSearchResult)m_srCache.get(structureId);
     }
 
     /**

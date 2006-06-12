@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/04/25 13:05:49 $
- * Version: $Revision: 1.17.4.6 $
+ * Date   : $Date: 2006/06/12 10:30:30 $
+ * Version: $Revision: 1.17.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.6 $ 
+ * @version $Revision: 1.17.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,9 +71,6 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
     /** list id constant. */
     public static final String LIST_ID = "lpr";
-
-    /** Request parameter name for the show explorer flag. */
-    public static final String PARAM_SHOW_EXPLORER = "showexplorer";
 
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;
