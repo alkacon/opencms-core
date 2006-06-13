@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2006/05/12 15:52:36 $
- * Version: $Revision: 1.19.4.1 $
+ * Date   : $Date: 2006/06/13 09:46:57 $
+ * Version: $Revision: 1.19.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,9 @@
 
 package org.opencms.file;
 
-import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -44,7 +42,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.1 $
+ * @version $Revision: 1.19.4.2 $
  * 
  * @since 6.0.0 
  * 
