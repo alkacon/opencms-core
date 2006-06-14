@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2006/04/10 11:20:03 $
- * Version: $Revision: 1.36.4.1 $
+ * Date   : $Date: 2006/06/14 15:09:32 $
+ * Version: $Revision: 1.36.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.1 $ 
+ * @version $Revision: 1.36.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -409,7 +409,19 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     }
 
     /**
-     * Visists all values of this XML content with the given value visitor.<p>
+     * @see org.opencms.xml.I_CmsXmlDocument#validate(org.opencms.file.CmsObject, java.util.Locale)
+     */
+    public CmsXmlContentErrorHandler validate(CmsObject cms, Locale locale) {
+    
+        // iterate through all initialized value nodes in this XML content
+        CmsXmlContentValidationVisitor visitor = new CmsXmlContentValidationVisitor(cms);
+        visitAllValuesWith(visitor, locale);
+
+        return visitor.getErrorHandler();        
+    }
+    
+    /**
+     * Visits all values of this XML content with the given value visitor.<p>
      * 
      * Please note that the order in which the values are visited may NOT be the
      * order they apper in the XML document. It is ensured that the the parent 
@@ -429,6 +441,33 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             visitor.visit(value);
         }
     }
+
+    /**
+     * Visits all values for the given locale of this XML content with the given value visitor.<p>
+     * 
+     * Please note that the order in which the values are visited may NOT be the
+     * order they apper in the XML document. It is ensured that the the parent 
+     * of a nested value is visited before the element it contains.<p>
+     * 
+     * @param visitor the value visitor implementation to visit the values with
+     * @param locale the locale to check
+     */
+    public void visitAllValuesWith(I_CmsXmlContentValueVisitor visitor, Locale locale) {
+    
+        String bookmarkPrefix = super.getBookmarkName("", locale);
+        
+        List bookmarks = new ArrayList(getBookmarks());
+        Collections.sort(bookmarks);
+
+        for (int i = 0; i < bookmarks.size(); i++) {
+
+            String key = (String)bookmarks.get(i);
+            if (key.startsWith(bookmarkPrefix)) {
+                I_CmsXmlContentValue value = (I_CmsXmlContentValue)getBookmark(key);
+                visitor.visit(value);
+            }
+        }
+    }    
 
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#getBookmark(java.lang.String)

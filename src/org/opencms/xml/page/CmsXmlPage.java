@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2006/04/10 11:20:03 $
- * Version: $Revision: 1.32.4.1 $
+ * Date   : $Date: 2006/06/14 15:09:32 $
+ * Version: $Revision: 1.32.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.1 $ 
+ * @version $Revision: 1.32.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -471,7 +471,15 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         // XML pages currently do not support validation
         return new CmsXmlContentErrorHandler();
     }
-
+    
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#validate(org.opencms.file.CmsObject, java.util.Locale)
+     */
+    public CmsXmlContentErrorHandler validate(CmsObject cms, Locale locale) {
+        // XML pages currently do not support validation
+        return new CmsXmlContentErrorHandler();
+    }
+    
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
      */
