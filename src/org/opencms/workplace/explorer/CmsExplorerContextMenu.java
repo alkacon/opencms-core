@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/06/14 13:38:27 $
+ * Version: $Revision: 1.13.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -57,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -194,14 +193,14 @@ public class CmsExplorerContextMenu {
      * @param cms the CmsObject
      * @param settings the explorer type settings for which the context menu is created
      * @param resTypeId the id of the resource type which uses the context menu
-     * @param locale the locale to generate the context menu for
+     * @param messages the messages to generate the context menu with (should be the workplace messages)
      * @return the JavaScript output to create the context menu
      */
-    public String getJSEntries(CmsObject cms, CmsExplorerTypeSettings settings, int resTypeId, Locale locale) {
+    public String getJSEntries(CmsObject cms, CmsExplorerTypeSettings settings, int resTypeId, CmsMessages messages) {
 
         // try to get the stored entries from the Map
-        String entries = (String)m_generatedScripts.get(locale);
-        CmsMessages messages = Messages.get().getBundle(locale);
+        String entries = (String)m_generatedScripts.get(messages.getLocale());
+
         if (entries == null) {
             //CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
 
@@ -269,7 +268,7 @@ public class CmsExplorerContextMenu {
             }
             entries = result.toString();
             // store the generated entries
-            m_generatedScripts.put(locale, entries);
+            m_generatedScripts.put(messages.getLocale(), entries);
         }
 
         if (!isMultiMenu()) {
