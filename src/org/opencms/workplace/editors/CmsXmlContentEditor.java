@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/04/13 08:38:41 $
- * Version: $Revision: 1.68.4.2 $
+ * Date   : $Date: 2006/06/14 13:37:46 $
+ * Version: $Revision: 1.68.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68.4.2 $ 
+ * @version $Revision: 1.68.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -203,12 +203,13 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
-        }
+        }  
+        
         // save eventually changed content of the editor
         Locale oldLocale = CmsLocaleManager.getLocale(getParamOldelementlanguage());
         try {
             setEditorValues(oldLocale);
-            if (!getErrorHandler().hasErrors()) {
+            if (!m_content.validate(getCms(), oldLocale).hasErrors()) {
                 // no errors found in content, save to temporary file              
                 writeContent();
             } else {
@@ -222,7 +223,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             if (LOG.isInfoEnabled()) {
                 LOG.info(e.getLocalizedMessage(), e);
             }
-        }
+        }      
     }
 
     /**
