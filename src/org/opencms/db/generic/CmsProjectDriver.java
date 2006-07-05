@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.241 $
+ * Date   : $Date: 2006/07/05 15:50:51 $
+ * Version: $Revision: 1.241.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.241 $
+ * @version $Revision: 1.241.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -1263,11 +1263,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // binary content gets only published once while a project is published
             if (!publishedResourceIds.contains(offlineResource.getResourceId())) {
                 // read the file content offline
-                offlineFile = m_driverManager.getVfsDriver().readFile(
+                CmsFile dummyFile = m_driverManager.getVfsDriver().readFile(
                     dbc,
                     offlineProject.getId(),
                     false,
-                    offlineResource.getStructureId());
+                    offlineResource.getResourceId());
+
+                offlineFile = new CmsFile(offlineResource);
+                offlineFile.setContents(dummyFile.getContents());
 
                 // create the file online              
                 newFile = (CmsFile)offlineFile.clone();
@@ -1286,11 +1289,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 // create the sibling online
                 m_driverManager.getVfsDriver().createSibling(dbc, onlineProject, offlineResource);
 
-                newFile = m_driverManager.getVfsDriver().readFile(
+                CmsFile dummyFile = m_driverManager.getVfsDriver().readFile(
                     dbc,
                     onlineProject.getId(),
                     false,
-                    offlineResource.getStructureId());
+                    offlineResource.getResourceId());
+
+                newFile = new CmsFile(offlineResource);
+                newFile.setContents(dummyFile.getContents());
             }
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {

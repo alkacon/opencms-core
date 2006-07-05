@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/07/05 15:50:52 $
+ * Version: $Revision: 1.20.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.20.4.1 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
 
@@ -413,13 +413,13 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         echo("Testing undoChanges on shared property");
-        
+
         // create the files
         String file = "/a";
         cms.createResource(file, CmsResourceTypePlain.getStaticTypeId());
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();    
+        cms.publishProject();
 
         String sibling = "/b";
         TestSiblings.createSibling(this, cms, file, sibling);
@@ -427,11 +427,14 @@ public class TestUndoChanges extends OpenCmsTestCase {
         CmsProperty property = new CmsProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT, "undoChanges navText", null);
         cms.writePropertyObject(sibling, property);
         // write a persistent shared property to test with
-        CmsProperty property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, null, "undoChanges description");
+        CmsProperty property1 = new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            null,
+            "undoChanges description");
         cms.writePropertyObject(sibling, property1);
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();    
+        cms.publishProject();
 
         // create a global storage and store the resource
         createStorage("undoChanges");

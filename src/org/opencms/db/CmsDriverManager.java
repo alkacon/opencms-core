@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/05/12 15:52:36 $
- * Version: $Revision: 1.570.2.5 $
+ * Date   : $Date: 2006/07/05 15:50:51 $
+ * Version: $Revision: 1.570.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1134,7 +1134,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             if ((content == null) || (content.length < 1)) {
                 // no known content yet - read from database
-                file = m_vfsDriver.readFile(dbc, dbc.currentProject().getId(), false, source.getStructureId());
+                file = m_vfsDriver.readFile(dbc, dbc.currentProject().getId(), false, source.getResourceId());
                 content = file.getContents();
             }
         }
@@ -4818,11 +4818,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc.removeSiteRoot(resource.getRootPath())));
         }
 
-        CmsFile file = m_vfsDriver.readFile(
-            dbc,
-            dbc.currentProject().getId(),
-            filter.includeDeleted(),
-            resource.getStructureId());
+        int projectId = dbc.currentProject().getId();
+        CmsFile fileNew = m_vfsDriver.readFile(dbc, projectId, filter.includeDeleted(), resource.getResourceId());
+        CmsFile file = new CmsFile(resource);
+        file.setContents(fileNew.getContents());
 
         return file;
     }
@@ -6754,38 +6753,46 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         } else {
 
-            // read the file from the online project
-            CmsFile onlineFile = this.m_vfsDriver.readFile(
+            // read the resource from the online project            
+            CmsResource onlineResource = m_vfsDriver.readResource(
+                dbc,
+                CmsProject.ONLINE_PROJECT_ID,
+                resource.getRootPath(),
+                true);
+
+            // read the content from the online project
+            CmsFile onlineContent = m_vfsDriver.readFile(
                 dbc,
                 CmsProject.ONLINE_PROJECT_ID,
                 true,
-                resource.getStructureId());
+                onlineResource.getResourceId());
 
             CmsFile restoredFile = new CmsFile(
-                onlineFile.getStructureId(),
-                onlineFile.getResourceId(),
-                onlineFile.getContentId(),
-                resource.getRootPath(),
-                onlineFile.getTypeId(),
-                onlineFile.getFlags(),
+                onlineResource.getStructureId(),
+                onlineResource.getResourceId(),
+                onlineContent.getContentId(),
+                onlineResource.getRootPath(),
+                onlineResource.getTypeId(),
+                onlineResource.getFlags(),
                 dbc.currentProject().getId(),
                 CmsResource.STATE_UNCHANGED,
-                onlineFile.getDateCreated(),
-                onlineFile.getUserCreated(),
-                onlineFile.getDateLastModified(),
-                onlineFile.getUserLastModified(),
-                onlineFile.getDateReleased(),
-                onlineFile.getDateExpired(),
+                onlineResource.getDateCreated(),
+                onlineResource.getUserCreated(),
+                onlineResource.getDateLastModified(),
+                onlineResource.getUserLastModified(),
+                onlineResource.getDateReleased(),
+                onlineResource.getDateExpired(),
                 0,
-                onlineFile.getLength(),
-                onlineFile.getContents());
+                onlineResource.getLength(),
+                onlineContent.getContents());
 
             // write the file in the offline project
             // this sets a flag so that the file date is not set to the current time
-            restoredFile.setDateLastModified(onlineFile.getDateLastModified());
+            restoredFile.setDateLastModified(onlineResource.getDateLastModified());
 
             // collect the old properties
-            List properties = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineFile);
+            //List properties = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineFile);
+            List properties = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineResource);
 
             // bugfix 1020: delete all properties (included shared), 
             // shared properties will be recreated by the next call of #createResource(...)
@@ -6817,7 +6824,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             ListIterator aceList = m_userDriver.readAccessControlEntries(
                 dbc,
                 onlineProject,
-                onlineFile.getResourceId(),
+                onlineResource.getResourceId(),
                 false).listIterator();
 
             while (aceList.hasNext()) {
@@ -6994,8 +7001,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 dbc,
                                 CmsProject.ONLINE_PROJECT_ID,
                                 false,
-                                currentResource.getStructureId());
-                            exportPointDriver.writeFile(file.getRootPath(), currentExportPoint, file.getContents());
+                                currentResource.getResourceId());
+                            exportPointDriver.writeFile(
+                                currentResource.getRootPath(),
+                                currentExportPoint,
+                                file.getContents());
                         }
                     }
                 } catch (CmsException e) {
@@ -7178,8 +7188,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 dbc,
                                 CmsProject.ONLINE_PROJECT_ID,
                                 false,
-                                currentPublishedResource.getStructureId());
-                            exportPointDriver.writeFile(file.getRootPath(), currentExportPoint, file.getContents());
+                                currentPublishedResource.getResourceId());
+                            exportPointDriver.writeFile(
+                                currentPublishedResource.getRootPath(),
+                                currentExportPoint,
+                                file.getContents());
                         }
                     }
 

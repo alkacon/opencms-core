@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2006/04/28 12:46:01 $
- * Version: $Revision: 1.258.4.2 $
+ * Date   : $Date: 2006/07/05 15:50:51 $
+ * Version: $Revision: 1.258.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.2 $
+ * @version $Revision: 1.258.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -1031,30 +1031,52 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readFile(org.opencms.db.CmsDbContext, int, boolean, org.opencms.util.CmsUUID)
      */
-    public CmsFile readFile(CmsDbContext dbc, int projectId, boolean includeDeleted, CmsUUID structureId)
+    public CmsFile readFile(CmsDbContext dbc, int projectId, boolean includeDeleted, CmsUUID resourceId)
     throws CmsDataAccessException {
 
-        CmsFile file = null;
+        CmsFile dummyFile = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
+        byte[] byteRes = null;
+        CmsUUID contentId = null;
 
         try {
             conn = m_sqlManager.getConnection(dbc, projectId);
 
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_FILES_READ");
-            stmt.setString(1, structureId.toString());
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_FILES_CONTENT");
+            stmt.setString(1, resourceId.toString());
             res = stmt.executeQuery();
 
             if (res.next()) {
-                file = createFile(res, projectId);
+                //query to read Array of bytes for the atribute FILE_CONTENT
+                byteRes = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
+                contentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_CONTENT_ID")));
+                dummyFile = new CmsFile(
+                    null,
+                    resourceId,
+                    contentId,
+                    null,
+                    0,
+                    0,
+                    projectId,
+                    0,
+                    0,
+                    null,
+                    0,
+                    null,
+                    0,
+                    0,
+                    0,
+                    0,
+                    byteRes);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
                     Messages.ERR_READ_FILE_WITH_STRUCTURE_ID_1,
-                    structureId));
+                    resourceId));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1065,13 +1087,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
-        if (file != null && file.getState() == org.opencms.file.CmsResource.STATE_DELETED && !includeDeleted) {
+        if (dummyFile != null && dummyFile.getState() == org.opencms.file.CmsResource.STATE_DELETED && !includeDeleted) {
             throw new CmsVfsException(Messages.get().container(
                 Messages.ERR_READ_DELETED_FILE_1,
-                dbc.removeSiteRoot(file.getRootPath())));
+                dbc.removeSiteRoot(dummyFile.getRootPath())));
         }
 
-        return file;
+        return dummyFile;
     }
 
     /**
@@ -2337,7 +2359,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setString(2, resource.getStructureId().toString());
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
-                
+
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RELEASE_EXPIRED");
                 stmt.setLong(1, resource.getDateReleased());
                 stmt.setLong(2, resource.getDateExpired());
