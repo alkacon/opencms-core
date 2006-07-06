@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/07/05 15:50:51 $
- * Version: $Revision: 1.570.2.6 $
+ * Date   : $Date: 2006/07/06 13:10:54 $
+ * Version: $Revision: 1.570.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4819,9 +4819,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         int projectId = dbc.currentProject().getId();
-        CmsFile fileNew = m_vfsDriver.readFile(dbc, projectId, filter.includeDeleted(), resource.getResourceId());
+        CmsFile content = m_vfsDriver.readFile(dbc, projectId, filter.includeDeleted(), resource.getResourceId());
         CmsFile file = new CmsFile(resource);
-        file.setContents(fileNew.getContents());
+        file.setContents(content.getContents());
 
         return file;
     }
@@ -6997,7 +6997,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             // try to create the exportpoint folder
                             exportPointDriver.createFolder(currentExportPoint, currentExportPoint);
                             // export the file content online          
-                            CmsFile file = getVfsDriver().readFile(
+                            CmsFile onlineContent = getVfsDriver().readFile(
                                 dbc,
                                 CmsProject.ONLINE_PROJECT_ID,
                                 false,
@@ -7005,7 +7005,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             exportPointDriver.writeFile(
                                 currentResource.getRootPath(),
                                 currentExportPoint,
-                                file.getContents());
+                                onlineContent.getContents());
                         }
                     }
                 } catch (CmsException e) {
@@ -7184,7 +7184,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             exportPointDriver.removeResource(currentPublishedResource.getRootPath(), currentExportPoint);
                         } else {
                             // read the file content online
-                            CmsFile file = getVfsDriver().readFile(
+                            CmsFile onlineContent = getVfsDriver().readFile(
                                 dbc,
                                 CmsProject.ONLINE_PROJECT_ID,
                                 false,
@@ -7192,7 +7192,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             exportPointDriver.writeFile(
                                 currentPublishedResource.getRootPath(),
                                 currentExportPoint,
-                                file.getContents());
+                                onlineContent.getContents());
                         }
                     }
 

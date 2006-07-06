@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2006/03/27 14:52:26 $
- * Version: $Revision: 1.114 $
+ * Date   : $Date: 2006/07/06 13:10:54 $
+ * Version: $Revision: 1.114.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114 $
+ * @version $Revision: 1.114.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -259,17 +259,20 @@ public interface I_CmsVfsDriver {
         boolean getFiles) throws CmsDataAccessException;
 
     /**
-     * Reads a file specified by it's structure ID.<p>
+     * Reads the content of a file specified by it's resource ID.
+     * The projectId and includeDeleted are not used anymore.
+     * They are still parameters of the method to maintain compatibility to older versions<p>
+     * The returned file only contains the fileContent and the content Id.<p>
      * 
      * @param dbc the current database context
      * @param projectId the ID of the current project
      * @param includeDeleted true if should be read even if it's state is deleted
-     * @param structureId the id of the file
+     * @param resourceId the id of the file
      * 
      * @return the file that was read
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsFile readFile(CmsDbContext dbc, int projectId, boolean includeDeleted, CmsUUID structureId)
+    CmsFile readFile(CmsDbContext dbc, int projectId, boolean includeDeleted, CmsUUID resourceId)
     throws CmsDataAccessException;
 
     /**
@@ -512,7 +515,7 @@ public interface I_CmsVfsDriver {
         long expiredAfter,
         long expiredBefore,
         int mode) throws CmsDataAccessException;
-    
+
     /**
      * Reads all siblings that point to the resource record of a specified resource.<p>
      * 
