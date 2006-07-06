@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/07/06 13:10:54 $
- * Version: $Revision: 1.241.4.2 $
+ * Date   : $Date: 2006/07/06 13:13:38 $
+ * Version: $Revision: 1.241.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.241.4.2 $
+ * @version $Revision: 1.241.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -1289,14 +1289,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 // create the sibling online
                 m_driverManager.getVfsDriver().createSibling(dbc, onlineProject, offlineResource);
 
-                CmsFile dummyFile = m_driverManager.getVfsDriver().readFile(
+                CmsFile offlineContent = m_driverManager.getVfsDriver().readFile(
                     dbc,
                     onlineProject.getId(),
                     false,
                     offlineResource.getResourceId());
 
                 newFile = new CmsFile(offlineResource);
-                newFile.setContents(dummyFile.getContents());
+                newFile.setContents(offlineContent.getContents());
             }
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
