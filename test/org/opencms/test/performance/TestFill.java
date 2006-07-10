@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/performance/TestFill.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/07/10 14:43:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,14 +28,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.test.performance;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.OpenCms;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.List;
+import java.util.Iterator;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -46,47 +51,52 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestFill extends OpenCmsTestCase {
-  
+
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestFill(String arg0) {
+
         super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestFill.class.getName());
-             
+
         //suite.addTest(new TestFill("testFillResources"));
         suite.addTest(new TestFill("testResWithProps"));
-        
+        suite.addTest(new TestFill("testReadFile"));
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms("simpletest", "/sites/default/");
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
-    }     
-        
+    }
+
     /**
      * fills the db with app in average: <br>
      *    <ul>
@@ -99,23 +109,49 @@ public class TestFill extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public void testFillResources() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
+
+        CmsObject cms = getCmsObject();
         echo("Test filling the db with tons of files");
         long t = System.currentTimeMillis();
         int nFiles = generateContent(cms, "/", 10, 5, 10, 0.6, 20, 0.75);
         t = System.currentTimeMillis() - t;
         echo("" + nFiles + " files have been created in " + t + " msecs");
-    }    
-    
+    }
+
+    /**
+     * Performance test for readFile.<p>
+     * 10,000 files will be read and 20% of them are binary.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testReadFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        int nFiles = generateContent(cms, "/", 10000, 0.2);
+
+        Iterator listIt = cms.readResources("/", CmsResourceFilter.ALL_MODIFIED).iterator();
+        OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, null);
+
+        long startT = System.currentTimeMillis();
+        while (listIt.hasNext()) {
+            CmsResource resource = (CmsResource)listIt.next();
+            if (resource.isFile()) {
+                cms.readFile(resource.getName());
+            }
+        }
+        long endT = System.currentTimeMillis();
+        long workT = endT - startT;
+        echo("" + nFiles + " files have been read in " + workT + " msecs");
+    }
+
     /**
      * Tests the <code>{@link CmsObject#readResourcesWithProperty(String)}</code> method.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testResWithProps() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
+
+        CmsObject cms = getCmsObject();
         echo("Testing the CmsObject#readResourcesWithProperty(String) method");
         String prop = "NavPos";
         long t = System.currentTimeMillis();
@@ -123,6 +159,5 @@ public class TestFill extends OpenCmsTestCase {
         t = System.currentTimeMillis() - t;
         echo("There are " + l.size() + " files with prop " + prop);
         echo("readResourcesWithProperty(String) performance was: " + t + " msecs");
-    }    
+    }
 }
-

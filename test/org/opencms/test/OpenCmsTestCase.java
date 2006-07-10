@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2006/07/10 14:43:27 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  * 
  * @since 6.0.0
  */
@@ -306,6 +306,95 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Generates a sub tree of folders with files.<p>
+     * 
+     * @param cms the cms context
+     * @param vfsFolder name of the folder
+     * @param numberOfFiles the number of files to generate
+     * @param fileTypeDistribution a percentage: x% binary files and (1-x)% text files
+     * 
+     * @return the number of files generated
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public static int generateContent(CmsObject cms, String vfsFolder, int numberOfFiles, double fileTypeDistribution)
+    throws Exception {
+
+        int maxProps = 10;
+        double propertyDistribution = 0.0;
+        int writtenFiles = 0;
+
+        int numberOfBinaryFiles = (int)(numberOfFiles * fileTypeDistribution);
+
+        // generate binary files
+        writtenFiles += generateResources(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            vfsFolder,
+            numberOfBinaryFiles,
+            CmsResourceTypeBinary.getStaticTypeId(),
+            maxProps,
+            propertyDistribution);
+
+        // generate text files
+        writtenFiles += generateResources(cms, "org/opencms/search/extractors/test1.html", vfsFolder, numberOfFiles
+            - numberOfBinaryFiles, CmsResourceTypePlain.getStaticTypeId(), maxProps, propertyDistribution);
+
+        System.out.println("" + writtenFiles + " files written in Folder " + vfsFolder);
+
+        return writtenFiles;
+    }
+
+    /**
+     * Generates n new resources in a given folder.<p>
+     * 
+     * @param cms the cms context
+     * @param rfsName the rfs file for the content
+     * @param vfsFolder the folder to create the resources in
+     * @param n number of resources to generate
+     * @param type the type of the resource
+     * @param maxProps upper bound for number of properties to create for each resource
+     * @param propertyDistribution a percentage: x% shared props and (1-x)% individuals props
+     * 
+     * @return the number of really written files
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public static int generateResources(
+        CmsObject cms,
+        String rfsName,
+        String vfsFolder,
+        int n,
+        int type,
+        int maxProps,
+        double propertyDistribution) throws Exception {
+
+        int fileNameLength = 10;
+        int propValueLength = 10;
+
+        if (!vfsFolder.endsWith("/")) {
+            vfsFolder += "/";
+        }
+        int writtenFiles = 0;
+        System.out.println("Importing files");
+        for (int i = 0; i < n; i++) {
+            String vfsName = vfsFolder + generateName(fileNameLength) + i;
+            if (rfsName.lastIndexOf('.') > 0) {
+                vfsName += rfsName.substring(rfsName.lastIndexOf('.'));
+            }
+
+            List props = generateProperties(cms, maxProps, propValueLength, propertyDistribution);
+            try {
+                OpenCmsTestCase.importTestResource(cms, rfsName, vfsName, type, props);
+                writtenFiles++;
+            } catch (Exception e) {
+                System.out.println("error! " + e.getMessage());
+            }
+        }
+        return writtenFiles;
+    }
+
+    /**
      * Generate a new random name.<p>
      * 
      * @param maxLen upper bound for the length of the name
@@ -360,55 +449,6 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         return props;
-    }
-
-    /**
-     * Generates n new resources in a given folder.<p>
-     * 
-     * @param cms the cms context
-     * @param rfsName the rfs file for the content
-     * @param vfsFolder the folder to create the resources in
-     * @param n number of resources to generate
-     * @param type the type of the resource
-     * @param maxProps upper bound for number of properties to create for each resource
-     * @param propertyDistribution a percentage: x% shared props and (1-x)% individuals props
-     * 
-     * @return the number of really written files
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public static int generateResources(
-        CmsObject cms,
-        String rfsName,
-        String vfsFolder,
-        int n,
-        int type,
-        int maxProps,
-        double propertyDistribution) throws Exception {
-
-        int fileNameLength = 10;
-        int propValueLength = 10;
-
-        if (!vfsFolder.endsWith("/")) {
-            vfsFolder += "/";
-        }
-        int writtenFiles = 0;
-        for (int i = 0; i < n; i++) {
-            String vfsName = vfsFolder + generateName(fileNameLength) + i;
-            if (rfsName.lastIndexOf('.') > 0) {
-                vfsName += rfsName.substring(rfsName.lastIndexOf('.'));
-            }
-            System.out.print("(" + (i + 1) + "/" + n + ") Importing " + vfsName + " ... ");
-            List props = generateProperties(cms, maxProps, propValueLength, propertyDistribution);
-            try {
-                OpenCmsTestCase.importTestResource(cms, rfsName, vfsName, type, props);
-                System.out.println("o.k.");
-                writtenFiles++;
-            } catch (Exception e) {
-                System.out.println("error!");
-            }
-        }
-        return writtenFiles;
     }
 
     /**
