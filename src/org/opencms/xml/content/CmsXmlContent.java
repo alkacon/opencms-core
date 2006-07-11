@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2006/06/14 15:09:32 $
- * Version: $Revision: 1.36.4.2 $
+ * Date   : $Date: 2006/07/11 11:00:27 $
+ * Version: $Revision: 1.36.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -67,7 +66,6 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -79,7 +77,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.2 $ 
+ * @version $Revision: 1.36.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -412,14 +410,14 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @see org.opencms.xml.I_CmsXmlDocument#validate(org.opencms.file.CmsObject, java.util.Locale)
      */
     public CmsXmlContentErrorHandler validate(CmsObject cms, Locale locale) {
-    
+
         // iterate through all initialized value nodes in this XML content
         CmsXmlContentValidationVisitor visitor = new CmsXmlContentValidationVisitor(cms);
         visitAllValuesWith(visitor, locale);
 
-        return visitor.getErrorHandler();        
+        return visitor.getErrorHandler();
     }
-    
+
     /**
      * Visits all values of this XML content with the given value visitor.<p>
      * 
@@ -453,9 +451,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param locale the locale to check
      */
     public void visitAllValuesWith(I_CmsXmlContentValueVisitor visitor, Locale locale) {
-    
+
         String bookmarkPrefix = super.getBookmarkName("", locale);
-        
+
         List bookmarks = new ArrayList(getBookmarks());
         Collections.sort(bookmarks);
 
@@ -467,7 +465,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 visitor.visit(value);
             }
         }
-    }    
+    }
 
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#getBookmark(java.lang.String)
@@ -600,44 +598,25 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      */
     private CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) throws CmsRuntimeException {
 
-        String schema = m_document.getRootElement().attributeValue(
+        String schemaLocation = m_document.getRootElement().attributeValue(
             I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION);
         // Note regarding exception handling:
         // Since this object already is a valid XML content object,
         // it must have a valid schema, otherwise it would not exist.
         // Therefore the exceptions should never be really thrown.
-        if (schema == null) {
+        if (schemaLocation == null) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_SCHEMA_0));
         }
 
-        CmsXmlContentDefinition result = null;
-        CmsXmlEntityResolver cmsResolver = null;
-        if (resolver instanceof CmsXmlEntityResolver) {
-            // check for a cached version of this content definition
-            cmsResolver = (CmsXmlEntityResolver)resolver;
-            result = cmsResolver.getCachedContentDefinition(schema);
+        try {
+            return CmsXmlContentDefinition.unmarshal(schemaLocation, resolver);
+        } catch (SAXException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_PARSE_0), e);
+        } catch (IOException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_IO_0), e);
+        } catch (CmsXmlException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_UNMARSHAL_0), e);
         }
-
-        if (result == null) {
-            // result was not already cached
-            InputSource source;
-            try {
-                source = resolver.resolveEntity(null, schema);
-                result = CmsXmlContentDefinition.unmarshal(source, schema, resolver);
-                if (cmsResolver != null) {
-                    // cache the result content definition
-                    cmsResolver.cacheContentDefinition(schema, result);
-                }
-            } catch (SAXException e) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_PARSE_0), e);
-            } catch (IOException e) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_IO_0), e);
-            } catch (CmsXmlException e) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_UNMARSHAL_0), e);
-            }
-        }
-
-        return result;
     }
 
     /**
