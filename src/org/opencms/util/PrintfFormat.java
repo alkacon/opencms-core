@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/PrintfFormat.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/07/11 10:53:43 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -462,7 +462,7 @@ import java.util.Vector;
  *
  * @author Allan Jacobs
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -646,7 +646,7 @@ public class PrintfFormat {
          * Constructor.  Used to prepare an instance
          * to hold a literal, not a control string.
          */
-        private ConversionSpecification() {
+        ConversionSpecification() {
 
             // empty
         }
@@ -662,7 +662,7 @@ public class PrintfFormat {
          *     input string is null, zero length, or
          *     otherwise malformed.
          */
-        private ConversionSpecification(String fmtArg)
+        ConversionSpecification(String fmtArg)
         throws CmsIllegalArgumentException {
 
             if (fmtArg == null) {
