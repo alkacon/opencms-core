@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/05/18 14:24:18 $
- * Version: $Revision: 1.717.2.10 $
+ * Date   : $Date: 2006/07/11 11:02:01 $
+ * Version: $Revision: 1.717.2.11 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -24,6 +24,10 @@ OpenCms 6.3.1 - xxxxx, 2006
 ! Added configurable validation handler for user and group name
 * Fixed issue with workplace localization that required all explorer related key to be in a single package
 * Fixed issue with Oracle DB contraints that prevented a proper OpenCms setup
+- Updated DB index names with consitent namig schema
+- Improved performance of the "readFile" method in the VFS driver by using the resource ID to read the content
+- Improved caching of XML Content definitions by adding a cache to the "unmarshal" factory methods
+* Fixed issue with synchonization during static export blocking the "clear cache" event
 
 OpenCms 6.3.0 - May 2, 2006
 * Added fix for "concurrent resource creation" issue
