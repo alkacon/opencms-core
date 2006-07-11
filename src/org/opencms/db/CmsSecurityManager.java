@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:26 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2006/07/11 12:21:13 $
+ * Version: $Revision: 1.97.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3845,6 +3845,51 @@ public final class CmsSecurityManager {
      * will ignore the date release / date expired information of the resource.<p>
      * 
      * @param context the current request context
+     * @param structureID the ID of the structure which will be used)
+     * @param filter the resource filter to use while reading
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     * 
+     * @see CmsObject#readResource(CmsUUID, CmsResourceFilter)
+     * @see CmsObject#readResource(CmsUUID)
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     */
+    public CmsResource readResource(CmsRequestContext context, CmsUUID structureID, CmsResourceFilter filter)
+    throws CmsException {
+
+        CmsResource result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = readResource(dbc, structureID, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_RESOURCE_FOR_ID_1, structureID), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Reads a resource from the VFS,
+     * using the specified resource filter.<p>
+     *
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link CmsFolder}</code>. In case of
+     * a file, the resource will not contain the binary file content. Since reading 
+     * the binary content is a cost-expensive database operation, it's recommended 
+     * to work with resources if possible, and only read the file content when absolutly
+     * required. To "upgrade" a resource to a file, 
+     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     *
+     * The specified filter controls what kind of resources should be "found" 
+     * during the read operation. This will depend on the application. For example, 
+     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
+     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
+     * will ignore the date release / date expired information of the resource.<p>
+     * 
+     * @param context the current request context
      * @param resourcePath the name of the resource to read (full path)
      * @param filter the resource filter to use while reading
      *
@@ -5609,6 +5654,34 @@ public final class CmsSecurityManager {
 
         CmsResource resource = readResource(dbc, resourcename, filter);
         return m_driverManager.convertResourceToFolder(resource);
+    }
+
+    /**
+     * Reads a resource from the OpenCms VFS, using the specified resource filter.<p>
+     * 
+     * @param dbc the current database context
+     * @param structureID the ID of the structure to read
+     * @param filter the resource filter to use while reading
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#readResource(CmsUUID, CmsResourceFilter)
+     * @see CmsObject#readResource(CmsUUID)
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     */
+    protected CmsResource readResource(CmsDbContext dbc, CmsUUID structureID, CmsResourceFilter filter)
+    throws CmsException {
+
+        // read the resource from the VFS
+        CmsResource resource = m_driverManager.readResource(dbc, structureID, filter);
+
+        // check if the user has read access to the resource
+        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, true, filter);
+
+        // access was granted - return the resource
+        return resource;
     }
 
     /**

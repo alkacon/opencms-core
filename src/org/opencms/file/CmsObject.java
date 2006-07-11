@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/04/13 16:00:45 $
- * Version: $Revision: 1.146.4.1 $
+ * Date   : $Date: 2006/07/11 12:21:13 $
+ * Version: $Revision: 1.146.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.1 $
+ * @version $Revision: 1.146.4.2 $
  * 
  * @since 6.0.0 
  */
@@ -2640,6 +2640,67 @@ public final class CmsObject {
     public List readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
 
         return m_securityManager.readPublishedResources(m_context, publishHistoryId);
+    }
+
+    /**
+     * Reads a resource from the VFS,
+     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
+     *
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link CmsFolder}</code>. In case of
+     * a file, the resource will not contain the binary file content. Since reading 
+     * the binary content is a cost-expensive database operation, it's recommended 
+     * to work with resources if possible, and only read the file content when absolutely
+     * required. To "upgrade" a resource to a file, 
+     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     *
+     * @param structureID the ID of the structure to read
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     *
+     * @see #readFile(String) 
+     * @see #readResource(CmsUUID, CmsResourceFilter)
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     */
+    public CmsResource readResource(CmsUUID structureID) throws CmsException {
+
+        return readResource(structureID, CmsResourceFilter.DEFAULT);
+    }
+
+    /**
+     * Reads a resource from the VFS,
+     * using the specified resource filter.<p>
+     *
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link CmsFolder}</code>. In case of
+     * a file, the resource will not contain the binary file content. Since reading 
+     * the binary content is a cost-expensive database operation, it's recommended 
+     * to work with resources if possible, and only read the file content when absolutly
+     * required. To "upgrade" a resource to a file, 
+     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     *
+     * The specified filter controls what kind of resources should be "found" 
+     * during the read operation. This will depend on the application. For example, 
+     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
+     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
+     * will ignore the date release / date expired information of the resource.<p>
+     * 
+     * @param structureID the ID of the structure to read
+     * @param filter the resource filter to use while reading
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     * 
+     * @see #readFile(String, CmsResourceFilter)
+     * @see #readFolder(String, CmsResourceFilter)
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     */
+    public CmsResource readResource(CmsUUID structureID, CmsResourceFilter filter) throws CmsException {
+
+        return m_securityManager.readResource(m_context, structureID, filter);
     }
 
     /**

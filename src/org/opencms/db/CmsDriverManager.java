@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/07/06 13:10:54 $
- * Version: $Revision: 1.570.2.7 $
+ * Date   : $Date: 2006/07/11 12:21:13 $
+ * Version: $Revision: 1.570.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -5578,6 +5578,37 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         return retValue;
 
+    }
+
+    /**
+     * Reads a resource from the VFS, using the specified resource filter.<p>
+     * 
+     * @param dbc the current database context
+     * @param structureID the structure id of the resource to read
+     * @param filter the resource filter to use while reading
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsDataAccessException if something goes wrong
+     * 
+     * @see CmsObject#readResource(CmsUUID, CmsResourceFilter)
+     * @see CmsObject#readResource(CmsUUID)
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     */
+    public CmsResource readResource(CmsDbContext dbc, CmsUUID structureID, CmsResourceFilter filter)
+    throws CmsDataAccessException {
+
+        CmsResource resource = m_vfsDriver.readResource(
+            dbc,
+            dbc.currentProject().getId(),
+            structureID,
+            filter.includeDeleted());
+
+        // context dates need to be updated even if filter was applied
+        updateContextDates(dbc, resource);
+
+        // return the resource
+        return resource;
     }
 
     /**
