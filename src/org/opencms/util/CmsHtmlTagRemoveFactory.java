@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlTagRemoveFactory.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/07/11 11:54:53 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.1.8
  * 
@@ -91,7 +91,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2 $
+     * @version $Revision: 1.2.4.1 $
      * 
      * @since 6.1.8
      * 
@@ -114,7 +114,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
          * 
          * @param delegate the tag to hide.
          */
-        private CmsInvisibleTag(Tag delegate) {
+        CmsInvisibleTag(Tag delegate) {
 
             m_decorated = delegate;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2006/05/22 14:08:25 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2006/07/11 11:54:53 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3.4.1 $ 
+ * @version $Revision: 1.3.4.2 $ 
  * 
  * @since 6.1.7 
  * 
@@ -321,7 +321,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                 
                 File parent = exportFile.getParentFile();
                 if (parent != null) {
-                    File paramVariants[] = parent.listFiles(new PrefixFileFilter(exportFile));
+                    File[] paramVariants = parent.listFiles(new PrefixFileFilter(exportFile));
                     for (int v = 0; v < paramVariants.length; v++) {
                         paramVariants[v].delete();
                     }

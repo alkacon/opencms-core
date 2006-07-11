@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2006/04/26 09:08:34 $
- * Version: $Revision: 1.18.4.1 $
+ * Date   : $Date: 2006/07/11 11:54:53 $
+ * Version: $Revision: 1.18.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18.4.1 $ 
+ * @version $Revision: 1.18.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,18 +89,18 @@ public final class CmsEncoder {
 
     /** The prefix for HTML entities. */
     private static final String ENTITY_PREFIX = "&#";
-    
+
     /** The replacement for HTML entity prefix in parameters. */
     private static final String ENTITY_REPLACEMENT = "$$";
-    
-    /** The plus entity. */
-    private static final String PLUS_ENTITY = "&#043;";
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEncoder.class);
 
     /** A cache for encoding name lookup. */
     private static Map m_encodingCache = new HashMap(16);
+
+    /** The plus entity. */
+    private static final String PLUS_ENTITY = ENTITY_PREFIX + "043;";
 
     /**
      * Constructor.<p>
@@ -280,11 +280,11 @@ public final class CmsEncoder {
      * @see #encodeParameter(String)
      */
     public static String decodeParameter(String input) {
-        
+
         String result = CmsStringUtil.substitute(input, ENTITY_REPLACEMENT, ENTITY_PREFIX);
-        return CmsEncoder.decodeHtmlEntities(result, OpenCms.getSystemInfo().getDefaultEncoding());     
+        return CmsEncoder.decodeHtmlEntities(result, OpenCms.getSystemInfo().getDefaultEncoding());
     }
-    
+
     /**
      * Encodes a String using UTF-8 encoding, which is the standard for http data transmission
      * with GET ant POST requests.<p>
@@ -363,7 +363,7 @@ public final class CmsEncoder {
                 result.append((char)c);
             } else {
                 // append HTML entiry reference
-                result.append("&#");
+                result.append(ENTITY_PREFIX);
                 result.append(c);
                 result.append(";");
             }
@@ -373,22 +373,22 @@ public final class CmsEncoder {
 
     /**
      * Encodes a string used as parameter in an uri in a way independent of other encodings/decodings applied later.<p>
+     * 
      * Used to ensure that GET parameters are not wrecked by wrong or incompatible configuration settings.
      * In order to ensure this, the String is first encoded with html entities for any character that cannot encoded
      * in US-ASCII; additionally, the plus sign is also encoded to avoid problems with the white-space replacer.
-     * Finally, the entity prefix is replaced with characters not used as delimiters in urls. 
+     * Finally, the entity prefix is replaced with characters not used as delimiters in urls.<p>
      * 
      * @param input the parameter string
      * @return the encoded parameter string
      */
     public static String encodeParameter(String input) {
-        
+
         String result = CmsEncoder.encodeHtmlEntities(input, CmsEncoder.ENCODING_US_ASCII);
-        
         result = CmsStringUtil.substitute(result, "+", PLUS_ENTITY);
-        return CmsStringUtil.substitute(result, ENTITY_PREFIX, ENTITY_REPLACEMENT);     
+        return CmsStringUtil.substitute(result, ENTITY_PREFIX, ENTITY_REPLACEMENT);
     }
-    
+
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
      * 
@@ -423,17 +423,20 @@ public final class CmsEncoder {
         StringBuffer result = new StringBuffer(source.length() * 2);
         for (int i = 0; i < source.length(); i++) {
             int ch = source.charAt(i);
-            // Avoid escaping already escaped characters;
-            if ((ch == 38) && ((terminatorIndex = source.indexOf(";", i)) > 0)) {
-                if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+|lt|gt|amp|quote")) {
-                    result.append(source.substring(i, terminatorIndex + 1));
-                    // Skip remaining chars up to (and including) ";"
-                    i = terminatorIndex;
-                    continue;
+            // avoid escaping already escaped characters            
+            if (ch == 38) {
+                terminatorIndex = source.indexOf(";", i);
+                if (terminatorIndex > 0) {
+                    if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+|lt|gt|amp|quote")) {
+                        result.append(source.substring(i, terminatorIndex + 1));
+                        // Skip remaining chars up to (and including) ";"
+                        i = terminatorIndex;
+                        continue;
+                    }
                 }
             }
             if ((ch != 32) && ((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62))) {
-                result.append("&#");
+                result.append(ENTITY_PREFIX);
                 result.append(ch);
                 result.append(";");
             } else {
@@ -464,7 +467,7 @@ public final class CmsEncoder {
         for (int i = 0; i < source.length(); i++) {
             int ch = source.charAt(i);
             if (ch > 255) {
-                result.append("&#");
+                result.append(ENTITY_PREFIX);
                 result.append(ch);
                 result.append(";");
             } else {
@@ -552,7 +555,7 @@ public final class CmsEncoder {
             return null;
         }
         StringBuffer result = new StringBuffer(source.length() * 2);
-        int terminatorIndex;
+
         for (int i = 0; i < source.length(); ++i) {
             char ch = source.charAt(i);
             switch (ch) {
@@ -563,16 +566,18 @@ public final class CmsEncoder {
                     result.append("&gt;");
                     break;
                 case '&':
-                    // Don't escape already escaped international and special characters
-                    if (!doubleEscape && ((terminatorIndex = source.indexOf(";", i)) > 0)) {
-                        if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+")) {
-                            result.append(ch);
-                        } else {
-                            result.append("&amp;");
+                    // don't escape already escaped international and special characters
+                    if (!doubleEscape) {
+                        int terminatorIndex = source.indexOf(";", i);
+                        if (terminatorIndex > 0) {
+                            if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+")) {
+                                result.append(ch);
+                                break;
+                            }
                         }
-                    } else {
-                        result.append("&amp;");
                     }
+                    // note that to other "break" in the above "if" block
+                    result.append("&amp;");
                     break;
                 case '"':
                     result.append("&quot;");
