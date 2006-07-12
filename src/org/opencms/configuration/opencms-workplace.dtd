@@ -328,9 +328,9 @@
 <!--
 # List of properties which are ignored (ie. not imported) when resources are imported. 
 -->
-<!ELEMENT ignoredproperties (property*)>
-<!ELEMENT property EMPTY>
-<!ATTLIST property name CDATA #REQUIRED>
+<!ELEMENT ignoredproperties (ignoredproperty*)>
+<!ELEMENT ignoredproperty EMPTY>
+<!ATTLIST ignoredproperty name CDATA #REQUIRED>
 
 <!--
 # The default user preferences of the OpenCms workplace contains the default data 

@@ -49,10 +49,9 @@
 # If the enabled attribute is false, the special property dialog will not be used.
 # If the shownavigation attribute is true, navigation properties can be editied in the special property dialog.
 #
-# Use the property element to define the shown default properties for the special property dialog.
-# Note: for module configuration files, use the defaultproperty element instead. 
+# Use the defaultproperty element to define the shown default properties for the special property dialog.
 -->
-<!ELEMENT defaultproperties (property|defaultproperty)*>
+<!ELEMENT defaultproperties (defaultproperty)*>
 <!ATTLIST defaultproperties 
     enabled (true|false|TRUE|FALSE) #REQUIRED
 	shownavigation (true|false|TRUE|FALSE) #IMPLIED>
