@@ -36,7 +36,7 @@
         <newresource uri="newresource_folder.jsp" order="5" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
+            <defaultproperty name="Title"/>
           </defaultproperties>
           <contextmenu>
             <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
@@ -73,9 +73,9 @@
         <newresource uri="newresource_xmlpage.jsp" order="20" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
-            <property name="Keywords"/>
-            <property name="Description"/>
+            <defaultproperty name="Title"/>
+            <defaultproperty name="Keywords"/>
+            <defaultproperty name="Description"/>
           </defaultproperties>
           <contextmenu>
             <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
@@ -114,8 +114,8 @@
         <newresource uri="newresource.jsp?newresourcetype=plain" order="30" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
-            <property name="export"/>
+            <defaultproperty name="Title"/>
+            <defaultproperty name="export"/>
           </defaultproperties>
           <contextmenu>
             <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
@@ -151,8 +151,8 @@
         <newresource uri="" order="40" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="false">
-            <property name="Title"/>
-            <property name="Description"/>
+            <defaultproperty name="Title"/>
+            <defaultproperty name="Description"/>
           </defaultproperties>
           <contextmenu>
             <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
@@ -192,10 +192,10 @@
         </accesscontrol>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="false">
-            <property name="Title"/>
-            <property name="cache"/>
-            <property name="content-encoding"/>
-            <property name="export"/>
+            <defaultproperty name="Title"/>
+            <defaultproperty name="cache"/>
+            <defaultproperty name="content-encoding"/>
+            <defaultproperty name="export"/>
           </defaultproperties>
           <contextmenu>
             <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
@@ -231,7 +231,7 @@
         <newresource uri="" order="60" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="false">
-            <property name="Title"/>
+            <defaultproperty name="Title"/>
           </defaultproperties>
           <contextmenu>
             <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
@@ -266,7 +266,7 @@
         <newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
+            <defaultproperty name="Title"/>
           </defaultproperties>
           <contextmenu>
             <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
@@ -342,7 +342,7 @@
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=imagegallery" order="10" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
+            <defaultproperty name="Title"/>
           </defaultproperties>
           <contextmenu>
             <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
@@ -377,7 +377,7 @@
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=downloadgallery" order="20" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
+            <defaultproperty name="Title"/>
           </defaultproperties>
           <contextmenu>
             <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
@@ -419,9 +419,9 @@
         <newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
-            <property name="Keywords"/>
-            <property name="Description"/>
+            <defaultproperty name="Title"/>
+            <defaultproperty name="Keywords"/>
+            <defaultproperty name="Description"/>
           </defaultproperties>
           <contextmenu>
             <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
