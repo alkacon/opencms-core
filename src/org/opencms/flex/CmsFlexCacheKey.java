@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2006/03/27 14:52:35 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2006/07/12 08:13:38 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -56,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -689,7 +690,12 @@ public class CmsFlexCacheKey {
                         m_user = IS_USED; // marks m_user as being used
                         break;
                     case 4: // params
-                        m_params = parseValueList(v);
+                        if (v!= null) {
+                            m_params = parseValueList(v);
+                        } else {
+                            m_params = Collections.EMPTY_SET;
+                        }
+                        
                         if (m_params.contains(I_CmsResourceLoader.PARAMETER_ELEMENT)) {
                             // workaround for element setting by parameter in OpenCms < 6.0
                             m_element = IS_USED;
@@ -705,7 +711,7 @@ public class CmsFlexCacheKey {
                             m_noparams = parseValueList(v);
                         } else {
                             // never cache with parameters
-                            m_noparams = new HashSet(0);
+                            m_noparams = Collections.EMPTY_SET;
                         }
                         break;
                     case 6: // timeout
