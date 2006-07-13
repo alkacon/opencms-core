@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2006/06/14 15:09:32 $
- * Version: $Revision: 1.32.4.2 $
+ * Date   : $Date: 2006/07/13 14:56:32 $
+ * Version: $Revision: 1.32.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.2 $ 
+ * @version $Revision: 1.32.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,6 +129,9 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /** Name of the target node. */
     public static final String NODE_TARGET = "target";
+
+    /** Name of the uuid node. */
+    public static final String NODE_UUID = "uuid";
 
     /** Property to check if relative links are allowed. */
     public static final String PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";

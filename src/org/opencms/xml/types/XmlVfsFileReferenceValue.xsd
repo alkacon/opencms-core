@@ -1,0 +1,17 @@
+<xsd:complexType name="OpenCmsVfsFileReference">
+	<xsd:sequence>
+		<xsd:element name="link" type="OpenCmsLinkRef" minOccurs="0" maxOccurs="1" />
+	</xsd:sequence>
+	<xsd:attribute name="name" type="xsd:string" use="optional" />
+	<xsd:attribute name="enabled" type="xsd:boolean" use="optional" />
+</xsd:complexType>
+
+<xsd:complexType name="OpenCmsLinkRef">
+	<xsd:sequence>
+		<xsd:element name="uuid" type="xsd:string" minOccurs="0" />
+		<xsd:element name="target" type="xsd:string" />
+		<xsd:element name="anchor" type="xsd:string" minOccurs="0" />
+		<xsd:element name="query" type="xsd:string" minOccurs="0" />
+	</xsd:sequence>
+</xsd:complexType>
+

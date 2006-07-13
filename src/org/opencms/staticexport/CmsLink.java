@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2006/07/13 14:56:32 $
+ * Version: $Revision: 1.27.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.staticexport;
 
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsUriSplitter;
 import org.opencms.xml.page.CmsXmlPage;
 
@@ -46,7 +47,7 @@ import org.dom4j.Element;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.27.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,6 +74,9 @@ public class CmsLink {
     /** The site root of the (internal) link. */
     private String m_siteRoot;
 
+    /** The structure id of the linked resource. */
+    private CmsUUID m_structureId;
+
     /** The link target (destination). */
     private String m_target;
 
@@ -81,6 +85,42 @@ public class CmsLink {
 
     /** The raw uri. */
     private String m_uri;
+
+    /**
+     * Creates a new link object with a reference to the xml page link element.<p>
+     * 
+     * @param element the xml link element reference
+     * @param name the internal name of this link
+     * @param type the type of this link
+     * @param structureId the internal target structure id
+     * @param target the link target (without anchor/query)
+     * @param anchor the anchor or null 
+     * @param query the query or null
+     * @param internal indicates if the link is internal within OpenCms 
+     */
+    public CmsLink(
+        Element element,
+        String name,
+        String type,
+        CmsUUID structureId,
+        String target,
+        String anchor,
+        String query,
+        boolean internal) {
+
+        m_element = element;
+        m_name = name;
+        m_type = type;
+        m_internal = internal;
+
+        m_structureId = structureId;
+        m_target = target;
+        m_anchor = anchor;
+        setQuery(query);
+
+        // update the uri from the components
+        m_uri = setUri(m_target, m_anchor, m_query);
+    }
 
     /**
      * Creates a new link object with a reference to the xml page link element.<p>
@@ -124,17 +164,7 @@ public class CmsLink {
         String query,
         boolean internal) {
 
-        m_element = element;
-        m_name = name;
-        m_type = type;
-        m_internal = internal;
-
-        m_target = target;
-        m_anchor = anchor;
-        setQuery(query);
-
-        // update the uri from the components
-        m_uri = setUri(m_target, m_anchor, m_query);
+        this(element, name, type, null, target, anchor, query, internal);
     }
 
     /**
@@ -260,6 +290,16 @@ public class CmsLink {
     }
 
     /**
+     * The structure id of the linked resource.<p>
+     * 
+     * @return structure id of the linked resource
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
+    }
+
+    /**
      * Returns the target (destination) of this link.<p>
      * 
      * @return the target the target (destination) of this link
@@ -312,6 +352,26 @@ public class CmsLink {
     public boolean isInternal() {
 
         return m_internal;
+    }
+
+    /**
+     * Sets the structure id of the internal target link.<p>
+     * 
+     * @param structureId the structure id of the internal target link
+     */
+    public void setStructureId(CmsUUID structureId) {
+
+        m_structureId = structureId;
+    }
+
+    /**
+     * Sets the internal target root path.<p>
+     *
+     * @param target the internal target root path to set
+     */
+    public void setTarget(String target) {
+
+        m_target = target;
     }
 
     /**
@@ -435,6 +495,8 @@ public class CmsLink {
         // check if this link node has a reference to the XML document
         if (m_element != null) {
 
+            // TODO: handle uuid node, may need a cms object here!
+            
             // handle <target> node in XML document
             Element targetElement = m_element.element(CmsXmlPage.NODE_TARGET);
             targetElement.clearContent();
