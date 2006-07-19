@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/07/10 14:43:27 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2006/07/19 13:19:12 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.91 $
+ * @version $Revision: 1.92 $
  * 
  * @since 6.0.0
  */
@@ -120,7 +120,7 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Extension of <code>NodeComparator</code> to store unequal nodes.<p>
      */
-    private class InternalNodeComparator extends NodeComparator {
+    class InternalNodeComparator extends NodeComparator {
 
         /** Unequal node1. */
         public Node m_node1 = null;

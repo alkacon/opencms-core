@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2006/03/27 14:53:04 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/07/19 13:19:12 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -176,7 +176,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             "s#^/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#",
             "s#^/content(.*)#/system$1#",
             "s#^/othertest(.*)#/sites/othersite$1#",
-            "s#^/(.*)#/sites/mysite/$1#",}, false);
+            "s#^/(.*)#/sites/mysite/$1#"}, false);
 
         // set modified folder translator
         OpenCms.getResourceManager().setTranslators(folderTranslator, OpenCms.getResourceManager().getFileTranslator());
