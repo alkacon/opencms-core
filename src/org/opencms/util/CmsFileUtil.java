@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/07/19 14:53:58 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -547,31 +547,16 @@ public final class CmsFileUtil {
             return readFully(in, in.available());
         }
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
-        if (in.available() > 0) {
-            // read the file content in available chunks
-            int offset = 0;
-            int numRead = 0;
-            do {
-                int available = in.available();
-                if (available > 0) {
-                    byte[] bytes = new byte[available];
-                    numRead = in.read(bytes, offset, bytes.length);
-                    out.write(bytes, offset, numRead);
-                    offset += numRead;
-                } else {
-                    numRead = in.read();
-                    if (numRead != -1) {
-                        out.write(numRead);
-                        offset++;
-                    }
-                }
-            } while (numRead != -1);
-        } else {
-            // read the file content byte-to-byte
-            int c;
-            while ((c = in.read()) != -1) {
-                out.write(c);
+        // copy buffer
+        int xferSize = in.available();
+        byte[] xfer = new byte[xferSize == 0 ? 2048 : xferSize];
+        // output buffer
+        ByteArrayOutputStream out = new ByteArrayOutputStream(xfer.length);
+
+        // transfer data from input to output in xfer-sized chunks.
+        for (int bytesRead = in.read(xfer, 0, xfer.length); bytesRead >= 0; bytesRead = in.read(xfer, 0, xfer.length)) {
+            if (bytesRead > 0) {
+                out.write(xfer, 0, bytesRead);
             }
         }
         in.close();
@@ -597,7 +582,7 @@ public final class CmsFileUtil {
         // read in the bytes
         int offset = 0;
         int numRead = 0;
-        while (offset < bytes.length && (numRead = in.read(bytes, offset, bytes.length - offset)) >= 0) {
+        while ((offset < bytes.length) && ((numRead = in.read(bytes, offset, bytes.length - offset)) >= 0)) {
             offset += numRead;
         }
 
