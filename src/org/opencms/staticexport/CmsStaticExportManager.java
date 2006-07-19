@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/07/11 11:02:01 $
- * Version: $Revision: 1.121.4.1 $
+ * Date   : $Date: 2006/07/19 13:20:59 $
+ * Version: $Revision: 1.121.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.1 $ 
+ * @version $Revision: 1.121.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -186,6 +186,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Handler class for static export. */
     private I_CmsStaticExportHandler m_handler;
 
+    /** Lock object for write access to the {@link #cmsEvent(CmsEvent)} method. */
+    private Object m_lockCmsEvent;
+
+    /** Lock object for export folder deletion in {@link #scrubExportFolders(I_CmsReport)}. */
+    private Object m_lockScrubExportFolders;
+
+    /** Lock object for write access to the {@link #m_exportnameResources} map in {@link #setExportnames()}. */
+    private Object m_lockSetExportnames;
+
     /** Indicates if the quick static export for plain resources is enabled. */
     private boolean m_quickPlainExport;
 
@@ -228,6 +237,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public CmsStaticExportManager() {
 
+        m_lockCmsEvent = new Object();
+        m_lockScrubExportFolders = new Object();
+        m_lockSetExportnames = new Object();
         m_exportSuffixes = new ArrayList();
         m_exportFolders = new ArrayList();
         m_exportHeaders = new ArrayList();
@@ -335,10 +347,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         m_cacheOnlineLinks.put(linkName, vfsName);
     }
-    
-    /** Lock object for write access to the {@link #cmsEvent(CmsEvent)} method. */
-    private Object m_lockCmsEvent = new Object();
-    
+
     /**
      * Implements the CmsEvent interface,
      * the static export properties uses the events to clear 
@@ -379,7 +388,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 clearCaches(event);
                 break;
             default:
-        // no operation
+                // no operation
         }
     }
 
@@ -1768,7 +1777,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         while (it.hasNext()) {
             CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)it.next();
             String rfsPrefix = rule.getRfsPrefix();
-            if (rfsName.startsWith(rfsPrefix + "/") && retVal.length() < rfsPrefix.length()) {
+            if (rfsName.startsWith(rfsPrefix + "/") && (retVal.length() < rfsPrefix.length())) {
                 retVal = rfsPrefix;
             }
         }
@@ -1868,7 +1877,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         // synchronization of this method is not required as the individual maps are all synchronized maps anyway,
         // and setExportnames() is doing it's own synchronization 
-        
+
         // flush all caches   
         m_cacheOnlineLinks.clear();
         m_cacheExportUris.clear();
@@ -2090,9 +2099,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         return result;
     }
 
-    /** Lock object for export folder deletion in {@link #scrubExportFolders(I_CmsReport)}. */
-    private Object m_lockScrubExportFolders = new Object();
-    
     /**
      * Scrubs all the "export" folders.<p>
      * 
@@ -2176,9 +2182,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
     }
 
-    /** Lock object for write access to the {@link #m_exportnameResources} map in {@link #setExportnames()}. */
-    private Object m_lockSetExportnames = new Object();
-    
     /**
      * Set the list of all resources that have the "exportname" property set.<p>
      */
