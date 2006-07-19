@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2006/07/19 12:38:17 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -67,7 +66,6 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -79,7 +77,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -537,34 +535,18 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      */
     private CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) throws CmsRuntimeException {
 
-        String schema = m_document.getRootElement().attributeValue(
+        String schemaLocation = m_document.getRootElement().attributeValue(
             I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION);
         // Note regarding exception handling:
         // Since this object already is a valid XML content object,
         // it must have a valid schema, otherwise it would not exist.
         // Therefore the exceptions should never be really thrown.
-        if (schema == null) {
+        if (schemaLocation == null) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_SCHEMA_0));
         }
 
-        CmsXmlContentDefinition result = null;
-        CmsXmlEntityResolver cmsResolver = null;
-        if (resolver instanceof CmsXmlEntityResolver) {
-            // check for a cached version of this content definition
-            cmsResolver = (CmsXmlEntityResolver)resolver;
-            result = cmsResolver.getCachedContentDefinition(schema);
-        }
-
-        if (result == null) {
-            // result was not already cached
-            InputSource source;
             try {
-                source = resolver.resolveEntity(null, schema);
-                result = CmsXmlContentDefinition.unmarshal(source, schema, resolver);
-                if (cmsResolver != null) {
-                    // cache the result content definition
-                    cmsResolver.cacheContentDefinition(schema, result);
-                }
+            return CmsXmlContentDefinition.unmarshal(schemaLocation, resolver);
             } catch (SAXException e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_PARSE_0), e);
             } catch (IOException e) {
@@ -573,9 +555,6 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_UNMARSHAL_0), e);
             }
         }
-
-        return result;
-    }
 
     /**
      * Processes a document node and extracts the values of the node according to the provided XML

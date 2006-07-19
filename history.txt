@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/19 11:56:29 $
- * Version: $Revision: 1.726 $
+ * Date   : $Date: 2006/07/19 12:38:17 $
+ * Version: $Revision: 1.727 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,8 @@ OpenCms 6.2.2 - xxxx, 2006
 * Fixed bug 1174, cache key "params" without parameter
 * Fixed issue with static export not deleting parameter versions of exported files
 * Fixed some localization issues in the XML content widget implementations
+* Fixed issue with synchonization during static export blocking the "clear cache" event
+- Improved caching of XML Content definitions by adding a cache to the "unmarshal" factory methods
 
 OpenCms 6.2.1 - May 2, 2006
 * Added fix for "concurrent resource creation" issue

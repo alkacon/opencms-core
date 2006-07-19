@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.121 $
+ * Date   : $Date: 2006/07/19 12:38:16 $
+ * Version: $Revision: 1.122 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121 $ 
+ * @version $Revision: 1.122 $ 
  * 
  * @since 6.0.0 
  */
@@ -186,6 +186,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Handler class for static export. */
     private I_CmsStaticExportHandler m_handler;
 
+    /** Lock object for write access to the {@link #cmsEvent(CmsEvent)} method. */
+    private Object m_lockCmsEvent;
+
+    /** Lock object for export folder deletion in {@link #scrubExportFolders(I_CmsReport)}. */
+    private Object m_lockScrubExportFolders;
+
+    /** Lock object for write access to the {@link #m_exportnameResources} map in {@link #setExportnames()}. */
+    private Object m_lockSetExportnames;
+
     /** Indicates if the quick static export for plain resources is enabled. */
     private boolean m_quickPlainExport;
 
@@ -228,6 +237,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public CmsStaticExportManager() {
 
+        m_lockCmsEvent = new Object();
+        m_lockScrubExportFolders = new Object();
+        m_lockSetExportnames = new Object();
         m_exportSuffixes = new ArrayList();
         m_exportFolders = new ArrayList();
         m_exportHeaders = new ArrayList();
@@ -343,7 +355,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      *
      * @param event CmsEvent that has occurred
      */
-    public synchronized void cmsEvent(CmsEvent event) {
+    public void cmsEvent(CmsEvent event) {
 
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_UPDATE_EXPORTS:
@@ -360,8 +372,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 if (report == null) {
                     report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
                 }
-                getHandler().performEventPublishProject(publishHistoryId, report);
-
+                synchronized (m_lockCmsEvent) {
+                    getHandler().performEventPublishProject(publishHistoryId, report);
+                }
                 clearCaches(event);
 
                 if (LOG.isDebugEnabled()) {
@@ -375,7 +388,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 clearCaches(event);
                 break;
             default:
-        // no operation
+                // no operation
         }
     }
 
@@ -1764,7 +1777,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         while (it.hasNext()) {
             CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)it.next();
             String rfsPrefix = rule.getRfsPrefix();
-            if (rfsName.startsWith(rfsPrefix + "/") && retVal.length() < rfsPrefix.length()) {
+            if (rfsName.startsWith(rfsPrefix + "/") && (retVal.length() < rfsPrefix.length())) {
                 retVal = rfsPrefix;
             }
         }
@@ -1861,6 +1874,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param event the event that requested to clear the caches
      */
     private void clearCaches(CmsEvent event) {
+
+        // synchronization of this method is not required as the individual maps are all synchronized maps anyway,
+        // and setExportnames() is doing it's own synchronization 
 
         // flush all caches   
         m_cacheOnlineLinks.clear();
@@ -2095,40 +2111,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 Messages.get().container(Messages.RPT_DELETING_EXPORT_FOLDERS_BEGIN_0),
                 I_CmsReport.FORMAT_HEADLINE);
         }
-        int count = 0;
-        Integer size = new Integer(m_rfsRules.size() + 1);
-        // default case
-        String exportFolderName = CmsFileUtil.normalizePath(m_staticExportPath + '/');
-        try {
-            File exportFolder = new File(exportFolderName);
-            // check if export file exists, if so delete it
-            if (exportFolder.exists() && exportFolder.canWrite()) {
-                CmsFileUtil.purgeDirectory(exportFolder);
-            }
-            count++;
-            if (report != null) {
-                report.println(Messages.get().container(
-                    Messages.RPT_DELETE_EXPORT_FOLDER_3,
-                    new Integer(count),
-                    size,
-                    exportFolderName), I_CmsReport.FORMAT_NOTE);
-            } else {
-                // write log message
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(Messages.LOG_DEL_MAIN_SE_FOLDER_1, exportFolderName));
-                }
-            }
-        } catch (Throwable t) {
-            // ignore, nothing to do about the
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName), t);
-            }
-        }
-        // iterate over the rules
-        Iterator it = m_rfsRules.iterator();
-        while (it.hasNext()) {
-            CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)it.next();
-            exportFolderName = CmsFileUtil.normalizePath(rule.getExportPath() + '/');
+        synchronized (m_lockScrubExportFolders) {
+            int count = 0;
+            Integer size = new Integer(m_rfsRules.size() + 1);
+            // default case
+            String exportFolderName = CmsFileUtil.normalizePath(m_staticExportPath + '/');
             try {
                 File exportFolder = new File(exportFolderName);
                 // check if export file exists, if so delete it
@@ -2154,6 +2141,39 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName), t);
                 }
             }
+            // iterate over the rules
+            Iterator it = m_rfsRules.iterator();
+            while (it.hasNext()) {
+                CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)it.next();
+                exportFolderName = CmsFileUtil.normalizePath(rule.getExportPath() + '/');
+                try {
+                    File exportFolder = new File(exportFolderName);
+                    // check if export file exists, if so delete it
+                    if (exportFolder.exists() && exportFolder.canWrite()) {
+                        CmsFileUtil.purgeDirectory(exportFolder);
+                    }
+                    count++;
+                    if (report != null) {
+                        report.println(Messages.get().container(
+                            Messages.RPT_DELETE_EXPORT_FOLDER_3,
+                            new Integer(count),
+                            size,
+                            exportFolderName), I_CmsReport.FORMAT_NOTE);
+                    } else {
+                        // write log message
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info(Messages.get().getBundle().key(Messages.LOG_DEL_MAIN_SE_FOLDER_1, exportFolderName));
+                        }
+                    }
+                } catch (Throwable t) {
+                    // ignore, nothing to do about the
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(
+                            Messages.get().getBundle().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName),
+                            t);
+                    }
+                }
+            }
         }
         if (report != null) {
             report.println(
@@ -2165,7 +2185,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Set the list of all resources that have the "exportname" property set.<p>
      */
-    private synchronized void setExportnames() {
+    private void setExportnames() {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_START_0));
@@ -2180,26 +2200,31 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             resources = Collections.EMPTY_LIST;
         }
 
-        m_exportnameResources = new HashMap(resources.size());
-        for (int i = 0, n = resources.size(); i < n; i++) {
-            CmsResource res = (CmsResource)resources.get(i);
-            try {
-                String foldername = cms.getSitePath(res);
-                String exportname = cms.readPropertyObject(foldername, CmsPropertyDefinition.PROPERTY_EXPORTNAME, false).getValue();
-                if (exportname != null) {
-                    if (!exportname.endsWith("/")) {
-                        exportname = exportname + "/";
+        synchronized (m_lockSetExportnames) {
+            m_exportnameResources = new HashMap(resources.size());
+            for (int i = 0, n = resources.size(); i < n; i++) {
+                CmsResource res = (CmsResource)resources.get(i);
+                try {
+                    String foldername = cms.getSitePath(res);
+                    String exportname = cms.readPropertyObject(
+                        foldername,
+                        CmsPropertyDefinition.PROPERTY_EXPORTNAME,
+                        false).getValue();
+                    if (exportname != null) {
+                        if (exportname.charAt(exportname.length() - 1) != '/') {
+                            exportname = exportname + "/";
+                        }
+                        if (exportname.charAt(0) != '/') {
+                            exportname = "/" + exportname;
+                        }
+                        m_exportnameResources.put(exportname, foldername);
                     }
-                    if (!exportname.startsWith("/")) {
-                        exportname = "/" + exportname;
-                    }
-                    m_exportnameResources.put(exportname, foldername);
+                } catch (CmsException e) {
+                    // ignore exception, folder will no be added
                 }
-            } catch (CmsException e) {
-                // ignore exception, folder will no be added
             }
+            m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
         }
-        m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
         }
