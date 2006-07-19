@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/12 16:53:56 $
- * Version: $Revision: 1.717.2.14 $
+ * Date   : $Date: 2006/07/19 14:58:44 $
+ * Version: $Revision: 1.717.2.15 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ OpenCms 6.3.1 - xxxxx, 2006
 * Fixed issue with duplicate "property" definition in workplace.xml / explorertypes.xml / resourcetypes.xml
 * Fixed bug 1174, cache key "params" without parameter
 ! Added readFile(...) method to CmsObject wich can read a file specified by it's structure ID
+* Fixed issue #1131 thanks to the contribution of Jason Trump
 
 OpenCms 6.3.0 - May 2, 2006
 * Added fix for "concurrent resource creation" issue
