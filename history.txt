@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/19 14:53:58 $
- * Version: $Revision: 1.729 $
+ * Date   : $Date: 2006/07/19 15:01:58 $
+ * Version: $Revision: 1.730 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,8 +27,10 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed issue with static export not deleting parameter versions of exported files
 * Fixed some localization issues in the XML content widget implementations
 * Fixed issue with synchonization during static export blocking the "clear cache" event
+* Fixed bug 1187, '&' Character in project name gives "String index out of range: -1"
 - Improved caching of XML Content definitions by adding a cache to the "unmarshal" factory methods
 * Fixed issue #1131 thanks to the contribution of Jason Trump
+
 
 OpenCms 6.2.1 - May 2, 2006
 * Added fix for "concurrent resource creation" issue

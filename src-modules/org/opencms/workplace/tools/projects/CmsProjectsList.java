@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/07/19 15:01:58 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -241,7 +241,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         String projectName = getSelectedItem().get(LIST_COLUMN_NAME).toString();
 
         Map params = new HashMap();
-        params.put(CmsEditProjectDialog.PARAM_PROJECTNAME, projectName);
+    
         params.put(CmsEditProjectDialog.PARAM_PROJECTID, projectId.toString());
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
