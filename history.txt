@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 13:06:52 $
- * Version: $Revision: 1.743 $
+ * Date   : $Date: 2006/07/20 13:51:41 $
+ * Version: $Revision: 1.744 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed issue #1187: '&' Character in project name gives "String index out of range: -1"
 * Fixed issue #1188: Wrong resource link in contenttools module
 * Fixed issue #1190: Multiple access control and input validation vulnerabilities
+* Fixed issue #1195: default locale while creating a XmlPage is missing
 * Fixed issue #1196: Wrong cast in CmsNewsletter has been removed
 
 OpenCms 6.2.1 - May 2, 2006
