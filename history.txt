@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 11:06:49 $
- * Version: $Revision: 1.736 $
+ * Date   : $Date: 2006/07/20 11:15:49 $
+ * Version: $Revision: 1.737 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed issue #1151: Exception when accessing file properties if TemplateOne module not installed
 * Fixed issue #1173: CmsSynchronize called CmsRequestContext#saveSiteRoot() multiple times
 * Fixed issue #1156: The Setup is trying to drop DB when it doesn't exist
+* Fixed issue #1178: Updated PDFBox.jar to 0.7.2 version to avoid issues with certain PDFs during search indexing
 
 OpenCms 6.2.1 - May 2, 2006
 * Added fix for "concurrent resource creation" issue
