@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 10:31:59 $
- * Version: $Revision: 1.717.2.18 $
+ * Date   : $Date: 2006/07/20 10:50:48 $
+ * Version: $Revision: 1.717.2.19 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ OpenCms 6.3.1 - xxxxx, 2006
 * Fixed issue #1163: NULL_PROPERTY uses equals() to check for identity, also has a name set to avoid NPE
 * Fixed issue #1190: Multiple access control and input validation vulnerabilities
 * Fixed issue #1151: Exception when accessing file properties if TemplateOne module not installed
+* Fixed issue #1156: The Setup is trying to to drop DB when it doesn't exist
 
 OpenCms 6.3.0 - May 2, 2006
 * Added fix for "concurrent resource creation" issue

@@ -131,12 +131,6 @@ Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> d
 						</tr>
 						<%
 						String user = Bean.getDbWorkUser();
-						//if(user.equals(""))	{
-						//	user = request.getContextPath();
-						//}
-						//if(user.startsWith("/"))	{
-						//	user = user.substring(1,user.length());
-						//}
 						%>
 						<tr>
 							<td>OpenCms Connection</td>

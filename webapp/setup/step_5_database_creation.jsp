@@ -38,7 +38,11 @@
 
 			/* check if database exists */
 			if(!dropDb)	{
-				db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
+			    if (Bean.getDatabase().startsWith("oracle")) {
+					db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(), Bean.getDbWorkPwd());
+				} else {
+					db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
+				}
 				dbExists = db.noErrors();
 				if(dbExists)	{
 					db.closeConnection();
