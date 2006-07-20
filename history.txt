@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 14:13:51 $
- * Version: $Revision: 1.745 $
+ * Date   : $Date: 2006/07/20 14:54:02 $
+ * Version: $Revision: 1.746 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed issue #1174: Cache key in Flex request "params" without parameter
 * Fixed issue #1178: Updated PDFBox.jar to 0.7.2 version to avoid issues with certain PDFs during search indexing
 * Fixed issue #1183: CmsJspActionElement.getContent(String) generates NPE for XML Content
+* Fixed issue #1186: Help bubble popup: Wrong display position using nested XML content
 * Fixed issue #1187: '&' Character in project name gives "String index out of range: -1"
 * Fixed issue #1188: Wrong resource link in contenttools module
 * Fixed issue #1190: Multiple access control and input validation vulnerabilities
