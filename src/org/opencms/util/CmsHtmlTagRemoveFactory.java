@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlTagRemoveFactory.java,v $
- * Date   : $Date: 2006/07/11 11:54:53 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/07/20 13:48:31 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  * 
  * @since 6.1.8
  * 
@@ -91,7 +91,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.1 $
+     * @version $Revision: 1.2.4.2 $
      * 
      * @since 6.1.8
      * 
@@ -563,5 +563,4 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
             throw rte;
         }
     }
-
 }
