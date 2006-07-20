@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 09:14:10 $
- * Version: $Revision: 1.731 $
+ * Date   : $Date: 2006/07/20 09:53:57 $
+ * Version: $Revision: 1.732 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,14 +23,15 @@ OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
 * Fixed issue with workplace localization that required all explorer related key to be in a single package
 * Fixed issue with Oracle DB contraints that prevented a proper OpenCms setup
-* Fixed bug 1174, cache key "params" without parameter
 * Fixed issue with static export not deleting parameter versions of exported files
 * Fixed some localization issues in the XML content widget implementations
 * Fixed issue with synchonization during static export blocking the "clear cache" event
-* Fixed bug 1187, '&' Character in project name gives "String index out of range: -1"
 - Improved caching of XML Content definitions by adding a cache to the "unmarshal" factory methods
-* Fixed issue #1131 thanks to the contribution of Jason Trump
-* Fixed bug 1188, wrong resource link in contenttools module
+* Fixed issue #1187: '&' Character in project name gives "String index out of range: -1"
+* Fixed issue #1174: Cache key in Flex request "params" without parameter
+* Fixed issue #1131: Problems with CmsFileUtile#readFully() (thanks to the contribution of Jason Trump)
+* Fixed issue #1188: Wrong resource link in contenttools module
+* Fixed issue #1163: NULL_PROPERTY now uses equals() to check for identity, also has a name set to avoid NPE
 
 
 OpenCms 6.2.1 - May 2, 2006
