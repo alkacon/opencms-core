@@ -88,10 +88,14 @@
 	  </classpath>
 	</taskdef>
 	
-	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms"> 
-	  <classpath>
-	    <pathelement location="${opencms.input.libs}/ant-opencms-1.1.jar"/>
-	  </classpath>
+	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
+		<classpath>
+			<pathelement location="${opencms.input.libs}/ant-opencms-1.1.jar" />
+			<pathelement location="${opencms.input.libs}/commons-digester-1.7.jar" />
+			<pathelement location="${opencms.input.libs}/commons-collections-3.1.jar" />
+			<pathelement location="${opencms.input.libs}/commons-logging-1.0.4.jar" />
+			<pathelement location="${opencms.input.libs}/commons-beanutils-1.7.0.jar" />
+		</classpath>
 	</taskdef>
 
 	<!-- 
