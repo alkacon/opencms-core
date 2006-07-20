@@ -79,6 +79,12 @@
 # For example, if your application requires a lot of special properties,
 # you can implement your own property dialog handler that contains only
 # the properties required by your application in a more user friendly form.
+#
+# If OpenCms does not start because a customized dialog handler class is not found, use the following 
+# default dialog handler classes:
+# - Delete dialog: org.opencms.workplace.commons.CmsDelete
+# - Lock dialog: org.opencms.workplace.commons.CmsLock
+# - Property dialog: org.opencms.workplace.commons.CmsPropertyAdvanced
 -->
 <!ELEMENT dialoghandlers (dialoghandler+)>
 <!ELEMENT dialoghandler EMPTY>
