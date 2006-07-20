@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 11:03:27 $
- * Version: $Revision: 1.735 $
+ * Date   : $Date: 2006/07/20 11:06:49 $
+ * Version: $Revision: 1.736 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed issue #1190: Multiple access control and input validation vulnerabilities
 * Fixed issue #1151: Exception when accessing file properties if TemplateOne module not installed
 * Fixed issue #1173: CmsSynchronize called CmsRequestContext#saveSiteRoot() multiple times
-
+* Fixed issue #1156: The Setup is trying to drop DB when it doesn't exist
 
 OpenCms 6.2.1 - May 2, 2006
 * Added fix for "concurrent resource creation" issue

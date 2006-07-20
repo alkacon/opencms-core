@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/03/27 15:18:19 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2006/07/20 11:06:50 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
@@ -1535,6 +1535,9 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         m_provider = provider;
 
         boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null));
+        if (conStr == null) {
+            conStr = "";
+        }
         String database = "";
         if (provider.equals(MYSQL_PROVIDER)) {
             database = request.getParameter("db");
@@ -1564,7 +1567,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
                     setDbProperty(getDatabase() + ".templateDb", templateDb);
                     setDbProperty(getDatabase() + ".newDb", database);
 
-                    if ((conStr != null) && (!conStr.endsWith("/"))) {
+                    if (!conStr.endsWith("/")) {
                         conStr += "/";
                     }
                     setDbProperty(getDatabase() + ".constr", conStr + getDbProperty(getDatabase() + ".templateDb"));
