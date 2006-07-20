@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2006/07/20 09:57:21 $
+ * Version: $Revision: 1.34.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.34.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -180,12 +180,15 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     /**
      * Creates a new CmsProperty object using the provided values.<p>
      *
+     * If <code>null</code> is supplied for the resource or structure value, this 
+     * value will not be available for this property.<p>
+     *
      * If the property definition does not exist for the resource type it
      * is automatically created when this propery is written.
      * 
      * @param name the name of the property definition
-     * @param structureValue the value to write as structure property
-     * @param resourceValue the value to write as resource property 
+     * @param structureValue the value to write as structure property, or <code>null</code>
+     * @param resourceValue the value to write as resource property, or <code>null</code>
      */
     public CmsProperty(String name, String structureValue, String resourceValue) {
 
@@ -195,10 +198,14 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     /**
      * Creates a new CmsProperty object using the provided values.<p>
      * 
+     * If <code>null</code> is supplied for the resource or structure value, this 
+     * value will not be available for this property.<p>
+     * 
      * @param name the name of the property definition
-     * @param structureValue the value to write as structure property
-     * @param resourceValue the value to write as resource property 
-     * @param autoCreatePropertyDefinition true, if the property definition for this property should be created mplicitly on any write operation if doesn't exist already
+     * @param structureValue the value to write as structure property, or <code>null</code>
+     * @param resourceValue the value to write as resource property , or <code>null</code>
+     * @param autoCreatePropertyDefinition if <code>true</code>, the property definition for this property will be 
+     *      created implicitly on any write operation if it doesn't exist already
      */
     public CmsProperty(String name, String structureValue, String resourceValue, boolean autoCreatePropertyDefinition) {
 
@@ -214,6 +221,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     static {
 
         NULL_PROPERTY.m_frozen = true;
+        NULL_PROPERTY.m_name = "";
     }
 
     /**
@@ -224,7 +232,8 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      *
      * @param name a property name
      * @param list a list of Cms property objects
-     * @return the index of the first occurrence of the name in they specified list, or the "null-property" if the name is not found
+     * @return the index of the first occurrence of the name in they specified list, 
+     *      or {@link CmsProperty#getNullProperty()} if the name is not found
      */
     public static final CmsProperty get(String name, List list) {
 
@@ -351,7 +360,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
         List properties = null;
         Object[] names = null;
 
-        if (map == null || map.size() == 0) {
+        if ((map == null) || (map.size() == 0)) {
             return Collections.EMPTY_LIST;
         }
 
@@ -388,7 +397,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
         String value = null;
         CmsProperty property = null;
 
-        if (list == null || list.size() == 0) {
+        if ((list == null) || (list.size() == 0)) {
             return Collections.EMPTY_MAP;
         }
 
@@ -416,10 +425,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
-     * Checks if the property definition for this property should be 
-     * created implicitly on any write operation if doesn't exist already.<p>
+     * Checks if the property definition for this property will be 
+     * created implicitly on any write operation if doesn't already exist.<p>
      * 
-     * @return true, if the property definition for this property should be created implicitly on any write operation
+     * @return <code>true</code>, if the property definition for this property will be created implicitly on any write operation
      */
     public boolean autoCreatePropertyDefinition() {
 
@@ -712,7 +721,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public boolean isDeleteResourceValue() {
 
-        return (m_resourceValue == DELETE_VALUE) || (m_resourceValue != null && m_resourceValue.length() == 0);
+        return (m_resourceValue == DELETE_VALUE) || ((m_resourceValue != null) && (m_resourceValue.length() == 0));
     }
 
     /**
@@ -724,7 +733,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public boolean isDeleteStructureValue() {
 
-        return (m_structureValue == DELETE_VALUE) || (m_structureValue != null && m_structureValue.length() == 0);
+        return (m_structureValue == DELETE_VALUE) || ((m_structureValue != null) && (m_structureValue.length() == 0));
     }
 
     /**
@@ -781,7 +790,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public boolean isNullProperty() {
 
-        return this == NULL_PROPERTY;
+        return NULL_PROPERTY.equals(this);
     }
 
     /**

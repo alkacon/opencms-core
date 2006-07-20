@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/07/20 09:57:21 $
+ * Version: $Revision: 1.23.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.23.4.1 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -77,6 +77,7 @@ public class TestProperty extends OpenCmsTestCase {
         suite.setName(TestProperty.class.getName());
 
         suite.addTest(new TestProperty("testFrozenProperty"));
+        suite.addTest(new TestProperty("testNullProperty"));
         suite.addTest(new TestProperty("testSharedPropertyIssue1"));
         suite.addTest(new TestProperty("testPropertyLists"));
         suite.addTest(new TestProperty("testWriteProperty"));
@@ -620,6 +621,24 @@ public class TestProperty extends OpenCmsTestCase {
         assertTrue(
             "Property '" + CmsPropertyDefinition.PROPERTY_DESCRIPTION + "' must be identical",
             descProperty.isIdentical(resultProperty));
+    }
+    
+    /**
+     * Tests the NULL_PROPERTY.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testNullProperty() throws Exception {
+        
+        // get the null property
+        CmsProperty nullProperty = CmsProperty.getNullProperty();
+        // create another property        
+        CmsProperty p = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Some title", null);
+        // do a comparison
+        assertFalse("Created property must not be equal to NULL_PROPERTY", p.equals(nullProperty));
+        assertFalse("NULL_PROPERTY must not be equal to created Property", nullProperty.equals(p));
+        assertTrue("NULL_PROPERTY must be equal to itself", nullProperty.equals(nullProperty));
+        assertTrue("NULL_PROPERTY must be identical to itself", nullProperty == CmsProperty.getNullProperty());
     }
     
     /**
