@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Attic/CmsRfsFileDownloadServlet.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/07/20 09:46:57 $
+ * Version: $Revision: 1.11.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,11 @@
 
 package org.opencms.workplace.tools.workplace.rfsfile;
 
+import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.main.CmsException;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.BufferedInputStream;
@@ -55,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,13 +121,24 @@ public final class CmsRfsFileDownloadServlet extends HttpServlet {
         if (CmsStringUtil.isEmpty(fileToFind)) {
             throw new ServletException(Messages.get().getBundle().key(Messages.ERR_DOWNLOAD_SERVLET_FILE_ARG_0));
         } else {
-
+            
+            CmsFlexController controller = CmsFlexController.getController(req);
+            try {
+                // check if the current user is allowed to download files
+                controller.getCmsObject().checkRole(CmsRole.WORKPLACE_MANAGER);
+            } catch (CmsRoleViolationException e) {
+                // user is not allowed, throw exception
+                CmsObject cms = controller.getCmsObject();
+                CmsException exc = CmsRole.WORKPLACE_MANAGER.createRoleViolationException(cms.getRequestContext());
+                throw new ServletException(exc.getLocalizedMessage(cms.getRequestContext().getLocale()));
+            }
+            
             File downloadFile = new File(fileToFind);
             res.setHeader("Content-Disposition", new StringBuffer("attachment; filename=\"").append(
                 downloadFile.getName()).append("\"").toString());
             res.setContentLength((int)downloadFile.length());
 
-            CmsFlexController controller = CmsFlexController.getController(req);
+            
             res = controller.getTopResponse();
             res.setContentType("application/octet-stream");
 
