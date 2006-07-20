@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/19 15:01:58 $
- * Version: $Revision: 1.730 $
+ * Date   : $Date: 2006/07/20 09:14:10 $
+ * Version: $Revision: 1.731 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed bug 1187, '&' Character in project name gives "String index out of range: -1"
 - Improved caching of XML Content definitions by adding a cache to the "unmarshal" factory methods
 * Fixed issue #1131 thanks to the contribution of Jason Trump
+* Fixed bug 1188, wrong resource link in contenttools module
 
 
 OpenCms 6.2.1 - May 2, 2006

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementChangeLocaleDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/07/20 09:14:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.1 
  */
@@ -83,7 +83,7 @@ public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
     public static final String[] PAGES = {"page1"};
 
     /** The import JSP report workplace URI. */
-    protected static final String CHANGELOCALE_ACTION_REPORT = PATH_WORKPLACE + "admin/contenttools/reports/changelocale.html";
+    protected static final String CHANGELOCALE_ACTION_REPORT = PATH_WORKPLACE + "admin/contenttools/reports/changelocale.jsp";
     
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementChangeLocaleDialog.class);
