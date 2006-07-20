@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2006/07/13 14:56:32 $
- * Version: $Revision: 1.32.4.3 $
+ * Date   : $Date: 2006/07/20 13:35:40 $
+ * Version: $Revision: 1.32.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.3 $ 
+ * @version $Revision: 1.32.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -521,7 +521,8 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
                     // add the element type bookmark
                     addBookmark(CmsXmlUtils.createXpathElement(name, 1), locale, enabled, value);
-                }
+                } 
+                addLocale(locale);
             }
         } catch (NullPointerException e) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_PAGE_INIT_BOOKMARKS_0), e);
