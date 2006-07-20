@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2006/07/20 14:13:51 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -372,7 +372,7 @@ public class CmsExplorer extends CmsWorkplace {
                 }
                 content.append("\"");
                 if (title != null) {
-                    content.append(CmsEncoder.escapeHtml(title));
+                    content.append(CmsEncoder.escapeWBlanks(title, CmsEncoder.ENCODING_UTF_8));
                 }
                 content.append("\",");
 

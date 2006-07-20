@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 13:51:41 $
- * Version: $Revision: 1.744 $
+ * Date   : $Date: 2006/07/20 14:13:51 $
+ * Version: $Revision: 1.745 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed issue #1151: Exception when accessing file properties if TemplateOne module not installed
 * Fixed issue #1155: Oracle DB contraints are not longer violated during OpenCms setup
 * Fixed issue #1156: The Setup is trying to drop DB when it doesn't exist
+* Fixed issue #1157: JavaScript for displaying explorer view is crashed when resource title ends with "/" ,"\" chars
 * Fixed issue #1163: NULL_PROPERTY now uses equals() to check for identity, also has a name set to avoid NPE
 * Fixed issue #1167: build-single.xml ClassNotFoundException (thanks to the contribution of Harald Brabenetz)
 * Fixed issue #1168: JavaScript error when closing database import/export report
