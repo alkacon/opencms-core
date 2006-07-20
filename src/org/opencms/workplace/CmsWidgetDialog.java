@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2006/07/20 12:09:49 $
+ * Version: $Revision: 1.60.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.60.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -1161,7 +1161,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         result.append("<form name=\"EDITOR\" id=\"EDITOR\" method=\"post\" action=\"").append(getDialogRealUri());
         result.append("\" class=\"nomargin\" onsubmit=\"return submitAction('").append(DIALOG_OK).append(
             "', null, 'EDITOR');\">\n");
-        result.append(dialogContentStart(null));
+        result.append(dialogContentStart(getDialogTitle()));
         result.append(buildDialogForm());
         result.append(dialogContentEnd());
         result.append(dialogButtonsCustom());
@@ -1305,6 +1305,19 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
             m_widgetParamValues.put(base.getName(), params);
         }
+    }
+
+    /**
+     * Returns the title for this Dialog.<p>
+     * 
+     * In the default implementation this method returns <code>null</code>.
+     * Override this if needed.<p>
+     * 
+     * @return the title for this Dialog, or <code>null</code> if this dialog has no title
+     */
+    protected String getDialogTitle() {
+
+        return null;
     }
 
     /**
