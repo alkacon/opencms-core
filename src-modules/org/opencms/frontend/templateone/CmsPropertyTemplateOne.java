@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2006/07/20 10:31:59 $
+ * Version: $Revision: 1.30.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.30.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -412,6 +412,9 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
     public String getDialogUri(String resource, CmsJspActionElement jsp) {
 
         try {
+            String templateOneDialog = MODULE_PATH + "dialogs/property.jsp";
+            boolean dialogPresent = jsp.getCmsObject().existsResource(templateOneDialog);
+
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
             String template = jsp.getCmsObject().readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
                 "");
@@ -420,19 +423,20 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
                 && res.getTypeId() != CmsResourceTypePlain.getStaticTypeId()
                 && res.getTypeId() != CmsResourceTypeImage.getStaticTypeId()) {
                 // file is no plain text, binary or image type, check "template" property
-                if (TEMPLATE_ONE.equals(template)) {
+                if (dialogPresent && TEMPLATE_ONE.equals(template)) {
                     // display special property dialog for files with "template one" as template
-                    return MODULE_PATH + "dialogs/property.jsp";
+                    return templateOneDialog;
                 } else if (res.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
                     // show xmlpage property dialog for xmlpages not using "template one" as template
                     return PATH_WORKPLACE + "editors/dialogs/property.jsp";
                 }
             }
-            if (res.isFolder()
+            if (dialogPresent 
+                && res.isFolder()
                 && TEMPLATE_ONE.equals(template)
                 && !res.getRootPath().startsWith(CmsResource.VFS_FOLDER_SYSTEM)) {
                 // display special property dialog also for folders but exclude the system folders
-                return MODULE_PATH + "dialogs/property.jsp";
+                return templateOneDialog;
             }
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
             // get settings for resource type
