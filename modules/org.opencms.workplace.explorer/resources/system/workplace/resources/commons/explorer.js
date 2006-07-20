@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/05/02 09:26:05 $
- * Version: $Revision: 1.13.4.2 $
+ * Date   : $Date: 2006/07/20 14:08:06 $
+ * Version: $Revision: 1.13.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ function menuItem(name, link, target, rules){
 function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject){
 	this.name = name;
 	this.path = path;
-	this.title = title
+	this.title = title;
 	this.type = type;
 	this.linkType = linkType;
 	this.size = size;
@@ -357,7 +357,7 @@ function showContext(doc, i, isSingleContext) {
 		// set resource list in hidden form field value
 		var resourceList = "";
 		var isFirst = true;
-		for (i=0; i<selectedResources.length; i++) {	
+		for (i=0; i<selectedResources.length; i++) {
 			if (!isFirst) {
 				resourceList += "|";
 			}
@@ -365,7 +365,7 @@ function showContext(doc, i, isSingleContext) {
 			isFirst = false;
 
 		}
-		doc.forms["formmulti"].elements["resourcelist"].value = resourceList; 
+		doc.forms["formmulti"].elements["resourcelist"].value = resourceList;
 	}
 
 	if (access) {
@@ -523,7 +523,7 @@ function showContext(doc, i, isSingleContext) {
 			}
 		} // end for ...
 		menu += "</table></div>";
-		
+
 		var el = doc.getElementById("contextmenu");
 		el.innerHTML = menu;
 		var x = 12;
@@ -562,7 +562,7 @@ function handleOnClick(e) {
 	cancelNextOpen = (selectedResources.length > 0);
 	if (contextOpen) {
 		// close eventually open context menu
-		closeContext();	
+		closeContext();
 		if (active_mouse_id == last_id) {
 			// clicked on same icon again, leave handler
 			return false;
@@ -571,8 +571,8 @@ function handleOnClick(e) {
 	// unselect resources;
 	toggleSelectionStyle(false);
 	selectedStyles = new Array();
-	
-	var btp = e.button;	
+
+	var btp = e.button;
 	var keyHold = e.shiftKey || e.ctrlKey || e.altKey;
 	if (keyHold) {
 		// stop event bubbling
@@ -605,7 +605,7 @@ function handleOnClick(e) {
 
 			}
 		} else {
-			// first click, mark single resource	
+			// first click, mark single resource
 			selectedResources = new Array();
 			selectedResources[selectedResources.length] = active_mouse_id;
 		}
@@ -668,7 +668,7 @@ function checkEvent(e) {
 		win.files.getElementById("contextmenu");
 	} catch (e) {
 		updateWindowStore();
-	} 
+	}
 	// check event
 	if (!e) {
 		e = win.fileswin.event;
@@ -716,7 +716,7 @@ function toggleSelectionStyle(isSelected) {
 			} else {
 				td.className = ah.className;
 			}
-		}			
+		}
 
 		for (k=0; k<3; k++) {
 			// change style of columns 0 to 2
@@ -742,7 +742,7 @@ function linkOver(obj, id) {
 }
 
 function linkOut(obj) {
-	
+
 	var cls = obj.className;
 	if (cls.charAt(cls.length - 1) == 'i') {
 		cls = cls.substring(0, cls.length-1);
@@ -812,7 +812,7 @@ function printList(wo) {
 	+ ".unselected { background: Window; color:WindowText; } "
 
 	+ "</style></head>";
-	
+
 	var returnplace = wo.location.href;
 	if ((openfolderMethod != "openthisfolderflat") && (mode != "listview")) {
 		var pos = returnplace.indexOf("/commons/");
@@ -1014,7 +1014,7 @@ function printList(wo) {
 			wo.writeln("</td>");
 		}
 		var ressize = (vi.liste[i].isFolder) ? "" : "" + vi.liste[i].size;
-		if (vi.check_title)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].title + "&nbsp;</td>");
+		if (vi.check_title)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + decodeURIComponent(vi.liste[i].title) + "&nbsp;</td>");
 		if (vi.check_type)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi_text + "</td>");
 		if (vi.check_size)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + ressize + "</td>");
 		if (vi.check_permissions)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].permissions + "</td>");
@@ -1055,7 +1055,7 @@ function getResourceAbsolutePath(i) {
 		} else {
 			resourceName = vi.liste[i].path;
 		}
-	}	
+	}
 	return resourceName;
 }
 
@@ -1146,7 +1146,7 @@ function dirUp(){
 
 
 function removeSiblingPrefix(directory) {
-	
+
 	if (directory.indexOf("siblings:") == 0) {
 		directory = directory.substring(9);
 		var lastSlashPos = directory.lastIndexOf("/");
@@ -1403,7 +1403,7 @@ function openFolder(folderName) {
 function openthisfolderflat(thisdir){
 	if (cancelNextOpen) {
 		return;
-	}	
+	}
 	eval(flaturl + "?resource=" + vr.actDirectory+thisdir+"/\"");
 }
 
