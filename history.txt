@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 12:38:54 $
- * Version: $Revision: 1.741 $
+ * Date   : $Date: 2006/07/20 12:41:40 $
+ * Version: $Revision: 1.742 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed issue #1156: The Setup is trying to drop DB when it doesn't exist
 * Fixed issue #1163: NULL_PROPERTY now uses equals() to check for identity, also has a name set to avoid NPE
 * Fixed issue #1167: build-single.xml ClassNotFoundException (thanks to the contribution of Harald Brabenetz)
+* Fixed issue #1168: JavaScript error when closing database import/export report
 * Fixed issue #1173: CmsSynchronize called CmsRequestContext#saveSiteRoot() multiple times
 * Fixed issue #1174: Cache key in Flex request "params" without parameter
 * Fixed issue #1178: Updated PDFBox.jar to 0.7.2 version to avoid issues with certain PDFs during search indexing
