@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 12:41:40 $
- * Version: $Revision: 1.742 $
+ * Date   : $Date: 2006/07/20 13:06:52 $
+ * Version: $Revision: 1.743 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,16 +21,16 @@ Legend:
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
+- Improved caching of XML Content definitions by adding a cache to the "unmarshal" factory methods
 * Fixed issue with workplace localization that required all explorer related key to be in a single package
-* Fixed issue with Oracle DB contraints that prevented a proper OpenCms setup
 * Fixed issue with static export not deleting parameter versions of exported files
 * Fixed some localization issues in the XML content widget implementations
 * Fixed issue with synchonization during static export blocking the "clear cache" event
-- Improved caching of XML Content definitions by adding a cache to the "unmarshal" factory methods
 * Fixed issue #1078: Custom implementations of CmsWidgetDialog are now able to provide a custom Title
 * Fixed issue #1131: Problems with CmsFileUtile#readFully() (thanks to the contribution of Jason Trump)
 * Fixed issue #1148: image.size property is now updated when using replace() operation
 * Fixed issue #1151: Exception when accessing file properties if TemplateOne module not installed
+* Fixed issue #1155: Oracle DB contraints are not longer violated during OpenCms setup
 * Fixed issue #1156: The Setup is trying to drop DB when it doesn't exist
 * Fixed issue #1163: NULL_PROPERTY now uses equals() to check for identity, also has a name set to avoid NPE
 * Fixed issue #1167: build-single.xml ClassNotFoundException (thanks to the contribution of Harald Brabenetz)
@@ -42,6 +42,7 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed issue #1187: '&' Character in project name gives "String index out of range: -1"
 * Fixed issue #1188: Wrong resource link in contenttools module
 * Fixed issue #1190: Multiple access control and input validation vulnerabilities
+* Fixed issue #1196: Wrong cast in CmsNewsletter has been removed
 
 OpenCms 6.2.1 - May 2, 2006
 * Added fix for "concurrent resource creation" issue
