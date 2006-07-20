@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 11:29:52 $
- * Version: $Revision: 1.738 $
+ * Date   : $Date: 2006/07/20 12:02:21 $
+ * Version: $Revision: 1.739 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed issue #1173: CmsSynchronize called CmsRequestContext#saveSiteRoot() multiple times
 * Fixed issue #1156: The Setup is trying to drop DB when it doesn't exist
 * Fixed issue #1178: Updated PDFBox.jar to 0.7.2 version to avoid issues with certain PDFs during search indexing
+* Fixed issue #1183: CmsJspActionElement.getContent(String) generates NPE for XML Content
 * Fixed issue #1167: build-single.xml ClassNotFoundException (thanks to the contribution of Harald Brabenetz)
 
 OpenCms 6.2.1 - May 2, 2006
