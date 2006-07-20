@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsNewsletter.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/07/20 13:05:30 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -119,9 +119,10 @@ public class CmsNewsletter implements I_CmsNewsletter {
             }
         }
         Email email;
-        if (htmlMsg.length() > 0 || !m_attachments.isEmpty()) {
-            email = new CmsHtmlMail();
-            ((CmsHtmlMail)email).setHtmlMsg(replaceMacros(htmlMsg.toString(), recipient));
+        if ((htmlMsg.length() > 0) || !m_attachments.isEmpty()) {
+            // we need to create a HTML mail
+            CmsHtmlMail htmlMail = new CmsHtmlMail();
+            htmlMail.setHtmlMsg(replaceMacros(htmlMsg.toString(), recipient));
             Iterator attachments = m_attachments.iterator();
             while (attachments.hasNext()) {
                 CmsResource resource = (CmsResource)attachments.next();
@@ -141,13 +142,16 @@ public class CmsNewsletter implements I_CmsNewsletter {
                         true).getValue();
                     description = propertyTitle;
                 }
-                ((CmsHtmlMail)email).attach(new CmsVfsDataSource(cms, resource), resource.getName(), description);
+                htmlMail.attach(new CmsVfsDataSource(cms, resource), resource.getName(), description);
             }
+            htmlMail.setTextMsg(replaceMacros(txtMsg.toString(), recipient));
+            email = htmlMail;
         } else {
             // only text content, return text mail
-            email = new CmsSimpleMail();
+            CmsSimpleMail textMail = new CmsSimpleMail();
+            textMail.setMsg(replaceMacros(txtMsg.toString(), recipient));
+            email = textMail;
         }
-        ((CmsHtmlMail)email).setTextMsg(replaceMacros(txtMsg.toString(), recipient));
         email.addTo(recipient.getEmail());
         email.setSubject(m_subject);
         return email;
