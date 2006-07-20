@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 12:37:32 $
- * Version: $Revision: 1.717.2.24 $
+ * Date   : $Date: 2006/07/20 12:45:19 $
+ * Version: $Revision: 1.717.2.25 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ OpenCms 6.3.1 - xxxxx, 2006
 ! Added readFile(...) method to CmsObject wich can read a file specified by it's structure ID
 * Fixed issue #1078: Custom implementations of CmsWidgetDialog are now able to provide a custom Title
 * Fixed issue #1131: Problems with CmsFileUtile#readFully() (thanks to the contribution of Jason Trump)
+* Fixed issue #1148: image.size property is now updated when using replace() operation
 * Fixed issue #1151: Exception when accessing file properties if TemplateOne module not installed
 * Fixed issue #1156: The Setup is trying to to drop DB when it doesn't exist
 * Fixed issue #1163: NULL_PROPERTY uses equals() to check for identity, also has a name set to avoid NPE
