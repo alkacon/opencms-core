@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2006/07/20 09:46:57 $
- * Version: $Revision: 1.33.4.1 $
+ * Date   : $Date: 2006/07/20 12:37:32 $
+ * Version: $Revision: 1.33.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.33.4.1 $ 
+ * @version $Revision: 1.33.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,7 +107,9 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("\tif (theForm == null) {\n");
         html.append("\t\ttheForm = document.forms[formName];\n");
         html.append("\t}\n");
-        html.append("\ttheForm." + CmsDialog.PARAM_FRAMENAME + ".value = window.name;\n");
+        html.append("\ttry {\n");
+        html.append("\t\ttheForm.").append(CmsDialog.PARAM_FRAMENAME).append(".value = window.name;\n");
+        html.append("\t} catch (e) {}\n");
         html.append("\tif (actionValue == '" + CmsDialog.DIALOG_OK + "') {\n");
         html.append("\t\tloadingOn();\n");
         html.append("\t\treturn true;\n");
