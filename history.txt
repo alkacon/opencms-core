@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 12:11:04 $
- * Version: $Revision: 1.740 $
+ * Date   : $Date: 2006/07/20 12:38:54 $
+ * Version: $Revision: 1.741 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@ OpenCms 6.2.2 - July 21, 2006
 - Improved caching of XML Content definitions by adding a cache to the "unmarshal" factory methods
 * Fixed issue #1078: Custom implementations of CmsWidgetDialog are now able to provide a custom Title
 * Fixed issue #1131: Problems with CmsFileUtile#readFully() (thanks to the contribution of Jason Trump)
+* Fixed issue #1148: image.size property is now updated when using replace() operation
 * Fixed issue #1151: Exception when accessing file properties if TemplateOne module not installed
 * Fixed issue #1156: The Setup is trying to drop DB when it doesn't exist
 * Fixed issue #1163: NULL_PROPERTY now uses equals() to check for identity, also has a name set to avoid NPE
