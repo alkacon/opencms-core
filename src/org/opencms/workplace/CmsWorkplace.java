@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.157 $
+ * Date   : $Date: 2006/07/20 10:14:23 $
+ * Version: $Revision: 1.158 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.157 $ 
+ * @version $Revision: 1.158 $ 
  * 
  * @since 6.0.0 
  */
@@ -1168,14 +1169,22 @@ public abstract class CmsWorkplace {
      */
     public void checkLock(String resource, int mode) throws CmsException {
 
+        CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
+        CmsLock lock = getCms().getLock(res);
         if (OpenCms.getWorkplaceManager().autoLockResources()) {
-            // Autolock is enabled, check the lock state of the resource
-            CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
-            if (getCms().getLock(res).isNullLock()) {
+            // autolock is enabled, check the lock state of the resource
+            if (lock.isNullLock()) {
                 // resource is not locked, lock it automatically
                 getCms().lockResource(resource, mode);
+            } else if (!lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+                throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
             }
-        }
+        } else {
+            if (lock.isNullLock()
+                || (!lock.isNullLock() && !lock.getUserId().equals(getCms().getRequestContext().currentUser().getId()))) {
+                throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
+        	}
+    	}
     }
 
     /**

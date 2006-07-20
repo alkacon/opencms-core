@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Attic/CmsImportToolHandler.java,v $
- * Date   : $Date: 2005/06/26 10:56:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/07/20 10:14:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,12 +41,20 @@ import org.opencms.workplace.tools.CmsOfflineToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsImportToolHandler extends CmsOfflineToolHandler {
 
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
+     */
+    public boolean isEnabled(CmsObject cms) {
+
+        return cms.hasRole(CmsRole.IMPORT_DATABASE) && !cms.getRequestContext().currentProject().isOnlineProject();
+    }
+    
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */

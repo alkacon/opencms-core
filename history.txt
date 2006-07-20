@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 09:53:57 $
- * Version: $Revision: 1.732 $
+ * Date   : $Date: 2006/07/20 10:14:23 $
+ * Version: $Revision: 1.733 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed issue #1131: Problems with CmsFileUtile#readFully() (thanks to the contribution of Jason Trump)
 * Fixed issue #1188: Wrong resource link in contenttools module
 * Fixed issue #1163: NULL_PROPERTY now uses equals() to check for identity, also has a name set to avoid NPE
+* Fixed issue #1190: Multiple access control and input validation vulnerabilities
 
 
 OpenCms 6.2.1 - May 2, 2006

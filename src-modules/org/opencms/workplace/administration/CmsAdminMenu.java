@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/07/20 10:14:23 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,7 +72,11 @@ public class CmsAdminMenu extends CmsToolDialog {
     public CmsAdminMenu(CmsJspActionElement jsp) {
 
         super(jsp);
-        initAdminTool();
+        try { 
+        	initAdminTool();
+        } catch (Exception e) {
+            // ignore, only a role violation, not important for left side menu
+        }
         installMenu();
     }
 

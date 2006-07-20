@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2006/07/20 10:14:23 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -49,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -310,8 +311,9 @@ public class CmsToolDialog extends CmsWorkplace {
      * Initializes the admin tool main view.<p>
      * 
      * @return the new modified params array
+     * @throws CmsRoleViolationException in case the dialog is opened by a user without the necessary privileges
      */
-    public Map initAdminTool() {
+    public Map initAdminTool() throws CmsRoleViolationException {
 
         Map params = new HashMap(getParameterMap());
         // initialize
@@ -338,6 +340,11 @@ public class CmsToolDialog extends CmsWorkplace {
         } catch (Exception e) {
             // ignore
         }
+
+        if (!getToolManager().getCurrentTool(this).getHandler().isEnabled(getCms())) {
+            throw new CmsRoleViolationException(Messages.get().container(Messages.ERR_ADMIN_INSUFFICIENT_RIGHTS_0));
+        }
+
         return params;
     }
 

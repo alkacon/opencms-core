@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Attic/CmsExportToolHandler.java,v $
- * Date   : $Date: 2005/06/25 14:28:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/07/20 10:14:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,7 +52,7 @@ public class CmsExportToolHandler extends A_CmsToolHandler {
      */
     public boolean isEnabled(CmsObject cms) {
 
-        return true;
+        return cms.hasRole(CmsRole.EXPORT_DATABASE);
     }
 
     /**

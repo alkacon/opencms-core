@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsMessageInfo.java,v $
- * Date   : $Date: 2005/06/30 10:13:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/07/20 10:14:23 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.mail.internet.InternetAddress;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -235,7 +235,7 @@ public class CmsMessageInfo {
     }
 
     /**
-     * Throws a runtime exception if the string is null or empty.<p>
+     * Throws a runtime exception if the string is null, empty or contains JavaScript.<p>
      * 
      * @param string the string to check
      */
@@ -243,6 +243,8 @@ public class CmsMessageInfo {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(string)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMPTY_STRING_0));
+        } else if (string.toLowerCase().indexOf("<script") != -1) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_STRING_CONTAINS_SCRIPT_0));
         }
     }
 

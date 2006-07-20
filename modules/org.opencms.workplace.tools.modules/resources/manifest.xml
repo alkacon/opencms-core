@@ -17,7 +17,7 @@
 <p>This module contains administration tools for managing the OpenCms modules.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.2.0</version>
+		<version>1.2.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -259,7 +259,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -313,7 +313,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -409,7 +409,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -455,7 +455,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -523,7 +523,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -569,7 +569,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -623,7 +623,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -669,7 +669,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -723,7 +723,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -769,7 +769,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -815,7 +815,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -861,7 +861,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
 				</property>
 				<property>
 					<name>export</name>
