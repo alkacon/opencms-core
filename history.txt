@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 14:08:06 $
- * Version: $Revision: 1.717.2.28 $
+ * Date   : $Date: 2006/07/20 14:53:03 $
+ * Version: $Revision: 1.717.2.29 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ OpenCms 6.3.1 - xxxxx, 2006
 * Fixed issue #1174: Cache key in Flex request "params" without parameter
 * Fixed issue #1178: Updated PDFBox.jar to 0.7.2 version to avoid issues with certain PDFs during search indexing
 * Fixed issue #1183: CmsJspActionElement.getContent(String) generates NPE for XML Content
+* Fixed issue #1186: Help bubble popup: Wrong display position using nested XML content
 * Fixed issue #1190: Multiple access control and input validation vulnerabilities
 * Fixed issue #1196: Wrong cast in CmsNewsletter has been removed
 * Fixed issue #1195: default locale while creating a XmlPage is missing
