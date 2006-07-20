@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.63 $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2006/07/20 11:03:27 $
+ * Version: $Revision: 1.64 $
+ * Date   : $Date: 2006/07/20 11:03:27 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,21 +121,20 @@ public class CmsSynchronize {
     public CmsSynchronize(CmsObject cms, CmsSynchronizeSettings settings, I_CmsReport report)
     throws CmsSynchronizeException, CmsException {
 
-        m_cms = cms;
-        m_report = report;
-        m_count = 1;
-
         // TODO: initialize the list of file modifiaction interface implementations
 
         // do the synchronization only if the synchonization folders in the VFS
         // and the FS are valid
         if ((settings != null) && (settings.isSyncEnabled())) {
 
-            // store the current site root
-            m_cms.getRequestContext().saveSiteRoot();
+            // create an independent copy of the provided user context
+            m_cms = OpenCms.initCmsObject(cms);
             // set site to root site
             m_cms.getRequestContext().setSiteRoot("/");
 
+            m_report = report;
+            m_count = 1;
+            
             // get the destination folder
             m_destinationPathInRfs = settings.getDestinationPathInRfs();
 
@@ -158,40 +157,36 @@ public class CmsSynchronize {
             m_syncList = readSyncList();
             m_newSyncList = new HashMap();
 
-            try {
-                Iterator i = settings.getSourceListInVfs().iterator();
-                while (i.hasNext()) {
-                    // iterate all source folders
-                    String sourcePathInVfs = (String)i.next();
-                    String destPath = m_destinationPathInRfs + sourcePathInVfs.replace('/', File.separatorChar);
+            Iterator i = settings.getSourceListInVfs().iterator();
+            while (i.hasNext()) {
+                // iterate all source folders
+                String sourcePathInVfs = (String)i.next();
+                String destPath = m_destinationPathInRfs + sourcePathInVfs.replace('/', File.separatorChar);
 
-                    report.println(org.opencms.workplace.threads.Messages.get().container(
-                        org.opencms.workplace.threads.Messages.RPT_SYNCHRONIZE_FOLDERS_2,
-                        sourcePathInVfs,
-                        destPath), I_CmsReport.FORMAT_HEADLINE);
-                    // synchronice the VFS and the RFS
-                    syncVfsToRfs(sourcePathInVfs);
-                }
-
-                // remove files from the RFS
-                removeFromRfs(m_destinationPathInRfs);
-                i = settings.getSourceListInVfs().iterator();
-
-                while (i.hasNext()) {
-                    // add new files from the RFS
-                    copyFromRfs((String)i.next());
-                }
-
-                // write the sync list
-                writeSyncList();
-            } finally {
-                // reset to current site root
-                m_cms.getRequestContext().restoreSiteRoot();
+                report.println(org.opencms.workplace.threads.Messages.get().container(
+                    org.opencms.workplace.threads.Messages.RPT_SYNCHRONIZE_FOLDERS_2,
+                    sourcePathInVfs,
+                    destPath), I_CmsReport.FORMAT_HEADLINE);
+                // synchronice the VFS and the RFS
+                syncVfsToRfs(sourcePathInVfs);
             }
+
+            // remove files from the RFS
+            removeFromRfs(m_destinationPathInRfs);
+            i = settings.getSourceListInVfs().iterator();
+
+            while (i.hasNext()) {
+                // add new files from the RFS
+                copyFromRfs((String)i.next());
+            }
+
+            // write the sync list
+            writeSyncList();
 
             // free mem
             m_syncList = null;
             m_newSyncList = null;
+            m_cms = null;
         } else {
             throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_INIT_SYNC_0));
         }
