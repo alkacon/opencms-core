@@ -50,7 +50,7 @@
             </classpath>
             <fileset dir="${srcdir}" >
               <include name="**/*.java" />
-              <exclude name="**/*Messages.java" />
+              <exclude name="**/Messages.java" />
             </fileset>
         </javadoc>
     </target>
