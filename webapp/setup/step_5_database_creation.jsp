@@ -129,6 +129,8 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 								<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 								
 								<%
+								db.closeConnection();
+								db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
 								db.dropDatabase(Bean.getDatabase(), Bean.getReplacer());
 								if (db.noErrors())	{ %>
 									<tr>
