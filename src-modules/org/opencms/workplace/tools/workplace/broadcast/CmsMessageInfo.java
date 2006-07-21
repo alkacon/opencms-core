@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsMessageInfo.java,v $
- * Date   : $Date: 2006/07/20 09:46:57 $
- * Version: $Revision: 1.9.8.1 $
+ * Date   : $Date: 2006/07/21 10:21:22 $
+ * Version: $Revision: 1.9.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.mail.internet.InternetAddress;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.8.1 $ 
+ * @version $Revision: 1.9.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -243,8 +243,6 @@ public class CmsMessageInfo {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(string)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMPTY_STRING_0));
-        } else if (string.toLowerCase().indexOf("<script") != -1) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_STRING_CONTAINS_SCRIPT_0));
         }
     }
 
