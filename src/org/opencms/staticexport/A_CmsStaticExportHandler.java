@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2006/07/21 09:10:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/07/21 09:56:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.7 
  * 
@@ -316,8 +316,10 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         if (parent != null) {
             // list all files in the parent folder that are variations of the base file
             File[] paramVariants = parent.listFiles(new PrefixFileFilter(rfsFile));
-            for (int v = 0; v < paramVariants.length; v++) {
-                deleteFile(paramVariants[v], vfsName);
+            if (paramVariants != null) {
+                for (int v = 0; v < paramVariants.length; v++) {
+                    deleteFile(paramVariants[v], vfsName);
+                }
             }
         }
     }
