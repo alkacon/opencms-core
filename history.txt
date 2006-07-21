@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/07/20 14:54:02 $
- * Version: $Revision: 1.746 $
+ * Date   : $Date: 2006/07/21 09:12:44 $
+ * Version: $Revision: 1.747 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ OpenCms 6.2.2 - July 21, 2006
 * Fixed issue #1190: Multiple access control and input validation vulnerabilities
 * Fixed issue #1195: default locale while creating a XmlPage is missing
 * Fixed issue #1196: Wrong cast in CmsNewsletter has been removed
+* Fixed issue #1197: Static export on demand does not scrub parameter based image versions
 
 OpenCms 6.2.1 - May 2, 2006
 * Added fix for "concurrent resource creation" issue
