@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.86.4.1 $
+ * Date   : $Date: 2006/07/21 12:05:08 $
+ * Version: $Revision: 1.86.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.86.4.1 $ 
+ * @version $Revision: 1.86.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,10 +133,10 @@ public class CmsFrameset extends CmsWorkplace {
             result.append("\n<script type=\"text/javascript\">\n<!--\n");
             // the timeout gives the frameset enough time to load before the alert is shown
             result.append("function showMessage() {\n");
-            result.append("\talert(\"");
+            result.append("\talert(decodeURIComponent(\"");
             // the user has pending messages, display them all
-            result.append(CmsStringUtil.escapeJavaScript(message));
-            result.append("\");\n}\n");
+            result.append(CmsEncoder.escapeWBlanks(message, CmsEncoder.ENCODING_UTF_8));
+            result.append("\"));\n}\n");
             result.append("setTimeout('showMessage();', 2000);");
             result.append("\n//-->\n</script>");
         }
