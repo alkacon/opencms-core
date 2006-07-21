@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2006/07/20 13:46:39 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/07/21 09:10:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.1.7 
  * 
@@ -71,36 +71,29 @@ import org.apache.commons.logging.Log;
  */
 public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandler {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsStaticExportHandler.class);
-
-    /** Indicates if this content handler is busy. */
-    protected boolean m_busy;
-
     /**
      * Implements the file filter used to remove variants with parameters of a base file.<p>
      */
     private class PrefixFileFilter implements FileFilter {
-    
-        /** The base file. */
-        private String m_baseName;
-        
+
         /** The extension. */
         private String m_baseExtension;
-        
-        
+
+        /** The base file. */
+        private String m_baseName;
+
         /**
          * Creates a new instance of PrefixFileFilter.<p>
          * 
          * @param baseFile the base file to compare with.
          */
         public PrefixFileFilter(File baseFile) {
-            
-            int p = baseFile.getName().lastIndexOf('.');
-            m_baseName = baseFile.getName() + "_";
-            m_baseExtension = baseFile.getName().substring(p);
+
+            String fileName = baseFile.getName();
+            m_baseExtension = CmsFileUtil.getFileExtension(fileName);
+            m_baseName = fileName + "_";
         }
-        
+
         /**
          * Accepts the given file if its name starts with the name of of the base file (wo extension) 
          * and ends with the extension.<p>
@@ -108,10 +101,16 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
          * @see java.io.FileFilter#accept(java.io.File)
          */
         public boolean accept(File f) {
-            
+
             return f.getName().startsWith(m_baseName) && f.getName().endsWith(m_baseExtension);
-        }    
+        }
     }
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsStaticExportHandler.class);
+
+    /** Indicates if this content handler is busy. */
+    protected boolean m_busy;
 
     /**
      * @see org.opencms.staticexport.I_CmsStaticExportHandler#isBusy()
@@ -298,40 +297,70 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
     }
 
     /**
-     * Deletes the given file from the RFS if it exists.<p>
+     * Deletes the given file from the RFS if it exists,
+     * also deletes all parameter variations of the file.<p>
      * 
-     * @param vfsName the vfs name of the file to delete
-     * @param exportFileName the file to delete
+     * @param rfsFilePath the path of the RFS file to delete
+     * @param vfsName the VFS name of the file to delete (required for logging)
      */
-    protected void purgeFile(String exportFileName, String vfsName) {
+    protected void purgeFile(String rfsFilePath, String vfsName) {
 
-        String rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix(vfsName)
-            + exportFileName.substring(OpenCms.getStaticExportManager().getExportPath(vfsName).length()));
-        rfsName = CmsStringUtil.substitute(rfsName, new String(new char[] {File.separatorChar}), "/");
+        File rfsFile = new File(rfsFilePath);
+
+        // first delete the base file
+        deleteFile(rfsFile, vfsName);
+
+        // now delete the file parameter variations
+        // get the parent folder
+        File parent = rfsFile.getParentFile();
+        if (parent != null) {
+            // list all files in the parent folder that are variations of the base file
+            File[] paramVariants = parent.listFiles(new PrefixFileFilter(rfsFile));
+            for (int v = 0; v < paramVariants.length; v++) {
+                deleteFile(paramVariants[v], vfsName);
+            }
+        }
+    }
+
+    /**
+     * Deletes the given file from the RFS, with error handling and logging.<p>
+     * 
+     * @param file the file to delete
+     * @param vfsName the VFS name of the file (required for logging)
+     */
+    private void deleteFile(File file, String vfsName) {
 
         try {
-            File exportFile = new File(exportFileName);
-            // check if export file exists, if so delete it
-            if (exportFile.exists() && exportFile.canWrite()) {
-                exportFile.delete();
+            if (file.exists() && file.canWrite()) {
+                file.delete();
                 // write log message
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(Messages.LOG_FILE_DELETED_1, rfsName));
-                }
-                
-                File parent = exportFile.getParentFile();
-                if (parent != null) {
-                    File[] paramVariants = parent.listFiles(new PrefixFileFilter(exportFile));
-                    for (int v = 0; v < paramVariants.length; v++) {
-                        paramVariants[v].delete();
-                    }
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_FILE_DELETED_1, getRfsName(file, vfsName)));
                 }
             }
         } catch (Throwable t) {
             // ignore, nothing to do about this
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(Messages.LOG_FILE_DELETION_FAILED_1, rfsName), t);
+                LOG.warn(
+                    Messages.get().getBundle().key(Messages.LOG_FILE_DELETION_FAILED_1, getRfsName(file, vfsName)),
+                    t);
             }
         }
+    }
+
+    /**
+     * Returns the export file name starting from the OpenCms webapp folder.<p>
+     * 
+     * @param file the file to delete
+     * @param vfsName the VFS name of the file (required for logging)
+     * 
+     * @return the export file name starting from the OpenCms webapp folder
+     */
+    private String getRfsName(File file, String vfsName) {
+
+        String filePath = file.getAbsolutePath();
+        String result = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix(vfsName)
+            + filePath.substring(OpenCms.getStaticExportManager().getExportPath(vfsName).length()));
+        return CmsStringUtil.substitute(result, new String(new char[] {File.separatorChar}), "/");
     }
 }
