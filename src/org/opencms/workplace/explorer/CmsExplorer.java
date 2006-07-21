@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2006/07/20 14:13:51 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2006/07/21 12:01:54 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -610,9 +610,10 @@ public class CmsExplorer extends CmsWorkplace {
         String message = getBroadcastMessageString();
         if (CmsStringUtil.isNotEmpty(message)) {
             // display broadcast as JavaScript alert
-            content.append("alert(\"");
-            content.append(CmsStringUtil.escapeJavaScript(message));
-            content.append("\");\n");
+            content.append("alert(decodeURIComponent(\"");
+            // the user has pending messages, display them all
+            content.append(CmsEncoder.escapeWBlanks(message, CmsEncoder.ENCODING_UTF_8));
+            content.append("\"));\n");
         }
 
         content.append("}\n");
