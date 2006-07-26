@@ -132,7 +132,7 @@ public final class CmsResourceUtil {
      */
     public static char getStateAbbreviation(int state) {
 
-        if (state >= 0 && state <= 3) {
+        if ((state >= 0) && (state <= 3)) {
             return RESOURCE_STATE[state];
         } else {
             return RESOURCE_STATE[4];
@@ -189,10 +189,10 @@ public final class CmsResourceUtil {
 
         int lockId = getLock().getType();
         String iconPath = null;
-        if (lockId != CmsLock.TYPE_UNLOCKED && m_request != null && isInsideProject()) {
+        if ((lockId != CmsLock.TYPE_UNLOCKED) && (m_request != null) && isInsideProject()) {
             if (getLock().getUserId().equals(m_request.currentUser().getId())
-                && getLockedInProjectId() == getReferenceProject().getId()) {
-                if (lockId == CmsLock.TYPE_SHARED_EXCLUSIVE || lockId == CmsLock.TYPE_SHARED_INHERITED) {
+                && (getLockedInProjectId() == getReferenceProject().getId())) {
+                if ((lockId == CmsLock.TYPE_SHARED_EXCLUSIVE) || (lockId == CmsLock.TYPE_SHARED_INHERITED)) {
                     iconPath = "shared";
                 } else {
                     iconPath = "user";
@@ -288,7 +288,7 @@ public final class CmsResourceUtil {
     public int getLockedInProjectId() {
 
         int lockedInProject = CmsDbUtil.UNKNOWN_ID;
-        if (getLock().isNullLock() && getResource().getState() != CmsResource.STATE_UNCHANGED) {
+        if (getLock().isNullLock() && (getResource().getState() != CmsResource.STATE_UNCHANGED)) {
             // resource is unlocked and modified
             lockedInProject = getResource().getProjectLastModified();
         } else {
@@ -351,8 +351,8 @@ public final class CmsResourceUtil {
 
         int projectId = m_resource.getProjectLastModified();
         if (!getLock().isNullLock()
-            && getLock().getType() != CmsLock.TYPE_INHERITED
-            && getLock().getType() != CmsLock.TYPE_SHARED_INHERITED) {
+            && (getLock().getType() != CmsLock.TYPE_INHERITED)
+            && (getLock().getType() != CmsLock.TYPE_SHARED_INHERITED)) {
             // use lock project ID only if lock is not inherited
             projectId = getLock().getProjectId();
         }
@@ -372,7 +372,7 @@ public final class CmsResourceUtil {
      */
     public Boolean getProjectState() {
 
-        if (m_resource.getState() == CmsResource.STATE_UNCHANGED || !isInsideProject()) {
+        if ((m_resource.getState() == CmsResource.STATE_UNCHANGED) || !isInsideProject()) {
             return null;
         } else {
             return new Boolean(getLockedInProjectId() == getReferenceProject().getId());
@@ -467,7 +467,7 @@ public final class CmsResourceUtil {
     public char getStateAbbreviation() {
 
         int state = getResource().getState();
-        if (state >= 0 && state <= 3) {
+        if ((state >= 0) && (state <= 3)) {
             return RESOURCE_STATE[state];
         } else {
             return RESOURCE_STATE[4];
@@ -530,7 +530,7 @@ public final class CmsResourceUtil {
      */
     public String getStyleRange() {
 
-        return isInRange() ? "" : "font-style:italic;";
+        return isReleasedAndNotExpired() ? "" : "font-style:italic;";
     }
 
     /**
@@ -628,33 +628,6 @@ public final class CmsResourceUtil {
     }
 
     /**
-     * Returns <code>true</code> if the given resource has expired.<p>
-     * 
-     * Retuns <code>true</code> if no request context is set.<p>
-     * 
-     * @return <code>true</code> if the given resource has expired
-     */
-    public boolean isExpired() {
-
-        if (m_request == null) {
-            return m_resource.getDateExpired() < System.currentTimeMillis();
-        }
-        return m_resource.getDateExpired() < m_request.getRequestTime();
-    }
-
-    /**
-     * Returns <code>true</code> if the given resource has been released and has not expired.<p>
-     * 
-     * Retuns <code>false</code> if no request context is set.<p>
-     * 
-     * @return <code>true</code> if the given resource has been released and has not expired
-     */
-    public boolean isInRange() {
-
-        return isReleased() && !isExpired();
-    }
-
-    /**
      * Returns <code>true</code> if the given resource is in the reference project.<p>
      * 
      * Returns <code>false</code> if the request context is <code>null</code>.<p>
@@ -676,16 +649,23 @@ public final class CmsResourceUtil {
     }
 
     /**
-     * Returns <code>true</code> if the given resource has been released.<p>
+     * Returns <code>true</code> if the stored resource has been released and has not expired.<p>
      * 
-     * @return <code>true</code> if the given resource has been released
+     * If no request context is available, the current time is used for the validation check.<p>
+     * 
+     * @return <code>true</code> if the stored resource has been released and has not expired
+     * 
+     * @see CmsResource#isReleasedAndNotExpired(long)
      */
-    public boolean isReleased() {
+    public boolean isReleasedAndNotExpired() {
 
+        long requestTime;
         if (m_request == null) {
-            return m_resource.getDateReleased() < System.currentTimeMillis();
+            requestTime = System.currentTimeMillis();
+        } else {
+            requestTime = m_request.getRequestTime();
         }
-        return m_resource.getDateReleased() < m_request.getRequestTime();
+        return m_resource.isReleasedAndNotExpired(requestTime);
     }
 
     /**

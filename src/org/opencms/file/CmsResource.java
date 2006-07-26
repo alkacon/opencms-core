@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2006/03/28 12:14:36 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2006/07/26 14:53:14 $
+ * Version: $Revision: 1.45.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.45.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -170,6 +170,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The default release date of a resource (which is: always released). */
     public static final long DATE_RELEASED_DEFAULT = 0;
+
+    /** A special date that indicates release and expiration information are to be ignored. */
+    public static final long DATE_RELEASED_EXPIRED_IGNORE = Long.MIN_VALUE;
 
     /** Signals that siblings of this resource should not be deleted. */
     public static final int DELETE_PRESERVE_SIBLINGS = 0;
@@ -763,6 +766,25 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         return CmsUUID.getNullUUID().hashCode();
     }
 
+    /** 
+     * Returns <code>true</code> if this resource is expired at the given time according to the 
+     * information stored in {@link #getDateExpired()}.<p>
+     * 
+     * @param time the time to check the expiration date against
+     * 
+     * @return <code>true</code> if this resource is expired at the given time
+     *      
+     * @see #isReleased(long)
+     * @see #isReleasedAndNotExpired(long)
+     * @see #DATE_RELEASED_EXPIRED_IGNORE
+     * @see CmsResource#getDateReleased()
+     * @see CmsRequestContext#getRequestTime()
+     */
+    public boolean isExpired(long time) {
+
+        return (time > m_dateExpired) && (time != DATE_RELEASED_EXPIRED_IGNORE);
+    }
+
     /**
      * Returns <code>true</code> if the resource is a file, i.e. can have no sub-resources.<p>
      *
@@ -805,6 +827,46 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public boolean isLabeled() {
 
         return ((m_flags & CmsResource.FLAG_LABELED) > 0);
+    }
+
+    /** 
+     * Returns <code>true</code> if this resource is released at the given time according to the 
+     * information stored in {@link #getDateReleased()}.<p>
+     * 
+     * @param time the time to check the release date against
+     * 
+     * @return <code>true</code> if this resource is released at the given time
+     *      
+     * @see #isExpired(long)
+     * @see #isReleasedAndNotExpired(long)
+     * @see #DATE_RELEASED_EXPIRED_IGNORE
+     * @see CmsResource#getDateReleased()
+     * @see CmsRequestContext#getRequestTime()
+     */
+    public boolean isReleased(long time) {
+
+        return (time > m_dateReleased) || (time == DATE_RELEASED_EXPIRED_IGNORE);
+    }
+
+    /** 
+     * Returns <code>true</code> if this resource is valid at the given time according to the 
+     * information stored in {@link #getDateReleased()} and {@link #getDateExpired()}.<p>
+     * 
+     * A resource is valid if it is released and not yet expired.<p>
+     * 
+     * @param time the time to check the release and expiration date against
+     * 
+     * @return <code>true</code> if this resource is valid at the given time
+     *      
+     * @see #isExpired(long)
+     * @see #isReleased(long)
+     * @see #DATE_RELEASED_EXPIRED_IGNORE
+     * @see CmsResource#getDateReleased()
+     * @see CmsRequestContext#getRequestTime()
+     */
+    public boolean isReleasedAndNotExpired(long time) {
+
+        return ((time < m_dateExpired) && (time > m_dateReleased)) || (time == DATE_RELEASED_EXPIRED_IGNORE);
     }
 
     /**
@@ -933,5 +995,4 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
         return result.toString();
     }
-
 }

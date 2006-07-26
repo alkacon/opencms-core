@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/07/26 14:53:14 $
+ * Version: $Revision: 1.23.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ package org.opencms.file;
  * @author Carsten Weinholz 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.23.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -710,7 +710,7 @@ public final class CmsResourceFilter {
                 }
                 break;
             default:
-        // ignored
+                // ignored
         }
 
         // check for required resource state
@@ -726,7 +726,7 @@ public final class CmsResourceFilter {
                 }
                 break;
             default:
-        // ignored
+                // ignored
         }
 
         // check for required resource type
@@ -742,7 +742,7 @@ public final class CmsResourceFilter {
                 }
                 break;
             default:
-        // ignored
+                // ignored
         }
 
         if (m_onlyFolders != null) {
@@ -761,37 +761,36 @@ public final class CmsResourceFilter {
 
         // check if the resource was last modified within the given time range
         if (m_filterLastModified) {
-            if (m_modifiedAfter > 0L && resource.getDateLastModified() < m_modifiedAfter) {
+            if ((m_modifiedAfter > 0L) && (resource.getDateLastModified() < m_modifiedAfter)) {
                 return false;
             }
-            if (m_modifiedBefore > 0L && resource.getDateLastModified() > m_modifiedBefore) {
+            if ((m_modifiedBefore > 0L) && (resource.getDateLastModified() > m_modifiedBefore)) {
                 return false;
             }
         }
 
         // check if the resource expires within the given time range
         if (m_filterExpire) {
-            if (m_expireAfter > 0L && resource.getDateExpired() < m_expireAfter) {
+            if ((m_expireAfter > 0L) && (resource.getDateExpired() < m_expireAfter)) {
                 return false;
             }
-            if (m_expireBefore > 0L && resource.getDateExpired() > m_expireBefore) {
+            if ((m_expireBefore > 0L) && (resource.getDateExpired() > m_expireBefore)) {
                 return false;
             }
         }
 
         // check if the resource is released within the given time range
         if (m_filterRelease) {
-            if (m_releaseAfter > 0L && resource.getDateReleased() < m_releaseAfter) {
+            if ((m_releaseAfter > 0L) && (resource.getDateReleased() < m_releaseAfter)) {
                 return false;
             }
-            if (m_releaseBefore > 0L && resource.getDateReleased() > m_releaseBefore) {
+            if ((m_releaseBefore > 0L) && (resource.getDateReleased() > m_releaseBefore)) {
                 return false;
             }
         }
 
         // check if the resource is currently released and not expired
-        if (m_filterTimerange
-            && ((resource.getDateReleased() > context.getRequestTime()) || (resource.getDateExpired() < context.getRequestTime()))) {
+        if (m_filterTimerange && !resource.isReleasedAndNotExpired(context.getRequestTime())) {
             return false;
         }
 
@@ -900,7 +899,7 @@ public final class CmsResourceFilter {
                 result.append(m_state);
                 break;
             default:
-        // ignored
+                // ignored
         }
         switch (m_filterFlags) {
             case REQUIRED:
@@ -912,7 +911,7 @@ public final class CmsResourceFilter {
                 result.append(m_flags);
                 break;
             default:
-        // ignored
+                // ignored
         }
         switch (m_filterType) {
             case REQUIRED:
@@ -924,7 +923,7 @@ public final class CmsResourceFilter {
                 result.append(m_type);
                 break;
             default:
-        // ignored
+                // ignored
         }
         if (m_onlyFolders != null) {
             if (m_onlyFolders.booleanValue()) {

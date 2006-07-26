@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2006/07/21 12:05:08 $
- * Version: $Revision: 1.32.4.4 $
+ * Date   : $Date: 2006/07/26 14:53:14 $
+ * Version: $Revision: 1.32.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.4 $ 
+ * @version $Revision: 1.32.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -406,9 +406,9 @@ public class CmsExplorer extends CmsWorkplace {
 
         // position 8: layoutstyle
         int layoutstyle = CmsExplorer.LAYOUTSTYLE_INRANGE;
-        if (resource.getDateReleased() > getCms().getRequestContext().getRequestTime()) {
+        if (!resource.isReleased(getCms().getRequestContext().getRequestTime())) {
             layoutstyle = CmsExplorer.LAYOUTSTYLE_BEFORERELEASE;
-        } else if ((resource.getDateExpired() < getCms().getRequestContext().getRequestTime())) {
+        } else if (resource.isExpired(getCms().getRequestContext().getRequestTime())) {
             layoutstyle = CmsExplorer.LAYOUTSTYLE_AFTEREXPIRE;
         }
         content.append(layoutstyle);
@@ -417,8 +417,8 @@ public class CmsExplorer extends CmsWorkplace {
         // position 9: project
         int projectId = resource.getProjectLastModified();
         if (!lock.isNullLock()
-            && lock.getType() != CmsLock.TYPE_INHERITED
-            && lock.getType() != CmsLock.TYPE_SHARED_INHERITED) {
+            && (lock.getType() != CmsLock.TYPE_INHERITED)
+            && (lock.getType() != CmsLock.TYPE_SHARED_INHERITED)) {
             // use lock project ID only if lock is not inherited
             projectId = lock.getProjectId();
         }
@@ -541,7 +541,7 @@ public class CmsExplorer extends CmsWorkplace {
 
         // position 19: name of project where the resource is locked in
         int lockedInProject = CmsDbUtil.UNKNOWN_ID;
-        if (lock.isNullLock() && resource.getState() != CmsResource.STATE_UNCHANGED) {
+        if (lock.isNullLock() && (resource.getState() != CmsResource.STATE_UNCHANGED)) {
             // resource is unlocked and modified
             lockedInProject = resource.getProjectLastModified();
         } else {
@@ -805,7 +805,7 @@ public class CmsExplorer extends CmsWorkplace {
             settings.setExplorerResource(currentResource);
         } else {
             // "showlinks" parameter not found 
-            if (currentResource != null && currentResource.startsWith(LOCATION_SIBLING)) {
+            if ((currentResource != null) && currentResource.startsWith(LOCATION_SIBLING)) {
                 // given resource starts with "siblings:", list of siblings is shown
                 showLinks = true;
                 settings.setExplorerResource(currentResource.substring(LOCATION_SIBLING.length()));
