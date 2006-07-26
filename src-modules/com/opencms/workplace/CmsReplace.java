@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/07/26 15:05:11 $
+ * Version: $Revision: 1.5.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.5.8.1 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -247,7 +247,7 @@ public final class CmsReplace extends CmsWorkplaceDefault {
      * @param parameters Hashtable of parameters (not used yet)
      * @param descriptions Description that will be displayed for the new resource
      * @return the index of the checked radio button, -1 if none is checked
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public int getResources(CmsObject cms, CmsXmlLanguageFile language, Vector resourceTypeIconNames, Vector resourceTypeFieldValues, Vector resourceTypeFieldNames, Hashtable parameters) throws CmsException {
         CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);

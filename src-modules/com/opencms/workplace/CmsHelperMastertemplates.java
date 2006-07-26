@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2005/06/27 23:22:07 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2006/07/26 15:05:11 $
+* Version: $Revision: 1.3.8.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
+ * @version $Revision: 1.3.8.1 $ $Date: 2006/07/26 15:05:11 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -59,7 +59,7 @@ public class CmsHelperMastertemplates {
      * @param currentTemplate The file name of the currently selected template.
      * @return The index of the currently selected template and the vectors names and values, filled with the information 
      * about the available templates. The index refers to the vectors.
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public static Integer getTemplates(CmsObject cms, Vector names, Vector values, String currentTemplate) throws CmsException {
         return getTemplates(cms, names, values, currentTemplate, 0);
@@ -74,7 +74,7 @@ public class CmsHelperMastertemplates {
      * @param defaultReturnValue The index used if no currentTemplate was found.
      * @return The index of the currently selected template and the vectors names and values, filled with the information 
      * about the available templates. The index refers to the vectors.
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public static Integer getTemplates(CmsObject cms, Vector names, Vector values, String currentTemplate, int defaultReturnValue) throws CmsException {
         // first read the available templates from the VFS
@@ -100,7 +100,7 @@ public class CmsHelperMastertemplates {
      * @param subFolder The sub folder name in the modules to look for information.
      * @param names Will be filled with the display names of found the templates.
      * @param values Will be filled with the file names of the found templates.
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public static void getTemplateElements(CmsObject cms, String subFolder, Vector names, Vector values) throws CmsException {       
         List files = (List) new ArrayList();  

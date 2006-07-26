@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2005/06/27 23:22:07 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2006/07/26 15:05:11 $
+* Version: $Revision: 1.5.8.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
+ * @version $Revision: 1.5.8.1 $ $Date: 2006/07/26 15:05:11 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -65,7 +65,7 @@ public class CmsLock extends CmsWorkplaceDefault {
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {

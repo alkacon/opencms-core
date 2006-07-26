@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/I_CmsFileListUsers.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2006/07/26 15:05:11 $
+* Version: $Revision: 1.1.8.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.List;
  * <code>&lt;FILELIST&gt;</code> has to implement this interface.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.1.8.1 $ $Date: 2006/07/26 15:05:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * @see com.opencms.workplace.CmsFileList
  * 
@@ -70,7 +70,7 @@ public interface I_CmsFileListUsers {
      * Collect all folders and files that are displayed in the file list.
      * @param cms The CmsObject.
      * @return A vector of folder and file objects.
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     
     public List getFiles(CmsObject cms) throws CmsException;

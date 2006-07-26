@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2005/06/27 23:22:25 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2006/07/26 15:05:11 $
+* Version: $Revision: 1.5.8.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,8 +62,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.5 $
- * $Date: 2005/06/27 23:22:25 $
+ * $Revision: 1.5.8.1 $
+ * $Date: 2006/07/26 15:05:11 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -929,7 +929,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * Plauzibilization method.
      * This method checks if all inputfields contain correct input data.
      * If an input field has no correct data, a CmsPlausibilizationException is thrown.
-     * @throws Throws CmsPlausibilizationException containing a vector of error-codes.
+     * @throws CmsPlausibilizationException containing a vector of error-codes.
      */
     public void check() throws CmsPlausibilizationException {
         // define the vector which will hold all error codes
