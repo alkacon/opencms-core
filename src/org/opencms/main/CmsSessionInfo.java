@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/07/26 14:59:07 $
+ * Version: $Revision: 1.16.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,9 @@ package org.opencms.main;
 
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
+import org.opencms.util.CmsUUID;
+
+import java.io.Serializable;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
@@ -52,14 +55,20 @@ import org.apache.commons.collections.buffer.BoundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.4.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSessionInfo implements Comparable {
+public class CmsSessionInfo implements Comparable, Serializable {
+
+    /** Name of the http session attribute the OpenCms session id is stored in. */
+    public static final String ATTRIBUTE_SESSION_ID = "__org.opencms.main.CmsSessionInfo#m_sessionId";
 
     /** Maximum size of the broadcast queue for one user. */
     public static final int QUEUE_SIZE = 10;
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 927301527031117920L;
 
     /** The broadcast queue buffer for the user of this session info. */
     private Buffer m_broadcastQueue;
@@ -71,7 +80,7 @@ public class CmsSessionInfo implements Comparable {
     private int m_projectId;
 
     /** The id of the (http) session this session info belongs to. */
-    private String m_sessionId;
+    private CmsUUID m_sessionId;
 
     /** The current site of the user. */
     private String m_siteRoot;
@@ -89,10 +98,10 @@ public class CmsSessionInfo implements Comparable {
      * Creates a new CmsSessionInfo object.<p>
      * 
      * @param context the user context to create this session info for
-     * @param sessionId id of the (http) session this session info belongs to
+     * @param sessionId OpenCms id of the (http) session this session info belongs to
      * @param maxInactiveInterval the maximum time, in seconds, this session info is allowed to be inactive
      */
-    public CmsSessionInfo(CmsRequestContext context, String sessionId, int maxInactiveInterval) {
+    public CmsSessionInfo(CmsRequestContext context, CmsUUID sessionId, int maxInactiveInterval) {
 
         m_timeCreated = System.currentTimeMillis();
         m_sessionId = sessionId;
@@ -155,13 +164,13 @@ public class CmsSessionInfo implements Comparable {
     }
 
     /**
-     * Returns the id of the (http) session this session info belongs to.<p>
+     * Returns the id of the OpenCms (http) session this session info belongs to.<p>
      *
-     * @return the id of the (http) session this session info belongs to
+     * @return the id of the OpenCms (http) session this session info belongs to
      * 
      * @see javax.servlet.http.HttpSession#getId()
      */
-    public String getSessionId() {
+    public CmsUUID getSessionId() {
 
         return m_sessionId;
     }

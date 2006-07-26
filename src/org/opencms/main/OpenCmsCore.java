@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/05/12 15:52:36 $
- * Version: $Revision: 1.218.4.5 $
+ * Date   : $Date: 2006/07/26 14:59:07 $
+ * Version: $Revision: 1.218.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.ExtendedProperties;
@@ -133,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.5 $ 
+ * @version $Revision: 1.218.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -248,7 +247,7 @@ public final class OpenCmsCore {
     throws CmsInitException {
 
         synchronized (LOCK) {
-            if (m_instance != null && (m_instance.getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE)) {
+            if ((m_instance != null) && (m_instance.getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE)) {
                 throw new CmsInitException(Messages.get().container(Messages.ERR_ALREADY_INITIALIZED_0));
             }
             initMembers();
@@ -696,7 +695,7 @@ public final class OpenCmsCore {
 
         String userName = contextInfo.getUserName();
 
-        if (adminCms == null || !adminCms.hasRole(CmsRole.ADMINISTRATOR)) {
+        if ((adminCms == null) || !adminCms.hasRole(CmsRole.ADMINISTRATOR)) {
             if (!userName.equals(getDefaultUsers().getUserGuest())
                 && !userName.equals(getDefaultUsers().getUserExport())) {
 
@@ -1273,7 +1272,7 @@ public final class OpenCmsCore {
         }
 
         // file is still null and not found exception was thrown, so throw original exception
-        if (resource == null && tmpException != null) {
+        if ((resource == null) && (tmpException != null)) {
             throw tmpException;
         }
 
@@ -1347,7 +1346,7 @@ public final class OpenCmsCore {
             if (resource != null) {
                 // a file was read, go on process it
                 m_resourceManager.loadResource(cms, resource, req, res);
-                updateUserSessionData(cms, req);
+                m_sessionManager.updateSessionInfo(cms, req);
             }
 
         } catch (Throwable t) {
@@ -1700,8 +1699,8 @@ public final class OpenCmsCore {
 
         try {
             isNotGuest = isNotGuest
-                || (cms != null
-                    && cms.getRequestContext().currentUser() != null
+                || ((cms != null)
+                    && (cms.getRequestContext().currentUser() != null)
                     && (!OpenCms.getDefaultUsers().getUserGuest().equals(
                         cms.getRequestContext().currentUser().getName())) && ((cms.userInGroup(
                     cms.getRequestContext().currentUser().getName(),
@@ -1718,7 +1717,7 @@ public final class OpenCmsCore {
         if (canWrite) {
             res.setContentType("text/html");
             CmsRequestUtil.setNoCacheHeaders(res);
-            if (isNotGuest && cms != null && !cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (isNotGuest && (cms != null) && !cms.getRequestContext().currentProject().isOnlineProject()) {
                 try {
                     res.setStatus(HttpServletResponse.SC_OK);
                     res.getWriter().print(createErrorBox(t, req, cms));
@@ -1798,23 +1797,8 @@ public final class OpenCmsCore {
 
         CmsObject cms;
 
-        // try to get the current session
-        HttpSession session = req.getSession(false);
-        String sessionId;
-
-        // check if there is user data already stored in the session manager
-        if (session != null) {
-            // session exists, try to reuse the user from the session
-            sessionId = session.getId();
-        } else {
-            // special case for acessing a session from "outside" requests (e.g. upload applet)
-            sessionId = req.getHeader(CmsRequestUtil.HEADER_JSESSIONID);
-        }
-        CmsSessionInfo sessionInfo = null;
-        if (sessionId != null) {
-            sessionInfo = m_sessionManager.getSessionInfo(sessionId);
-        }
-
+        // try to get an OpenCms user session info object for this request
+        CmsSessionInfo sessionInfo = m_sessionManager.getSessionInfo(req);
         // initialize the requested site root
         CmsSite site = getSiteManager().matchRequest(req);
 
@@ -1835,7 +1819,7 @@ public final class OpenCmsCore {
             }
             cms = initCmsObject(req, sessionInfo.getUser().getName(), siteroot, project);
         } else {
-            // no user name found in session or no session, login the user as guest user
+            // no OpenCms user session info object found, login the user as guest user
             cms = initCmsObject(
                 req,
                 OpenCms.getDefaultUsers().getUserGuest(),
@@ -2005,8 +1989,8 @@ public final class OpenCmsCore {
 
         CmsHttpAuthenticationSettings httpAuthenticationSettings = getSystemInfo().getHttpAuthenticationSettings();
         String pathWithParams = CmsRequestUtil.encodeParamsWithUri(path, req);
-        if (propertyLoginForm != null
-            && propertyLoginForm != CmsProperty.getNullProperty()
+        if ((propertyLoginForm != null)
+            && (propertyLoginForm != CmsProperty.getNullProperty())
             && CmsStringUtil.isNotEmpty(propertyLoginForm.getValue())) {
             // login form property value was found            
             // build a redirect URL using the value of the property
@@ -2066,49 +2050,6 @@ public final class OpenCmsCore {
                 }
             }
             m_instance.m_runLevel = level;
-        }
-    }
-
-    /**
-     * Updates the the user data stored in the CmsSessionInfoManager after the requested document
-     * is processed.<p>
-     *
-     * This is required if the user data (current group or project) was changed in
-     * the requested document.<p>
-     *
-     * The user data is only updated if the user was authenticated to the system.
-     *
-     * @param cms the current CmsObject initialized with the user data
-     * @param req the current request
-     */
-    private void updateUserSessionData(CmsObject cms, HttpServletRequest req) {
-
-        if (!cms.getRequestContext().isUpdateSessionEnabled()) {
-            // this request must not update the user session info
-            // this is true for long running "thread" requests, e.g. during project publish
-            return;
-        }
-        // get the session if it is available
-        HttpSession session = req.getSession(false);
-        // if the user was authenticated via sessions, 
-        // update the information in the session info manager
-        if (session != null) {
-            if (!cms.getRequestContext().currentUser().isGuestUser()) {
-                // get the session info object for the user
-                CmsSessionInfo sessionInfo = m_sessionManager.getSessionInfo(session.getId());
-                if (sessionInfo != null) {
-                    // update the users session information
-                    sessionInfo.update(cms.getRequestContext());
-                } else {
-                    // create a new session info for the user
-                    sessionInfo = new CmsSessionInfo(
-                        cms.getRequestContext(),
-                        session.getId(),
-                        session.getMaxInactiveInterval());
-                    // update the session info user data
-                    m_sessionManager.addSessionInfo(sessionInfo);
-                }
-            }
         }
     }
 }

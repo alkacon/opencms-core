@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/07/26 14:59:07 $
+ * Version: $Revision: 1.14.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -211,21 +211,21 @@ public class CmsSessionsList extends A_CmsListDialog {
 
         List ret = new ArrayList();
         // get content
-        List sessions = OpenCms.getSessionManager().getSessionInfos();
-        Iterator itSessions = sessions.iterator();
+        List sessionInfos = OpenCms.getSessionManager().getSessionInfos();
+        Iterator itSessions = sessionInfos.iterator();
         while (itSessions.hasNext()) {
-            CmsSessionInfo session = (CmsSessionInfo)itSessions.next();
-            CmsListItem item = getList().newItem(session.getSessionId());
-            item.set(LIST_COLUMN_USER, session.getUser().getFullName());
-            item.set(LIST_COLUMN_EMAIL, session.getUser().getEmail());
-            item.set(LIST_COLUMN_CREATION, new Date(session.getTimeCreated()));
-            item.set(LIST_COLUMN_INACTIVE, new Long(System.currentTimeMillis() - session.getTimeUpdated()));
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)itSessions.next();
+            CmsListItem item = getList().newItem(sessionInfo.getSessionId().toString());
+            item.set(LIST_COLUMN_USER, sessionInfo.getUser().getFullName());
+            item.set(LIST_COLUMN_EMAIL, sessionInfo.getUser().getEmail());
+            item.set(LIST_COLUMN_CREATION, new Date(sessionInfo.getTimeCreated()));
+            item.set(LIST_COLUMN_INACTIVE, new Long(System.currentTimeMillis() - sessionInfo.getTimeUpdated()));
             try {
-                item.set(LIST_COLUMN_PROJECT, getCms().readProject(session.getProject()).getName());
+                item.set(LIST_COLUMN_PROJECT, getCms().readProject(sessionInfo.getProject()).getName());
             } catch (Exception e) {
                 // ignore
             }
-            item.set(LIST_COLUMN_SITE, session.getSiteRoot());
+            item.set(LIST_COLUMN_SITE, sessionInfo.getSiteRoot());
             ret.add(item);
         }
 

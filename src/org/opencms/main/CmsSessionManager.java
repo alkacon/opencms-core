@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/07/26 14:59:07 $
+ * Version: $Revision: 1.12.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,22 +33,22 @@ package org.opencms.main;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
-import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
+import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.collections.buffer.BoundedFifoBuffer;
 import org.apache.commons.logging.Log;
 
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,6 +78,9 @@ public class CmsSessionManager {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSessionManager.class);
 
+    /** Lock object for synchronized session count updates. */
+    private Object m_lockSessionCount;
+
     /** Counter for the currently active sessions. */
     private int m_sessionCountCurrent;
 
@@ -85,32 +88,36 @@ public class CmsSessionManager {
     private int m_sessionCountTotal;
 
     /** Stores the session info objects mapped to the session id. */
-    private Map m_sessions;
+    private FastHashMap m_sessions;
 
     /**
      * Creates a new instance of the OpenCms session manager.<p>
      */
     protected CmsSessionManager() {
 
-        super();
+        // create a lock object for the session counter
+        m_lockSessionCount = new Object();
         // create a map for all sessions, these will be mapped using their session id
-        m_sessions = new Hashtable();
+        m_sessions = new FastHashMap();
+        // set to "fast" mode (will be reset for write access)
+        m_sessions.setFast(true);
     }
 
     /**
-     * Returns the broadcast queue for the given session id.<p>
+     * Returns the broadcast queue for the given OpenCms session id.<p>
      * 
-     * @param sessionId the session id to get the broadcast queue for
+     * @param sessionId the OpenCms session id to get the broadcast queue for
      * 
-     * @return the broadcast queue for the given session id
+     * @return the broadcast queue for the given OpenCms session id
      */
     public Buffer getBroadcastQueue(String sessionId) {
 
-        if (getSessionInfo(sessionId) == null) {
-            // return empty message buffer if the session is gone
+        CmsSessionInfo sessionInfo = getSessionInfo(getSessionUUID(sessionId));
+        if (sessionInfo == null) {
+            // return empty message buffer if the session is gone or not available
             return BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(CmsSessionInfo.QUEUE_SIZE));
         }
-        return getSessionInfo(sessionId).getBroadcastQueue();
+        return sessionInfo.getBroadcastQueue();
     }
 
     /**
@@ -147,13 +154,46 @@ public class CmsSessionManager {
      * Returns the complete user session info of a user from the session storage,
      * or <code>null</code> if this session id has no session info attached.<p>
      *
-     * @param sessionId the session id to return the session info for
+     * @param sessionId the OpenCms session id to return the session info for
      * 
      * @return the complete user session info of a user from the session storage
      */
-    public CmsSessionInfo getSessionInfo(String sessionId) {
+    public CmsSessionInfo getSessionInfo(CmsUUID sessionId) {
 
         return (CmsSessionInfo)m_sessions.get(sessionId);
+    }
+
+    /**
+     * Returns the OpenCms user session info for the given http session, 
+     * or <code>null</code> if no user session is available.<p>
+     * 
+     * @param session the current http session
+     * 
+     * @return the OpenCms user session info for the given http session, or <code>null</code> if no user session is available
+     */
+    public CmsSessionInfo getSessionInfo(HttpSession session) {
+
+        if (session == null) {
+            return null;
+        }
+        CmsUUID sessionId = (CmsUUID)session.getAttribute(CmsSessionInfo.ATTRIBUTE_SESSION_ID);
+        return (sessionId == null) ? null : getSessionInfo(sessionId);
+    }
+
+    /**
+     * Returns the complete user session info of a user from the session storage,
+     * or <code>null</code> if this session id has no session info attached.<p>
+     *
+     * @param sessionId the OpenCms session id to return the session info for,
+     * this must be a String representation of a {@link CmsUUID}
+     * 
+     * @return the complete user session info of a user from the session storage
+     * 
+     * @see #getSessionInfo(CmsUUID)
+     */
+    public CmsSessionInfo getSessionInfo(String sessionId) {
+
+        return getSessionInfo(getSessionUUID(sessionId));
     }
 
     /**
@@ -164,14 +204,12 @@ public class CmsSessionManager {
     public List getSessionInfos() {
 
         List result = new ArrayList();
-        synchronized (m_sessions) {
-            Iterator i = getConcurrentSessionIterator();
-            while (i.hasNext()) {
-                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
-                if (sessionInfo != null) {
-                    // may be the case in case of concurrent modification
-                    result.add(sessionInfo);
-                }
+        Iterator i = m_sessions.keySet().iterator();
+        while (i.hasNext()) {
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
+            if (sessionInfo != null) {
+                // may be the case in case of concurrent modification
+                result.add(sessionInfo);
             }
         }
         return result;
@@ -192,14 +230,11 @@ public class CmsSessionManager {
     public List getSessionInfos(CmsUUID userId) {
 
         List userSessions = new ArrayList();
-        synchronized (m_sessions) {
-            Iterator i = getConcurrentSessionIterator();
-            while (i.hasNext()) {
-                String key = (String)i.next();
-                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-                if (userId.equals(sessionInfo.getUser().getId())) {
-                    userSessions.add(sessionInfo);
-                }
+        Iterator i = m_sessions.keySet().iterator();
+        while (i.hasNext()) {
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
+            if (userId.equals(sessionInfo.getUser().getId())) {
+                userSessions.add(sessionInfo);
             }
         }
         return userSessions;
@@ -221,14 +256,12 @@ public class CmsSessionManager {
         // create the broadcast
         CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().currentUser(), message);
         // send the broadcast to all authenticated sessions
-        synchronized (m_sessions) {
-            Iterator i = getConcurrentSessionIterator();
-            while (i.hasNext()) {
-                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
-                if (sessionInfo != null) {
-                    // double check for concurrent modification
-                    sessionInfo.getBroadcastQueue().add(broadcast);
-                }
+        Iterator i = m_sessions.keySet().iterator();
+        while (i.hasNext()) {
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
+            if (sessionInfo != null) {
+                // double check for concurrent modification
+                sessionInfo.getBroadcastQueue().add(broadcast);
             }
         }
     }
@@ -252,14 +285,9 @@ public class CmsSessionManager {
         List userSessions = getSessionInfos(user.getId());
         Iterator i = userSessions.iterator();
         // send the broadcast to all sessions of the selected user
-        synchronized (m_sessions) {
-            while (i.hasNext()) {
-                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
-                if (sessionInfo != null) {
-                    // double check for concurrent modification
-                    sessionInfo.getBroadcastQueue().add(broadcast);
-                }
-            }
+        while (i.hasNext()) {
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
+            sessionInfo.getBroadcastQueue().add(broadcast);
         }
     }
 
@@ -269,7 +297,7 @@ public class CmsSessionManager {
      * @param cms the OpenCms user context of the user sending the broadcast
      * 
      * @param message the message to broadcast
-     * @param sessionId the session id target (reciever) of the broadcast
+     * @param sessionId the OpenCms session id target (reciever) of the broadcast
      */
     public void sendBroadcast(CmsObject cms, String message, String sessionId) {
 
@@ -278,7 +306,7 @@ public class CmsSessionManager {
             return;
         }
         // send the broadcast only to the selected session
-        CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
+        CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(getSessionUUID(sessionId));
         if (sessionInfo != null) {
             // double check for concurrent modification
             sessionInfo.getBroadcastQueue().add(new CmsBroadcast(cms.getRequestContext().currentUser(), message));
@@ -291,17 +319,15 @@ public class CmsSessionManager {
     public String toString() {
 
         StringBuffer output = new StringBuffer();
-        synchronized (m_sessions) {
-            Iterator i = getConcurrentSessionIterator();
-            output.append("[CmsSessions]:\n");
-            while (i.hasNext()) {
-                String key = (String)i.next();
-                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-                output.append(key);
-                output.append(" : ");
-                output.append(sessionInfo.getUser().toString());
-                output.append('\n');
-            }
+        Iterator i = m_sessions.keySet().iterator();
+        output.append("[CmsSessions]:\n");
+        while (i.hasNext()) {
+            CmsUUID key = (CmsUUID)i.next();
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(key);
+            output.append(key.toString());
+            output.append(" : ");
+            output.append(sessionInfo.getUser().toString());
+            output.append('\n');
         }
         return output.toString();
     }
@@ -317,6 +343,37 @@ public class CmsSessionManager {
     }
 
     /**
+     * Returns the OpenCms user session info for the given request, 
+     * or <code>null</code> if no user session is available.<p>
+     * 
+     * @param req the current request
+     * 
+     * @return the OpenCms user session info for the given request, or <code>null</code> if no user session is available
+     */
+    protected CmsSessionInfo getSessionInfo(HttpServletRequest req) {
+
+        HttpSession session = req.getSession(false);
+        if (session == null) {
+            // special case for acessing a session from "outside" requests (e.g. upload applet)
+            String sessionId = req.getHeader(CmsRequestUtil.HEADER_JSESSIONID);
+            return sessionId == null ? null : getSessionInfo(sessionId);
+        }
+        return getSessionInfo(session);
+    }
+
+    /**
+     * Returns the UUID representation for the given session id String.<p>
+     * 
+     * @param sessionId the session id String to return the  UUID representation for
+     * 
+     * @return the UUID representation for the given session id String
+     */
+    protected CmsUUID getSessionUUID(String sessionId) {
+
+        return new CmsUUID(sessionId);
+    }
+
+    /**
      * Called by the {@link OpenCmsListener} when a http session is created.<p>
      * 
      * @param event the http session event
@@ -324,16 +381,19 @@ public class CmsSessionManager {
      * @see javax.servlet.http.HttpSessionListener#sessionCreated(javax.servlet.http.HttpSessionEvent)
      * @see OpenCmsListener#sessionCreated(HttpSessionEvent)
      */
-    protected synchronized void sessionCreated(HttpSessionEvent event) {
+    protected void sessionCreated(HttpSessionEvent event) {
 
-        m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);
-        m_sessionCountTotal++;
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_SESSION_CREATED_2,
-                new Integer(m_sessionCountTotal),
-                new Integer(m_sessionCountCurrent)));
+        synchronized (m_lockSessionCount) {
+            m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);
+            m_sessionCountTotal++;
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.LOG_SESSION_CREATED_2,
+                    new Integer(m_sessionCountTotal),
+                    new Integer(m_sessionCountCurrent)));
+            }
         }
+
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SESSION_CREATED_1, event.getSession().getId()));
         }
@@ -347,33 +407,77 @@ public class CmsSessionManager {
      * @see javax.servlet.http.HttpSessionListener#sessionDestroyed(javax.servlet.http.HttpSessionEvent)
      * @see OpenCmsListener#sessionDestroyed(HttpSessionEvent)
      */
-    protected synchronized void sessionDestroyed(HttpSessionEvent event) {
+    protected void sessionDestroyed(HttpSessionEvent event) {
 
-        m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 0 : (m_sessionCountCurrent - 1);
+        synchronized (m_lockSessionCount) {
+            m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 0 : (m_sessionCountCurrent - 1);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.LOG_SESSION_DESTROYED_2,
+                    new Integer(m_sessionCountTotal),
+                    new Integer(m_sessionCountCurrent)));
+            }
+        }
 
-        String sessionId = event.getSession().getId();
-        // remove the session for the session info storage
-        CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
+        CmsSessionInfo sessionInfo = getSessionInfo(event.getSession());
         CmsUUID userId = CmsUUID.getNullUUID();
         if (sessionInfo != null) {
             userId = sessionInfo.getUser().getId();
+            m_sessions.remove(sessionInfo.getSessionId());
         }
-        synchronized (m_sessions) {
-            m_sessions.remove(sessionId);
-        }
-        if (!userId.isNullUUID() && getSessionInfos(userId).size() == 0) {
+
+        if (!userId.isNullUUID() && (getSessionInfos(userId).size() == 0)) {
             // remove the temporary locks of this user from memory
             OpenCms.getLockManager().removeTempLocks(userId);
         }
 
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_SESSION_DESTROYED_2,
-                new Integer(m_sessionCountTotal),
-                new Integer(m_sessionCountCurrent)));
-        }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SESSION_DESTROYED_1, event.getSession().getId()));
+        }
+    }
+
+    /**
+     * Updates the the OpenCms session data used for quick authentication of users.<p>
+     *
+     * This is required if the user data (current group or project) was changed in
+     * the requested document.<p>
+     *
+     * The user data is only updated if the user was authenticated to the system.
+     *
+     * @param cms the current OpenCms user context
+     * @param req the current request
+     */
+    protected void updateSessionInfo(CmsObject cms, HttpServletRequest req) {
+
+        if (!cms.getRequestContext().isUpdateSessionEnabled()) {
+            // this request must not update the user session info
+            // this is true for long running "thread" requests, e.g. during project publish
+            return;
+        }
+
+        if (!cms.getRequestContext().currentUser().isGuestUser()) {
+            // Guest user requests don't need to update the OpenCms user session information
+
+            // get the session info object for the user
+            CmsSessionInfo sessionInfo = getSessionInfo(req);
+            if (sessionInfo != null) {
+                // update the users session information
+                sessionInfo.update(cms.getRequestContext());
+            } else {
+                HttpSession session = req.getSession(false);
+                // only create session info if a session is already available 
+                if (session != null) {
+                    // create a new session info for the user
+                    sessionInfo = new CmsSessionInfo(
+                        cms.getRequestContext(),
+                        new CmsUUID(),
+                        session.getMaxInactiveInterval());
+                    // append the session info to the http session
+                    session.setAttribute(CmsSessionInfo.ATTRIBUTE_SESSION_ID, sessionInfo.getSessionId().clone());
+                    // update the session info user data
+                    addSessionInfo(sessionInfo);
+                }
+            }
         }
     }
 
@@ -383,10 +487,12 @@ public class CmsSessionManager {
      */
     protected void validateSessionInfos() {
 
-        synchronized (m_sessions) {
-            Iterator i = getConcurrentSessionIterator();
+        try {
+            // change session map to full synchronization or "slow" mode
+            m_sessions.setFast(false);
+            Iterator i = m_sessions.keySet().iterator();
             while (i.hasNext()) {
-                String sessionId = (String)i.next();
+                CmsUUID sessionId = (CmsUUID)i.next();
                 CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
                 if (sessionInfo != null) {
                     // may be the case in case of concurrent modification
@@ -400,33 +506,9 @@ public class CmsSessionManager {
                     }
                 }
             }
+        } finally {
+            // reset session map to "fast" mode
+            m_sessions.setFast(true);
         }
-    }
-
-    /**
-     * Returns an iterator of a copy of the keyset of the current session map,
-     * which should be used for iterators to avoid concurrent modification exceptions.<p>
-     * 
-     * @return an iterator of the keyset of the current session map 
-     */
-    private Iterator getConcurrentSessionIterator() {
-
-        Set keySet;
-        int count = 0;
-        do {
-            keySet = new HashSet(m_sessions.size());
-            try {
-                keySet.addAll(m_sessions.keySet());
-            } catch (ConcurrentModificationException e) {
-                // problem creating a copy of the keyset, try up to 5 times 
-                count++;
-                keySet = null;
-            }
-        } while ((keySet == null) && (count < 5));
-        if (keySet == null) {
-            // no success, so we return an empty set to avoid problems
-            keySet = new HashSet();
-        }
-        return keySet.iterator();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/07/26 14:59:07 $
+ * Version: $Revision: 1.22.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -175,10 +175,11 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     byte[] onlineContents = null;
                     try {
                         // switch to online project and get online file contents
-                        getCms().getRequestContext().setCurrentProject(getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
+                        getCms().getRequestContext().setCurrentProject(
+                            getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
                         CmsFile onlineFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
                         onlineContents = onlineFile.getContents();
-                        
+
                     } finally {
                         // switch back to current project
                         getCms().getRequestContext().setCurrentProject(currentProject);
@@ -212,7 +213,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 int newType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType()).getTypeId();
                 getCms().chtype(getParamResource(), newType);
             }
-            if (getParamNewResourceName() != null && !getParamResource().endsWith(getParamNewResourceName())) {
+            if ((getParamNewResourceName() != null) && !getParamResource().endsWith(getParamNewResourceName())) {
                 String newResourceName = CmsResource.getFolderPath(getParamResource()) + getParamNewResourceName();
                 // rename the resource
                 getCms().renameResource(getParamResource(), newResourceName);
@@ -256,7 +257,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 long size = fi.getSize();
                 long maxFileSizeBytes = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms());
                 // check file size
-                if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
+                if ((maxFileSizeBytes > 0) && (size > maxFileSizeBytes)) {
                     // file size is larger than maximum allowed file size, throw an error
                     throw new CmsWorkplaceException(Messages.get().container(
                         Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1,
@@ -302,7 +303,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     setParamResource(computeFullResourceName());
                     // determine the resource type id from the given information
                     int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
-                    if (! getCms().existsResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    if (!getCms().existsResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION)) {
                         try {
                             // create the resource
                             getCms().createResource(getParamResource(), resTypeId, content, properties);
@@ -382,7 +383,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
         // get the current session id
         HttpSession session = getJsp().getRequest().getSession(false);
-        String sessionId = session.getId();
+        // we assume we always have a session here, otherwise an unhandeld NPE will occur
+        String sessionId = OpenCms.getSessionManager().getSessionInfo(session).getSessionId().toString();
 
         // define the required colors.
         // currently this is hard coded here       
@@ -454,7 +456,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append(maxFileSize);
         applet.append("\">\n");
         applet.append("<param name=\"actionOutputSelect\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_SELECT_0)); 
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_SELECT_0));
         applet.append("\">\n");
         applet.append("<param name=\"actionOutputCount\"value=\"");
         applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_COUNT_0));

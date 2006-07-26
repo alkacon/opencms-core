@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/07/21 12:05:08 $
- * Version: $Revision: 1.156.4.4 $
+ * Date   : $Date: 2006/07/26 14:59:07 $
+ * Version: $Revision: 1.156.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.4 $ 
+ * @version $Revision: 1.156.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -721,7 +721,7 @@ public abstract class CmsWorkplace {
         StringBuffer result = new StringBuffer(256);
 
         String anchorStart = "<a href=\"";
-        if (href != null && href.toLowerCase().startsWith("javascript:")) {
+        if ((href != null) && href.toLowerCase().startsWith("javascript:")) {
             anchorStart = "<a href=\"#\" onclick=\"";
         }
 
@@ -750,7 +750,7 @@ public abstract class CmsWorkplace {
                 result.append("style=\"background-image: url('");
                 result.append(imagePath);
                 result.append(image);
-                if (image != null && image.indexOf('.') == -1) {
+                if ((image != null) && (image.indexOf('.') == -1)) {
                     // append default suffix for button images
                     result.append(".png");
                 }
@@ -813,7 +813,7 @@ public abstract class CmsWorkplace {
                 result.append("><img class=\"button\" src=\"");
                 result.append(imagePath);
                 result.append(image);
-                if (image != null && image.indexOf('.') == -1) {
+                if ((image != null) && (image.indexOf('.') == -1)) {
                     // append default suffix for button images
                     result.append(".png");
                 }
@@ -1135,7 +1135,7 @@ public abstract class CmsWorkplace {
         result.append(mondayFirst);
         result.append(",\n");
         result.append("\t\tshowsTime      :    " + showTime);
-        if (showTime && key(Messages.GUI_CALENDAR_TIMEFORMAT_0).toLowerCase().indexOf("p") != -1) {
+        if (showTime && (key(Messages.GUI_CALENDAR_TIMEFORMAT_0).toLowerCase().indexOf("p") != -1)) {
             result.append(",\n\t\ttimeFormat     :    \"12\"");
         }
         if (CmsStringUtil.isNotEmpty(dateStatusFunc)) {
@@ -1274,7 +1274,7 @@ public abstract class CmsWorkplace {
      */
     public String getBroadcastMessageString() {
 
-        String sessionId = getSession().getId();
+        String sessionId = OpenCms.getSessionManager().getSessionInfo(getSession()).getSessionId().toString();
         Buffer messageQueue = OpenCms.getSessionManager().getBroadcastQueue(sessionId);
         if (!messageQueue.isEmpty()) {
             // create message String
@@ -1428,8 +1428,8 @@ public abstract class CmsWorkplace {
             // create a new macro resolver "with everything we got"
             m_macroResolver = CmsMacroResolver.newInstance()
             // initialize resolver with the objects available
-                .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
-                    (m_jsp == null) ? null : m_jsp.getJspContext());
+            .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
+                (m_jsp == null) ? null : m_jsp.getJspContext());
         }
         return m_macroResolver;
     }
@@ -1702,7 +1702,7 @@ public abstract class CmsWorkplace {
             StringBuffer result = new StringBuffer(128);
             result.append("</head>\n<body unselectable=\"on\"");
             if (getSettings().isViewAdministration()) {
-                if (className == null || "dialog".equals(className)) {
+                if ((className == null) || "dialog".equals(className)) {
                     className = "dialogadmin";
                 }
                 if (parameters == null) {
