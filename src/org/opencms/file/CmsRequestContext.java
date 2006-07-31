@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2006/07/31 13:40:19 $
+ * Version: $Revision: 1.29.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.29.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -104,6 +104,7 @@ public final class CmsRequestContext {
      * @param locale the users current locale 
      * @param encoding the encoding to use for this request
      * @param remoteAddr the remote IP address of the user
+     * @param requestTime the time of the request (used for resource publication / expiration date)
      * @param directoryTranslator the directory translator
      * @param fileTranslator the file translator
      */
@@ -115,6 +116,7 @@ public final class CmsRequestContext {
         Locale locale,
         String encoding,
         String remoteAddr,
+        long requestTime,
         CmsResourceTranslator directoryTranslator,
         CmsResourceTranslator fileTranslator) {
 
@@ -126,9 +128,9 @@ public final class CmsRequestContext {
         m_locale = locale;
         m_encoding = encoding;
         m_remoteAddr = remoteAddr;
+        m_requestTime = requestTime;
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
-        m_requestTime = System.currentTimeMillis();
     }
 
     /**

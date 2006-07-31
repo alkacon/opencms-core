@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/07/19 13:20:59 $
- * Version: $Revision: 1.121.4.2 $
+ * Date   : $Date: 2006/07/31 13:40:19 $
+ * Version: $Revision: 1.121.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.2 $ 
+ * @version $Revision: 1.121.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -433,7 +433,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             "/",
             i18nInfo.getLocale(),
             i18nInfo.getEncoding(),
-            remoteAddr);
+            remoteAddr,
+            CmsContextInfo.CURRENT_TIME);
 
         cms = OpenCms.initCmsObject(null, contextInfo);
 

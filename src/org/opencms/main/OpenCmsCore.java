@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/07/26 14:59:07 $
- * Version: $Revision: 1.218.4.6 $
+ * Date   : $Date: 2006/07/31 13:40:19 $
+ * Version: $Revision: 1.218.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,6 +104,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.ExtendedProperties;
@@ -132,7 +133,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.6 $ 
+ * @version $Revision: 1.218.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1764,6 +1765,7 @@ public final class OpenCmsCore {
             contextInfo.getLocale(),
             contextInfo.getEncoding(),
             contextInfo.getRemoteAddr(),
+            contextInfo.getRequestTime(),
             m_resourceManager.getFolderTranslator(),
             m_resourceManager.getFileTranslator());
 
@@ -1773,23 +1775,24 @@ public final class OpenCmsCore {
     }
 
     /**
-     * This method handled the user authentification for each request sent to the
-     * OpenCms. <p>
+     * This method handles the user authentification for each request sent to OpenCms.<p>
      *
      * User authentification is done in three steps:
      * <ol>
-     * <li> Session authentification: OpenCms stores information of all authentificated
-     * users in an internal storage based on the users session.</li>
-     * <li> HTTP authentification: If the session authentification fails, it is checked if the current
-     * user is providing data for HTTP BASIC authentification. If this check is positive, the user 
-     * is tried to log in with this data, and on success a session is generated.</li>
-     * <li> Default user: When both authentification methods fail, the user is
-     * set to the default (Guest) user. </li>
+     * <li>Session authentification: OpenCms stores information of all authentificated
+     *      users in an internal storage based on the users session.</li>
+     * <li>HTTP authentification: If the session authentification fails, it is checked if the current
+     *      user is providing data for HTTP BASIC authentification. If this check is positive, the user 
+     *      is tried to log in with this data, and on success a session is generated.</li>
+     * <li>Default user: When both authentification methods fail, the user is
+     * set to the default (Guest) user.</li>
      * </ol>
      *
      * @param req the current http request
      * @param res the current http response
+     * 
      * @return the initialized cms context
+     * 
      * @throws IOException if user authentication fails
      * @throws CmsException in case something goes wrong
      */
@@ -1893,25 +1896,46 @@ public final class OpenCmsCore {
             project = m_securityManager.readProject(CmsProject.ONLINE_PROJECT_ID);
         }
 
-        // get requested resource uri
+        // get requested resource uri and remote IP address, as well as time for "time warp" browsing
         String requestedResource = null;
+        Long requestTimeAttr = null;
+        String remoteAddr;
+
         if (req != null) {
+            // get path info from request
             requestedResource = req.getPathInfo();
+            
+            // check for special header for remote address
+            remoteAddr = req.getHeader(CmsRequestUtil.HEADER_X_FORWARDED_FOR);
+            if (remoteAddr == null) {
+                // if header is not available, use default remote address
+                remoteAddr = req.getRemoteAddr();
+            }
+            
+            // check for special "time warp" browsing
+            if (!CmsProject.isOnlineProject(projectId)) {
+                // this feature is not available in the "online" project
+                HttpSession session = req.getSession(false);
+                if (session != null) {
+                    // no new session must be created here
+                    requestTimeAttr = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
+                }
+            }
+        } else {
+            // if no request is available, the IP is always set to localhost
+            remoteAddr = CmsContextInfo.LOCALHOST;
         }
         if (requestedResource == null) {
-            // path info can be null, so no 'else'
+            // path info can still be null
             requestedResource = "/";
         }
 
-        // get remote IP address
-        String remoteAddr;
-        if (req != null) {
-            remoteAddr = req.getHeader(CmsRequestUtil.HEADER_X_FORWARDED_FOR);
-            if (remoteAddr == null) {
-                remoteAddr = req.getRemoteAddr();
-            }
+        // calculate the request time
+        long requestTime;
+        if (requestTimeAttr == null) {
+            requestTime = System.currentTimeMillis();
         } else {
-            remoteAddr = CmsContextInfo.LOCALHOST;
+            requestTime = requestTimeAttr.longValue();
         }
 
         // get locale and encoding        
@@ -1945,7 +1969,8 @@ public final class OpenCmsCore {
             currentSite,
             i18nInfo.getLocale(),
             i18nInfo.getEncoding(),
-            remoteAddr);
+            remoteAddr,
+            requestTime);
 
         // now generate and return the CmsObject
         return initCmsObject(contextInfo);
