@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/07/20 14:08:06 $
- * Version: $Revision: 1.13.4.3 $
+ * Date   : $Date: 2006/07/31 12:06:15 $
+ * Version: $Revision: 1.13.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ function menuItem(name, link, target, rules){
 }
 
 
-//            1     2     3      4     5         6     7      8      9        10                11                   12           13              14            15           16           17        18        19                   20                 21
+//            1     2     3      4     5         6     7      8            9        10                11                   12           13              14            15           16           17        18        19                   20                 21
 function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject){
 	this.name = name;
 	this.path = path;
