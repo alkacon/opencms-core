@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/parse/A_CmsConfiguredHtmlParser.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/10 08:20:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,24 +39,25 @@ import org.htmlparser.util.ParserException;
 
 /**
  * Base class for all classes that are specified for the &lt;cms:parse parserClass="name"
- * param="config" /&gt; tag in the parserClass Attribute.
- * <p>
+ * param="config" /&gt; tag in the parserClass Attribute.<p>
  * 
- * Entry point for the tag implementation ({@link org.opencms.jsp.CmsJspTagParse}). It will
- * provide a valid {@link org.opencms.file.CmsObject} and it's configuration parameter String to an
- * internal (and unknown) {@link org.opencms.util.I_CmsHtmlNodeVisitor} implementation along with
- * the entry point {@link #doParse(String, String)} for parsing.
- * <p>
+ * Entry point for the tag implementation ({@link org.opencms.jsp.CmsJspTagParse}). The tag will
+ * provide a valid {@link org.opencms.file.CmsObject} and it's configuration parameter String to
+ * subclasses of this instances. Implementations just choose the type of
+ * {@link org.opencms.util.I_CmsHtmlNodeVisitor} they will use for visiting the content to be
+ * parsed.<p>
  * 
+ * To implement a custom class that may be used with the <nobr>&lt;cms:parse parserClass="name"
+ * param="config" /&gt;</nobr> tag the only thing that has to be done is to implement the method
+ * {@link #createVisitorInstance()} and return the desired {@link org.opencms.util.I_CmsHtmlNodeVisitor} 
+ * implementation.<p>
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.1.7
- * 
  */
-
 public abstract class A_CmsConfiguredHtmlParser {
 
     /** The internal cms object for accessing core functionality. */
@@ -70,38 +71,27 @@ public abstract class A_CmsConfiguredHtmlParser {
 
     /**
      * Default constructor that initializes the internal visitor by using the abstract template
-     * method {@link #createVisitorInstance()}.
-     * <p>
+     * method {@link #createVisitorInstance()}.<p>
      */
     protected A_CmsConfiguredHtmlParser() {
 
-        m_visitor = createVisitorInstance();
+        // nop
     }
 
     /**
-     * Returns the result of subsequent parsing to the &lt;cms:parse&lt; tag implementation.
-     * <p>
+     * Returns the result of subsequent parsing to the &lt;cms:parse&lt; tag implementation.<p>
      * 
-     * {@link #setVisitor(I_CmsHtmlNodeVisitor)} has to be invoked with a non null value before this
-     * method or it will always fail to parse.
-     * <p>
+     * @param encoding the encoding to use for parsing
+     * @param html the html content to parse
      * 
-     * Override this method to perform further configurations. Keep the exception contract in mind
-     * to avoid serving ugly HTML pages to potential clients.
-     * <p>
+     * @return the result of subsequent parsing to the &lt;cms:parse&lt; tag implementation
      * 
-     * @param encoding the encoding to use for parsing.
-     * 
-     * @param html the html content to parse.
-     * 
-     * @return the result of subsequent parsing to the &lt;cms:parse&lt; tag implementation.
-     * 
-     * @throws ParserException if sth. goes wrong at parsing.
-     * 
-     * @throws CmsException if sth. goes wrong at accessing OpenCms core functionality.
+     * @throws ParserException if sth. goes wrong at parsing
+     * @throws CmsException if sth. goes wrong at accessing OpenCms core functionality
      */
     public String doParse(String html, String encoding) throws ParserException, CmsException {
 
+        m_visitor = createVisitorInstance();
         String result = "";
         m_visitor.process(html, encoding);
         result = m_visitor.getResult();
@@ -114,12 +104,11 @@ public abstract class A_CmsConfiguredHtmlParser {
     }
 
     /**
-     * Sets the internal cms object for accessing core functionality.
-     * <p>
-     * This will be invokde by the &tl;cms:parse&gt; tag implementation.
-     * <p>
+     * Sets the internal cms object for accessing core functionality.<p>
      * 
-     * @param cmsObject the internal cms object for accessing core functionality to set.
+     * This will be invokde by the &tl;cms:parse&gt; tag implementation.<p>
+     * 
+     * @param cmsObject the internal cms object for accessing core functionality to set
      */
     public void setCmsObject(CmsObject cmsObject) {
 
@@ -127,13 +116,11 @@ public abstract class A_CmsConfiguredHtmlParser {
     }
 
     /**
-     * The attribute value of the attribute param of the &lt;cms:parse&gt; tag.
-     * <p>
+     * The attribute value of the attribute param of the &lt;cms:parse&gt; tag.<p>
      * 
-     * Will be set by the &lt;cms:parse&gt; implementation.
-     * <p>
+     * Will be set by the &lt;cms:parse&gt; implementation.<p>
      * 
-     * @param param the param to set.
+     * @param param the param to set
      */
     public void setParam(String param) {
 
@@ -141,21 +128,21 @@ public abstract class A_CmsConfiguredHtmlParser {
     }
 
     /**
-     * Subclasses have to create their desired instance for parsing the html here.
-     * <p>
+     * Subclasses have to create their desired instance for parsing the html here.<p> 
      * 
-     * @return the instance to be used for parsing the html.
+     * You have access to {@link #getCmsObject()} and {@link #getParam()} already here and may pass those to
+     * the visitor to return.<p>
+     * 
+     * @return the instance to be used for parsing the html
      */
     protected abstract I_CmsHtmlNodeVisitor createVisitorInstance();
 
     /**
-     * Returns the internal cms object for accessing core functionality.
-     * <p>
+     * Returns the internal cms object for accessing core functionality.<p>
      * 
-     * This value will be initialized by the &lt;cms:parse&gt; tag.
-     * <p>
+     * This value will be initialized by the &lt;cms:parse&gt; tag.<p>
      * 
-     * @return the internal cms object for accessing core functionality.
+     * @return the internal cms object for accessing core functionality
      */
     protected CmsObject getCmsObject() {
 
@@ -163,8 +150,7 @@ public abstract class A_CmsConfiguredHtmlParser {
     }
 
     /**
-     * Returns the param.
-     * <p>
+     * Returns the param.<p>
      * 
      * @return the param
      */
@@ -174,26 +160,12 @@ public abstract class A_CmsConfiguredHtmlParser {
     }
 
     /**
-     * Returns the visitor.
-     * <p>
+     * Returns the visitor.<p>
      * 
      * @return the visitor
      */
     protected I_CmsHtmlNodeVisitor getVisitor() {
 
         return m_visitor;
-    }
-
-    /**
-     * Sets the visitor.
-     * <p>
-     * This has to be done from the constructor of subclasses!
-     * <p>
-     * 
-     * @param visitor the visitor to set
-     */
-    protected void setVisitor(I_CmsHtmlNodeVisitor visitor) {
-
-        m_visitor = visitor;
     }
 }
