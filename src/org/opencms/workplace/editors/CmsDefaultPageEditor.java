@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.22.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +75,16 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /** Parameter name for the request parameter "old element name". */
     public static final String PARAM_OLDELEMENTNAME = "oldelementname";
+
+    /** option values for font select boxes. */
+    public static final String[] SELECTBOX_FONTS = {
+        "Arial",
+        "Arial Narrow",
+        "System",
+        "Times New Roman",
+        "Verdana",
+        "Monospace",
+        "SansSerif"};
 
     /** Name of the special body element from an XMLTemplate. */
     public static final String XML_BODY_ELEMENT = "body";
@@ -91,19 +102,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /** The element locale. */
     private Locale m_elementLocale;
-
     private String m_paramElementname;
-    private String m_paramOldelementname;
 
-    /** option values for font select boxes. */
-    public static final String[] SELECTBOX_FONTS = {
-        "Arial",
-        "Arial Narrow",
-        "System",
-        "Times New Roman",
-        "Verdana",
-        "Monospace",
-        "SansSerif"};
+    private String m_paramOldelementname;
 
     /**
      * Public constructor.<p>
@@ -183,6 +184,42 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e);
                 }
+            }
+        }
+    }
+
+    /**
+     * Performs the delete locale action.<p>
+     * 
+     * @throws JspException if something goes wrong
+     */
+    public void actionDeleteElementLocale() throws JspException {
+
+        try {
+            Locale loc = getElementLocale();
+            m_page.removeLocale(loc);
+            //write the modified xml content
+            m_file.setContents(m_page.marshal());
+            m_file = getCms().writeFile(m_file);
+            List locales = m_page.getLocales();
+            if (locales.size() > 0) {
+                // set first locale as new display locale
+                Locale newLoc = (Locale)locales.get(0);
+                setParamElementlanguage(newLoc.toString());
+                m_elementLocale = newLoc;
+            } else {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, getParamResource()));
+                }
+            }
+            initContent();
+        } catch (CmsXmlException e) {
+            // an error occured while trying to delete the locale, stop action
+            showErrorPage(e);
+        } catch (CmsException e) {
+            // should usually never happen
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage(), e);
             }
         }
     }
@@ -515,7 +552,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     protected void initBodyElementName(String elementName) {
 
-        if (elementName == null
+        if ((elementName == null)
             || (m_page.hasValue(elementName, getElementLocale()) && !m_page.isEnabled(elementName, getElementLocale()))) {
             // elementName not specified or given element is disabled, determine default element
             List allElements = m_page.getNames(getElementLocale());

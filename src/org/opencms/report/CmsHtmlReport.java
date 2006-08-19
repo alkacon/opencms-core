@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2006/04/11 10:12:43 $
- * Version: $Revision: 1.32.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.32.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.32.4.1 $ 
+ * @version $Revision: 1.32.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,7 +113,7 @@ public class CmsHtmlReport extends A_CmsReport {
         int indexEnd = m_content.size();
         for (int i = m_indexNext; i < indexEnd; i++) {
             Object obj = m_content.get(i);
-            if (obj instanceof String || obj instanceof StringBuffer) {
+            if ((obj instanceof String) || (obj instanceof StringBuffer)) {
                 result.append(obj);
             } else if (obj instanceof Throwable) {
                 result.append(getExceptionElement((Throwable)obj));

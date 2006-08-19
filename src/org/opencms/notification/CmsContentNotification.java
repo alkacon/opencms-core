@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsContentNotification.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -412,8 +412,8 @@ public class CmsContentNotification extends CmsHtmlMail {
         String siteRoot = CmsSiteManager.getSiteRoot(resourcePath);
         resourcePath = resourcePath.substring(siteRoot.length());
         // append link, if page is available
-        if (notificationCause.getResource().getDateReleased() < System.currentTimeMillis()
-            && notificationCause.getResource().getDateExpired() > System.currentTimeMillis()) {
+        if ((notificationCause.getResource().getDateReleased() < System.currentTimeMillis())
+            && (notificationCause.getResource().getDateExpired() > System.currentTimeMillis())) {
 
             Map params = new HashMap();
             params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);

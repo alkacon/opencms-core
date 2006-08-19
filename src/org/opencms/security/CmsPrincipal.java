@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.2.0 
  */
@@ -110,7 +110,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
         Iterator it = principals.iterator();
         while (it.hasNext()) {
             CmsPrincipal p = (CmsPrincipal)it.next();
-            if (p.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT && (p.getFlags() & flag) != flag) {
+            if ((p.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) && ((p.getFlags() & flag) != flag)) {
                 it.remove();
             }
         }
@@ -199,6 +199,35 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
         }
         // invalid principal name was given
         throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, name));
+    }
+
+    /**
+     * Utility function to read a principal by its id from the OpenCms database using the 
+     * provided OpenCms user context.<p>
+     * 
+     * @param cms the OpenCms user context to use when reading the principal
+     * @param id the id of the principal to read
+     * 
+     * @return the principal read from the OpenCms database
+     * 
+     * @throws CmsException in case the principal could not be read
+     */
+    public static I_CmsPrincipal readPrincipal(CmsObject cms, CmsUUID id) throws CmsException {
+
+        try {
+            // first try to read the principal as a user
+            return cms.readUser(id);
+        } catch (CmsException exc) {
+            // assume user does not exist
+        }
+        try {
+            // now try to read the principal as a group
+            return cms.readGroup(id);
+        } catch (CmsException exc) {
+            //  assume group does not exist
+        }
+        // invalid principal name was given
+        throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, id));
     }
 
     /**

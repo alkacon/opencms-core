@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.23.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.23.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -259,7 +259,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
                 allElements.put(title, path);
             }
         }
-        if (!emptyMap && elements.size() < 1) {
+        if (!emptyMap && (elements.size() < 1)) {
             // empty Map should not be returned, return all collected elements
             return allElements;
         }

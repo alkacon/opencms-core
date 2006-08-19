@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.35.4.3 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.35.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.35.4.3 $ 
+ * @version $Revision: 1.35.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -240,10 +240,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
             // set the number of items per page from the user settings
             getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
             // sort the list
-            if (sortedColId != null && getList().getMetadata().getColumnDefinition(sortedColId) != null) {
+            if ((sortedColId != null) && (getList().getMetadata().getColumnDefinition(sortedColId) != null)) {
                 getList().setWp(this);
                 getList().setSortedColumn(sortedColId);
-                if (sortOrder != null && sortOrder == CmsListOrderEnum.ORDER_DESCENDING) {
+                if ((sortOrder != null) && (sortOrder == CmsListOrderEnum.ORDER_DESCENDING)) {
                     getList().setSortedColumn(sortedColId);
                 }
             }
@@ -399,7 +399,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 executeSelectPage();
                 break;
             default:
-        //noop
+                //noop
         }
         listSave();
     }
@@ -452,7 +452,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public CmsHtmlList getList() {
 
-        if (m_list != null && m_list.getMetadata() == null) {
+        if ((m_list != null) && (m_list.getMetadata() == null)) {
             m_list.setMetadata(getMetadata(getClass().getName(), m_list.getId()));
         }
         return m_list;
@@ -630,7 +630,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
             // null object: remove the entry from the map
             getListObjectMap(getSettings()).remove(listDialog.getName());
         } else {
-            if (listObject.getMetadata() != null && listObject.getMetadata().isVolatile()) {
+            if ((listObject.getMetadata() != null) && listObject.getMetadata().isVolatile()) {
                 listObject.setMetadata(null);
             }
             getListObjectMap(getSettings()).put(listDialog.getName(), listObject);
@@ -744,7 +744,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected String defaultActionHtml() {
 
-        if (getList() != null && getList().getAllContent().isEmpty()) {
+        if ((getList() != null) && getList().getAllContent().isEmpty()) {
             // TODO: check the need for this
             refreshList();
         }
@@ -910,7 +910,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected synchronized CmsListMetadata getMetadata(String listDialogName, String listId) {
 
-        if (m_metadatas.get(listDialogName) == null || ((CmsListMetadata)m_metadatas.get(listDialogName)).isVolatile()) {
+        if ((m_metadatas.get(listDialogName) == null) || ((CmsListMetadata)m_metadatas.get(listDialogName)).isVolatile()) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_METADATA_LIST_1, getListId()));
             }
@@ -977,7 +977,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected synchronized void listRecovery(String listId) {
 
         CmsHtmlList list = getListObject(this.getClass(), getSettings());
-        if (list != null && !list.getId().equals(listId)) {
+        if ((list != null) && !list.getId().equals(listId)) {
             list = null;
         }
         setList(list);
@@ -1029,7 +1029,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected void setSearchAction(CmsListMetadata metadata, String columnId) {
 
         CmsListColumnDefinition col = metadata.getColumnDefinition(columnId);
-        if (columnId != null && col != null) {
+        if ((columnId != null) && (col != null)) {
             if (metadata.getSearchAction() == null) {
                 // makes the list searchable
                 CmsListSearchAction searchAction = new CmsListSearchAction(col);

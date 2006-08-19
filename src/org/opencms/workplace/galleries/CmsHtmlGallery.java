@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2006/05/19 08:34:49 $
- * Version: $Revision: 1.17.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.17.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.1 $ 
+ * @version $Revision: 1.17.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +126,12 @@ public class CmsHtmlGallery extends A_CmsGallery {
             }
             content = CmsEncoder.escapeXml(content);
             // use javascript function call with content as parameter
-            return button("javascript:pasteContent('" + content + "')", null, "apply.png", Messages.GUI_BUTTON_PASTE_0, 0);
+            return button(
+                "javascript:pasteContent('" + content + "')",
+                null,
+                "apply.png",
+                Messages.GUI_BUTTON_PASTE_0,
+                0);
         } else {
             // in editor mode, use simple javascript function call
             return button("javascript:pasteContent()", null, "apply.png", Messages.GUI_BUTTON_PASTE_0, 0);

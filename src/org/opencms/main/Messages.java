@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2006/04/25 14:43:20 $
- * Version: $Revision: 1.28.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.28.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28.4.1 $ 
+ * @version $Revision: 1.28.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -48,7 +48,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** The copyright message for OpenCms. */
     public static final String[] COPYRIGHT_BY_ALKACON = {
         "",
-        "Copyright (c) 2005 Alkacon Software GmbH",
+        "Copyright (c) 2006 Alkacon Software GmbH",
         "OpenCms comes with ABSOLUTELY NO WARRANTY",
         "This is free software, and you are welcome to",
         "redistribute it under certain conditions.",
@@ -115,6 +115,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_OPENCMS_NOT_INITIALIZED_2 = "ERR_OPENCMS_NOT_INITIALIZED_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_PERMALINK_1 = "ERR_PERMALINK_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_READ_INTERNAL_RESOURCE_1 = "ERR_READ_INTERNAL_RESOURCE_1";

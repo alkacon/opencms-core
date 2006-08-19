@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsStaticExportJob.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.7.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.ServletException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,18 +68,26 @@ public class CmsStaticExportJob implements I_CmsScheduledJob {
             report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsStaticExportJob.class);
             OpenCms.getStaticExportManager().exportFullStaticRender(true, report);
         } catch (CmsException e) {
-            report.println(e);
+            if (report != null) {
+                report.println(e);
+            }
         } catch (IOException e) {
-            report.println(e);
+            if (report != null) {
+                report.println(e);
+            }
         } catch (ServletException e) {
-            report.println(e);
+            if (report != null) {
+                report.println(e);
+            }
         } finally {
             // append runtime statistics to the report
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_STAT_0));
-            report.println(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_STAT_DURATION_1,
-                report.formatRuntime()));
-            report.println(Messages.get().container(Messages.RPT_STATICEXPORT_END_0), I_CmsReport.FORMAT_HEADLINE);
+            if (report != null) {
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_STAT_0));
+                report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_STAT_DURATION_1,
+                    report.formatRuntime()));
+                report.println(Messages.get().container(Messages.RPT_STATICEXPORT_END_0), I_CmsReport.FORMAT_HEADLINE);
+            }
         }
 
         return null;

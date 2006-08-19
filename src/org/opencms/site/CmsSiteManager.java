@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2006/04/25 14:43:20 $
- * Version: $Revision: 1.51.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.51.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.51.4.1 $ 
+ * @version $Revision: 1.51.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,7 +137,7 @@ public final class CmsSiteManager implements Cloneable {
             }
         }
         // add default site
-        if (workplaceMode && OpenCms.getSiteManager().getDefaultSite() != null) {
+        if (workplaceMode && (OpenCms.getSiteManager().getDefaultSite() != null)) {
             String folder = OpenCms.getSiteManager().getDefaultSite().getSiteRoot() + "/";
             if (!siteroots.contains(folder)) {
                 siteroots.add(folder);

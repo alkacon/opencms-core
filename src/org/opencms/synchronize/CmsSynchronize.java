@@ -1,9 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2006/07/20 11:04:54 $
- * Version: $Revision: 1.63.4.1 $
- * Date   : $Date: 2006/07/20 11:04:54 $
- * Version: $Revision: 1.63.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.63.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.63.4.1 $ 
+ * @version $Revision: 1.63.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,7 +132,7 @@ public class CmsSynchronize {
 
             m_report = report;
             m_count = 1;
-            
+
             // get the destination folder
             m_destinationPathInRfs = settings.getDestinationPathInRfs();
 
@@ -608,18 +606,12 @@ public class CmsSynchronize {
                     //  from it
                     if (line != null) {
                         StringTokenizer tok = new StringTokenizer(line, ":");
-                        if (tok != null) {
-                            String resName = tok.nextToken();
-                            String tranResName = tok.nextToken();
-                            long modifiedVfs = new Long(tok.nextToken()).longValue();
-                            long modifiedFs = new Long(tok.nextToken()).longValue();
-                            CmsSynchronizeList sync = new CmsSynchronizeList(
-                                resName,
-                                tranResName,
-                                modifiedVfs,
-                                modifiedFs);
-                            syncList.put(translate(resName), sync);
-                        }
+                        String resName = tok.nextToken();
+                        String tranResName = tok.nextToken();
+                        long modifiedVfs = new Long(tok.nextToken()).longValue();
+                        long modifiedFs = new Long(tok.nextToken()).longValue();
+                        CmsSynchronizeList sync = new CmsSynchronizeList(resName, tranResName, modifiedVfs, modifiedFs);
+                        syncList.put(translate(resName), sync);
                     }
                 }
             } catch (IOException e) {
@@ -1028,12 +1020,12 @@ public class CmsSynchronize {
         } finally {
             // close all streams that were used
             try {
-                pOut.flush();
-                fOut.flush();
                 if (pOut != null) {
+                    pOut.flush();
                     pOut.close();
                 }
                 if (fOut != null) {
+                    fOut.flush();
                     fOut.close();
                 }
             } catch (IOException e) {

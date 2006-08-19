@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2006/06/14 15:09:32 $
- * Version: $Revision: 1.16.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.16.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.1 $ 
+ * @version $Revision: 1.16.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -330,20 +330,14 @@ public interface I_CmsXmlDocument {
     /**
      * Validates the content of this XML document.<p>
      * 
+     * To check for errors in a single document locale only, use 
+     * {@link CmsXmlContentErrorHandler#hasErrors(Locale)} in the result object.<p>
+     * 
      * @param cms the current OpenCms user context
      * 
      * @return an error handler instance that provides information about the errors or warnings that have been found
+     * 
+     * @see #validate(CmsObject, Locale)
      */
     CmsXmlContentErrorHandler validate(CmsObject cms);
-    
-    
-    /**
-     * Validates the content of this XML document for a single locale.<p>
-     * 
-     * @param cms the current OpenCms user context
-     * @param locale the locale to validate the content
-     * 
-     * @return an error handler instance that provides information about the errors or warnings that have been found
-     */
-    CmsXmlContentErrorHandler validate(CmsObject cms, Locale locale);
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:49 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,16 +109,16 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /** Request parameter name for the releasedate. */
     public static final String PARAM_RELEASEDATE = "releasedate";
-    
+
     /** Request parameter name for the resetexpire. */
     public static final String PARAM_RESETEXPIRE = "resetexpire";
-    
+
     /** Request parameter name for the resetrelease. */
     public static final String PARAM_RESETRELEASE = "resetrelease";
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAvailability.class);
-    
+
     private String m_paramEnablenotification;
     private String m_paramExpiredate;
     private String m_paramLeaveexpire;
@@ -247,7 +247,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
         StringBuffer result = new StringBuffer(254);
         try {
-            if (isMultiOperation() || getCms().readSiblings(getParamResource(), CmsResourceFilter.ALL).size() > 1) {
+            if (isMultiOperation() || (getCms().readSiblings(getParamResource(), CmsResourceFilter.ALL).size() > 1)) {
                 result.append("<tr>\n<td style=\"white-space:nowrap;\">");
                 result.append(key(Messages.GUI_AVAILABILITY_MODIFY_SIBLINGS_0));
                 result.append("</td>\n<td class=\"maxwidth\" style=\"padding-left: 5px;\">\n");
@@ -746,7 +746,7 @@ public class CmsAvailability extends CmsMultiDialog {
         boolean leaveExpireDate = false;
         if (!resetExpireDate) {
             try {
-                if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamExpiredate())) 
+                if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamExpiredate()))
                     && (!getParamExpiredate().startsWith(CmsTouch.DEFAULT_DATE_STRING))) {
                     expireDate = getCalendarDate(getParamExpiredate(), true);
                 } else {
@@ -825,14 +825,15 @@ public class CmsAvailability extends CmsMultiDialog {
             checkLock(resourcePath);
             if (!leaveRelease && !leaveExpire) {
                 if (expireDate < releaseDate) {
-                    throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_AVAILABILITY_BAD_TIMEWINDOW_0)); 
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.ERR_AVAILABILITY_BAD_TIMEWINDOW_0));
                 }
             }
             // modify release and expire date of the resource if desired
-            if (! leaveRelease) {
+            if (!leaveRelease) {
                 getCms().setDateReleased(resourcePath, releaseDate, modifyRecursive);
-            } 
-            if (! leaveExpire) {
+            }
+            if (!leaveExpire) {
                 getCms().setDateExpired(resourcePath, expireDate, modifyRecursive);
             }
             // write notification settings

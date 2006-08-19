@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2006/05/12 15:52:36 $
- * Version: $Revision: 1.14.4.2 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.14.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.4.2 $
+ * @version $Revision: 1.14.4.3 $
  * 
  * @since 6.0.0
  */
@@ -172,6 +172,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_VFS_XML_CONTENT_FINISHED_0 = "INIT_VFS_XML_CONTENT_FINISHED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_WORKFLOW_MANAGER_INVALID_1 = "INIT_WORKFLOW_MANAGER_INVALID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_WORKFLOW_MANAGER_SUCCESS_1 = "INIT_WORKFLOW_MANAGER_SUCCESS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_WORKPLACE_FINISHED_0 = "INIT_WORKPLACE_FINISHED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -220,6 +226,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_INIT_REQUEST_HANDLER_FAILURE_1 = "LOG_INIT_REQUEST_HANDLER_FAILURE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_INIT_WORKFLOW_MANAGER_FAILURE_1 = "LOG_INIT_WORKFLOW_MANAGER_FAILURE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_INVALID_CONFIG_BASE_FOLDER_1 = "LOG_INVALID_CONFIG_BASE_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
@@ -229,9 +238,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_MAIL_SETTINGS_1 = "LOG_MAIL_SETTINGS_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_VALIDATION_HANDLER_1 = "LOG_VALIDATION_HANDLER_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_REMOVE_CONFIG_FILE_1 = "LOG_REMOVE_CONFIG_FILE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -239,6 +245,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RESOURCE_INIT_FAILURE_1 = "LOG_RESOURCE_INIT_FAILURE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_VALIDATION_HANDLER_1 = "LOG_VALIDATION_HANDLER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_CONFIG_SUCCESS_2 = "LOG_WRITE_CONFIG_SUCCESS_2";

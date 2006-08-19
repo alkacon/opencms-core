@@ -52,6 +52,7 @@
 				}
 			}
 			if( !dbExists || dropDb)	{
+                db.closeConnection();
 				db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
 			}
 			else {
@@ -140,8 +141,7 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 									</tr>									
 									<%
 									enableContinue = true;
-								}
-								else	{
+								} else {
 									enableContinue = false;
 									dbError = true;
 								 %>
@@ -188,8 +188,7 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 									</tr>									
 									<%
 									enableContinue = true;
-								}
-								else	{ 
+								} else { 
 									enableContinue = false;
 									dbError = true;
 								%>
@@ -299,7 +298,9 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 <input name="btcontinue" type="submit" value="Continue &#062;&#062;" class="dialogbutton" disabled="disabled" id="btcontinue">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>
-<% if (enableContinue && !dbError)	{
+<% 
+  db.closeConnection();
+  if (enableContinue && !dbError)	{
 	out.println("<script type=\"text/javascript\">\ndocument.getElementById(\"btcontinue\").disabled = false;\n</script>");
 } %>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/05/12 15:52:36 $
- * Version: $Revision: 1.36.4.3 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.36.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.workflow.I_CmsWorkflowManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,7 +78,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.3 $
+ * @version $Revision: 1.36.4.4 $
  * 
  * @since 6.0.0
  */
@@ -374,6 +375,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the warning-interval node. */
     public static final String N_WARNING_INTERVAL = "warning-interval";
 
+    /** The node name for the workflow node. */
+    public static final String N_WORKFLOW = "workflow";
+
+    /** The node name for the workflow engine node. */
+    public static final String N_WORKFLOW_ENGINE = "workflowengine";
+
+    /** The node name for the workflow manager node. */
+    public static final String N_WORKFLOW_MANAGER = "workflowmanager";
+
     /** The node name for the workplace-server node. */
     public static final String N_WORKPLACE_SERVER = "workplace-server";
 
@@ -455,6 +465,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The maximum number of entries in the version history (per resource). */
     private int m_versionHistoryMaxCount;
+
+    /** The workfloe engine. */
+    private String m_workflowEngine;
+
+    /** The configured workflow manager. */
+    private I_CmsWorkflowManager m_workflowManager;
 
     /**
      * Public constructor, will be called by configuration manager.<p> 
@@ -591,6 +607,38 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void addScheduleManager() {
 
         m_scheduleManager = new CmsScheduleManager(m_configuredJobs);
+    }
+
+    /**
+     * Generates the workflow manager.<p>
+     * 
+     * @param clazz the workflow manager class to use
+     */
+    public void addWorkflowManager(String clazz) {
+
+        // TODO: Name of classes must be written to configuration (system.xml) even if init fails
+        int todo_v7 = 0;
+
+        Object initClass;
+        try {
+            initClass = Class.forName(clazz).newInstance();
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INIT_WORKFLOW_MANAGER_FAILURE_1, clazz), t);
+            return;
+        }
+        if (initClass instanceof I_CmsWorkflowManager) {
+            m_workflowManager = (I_CmsWorkflowManager)initClass;
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKFLOW_MANAGER_SUCCESS_1, clazz));
+            }
+            if (m_workflowEngine != null) {
+                m_workflowManager.setEngine(m_workflowEngine);
+            }
+        } else {
+            if (CmsLog.INIT.isErrorEnabled()) {
+                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_WORKFLOW_MANAGER_INVALID_1, clazz));
+            }
+        }
     }
 
     /**
@@ -770,7 +818,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, "setPasswordHandler");
 
         // add validation handler creation rules
-        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, A_CLASS, CmsDefaultValidationHandler.class);
+        digester.addObjectCreate(
+            "*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER,
+            A_CLASS,
+            CmsDefaultValidationHandler.class);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, "setValidationHandler");
 
         // add login manager creation rules
@@ -912,6 +963,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             "setNotificationProject",
             1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_CONTENT_NOTIFICATION + "/" + N_NOTIFICATION_PROJECT, 0);
+
+        // add rule for workflow manager
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_MANAGER, "addWorkflowManager", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_MANAGER, 0, A_CLASS);
+
+        // add workflow engine rule
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_ENGINE, "setWorkflowEngine", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_ENGINE, 0, A_CLASS);
     }
 
     /**
@@ -934,6 +993,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             m_siteManager = OpenCms.getSiteManager();
             m_loginManager = OpenCms.getLoginManager();
             m_loginMessage = OpenCms.getLoginManager().getLoginMessage();
+            m_workflowManager = OpenCms.getWorkflowManager();
         }
 
         // i18n nodes
@@ -1221,13 +1281,22 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         cacheElement.addElement(N_SIZE_PERMISSIONS).setText(Integer.toString(m_cacheSettings.getPermissionCacheSize()));
 
         // content notification settings
-        if (m_notificationTime != null || m_notificationProject != null) {
+        if ((m_notificationTime != null) || (m_notificationProject != null)) {
             Element notificationElement = systemElement.addElement(N_CONTENT_NOTIFICATION);
             if (m_notificationTime != null) {
                 notificationElement.addElement(N_NOTIFICATION_TIME).setText(m_notificationTime.toString());
             }
             if (m_notificationProject != null) {
                 notificationElement.addElement(N_NOTIFICATION_PROJECT).setText(m_notificationProject.toString());
+            }
+        }
+
+        // optional workflow nodes
+        if (m_workflowManager != null) {
+            Element workflowElement = systemElement.addElement(N_WORKFLOW);
+            workflowElement.addElement(N_WORKFLOW_MANAGER).addAttribute(A_CLASS, m_workflowManager.getClass().getName());
+            if (m_workflowManager.getEngine() != null) {
+                workflowElement.addElement(N_WORKFLOW_ENGINE).addAttribute(A_CLASS, m_workflowManager.getEngine());
             }
         }
 
@@ -1482,6 +1551,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public int getVersionHistoryMaxCount() {
 
         return m_versionHistoryMaxCount;
+    }
+
+    /**
+     * Returns the configured workflow manager.<p>
+     *
+     * @return the configured workflow manager
+     */
+    public I_CmsWorkflowManager getWorkflowManager() {
+
+        return m_workflowManager;
     }
 
     /**
@@ -1792,9 +1871,23 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_versionHistoryEnabled = Boolean.valueOf(historyEnabled).booleanValue();
         m_versionHistoryMaxCount = Integer.valueOf(historyMaxCount).intValue();
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_HISTORY_SETTINGS_2,
-            // is Boolean type localized by underlying java.text.MessageFormat?
-                new Boolean(m_versionHistoryEnabled), new Integer(m_versionHistoryMaxCount)));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_HISTORY_SETTINGS_2,
+                new Boolean(m_versionHistoryEnabled),
+                new Integer(m_versionHistoryMaxCount)));
+        }
+    }
+
+    /**
+     * Sets the workflow engine implementation.<p>
+     * 
+     * @param engine the engines class name
+     */
+    public void setWorkflowEngine(String engine) {
+
+        m_workflowEngine = engine;
+        if (m_workflowManager != null) {
+            m_workflowManager.setEngine(engine);
         }
     }
 }

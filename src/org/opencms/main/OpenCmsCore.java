@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/07/31 13:40:19 $
- * Version: $Revision: 1.218.4.7 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.218.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,6 +83,7 @@ import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
@@ -133,7 +134,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.7 $ 
+ * @version $Revision: 1.218.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -174,9 +175,6 @@ public final class OpenCmsCore {
 
     /** The locale manager used for obtaining the current locale. */
     private CmsLocaleManager m_localeManager;
-
-    /** The lock manager used for the locking mechanism. */
-    private CmsLockManager m_lockManager;
 
     /** The login manager. */
     private CmsLoginManager m_loginManager;
@@ -232,6 +230,9 @@ public final class OpenCmsCore {
     /** The runtime validation handler. */
     private I_CmsValidationHandler m_validationHandler;
 
+    /** The workflow manager. */
+    private I_CmsWorkflowManager m_workflowManager;
+
     /** The workplace manager contains information about the global workplace settings. */
     private CmsWorkplaceManager m_workplaceManager;
 
@@ -255,6 +256,72 @@ public final class OpenCmsCore {
             m_instance = this;
             setRunLevel(OpenCms.RUNLEVEL_1_CORE_OBJECT);
         }
+    }
+
+    /**
+     * Returns the resource to render, if the resource is a folder it tries 
+     * to get a file to render the folder through the default folder files, 
+     * if still no file can be found to render the folder <code>null</code> is retuned. 
+     * 
+     * @param cms the cms context
+     * @param resource the resource name
+     * 
+     * @return the resource to render
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsResource narrowResource(CmsObject cms, CmsResource resource) throws CmsException {
+
+        // TODO: This should be a method in the CmsObject!
+        int todo_v7;
+
+        // resource exists, lets check if we have a file or a folder
+        if (resource.isFolder()) {
+            // the resource is a folder, check if PROPERTY_DEFAULT_FILE is set on folder
+            try {
+                String defaultFileName = cms.readPropertyObject(
+                    CmsResource.getFolderPath(cms.getSitePath(resource)),
+                    CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
+                    false).getValue();
+                if (defaultFileName != null) {
+                    // property was set, so look up this file first
+                    String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource)) + defaultFileName;
+                    resource = cms.readResource(tmpResourceName);
+                    // no exception? so we have found the default file                         
+                    cms.getRequestContext().setUri(tmpResourceName);
+                }
+            } catch (CmsSecurityException se) {
+                // permissions deny access to the resource
+                throw se;
+            } catch (CmsException e) {
+                // ignore all other exceptions and continue the lookup process
+            }
+            if (resource.isFolder()) {
+                // resource is (still) a folder, check default files specified in configuration
+                Iterator it = OpenCms.getDefaultFiles().iterator();
+                while (it.hasNext()) {
+                    String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource))
+                        + it.next().toString();
+                    try {
+                        resource = cms.readResource(tmpResourceName);
+                        // no exception? So we have found the default file                         
+                        cms.getRequestContext().setUri(tmpResourceName);
+                        // stop looking for default files   
+                        break;
+                    } catch (CmsSecurityException se) {
+                        // permissions deny access to the resource
+                        throw se;
+                    } catch (CmsException e) {
+                        // ignore all other exceptions and continue the lookup process
+                    }
+                }
+            }
+        }
+        if (resource.isFolder()) {
+            // we only want files as a result for further processing
+            resource = null;
+        }
+        return resource;
     }
 
     /**
@@ -347,8 +414,6 @@ public final class OpenCmsCore {
     /**
      * Returns the configured list of default directory file names.<p>
      *  
-     * Caution: This list can not be modified.<p>
-     * 
      * @return the configured list of default directory file names
      */
     protected List getDefaultFiles() {
@@ -425,7 +490,7 @@ public final class OpenCmsCore {
      */
     protected CmsLockManager getLockManager() {
 
-        return m_lockManager;
+        return m_securityManager.getLockManager();
     }
 
     /**
@@ -619,6 +684,16 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns the workflow manager.<p>  
+     * 
+     * @return the workflow manager
+     */
+    protected I_CmsWorkflowManager getWorkflowManager() {
+
+        return m_workflowManager;
+    }
+
+    /**
      * Returns the initialized workplace manager, 
      * which contains information about the global workplace settings.<p> 
      * 
@@ -775,9 +850,6 @@ public final class OpenCmsCore {
         // set the server name
         String serverName = configuration.getString("server.name", "OpenCmsServer");
         getSystemInfo().setServerName(serverName);
-
-        // initialize the lock manager
-        m_lockManager = CmsLockManager.getInstance();
 
         // check the installed Java SDK
         try {
@@ -954,10 +1026,13 @@ public final class OpenCmsCore {
             systemConfiguration.getRuntimeInfoFactory());
 
         // initialize the Thread store
-        m_threadStore = new CmsThreadStore();
+        m_threadStore = new CmsThreadStore(m_securityManager);
 
         // initialize the link manager
         m_linkManager = new CmsLinkManager();
+
+        // get the workflow manager
+        m_workflowManager = systemConfiguration.getWorkflowManager();
 
         // store the runtime properties
         m_runtimeProperties.putAll(systemConfiguration.getRuntimeProperties());
@@ -999,6 +1074,12 @@ public final class OpenCmsCore {
 
             // initialize the workplace manager
             m_workplaceManager.initialize(initCmsObject(adminCms));
+
+            // initialize the workflow manager
+            if (m_workflowManager != null) {
+                m_workflowManager.initialize(initCmsObject(adminCms));
+            }
+
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
@@ -1162,57 +1243,13 @@ public final class OpenCmsCore {
         HttpServletRequest req,
         HttpServletResponse res) throws CmsException {
 
-        CmsResource resource = null;
         CmsException tmpException = null;
+        CmsResource resource;
 
         try {
             // try to read the requested resource
-            resource = cms.readResource(resourceName);
-            // resource exists, lets check if we have a file or a folder
-            if (resource.isFolder()) {
-                // the resource is a folder, check if PROPERTY_DEFAULT_FILE is set on folder
-                try {
-                    String defaultFileName = cms.readPropertyObject(
-                        CmsResource.getFolderPath(cms.getSitePath(resource)),
-                        CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
-                        false).getValue();
-                    if (defaultFileName != null) {
-                        // property was set, so look up this file first
-                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource)) + defaultFileName;
-                        resource = cms.readResource(tmpResourceName);
-                        // no exception? so we have found the default file                         
-                        cms.getRequestContext().setUri(tmpResourceName);
-                    }
-                } catch (CmsSecurityException se) {
-                    // permissions deny access to the resource
-                    throw se;
-                } catch (CmsException e) {
-                    // ignore all other exceptions and continue the lookup process
-                }
-                if (resource.isFolder()) {
-                    // resource is (still) a folder, check default files specified in configuration
-                    for (int i = 0; i < m_defaultFiles.size(); i++) {
-                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource))
-                            + m_defaultFiles.get(i);
-                        try {
-                            resource = cms.readResource(tmpResourceName);
-                            // no exception? So we have found the default file                         
-                            cms.getRequestContext().setUri(tmpResourceName);
-                            // stop looking for default files   
-                            break;
-                        } catch (CmsSecurityException se) {
-                            // permissions deny access to the resource
-                            throw se;
-                        } catch (CmsException e) {
-                            // ignore all other exceptions and continue the lookup process
-                        }
-                    }
-                }
-            }
-            if (resource.isFolder()) {
-                // we only want files as a result for further processing
-                resource = null;
-            }
+            resource = narrowResource(cms, cms.readResource(resourceName));
+
         } catch (CmsException e) {
             // file or folder with given name does not exist, store exception
             tmpException = e;
@@ -1904,14 +1941,14 @@ public final class OpenCmsCore {
         if (req != null) {
             // get path info from request
             requestedResource = req.getPathInfo();
-            
+
             // check for special header for remote address
             remoteAddr = req.getHeader(CmsRequestUtil.HEADER_X_FORWARDED_FOR);
             if (remoteAddr == null) {
                 // if header is not available, use default remote address
                 remoteAddr = req.getRemoteAddr();
             }
-            
+
             // check for special "time warp" browsing
             if (!CmsProject.isOnlineProject(projectId)) {
                 // this feature is not available in the "online" project

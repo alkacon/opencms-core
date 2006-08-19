@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.17.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,7 +77,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "delete";
-    
+
     /** Request parameter name for the deletevfslinks parameter. */
     public static final String PARAM_DELETEVFSLINKS = "deletevfslinks";
 
@@ -165,7 +165,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         if (isMultiOperation() || (hasVfsLinks() && hasCorrectLockstate())) {
             // show only for multi resource operation or if resource has siblings and correct lock state
             int defaultMode = getSettings().getUserSettings().getDialogDeleteFileMode();
-            if (! isMultiOperation()) {
+            if (!isMultiOperation()) {
                 result.append(key(Messages.GUI_DELETE_WARNING_SIBLINGS_0));
                 result.append("<p>");
             }
@@ -190,7 +190,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         }
         if (isMultiOperation()) {
             result.append(key(Messages.GUI_DELETE_MULTI_CONFIRMATION_0));
-        }  else {
+        } else {
             result.append(key(Messages.GUI_DELETE_CONFIRMATION_0));
         }
         return result.toString();
@@ -241,10 +241,9 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
             LOG.error(e.getLocalizedMessage(), e);
             return false;
         }
-        int type = lock.getType();
         // check if autolock feature is enabled
         boolean autoLockFeature = lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources();
-        return (autoLockFeature || type == CmsLock.TYPE_EXCLUSIVE || type == CmsLock.TYPE_INHERITED);
+        return autoLockFeature || lock.isExclusive() || lock.isInherited();
     }
 
     /**

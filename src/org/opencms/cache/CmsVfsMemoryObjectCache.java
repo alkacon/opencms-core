@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.1.3
  */
@@ -112,6 +112,7 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
                 uncacheSystemId(resource.getRootPath());
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_DELETED:
+            case I_CmsEventListener.EVENT_RESOURCE_MOVED:
                 List resources = (List)event.getData().get("resources");
                 for (int i = 0; i < resources.size(); i++) {
                     resource = (CmsResource)resources.get(i);
@@ -119,7 +120,7 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
                 }
                 break;
             default:
-        // no operation
+                // no operation
         }
     }
 
@@ -159,6 +160,7 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
             I_CmsEventListener.EVENT_CLEAR_CACHES,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT,
             I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
+            I_CmsEventListener.EVENT_RESOURCE_MOVED,
             I_CmsEventListener.EVENT_RESOURCE_DELETED});
     }
 
@@ -183,7 +185,8 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
      * Returns a cache key for the given root path based on the status 
      * of the given CmsObject.<p>
      * 
-     * @param systemId the system id (filename) to get the cache key for
+     * @param cms the cms context
+     * @param rootPath the filename to get the cache key for
      * 
      * @return the cache key for the system id
      */

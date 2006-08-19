@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/08/19 13:40:47 $
+ * Version: $Revision: 1.21.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,13 @@ package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -72,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,7 +88,7 @@ public class CmsDisplayResource extends CmsDialog {
 
     /** The version id parameter. */
     private String m_paramVersionid;
-    
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -155,12 +157,13 @@ public class CmsDisplayResource extends CmsDialog {
     public void actionShow() throws Exception {
 
         // try to load the backup resource
+        String resourceStr = getParamResource();
         if (CmsStringUtil.isNotEmpty(getParamVersionid())) {
-            byte[] result = getBackupResourceContent(getCms(), getParamResource(), getParamVersionid());
+            byte[] result = getBackupResourceContent(getCms(), resourceStr, getParamVersionid());
             if (result != null) {
                 // get the top level response to change the content type
                 String contentType = OpenCms.getResourceManager().getMimeType(
-                    getParamResource(),
+                    resourceStr,
                     getCms().getRequestContext().getEncoding());
 
                 HttpServletResponse res = getJsp().getResponse();
@@ -168,7 +171,7 @@ public class CmsDisplayResource extends CmsDialog {
 
                 res.setHeader(
                     CmsRequestUtil.HEADER_CONTENT_DISPOSITION,
-                    new StringBuffer("attachment; filename=\"").append(getParamResource()).append("\"").toString());
+                    new StringBuffer("attachment; filename=\"").append(resourceStr).append("\"").toString());
                 res.setContentLength(result.length);
 
                 CmsFlexController controller = CmsFlexController.getController(req);
@@ -187,10 +190,31 @@ public class CmsDisplayResource extends CmsDialog {
                 }
             }
         } else {
-            if (getCms().existsResource(getParamResource(), CmsResourceFilter.DEFAULT)) {
-                String url = getJsp().link(getParamResource());
+
+            // manual existsResource, need it for timewarp checking and saves three calls for existsResource
+            CmsResource resource = null;
+            try {
+                resource = getCms().readResource(resourceStr, CmsResourceFilter.ALL);
+            } catch (CmsVfsResourceNotFoundException e) {
+                // ignore, resource will be null
+            }
+
+            if (resource != null) {
+                if (resource.getState() == CmsResource.STATE_DELETED) {
+                    // resource has been deleted in offline project
+                    throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                        Messages.ERR_RESOURCE_DELETED_2,
+                        resourceStr,
+                        getCms().getRequestContext().currentProject().getName()));
+                }
+
+                // check for release / expiration time window 
+                autoTimeWarp(resource);
+
+                // code for display resource after all tests for displayability (exists, not deleted)
+                String url = getJsp().link(resourceStr);
                 // if in online project
-                if (url.indexOf("//:") < 0 && getCms().getRequestContext().currentProject().isOnlineProject()) {
+                if ((url.indexOf("//:") < 0) && getCms().getRequestContext().currentProject().isOnlineProject()) {
                     String site = getCms().getRequestContext().getSiteRoot();
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
                         site = OpenCms.getSiteManager().getDefaultUri();
@@ -208,8 +232,7 @@ public class CmsDisplayResource extends CmsDialog {
                         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
                         HttpURLConnection.setFollowRedirects(false);
                         // try to export it
-                        URL exportUrl = new URL(manager.getExportUrl()
-                            + manager.getRfsName(getCms(), getParamResource()));
+                        URL exportUrl = new URL(manager.getExportUrl() + manager.getRfsName(getCms(), resourceStr));
                         HttpURLConnection urlcon = (HttpURLConnection)exportUrl.openConnection();
                         // setup the connection and request the resource
                         urlcon.setRequestMethod("GET");
@@ -243,30 +266,16 @@ public class CmsDisplayResource extends CmsDialog {
                 }
                 getJsp().getResponse().sendRedirect(url);
             } else {
-                if (getCms().existsResource(getParamResource(), CmsResourceFilter.ALL)) {
-                    if (getCms().existsResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION)) {
-                        // resource is outside time window, show error message
-                        throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                            Messages.ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1,
-                            getParamResource()));
-                    } else {
-                        // resource is deleted, show error message
-                        throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                            Messages.ERR_RESOURCE_DELETED_2,
-                            getParamResource(),
-                            getCms().getRequestContext().currentProject().getName()));
-                    }
-                }
-                // resource is outside time window, show error message
+                // resource does not exist, show error message
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
                     Messages.ERR_RESOURCE_DOES_NOT_EXIST_3,
-                    getParamResource(),
+                    resourceStr,
                     getCms().getRequestContext().currentProject().getName(),
-                    getCms().getRequestContext().getSiteRoot()));                
+                    getCms().getRequestContext().getSiteRoot()));
             }
         }
     }
-    
+
     /**
      * Returns the paramVersionid.<p>
      *
@@ -285,6 +294,53 @@ public class CmsDisplayResource extends CmsDialog {
     public void setParamVersionid(String paramVersionid) {
 
         m_paramVersionid = paramVersionid;
+    }
+
+    /**
+     * Performs a timewarp for resources that are expired or not released yet to always allow a
+     * preview of a page out of the workplace.<p>
+     *
+     * If the user has a configured timewarp (preferences dialog) a mandatory timewarp will lead to 
+     * an exception. One cannot auto timewarp with configured timewarp time.<p>
+     * 
+     * @param resource the resource to show
+     * 
+     * @throws CmsVfsResourceNotFoundException if a warp would be needed to show the resource but the user has a configured
+     *      timewarp which disallows auto warping
+     */
+    protected void autoTimeWarp(CmsResource resource) throws CmsVfsResourceNotFoundException {
+
+        long surfTime = getCms().getRequestContext().getRequestTime();
+        if (resource.isReleasedAndNotExpired(surfTime)) {
+            // resource is valid, no modification of time required
+            return;
+        }
+
+        if (getSettings().getUserSettings().getTimeWarp() == CmsContextInfo.CURRENT_TIME) {
+            // no time warp has been set, enable auto time warp
+            long timeWarp;
+            // will also work if ATTRIBUTE_REQUEST_TIME was CmsResource.DATE_RELEASED_EXPIRED_IGNORE
+            if (resource.isExpired(surfTime)) {
+                // do a time warp into the past
+                timeWarp = resource.getDateExpired() - 1;
+            } else if (!resource.isReleased(surfTime)) {
+                // do a time warp into the future
+                timeWarp = resource.getDateReleased() + 1;
+            } else {
+                // do no time warp
+                timeWarp = CmsContextInfo.CURRENT_TIME;
+            }
+            if (timeWarp != CmsContextInfo.CURRENT_TIME) {
+                // let's do the time warp again...
+                getSession().setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, new Long(timeWarp));
+            }
+        } else {
+            // resource is not vaild in the time window set by the user,
+            // report an error message
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                Messages.ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1,
+                getParamResource()));
+        }
     }
 
     /**

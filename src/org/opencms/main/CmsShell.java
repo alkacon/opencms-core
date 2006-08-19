@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2006/03/28 13:10:02 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.48.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.48.4.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -95,10 +95,10 @@ public class CmsShell {
      */
     private class CmsCommandObject {
 
-        /** The list of methods. */ 
+        /** The list of methods. */
         private Map m_methods;
 
-        /** The object to execute the methods on. */ 
+        /** The object to execute the methods on. */
         private Object m_object;
 
         /**
@@ -237,7 +237,7 @@ public class CmsShell {
                 foundMethod = onlyStringMethod;
             }
 
-            if (params == null) {
+            if ((params == null) || (foundMethod == null)) {
                 // no match found at all
                 return false;
             }
@@ -826,7 +826,7 @@ public class CmsShell {
                     }
                     break;
                 }
-                if ((line != null) && line.trim().startsWith("#")) {
+                if (line.trim().startsWith("#")) {
                     System.out.println(line);
                     continue;
                 }
@@ -846,7 +846,7 @@ public class CmsShell {
                 reader.close();
 
                 // extract command and arguments
-                if ((parameters == null) || (parameters.size() == 0)) {
+                if (parameters.size() == 0) {
                     if (m_echo) {
                         System.out.println();
                     }

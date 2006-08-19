@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsNotificationCandidates.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -115,7 +115,7 @@ public class CmsNotificationCandidates {
                 GregorianCalendar intervalAfter = (GregorianCalendar)intervalBefore.clone();
                 intervalAfter.add(Calendar.WEEK_OF_YEAR, -1);
 
-                for (int i = 0; i < 100 && intervalAfter.getTime().before(now.getTime()); i++) {
+                for (int i = 0; (i < 100) && intervalAfter.getTime().before(now.getTime()); i++) {
                     if (intervalBefore.getTime().after(now.getTime())) {
                         m_resources.add(new CmsExtendedNotificationCause(
                             resource,

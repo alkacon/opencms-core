@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/07/20 10:50:48 $
- * Version: $Revision: 1.47.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.47.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.47.4.1 $ 
+ * @version $Revision: 1.47.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -347,7 +347,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public Map getAvailableModules() {
 
-        if (m_availableModules == null || m_availableModules.isEmpty()) {
+        if ((m_availableModules == null) || m_availableModules.isEmpty()) {
             m_availableModules = new HashMap();
             m_moduleDependencies = new HashMap();
             m_moduleFilenames = new HashMap();
@@ -772,7 +772,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public Map getModuleDependencies() {
 
-        if (m_moduleDependencies == null || m_moduleDependencies.isEmpty()) {
+        if ((m_moduleDependencies == null) || m_moduleDependencies.isEmpty()) {
             try {
                 // open the folder "/WEB-INF/packages/modules/"
                 m_moduleDependencies = CmsModuleManager.buildDepsForAllModules(getModuleFolder(), true);
@@ -800,7 +800,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public List getModulesToInstall() {
 
-        if (m_installModules == null || m_installModules.isEmpty()) {
+        if ((m_installModules == null) || m_installModules.isEmpty()) {
             return Collections.EMPTY_LIST;
         }
         return Collections.unmodifiableList(m_installModules);
@@ -1015,7 +1015,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         // 5) because the setup bean implements I_CmsShellCommands, the shell constructor can pass the shell's CmsObject back to the setup bean
         // 6) thus, the setup bean can do things with the Cms
 
-        if (m_cms != null && m_installModules != null) {
+        if ((m_cms != null) && (m_installModules != null)) {
             for (int i = 0; i < m_installModules.size(); i++) {
                 String filename = (String)m_moduleFilenames.get(m_installModules.get(i));
                 try {
@@ -1141,7 +1141,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public String isChecked(String value1, String value2) {
 
-        if (value1 == null || value2 == null) {
+        if ((value1 == null) || (value2 == null)) {
             return "";
         }
 
@@ -2033,7 +2033,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
                     int index = line.indexOf('=');
                     int index1 = line.indexOf("\\=");
-                    if (line.indexOf('=') > -1 && index1 != index - 1) {
+                    if ((line.indexOf('=') > -1) && (index1 != index - 1)) {
 
                         String key = line.substring(0, line.indexOf('=')).trim();
                         if (alreadyWritten.contains(key)) {
@@ -2045,7 +2045,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
                             Object obj = properties.get(key);
                             String value = "";
 
-                            if (obj != null && obj instanceof Vector) {
+                            if ((obj != null) && (obj instanceof Vector)) {
                                 String[] values = {};
                                 values = (String[])((Vector)obj).toArray(values);
                                 StringBuffer buf = new StringBuffer();

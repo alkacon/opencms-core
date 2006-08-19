@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.75.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.75 $ 
+ * @version $Revision: 1.75.4.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -173,7 +173,7 @@ public class CmsImportVersion3 extends A_CmsImport {
         boolean convert = false;
 
         Map config = OpenCms.getPasswordHandler().getConfiguration();
-        if (config != null && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
+        if ((config != null) && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
             convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)).booleanValue();
         }
 
@@ -498,8 +498,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             }
 
             // create a new CmsResource                         
-            CmsResource resource = new CmsResource(
-                new CmsUUID(), // structure ID is always a new UUID
+            CmsResource resource = new CmsResource(new CmsUUID(), // structure ID is always a new UUID
                 newUuidresource,
                 destination,
                 resType.getTypeId(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.17.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -162,7 +162,7 @@ public class CmsDialogElements extends CmsDialog {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
-        if (currentTemplate != null && currentTemplate.length() > 0) {
+        if ((currentTemplate != null) && (currentTemplate.length() > 0)) {
             // template found, check template-elements property
             String elements = null;
             try {

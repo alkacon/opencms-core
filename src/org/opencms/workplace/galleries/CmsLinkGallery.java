@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.22.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -328,9 +328,9 @@ public class CmsLinkGallery extends A_CmsGallery {
                     CmsFile file = CmsFile.upgrade(res, getCms());
                     String link = new String(file.getContents()).toLowerCase();
 
-                    if (restitle.indexOf(searchword) != -1
-                        || resname.indexOf(searchword) != -1
-                        || link.indexOf(searchword) != -1) {
+                    if ((restitle.indexOf(searchword) != -1)
+                        || (resname.indexOf(searchword) != -1)
+                        || (link.indexOf(searchword) != -1)) {
                         // add this resource to the hitlist
                         hitlist.add(res);
                     }

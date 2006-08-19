@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItem.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,8 +88,8 @@ public class CmsListItem {
      */
     public Object get(String columnId) throws CmsIllegalArgumentException {
 
-        if (getMetadata().getColumnDefinition(columnId) == null
-            && getMetadata().getItemDetailDefinition(columnId) == null) {
+        if ((getMetadata().getColumnDefinition(columnId) == null)
+            && (getMetadata().getItemDetailDefinition(columnId) == null)) {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(Messages.ERR_LIST_INVALID_COLUMN_1, columnId));
         }
@@ -130,8 +130,8 @@ public class CmsListItem {
      */
     public Object set(String columnId, Object value) throws CmsIllegalArgumentException {
 
-        if (getMetadata().getColumnDefinition(columnId) == null
-            && getMetadata().getItemDetailDefinition(columnId) == null) {
+        if ((getMetadata().getColumnDefinition(columnId) == null)
+            && (getMetadata().getItemDetailDefinition(columnId) == null)) {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(Messages.ERR_LIST_INVALID_COLUMN_1, columnId));
         }

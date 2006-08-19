@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupStateAction.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.11.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.11.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.11.4.1 $ 
+ * @version $Revision: 1.11.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,6 +103,9 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
      */
     public String getUserName() {
 
+        if (m_userName == null) {
+            m_userName = ((A_CmsUserGroupsList)getWp()).getParamUsername();
+        }
         return m_userName;
     }
 
@@ -152,6 +155,6 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
 
         super.setWp(wp);
         m_cms = wp.getCms();
-        m_userName = ((A_CmsUserGroupsList)getWp()).getParamUsername();
+        m_userName = null;
     }
 }

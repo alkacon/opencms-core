@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.8.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,7 +47,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COLLECTOR_DEFAULTS_INVALID_2 = "ERR_COLLECTOR_DEFAULTS_INVALID_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COLLECTOR_NAME_INVALID_1 = "ERR_COLLECTOR_NAME_INVALID_1";
 

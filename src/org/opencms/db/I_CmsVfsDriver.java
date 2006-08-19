@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2006/07/12 16:53:56 $
- * Version: $Revision: 1.114.4.4 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.114.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.util.CmsUUID;
 
 import java.sql.ResultSet;
@@ -51,7 +53,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.4 $
+ * @version $Revision: 1.114.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -75,7 +77,7 @@ public interface I_CmsVfsDriver {
     throws CmsDataAccessException;
 
     /**
-     * Creates a CmsFile instance from a JDBC ResultSet.<p>
+     * Creates a {@link CmsFile} instance from a JDBC ResultSet.<p>
      * 
      * @param res the JDBC ResultSet
      * @param projectId the project id
@@ -86,7 +88,7 @@ public interface I_CmsVfsDriver {
     CmsFile createFile(ResultSet res, int projectId) throws SQLException;
 
     /**
-     * Creates a CmsFile instance from a JDBC ResultSet.<p>
+     * Creates a {@link CmsFile} instance from a JDBC ResultSet.<p>
      * 
      * @param res the JDBC ResultSet
      * @param projectId the project id
@@ -98,7 +100,7 @@ public interface I_CmsVfsDriver {
     CmsFile createFile(ResultSet res, int projectId, boolean hasFileContentInResultSet) throws SQLException;
 
     /**
-     * Creates a CmsFolder instance from a JDBC ResultSet.<p>
+     * Creates a {@link CmsFolder} instance from a JDBC ResultSet.<p>
      * 
      * @param res the JDBC ResultSet
      * @param projectId the ID of the current project
@@ -124,7 +126,18 @@ public interface I_CmsVfsDriver {
     throws CmsDataAccessException;
 
     /**
-     * Creates a new resource from a given CmsResource object.<p>
+     * Creates a new {@link CmsRelation} object in the database.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the id of the project to execute the query in
+     * @param relation the relation to create
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void createRelation(CmsDbContext dbc, int projectId, CmsRelation relation) throws CmsDataAccessException;
+
+    /**
+     * Creates a new resource from a given {@link CmsResource} object.<p>
      * 
      * This method works for both files and folders. Existing resources get overwritten.<p>
      * 
@@ -187,12 +200,24 @@ public interface I_CmsVfsDriver {
      * @param deleteOption determines which property values should be deleted
      * 
      * @throws CmsDataAccessException if something goes wrong
+     * 
      * @see org.opencms.file.CmsProperty#DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES
      * @see org.opencms.file.CmsProperty#DELETE_OPTION_DELETE_STRUCTURE_VALUES
      * @see org.opencms.file.CmsProperty#DELETE_OPTION_DELETE_RESOURCE_VALUES
      */
     void deletePropertyObjects(CmsDbContext dbc, int projectId, CmsResource resource, int deleteOption)
     throws CmsDataAccessException;
+
+    /**
+     * Deletes all relations with the given filter for the given resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the id of the project to execute the query in
+     * @param filter the filter to restrict the relations to remove
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void deleteRelations(CmsDbContext dbc, int projectId, CmsRelationFilter filter) throws CmsDataAccessException;
 
     /**
      * Destroys this driver.<p>
@@ -219,6 +244,19 @@ public interface I_CmsVfsDriver {
      * @return the SQL manager for this driver
      */
     org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
+
+    /**
+     * Moves the given resource to the specified destination path.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the Id of the project
+     * @param source the resource to move
+     * @param destinationPath the root path of the destination resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void moveResource(CmsDbContext dbc, int projectId, CmsResource source, String destinationPath)
+    throws CmsDataAccessException;
 
     /**
      * Publishes the structure and resource records of an 
@@ -264,13 +302,12 @@ public interface I_CmsVfsDriver {
      * The <code>projectId</code> and <code>includeDeleted</code> are not used anymore.
      * They are still parameters of the method to maintain compatibility to older versions.<p>
      * The returned file possesses only the content of the file as a byte array, 
-     * which is returned by {@link CmsFile#getContents()}, and the content ID returned 
-     * by {@link CmsFile#getContentId()}.<p>
+     * which can be by (@link CmsFile#getContents()), and the content ID.<p>
      * 
      * @param dbc the current database context
      * @param projectId the ID of the current project
-     * @param includeDeleted true if deleted files should be read as well
-     * @param resourceId the resource ID of the file
+     * @param includeDeleted true if should be read even if it's state is deleted
+     * @param resourceId the id of the resource
      * 
      * @return the file that was read
      * @throws CmsDataAccessException if something goes wrong
@@ -286,6 +323,7 @@ public interface I_CmsVfsDriver {
      * @param folderId the id of the folder to be read
      * 
      * @return the read folder
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
     CmsFolder readFolder(CmsDbContext dbc, int projectId, CmsUUID folderId) throws CmsDataAccessException;
@@ -301,6 +339,21 @@ public interface I_CmsVfsDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     CmsFolder readFolder(CmsDbContext dbc, int projectId, String foldername) throws CmsDataAccessException;
+
+    /**
+     * Reads the parent folder of a resource specified by it's structure ID.<p>
+     *
+     * The parent folder for the root '/' is defined as <code>null</code>.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the project in which the resource will be used
+     * @param structureId the id of the resource to read the parent folder for
+     * 
+     * @return the read folder, or <code>null</code>
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    CmsFolder readParentFolder(CmsDbContext dbc, int projectId, CmsUUID structureId) throws CmsDataAccessException;
 
     /**
      * Reads a property definition for the soecified resource type.<p>
@@ -361,6 +414,19 @@ public interface I_CmsVfsDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     List readPropertyObjects(CmsDbContext dbc, CmsProject project, CmsResource resource) throws CmsDataAccessException;
+
+    /**
+     * Reads all relations with the given filter for the given resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the id of the project to execute the query in
+     * @param filter the filter to restrict the relations to remove
+     * 
+     * @return the read relations
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List readRelations(CmsDbContext dbc, int projectId, CmsRelationFilter filter) throws CmsDataAccessException;
 
     /**
      * Reads a resource specified by it's structure ID.<p>
@@ -562,7 +628,6 @@ public interface I_CmsVfsDriver {
 
     /**
      * Replaces the content and properties of an existing resource.<p>
-     * 
      * @param dbc the current database context
      * @param newResource the new resource
      * @param newResourceContent the new content

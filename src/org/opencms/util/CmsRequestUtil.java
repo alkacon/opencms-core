@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2006/05/11 07:28:43 $
- * Version: $Revision: 1.18.4.2 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.18.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.18.4.2 $ 
+ * @version $Revision: 1.18.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -443,7 +443,7 @@ public final class CmsRequestUtil {
     public static String getCookieValue(CmsJspActionElement jsp, String name) {
 
         Cookie[] cookies = jsp.getRequest().getCookies();
-        for (int i = 0; cookies != null && i < cookies.length; i++) {
+        for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
             if (name.equalsIgnoreCase(cookies[i].getName())) {
                 return cookies[i].getValue();
             }
@@ -560,7 +560,7 @@ public final class CmsRequestUtil {
             FileItem item = (FileItem)i.next();
             String name = item.getFieldName();
             String value = null;
-            if (name != null && item.getName() == null) {
+            if ((name != null) && (item.getName() == null)) {
                 // only put to map if current item is no file and not null
                 try {
                     value = item.getString(encoding);
@@ -627,7 +627,7 @@ public final class CmsRequestUtil {
     public static void setCookieValue(CmsJspActionElement jsp, String name, String value) {
 
         Cookie[] cookies = jsp.getRequest().getCookies();
-        for (int i = 0; cookies != null && i < cookies.length; i++) {
+        for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
             if (name.equalsIgnoreCase(cookies[i].getName())) {
                 cookies[i].setValue(value);
                 return;

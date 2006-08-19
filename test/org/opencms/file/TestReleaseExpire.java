@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReleaseExpire.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import junit.framework.TestSuite;
  * Unit test for the "setDateExpired" and "setDateReleased" method of the CmsObject.<p>
  * 
  * @author Jan Baudisch
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.3.4.1 $
  */
 public class TestReleaseExpire extends OpenCmsTestCase {
 
@@ -110,17 +110,19 @@ public class TestReleaseExpire extends OpenCmsTestCase {
 
         CmsResource resource = testOutsideTimeRange(cms);
         assertEquals(resource.getDateExpired(), yesterday);
+
+        assertEquals(resource.getProjectLastModified(), cms.getRequestContext().currentProject().getId());
     }
 
     /**
-     * Test to set relase date on a resource.<p>
+     * Test to set release date on a resource.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testSetDateReleased() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        echo("Testing to set relase date");
+        echo("Testing to set release date");
 
         long tomorrow = System.currentTimeMillis() + m_msecPerDay;
         cms.lockResource(m_resourceName);
@@ -129,25 +131,24 @@ public class TestReleaseExpire extends OpenCmsTestCase {
 
         CmsResource resource = testOutsideTimeRange(cms);
         assertEquals(resource.getDateReleased(), tomorrow);
+
+        assertEquals(resource.getProjectLastModified(), cms.getRequestContext().currentProject().getId());
     }
 
     private CmsResource testOutsideTimeRange(CmsObject cms) throws CmsException {
 
-        boolean coughtException = false;
-        // should throw exception  
         try {
+            // should throw exception  
             cms.readResource(m_resourceName, CmsResourceFilter.DEFAULT);
+            fail("Read outside-of-time-range resource with filter CmsResourceFilter.DEFAULT");
         } catch (CmsVfsResourceNotFoundException e) {
-            coughtException = true;
-        }
-        if (!coughtException) {
-            fail("Read invisible resource with filter CmsResourceFilter.ONLY_VISIBLE");
+            // ok
         }
 
         try {
             return cms.readResource(m_resourceName, CmsResourceFilter.ALL);
         } catch (CmsException e) {
-            fail("Unable to read invisible resource with filter CmsResourceFilter.ALL");
+            fail("Unable to read outside-of-time-range resource with filter CmsResourceFilter.ALL");
         }
         return null;
     }

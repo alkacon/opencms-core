@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchEditorWrapper.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,7 +116,7 @@ public class CmsSearchEditorWrapper extends CmsDialog {
             "uri",
             CmsEncoder.encode(CmsEncoder.encode(uri)));
         getSettings().setViewStartup(getJsp().link(uri));
-        
+
         JspWriter out = getJsp().getJspContext().getOut();
         out.print(htmlStart());
         out.print(bodyStart(null));

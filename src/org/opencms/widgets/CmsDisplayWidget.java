@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.12.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,7 +124,9 @@ public class CmsDisplayWidget extends A_CmsWidget {
             if (widgetDialog.useNewStyle()) {
                 result.append(getJsHelpMouseHandler(widgetDialog, locKey, null));
             } else {
-                result.append(getJsHelpMouseHandler(widgetDialog, locKey, CmsEncoder.escape(locValue, cms.getRequestContext().getEncoding())));
+                result.append(getJsHelpMouseHandler(widgetDialog, locKey, CmsEncoder.escape(
+                    locValue,
+                    cms.getRequestContext().getEncoding())));
             }
             result.append("></td>");
             return result.toString();
@@ -143,7 +145,7 @@ public class CmsDisplayWidget extends A_CmsWidget {
             return "";
         }
         helpIdsShown.add(helpId);
-        
+
         // calculate the key        
         String locValue = widgetDialog.getMessages().key(helpId, true);
         if (locValue == null) {

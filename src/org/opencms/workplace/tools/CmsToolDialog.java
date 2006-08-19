@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2006/07/20 12:37:32 $
- * Version: $Revision: 1.33.4.2 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.33.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.33.4.2 $ 
+ * @version $Revision: 1.33.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -342,11 +342,11 @@ public class CmsToolDialog extends CmsWorkplace {
         } catch (Exception e) {
             // ignore
         }
-        
+
         if (!getToolManager().getCurrentTool(this).getHandler().isEnabled(getCms())) {
             throw new CmsRoleViolationException(Messages.get().container(Messages.ERR_ADMIN_INSUFFICIENT_RIGHTS_0));
         }
-        
+
         return params;
     }
 
@@ -403,7 +403,7 @@ public class CmsToolDialog extends CmsWorkplace {
      */
     public String pageHtmlStyle(int segment, String title, String stylesheet) {
 
-        if (!useNewStyle() || segment != HTML_START) {
+        if (!useNewStyle() || (segment != HTML_START)) {
             return super.pageHtmlStyle(segment, title, stylesheet);
         }
 
@@ -500,7 +500,7 @@ public class CmsToolDialog extends CmsWorkplace {
      */
     public boolean useNewStyle() {
 
-        return getParamStyle() != null && getParamStyle().equals(CmsToolDialog.STYLE_NEW);
+        return (getParamStyle() != null) && getParamStyle().equals(CmsToolDialog.STYLE_NEW);
     }
 
     /**

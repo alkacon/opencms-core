@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2006/03/27 14:52:26 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.25.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.25.4.1 $
  * 
  * @since 6.0.0
  */
@@ -332,6 +332,8 @@ public final class CmsDbUtil {
         PreparedStatement stmt = null;
 
         try {
+            // TODO: move all these queries to the queries.sql!!
+            int todo_v7;
             stmt = conn.prepareStatement("UPDATE CMS_SYSTEMID SET ID=? WHERE CMS_SYSTEMID.TABLE_KEY=? AND CMS_SYSTEMID.ID=?");
             stmt.setInt(1, newId);
             stmt.setString(2, tableName);

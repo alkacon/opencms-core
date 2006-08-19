@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.25.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.25.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.25.4.1 $ 
+ * @version $Revision: 1.25.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -461,7 +461,7 @@ public class CmsListColumnDefinition {
 
         boolean isSorted = getId().equals(sortedCol);
         CmsListOrderEnum nextOrder = CmsListOrderEnum.ORDER_ASCENDING;
-        if (isSorted && order == CmsListOrderEnum.ORDER_ASCENDING) {
+        if (isSorted && (order == CmsListOrderEnum.ORDER_ASCENDING)) {
             nextOrder = CmsListOrderEnum.ORDER_DESCENDING;
         }
         // button
@@ -481,7 +481,7 @@ public class CmsListColumnDefinition {
                 helpText = messages.key(Messages.GUI_LIST_COLUMN_NO_SORT_1, new Object[] {getName().key(locale)});
             }
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && getWidth().indexOf('%') < 0) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && (getWidth().indexOf('%') < 0)) {
             html.append("\t<div style='display:block; width: ");
             html.append(getWidth());
             html.append("px;'>\n");
@@ -510,7 +510,7 @@ public class CmsListColumnDefinition {
                 html.append("' alt=''>\n");
             }
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && getWidth().indexOf('%') < 0) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && (getWidth().indexOf('%') < 0)) {
             html.append("\t</div>\n");
         }
         html.append("</th>\n");

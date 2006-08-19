@@ -66,7 +66,11 @@ public class CmsListCsvExportIAction extends A_CmsListIndependentJsAction {
      */
     public String jsCode(CmsWorkplace wp) {
 
-        String url = wp.getJsp().link("/system/workplace/commons/list-csv.jsp?" + CmsListCsvExportDialog.PARAM_LISTCLASS + "=" + wp.getClass().getName());
+        String url = wp.getJsp().link(
+            "/system/workplace/commons/list-csv.jsp?"
+                + CmsListCsvExportDialog.PARAM_LISTCLASS
+                + "="
+                + wp.getClass().getName());
         String title = "CSV - " + ((A_CmsListDialog)wp).getList().getName().key(wp.getLocale());
         String opts = "toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width=450,height=450";
         StringBuffer js = new StringBuffer(512);

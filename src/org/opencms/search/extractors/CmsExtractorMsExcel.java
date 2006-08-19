@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsExcel.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.8.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReader;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,7 +152,7 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractorMsOfficeBase {
                             } catch (Exception e) {
                                 // ignore this cell
                             }
-                            if (CmsStringUtil.isNotEmpty(text)) {
+                            if ((text != null) && (text.length() != 0)) {
                                 result.append(text.trim());
                                 result.append(' ');
                                 hasContent = true;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2006/08/19 13:40:39 $
+ * Version: $Revision: 1.25.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.25.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -176,7 +176,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @throws CmsException if something goes wrong
      */
     public static CmsFile upgrade(CmsResource resource, CmsObject cms) throws CmsException {
-        
+
         // test if we already have a file
         if (resource instanceof CmsFile) {
             // resource is already a file
@@ -198,7 +198,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
                 return backupResource;
             }
         }
-        
+
         // resource is no file, or contents are not available
         String filename = cms.getSitePath(resource);
         // read and return the file

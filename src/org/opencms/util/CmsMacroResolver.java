@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.18.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.18.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Key used to specify the city of the current user as macro value. */
     public static final String KEY_CURRENT_USER_CITY = "currentuser.city";
+
+    /** Key used to specify the country of the current user as macro value. */
+    public static final String KEY_CURRENT_USER_COUNTRY = "currentuser.country";
 
     /** Key used to specify the email address of the current user as macro value. */
     public static final String KEY_CURRENT_USER_EMAIL = "currentuser.email";
@@ -92,9 +95,6 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Key used to specify the zip code of the current user as macro value. */
     public static final String KEY_CURRENT_USER_ZIP = "currentuser.zip";
-
-    /** Key used to specify the country of the current user as macro value. */
-    public static final String KEY_CURRENT_USER_COUNTRY = "currentuser.country";
 
     /** Key prefix used to specify the value of a localized key as macro value. */
     public static final String KEY_LOCALIZED_PREFIX = "key.";
@@ -164,7 +164,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Adds macro delimiters to the given input, 
-     * for example <code>key</code> becomes <code>${key}</code>.<p>
+     * for example <code>key</code> becomes <code>%(key)</code>.<p>
      * 
      * @param input the input to format as a macro
      * 
@@ -173,10 +173,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static String formatMacro(String input) {
 
         StringBuffer result = new StringBuffer(input.length() + 4);
-        result.append(I_CmsMacroResolver.MACRO_DELIMITER);
-        result.append(I_CmsMacroResolver.MACRO_START);
+        result.append(I_CmsMacroResolver.MACRO_DELIMITER_NEW);
+        result.append(I_CmsMacroResolver.MACRO_START_NEW);
         result.append(input);
-        result.append(I_CmsMacroResolver.MACRO_END);
+        result.append(I_CmsMacroResolver.MACRO_END_NEW);
         return result.toString();
     }
 
@@ -195,8 +195,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return false;
         }
 
-        return ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER)
-            && (input.charAt(1) == I_CmsMacroResolver.MACRO_START) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END));
+        return (((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END))) || ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER_NEW) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START_NEW) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END_NEW))));
     }
 
     /**
@@ -212,7 +211,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /**
      * Resolves the macros in the given input using the provided parameters.<p>
      * 
-     * A macro in the form <code>${key}</code> in the content is replaced with it's assigned value
+     * A macro in the form <code>%(key)</code> or <code>${key}</code> in the content is replaced with it's assigned value
      * returned by the <code>{@link I_CmsMacroResolver#getMacroValue(String)}</code> method of the given 
      * <code>{@link I_CmsMacroResolver}</code> instance.<p>
      * 
@@ -237,7 +236,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /**
      * Resolves macros in the provided input String using the given macro resolver.<p>
      * 
-     * A macro in the form <code>${key}</code> in the content is replaced with it's assigned value
+     * A macro in the form <code>%(key)</code> or <code>${key}</code> in the content is replaced with it's assigned value
      * returned by the <code>{@link I_CmsMacroResolver#getMacroValue(String)}</code> method of the given 
      * <code>{@link I_CmsMacroResolver}</code> instance.<p>
      * 
@@ -253,12 +252,14 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static String resolveMacros(final String input, I_CmsMacroResolver resolver) {
 
         if ((input == null) || (input.length() < 3)) {
-            // macro must have at last 3 chars "${}"
+            // macro must have at last 3 chars "${}" or "%()"
             return input;
         }
 
-        int p = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER);
-        if (p == -1) {
+        int pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_NEW);
+        int po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER);
+
+        if ((po == -1) && (pn == -1)) {
             // no macro delimiter found in input
             return input;
         }
@@ -269,6 +270,18 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         String macro, value;
         boolean keep = resolver.isKeepEmptyMacros();
         boolean resolvedNone = true;
+        char ds, de;
+        int p;
+
+        if ((po == -1) || ((pn > -1) && (pn < po))) {
+            p = pn;
+            ds = I_CmsMacroResolver.MACRO_START_NEW;
+            de = I_CmsMacroResolver.MACRO_END_NEW;
+        } else {
+            p = po;
+            ds = I_CmsMacroResolver.MACRO_START;
+            de = I_CmsMacroResolver.MACRO_END;
+        }
 
         // append chars before the first delimiter found
         result.append(input.substring(0, p));
@@ -276,22 +289,35 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             pp1 = p + 1;
             pp2 = pp1 + 1;
             if (pp2 >= len) {
-                // remaining chars cant be a macro (minumum size is 3)
+                // remaining chars can't be a macro (minumum size is 3)
                 result.append(input.substring(p, len));
                 break;
             }
             // get the next macro delimiter
-            np = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER, pp1);
-            if (np == -1) {
+            if ((pn > -1) && (pn < pp1)) {
+                pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_NEW, pp1);
+            }
+            if ((po > -1) && (po < pp1)) {
+                po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER, pp1);
+            }
+            if ((po == -1) && (pn == -1)) {
                 // none found, make sure remaining chars in this segement are appended
                 np = len;
+            } else {
+                // check if the next delimiter is old or new style
+                if ((po == -1) || ((pn > -1) && (pn < po))) {
+                    np = pn;
+                } else {
+                    np = po;
+                }
             }
             // check if the next char is a "macro start"
-            if (input.charAt(pp1) == I_CmsMacroResolver.MACRO_START) {
-                // we have a starting macro sequence "${", now check if this segment contains a "}"
-                e = input.indexOf(I_CmsMacroResolver.MACRO_END, p);
+            char st = input.charAt(pp1);
+            if (st == ds) {
+                // we have a starting macro sequence "${" or "%(", now check if this segment contains a "}" or ")"
+                e = input.indexOf(de, p);
                 if ((e > 0) && (e < np)) {
-                    // this segment contains a closing macro delimiter "}", so we have found a macro
+                    // this segment contains a closing macro delimiter "}" or "]", so we may have found a macro
                     macro = input.substring(pp2, e);
                     // resolve macro
                     value = resolver.getMacroValue(macro);
@@ -305,12 +331,20 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         result.append(input.substring(p, e));
                     }
                 } else {
-                    // no complete macro "${...}" in this segment
+                    // no complete macro "${...}" or "%(...)" in this segment
                     e = p;
                 }
             } else {
-                // no macro start char after the "$"
+                // no macro start char after the "$" or "%"
                 e = p;
+            }
+            // adpot macro style for next delimiter found
+            if (np == pn) {
+                ds = I_CmsMacroResolver.MACRO_START_NEW;
+                de = I_CmsMacroResolver.MACRO_END_NEW;
+            } else {
+                ds = I_CmsMacroResolver.MACRO_START;
+                de = I_CmsMacroResolver.MACRO_END;
             }
             // append the remaining chars after the macro to the start of the next macro
             result.append(input.substring(e, np));
@@ -325,6 +359,24 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         // input was changed during resolving of macros
         return result.toString();
+    }
+
+    /**
+     * Strips the macro delimiters from the given input, 
+     * for example <code>%(key)</code> or <code>${key}</code> becomes <code>key</code>.<p>
+     * 
+     * In case the input is not a macro, <code>null</code> is returned.<p>
+     * 
+     * @param input the input to strip
+     * 
+     * @return the macro stripped from the input, or <code>null</code>
+     */
+    public static String stripMacro(String input) {
+
+        if (isMacro(input)) {
+            return input.substring(2, input.length() - 1);
+        }
+        return null;
     }
 
     /**

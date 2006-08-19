@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.60.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.60.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -413,7 +413,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             } else {
                 // index does not exist yet
                 f = f.getParentFile();
-                if (f != null && !f.exists()) {
+                if ((f != null) && !f.exists()) {
                     // create the parent folders if required
                     f.mkdirs();
                 }
@@ -723,8 +723,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // perform the search operation          
             hits = searcher.search(finalQuery, params.getSort());
 
-            int hitCount = hits.length();
-
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
 
@@ -733,9 +731,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             String excerpt = null;
 
             if (hits != null) {
+                int hitCount = hits.length();
                 int page = params.getSearchPage();
                 int start = -1, end = -1;
-                if (matchesPerPage > 0 && page > 0 && hitCount > 0) {
+                if ((matchesPerPage > 0) && (page > 0) && (hitCount > 0)) {
                     // calculate the final size of the search result
                     start = matchesPerPage * (page - 1);
                     end = start + matchesPerPage;
@@ -749,7 +748,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 }
 
                 int visibleHitCount = hitCount;
-                for (int i = 0, cnt = 0; i < hitCount && cnt < end; i++) {
+                for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
                         doc = hits.doc(i);
                         if (hasReadPermission(cms, doc)) {
@@ -757,7 +756,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                             if (cnt >= start) {
                                 // do not use the resource to obtain the raw content, read it from the lucene document !
                                 // documents must not have content (i.e. images), so check if the content field exists
-                                if (m_createExcerpt && doc.getField(I_CmsDocumentFactory.DOC_CONTENT) != null) {
+                                if (m_createExcerpt && (doc.getField(I_CmsDocumentFactory.DOC_CONTENT) != null)) {
                                     excerpt = getExcerpt(
                                         doc.getField(I_CmsDocumentFactory.DOC_CONTENT).stringValue(),
                                         finalQuery,
@@ -808,7 +807,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         timeTotal += System.currentTimeMillis();
 
         Object[] logParams = new Object[] {
-            new Integer(hits.length()),
+            new Integer(hits == null ? 0 : hits.length()),
             new Long(timeTotal),
             new Long(timeLucene),
             new Long(timeResultProcessing)};
@@ -958,7 +957,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         excerpt = excerpt.replace('\f', ' ');
 
         int maxLength = OpenCms.getSearchManager().getMaxExcerptLength();
-        if (excerpt != null && excerpt.length() > maxLength) {
+        if ((excerpt != null) && (excerpt.length() > maxLength)) {
             excerpt = excerpt.substring(0, maxLength);
         }
 

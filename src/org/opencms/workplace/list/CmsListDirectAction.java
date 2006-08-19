@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.19.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.19.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.1 $ 
+ * @version $Revision: 1.19.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,7 +76,7 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     protected String resolveHelpText(Locale locale) {
 
         String helpText = getHelpText().key(locale);
-        if (getColumnForTexts() != null && getItem().get(getColumnForTexts()) != null) {
+        if ((getColumnForTexts() != null) && (getItem().get(getColumnForTexts()) != null)) {
             helpText = new MessageFormat(helpText, locale).format(new Object[] {getItem().get(getColumnForTexts())});
         }
         return helpText;
@@ -92,7 +92,7 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     protected String resolveOnClic(Locale locale) {
 
         String confirmationMessage = getConfirmationMessage().key(locale);
-        if (getColumnForTexts() != null && getItem().get(getColumnForTexts()) != null) {
+        if ((getColumnForTexts() != null) && (getItem().get(getColumnForTexts()) != null)) {
             confirmationMessage = new MessageFormat(confirmationMessage, locale).format(new Object[] {getItem().get(
                 getColumnForTexts())});
         }
@@ -102,8 +102,8 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
         onClic.append("', '");
         onClic.append(getId());
         onClic.append("', '");
-        if (getColumnForTexts() == null
-            || getItem().get(getColumnForTexts()) == null
+        if ((getColumnForTexts() == null)
+            || (getItem().get(getColumnForTexts()) == null)
             || confirmationMessage.equals(new MessageFormat(confirmationMessage, locale).format(new Object[] {""}))) {
             onClic.append("conf" + getId());
         } else {
@@ -133,10 +133,10 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
      * @return the style of the button
      */
     protected CmsHtmlIconButtonStyleEnum resolveButtonStyle() {
-        
+
         return CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY;
     }
-    
+
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
      */
@@ -167,8 +167,9 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
         StringBuffer html = new StringBuffer(512);
         String cm = getConfirmationMessage().key(getWp().getLocale());
         String confMessage = new MessageFormat(cm, getWp().getLocale()).format(new Object[] {""});
-        if (getColumnForTexts() == null
-            || confMessage.equals(new MessageFormat(cm, getWp().getLocale()).format(new Object[] {getItem().get(getColumnForTexts())}))) {
+        if ((getColumnForTexts() == null)
+            || confMessage.equals(new MessageFormat(cm, getWp().getLocale()).format(new Object[] {getItem().get(
+                getColumnForTexts())}))) {
             html.append(A_CmsListAction.defaultConfirmationHtml(getId(), confMessage));
         }
         return html.toString();
@@ -198,8 +199,9 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
         StringBuffer html = new StringBuffer(512);
         String ht = getHelpText().key(getWp().getLocale());
         String helptext = new MessageFormat(ht, getWp().getLocale()).format(new Object[] {""});
-        if (getColumnForTexts() == null
-            || helptext.equals(new MessageFormat(ht, getWp().getLocale()).format(new Object[] {getItem().get(getColumnForTexts())}))) {
+        if ((getColumnForTexts() == null)
+            || helptext.equals(new MessageFormat(ht, getWp().getLocale()).format(new Object[] {getItem().get(
+                getColumnForTexts())}))) {
             html.append(A_CmsHtmlIconButton.defaultHelpHtml(getId(), helptext));
         }
         return html.toString();

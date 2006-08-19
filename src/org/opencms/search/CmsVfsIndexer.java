@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.34.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.lucene.index.Term;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.34.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -256,7 +256,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_UNABLE_TO_READ_RESOURCE_2,
-                        resource.getRootPath(),
+                        res.getRootPath(),
                         m_index.getName()), e);
                 }
             }

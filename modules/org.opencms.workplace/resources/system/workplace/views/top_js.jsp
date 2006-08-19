@@ -18,6 +18,7 @@ this.descr = new Array(
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_TITLE_0) %>",  						 
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_TYPE_0) %>", 
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_SIZE_0) %>",
+		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_WORKFLOW_STATE_0) %>",	
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_PERMISSIONS_0) %>", 
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_DATELASTMODIFIED_0) %>", 
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_USERLASTMODIFIED_0) %>",
@@ -34,6 +35,7 @@ this.actProject;
 this.onlineProject;
 this.actDirectory;
 this.actDirId;
+this.showUpload = <%= OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowFileUploadButtonString() %>
 
 this.userName="<%= wp.getSettings().getUser().getName() %>";
 this.servpath="<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";

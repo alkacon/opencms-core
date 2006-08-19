@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2006/04/02 09:59:56 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2006/08/19 13:40:39 $
+ * Version: $Revision: 1.25.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.25.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -89,6 +89,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INITIALIZING_USER_DRIVER_0 = "ERR_INITIALIZING_USER_DRIVER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_DELETE_OPTION_1 = "ERR_INVALID_DELETE_OPTION_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_RESOURCE_LENGTH_2 = "ERR_INVALID_RESOURCE_LENGTH_2";
 
     /** Message constant for key in the resource bundle. */
@@ -126,6 +129,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_OUT_OF_MEMORY_0 = "ERR_OUT_OF_MEMORY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_OVERWRITE_MOVED_RESOURCE_3 = "ERR_OVERWRITE_MOVED_RESOURCE_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PARENT_FOLDER_DELETED_1 = "ERR_PARENT_FOLDER_DELETED_1";
@@ -170,6 +176,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_TASKS_0 = "ERR_READ_TASKS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_ADDITIONAL_INFO_1 = "ERR_READING_ADDITIONAL_INFO_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_USER_0 = "ERR_READING_USER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -180,7 +189,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_WITH_NAME_CURRENTLY_CREATED_1 = "ERR_RESOURCE_WITH_NAME_CURRENTLY_CREATED_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCENAME_TOO_LONG_2 = "ERR_RESOURCENAME_TOO_LONG_2";
 
@@ -208,9 +217,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITING_TO_OUTPUT_STREAM_1 = "ERR_WRITING_TO_OUTPUT_STREAM_1";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READING_ADDITIONAL_INFO_1 = "ERR_READING_ADDITIONAL_INFO_1";
-    
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ASSIGNED_POOL_1 = "INIT_ASSIGNED_POOL_1";
 
@@ -240,6 +246,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_USER_GROUP_INITIALIZATION_FAILED_0 = "INIT_USER_GROUP_INITIALIZATION_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DBG_CLEAR_LOCKS_1 = "LOG_DBG_CLEAR_LOCKS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DBG_READ_LOCKS_1 = "LOG_DBG_READ_LOCKS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DBG_WRITE_LOCKS_1 = "LOG_DBG_WRITE_LOCKS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEL_FILE_3 = "LOG_DEL_FILE_3";

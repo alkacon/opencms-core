@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.31.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.31.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -347,7 +347,7 @@ public class CmsXmlContentTypeManager {
             }
         }
 
-        if (simpleType) {
+        if (simpleType && (schemaType != null)) {
             schemaType = schemaType.newInstance(elementName, minOccrs, maxOccrs);
 
             if (CmsStringUtil.isNotEmpty(defaultValue)) {

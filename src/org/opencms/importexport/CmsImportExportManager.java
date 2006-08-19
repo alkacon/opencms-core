@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.30.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.30.4.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -80,7 +80,7 @@ public class CmsImportExportManager {
     public static final String EXPORT_MANIFEST = "manifest.xml";
 
     /** The current version of the OpenCms export (appears in the {@link #EXPORT_MANIFEST} header). */
-    public static final String EXPORT_VERSION = "4";
+    public static final String EXPORT_VERSION = "" + CmsImportVersion5.IMPORT_VERSION;
 
     /** 
      * The name of the XML manifest file used for the description of exported OpenCms VFS properties and atributes.<p>
@@ -334,7 +334,6 @@ public class CmsImportExportManager {
                     Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_ERROR_READING_MANIFEST_1, resource),
                     e);
             }
-            manifest = null;
         } finally {
             try {
                 if (reader != null) {
@@ -524,19 +523,14 @@ public class CmsImportExportManager {
             handler = null;
         }
 
-        if (handler == null) {
-
-            CmsMessageContainer message = Messages.get().container(
-                Messages.ERR_IMPORTEXPORT_ERROR_NO_HANDLER_FOUND_1,
-                importFile);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(message.key());
-            }
-
-            throw new CmsImportExportException(message);
+        CmsMessageContainer message = Messages.get().container(
+            Messages.ERR_IMPORTEXPORT_ERROR_NO_HANDLER_FOUND_1,
+            importFile);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(message.key());
         }
 
-        return null;
+        throw new CmsImportExportException(message);
     }
 
     /**

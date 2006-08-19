@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2005/06/27 23:22:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.6.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,7 @@
 
 package com.opencms.defaults;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.mail.CmsHtmlMail;
 import org.opencms.mail.CmsMailTransport;
 import org.opencms.mail.CmsSimpleMail;
@@ -42,12 +39,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.I_CmsScheduledJob;
-import org.opencms.validation.CmsPointerLinkValidator;
 
 import com.opencms.legacy.CmsLegacyException;
-import com.opencms.legacy.CmsRegistry;
 import com.opencms.template.CmsXmlTemplate;
-import com.opencms.template.CmsXmlTemplateFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -63,13 +57,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -303,157 +295,8 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
      * @throws CmsException if something goes wrong 
      */
     public void linksUrlCheck(CmsObject cms, String parameter) throws CmsException {
-        // hashtable that contains the urls that are not available and the resourcenames of the links
-        // where this url is referenced
-        Hashtable notAvailable = new Hashtable();
 
-        // vector that contains all external links from the database
-        Vector linkList = new Vector();
-
-        // vector and hashtable that contains the links of an owner that are not available,
-        // so there can be created a mail to the owner with all the broken links
-        Hashtable ownerLinkList = new Hashtable();
-
-        // get the hashtable with the last check result from the system table
-        Hashtable linkckecktable = CmsLinkCheck.readLinkCheckTable();
-
-        Hashtable newLinkchecktable = new Hashtable();
-        // get the values for email from the registry
-        // TODO: check REGISTRY "checklink"  
-        int warning = 0;
-        Hashtable emailValues = CmsRegistry.getInstance().getSystemValues("checklink");
-        // Hashtable emailValues = new Hashtable();
-        // get templateFile this way because there is no actual file if
-        // method is called from scheduler ...
-        CmsXmlTemplateFile template = getOwnTemplateFile(cms, (String)emailValues.get("mailtemplate"), "", null, "");
-
-        // set the current date and time
-        GregorianCalendar actDate = new GregorianCalendar();
-        String actDateString = getDateString(actDate);
-        template.setData("actdate", actDateString);
-        newLinkchecktable.put(CmsLinkCheck.C_LINKCHECKTABLE_DATE, actDateString);
-
-        StringBuffer mailContent = new StringBuffer(template.getProcessedDataValue("single_message"));
-
-        // get all links from the database
-        linkList = new Vector(cms.readResources("/", CmsResourceFilter.ONLY_VISIBLE_NO_DELETED
-            .addRequireType(CmsResourceTypePointer.getStaticTypeId())));
-        for (int i = 0; i < linkList.size(); i++) {
-            CmsFile linkElement = (CmsFile)linkList.elementAt(i);
-            String linkName = cms.getSitePath(linkElement);
-            String linkUrl = new String(linkElement.getContents());
-            // do not check internal links
-            if (!linkUrl.startsWith("/")) {
-                // get the number of failed checks for the link
-                int failedCheck = 0;
-                String numFromTable = (String)linkckecktable.get(linkName + ", " + linkUrl);
-                if ((numFromTable != null) && (!"".equals(numFromTable.trim()))) {
-                    failedCheck = Integer.parseInt(numFromTable);
-                }
-
-                // check the url,
-                // if the url is not readable add it to the list of not available urls
-                if (!CmsPointerLinkValidator.checkUrl(cms, linkUrl)) {
-                    // get the vector of resourcenames from the hashtable of urls
-                    Vector inList = null;
-                    inList = (Vector)notAvailable.get(linkUrl);
-                    if (inList == null) {
-                        inList = new Vector();
-                    }
-                    inList.addElement(linkName);
-                    notAvailable.put(linkUrl, inList);
-
-                    // create the hashtable for the owner mails if requested
-                    if ((parameter != null) && ("owneremail".equals(parameter.trim()))) {
-                        // add the failed link to the links of the owner
-                        // first try to get the email
-                        String ownerEmail = null;
-                        if ((ownerEmail == null) || ("".equals(ownerEmail.trim()))) {
-                            ownerEmail = (String)emailValues.get("mailto");
-                        }
-                        Hashtable ownerLinks = null;
-                        ownerLinks = (Hashtable)ownerLinkList.get(ownerEmail);
-                        if (ownerLinks == null) {
-                            ownerLinks = new Hashtable();
-                        }
-                        ownerLinks.put(linkName, linkUrl);
-                        ownerLinkList.put(ownerEmail, ownerLinks);
-                    }
-
-                    // add the failed link to the new linkchecktable
-                    newLinkchecktable.put(linkName + ", " + linkUrl, "" + (failedCheck + 1));
-                }
-            }
-        }
-        // write the linkchecktable to database
-        CmsLinkCheck.writeLinkCheckTable(newLinkchecktable);
-
-        // get the information for the output
-        if ((parameter != null) && (!"".equals(parameter.trim()))) {
-            // send an email to the owner of the link
-            if ("owneremail".equals(parameter.trim())) {
-                // get the owners from the owner list
-                if (ownerLinkList.size() > 0) {
-                    Enumeration ownerKeys = ownerLinkList.keys();
-                    while (ownerKeys.hasMoreElements()) {
-                        StringBuffer ownerContent = new StringBuffer();
-                        ownerContent.append(mailContent.toString());
-                        String mailTo = (String)ownerKeys.nextElement();
-                        Hashtable linknames = (Hashtable)ownerLinkList.get(mailTo);
-                        // get all failed links of the owner
-                        Enumeration linkKeys = linknames.keys();
-                        String singleLink = "";
-                        while (linkKeys.hasMoreElements()) {
-                            // set the data for the link
-                            singleLink = (String)linkKeys.nextElement();
-                            template.setData("ownerlinkname", singleLink);
-                            template.setData("ownerlinkurl", (String)linknames.get(singleLink));
-                            ownerContent.append(template.getProcessedDataValue("ownermail_link"));
-                        }
-                        // get the email data
-                        String mailSubject = template.getProcessedDataValue("emailsubject");
-                        String mailFrom = (String)emailValues.get("mailfrom");
-                        List mailCc = getReceiverList(template.getDataValue("emailcc"));
-                        List mailBcc = getReceiverList(template.getDataValue("emailbcc"));
-                        String mailType = template.getDataValue("emailtype");
-                        generateEmail(mailFrom, getReceiverList(mailTo), mailCc, mailBcc, mailSubject, ownerContent.toString(), mailType);
-                    }
-                }
-            } else {
-                // if there are not readable urls create the content of the eMail
-                // and send it to the specified user(s)
-                if (notAvailable.size() > 0) {
-                    Enumeration linkKeys = notAvailable.keys();
-                    StringBuffer mailUrls = new StringBuffer();
-                    while (linkKeys.hasMoreElements()) {
-                        String url = (String)linkKeys.nextElement();
-                        template.setData("url", url);
-                        Vector linknames = (Vector)notAvailable.get(url);
-                        StringBuffer mailLinks = new StringBuffer();
-                        for (int j = 0; j < linknames.size(); j++) {
-                            String nextLink = (String)linknames.elementAt(j);
-                            template.setData("linkname", nextLink);
-                            mailLinks.append(template.getProcessedDataValue("single_link"));
-                        }
-                        template.setData("links", mailLinks.toString());
-                        mailUrls.append(template.getProcessedDataValue("single_url"));
-                    }
-                    mailContent.append(mailUrls.toString());
-                    if ("email".equals(parameter.trim())) {
-                        // get the eMail information
-                        String mailSubject = template.getProcessedDataValue("emailsubject");
-                        String mailFrom = (String)emailValues.get("mailfrom");
-                        List mailTo = getReceiverList((String)emailValues.get("mailto"));
-                        List mailCc = getReceiverList(template.getDataValue("emailcc"));
-                        List mailBcc = getReceiverList(template.getDataValue("emailbcc"));
-                        String mailType = template.getDataValue("emailtype");
-                        generateEmail(mailFrom, mailTo, mailCc, mailBcc, mailSubject, mailContent.toString(), mailType);
-                    } else {
-                        generateFile(mailContent.toString(), parameter, actDate);
-                    }
-                }
-            }
-        }
+        // noop, this function is no longer required / used in legacy code
     }
    
     /**

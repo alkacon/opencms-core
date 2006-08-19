@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.14.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -409,7 +409,7 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void setBrowserPattern(List pattern) {
 
-        if (pattern == null || pattern.size() == 0) {
+        if ((pattern == null) || (pattern.size() == 0)) {
             setValidConfiguration(false);
             LOG.error(Messages.get().getBundle().key(Messages.LOG_EDITOR_CONFIG_NO_PATTERN_0));
         }
@@ -450,7 +450,7 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void setResourceTypes(Map types) {
 
-        if (types == null || types.size() == 0) {
+        if ((types == null) || (types.size() == 0)) {
             setValidConfiguration(false);
             LOG.error(Messages.get().getBundle().key(Messages.LOG_NO_RESOURCE_TYPES_0));
         }
@@ -464,7 +464,7 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void setUserAgentsRegEx(List agents) {
 
-        if (agents == null || agents.size() == 0) {
+        if ((agents == null) || (agents.size() == 0)) {
             setValidConfiguration(false);
             LOG.error(Messages.get().getBundle().key(Messages.LOG_NO_USER_AGENTS_0));
         }

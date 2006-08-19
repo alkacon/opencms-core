@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Messages.java,v $
- * Date   : $Date: 2006/07/20 09:46:57 $
- * Version: $Revision: 1.11.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.11.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11.4.1 $ 
+ * @version $Revision: 1.11.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,25 +50,25 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_HISTORY_0 = "GUI_HISTORY_0";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String GUI_DIFF_TOOL_NAME_0 = "GUI_DIFF_TOOL_NAME_0";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String GUI_DIFF_NAVBAR_0 = "GUI_DIFF_NAVBAR_0";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String GUI_COMPARE_TOOL_NAME_0 = "GUI_COMPARE_TOOL_NAME_0";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String GUI_COMPARE_NAVBAR_0 = "GUI_COMPARE_NAVBAR_0";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_VIEW_ROOT_HELP_0 = "GUI_EXPLORER_VIEW_ROOT_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_VIEW_ROOT_NAME_0 = "GUI_EXPLORER_VIEW_ROOT_NAME_0";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_LOADING_0 = "GUI_ADMIN_VIEW_LOADING_0";
 

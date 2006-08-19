@@ -29,7 +29,8 @@
 	flexcache,
 	http-authentication,
 	resultcache,
-	content-notification?)>
+	content-notification?,
+	workflow?)>
 
 <!--
 # Version history settings.
@@ -46,6 +47,9 @@
 <!ELEMENT versionhistory EMPTY>
 <!ATTLIST versionhistory enabled (TRUE|true|FALSE|false) #REQUIRED count CDATA #REQUIRED>
 
+<!--
+# Internationalization settings.
+-->
 <!ELEMENT internationalization (localehandler, localesconfigured, localesdefault)>
 
 <!ELEMENT localehandler EMPTY>
@@ -56,6 +60,9 @@
 
 <!ELEMENT locale (#PCDATA)>
 
+<!--
+# Mail settings.
+-->
 <!ELEMENT mail (mailfrom, mailhost+)>
 <!ELEMENT mailfrom (#PCDATA)>
 <!ELEMENT mailhost EMPTY>
@@ -66,6 +73,9 @@
 	user CDATA  #IMPLIED
 	password CDATA #IMPLIED>
 
+<!--
+# Resource initializer settings.
+-->
 <!ELEMENT resourceinit (resourceinithandler*)>
 <!ELEMENT resourceinithandler EMPTY>
 <!ATTLIST resourceinithandler class CDATA #REQUIRED>
@@ -355,8 +365,8 @@ Each job can have an optional list of parameters.
 
 
 <!--
-#
 # Driver manager cache settings.
+# These settings control the size of various internal caches in the OpenCms database layer.
 -->
 <!ELEMENT resultcache (
 	keygenerator,
@@ -434,3 +444,15 @@ Each job can have an optional list of parameters.
 # The project in which timestamps for the content notification are read
 -->
 <!ELEMENT notification-project (#PCDATA)>
+<!-- 
+# Workflow settings.
+# OpenCms allows you to connect an external workflow engine with the core in order to have fine-tuned
+# workflow control. A simple default implementation of such an engine ships with the distribution.
+-->
+<!ELEMENT workflow (workflowmanager, workflowengine?)>
+
+<!ELEMENT workflowmanager EMPTY>
+<!ATTLIST workflowmanager class CDATA #REQUIRED>
+
+<!ELEMENT workflowengine EMPTY>
+<!ATTLIST workflowengine class CDATA #REQUIRED>

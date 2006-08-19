@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.23.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.23.8.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -90,10 +90,7 @@ public class CmsJspNavBuilder {
             try {
                 cms.getRequestContext().saveSiteRoot();
                 cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-                m_title = cms.readPropertyObject(
-                    res,
-                    org.opencms.file.CmsPropertyDefinition.PROPERTY_TITLE,
-                    false).getValue();
+                m_title = cms.readPropertyObject(res, org.opencms.file.CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
                 cms.getRequestContext().restoreSiteRoot();
             } catch (Exception e) {
                 m_title = "";
@@ -569,7 +566,7 @@ public class CmsJspNavBuilder {
             level -= 1;
         }
         // check current level and change endlevel if it is higher or -1
-        if (level < endlevel || endlevel == -1) {
+        if ((level < endlevel) || (endlevel == -1)) {
             endlevel = level;
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.113 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.113.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.113 $ 
+ * @version $Revision: 1.113.4.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -138,7 +138,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 replace = replace.substring(0, replace.lastIndexOf("$1"));
             }
             // scan content for paths if the replace String is not present
-            if (content.indexOf(replace) == -1 && content.indexOf(search) != -1) {
+            if ((content.indexOf(replace) == -1) && (content.indexOf(search) != -1)) {
                 // ensure subdirectories of the same name are not replaced
                 search = "([}>\"'\\[]\\s*)" + search;
                 replace = "$1" + replace;
@@ -317,7 +317,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         boolean convert = false;
 
         Map config = OpenCms.getPasswordHandler().getConfiguration();
-        if (config != null && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
+        if ((config != null) && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
             convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)).booleanValue();
         }
 
@@ -385,7 +385,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         List webAppNamesOri = new ArrayList();
 
         String configuredWebAppNames = (String)OpenCms.getRuntimeProperty(COMPATIBILITY_WEBAPPNAMES);
-        if (configuredWebAppNames != null && configuredWebAppNames.length() != 0) {
+        if ((configuredWebAppNames != null) && (configuredWebAppNames.length() != 0)) {
             // split the comma separated list of web app names
             StringTokenizer tokenizer = new StringTokenizer(configuredWebAppNames, ",;");
             while (tokenizer.hasMoreTokens()) {
@@ -412,11 +412,6 @@ public class CmsImportVersion2 extends A_CmsImport {
         : Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_SUPPORT_DISABLED_0;
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().getBundle().key(key));
-        }
-
-        // check if list is null
-        if (webAppNames == null) {
-            webAppNames = new ArrayList();
         }
 
         // add current context to webapp names list
@@ -651,7 +646,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
             // now merge the body and page control files. this only has to be done if the import
             // version is below version 3
-            if (getVersion() < 3 && m_convertToXmlPage) {
+            if ((getVersion() < 3) && m_convertToXmlPage) {
                 mergePageFiles();
                 removeFolders();
             }
@@ -766,7 +761,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 // the specified resource type ID might be of an unknown resource type.
                 // as another option, check the content length and resource type name 
                 // to determine if the resource is a folder or not.              
-                isFolder = ((content.length == 0) && CmsResourceTypeFolder.RESOURCE_TYPE_NAME.equalsIgnoreCase(resourceTypeName));
+                isFolder = ((size == 0) && CmsResourceTypeFolder.RESOURCE_TYPE_NAME.equalsIgnoreCase(resourceTypeName));
             }
 
             // create a new CmsResource                         
@@ -906,7 +901,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     }
                 }
 
-                if (mastertemplate == null || bodyname == null) {
+                if ((mastertemplate == null) || (bodyname == null)) {
 
                     CmsMessageContainer message = Messages.get().container(
                         Messages.ERR_IMPORTEXPORT_ERROR_CANNOT_MERGE_PAGE_FILE_3,

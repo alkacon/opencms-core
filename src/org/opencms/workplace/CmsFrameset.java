@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2006/07/21 12:05:08 $
- * Version: $Revision: 1.86.4.2 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.86.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.workplace;
 
+import org.opencms.configuration.CmsDefaultUserSettings;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResourceFilter;
@@ -53,6 +55,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
@@ -69,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.86.4.2 $ 
+ * @version $Revision: 1.86.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,15 +95,6 @@ public class CmsFrameset extends CmsWorkplace {
 
     /** The request parameter for the workplace view selection. */
     public static final String PARAM_WP_VIEW = "wpView";
-
-    /** Publish button appearance: show always. */
-    public static final String PUBLISHBUTTON_SHOW_ALWAYS = "always";
-
-    /** Publish button appearance: show auto (only if user has publish permissions). */
-    public static final String PUBLISHBUTTON_SHOW_AUTO = "auto";
-
-    /** Publish button appearance: show never. */
-    public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFrameset.class);
@@ -257,13 +251,13 @@ public class CmsFrameset extends CmsWorkplace {
     public String getPublishButton() {
 
         String publishButton = OpenCms.getWorkplaceManager().getDefaultUserSettings().getPublishButtonAppearance();
-        if (PUBLISHBUTTON_SHOW_NEVER.equals(publishButton)) {
+        if (CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_NEVER.equals(publishButton)) {
             return "";
         }
 
         int buttonStyle = getSettings().getUserSettings().getWorkplaceButtonStyle();
 
-        if (PUBLISHBUTTON_SHOW_AUTO.equals(publishButton)) {
+        if (CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_AUTO.equals(publishButton)) {
             if (getCms().isManagerOfProject()) {
                 return button(
                     "../commons/publishproject.jsp",
@@ -431,6 +425,16 @@ public class CmsFrameset extends CmsWorkplace {
         // count available sites
         int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
         return (siteCount > 1);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initTimeWarp(org.opencms.db.CmsUserSettings, javax.servlet.http.HttpSession)
+     */
+    protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
+
+        // overriden to avoid deletion of the configured time warp: 
+        // this is triggered by editors and in auto time warping a direct edit 
+        // must not delete a potential auto warped request time 
     }
 
     /**

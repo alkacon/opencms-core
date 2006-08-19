@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsEvents.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/08/19 13:40:51 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.3.4.1 $
  */
 public class TestCmsEvents extends OpenCmsTestCase {
 
@@ -118,7 +118,7 @@ public class TestCmsEvents extends OpenCmsTestCase {
         }
 
         // create and register the event listener
-        TestEventListener handler = new TestEventListener();
+        CmsTestEventListener handler = new CmsTestEventListener();
         OpenCms.addCmsEventListener(handler, new int[] {
             I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT});

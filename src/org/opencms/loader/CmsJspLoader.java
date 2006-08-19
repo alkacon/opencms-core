@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/03/27 14:52:37 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.100.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100 $ 
+ * @version $Revision: 1.100.4.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -239,7 +239,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             // remove temporary controller
             CmsFlexController.removeController(req);
         } finally {
-            if (oldController != null) {
+            if ((oldController != null) && (controller != null)) {
                 // update "date last modified"
                 oldController.updateDates(controller.getDateLastModified(), controller.getDateExpires());
                 // reset saved controller 
@@ -1126,7 +1126,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_JSP_1, jspVfsName));
         }
-        String jspRfsName = null;
+        String jspRfsName;
         try {
             // create an OpenCms user context that operates in the root site
             CmsObject cms = OpenCms.initCmsObject(controller.getCmsObject());

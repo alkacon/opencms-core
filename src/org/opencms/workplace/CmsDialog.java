@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.96.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -61,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96 $ 
+ * @version $Revision: 1.96.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -334,43 +333,6 @@ public class CmsDialog extends CmsToolDialog {
             } catch (Exception e) {
                 // forward failed
                 throw new JspException(e.getMessage(), e);
-            }
-        } else if (getParamFramename() != null) {
-            // legacy backoffice mode 
-            // TODO: remove this if all JSP based pages have been fully ported to the new Administration
-
-            // framename parameter found, get URI
-            String frameUri = (String)getSettings().getFrameUris().get(getParamFramename());
-            if (frameUri != null) {
-                // URI found, include it
-                if (frameUri.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-                    // remove context path from URI before inclusion
-                    frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                }
-                if (frameUri.endsWith("administration_content_top.html")) {
-                    String wpClass = this.getClass().getName();
-                    String wpPackage = this.getClass().getPackage().getName();
-                    if ((wpPackage.endsWith("commons") || wpPackage.endsWith("gallery"))
-                        && (!wpClass.endsWith("Report"))) {
-                        // for returning from common workplace action, show explorer filelist again (i.e. gallery & project views)
-                        getJsp().include(FILE_EXPLORER_FILELIST, null, params);
-                    } else {
-                        try {
-                            // redirect to administration body frame with "sender" parameter
-                            getJsp().getResponse().sendRedirect(
-                                getJsp().link(frameUri) + "?sender=/system/workplace/administration/");
-                        } catch (IOException e) {
-                            params.put("sender", "/system/workplace/administration/");
-                            getJsp().include(frameUri, null, params);
-                        }
-                    }
-                } else {
-                    // include the found frame URI
-                    getJsp().include(frameUri, null, params);
-                }
-            } else {
-                // no URI found, include the explorer file list
-                getJsp().include(FILE_EXPLORER_FILELIST, null, params);
             }
         } else {
             // no framename parameter found, include the explorer file list
@@ -1022,7 +984,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public String getParamFramename() {
 
-        if (m_paramFrameName != null && !"null".equals(m_paramFrameName)) {
+        if ((m_paramFrameName != null) && !"null".equals(m_paramFrameName)) {
             return m_paramFrameName;
         } else {
             return null;
@@ -1076,7 +1038,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public String getParamResource() {
 
-        if (m_paramResource != null && !"null".equals(m_paramResource)) {
+        if ((m_paramResource != null) && !"null".equals(m_paramResource)) {
             return m_paramResource;
         } else {
             return null;

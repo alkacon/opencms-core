@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsErrorBean.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.8.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Properties;
  *
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,7 +155,7 @@ public class CmsErrorBean {
      */
     public String getMessage(Throwable t) {
 
-        if (t instanceof I_CmsThrowable && ((I_CmsThrowable)t).getMessageContainer() != null) {
+        if ((t instanceof I_CmsThrowable) && (((I_CmsThrowable)t).getMessageContainer() != null)) {
             StringBuffer result = new StringBuffer(256);
             if (m_throwable instanceof CmsMultiException) {
                 CmsMultiException exc = (CmsMultiException)m_throwable;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPointerComparisonDialog.java,v $
- * Date   : $Date: 2006/03/30 07:50:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -39,7 +39,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,10 +83,16 @@ public class CmsPointerComparisonDialog extends CmsDialog {
         if (getAction() == ACTION_CANCEL) {
             actionCloseDialog();
         }
-        CmsFile resource1 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath1(), 
-            getParamVersion1(), Integer.parseInt(getParamTagId1()));
-        CmsFile resource2 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath2(), 
-            getParamVersion2(), Integer.parseInt(getParamTagId2()));
+        CmsFile resource1 = CmsResourceComparisonDialog.readFile(
+            getCms(),
+            getParamPath1(),
+            getParamVersion1(),
+            Integer.parseInt(getParamTagId1()));
+        CmsFile resource2 = CmsResourceComparisonDialog.readFile(
+            getCms(),
+            getParamPath2(),
+            getParamVersion2(),
+            Integer.parseInt(getParamTagId2()));
         String linkTarget1 = new String(resource1.getContents());
         String linkTarget2 = new String(resource2.getContents());
         JspWriter out = getJsp().getJspContext().getOut();

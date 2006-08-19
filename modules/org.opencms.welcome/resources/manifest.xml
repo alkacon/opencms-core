@@ -3,10 +3,10 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.1</opencms_version>
-		<createdate>Thu, 20 Jul 2006 15:32:29 GMT</createdate>
+		<opencms_version>6.5.0</opencms_version>
+		<createdate>Wed, 12 Jul 2006 15:17:32 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>5</export_version>
 	</info>
 	<module>
 		<name>org.opencms.welcome</name>
@@ -18,7 +18,7 @@
 <p><strong>Note:</strong> Deleting this module will remove the "/release" folder and all pages there. 
 It will also remove the "default" template.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>4.2.2</version>
+		<version>4.2.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -37,7 +37,8 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>release</destination>
 			<type>folder</type>
-			<datelastmodified>Thu, 20 Jul 2006 15:18:17 GMT</datelastmodified>
+			<uuidstructure>f0d1ccb2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -53,7 +54,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[notes_6.2.2.html]]></value>
+					<value><![CDATA[notes_6.2.1.html]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -70,6 +71,7 @@ It will also remove the "default" template.</p>
 			<source>release/installation.html</source>
 			<destination>release/installation.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>f0d416a8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0fe6cf2e-2a34-11d8-9147-c2dcabc28482</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -100,6 +102,7 @@ It will also remove the "default" template.</p>
 			<source>release/mailinglist.html</source>
 			<destination>release/mailinglist.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>f0d8f8ae-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>167d141b-c102-11d7-a1e4-9b02dffa6399</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -112,12 +115,12 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[102.0]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[Mailing list]]></value>
-				</property>
-				<property>
 					<name>template</name>
 					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Mailing list]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -130,6 +133,7 @@ It will also remove the "default" template.</p>
 			<source>release/notes_6.0.2.html</source>
 			<destination>release/notes_6.0.2.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>f0db42a4-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>5a39fbd4-3a43-11da-a471-7b71207593c3</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -160,6 +164,7 @@ It will also remove the "default" template.</p>
 			<source>release/notes_6.0.3.html</source>
 			<destination>release/notes_6.0.3.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>f0ddb3aa-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>815e6461-5d04-11da-a3fb-23895cb0241f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -190,6 +195,7 @@ It will also remove the "default" template.</p>
 			<source>release/notes_6.0.4.html</source>
 			<destination>release/notes_6.0.4.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>f0dffda0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>815e6461-5d04-11da-a3fb-23895cb0240f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -220,6 +226,7 @@ It will also remove the "default" template.</p>
 			<source>release/notes_6.0.html</source>
 			<destination>release/notes_6.0.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>f0e26da6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>9f1adb82-df2d-11d9-8b1a-157a1a2d4854</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -250,6 +257,7 @@ It will also remove the "default" template.</p>
 			<source>release/notes_6.2.1.html</source>
 			<destination>release/notes_6.2.1.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>f0e4dead-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>57e15f7c-d6a0-11da-949b-bf247dbd39dc</uuidresource>
 			<datelastmodified>Fri, 28 Apr 2006 15:29:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -280,6 +288,7 @@ It will also remove the "default" template.</p>
 			<source>release/notes_6.2.2.html</source>
 			<destination>release/notes_6.2.2.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>f0e4deac-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d3a4419e-1802-11db-bb55-c1b5b7a5ce9e</uuidresource>
 			<datelastmodified>Thu, 20 Jul 2006 15:25:24 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -310,6 +319,7 @@ It will also remove the "default" template.</p>
 			<source>release/notes_6.2.beta.html</source>
 			<destination>release/notes_6.2.beta.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>f0e728a2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>e4e5c285-98bb-11da-890c-c9ea5eb4afdb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -340,6 +350,7 @@ It will also remove the "default" template.</p>
 			<source>release/notes_6.2.html</source>
 			<destination>release/notes_6.2.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>f0e999a8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>7ff44e54-bb17-11da-a3a7-f326e0bcb6a1</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -370,6 +381,7 @@ It will also remove the "default" template.</p>
 			<source>release/welcome.html</source>
 			<destination>release/welcome.html</destination>
 			<type>jsp</type>
+			<uuidstructure>f0ec0aae-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -407,26 +419,18 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 20 Jul 2006 15:03:30 GMT</datecreated>
+			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
+			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -438,6 +442,7 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules/org.opencms.welcome</destination>
 			<type>folder</type>
+			<uuidstructure>f1895c29-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -454,6 +459,7 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules/org.opencms.welcome/default_bodies</destination>
 			<type>folder</type>
+			<uuidstructure>f18ba61c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -466,6 +472,7 @@ It will also remove the "default" template.</p>
 			<source>system/modules/org.opencms.welcome/default_bodies/default</source>
 			<destination>system/modules/org.opencms.welcome/default_bodies/default</destination>
 			<type>plain</type>
+			<uuidstructure>f18e171d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c0080cf9-5e05-11d8-865d-ad3adbb53365</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -483,6 +490,7 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules/org.opencms.welcome/elements</destination>
 			<type>folder</type>
+			<uuidstructure>f1908821-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -495,6 +503,7 @@ It will also remove the "default" template.</p>
 			<source>system/modules/org.opencms.welcome/elements/checklibs.jsp</source>
 			<destination>system/modules/org.opencms.welcome/elements/checklibs.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>f192d212-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2150f2ca-26a6-11d9-ac66-05a14f60fff0</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -517,6 +526,7 @@ It will also remove the "default" template.</p>
 			<source>system/modules/org.opencms.welcome/elements/login_element.jsp</source>
 			<destination>system/modules/org.opencms.welcome/elements/login_element.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>f1954316-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c70b997b-997c-11d8-9067-cb7004c5994f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -543,6 +553,7 @@ It will also remove the "default" template.</p>
 			<source>system/modules/org.opencms.welcome/elements/welcome_nav.jsp</source>
 			<destination>system/modules/org.opencms.welcome/elements/welcome_nav.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>f197b41b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>16b86e9f-c102-11d7-a1e4-9b02dffa6399</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -568,6 +579,7 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules/org.opencms.welcome/resources</destination>
 			<type>folder</type>
+			<uuidstructure>f19c6f11-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -580,6 +592,7 @@ It will also remove the "default" template.</p>
 			<source>system/modules/org.opencms.welcome/resources/logo_alkacon.gif</source>
 			<destination>system/modules/org.opencms.welcome/resources/logo_alkacon.gif</destination>
 			<type>image</type>
+			<uuidstructure>f19c6f12-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>5c99ec74-6614-11d8-ab96-cbfb51df5f23</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -602,6 +615,7 @@ It will also remove the "default" template.</p>
 			<source>system/modules/org.opencms.welcome/resources/logo_opencms_large.png</source>
 			<destination>system/modules/org.opencms.welcome/resources/logo_opencms_large.png</destination>
 			<type>image</type>
+			<uuidstructure>f1a12a06-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>bce5e6c4-b026-11da-8587-d7e64aecbbea</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -624,6 +638,7 @@ It will also remove the "default" template.</p>
 			<source>system/modules/org.opencms.welcome/resources/welcome.css</source>
 			<destination>system/modules/org.opencms.welcome/resources/welcome.css</destination>
 			<type>plain</type>
+			<uuidstructure>f1a5e4fa-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>16e5c051-c102-11d7-a1e4-9b02dffa6399</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -645,6 +660,7 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules/org.opencms.welcome/templates</destination>
 			<type>folder</type>
+			<uuidstructure>f1a855ff-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -657,6 +673,7 @@ It will also remove the "default" template.</p>
 			<source>system/modules/org.opencms.welcome/templates/empty</source>
 			<destination>system/modules/org.opencms.welcome/templates/empty</destination>
 			<type>jsp</type>
+			<uuidstructure>f1aac700-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a6fa79f4-5e05-11d8-865d-ad3adbb53365</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -687,6 +704,7 @@ It will also remove the "default" template.</p>
 			<source>system/modules/org.opencms.welcome/templates/welcome</source>
 			<destination>system/modules/org.opencms.welcome/templates/welcome</destination>
 			<type>jsp</type>
+			<uuidstructure>f1ad10f6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>16f1802c-c102-11d7-a1e4-9b02dffa6399</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -716,6 +734,7 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>index.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>f1b1cbec-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>

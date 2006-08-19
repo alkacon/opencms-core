@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.12.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,7 +173,6 @@ public class CmsEditorDisplayOptions {
                                 LOG.info(e);
                             }
                             mappedConfigFile = NO_MAPPING_FOR_USER;
-                            displayOptions = null;
                         } catch (IOException e) {
                             // set configuration to not available
                             if (LOG.isInfoEnabled()) {
@@ -215,7 +214,7 @@ public class CmsEditorDisplayOptions {
      */
     public boolean showElement(String key, Properties displayOptions) {
 
-        return (displayOptions != null && Boolean.valueOf(displayOptions.getProperty(key)).booleanValue());
+        return ((displayOptions != null) && Boolean.valueOf(displayOptions.getProperty(key)).booleanValue());
     }
 
 }

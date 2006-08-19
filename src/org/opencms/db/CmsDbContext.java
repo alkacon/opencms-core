@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2005/09/12 09:57:12 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.14.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,11 +43,11 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsRequestUtil;
 
 /**
- * Warps context information to access the OpenCms database.<p> 
+ * Wraps context information to access the OpenCms database.<p> 
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.14.8.1 $
  * 
  * @since 6.0.0
  */
@@ -165,7 +165,7 @@ public class CmsDbContext {
      */
     public String removeSiteRoot(String resourcename) {
 
-        if (m_requestContext != null) {
+        if ((m_requestContext != null) && (resourcename != null)) {
             return m_requestContext.removeSiteRoot(resourcename);
         }
 

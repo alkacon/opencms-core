@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.36.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,17 @@
 
 package org.opencms.db;
 
+import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workflow.CmsTaskService;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -52,11 +53,15 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.36.4.1 $
  * 
  * @since 6.0.0
  */
 public class CmsUserSettings {
+
+    /** Key for additional info city. */
+    // Value must unfortunatly still be "USER_TOWN" or existing serialized user information will be lost
+    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN";
 
     /** Key for additional info of resources that were confirmemed by the user. */
     public static final String ADDITIONAL_INFO_CONFIRMED_RESOURCES = "ADDITIONAL_INFO_CONFIRMED_RESOURCES";
@@ -76,10 +81,6 @@ public class CmsUserSettings {
     /** Key for additional info start settings. */
     public static final String ADDITIONAL_INFO_STARTSETTINGS = "USER_STARTSETTINGS";
 
-    /** Key for additional info city. */
-    // Value must unfortunatly still be "USER_TOWN" or existing serialized user information will be lost
-    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN";
-    
     /**
      *  Key for additional info city.
      *  
@@ -129,6 +130,9 @@ public class CmsUserSettings {
     /** Flag for displaying the user who last modified column. */
     public static final int FILELIST_USER_LASTMODIFIED = 2048;
 
+    /** Flag for displaying the workflow check column. */
+    public static final int FILELIST_WORKFLOW_STATE = 16384;
+
     /** The default button style. */
     private static final int BUTTONSTYLE_DEFAULT = 1;
 
@@ -176,11 +180,15 @@ public class CmsUserSettings {
 
     private CmsUserProjectSettings m_projectSettings;
 
+    /** Controls appearance of the publish button. */
     private String m_publishButtonAppearance;
 
     private boolean m_restrictExplorerView;
 
     private boolean m_showExportSettings;
+
+    /** Flag that controls display of the file upload button. */
+    private boolean m_showFileUploadButton;
 
     private boolean m_showLock;
 
@@ -190,11 +198,8 @@ public class CmsUserSettings {
 
     private CmsSynchronizeSettings m_synchronizeSettings;
 
-    private int m_taskMessages;
-
-    private boolean m_taskShowProjects;
-
-    private String m_taskStartupfilter;
+    /** The custom user surf time. */
+    private long m_timeWarp;
 
     private boolean m_uploadApplet;
 
@@ -211,12 +216,15 @@ public class CmsUserSettings {
      */
     public CmsUserSettings() {
 
-        m_workplaceButtonStyle = BUTTONSTYLE_DEFAULT;
+        m_workplaceButtonStyle = CmsUserSettings.BUTTONSTYLE_DEFAULT;
         m_workplaceReportType = I_CmsReport.REPORT_TYPE_SIMPLE;
-        m_explorerButtonStyle = BUTTONSTYLE_DEFAULT;
-        m_explorerFileEntries = ENTRYS_PER_PAGE_DEFAULT;
+        m_explorerButtonStyle = CmsUserSettings.BUTTONSTYLE_DEFAULT;
+        m_explorerFileEntries = CmsUserSettings.ENTRYS_PER_PAGE_DEFAULT;
         m_explorerSettings = CmsUserSettings.FILELIST_NAME;
         m_editorSettings = new HashMap();
+        m_showFileUploadButton = true;
+        m_uploadApplet = true;
+        m_publishButtonAppearance = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_ALWAYS;
     }
 
     /**
@@ -438,6 +446,10 @@ public class CmsUserSettings {
     /**
      * Returns the appearance of the "publish project" button.<p>
      * 
+     * This can be either {@link CmsDefaultUserSettings#PUBLISHBUTTON_SHOW_ALWAYS}, 
+     * {@link CmsDefaultUserSettings#PUBLISHBUTTON_SHOW_AUTO} or 
+     * {@link CmsDefaultUserSettings#PUBLISHBUTTON_SHOW_NEVER}.<p>
+     * 
      * @return the appearance of the "publish project" button
      */
     public String getPublishButtonAppearance() {
@@ -453,6 +465,16 @@ public class CmsUserSettings {
     public boolean getRestrictExplorerView() {
 
         return m_restrictExplorerView;
+    }
+
+    /**
+     * Returns <code>true</code> if the file upload button should be shown or <code>false</code> otherwise.<p>
+     *
+     * @return the showFileUpload
+     */
+    public boolean getShowFileUploadButton() {
+
+        return m_showFileUploadButton;
     }
 
     /**
@@ -506,73 +528,16 @@ public class CmsUserSettings {
     }
 
     /**
-     * Determines if a message should be sent if the task is accepted.<p>
+     * Returns the current users timewarp time, or
+     * {@link org.opencms.main.CmsContextInfo#CURRENT_TIME} if this feature is disabled and the current time
+     * is used for each user request.<p>
      * 
-     * @return true if a message should be sent if the task is accepted, otherwise false
+     * @return the current users timewarp time, or
+     *      {@link org.opencms.main.CmsContextInfo#CURRENT_TIME} if this feature is disabled
      */
-    public boolean getTaskMessageAccepted() {
+    public long getTimeWarp() {
 
-        return ((m_taskMessages & CmsTaskService.TASK_MESSAGES_ACCEPTED) > 0);
-    }
-
-    /**
-     * Determines if a message should be sent if the task is completed.<p>
-     * 
-     * @return true if a message should be sent if the task is completed, otherwise false
-     */
-    public boolean getTaskMessageCompleted() {
-
-        return ((m_taskMessages & CmsTaskService.TASK_MESSAGES_COMPLETED) > 0);
-    }
-
-    /**
-     * Determines if a message should be sent if the task is forwarded.<p>
-     * 
-     * @return true if a message should be sent if the task is forwarded, otherwise false
-     */
-    public boolean getTaskMessageForwarded() {
-
-        return ((m_taskMessages & CmsTaskService.TASK_MESSAGES_FORWARDED) > 0);
-    }
-
-    /**
-     * Determines if all role members should be informed about the task.<p>
-     * 
-     * @return true if all role members should be informed about the task, otherwise false
-     */
-    public boolean getTaskMessageMembers() {
-
-        return ((m_taskMessages & CmsTaskService.TASK_MESSAGES_MEMBERS) > 0);
-    }
-
-    /**
-     * Returns the task messages value for the tasks view.<p>
-     * 
-     * @return task messages value for the tasks view
-     */
-    public int getTaskMessageValue() {
-
-        return m_taskMessages;
-    }
-
-    /**
-     * Determines if all projects should be shown in tasks view.<p>
-     * 
-     * @return true if all projects should be shown in tasks view, otherwise false
-     */
-    public boolean getTaskShowAllProjects() {
-
-        return m_taskShowProjects;
-    }
-
-    /**
-     * Returns the startup filter for the tasks view.<p>
-     * 
-     * @return the startup filter for the tasks view
-     */
-    public String getTaskStartupFilter() {
-
-        return m_taskStartupfilter;
+        return m_timeWarp;
     }
 
     /**
@@ -625,6 +590,14 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_BUTTONSTYLE)).intValue();
         } catch (Throwable t) {
             m_workplaceButtonStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceButtonStyle();
+        }
+        // worplace timewarp setting
+        try {
+            m_timeWarp = ((Long)m_user.getAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                + CmsWorkplaceConfiguration.N_TIMEWARP)).longValue();
+        } catch (Throwable t) {
+            m_timeWarp = CmsContextInfo.CURRENT_TIME;
         }
         // workplace report type
         m_workplaceReportType = ((String)m_user.getAdditionalInfo(PREFERENCES
@@ -784,29 +757,6 @@ public class CmsUserSettings {
         if (m_editorSettings == null) {
             m_editorSettings = new HashMap(OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorSettings());
         }
-        // task startupfilter
-        m_taskStartupfilter = (String)m_user.getAdditionalInfo(PREFERENCES
-            + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS
-            + CmsWorkplaceConfiguration.N_STARTUPFILTER);
-        if (m_taskStartupfilter == null) {
-            m_taskStartupfilter = OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskStartupFilter();
-        }
-        // task show all projects
-        try {
-            m_taskShowProjects = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_SHOWPROJECTS)).booleanValue();
-        } catch (Throwable t) {
-            m_taskShowProjects = OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskShowAllProjects();
-        }
-        // task messages
-        try {
-            m_taskMessages = ((Integer)m_user.getAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKFLOWDEFAULTSETTINGS)).intValue();
-        } catch (Throwable t) {
-            m_taskMessages = OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskMessageValue();
-        }
-
         // start site
         m_startSite = ((String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
@@ -821,7 +771,6 @@ public class CmsUserSettings {
         if (m_startFolder == null) {
             m_startFolder = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder();
         }
-
         // restrict explorer folder view
         try {
             m_restrictExplorerView = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
@@ -830,7 +779,6 @@ public class CmsUserSettings {
         } catch (Throwable t) {
             m_restrictExplorerView = OpenCms.getWorkplaceManager().getDefaultUserSettings().getRestrictExplorerView();
         }
-
         // synchronize settings
         try {
             m_synchronizeSettings = ((CmsSynchronizeSettings)m_user.getAdditionalInfo(PREFERENCES + SYNC_SETTINGS));
@@ -838,7 +786,6 @@ public class CmsUserSettings {
             // default is to disable the synchronize settings
             m_synchronizeSettings = null;
         }
-
         // project settings
         try {
             m_projectSettings = ((CmsUserProjectSettings)m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS));
@@ -884,19 +831,20 @@ public class CmsUserSettings {
     }
 
     /**
-     * Saves the changed settings of the user to the user object.<p>
+     * Saves the changed settings of the user to the users {@link CmsUser#getAdditionalInfo()} map.<p>
      * 
-     * If the given CmsObject is null, the additional user infos are only updated in memory
+     * If the given CmsObject is <code>null</code>, the additional user infos are only updated in memory
      * and not saved into the database.<p>
      * 
      * @param cms the CmsObject needed to write the user to the db
+     * 
      * @throws CmsException if user cannot be written to the db
      */
     public void save(CmsObject cms) throws CmsException {
 
         // only set those values that are different than the default values
-        // if the user info should be updated in the databas (i.e. the CmsObject != null)
-        // all values that are equal to the defaul values must be deleted form the additinal
+        // if the user info should be written to the database (if the CmsObject != null)
+        // all values that are equal to the default values must be deleted form the additional info
         // user settings.
 
         // workplace button style
@@ -908,6 +856,16 @@ public class CmsUserSettings {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
                 + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
+        }
+        // workplace user surf time (timewarp) 
+        if (getTimeWarp() != CmsContextInfo.CURRENT_TIME) {
+            m_user.setAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                + CmsWorkplaceConfiguration.N_TIMEWARP, new Long(getTimeWarp()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                + CmsWorkplaceConfiguration.N_TIMEWARP);
         }
         // workplace report type
         if (!getWorkplaceReportType().equals(
@@ -1098,35 +1056,6 @@ public class CmsUserSettings {
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS);
         }
-        // task startup filter
-        if (!getTaskStartupFilter().equals(
-            OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskStartupFilter())) {
-            m_user.setAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_STARTUPFILTER, getTaskStartupFilter());
-        } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_STARTUPFILTER);
-        }
-        // task show all projects
-        if (getTaskShowAllProjects() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskShowAllProjects()) {
-            m_user.setAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_SHOWPROJECTS, new Boolean(getTaskShowAllProjects()));
-        } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_SHOWPROJECTS);
-        }
-        // task messages        
-        if (getTaskMessageValue() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskMessageValue()) {
-            m_user.setAdditionalInfo(PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWDEFAULTSETTINGS, new Integer(
-                m_taskMessages));
-        } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWDEFAULTSETTINGS);
-        }
-
         // start site
         if (!getStartSite().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite())) {
             m_user.setAdditionalInfo(PREFERENCES
@@ -1148,7 +1077,6 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
                 + CmsWorkplaceConfiguration.N_FOLDER);
         }
-
         // restrict explorer folder view
         if (getRestrictExplorerView() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getRestrictExplorerView()) {
             m_user.setAdditionalInfo(PREFERENCES
@@ -1159,14 +1087,12 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
                 + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW);
         }
-
         // synchronize settings        
         if (getSynchronizeSettings() != null) {
             m_user.setAdditionalInfo(PREFERENCES + SYNC_SETTINGS, getSynchronizeSettings());
         } else {
             m_user.deleteAdditionalInfo(PREFERENCES + SYNC_SETTINGS);
         }
-
         // project settings        
         if (getProjectSettings() != null) {
             m_user.setAdditionalInfo(PREFERENCES + PROJECT_SETTINGS, getProjectSettings());
@@ -1367,11 +1293,24 @@ public class CmsUserSettings {
     /**
      * Sets the appearance of the "publish project" button.<p>
      * 
+     * Allowed values are either {@link CmsDefaultUserSettings#PUBLISHBUTTON_SHOW_ALWAYS}, 
+     * {@link CmsDefaultUserSettings#PUBLISHBUTTON_SHOW_AUTO} or 
+     * {@link CmsDefaultUserSettings#PUBLISHBUTTON_SHOW_NEVER}.<p>
+     * 
      * @param publishButtonAppearance the appearance of the "publish project" button
      */
     public void setPublishButtonAppearance(String publishButtonAppearance) {
 
-        m_publishButtonAppearance = publishButtonAppearance;
+        String value = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_ALWAYS;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(publishButtonAppearance)) {
+            publishButtonAppearance = publishButtonAppearance.trim().toLowerCase();
+            if (CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_AUTO.equals(publishButtonAppearance)) {
+                value = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_AUTO;
+            } else if (CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_NEVER.equals(publishButtonAppearance)) {
+                value = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_NEVER;
+            }
+        }
+        m_publishButtonAppearance = value;
     }
 
     /**
@@ -1405,7 +1344,7 @@ public class CmsUserSettings {
     }
 
     /**
-     * Sets if the file last modified date should be shown in explorer view.<p>
+     * Sets if the workflow state should be shown in explorer view.<p>
      * 
      * @param show true if the file last modified date should be shown, otherwise false
      */
@@ -1505,6 +1444,26 @@ public class CmsUserSettings {
     }
 
     /**
+     * Sets if the file last modified date should be shown in explorer view.<p>
+     * 
+     * @param show true if the workflow stat should be shown, otherwise false
+     */
+    public void setShowExplorerWorkflowState(boolean show) {
+
+        setExplorerSetting(show, CmsUserSettings.FILELIST_WORKFLOW_STATE);
+    }
+
+    /**
+     * Controls whether to display a file upload icon or not.<p>
+     * 
+     * @param flag <code>true</code> or <code>false</code> to flag the use of the file upload button
+     */
+    public void setShowFileUploadButton(boolean flag) {
+
+        m_showFileUploadButton = flag;
+    }
+
+    /**
      * Sets the start folder of the user.<p>
      * 
      * @param folder the start folder of the user
@@ -1555,73 +1514,20 @@ public class CmsUserSettings {
     }
 
     /**
-     * Sets if a message should be sent if the task is accepted.<p>
+     * Sets the user specific custom "timewarp" time.<p>
      * 
-     * @param message true if a message should be sent if the task is accepted, otherwise false
-     */
-    public void setTaskMessageAccepted(boolean message) {
-
-        setTaskMessageSetting(message, CmsTaskService.TASK_MESSAGES_ACCEPTED);
-    }
-
-    /**
-     * Sets if a message should be sent if the task is completed.<p>
+     * Use {@link org.opencms.main.CmsContextInfo#CURRENT_TIME} to unset this feature, ie. enable the
+     * current time for each new request.<p>
      * 
-     * @param message true if a message should be sent if the task is completed, otherwise false
-     */
-    public void setTaskMessageCompleted(boolean message) {
-
-        setTaskMessageSetting(message, CmsTaskService.TASK_MESSAGES_COMPLETED);
-    }
-
-    /**
-     * Sets if a message should be sent if the task is forwarded.<p>
+     * If this value is set, auto time warping will be disabled: Clicking on a resource that 
+     * has not been released at the given time or is already expired at the given time will not 
+     * be shown - an error message will pop up  ("out of time window").<p>
      * 
-     * @param message true if a message should be sent if the task is forwarded, otherwise false
+     * @param timewarp the timewarp time to set
      */
-    public void setTaskMessageForwarded(boolean message) {
+    public void setTimeWarp(long timewarp) {
 
-        setTaskMessageSetting(message, CmsTaskService.TASK_MESSAGES_FORWARDED);
-    }
-
-    /**
-     * Sets if all role members should be informed about the task.<p>
-     * 
-     * @param message true if all role members should be informed about the task, otherwise false
-     */
-    public void setTaskMessageMembers(boolean message) {
-
-        setTaskMessageSetting(message, CmsTaskService.TASK_MESSAGES_MEMBERS);
-    }
-
-    /**
-     * Sets the task message values.<p>
-     * 
-     * @param value the value of the task messages
-     */
-    public void setTaskMessageValue(int value) {
-
-        m_taskMessages = value;
-    }
-
-    /**
-     * Sets if all projects should be shown in tasks view.<p>
-     * 
-     * @param show true if all projects should be shown in tasks view, otherwise false
-     */
-    public void setTaskShowAllProjects(boolean show) {
-
-        m_taskShowProjects = show;
-    }
-
-    /**
-     * Sets the startup filter for the tasks view.<p>
-     * 
-     * @param filter the startup filter for the tasks view
-     */
-    public void setTaskStartupFilter(String filter) {
-
-        m_taskStartupfilter = filter;
+        m_timeWarp = timewarp;
     }
 
     /**
@@ -1785,6 +1691,16 @@ public class CmsUserSettings {
     }
 
     /**
+     * Determines if the file state should be shown in explorer view.<p>
+     * 
+     * @return true if the file state should be shown, otherwise false
+     */
+    public boolean showExplorerWorkflowState() {
+
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_WORKFLOW_STATE) > 0);
+    }
+
+    /**
      * Determines if the upload applet should be used.<p>
      * 
      * @return true if the if the upload applet should be used, otherwise false
@@ -1806,21 +1722,6 @@ public class CmsUserSettings {
             m_explorerSettings |= setting;
         } else {
             m_explorerSettings &= ~setting;
-        }
-    }
-
-    /**
-     * Sets a specific task message setting depending on the set parameter.<p>
-     * 
-     * @param set true if the setting should be set, otherwise false
-     * @param setting the settings constant value for the task message settings
-     */
-    private void setTaskMessageSetting(boolean set, int setting) {
-
-        if (set) {
-            m_taskMessages |= setting;
-        } else {
-            m_taskMessages &= ~setting;
         }
     }
 }

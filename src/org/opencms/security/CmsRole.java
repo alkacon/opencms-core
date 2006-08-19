@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.11.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.List;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,7 +147,10 @@ public final class CmsRole {
      */
     public static final CmsRole SYSTEM_USER = new CmsRole("SYSTEM_USER", new CmsRole[] {
     // important: this role must be defined _after_ all other roles it refers to
-        CmsRole.ADMINISTRATOR, CmsRole.WORKPLACE_USER, CmsRole.PROJECT_MANAGER, CmsRole.DEVELOPER});
+        CmsRole.ADMINISTRATOR,
+        CmsRole.WORKPLACE_USER,
+        CmsRole.PROJECT_MANAGER,
+        CmsRole.DEVELOPER});
 
     /** The list of system roles. */
     private static List m_systemRoles;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2005/08/26 09:59:01 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/08/19 13:40:39 $
+ * Version: $Revision: 1.19.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.19.8.1 $
  * 
  * @since 6.0.0 
  */
@@ -69,6 +69,9 @@ public class CmsProject implements Cloneable, Comparable {
 
     /** Indicates a temporary project that is deleted after it is published. */
     public static final int PROJECT_TYPE_TEMPORARY = 1;
+
+    /** Indicates a project that is used to bundle resources for a workflow task. */
+    public static final int PROJECT_TYPE_WORKFLOW = 2;
 
     /** The creation date of this project. */
     private long m_dateCreated;
@@ -94,9 +97,6 @@ public class CmsProject implements Cloneable, Comparable {
     /** The id of this projects owner. */
     private CmsUUID m_ownerId;
 
-    /** The task id of this project. */
-    private int m_taskId;
-
     /** The type of this project. */
     private int m_type;
 
@@ -114,7 +114,6 @@ public class CmsProject implements Cloneable, Comparable {
      * @param projectId the id to use for this project
      * @param name the name for this project
      * @param description the description for this project
-     * @param taskId the task id for this project
      * @param ownerId the owner id for this project
      * @param groupId the group id for this project
      * @param managerGroupId the manager group id for this project
@@ -126,7 +125,6 @@ public class CmsProject implements Cloneable, Comparable {
         int projectId,
         String name,
         String description,
-        int taskId,
         CmsUUID ownerId,
         CmsUUID groupId,
         CmsUUID managerGroupId,
@@ -137,7 +135,6 @@ public class CmsProject implements Cloneable, Comparable {
         m_id = projectId;
         m_name = name;
         m_description = description;
-        m_taskId = taskId;
         m_ownerId = ownerId;
         m_groupUsersId = groupId;
         m_groupManagersId = managerGroupId;
@@ -160,7 +157,6 @@ public class CmsProject implements Cloneable, Comparable {
             res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
             res.getString(sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
             res.getString(sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
-            res.getInt(sqlManager.readQuery("C_PROJECTS_TASK_ID")),
             new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_USER_ID"))),
             new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
             new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
@@ -232,7 +228,6 @@ public class CmsProject implements Cloneable, Comparable {
             m_id,
             m_name,
             m_description,
-            m_taskId,
             m_ownerId,
             m_groupUsersId,
             m_groupManagersId,
@@ -359,16 +354,6 @@ public class CmsProject implements Cloneable, Comparable {
     }
 
     /**
-     * Returns the task id of this project.<p>
-     *
-     * @return the task id of this project
-     */
-    public int getTaskId() {
-
-        return m_taskId;
-    }
-
-    /**
      * Returns the type of this project.<p>
      *
      * @return the type of this project
@@ -411,6 +396,16 @@ public class CmsProject implements Cloneable, Comparable {
         return isOnlineProject(m_id);
     }
 
+    /**
+     * Returns <code>true</code> if this project is a workflow project.<p>
+     * 
+     * @return <code>true</code> if this project is a workflow project
+     */
+    public boolean isWorkflowProject() {
+        
+        return m_type == CmsProject.PROJECT_TYPE_WORKFLOW;
+    }                                       
+    
     /**
      * Sets the delete After Publishing flag.<p>
      *
@@ -474,6 +469,17 @@ public class CmsProject implements Cloneable, Comparable {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PROJECTNAME_VALIDATION_0));
         }
         m_name = name;
+    }
+
+    /**
+     * Sets the owner id of this project.<p>
+     * 
+     * @param id the id of the new owner
+     */
+    public void setOwnerId(CmsUUID id) {
+
+        CmsUUID.checkId(id, false);
+        m_ownerId = id;
     }
 
     /**

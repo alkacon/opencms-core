@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/A_CmsMessageBundle.java,v $
- * Date   : $Date: 2006/04/18 16:14:04 $
- * Version: $Revision: 1.51.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.51.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51.4.1 $
+ * @version $Revision: 1.51.4.2 $
  * 
  * @since 6.0.0
  */
@@ -71,6 +71,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.module.Messages.get(),
             org.opencms.monitor.Messages.get(),
             org.opencms.report.Messages.get(),
+            org.opencms.relations.Messages.get(),
             org.opencms.scheduler.Messages.get(),
             org.opencms.scheduler.jobs.Messages.get(),
             org.opencms.search.Messages.get(),
@@ -82,9 +83,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.staticexport.Messages.get(),
             org.opencms.synchronize.Messages.get(),
             org.opencms.util.Messages.get(),
-            org.opencms.validation.Messages.get(),
             org.opencms.widgets.Messages.get(),
-            org.opencms.workflow.Messages.get(),
             org.opencms.workplace.Messages.get(),
             org.opencms.workplace.commons.Messages.get(),
             org.opencms.workplace.comparison.Messages.get(),

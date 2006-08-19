@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceLockAction.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,13 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.lock.CmsLock;
 
 /**
  * Displays an icon action for the lock type.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +79,7 @@ public class CmsListResourceLockAction extends CmsListExplorerDirectAction {
     public CmsMessageContainer getName() {
 
         if (super.getName() == null) {
-            if (getResourceUtil().getLock().getType() != CmsLock.TYPE_UNLOCKED) {
+            if (! getResourceUtil().getLock().isUnlocked()) {
                 return Messages.get().container(
                     Messages.GUI_EXPLORER_LIST_ACTION_LOCK_NAME_2,
                     getResourceUtil().getLockedByName(),

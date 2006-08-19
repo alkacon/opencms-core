@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldFactory.java,v $
- * Date   : $Date: 2006/05/11 07:30:53 $
- * Version: $Revision: 1.5.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:58 $
+ * Version: $Revision: 1.5.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * A factory to create form field instances of a specified type.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5.4.1 $
+ * @version $Revision: 1.5.4.2 $
  */
 public final class CmsFieldFactory {
 
@@ -107,7 +107,7 @@ public final class CmsFieldFactory {
                     }
 
                     String[] values = fieldProperties.getStringArray(key);
-                    if (values == null || values.length == 0) {
+                    if ((values == null) || (values.length == 0)) {
                         continue;
                     }
 
@@ -126,11 +126,10 @@ public final class CmsFieldFactory {
                 }
             }
         } catch (IOException e) {
-
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_ERR_READING_CUSTOM_FORM_FIELD_PROPERTIES_1,
-                    propertyFile.getAbsolutePath()), e);
+                    propertyFile == null ? CUSTOM_FORM_FIELD_PROPERTIES : propertyFile.getAbsolutePath()), e);
             }
         }
     }

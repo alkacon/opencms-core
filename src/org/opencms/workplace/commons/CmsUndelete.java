@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndelete.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.15.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,14 +111,14 @@ public class CmsUndelete extends CmsMultiDialog {
             includeErrorpage(this, e);
         }
     }
-    
+
     /**
      * Returns the HTML for the localized undelete confirmation message depending on single or multi operation.<p>
      * 
      * @return the HTML for the localized undelete confirmation message
      */
     public String buildConfirmationMessage() {
-        
+
         if (isMultiOperation()) {
             return key(Messages.GUI_UNDELETE_MULTI_CONFIRMATION_0);
         } else {
@@ -133,13 +133,13 @@ public class CmsUndelete extends CmsMultiDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         // check the required permissions to undelete the resource       
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+        if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
         }
-        
+
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
@@ -171,7 +171,7 @@ public class CmsUndelete extends CmsMultiDialog {
             // return false, this will trigger the "please wait" screen
             return false;
         }
-        
+
         Iterator i = getResourceList().iterator();
         // iterate the resources to undelete
         while (i.hasNext()) {

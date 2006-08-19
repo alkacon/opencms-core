@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:36 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.1.8
  */
@@ -294,9 +294,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
                             resource.getRootPath()));
                     }
                     // obtaining the lock:
-                    getCms().lockResource(
-                        getCms().getRequestContext().removeSiteRoot(resource.getRootPath()),
-                        CmsLock.TYPE_EXCLUSIVE);
+                    getCms().lockResource(getCms().getRequestContext().removeSiteRoot(resource.getRootPath()));
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_TAGREPLACE_LOCK_RESOURCE_OK_1,

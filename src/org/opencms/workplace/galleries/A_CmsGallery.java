@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2006/05/19 08:34:49 $
- * Version: $Revision: 1.24.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.24.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.24.4.1 $ 
+ * @version $Revision: 1.24.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -451,7 +451,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         if (pageno == null) {
             pageno = "1";
         }
-        if (items != null && items.size() > 0) {
+        if ((items != null) && (items.size() > 0)) {
             // calculate page items
             int start = 0;
             int end = getSettings().getUserSettings().getExplorerFileEntries();
@@ -524,7 +524,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     public String buildGallerySelectBox() {
 
         List galleries = getGalleries();
-        if (galleries != null && galleries.size() == 1) {
+        if ((galleries != null) && (galleries.size() == 1)) {
             // exactly one gallery present
             CmsResource res = (CmsResource)galleries.get(0);
             StringBuffer result = new StringBuffer(128);
@@ -547,7 +547,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
             result.append(path);
             result.append("\">");
             return result.toString();
-        } else if (galleries.size() > 1) {
+        } else if ((galleries != null) && (galleries.size() > 1)) {
             // more than one gallery present
             int galleryCount = galleries.size();
             List options = new ArrayList(galleryCount);
@@ -725,7 +725,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     public boolean galleriesExists() {
 
         List galleries = getGalleries();
-        if (galleries != null && galleries.size() > 0) {
+        if ((galleries != null) && (galleries.size() > 0)) {
             // at least one gallery exists
             return true;
         }
@@ -775,7 +775,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public List getGalleries() {
 
-        List galleries = null;
+        List galleries = new ArrayList();
         int galleryTypeId = getGalleryTypeId();
         try {
             // get the galleries of the current site
@@ -800,7 +800,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 LOG.error(e);
             }
 
-            if (systemGalleries != null && systemGalleries.size() > 0) {
+            if ((systemGalleries != null) && (systemGalleries.size() > 0)) {
                 // add the found system galleries to the result
                 galleries.addAll(systemGalleries);
             }
@@ -1397,7 +1397,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     CmsPropertyDefinition.PROPERTY_TITLE,
                     getCms().getSitePath(res),
                     resname).toLowerCase();
-                if (restitle.indexOf(searchword) != -1 || resname.indexOf(searchword) != -1) {
+                if ((restitle.indexOf(searchword) != -1) || (resname.indexOf(searchword) != -1)) {
                     // add this resource to the hitlist
                     hitlist.add(res);
                 }
@@ -1549,7 +1549,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 currentProperty.setResourceValue(currentPropertyValue);
             }
             CmsLock lock = getCms().getLock(res);
-            if (lock.getType() == CmsLock.TYPE_UNLOCKED) {
+            if (lock.isUnlocked()) {
                 // lock resource before operation
                 getCms().lockResource(resPath);
             }

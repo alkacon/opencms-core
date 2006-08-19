@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.22.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.report.CmsShellReport;
@@ -58,12 +59,13 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.22.4.1 $
  * 
  * @since 6.0.0
  */
 public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
+    /** Used encoding. */
     private static final String UTF8 = CmsEncoder.ENCODING_UTF_8;
 
     /**
@@ -94,6 +96,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlPageInSystem("testCommentInSource"));
         suite.addTest(new TestCmsXmlPageInSystem("testXmlPageRenameElement"));
         suite.addTest(new TestCmsXmlPageInSystem("testMalformedPage"));
+        suite.addTest(new TestCmsXmlPageInSystem("testXmlPageCreate"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -212,7 +215,9 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index_noexist.html?a=b&language=de\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&amp;language=de\">link</a>", text);
+        assertEquals(
+            "<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&amp;language=de\">link</a>",
+            text);
 
         page.setStringValue(
             cms,
@@ -253,6 +258,43 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html\">link</a>", text);
+        file.setContents(page.marshal());
+
+        // move the file
+        String source = "/folder1/subfolder11/index.html";
+        String destination = "/folder1/subfolder11/index_new.html";
+        CmsResource movedRes = cms.readResource(source);
+        cms.lockResource(source);
+        cms.moveResource(source, destination);
+
+        // test link replacement with moved file
+        page = CmsXmlPageFactory.unmarshal(cms, file);
+        text = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_new.html\">link</a>", text);
+        assertEquals(
+            movedRes.getStructureId(),
+            page.getLinkTable(element, Locale.ENGLISH).getLink("link0").getStructureId());
+        file.setContents(page.marshal());
+
+        // delete and recreate the file
+        cms.deleteResource(destination, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.unlockResource(destination);
+        cms.publishResource(destination);
+        CmsResource newRes = cms.createResource(
+            destination,
+            CmsResourceTypeXmlPage.getStaticTypeId(),
+            content.getBytes(UTF8),
+            properties);
+        assertNotSame(movedRes.getStructureId(), newRes.getStructureId());
+
+        // test link replacement with recreated resource
+        page = CmsXmlPageFactory.unmarshal(cms, file);
+        text = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_new.html\">link</a>", text);
+        assertEquals(
+            newRes.getStructureId(),
+            page.getLinkTable(element, Locale.ENGLISH).getLink("link0").getStructureId());
+        file.setContents(page.marshal());
 
         // test link replacement with non-existing file
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index_noexist.html\">link</a>");
@@ -317,6 +359,32 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         page.validateXmlStructure(new CmsXmlEntityResolver(cms));
         page.setStringValue(cms, "body", Locale.ENGLISH, "This is a another test");
         assertEquals("This is a another test", page.getValue("body", Locale.ENGLISH).getStringValue(cms));
+        file.setContents(page.marshal());
+        cms.writeFile(file);
+    }
+
+    /**
+     * Tests creating a XMl page with the API.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testXmlPageCreate() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing creation of an XML page:\n");
+
+        String filename = "xmlpage.html";
+        CmsResource res = cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId());
+        CmsFile file = CmsFile.upgrade(res, cms);
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
+        assertTrue(page.hasLocale(Locale.ENGLISH));
+        try {
+            page.addLocale(cms, Locale.ENGLISH);
+            fail("where is the default locale!?");
+        } catch (Exception e) {
+            // should fail
+        }
+        page.addValue("test", Locale.ENGLISH);
         file.setContents(page.marshal());
         cms.writeFile(file);
     }

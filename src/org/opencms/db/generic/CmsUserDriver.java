@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2006/04/04 15:46:20 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2006/08/19 13:40:39 $
+ * Version: $Revision: 1.110.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.110 $
+ * @version $Revision: 1.110.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -181,14 +181,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 parentId = readGroup(dbc, parentGroupName).getId();
             }
 
-            if (reservedParam == null) {
-                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection(dbc);
-            } else {
-                // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(dbc, ((Integer)reservedParam).intValue());
-            }
-
+            conn = getSqlManager().getConnection(dbc, reservedParam);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_CREATEGROUP");
 
             // write new group to the database
@@ -241,6 +234,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         try {
+            // user data is project independent- use a "dummy" project ID to receive
+            // a JDBC connection from the offline connection pool
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
 
@@ -267,7 +262,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
 
-        return this.readUser(dbc, id);
+        return readUser(dbc, id);
     }
 
     /**
@@ -283,14 +278,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         if (!internalValidateUserInGroup(dbc, userid, groupid, reservedParam)) {
             // if not, add this user to the group
             try {
-                if (reservedParam == null) {
-                    // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                    conn = m_sqlManager.getConnection(dbc);
-                } else {
-                    // get a JDBC connection from the reserved JDBC pools
-                    conn = m_sqlManager.getConnection(dbc, ((Integer)reservedParam).intValue());
-                }
-
+                conn = getSqlManager().getConnection(dbc, reservedParam);
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_ADDUSERTOGROUP");
 
                 // write the new assingment to the database
@@ -299,7 +287,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 // flag field is not used yet
                 stmt.setInt(3, CmsDbUtil.UNKNOWN_ID);
                 stmt.executeUpdate();
-
             } catch (SQLException e) {
                 throw new CmsDbSqlException(Messages.get().container(
                     Messages.ERR_GENERIC_SQL_1,
@@ -338,16 +325,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#deleteGroup(org.opencms.db.CmsDbContext, java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#deleteGroup(org.opencms.db.CmsDbContext, java.lang.String, Object)
      */
-    public void deleteGroup(CmsDbContext dbc, String name) throws CmsDataAccessException {
+    public void deleteGroup(CmsDbContext dbc, String name, Object reservedParam) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
-            // create statement
-            conn = m_sqlManager.getConnection(dbc);
+            conn = getSqlManager().getConnection(dbc, reservedParam);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_DELETEGROUP");
 
             stmt.setString(1, name);
@@ -362,15 +348,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#deleteUser(org.opencms.db.CmsDbContext, java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#deleteUser(org.opencms.db.CmsDbContext, java.lang.String, Object)
      */
-    public void deleteUser(CmsDbContext dbc, String userName) throws CmsDataAccessException {
+    public void deleteUser(CmsDbContext dbc, String userName, Object reservedParam) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = getSqlManager().getConnection(dbc, reservedParam);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_DELETE");
 
             stmt.setString(1, userName);
@@ -385,15 +371,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#deleteUserInGroup(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#deleteUserInGroup(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, Object)
      */
-    public void deleteUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId) throws CmsDataAccessException {
+    public void deleteUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId, Object reservedParam)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            // create statement
-            conn = m_sqlManager.getConnection(dbc);
+            conn = getSqlManager().getConnection(dbc, reservedParam);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_REMOVEUSERFROMGROUP");
 
             stmt.setString(1, groupId.toString());
@@ -430,14 +416,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         boolean result = false;
 
         try {
-            if (reservedParam == null) {
-                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection(dbc);
-            } else {
-                // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(dbc, ((Integer)reservedParam).intValue());
-            }
-
+            conn = getSqlManager().getConnection(dbc, reservedParam);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READGROUP");
 
             stmt.setString(1, groupName);
@@ -473,14 +452,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         boolean result = false;
 
         try {
-            if (reservedParam == null) {
-                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection(dbc);
-            } else {
-                // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(dbc, ((Integer)reservedParam).intValue());
-            }
-
+            conn = getSqlManager().getConnection(dbc, reservedParam);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ");
             stmt.setString(1, username);
             stmt.setInt(2, usertype);
@@ -542,14 +514,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         try {
-            if (reservedParam == null) {
-                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection(dbc);
-            } else {
-                // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(dbc, ((Integer)reservedParam).intValue());
-            }
-
+            conn = getSqlManager().getConnection(dbc, reservedParam);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
 
             stmt.setString(1, id.toString());
@@ -649,7 +614,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), e);
         }
 
-        if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
+        if ((successiveDrivers != null) && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(
                     Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1,
@@ -1356,17 +1321,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
+     * @see org.opencms.db.I_CmsUserDriver#writeGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup, Object)
      */
-    public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
+    public void writeGroup(CmsDbContext dbc, CmsGroup group, Object reservedParam) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
         if (group != null) {
             try {
-
-                // create statement
-                conn = m_sqlManager.getConnection(dbc);
+                conn = getSqlManager().getConnection(dbc, reservedParam);
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_WRITEGROUP");
 
                 stmt.setString(1, m_sqlManager.validateEmpty(group.getDescription()));
@@ -1385,15 +1348,20 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } else {
             throw new CmsDbEntryNotFoundException(org.opencms.db.Messages.get().container(
                 org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1,
-                group.getName()));
+                "null"));
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writePassword(org.opencms.db.CmsDbContext, java.lang.String, int, java.lang.String, java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#writePassword(org.opencms.db.CmsDbContext, java.lang.String, int, java.lang.String, java.lang.String, Object)
      */
-    public void writePassword(CmsDbContext dbc, String userName, int type, String oldPassword, String newPassword)
-    throws CmsDataAccessException, CmsPasswordEncryptionException {
+    public void writePassword(
+        CmsDbContext dbc,
+        String userName,
+        int type,
+        String oldPassword,
+        String newPassword,
+        Object reservedParam) throws CmsDataAccessException, CmsPasswordEncryptionException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1401,7 +1369,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         // TODO: if old password is not null, check if it is valid
         // TODO: use type in user selection
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = getSqlManager().getConnection(dbc, reservedParam);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SETPW");
             stmt.setString(1, OpenCms.getPasswordHandler().digest(newPassword));
             stmt.setString(2, userName);
@@ -1416,15 +1384,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser)
+     * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser, Object)
      */
-    public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
+    public void writeUser(CmsDbContext dbc, CmsUser user, Object reservedParam) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = getSqlManager().getConnection(dbc, reservedParam);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE");
             // write data to database
             stmt.setString(1, m_sqlManager.validateEmpty(user.getDescription()));
@@ -1452,15 +1420,16 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeUserType(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, int)
+     * @see org.opencms.db.I_CmsUserDriver#writeUserType(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, int, Object)
      */
-    public void writeUserType(CmsDbContext dbc, CmsUUID userId, int userType) throws CmsDataAccessException {
+    public void writeUserType(CmsDbContext dbc, CmsUUID userId, int userType, Object reservedParam)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = getSqlManager().getConnection(dbc, reservedParam);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_UPDATE_USERTYPE");
 
             // write data to database
@@ -1750,14 +1719,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            if (reservedParam == null) {
-                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection(dbc);
-            } else {
-                // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(dbc, ((Integer)reservedParam).intValue());
-            }
-
+            conn = getSqlManager().getConnection(dbc, reservedParam);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_USERINGROUP");
 
             stmt.setString(1, groupId.toString());

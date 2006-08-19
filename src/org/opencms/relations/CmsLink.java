@@ -1,0 +1,590 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.1.2.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.relations;
+
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.staticexport.CmsLinkProcessor;
+import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.util.CmsUriSplitter;
+
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+
+import org.dom4j.Attribute;
+import org.dom4j.Element;
+
+/**
+ * A single link entry in the link table.<p>
+ * 
+ * @author Carsten Weinholz
+ * @author Michael Moossen 
+ * 
+ * @version $Revision: 1.1.2.1 $ 
+ * 
+ * @since 6.0.0 
+ */
+public class CmsLink {
+
+    /** Name of the internal attribute of the link node. */
+    public static final String ATTRIBUTE_INTERNAL = "internal";
+
+    /** Name of the name attribute of the elements node. */
+    public static final String ATTRIBUTE_NAME = "name";
+
+    /** Name of the type attribute of the elements node. */
+    public static final String ATTRIBUTE_TYPE = "type";
+
+    /** Default link name. */
+    public static final String DEFAULT_NAME = "ref";
+
+    /** Default link type. */
+    public static final CmsRelationType DEFAULT_TYPE = CmsRelationType.REFERENCE;
+
+    /** Name of the anchor node. */
+    public static final String NODE_ANCHOR = "anchor";
+
+    /** Name of the query node. */
+    public static final String NODE_QUERY = "query";
+
+    /** Name of the target node. */
+    public static final String NODE_TARGET = "target";
+
+    /** Name of the uuid node. */
+    public static final String NODE_UUID = "uuid";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLink.class);
+
+    /** The anchor of the uri, if any. */
+    private String m_anchor;
+
+    /** The xml element reference. */
+    private Element m_element;
+
+    /** Indicates if the link is an internal link within the OpenCms VFS. */
+    private boolean m_internal;
+
+    /** The internal name of the link. */
+    private String m_name;
+
+    /** The parameters of the query , if any. */
+    private Map m_parameters;
+
+    /** The query, if any. */
+    private String m_query;
+
+    /** The site root of the (internal) link. */
+    private String m_siteRoot;
+
+    /** The structure id of the linked resource. */
+    private CmsUUID m_structureId;
+
+    /** The link target (destination). */
+    private String m_target;
+
+    /** The type of the link. */
+    private CmsRelationType m_type;
+
+    /** The raw uri. */
+    private String m_uri;
+
+    /**
+     * Reconstructs a link object from the given xml node.<p>
+     * 
+     * @param element the xml node containing the link information
+     */
+    public CmsLink(Element element) {
+
+        m_element = element;
+        Attribute attrName = element.attribute(ATTRIBUTE_NAME);
+        if (attrName != null) {
+            m_name = attrName.getValue();
+        } else {
+            m_name = DEFAULT_NAME;
+        }
+        Attribute attrType = element.attribute(ATTRIBUTE_TYPE);
+        if (attrType != null) {
+            m_type = CmsRelationType.valueOf(attrType.getValue());
+        } else {
+            m_type = DEFAULT_TYPE;
+        }
+        Attribute attrInternal = element.attribute(ATTRIBUTE_INTERNAL);
+        if (attrInternal != null) {
+            m_internal = Boolean.valueOf(attrInternal.getValue()).booleanValue();
+        } else {
+            m_internal = true;
+        }
+
+        Element uuid = element.element(NODE_UUID);
+        Element target = element.element(NODE_TARGET);
+        Element anchor = element.element(NODE_ANCHOR);
+        Element query = element.element(NODE_QUERY);
+
+        m_structureId = (uuid != null) ? new CmsUUID(uuid.getText()) : null;
+        m_target = (target != null) ? target.getText() : null;
+        m_anchor = (anchor != null) ? anchor.getText() : null;
+        setQuery((query != null) ? query.getText() : null);
+
+        // update the uri from the components
+        setUri();
+    }
+
+    /**
+     * Creates a new link object without a reference to the xml page link element.<p>
+     * 
+     * @param name the internal name of this link
+     * @param type the type of this link
+     * @param uri the link uri
+     * @param internal indicates if the link is internal within OpenCms 
+     */
+    public CmsLink(String name, CmsRelationType type, String uri, boolean internal) {
+
+        m_element = null;
+        m_name = name;
+        m_type = type;
+        m_internal = internal;
+        m_uri = uri;
+        // update component members from the uri
+        setComponents();
+    }
+
+    /**
+     * Checks and updates the structure id or the path of the target.<p>  
+     * 
+     * @param cms the cms context
+     */
+    public void checkConsistency(CmsObject cms) {
+
+        if (!m_internal || (cms == null)) {
+            return;
+        }
+        try {
+            // first look for the resource with the given structure id
+            CmsResource res = cms.readResource(m_structureId, CmsResourceFilter.ALL);
+            if (!res.getRootPath().equals(m_target)) {
+                // update path if needed
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_BROKEN_LINK_UPDATED_BY_ID_3,
+                        m_structureId,
+                        m_target,
+                        res.getRootPath()));
+                }
+                // set the new target
+                m_target = res.getRootPath();
+                setUri();
+                // update xml node
+                CmsLinkUpdateUtil.updateXml(this, m_element, true);
+            }
+        } catch (CmsException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_BROKEN_LINK_BY_ID_2, m_target, m_structureId), e);
+            }
+            // go on with the resource with the given path
+            try {
+                // adjust the path to the site
+                String target = m_target;
+                if (getSiteRoot() != null) {
+                    target = target.substring(getSiteRoot().length());
+                }
+                // now look for the resource with the given path
+                CmsResource res = cms.readResource(target, CmsResourceFilter.ALL);
+                if (!res.getStructureId().equals(m_structureId)) {
+                    // update structure id if needed
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_BROKEN_LINK_UPDATED_BY_NAME_3,
+                            target,
+                            m_structureId,
+                            res.getStructureId()));
+                    }
+                    m_target = res.getRootPath(); // could change by a translation rule
+                    m_structureId = res.getStructureId();
+                    CmsLinkUpdateUtil.updateXml(this, m_element, true);
+                }
+            } catch (CmsException e1) {
+                // no correction was possible
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_BROKEN_LINK_BY_NAME_1, m_target), e1);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the anchor of this link.<p>
+     * 
+     * @return the anchor or null if undefined
+     */
+    public String getAnchor() {
+
+        return m_anchor;
+    }
+
+    /**
+     * Returns the xml node element representing this link object.<p>
+     * 
+     * @return the xml node element representing this link object
+     */
+    public Element getElement() {
+
+        return m_element;
+    }
+
+    /**
+     * Returns the processed link.<p>
+     * 
+     * @param cms the cms context, could be <code>null</code>
+     * @param processEditorLinks set it to <code>true</code> in case the processed link is needed as editor parameter
+     * 
+     * @return processed link
+     */
+    public String getLink(CmsObject cms, boolean processEditorLinks) {
+
+        if (isInternal()) {
+
+            // if we have a local link, leave it unchanged
+            // cms may be null for unit tests
+            if ((cms == null) || (getUri().length() == 0) || (getUri().charAt(0) == '#')) {
+                return getUri();
+            }
+
+            checkConsistency(cms);
+
+            // Explanation why the "processEditorLinks" param is required:
+            // If the VFS is browsed in the root site, this indicates that a user has switched
+            // the context to the / in the Workplace. In this case the workplace site must be 
+            // the active site. If normal link processing would be used, the site root in the link
+            // would be replaced with server name / port for the other sites. But if a user clicks
+            // on such a link he would leave the workplace site and loose his session. 
+            // A result is that the "direct edit" mode does not work since he in not longer logged in.      
+            // Therefore if the user is NOT in the editor, but in the root site, the links are generated
+            // without server name / port. However, if the editor is opened, the links are generated 
+            // _with_ server name / port so that the source code looks identical to code
+            // that would normally created when running in a regular site.
+
+            // we are in the opencms root site but not in edit mode - use link as stored
+            if (!processEditorLinks && (cms.getRequestContext().getSiteRoot().length() == 0)) {
+                return OpenCms.getLinkManager().substituteLink(cms, getUri());
+            }
+
+            // otherwise get the desired site root from the stored link
+            // if there is no site root, we have a /system link (or the site was deleted),
+            // return the link prefixed with the opencms context
+            String siteRoot = getSiteRoot();
+            if (siteRoot == null) {
+                return OpenCms.getLinkManager().substituteLink(cms, getUri());
+            }
+
+            // return the link with the server prefix, if necessary 
+            return OpenCms.getLinkManager().substituteLink(cms, getVfsUri(), siteRoot);
+        } else {
+
+            // don't touch external links
+            return getUri();
+        }
+    }
+
+    /**
+     * Returns the macro name of this link.<p>
+     * 
+     * @return the macro name name of this link
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /**
+     * Returns the first parameter value for the given parameter name.<p>
+     * 
+     * @param name the name of the parameter
+     * @return the first value for this name or <code>null</code>
+     */
+    public String getParameter(String name) {
+
+        String[] p = (String[])m_parameters.get(name);
+        if (p != null) {
+            return p[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the map of parameters of this link.<p>
+     * 
+     * @return the map of parameters (<code>Map(String[])</code>)
+     */
+    public Map getParameterMap() {
+
+        return m_parameters;
+    }
+
+    /**
+     * Returns the set of available parameter names for this link.<p>
+     * 
+     * @return a <code>Set</code> of parameter names
+     */
+    public Set getParameterNames() {
+
+        return m_parameters.keySet();
+    }
+
+    /**
+     * Returns all parameter values for the given name.<p>
+     * 
+     * @param name the name of the parameter
+     * @return a <code>String[]</code> of all parameter values or <code>null</code>
+     */
+    public String[] getParameterValues(String name) {
+
+        return (String[])m_parameters.get(name);
+    }
+
+    /**
+     * Returns the query of this link.<p>
+     * 
+     * @return the query or null if undefined
+     */
+    public String getQuery() {
+
+        return m_query;
+    }
+
+    /**
+     * Return the site root of the target if it is internal.<p>
+     * 
+     * @return the site root or <code>null</code>
+     */
+    public String getSiteRoot() {
+
+        if (m_siteRoot != null) {
+            return m_siteRoot;
+        }
+        if (m_internal) {
+            m_siteRoot = CmsSiteManager.getSiteRoot(m_target);
+            if (m_siteRoot == null) {
+                m_siteRoot = "";
+            }
+            return m_siteRoot;
+        }
+        return null;
+    }
+
+    /**
+     * The structure id of the linked resource.<p>
+     * 
+     * @return structure id of the linked resource
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
+    }
+
+    /**
+     * Returns the target (destination) of this link.<p>
+     * 
+     * @return the target the target (destination) of this link
+     */
+    public String getTarget() {
+
+        return m_target;
+    }
+
+    /**
+     * Returns the type of this link.<p>
+     * 
+     * @return the type of this link
+     */
+    public CmsRelationType getType() {
+
+        return m_type;
+    }
+
+    /**
+     * Returns the raw uri of this link.<p>
+     * 
+     * @return the uri
+     */
+    public String getUri() {
+
+        return m_uri;
+    }
+
+    /**
+     * Returns the vfs link of the target if it is internal.<p>
+     * 
+     * @return the full link destination or null if the link is not internal.
+     */
+    public String getVfsUri() {
+
+        if (m_internal) {
+            String siteRoot = getSiteRoot();
+            if (siteRoot != null) {
+                return m_uri.substring(siteRoot.length());
+            } else {
+                return m_uri;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns if the link is internal.<p>
+     * 
+     * @return true if the link is a local link
+     */
+    public boolean isInternal() {
+
+        return m_internal;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        return m_uri;
+    }
+
+    /**
+     * Updates the uri of this link with a new value.<p>
+     * 
+     * Also updates the structure of the underlying XML page document this link belongs to.<p> 
+     * 
+     * Note that you can <b>not</b> update the "internal" or "type" values of the link,
+     * so the new link must be of same type (A, IMG) and also remain either an internal or external link.<p>
+     * 
+     * @param uri the uri to update this link with <code>scheme://authority/path#anchor?query</code>
+     */
+    public void updateLink(String uri) {
+
+        // set the uri
+        m_uri = uri;
+
+        // update the components
+        setComponents();
+
+        // update the xml
+        CmsLinkUpdateUtil.updateXml(this, m_element, true);
+    }
+
+    /**
+     * Updates the uri of this link with a new target, anchor and query.<p>
+     * 
+     * If anchor and/or query are <code>null</code>, this features are not used.<p>
+     * 
+     * Note that you can <b>not</b> update the "internal" or "type" values of the link,
+     * so the new link must be of same type (A, IMG) and also remain either an internal or external link.<p>
+     * 
+     * Also updates the structure of the underlying XML page document this link belongs to.<p> 
+     * 
+     * @param target the target (destination) of this link
+     * @param anchor the anchor or null if undefined
+     * @param query the query or null if undefined
+     */
+    public void updateLink(String target, String anchor, String query) {
+
+        // set the components
+        m_target = target;
+        m_anchor = anchor;
+        setQuery(query);
+
+        // create the uri from the components
+        setUri();
+
+        // update the xml
+        CmsLinkUpdateUtil.updateXml(this, m_element, true);
+    }
+
+    /**
+     * Sets the component member variables (target, anchor, query) 
+     * by splitting the uri <code>scheme://authority/path#anchor?query</code>.<p>
+     */
+    private void setComponents() {
+
+        CmsUriSplitter splitter = new CmsUriSplitter(m_uri, true);
+        m_target = splitter.getPrefix();
+        m_anchor = splitter.getAnchor();
+        setQuery(splitter.getQuery());
+
+        // initialize the parameter map
+        m_parameters = CmsRequestUtil.createParameterMap(m_query);
+    }
+
+    /**
+     * Sets the query of the link.<p>
+     * 
+     * @param query the query to set.
+     */
+    private void setQuery(String query) {
+
+        m_query = CmsLinkProcessor.unescapeLink(query);
+    }
+
+    /**
+     * Joins the internal target, anchor and query components 
+     * to one uri string, setting the internal uri and parameters fields.<p>
+     * 
+     * @param target the link target (without anchor/query)
+     * @param anchor the anchor or null 
+     * @param query the query or null
+     */
+    private void setUri() {
+
+        StringBuffer uri = new StringBuffer(64);
+        uri.append(m_target);
+        if (m_query != null) {
+            uri.append('?');
+            uri.append(m_query);
+        }
+        if (m_anchor != null) {
+            uri.append('#');
+            uri.append(m_anchor);
+        }
+
+        // initialize the parameter map
+        m_parameters = CmsRequestUtil.createParameterMap(m_query);
+        m_uri = uri.toString();
+    }
+}

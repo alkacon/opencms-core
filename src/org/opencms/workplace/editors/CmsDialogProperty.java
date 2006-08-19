@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogProperty.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.9.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -281,7 +281,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
             paramValue = request.getParameter(CmsPropertyDefinition.PROPERTY_TEMPLATE);
             oldValue = request.getParameter(PREFIX_HIDDEN + CmsPropertyDefinition.PROPERTY_TEMPLATE);
             writeProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE, paramValue, oldValue);
-            if (paramValue != null && !paramValue.equals(oldValue)) {
+            if ((paramValue != null) && !paramValue.equals(oldValue)) {
                 // template has changed, refresh editor window
                 m_templateChanged = true;
             }

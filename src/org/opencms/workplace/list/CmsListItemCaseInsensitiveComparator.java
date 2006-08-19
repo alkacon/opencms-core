@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemCaseInsensitiveComparator.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.6.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.8.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -74,7 +74,7 @@ public class CmsListItemCaseInsensitiveComparator implements I_CmsListItemCompar
 
                 Comparable c1 = (Comparable)((CmsListItem)o1).get(columnId);
                 Comparable c2 = (Comparable)((CmsListItem)o2).get(columnId);
-                if (c1 instanceof String && c2 instanceof String) {
+                if ((c1 instanceof String) && (c2 instanceof String)) {
                     return collator.compare(((String)c1).toUpperCase(), ((String)c2).toUpperCase());
                 } else if (c1 != null) {
                     if (c2 == null) {

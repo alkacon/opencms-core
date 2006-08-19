@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSetNextRule.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.8.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.xml.sax.Attributes;
  * @author Craig McClanahan 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.4.1 $
  * 
  * @since 6.0.0
  */
@@ -257,11 +257,11 @@ public class CmsSetNextRule extends Rule {
             // only be overridden if data is present in the XML. I don't
             // know why this should only apply to methods taking *one*
             // parameter, but it always has been so we can't change it now.
-            if (m_paramCount == 1 && parameters[0] == null) {
+            if ((m_paramCount == 1) && (parameters[0] == null)) {
                 return;
             }
 
-        } else if (m_paramTypes != null && m_paramTypes.length != 0) {
+        } else if ((m_paramTypes != null) && (m_paramTypes.length != 0)) {
             // Having paramCount == 0 and paramTypes.length == 1 indicates
             // that we have the special case where the target method has one
             // parameter being the body text of the current element.
@@ -283,6 +283,7 @@ public class CmsSetNextRule extends Rule {
             // When paramCount is zero and paramTypes.length is zero it
             // means that we truly are calling a method with no parameters.
             // Nothing special needs to be done here.
+            parameters = new Object[0];
         }
 
         // Construct the parameter values array we will need
@@ -295,8 +296,8 @@ public class CmsSetNextRule extends Rule {
             if (m_paramTypes[i] == propertyClass) {
                 // implant the original child to set if Class matches: 
                 paramValues[i] = child;
-            } else if (parameters[i] == null
-                || (parameters[i] instanceof String && !String.class.isAssignableFrom(m_paramTypes[i]))) {
+            } else if ((parameters[i] == null)
+                || ((parameters[i] instanceof String) && !String.class.isAssignableFrom(m_paramTypes[i]))) {
                 // convert nulls and convert stringy parameters 
                 // for non-stringy param types
                 paramValues[i] = ConvertUtils.convert((String)parameters[i], m_paramTypes[i]);

@@ -8,10 +8,16 @@
 
 <xsd:complexType name="OpenCmsLinkRef">
 	<xsd:sequence>
-		<xsd:element name="uuid" type="xsd:string" minOccurs="0" />
 		<xsd:element name="target" type="xsd:string" />
+		<xsd:element name="uuid" type="xsd:string" minOccurs="0" />
 		<xsd:element name="anchor" type="xsd:string" minOccurs="0" />
 		<xsd:element name="query" type="xsd:string" minOccurs="0" />
 	</xsd:sequence>
+	<xsd:attribute name="type" type="OpenCmsDefaultAppinfoRelationType" use="optional" />
 </xsd:complexType>
 
+<xsd:simpleType name="OpenCmsDefaultAppinfoRelationType">
+	<xsd:restriction base="xsd:string">
+		<xsd:pattern value="attachment|ATTACHMENT|reference|REFERENCE" />
+	</xsd:restriction>
+</xsd:simpleType>

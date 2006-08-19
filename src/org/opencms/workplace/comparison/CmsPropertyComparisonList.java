@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2006/03/30 09:31:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.5.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -430,12 +430,18 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
-        super.initWorkplaceRequestValues(settings, request);     
+        super.initWorkplaceRequestValues(settings, request);
         try {
-            m_file1 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath1(), 
-                getParamVersion1(), Integer.parseInt(getParamTagId1()));
-            m_file2 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath2(), 
-                getParamVersion2(), Integer.parseInt(getParamTagId2()));
+            m_file1 = CmsResourceComparisonDialog.readFile(
+                getCms(),
+                getParamPath1(),
+                getParamVersion1(),
+                Integer.parseInt(getParamTagId1()));
+            m_file2 = CmsResourceComparisonDialog.readFile(
+                getCms(),
+                getParamPath2(),
+                getParamVersion2(),
+                Integer.parseInt(getParamTagId2()));
         } catch (CmsException e) {
 
             LOG.error(e.getStackTrace(), e);

@@ -23,7 +23,8 @@
 		<scheduler />	
 	   	<versionhistory enabled="true" count="10"/>		   	
 		<resourceinit>
-            <resourceinithandler class="org.opencms.file.CmsBackupResourceHandler"/>
+			<resourceinithandler class="org.opencms.file.CmsBackupResourceHandler"/>
+			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
         </resourceinit>
 		<requesthandlers />
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">

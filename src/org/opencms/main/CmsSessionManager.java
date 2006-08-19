@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2006/07/26 14:59:07 $
- * Version: $Revision: 1.12.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.12.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.1 $ 
+ * @version $Revision: 1.12.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -420,15 +420,15 @@ public class CmsSessionManager {
         }
 
         CmsSessionInfo sessionInfo = getSessionInfo(event.getSession());
-        CmsUUID userId = CmsUUID.getNullUUID();
+        CmsUser user = null;
         if (sessionInfo != null) {
-            userId = sessionInfo.getUser().getId();
+            user = sessionInfo.getUser();
             m_sessions.remove(sessionInfo.getSessionId());
         }
 
-        if (!userId.isNullUUID() && (getSessionInfos(userId).size() == 0)) {
+        if ((user != null) && (getSessionInfos(user.getId()).size() == 0)) {
             // remove the temporary locks of this user from memory
-            OpenCms.getLockManager().removeTempLocks(userId);
+            OpenCms.getLockManager().removeTempLocks(user);
         }
 
         if (LOG.isDebugEnabled()) {

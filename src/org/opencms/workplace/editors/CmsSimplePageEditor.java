@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.16.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,7 +150,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         setParamDialogtype(EDITOR_TYPE);
 
         // Initialize a page object from the temporary file
-        if (getParamTempfile() != null && !"null".equals(getParamTempfile())) {
+        if ((getParamTempfile() != null) && !"null".equals(getParamTempfile())) {
             try {
                 m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
                 m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
@@ -205,6 +205,8 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             setAction(ACTION_EXIT);
         } else if (EDITOR_EXIT.equals(getParamAction())) {
             setAction(ACTION_EXIT);
+        } else if (EDITOR_DELETELOCALE.equals(getParamAction())) {
+            setAction(ACTION_DELETELOCALE);
         } else if (EDITOR_CHANGE_ELEMENT.equals(getParamAction())) {
             setAction(ACTION_SHOW);
             actionChangeBodyElement();
@@ -228,7 +230,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 // lock resource if autolock is enabled in configuration
                 if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
                     // set a temporary lock in direct edit mode
-                    checkLock(getParamResource(), CmsLock.TEMPORARY);
+                    checkLock(getParamResource(), CmsLockType.TEMPORARY);
                 } else {
                     // set common lock
                     checkLock(getParamResource());

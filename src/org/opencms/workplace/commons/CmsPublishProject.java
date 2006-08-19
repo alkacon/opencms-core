@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.27.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.threads.CmsPublishThread;
-import org.opencms.workplace.threads.CmsXmlDocumentLinkValidatorThread;
+import org.opencms.workplace.threads.CmsRelationsValidatorThread;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.27.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,10 +93,10 @@ public class CmsPublishProject extends CmsReport {
 
     /** Request parameter value for the action: unlock confirmed. */
     public static final String DIALOG_UNLOCK_CONFIRMED = "unlockconfirmed";
-    
+
     /** Request parameter name for the publishsiblings parameter. */
     public static final String PARAM_PUBLISHSIBLINGS = "publishsiblings";
-    
+
     /** Request parameter name for the subresources parameter. */
     public static final String PARAM_SUBRESOURCES = "subresources";
 
@@ -170,7 +170,7 @@ public class CmsPublishProject extends CmsReport {
                                 publishResources.add(res);
                                 // check if the resource is locked                   
                                 CmsLock lock = getCms().getLock(resName);
-                                if (! lock.isNullLock()) {
+                                if (!lock.isNullLock()) {
                                     // resource is locked, so unlock it
                                     getCms().unlockResource(resName);
                                 }
@@ -215,7 +215,7 @@ public class CmsPublishProject extends CmsReport {
                             getCms().unlockProject(Integer.parseInt(getParamProjectid()));
                         }
                     }
-                    
+
                     CmsPublishList publishList = null;
                     if (directPublish) {
                         // create publish list for direct publish
@@ -226,9 +226,9 @@ public class CmsPublishProject extends CmsReport {
                             publishSubResources);
                         getCms().checkPublishPermissions(publishList);
                     }
-                    
+
                     // start the link validation thread before publishing
-                    CmsXmlDocumentLinkValidatorThread thread = new CmsXmlDocumentLinkValidatorThread(
+                    CmsRelationsValidatorThread thread = new CmsRelationsValidatorThread(
                         getCms(),
                         publishList,
                         getSettings());
@@ -256,7 +256,7 @@ public class CmsPublishProject extends CmsReport {
     public String buildCheckSiblings() {
 
         CmsResource res = null;
-        if (! isMultiOperation()) {
+        if (!isMultiOperation()) {
             try {
                 res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             } catch (CmsException e) {
@@ -268,9 +268,11 @@ public class CmsPublishProject extends CmsReport {
         }
         StringBuffer result = new StringBuffer(128);
         boolean showSiblingCheckBox = false;
-        if (isMultiOperation() || (res != null && res.isFile() && res.getSiblingCount() > 1) || (res != null && res.isFolder())) {
+        if (isMultiOperation()
+            || ((res != null) && res.isFile() && (res.getSiblingCount() > 1))
+            || ((res != null) && res.isFolder())) {
             // resource is file and has siblings, so create checkbox
-            
+
             result.append(dialogSpacer());
             result.append("<input type=\"checkbox\" name=\"");
             result.append(PARAM_PUBLISHSIBLINGS);
@@ -376,7 +378,7 @@ public class CmsPublishProject extends CmsReport {
      * @return the value of the subresources parameter
      */
     public String getParamSubresources() {
-    
+
         return m_paramSubresources;
     }
 
@@ -456,7 +458,7 @@ public class CmsPublishProject extends CmsReport {
      * @param paramSubresources the value of the subresources parameter
      */
     public void setParamSubresources(String paramSubresources) {
-    
+
         m_paramSubresources = paramSubresources;
     }
 
@@ -470,7 +472,7 @@ public class CmsPublishProject extends CmsReport {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the publishing type: publish project or direct publish
-       
+
         if (CmsStringUtil.isNotEmpty(getParamResource()) || isMultiOperation()) {
             setParamDirectpublish(CmsStringUtil.TRUE);
         }
@@ -554,7 +556,7 @@ public class CmsPublishProject extends CmsReport {
      */
     private void computePublishResource() {
 
-        if (! isMultiOperation()) {
+        if (!isMultiOperation()) {
             try {
                 CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
                 setParamResourcename(res.getName());

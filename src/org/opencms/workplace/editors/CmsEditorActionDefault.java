@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.19.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,7 +158,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             int currentProject = cmsObject.getRequestContext().currentProject().getId();
             CmsUUID userId = cmsObject.getRequestContext().currentUser().getId();
             CmsLock lock = cmsObject.getLock(filename);
-            boolean locked = !(lock.isNullLock() || (lock.getUserId().equals(userId) && lock.getProjectId() == currentProject));
+            boolean locked = !(lock.isNullLock() || (lock.getUserId().equals(userId) && (lock.getProjectId() == currentProject)));
 
             if (currentProject == CmsProject.ONLINE_PROJECT_ID) {
                 // don't render direct edit button in online project

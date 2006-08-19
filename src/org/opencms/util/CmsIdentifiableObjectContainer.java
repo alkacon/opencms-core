@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.9.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,21 +45,21 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectContainer {
 
-    // TODO: This class should really be in a workplace package!
-    int todo = 0;
-    
+    /** TODO: This class should really be in a workplace package! */
+    private int m_todo = 0;
+
     /**
      * Internal class just for taking care of the positions in the container.<p>
      * 
      * @author Michael Moossen  
      * 
-     * @version $Revision: 1.9 $
+     * @version $Revision: 1.9.4.1 $
      * 
      * @since 6.0.0
      */
@@ -139,7 +139,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     public void addIdentifiableObject(String id, Object idObject) {
 
         m_cache = null;
-        if (m_uniqueIds && m_objectsById.get(id) != null) {
+        if (m_uniqueIds && (m_objectsById.get(id) != null)) {
             removeObject(id);
         }
         if (m_relativeOrdered) {
@@ -172,7 +172,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     public void addIdentifiableObject(String id, Object idObject, float position) {
 
         m_cache = null;
-        if (m_uniqueIds && m_objectsById.get(id) != null) {
+        if (m_uniqueIds && (m_objectsById.get(id) != null)) {
             removeObject(id);
         }
         if (m_relativeOrdered) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemNumericalComparator.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -74,7 +74,7 @@ public class CmsListItemNumericalComparator implements I_CmsListItemComparator {
 
                 Comparable c1 = (Comparable)((CmsListItem)o1).get(columnId);
                 Comparable c2 = (Comparable)((CmsListItem)o2).get(columnId);
-                if (c1 instanceof String && c2 instanceof String) {
+                if ((c1 instanceof String) && (c2 instanceof String)) {
                     return collator.compare(c1, c2);
                 } else if (c1 != null) {
                     if (c2 == null) {

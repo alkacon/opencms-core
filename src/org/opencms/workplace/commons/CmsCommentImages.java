@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCommentImages.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:47 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.3
  */
@@ -383,7 +383,7 @@ public class CmsCommentImages extends CmsDialog {
         } else {
             // parameter is not empty, check if the value has changed
             if (!propValue.equals(currentProperty.getValue())) {
-                if (currentProperty.getStructureValue() == null && currentProperty.getResourceValue() == null) {
+                if ((currentProperty.getStructureValue() == null) && (currentProperty.getResourceValue() == null)) {
                     // new property, determine setting from OpenCms workplace configuration
                     if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
                         currentProperty.setStructureValue(propValue);

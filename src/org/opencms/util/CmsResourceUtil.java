@@ -87,10 +87,17 @@ public final class CmsResourceUtil {
     /** The current resource type. */
     private I_CmsResourceType m_resourceType;
 
-    // TODO: Remove this class, maybe refactor to org.opencms.workplace.list package
-    // TODO: Check if CmsResource should be extended by this class
-    private int todo = 0;
+    /** 
+     * TODO: Remove this class, maybe refactor to org.opencms.workplace.list package.
+     * TODO: Check if CmsResource should be extended by this class.
+     */
+    private int m_todo = 0;
 
+    /**
+     * TODO: This class does not support the new workflow lock logic.
+     */
+    private int m_todo_v7 = 0;
+    
     /**
      * Creates a new {@link CmsRequestUtil} object.<p> 
      * 
@@ -187,12 +194,12 @@ public final class CmsResourceUtil {
      */
     public String getIconPathLock() {
 
-        int lockId = getLock().getType();
+        CmsLock lock = getLock();
         String iconPath = null;
-        if ((lockId != CmsLock.TYPE_UNLOCKED) && (m_request != null) && isInsideProject()) {
+        if (!lock.isUnlocked() && (m_request != null) && isInsideProject()) {
             if (getLock().getUserId().equals(m_request.currentUser().getId())
                 && (getLockedInProjectId() == getReferenceProject().getId())) {
-                if ((lockId == CmsLock.TYPE_SHARED_EXCLUSIVE) || (lockId == CmsLock.TYPE_SHARED_INHERITED)) {
+                if (lock.isShared()) {
                     iconPath = "shared";
                 } else {
                     iconPath = "user";
@@ -350,9 +357,7 @@ public final class CmsResourceUtil {
     public int getProjectId() {
 
         int projectId = m_resource.getProjectLastModified();
-        if (!getLock().isNullLock()
-            && (getLock().getType() != CmsLock.TYPE_INHERITED)
-            && (getLock().getType() != CmsLock.TYPE_SHARED_INHERITED)) {
+        if (!getLock().isUnlocked() && !getLock().isInherited()) {
             // use lock project ID only if lock is not inherited
             projectId = getLock().getProjectId();
         }

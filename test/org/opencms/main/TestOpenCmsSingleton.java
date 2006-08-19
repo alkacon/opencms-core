@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/08/19 13:40:51 $
+ * Version: $Revision: 1.15.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.15.8.1 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
@@ -112,13 +112,16 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         // get content encoding default property from the JSP resource type
         CmsResourceTypeJsp jsp = (CmsResourceTypeJsp)OpenCms.getResourceManager().getResourceType(
             CmsResourceTypeJsp.getStaticTypeId());
+        // note: default test configuration is done in opencms-vfs.xml and may be different from standard installation
         List defaultProperties = jsp.getConfiguredDefaultProperties();
+        assertEquals("Test configuration has 2 default properties configured for JSP", 2, defaultProperties.size());        
         Iterator i = defaultProperties.iterator();
         String jspEncoding = null;
         while (i.hasNext()) {
             CmsProperty property = (CmsProperty)i.next();
             if (CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING.equals(property.getName())) {
                 jspEncoding = property.getValue();
+                assertEquals("Test configuration has property value '${opencms.default.encoding}' configured for JSP", 2, defaultProperties.size());        
                 // resolve the macro
                 CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
                 jspEncoding = CmsMacroResolver.newInstance().setCmsObject(cms).resolveMacros(jspEncoding);
@@ -195,6 +198,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
             cms = OpenCms.initCmsObject(getCmsObject(), contextInfo);
         } catch (CmsException e) {
             fail("'Admin' user creation with valid Admin context didn't work!");
+            return;
         }
         if (!cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserAdmin())) {
             fail("'Admin' user could not be properly initialized with valid Admin context!");

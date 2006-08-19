@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.17.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -322,7 +322,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.17 $
+     * @version $Revision: 1.17.4.1 $
      * 
      * @since 6.0.0
      */
@@ -666,7 +666,7 @@ public class CmsRfsFileViewer implements Cloneable {
                 long skip = lineInfo.getLineBreakPosition(m_windowPos * m_windowSize, m_windowSize);
                 // this might look complicated but avoids infinite loops (expect the worst from implementation relying on)
                 int maxSkipTries = 100;
-                while (skip > 0 && maxSkipTries > 0) {
+                while ((skip > 0) && (maxSkipTries > 0)) {
                     long skipped = reader.skip(skip);
                     skip -= skipped;
                     maxSkipTries--;
@@ -680,7 +680,7 @@ public class CmsRfsFileViewer implements Cloneable {
                 if (m_isLogfile) {
                     // java hall of shame candidate... but standard
                     Stack inverter = new Stack();
-                    for (int i = m_windowSize; i > 0 && read != null; i--) {
+                    for (int i = m_windowSize; (i > 0) && (read != null); i--) {
                         inverter.push(read);
                         read = lineReader.readLine();
                     }
@@ -692,7 +692,7 @@ public class CmsRfsFileViewer implements Cloneable {
 
                 } else {
 
-                    for (int i = m_windowSize; i > 0 && read != null; i--) {
+                    for (int i = m_windowSize; (i > 0) && (read != null); i--) {
                         result.append(read);
                         result.append('\n');
                         read = lineReader.readLine();

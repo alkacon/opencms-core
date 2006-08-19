@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2006/07/12 08:23:18 $
- * Version: $Revision: 1.26.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.26.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26.4.1 $ 
+ * @version $Revision: 1.26.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -690,12 +690,12 @@ public class CmsFlexCacheKey {
                         m_user = IS_USED; // marks m_user as being used
                         break;
                     case 4: // params
-                        if (v!= null) {
+                        if (v != null) {
                             m_params = parseValueList(v);
                         } else {
                             m_params = Collections.EMPTY_SET;
                         }
-                        
+
                         if (m_params.contains(I_CmsResourceLoader.PARAMETER_ELEMENT)) {
                             // workaround for element setting by parameter in OpenCms < 6.0
                             m_element = IS_USED;

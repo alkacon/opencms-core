@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/07/11 12:21:13 $
- * Version: $Revision: 1.570.2.8 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.570.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,15 +59,21 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockManager;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsMultiException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationsValidator;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -82,10 +88,6 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.validation.CmsXmlDocumentLinkValidator;
-import org.opencms.workflow.CmsTask;
-import org.opencms.workflow.CmsTaskLog;
-import org.opencms.workflow.CmsTaskService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,7 +99,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -325,6 +326,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Key to indicate update of resource record. */
     public static final int UPDATE_RESOURCE = 4;
 
+    /** Key to indicate update of lastmodified project reference. */
+    public static final int UPDATE_RESOURCE_PROJECT = 6;
+
     /** Key to indicate update of resource state. */
     public static final int UPDATE_RESOURCE_STATE = 1;
 
@@ -335,7 +339,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public static final int UPDATE_STRUCTURE_STATE = 2;
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSecurityManager.class);
+    private static final Log LOG = CmsLog.getLog(CmsDriverManager.class);
 
     /** Separator for user cache. */
     private static final char USER_CACHE_SEP = '\u0000';
@@ -359,13 +363,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
     private Map m_groupCache;
 
     /** The HTML link validator. */
-    private CmsXmlDocumentLinkValidator m_htmlLinkValidator;
+    private CmsRelationsValidator m_htmlLinkValidator;
 
     /** The class used for cache key generation. */
     private I_CmsCacheKey m_keyGenerator;
 
     /** The lock manager. */
-    private CmsLockManager m_lockManager = OpenCms.getLockManager();
+    private CmsLockManager m_lockManager;
 
     /** Cache for offline projects. */
     private Map m_projectCache;
@@ -400,15 +404,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** The VFS driver. */
     private I_CmsVfsDriver m_vfsDriver;
 
-    /** The workflow driver. */
-    private I_CmsWorkflowDriver m_workflowDriver;
-
     /**
      * Private constructor, initializes some required member variables.<p> 
      */
     private CmsDriverManager() {
 
-        m_connectionPools = new ArrayList();
+        // intentionally left blank
     }
 
     /**
@@ -427,6 +428,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param configurationManager the configuration manager
      * @param securityManager the security manager
+     * @param lockManager the lock manager provided by the security manager
      * @param runtimeInfoFactory the initialized OpenCms runtime info factory
      * 
      * @return CmsDriverManager the instanciated driver manager
@@ -435,6 +437,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public static CmsDriverManager newInstance(
         CmsConfigurationManager configurationManager,
         CmsSecurityManager securityManager,
+        CmsLockManager lockManager,
         I_CmsDbContextFactory runtimeInfoFactory) throws CmsInitException {
 
         Map configuration = configurationManager.getConfiguration();
@@ -456,7 +459,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         I_CmsVfsDriver vfsDriver = null;
         I_CmsUserDriver userDriver = null;
         I_CmsProjectDriver projectDriver = null;
-        I_CmsWorkflowDriver workflowDriver = null;
         I_CmsBackupDriver backupDriver = null;
 
         CmsDriverManager driverManager = null;
@@ -479,6 +481,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // set the security manager
         driverManager.m_securityManager = securityManager;
+
+        // set connection pools
+        driverManager.m_connectionPools = new ArrayList();
+
+        // set the lock manager
+        driverManager.m_lockManager = lockManager;
 
         // create and set the sql manager
         driverManager.m_sqlManager = new CmsSqlManager(driverManager);
@@ -529,12 +537,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         projectDriver = (I_CmsProjectDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
-        // read the workflow driver class properties and initialize a new instance 
-        drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_WORKFLOW));
-        driverName = config.getString((String)drivers.get(0) + ".workflow.driver");
-        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        workflowDriver = (I_CmsWorkflowDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
-
         // read the backup driver class properties and initialize a new instance 
         drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_BACKUP));
         driverName = config.getString((String)drivers.get(0) + ".backup.driver");
@@ -543,14 +545,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         try {
             // invoke the init method of the driver manager
-            driverManager.init(
-                configurationManager,
-                config,
-                vfsDriver,
-                userDriver,
-                projectDriver,
-                workflowDriver,
-                backupDriver);
+            driverManager.init(configurationManager, config, vfsDriver, userDriver, projectDriver, backupDriver);
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_OK_0));
             }
@@ -571,27 +566,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // return the configured driver manager
         return driverManager;
-    }
-
-    /**
-     * Updates the state of the given task as accepted by the current user.<p>
-     *
-     * @param dbc the current database context
-     * @param taskId the Id of the task to accept
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public void acceptTask(CmsDbContext dbc, int taskId) throws CmsException {
-
-        CmsTask task = m_workflowDriver.readTask(dbc, taskId);
-        task.setPercentage(1);
-        task = m_workflowDriver.writeTask(dbc, task);
-        // currently don't localize workflow logs (this log goes to the database)
-        m_workflowDriver.writeSystemTaskLog(dbc, taskId, "Task was accepted from "
-            + dbc.currentUser().getFirstname()
-            + " "
-            + dbc.currentUser().getLastname()
-            + '.');
     }
 
     /**
@@ -643,9 +617,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         groupname));
                 }
             } else {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_UNKNOWN_USER_1,
-                    user.getName()));
+                throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, username));
             }
         }
     }
@@ -724,7 +696,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (user != null) {
             CmsGroup usergroup = readGroup(dbc, group);
             //check if group exists
-            if (usergroup != null && isWebgroup(dbc, usergroup)) {
+            if ((usergroup != null) && isWebgroup(dbc, usergroup)) {
                 //add this user to the group
                 m_userDriver.createUserInGroup(dbc, user.getId(), usergroup.getId(), null);
                 // update the cache
@@ -736,7 +708,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // Users, Administrators or Projectmanager add the user to this group
             if (CmsStringUtil.isNotEmpty(additionalGroup)) {
                 CmsGroup addGroup = readGroup(dbc, additionalGroup);
-                if (addGroup != null && isWebgroup(dbc, addGroup)) {
+                if ((addGroup != null) && isWebgroup(dbc, addGroup)) {
                     //add this user to the group
                     m_userDriver.createUserInGroup(dbc, user.getId(), addGroup.getId(), null);
                     // update the cache
@@ -746,7 +718,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
         } else {
-            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, user.getName()));
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, name));
         }
         return newUser;
     }
@@ -816,7 +788,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc.getRequestContext().getSitePath(resource)));
         } else if (currentLock.getUserId().equals(dbc.currentUser().getId())
             && (currentLock.getProjectId() == dbc.currentProject().getId())
-            && (currentLock.getType() == CmsLock.TYPE_EXCLUSIVE)) {
+            && (currentLock.isExclusive())) {
             // the current lock requires no change
             return;
         }
@@ -857,7 +829,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // remove the old lock
         m_lockManager.removeResource(this, dbc, resource, true);
         // apply the new lock
-        lockResource(dbc, resource, CmsLock.COMMON);
+        lockResource(dbc, resource, dbc.currentProject(), CmsLockType.EXCLUSIVE);
     }
 
     /**
@@ -873,7 +845,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // try to remove user from cache
         clearUserCache(user);
-        m_userDriver.writeUserType(dbc, user.getId(), userType);
+        m_userDriver.writeUserType(dbc, user.getId(), userType, null);
     }
 
     /**
@@ -898,7 +870,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /**
      * Changes the user type of the user.<p>
-
+     *
      * Only the administrator can change the type.<p>
      * 
      * @param dbc the current database context
@@ -1006,7 +978,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 clearcache(true);
                 break;
             default:
-        // noop
+                // noop
         }
     }
 
@@ -1067,7 +1039,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /**
      * Copies a resource.<p>
      * 
-     * You must ensure that the destination path is anabsolute, vaild and
+     * You must ensure that the destination path is an absolute, valid and
      * existing VFS path. Relative paths from the source are currently not supported.<p>
      * 
      * In case the target resource already exists, it is overwritten with the 
@@ -1088,7 +1060,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param siblingMode indicates how to handle siblings during copy
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsIllegalArgumentException if the <code>source</code> argument is null or of length 0
+     * @throws CmsIllegalArgumentException if the <code>source</code> argument is <code>null</code>
      * 
      * @see CmsObject#copyResource(String, String, int)
      * @see I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, int)
@@ -1161,7 +1133,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         long dateLastModified;
         CmsUUID userLastModified;
         if (source.isFolder()) {
-            // folders always get a new date and uswer when they are copied
+            // folders always get a new date and user when they are copied
             dateLastModified = currentTime;
             userLastModified = dbc.currentUser().getId();
         } else {
@@ -1257,6 +1229,45 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Copies a resource to the current project of the user.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to apply this operation to
+     * @param project the project to copy the resource to
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#copyResourceToProject(String)
+     * @see I_CmsResourceType#copyResourceToProject(CmsObject, CmsSecurityManager, CmsResource)
+     */
+    public void copyResourceToProject(CmsDbContext dbc, CmsResource resource, CmsProject project) throws CmsException {
+
+        // copy the resource to the project only if the resource is not already in the project
+        if (!isInsideProject(dbc, resource.getRootPath(), project)) {
+            // check if there are already any subfolders of this resource
+            if (resource.isFolder()) {
+                List projectResources = m_projectDriver.readProjectResources(dbc, project);
+                for (int i = 0; i < projectResources.size(); i++) {
+                    String resname = (String)projectResources.get(i);
+                    if (resname.startsWith(resource.getRootPath())) {
+                        // delete the existing project resource first
+                        m_projectDriver.deleteProjectResource(dbc, project.getId(), resname);
+                    }
+                }
+            }
+            try {
+                m_projectDriver.createProjectResource(dbc, project.getId(), resource.getRootPath(), null);
+            } catch (CmsException exc) {
+                // if the subfolder exists already - all is ok
+            } finally {
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
+                    "project",
+                    dbc.currentProject())));
+            }
+        }
+    }
+
+    /**
      * Counts the locked resources in a given folder.<p>
      *
      * @param dbc the current database context
@@ -1331,36 +1342,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Creates a new task for project creation.<p>
-     *
-     * @param dbc the current database context
-     * @param projectName name of the project
-     * @param roleName usergroup for the project
-     * @param timeout time when the Project must finished
-     * @param priority priority for the Project
-     * 
-     * @return the new task project
-     *
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    public CmsTask createProject(CmsDbContext dbc, String projectName, String roleName, long timeout, int priority)
-    throws CmsDataAccessException {
-
-        CmsGroup role = null;
-
-        // read the role
-        if (CmsStringUtil.isNotEmpty(roleName)) {
-            role = readGroup(dbc, roleName);
-        }
-        // create the timestamp
-        java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
-        java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
-
-        return m_workflowDriver.createTask(dbc, 0, 0, 1, // standart project type,
-            dbc.currentUser().getId(), dbc.currentUser().getId(), role.getId(), projectName, now, timestamp, priority);
-    }
-
-    /**
      * Creates a project.<p>
      *
      * @param dbc the current database context
@@ -1393,20 +1374,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsGroup group = readGroup(dbc, groupname);
         CmsGroup managergroup = readGroup(dbc, managergroupname);
 
-        // create a new task for the project
-        CmsTask task = createProject(
-            dbc,
-            name,
-            group.getName(),
-            System.currentTimeMillis(),
-            CmsTaskService.TASK_PRIORITY_NORMAL);
-
         return m_projectDriver.createProject(
             dbc,
             dbc.currentUser(),
             group,
             managergroup,
-            task,
             name,
             description,
             CmsProject.PROJECT_STATE_UNLOCKED,
@@ -1465,6 +1437,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Creates the relation information.<p>
+     * 
+     * @param dbc the current db context
+     * @param relation the relation information to create 
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#updateRelationsForResource(CmsRequestContext, CmsResource)
+     */
+    public void createRelation(CmsDbContext dbc, CmsRelation relation) throws CmsException {
+
+        m_vfsDriver.createRelation(dbc, dbc.currentProject().getId(), relation);
+    }
+
+    /**
      * Creates a new resource with the provided content and properties.<p>
      * 
      * The <code>content</code> parameter may be null if the resource id already exists.
@@ -1501,15 +1488,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsResource newResource = null;
 
-        if (m_concurrentCreateResourceLocks.contains(resourcePath)) {
-            // since this method is a long-runner, we must make sure to avoid concurrent creation of the same resource
-            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_CURRENTLY_CREATED_1,
-                dbc.removeSiteRoot(resourcePath)));
-            // potential issue with this solution: 
-            // in theory, someone _without_ write permissions could "block" the concurrent creation of a resource
-            // for someone _with_ permissions this way since the permissions have not been checked yet
-        }
+        // since this method is a long-runner, we must make sure to avoid concurrent creation of the same resource
+        checkCreateResourceLock(dbc, resourcePath);
 
         try {
             // avoid concurrent creation issues
@@ -1518,26 +1498,105 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // check import configuration of "lost and found" folder
             boolean useLostAndFound = importCase && !OpenCms.getImportExportManager().overwriteCollidingResources();
 
-            // check if the resource already exists
-            CmsResource currentResource = null;
-
+            // check if the resource already exists by name
+            CmsResource currentResourceByName = null;
             try {
-                currentResource = readResource(dbc, resourcePath, CmsResourceFilter.ALL);
+                currentResourceByName = readResource(dbc, resourcePath, CmsResourceFilter.ALL);
             } catch (CmsVfsResourceNotFoundException e) {
-                // if the resource does exist, we need to either overwrite it,
-                // or create a sibling - this will be handled later
+                // if the resource does exist, we have to check the id later to decide what to do
             }
 
-            CmsResource parentFolder;
-            String parentFolderName;
-            String createdResourceName = resourcePath;
-            int contentLength;
+            // check if the resource already exists by id
+            CmsResource currentResourceById = null;
+            try {
+                currentResourceById = readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL);
+                // reset if it is the same as by name
+                if ((currentResourceByName != null)
+                    && currentResourceById.getRootPath().equals(currentResourceByName.getRootPath())) {
+                    currentResourceById = null;
+                }
+            } catch (CmsVfsResourceNotFoundException e) {
+                // if the resource does exist, we have to check the id later to decide what to do
+            }
 
-            if (currentResource != null) {
-                if (currentResource.getState() == CmsResource.STATE_DELETED) {
-                    if (!currentResource.isFolder()) {
+            // need to provide the parent folder id for resource creation
+            String parentFolderName = CmsResource.getParentFolder(resourcePath);
+            CmsResource parentFolder = readFolder(dbc, parentFolderName, CmsResourceFilter.IGNORE_EXPIRATION);
+
+            // check the permissions
+            if (currentResourceByName == null) {
+                // resource does not exist - check parent folder
+                m_securityManager.checkPermissions(
+                    dbc,
+                    parentFolder,
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+            } else {
+                // resource already exists - check existing resource              
+                m_securityManager.checkPermissions(
+                    dbc,
+                    currentResourceByName,
+                    CmsPermissionSet.ACCESS_WRITE,
+                    !importCase,
+                    CmsResourceFilter.ALL);
+            }
+            if (currentResourceById != null) {
+                // resource already exists - check existing resource              
+                m_securityManager.checkPermissions(
+                    dbc,
+                    currentResourceById,
+                    CmsPermissionSet.ACCESS_WRITE,
+                    !importCase,
+                    CmsResourceFilter.ALL);
+            }
+
+            // first handle a possible moved resource
+            if (currentResourceById != null) {
+                // a resource in another place is using the same id
+                if (!importCase) {
+                    // direct "overwrite" of a resource is possible only during import, 
+                    // or if the resource has been deleted
+                    throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
+                        Messages.ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3,
+                        dbc.removeSiteRoot(resource.getRootPath()),
+                        currentResourceById.getRootPath(),
+                        currentResourceById.getStructureId()));
+                }
+                // lock the resource by id
+                lockResource(dbc, currentResourceById, dbc.currentProject(), CmsLockType.EXCLUSIVE);
+
+                // deleted resources were not moved to L&F
+                if (currentResourceById.getState() == CmsResource.STATE_DELETED) {
+                    if (!currentResourceById.isFolder()) {
+                        // trigger createResource instead of writeResource
+                        currentResourceById = null;
+                    }
+                } else {
+                    // the resource already exists
+                    if (!resource.isFolder()
+                        && useLostAndFound
+                        && (!currentResourceById.getResourceId().equals(resource.getResourceId()))) {
+                        // semantic change: the current resource is moved to L&F and the imported resource will overwrite the old one                
+                        // will leave the resource with state deleted, 
+                        // but it does not matter, since the state will be set later again
+                        moveToLostAndFound(dbc, currentResourceById, false);
+                    }
+                }
+
+                if (currentResourceByName == null) {
+                    // move resource back to original place
+                    moveResource(dbc, currentResourceById, resourcePath, true, false);
+                }
+            }
+
+            // now look for the resource by name
+            if (currentResourceByName != null) {
+                boolean overwrite = true;
+                if (currentResourceByName.getState() == CmsResource.STATE_DELETED) {
+                    if (!currentResourceByName.isFolder()) {
                         // if a non-folder resource was deleted it's treated like a new resource
-                        currentResource = null;
+                        overwrite = false;
                     }
                 } else {
                     if (!importCase) {
@@ -1550,40 +1609,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // the resource already exists
                     if (!resource.isFolder()
                         && useLostAndFound
-                        && (!currentResource.getResourceId().equals(resource.getResourceId()))) {
-                        // new resource must be created in "lost and found"                
-                        createdResourceName = moveToLostAndFound(dbc, resourcePath, false);
-                        // current resource must remain unchanged, new will be created in "lost and found"
-                        currentResource = null;
+                        && (!currentResourceByName.getResourceId().equals(resource.getResourceId()))) {
+                        // semantic change: the current resource is moved to L&F and the imported resource will overwrite the old one                
+                        // will leave the resource with state deleted, 
+                        // but it does not matter, since the state will be set later again
+                        moveToLostAndFound(dbc, currentResourceByName, false);
                     }
                 }
+                if (!overwrite) {
+                    // lock the resource
+                    lockResource(dbc, currentResourceByName, dbc.currentProject(), CmsLockType.EXCLUSIVE);
+                    // trigger createResource instead of writeResource
+                    currentResourceByName = null;
+                }
             }
-
-            // need to provide the parent folder id for resource creation
-            parentFolderName = CmsResource.getParentFolder(createdResourceName);
-            parentFolder = readFolder(dbc, parentFolderName, CmsResourceFilter.IGNORE_EXPIRATION);
-
-            // check the permissions
-            if (currentResource == null) {
-                // resource does not exist - check parent folder
-                m_securityManager.checkPermissions(
-                    dbc,
-                    parentFolder,
-                    CmsPermissionSet.ACCESS_WRITE,
-                    false,
-                    CmsResourceFilter.IGNORE_EXPIRATION);
-            } else {
-                // resource already exists - check existing resource              
-                m_securityManager.checkPermissions(
-                    dbc,
-                    currentResource,
-                    CmsPermissionSet.ACCESS_WRITE,
-                    !importCase,
-                    CmsResourceFilter.ALL);
-            }
+            // if null, create new resource, if not null write resource
+            CmsResource overwrittenResource = (currentResourceById != null ? currentResourceById
+            : currentResourceByName);
 
             // extract the name (without path)
-            String targetName = CmsResource.getName(createdResourceName);
+            String targetName = CmsResource.getName(resourcePath);
+
+            int contentLength;
 
             // modify target name and content length in case of folder creation
             if (resource.isFolder()) {
@@ -1598,9 +1645,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (content != null) {
                     // if a content is provided, in each case the length is the length of this content
                     contentLength = content.length;
-                } else if (currentResource != null) {
+                } else if (overwrittenResource != null) {
                     // we have no content, but an already existing resource - length remains unchanged
-                    contentLength = currentResource.getLength();
+                    contentLength = overwrittenResource.getLength();
                 } else {
                     // we have no content - length is used as set in the resource
                     contentLength = resource.getLength();
@@ -1612,30 +1659,66 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // must do this here since targetName is modified in folder case (see above)
             CmsResource.checkResourceName(targetName);
 
-            // set strcuture and resource ids
-            CmsUUID structureId;
-            CmsUUID resourceId;
-            if (currentResource != null) {
+            // set structure and resource ids as given
+            CmsUUID structureId = resource.getStructureId();
+            CmsUUID resourceId = resource.getResourceId();
+
+            // decide which structure id to use
+            if (overwrittenResource != null) {
                 // resource exists, re-use existing ids
-                structureId = currentResource.getStructureId();
-                resourceId = currentResource.getResourceId();
-            } else {
-                // new resource always gets a new structure id
+                structureId = overwrittenResource.getStructureId();
+            }
+            if (structureId.isNullUUID()) {
+                // need a new structure id
                 structureId = new CmsUUID();
-                if (!resource.getResourceId().isNullUUID()) {
-                    // re-use existing resource id 
-                    resourceId = resource.getResourceId();
-                } else {
-                    // need a new resource id
-                    resourceId = new CmsUUID();
+            }
+
+            // decide which resource id to use
+            if (overwrittenResource != null) {
+                // if we are overwritting we have to assure the resource id is the same
+                resourceId = overwrittenResource.getResourceId();
+            }
+            if (resourceId.isNullUUID()) {
+                // need a new resource id
+                resourceId = new CmsUUID();
+            }
+
+            try {
+                // check online resource
+                CmsResource onlineResource = m_vfsDriver.readResource(
+                    dbc,
+                    CmsProject.ONLINE_PROJECT_ID,
+                    resourcePath,
+                    true);
+                // only allow to overwrite with diff id if importing (createResource will set the right id)
+                try {
+                    CmsResource offlineResource = m_vfsDriver.readResource(
+                        dbc,
+                        dbc.currentProject().getId(),
+                        onlineResource.getStructureId(),
+                        true);
+                    if (!offlineResource.getRootPath().equals(onlineResource.getRootPath())) {
+                        throw new CmsVfsOnlineResourceAlreadyExistsException(Messages.get().container(
+                            Messages.ERR_ONLINE_RESOURCE_EXISTS_2,
+                            dbc.removeSiteRoot(resourcePath),
+                            dbc.removeSiteRoot(offlineResource.getRootPath())));
+                    }
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // there is no problem for now
+                    // but should never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e);
+                    }
                 }
+            } catch (CmsVfsResourceNotFoundException e) {
+                // ok, there is no online entry to worry about
             }
 
             // now create a resource object with all informations
             newResource = new CmsResource(
                 structureId,
                 resourceId,
-                createdResourceName,
+                resourcePath,
                 resource.getTypeId(),
                 resource.isFolder(),
                 resource.getFlags(),
@@ -1669,33 +1752,37 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
 
-            if (currentResource == null) {
+            if (overwrittenResource == null) {
 
                 // resource does not exist.
                 newResource = m_vfsDriver.createResource(dbc, dbc.currentProject(), newResource, content);
 
             } else {
+                // lock the original resource
+                lockResource(dbc, overwrittenResource, dbc.currentProject(), CmsLockType.EXCLUSIVE);
 
                 // resource already exists. 
                 // probably the resource is a merged page file that gets overwritten during import, or it gets 
                 // overwritten by a copy operation. if so, the structure & resource state are not modified to changed.
-                int updateStates = (currentResource.getState() == CmsResource.STATE_NEW) ? CmsDriverManager.NOTHING_CHANGED
+                int updateStates = (overwrittenResource.getState() == CmsResource.STATE_NEW) ? CmsDriverManager.NOTHING_CHANGED
                 : CmsDriverManager.UPDATE_ALL;
                 m_vfsDriver.writeResource(dbc, dbc.currentProject(), newResource, updateStates);
 
                 if ((content != null) && resource.isFile()) {
                     // also update file content if required
-                    m_vfsDriver.writeContent(dbc, dbc.currentProject(), currentResource.getResourceId(), content);
+                    m_vfsDriver.writeContent(dbc, dbc.currentProject(), newResource.getResourceId(), content);
                 }
 
             }
 
             // write the properties (internal operation, no events or duplicate permission checks)
-            writePropertyObjects(dbc, newResource, properties);
+            writePropertyObjects(dbc, newResource, properties, false);
 
             // lock the created resource
-            lockResource(dbc, newResource, CmsLock.COMMON);
+            lockResource(dbc, newResource, dbc.currentProject(), CmsLockType.EXCLUSIVE);
 
+            // delete all relations for the resource, the relations will be rebuild as soon as needed
+            deleteRelationsForResource(dbc, newResource, CmsRelationFilter.TARGETS);
         } finally {
             // remove the create lock
             m_concurrentCreateResourceLocks.remove(resourcePath);
@@ -1759,8 +1846,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // create a new resource
-        CmsResource newResource = new CmsResource(
-            CmsUUID.getNullUUID(), // uuids will be "corrected" later
+        CmsResource newResource = new CmsResource(CmsUUID.getNullUUID(), // uuids will be "corrected" later
             CmsUUID.getNullUUID(),
             targetName,
             type,
@@ -1853,111 +1939,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Creates a new task.<p>
-     *
-     * @param dbc the current database context
-     * @param currentUser the current user
-     * @param projectid the current project id
-     * @param agentName user who will edit the task
-     * @param roleName usergroup for the task
-     * @param taskName name of the task
-     * @param taskType type of the task
-     * @param taskComment description of the task
-     * @param timeout time when the task must finished
-     * @param priority Id for the priority
-     * 
-     * @return a new task object
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsTask createTask(
-        CmsDbContext dbc,
-        CmsUser currentUser,
-        int projectid,
-        String agentName,
-        String roleName,
-        String taskName,
-        String taskComment,
-        int taskType,
-        long timeout,
-        int priority) throws CmsException {
-
-        CmsUser agent = readUser(dbc, agentName, CmsUser.USER_TYPE_SYSTEMUSER);
-        CmsGroup role = m_userDriver.readGroup(dbc, roleName);
-        java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
-        java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
-
-        // validate the task name
-        CmsTask.checkTaskName(taskName);
-
-        CmsTask task = m_workflowDriver.createTask(
-            dbc,
-            projectid,
-            projectid,
-            taskType,
-            currentUser.getId(),
-            agent.getId(),
-            role.getId(),
-            taskName,
-            now,
-            timestamp,
-            priority);
-
-        if (CmsStringUtil.isNotEmpty(taskComment)) {
-            m_workflowDriver.writeTaskLog(dbc, task.getId(), currentUser.getId(), new java.sql.Timestamp(
-                System.currentTimeMillis()), taskComment, CmsTaskService.TASKLOG_USER);
-        }
-
-        return task;
-    }
-
-    /**
-     * Creates a new task.<p>
-     * 
-     * This is just a more limited version of the 
-     * <code>{@link #createTask(CmsDbContext, CmsUser, int, String, String, String, String, int, long, int)}</code>
-     * method, where: <br>
-     * <ul>
-     * <il>the project id is the current project id.</il>
-     * <il>the task type is the standard task type <b>1</b>.</il>
-     * <il>with no comments</il>
-     * </ul><p>
-     * 
-     * @param dbc the current database context
-     * @param agentName the user who will edit the task
-     * @param roleName a usergroup for the task
-     * @param taskname the name of the task
-     * @param timeout the time when the task must finished
-     * @param priority the id for the priority of the task
-     * 
-     * @return the created task
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsTask createTask(
-        CmsDbContext dbc,
-        String agentName,
-        String roleName,
-        String taskname,
-        long timeout,
-        int priority) throws CmsException {
-
-        CmsGroup role = m_userDriver.readGroup(dbc, roleName);
-        java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
-        java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
-        CmsUUID agentId = CmsUUID.getNullUUID();
-        // validate the task name
-        CmsTask.checkTaskName(taskname);
-        try {
-            agentId = readUser(dbc, agentName, CmsUser.USER_TYPE_SYSTEMUSER).getId();
-        } catch (Exception e) {
-            // ignore that this user doesn't exist and create a task for the role
-        }
-        return m_workflowDriver.createTask(dbc, dbc.currentProject().getTaskId(), dbc.currentProject().getTaskId(), 1, // standart Task Type
-            dbc.currentUser().getId(), agentId, role.getId(), taskname, now, timestamp, priority);
-    }
-
-    /**
      * Creates the project for the temporary workplace files.<p>
      *
      * @param dbc the current database context
@@ -1972,20 +1953,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsGroup projectUserGroup = readGroup(dbc, OpenCms.getDefaultUsers().getGroupUsers());
         CmsGroup projectManagerGroup = readGroup(dbc, OpenCms.getDefaultUsers().getGroupAdministrators());
 
-        // create a new task for the project
-        CmsTask task = createProject(
-            dbc,
-            I_CmsProjectDriver.TEMP_FILE_PROJECT_NAME,
-            projectUserGroup.getName(),
-            System.currentTimeMillis(),
-            CmsTaskService.TASK_PRIORITY_NORMAL);
-
         CmsProject tempProject = m_projectDriver.createProject(
             dbc,
             dbc.currentUser(),
             projectUserGroup,
             projectManagerGroup,
-            task,
             I_CmsProjectDriver.TEMP_FILE_PROJECT_NAME,
             Messages.get().getBundle(dbc.getRequestContext().getLocale()).key(
                 Messages.GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0),
@@ -2224,7 +2196,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         // remove the group
         m_userDriver.removeAccessControlEntriesForPrincipal(dbc, dbc.currentProject(), onlineProject, group.getId());
-        m_userDriver.deleteGroup(dbc, group.getName());
+        m_userDriver.deleteGroup(dbc, group.getName(), null);
         m_groupCache.remove(new CacheId(group.getName()));
     }
 
@@ -2276,9 +2248,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsLock lock = getLock(dbc, currentFile);
                 if (lock.isNullLock()) {
                     // lock the resource
-                    lockResource(dbc, currentFile, CmsLock.COMMON);
+                    lockResource(dbc, currentFile, dbc.currentProject(), CmsLockType.EXCLUSIVE);
                 } else if (!lock.getUserId().equals(dbc.currentUser().getId())
-                    || lock.getProjectId() != dbc.currentProject().getId()) {
+                    || (lock.getProjectId() != dbc.currentProject().getId())) {
                     changeLock(dbc, currentFile);
                 }
 
@@ -2335,14 +2307,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsLock lock = getLock(dbc, currentFolder);
                 if (lock.isNullLock()) {
                     // lock the resource
-                    lockResource(dbc, currentFolder, CmsLock.COMMON);
+                    lockResource(dbc, currentFolder, dbc.currentProject(), CmsLockType.EXCLUSIVE);
                 } else if (!lock.getUserId().equals(dbc.currentUser().getId())
-                    || lock.getProjectId() != dbc.currentProject().getId()) {
+                    || (lock.getProjectId() != dbc.currentProject().getId())) {
                     changeLock(dbc, currentFolder);
                 }
 
                 // undo all changes in the folder
-                undoChanges(dbc, currentFolder);
+                undoChanges(dbc, currentFolder, CmsResource.UNDO_CONTENT);
 
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
@@ -2361,14 +2333,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsLock lock = getLock(dbc, currentFile);
                 if (lock.isNullLock()) {
                     // lock the resource
-                    lockResource(dbc, currentFile, CmsLock.COMMON);
+                    lockResource(dbc, currentFile, dbc.currentProject(), CmsLockType.EXCLUSIVE);
                 } else if (!lock.getUserId().equals(dbc.currentUser().getId())
-                    || lock.getProjectId() != dbc.currentProject().getId()) {
+                    || (lock.getProjectId() != dbc.currentProject().getId())) {
                     changeLock(dbc, currentFile);
                 }
 
                 // undo all changes in the file
-                undoChanges(dbc, currentFile);
+                undoChanges(dbc, currentFile, CmsResource.UNDO_CONTENT);
 
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
@@ -2377,7 +2349,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // unlock all resources in the project
-        m_lockManager.removeResourcesInProject(deleteProject.getId());
+        m_lockManager.removeResourcesInProject(deleteProject.getId(), false, false);
         clearAccessControlListCache();
         clearResourceCache();
 
@@ -2424,6 +2396,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Deletes all relations for the given resource matching the given filter.<p>
+     * 
+     * @param dbc the current db context
+     * @param resource the resource to delete the relations for
+     * @param filter the filter to use for deletion
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#deleteRelationsForResource(CmsRequestContext, CmsResource, CmsRelationFilter)
+     */
+    public void deleteRelationsForResource(CmsDbContext dbc, CmsResource resource, CmsRelationFilter filter)
+    throws CmsException {
+
+        if (resource != null) {
+            // delete by id and path
+            filter = filter.filterStructureId(resource.getStructureId());
+            filter = filter.filterPath(resource.getRootPath());
+        }
+        m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getId(), filter);
+    }
+
+    /**
      * Deletes a resource.<p>
      * 
      * The <code>siblingMode</code> parameter controls how to handle siblings 
@@ -2447,9 +2441,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // upgrade a potential inherited, non-shared lock into a common lock
         CmsLock currentLock = getLock(dbc, resource);
-        if (currentLock.getType() == CmsLock.TYPE_INHERITED) {
+        if (currentLock.isInheritedDirectly()) {
             // upgrade the lock status if required
-            lockResource(dbc, resource, CmsLock.COMMON);
+            lockResource(dbc, resource, dbc.currentProject(), CmsLockType.EXCLUSIVE);
         }
 
         // check if siblings of the resource exist and must be deleted as well
@@ -2479,21 +2473,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
         int size = resources.size();
         // if we have only one resource no further check is required
         if (size > 1) {
+            CmsMultiException me = new CmsMultiException();
             // ensure that each sibling is unlocked or locked by the current user
             for (int i = 0; i < size; i++) {
-
                 CmsResource currentResource = (CmsResource)resources.get(i);
                 currentLock = getLock(dbc, currentResource);
-
                 if (!currentLock.equals(CmsLock.getNullLock())
                     && !currentLock.getUserId().equals(dbc.currentUser().getId())) {
                     // the resource is locked by a user different from the current user
                     CmsRequestContext context = dbc.getRequestContext();
-                    throw new CmsLockException(org.opencms.lock.Messages.get().container(
+                    me.addException(new CmsLockException(org.opencms.lock.Messages.get().container(
                         org.opencms.lock.Messages.ERR_SIBLING_LOCKED_2,
                         context.getSitePath(currentResource),
-                        context.getSitePath(resource)));
+                        context.getSitePath(resource))));
                 }
+            }
+            if (!me.getExceptions().isEmpty()) {
+                throw me;
             }
         }
 
@@ -2503,13 +2499,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
         for (int i = 0; i < size; i++) {
             CmsResource currentResource = (CmsResource)resources.get(i);
 
-            // try to delete/remove the resource only if the user has write access to the resource            
-            if (CmsSecurityManager.PERM_ALLOWED != m_securityManager.hasPermissions(
-                dbc,
-                currentResource,
-                CmsPermissionSet.ACCESS_WRITE,
-                true,
-                CmsResourceFilter.ALL)) {
+            // try to delete/remove the resource only if the user has write access to the resource
+            // check permissions only for the sibling, the resource it self was already checked or 
+            // is to be removed without write permissions, ie. while deleting a folder
+            if (!currentResource.equals(resource)
+                && (CmsSecurityManager.PERM_ALLOWED != m_securityManager.hasPermissions(
+                    dbc,
+                    currentResource,
+                    CmsPermissionSet.ACCESS_WRITE,
+                    true,
+                    CmsResourceFilter.ALL))) {
 
                 // no write access to sibling - must keep ACE (see below)
                 allSiblingsRemoved = false;
@@ -2532,7 +2531,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     if (currentResource.isFolder()) {
                         m_vfsDriver.removeFolder(dbc, dbc.currentProject(), currentResource);
                     } else {
-                        // check lables
+                        // check labels
                         if (currentResource.isLabeled() && !labelResource(dbc, currentResource, null, 2)) {
                             // update the resource flags to "unlabel" the other siblings
                             int flags = currentResource.getFlags();
@@ -2555,13 +2554,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                     // set resource state to deleted
                     currentResource.setState(CmsResource.STATE_DELETED);
-                    m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), currentResource, UPDATE_STRUCTURE_STATE);
-
-                    // add the project id as a property, this is later used for publishing
-                    m_vfsDriver.writePropertyObject(dbc, dbc.currentProject(), currentResource, new CmsProperty(
-                        CmsPropertyDefinition.PROPERTY_INTERNAL,
-                        String.valueOf(dbc.currentProject().getId()),
-                        null));
+                    m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), currentResource, UPDATE_STRUCTURE);
 
                     // update the project ID
                     m_vfsDriver.writeLastModifiedProjectId(
@@ -2663,7 +2656,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // online
         transferPrincipalResources(dbc, onlineProject, user.getId(), replacementUser.getId(), withACEs);
         m_userDriver.removeAccessControlEntriesForPrincipal(dbc, project, onlineProject, user.getId());
-        m_userDriver.deleteUser(dbc, username);
+        m_userDriver.deleteUser(dbc, username, null);
         // delete user from cache
         clearUserCache(user);
     }
@@ -2679,7 +2672,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void deleteWebUser(CmsDbContext dbc, CmsUUID userId) throws CmsException {
 
         CmsUser user = readUser(dbc, userId);
-        m_userDriver.deleteUser(dbc, user.getName());
+        m_userDriver.deleteUser(dbc, user.getName(), null);
         // delete user from cache
         clearUserCache(user);
     }
@@ -2696,29 +2689,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_DRIVER_MANAGER_DESTROY_1,
                 getClass().getName()));
-        }
-    }
-
-    /**
-     * Ends a task.<p>
-     *
-     * @param dbc the current databsae context
-     * @param taskid the ID of the task to end
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public void endTask(CmsDbContext dbc, int taskid) throws CmsException {
-
-        m_workflowDriver.endTask(dbc, taskid);
-        if (dbc.currentUser() == null) {
-            m_workflowDriver.writeSystemTaskLog(dbc, taskid, "Task finished.");
-
-        } else {
-            m_workflowDriver.writeSystemTaskLog(dbc, taskid, "Task finished by "
-                + dbc.currentUser().getFirstname()
-                + " "
-                + dbc.currentUser().getLastname()
-                + '.');
         }
     }
 
@@ -2807,7 +2777,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // the folder and all modified resources within the tree below this folder 
                     // and with the last change done in the current project are candidates if unlocked
 
-                    if (CmsResource.STATE_UNCHANGED != directPublishResource.getState()
+                    if ((CmsResource.STATE_UNCHANGED != directPublishResource.getState())
                         && getLock(dbc, directPublishResource).isNullLock()) {
                         publishList.addFolder(directPublishResource);
                     }
@@ -2854,7 +2824,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
                     }
                 } else if (directPublishResource.isFile()
-                    && CmsResource.STATE_UNCHANGED != directPublishResource.getState()) {
+                    && (CmsResource.STATE_UNCHANGED != directPublishResource.getState())) {
 
                     // when publishing a file directly this file is the only candidate
                     // if it is modified and unlocked
@@ -2888,38 +2858,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Forwards a task to a new user.<p>
-     *
-     * @param dbc the current database context
-     * @param taskid the Id of the task to forward
-     * @param newRoleName the new group name for the task
-     * @param newUserName the new user who gets the task. if it is empty, a new agent will automatic selected
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void forwardTask(CmsDbContext dbc, int taskid, String newRoleName, String newUserName) throws CmsException {
-
-        CmsGroup newRole = m_userDriver.readGroup(dbc, newRoleName);
-        CmsUser newUser = null;
-        if (CmsStringUtil.isEmpty(newUserName)) {
-            newUser = readUser(dbc, m_workflowDriver.readAgent(dbc, newRole.getId()));
-        } else {
-            newUser = readUser(dbc, newUserName, CmsUser.USER_TYPE_SYSTEMUSER);
-        }
-
-        m_workflowDriver.forwardTask(dbc, taskid, newRole.getId(), newUser.getId());
-        m_workflowDriver.writeSystemTaskLog(dbc, taskid, "Task fowarded from "
-            + dbc.currentUser().getFirstname()
-            + " "
-            + dbc.currentUser().getLastname()
-            + " to "
-            + newUser.getFirstname()
-            + " "
-            + newUser.getLastname()
-            + '.');
-    }
-
-    /**
      * Returns the list of access control entries of a resource given its name.<p>
      * 
      * @param dbc the current database context
@@ -2942,7 +2880,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String parentPath = CmsResource.getParentFolder(resource.getRootPath());
         int d = (resource.isFolder()) ? 1 : 0;
 
-        while (getInherited && parentPath != null) {
+        while (getInherited && (parentPath != null)) {
             resource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getId(), parentPath);
             List entries = m_userDriver.readAccessControlEntries(
                 dbc,
@@ -3280,9 +3218,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Returns the HTML link validator.<p>
      * 
      * @return the HTML link validator
-     * @see CmsXmlDocumentLinkValidator
+     * @see CmsRelationsValidator
      */
-    public CmsXmlDocumentLinkValidator getHtmlLinkValidator() {
+    public CmsRelationsValidator getHtmlLinkValidator() {
 
         return m_htmlLinkValidator;
     }
@@ -3323,7 +3261,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsLock getLock(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        return m_lockManager.getLock(this, dbc, resource);
+        return m_lockManager.getLock(this, dbc, resource, true);
+    }
+
+    /**
+     * Returns the lock state of a resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to return the lock state for
+     * @param preferExclusive indicates if exclusive locks are preferred
+     * 
+     * @return the lock state of the resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsLock getLock(CmsDbContext dbc, CmsResource resource, boolean preferExclusive) throws CmsException {
+
+        return m_lockManager.getLock(this, dbc, resource, preferExclusive);
     }
 
     /**
@@ -3378,6 +3332,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public I_CmsProjectDriver getProjectDriver() {
 
         return m_projectDriver;
+    }
+
+    /**
+     * Returns all relations for the given resource mathing the given filter.<p> 
+     * 
+     * @param dbc the current db context
+     * @param resource the resource to retrieve the relations for
+     * @param filter the filter to match the relation 
+     * 
+     * @return all {@link CmsRelation} objects for the given resource mathing the given filter
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#getRelationsForResource(CmsRequestContext, CmsResource, CmsRelationFilter)
+     */
+    public List getRelationsForResource(CmsDbContext dbc, CmsResource resource, CmsRelationFilter filter)
+    throws CmsException {
+
+        if (resource != null) {
+            filter = filter.filterStructureId(resource.getStructureId());
+        }
+        return m_vfsDriver.readRelations(dbc, dbc.currentProject().getId(), filter);
     }
 
     /**
@@ -3471,6 +3447,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the security manager this driver manager belongs to.<p>
+     * 
+     * @return the security manager this driver manager belongs to
+     */
+    public CmsSecurityManager getSecurityManager() {
+
+        return m_securityManager;
+    }
+
+    /**
      * Returns an instance of the common sql manager.<p>
      * 
      * @return an instance of the common sql manager
@@ -3478,37 +3464,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsSqlManager getSqlManager() {
 
         return m_sqlManager;
-    }
-
-    /**
-     * Returns the value of the given parameter for the given task.<p>
-     *
-     * @param dbc the current database context
-     * @param taskId the Id of the task
-     * @param parName name of the parameter
-     * 
-     * @return task parameter value
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public String getTaskPar(CmsDbContext dbc, int taskId, String parName) throws CmsException {
-
-        return m_workflowDriver.readTaskParameter(dbc, taskId, parName);
-    }
-
-    /**
-     * Returns the template task id for a given taskname.<p>
-     *
-     * @param dbc the current database context
-     * @param taskName the name of the task
-     * 
-     * @return the id of the task template
-     * 
-     * @throws CmsException if operation was not successful
-     */
-    public int getTaskType(CmsDbContext dbc, String taskName) throws CmsException {
-
-        return m_workflowDriver.readTaskType(dbc, taskName);
     }
 
     /**
@@ -3573,16 +3528,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public I_CmsVfsDriver getVfsDriver() {
 
         return m_vfsDriver;
-    }
-
-    /**
-     * Returns the workflow driver.<p>
-     * 
-     * @return the workflow driver
-     */
-    public I_CmsWorkflowDriver getWorkflowDriver() {
-
-        return m_workflowDriver;
     }
 
     /**
@@ -3676,7 +3621,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param vfsDriver the vfsdriver
      * @param userDriver the userdriver
      * @param projectDriver the projectdriver
-     * @param workflowDriver the workflowdriver
      * @param backupDriver the backupdriver
      * 
      * @throws CmsException if something goes wrong
@@ -3688,7 +3632,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         I_CmsVfsDriver vfsDriver,
         I_CmsUserDriver userDriver,
         I_CmsProjectDriver projectDriver,
-        I_CmsWorkflowDriver workflowDriver,
         I_CmsBackupDriver backupDriver) throws CmsException, Exception {
 
         // initialize the access-module.
@@ -3700,7 +3643,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_vfsDriver = vfsDriver;
         m_userDriver = userDriver;
         m_projectDriver = projectDriver;
-        m_workflowDriver = workflowDriver;
         m_backupDriver = backupDriver;
 
         m_configuration = configuration;
@@ -3771,7 +3713,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         getProjectDriver().fillDefaults(new CmsDbContext());
 
         // initialize the HTML link validator
-        m_htmlLinkValidator = new CmsXmlDocumentLinkValidator(this);
+        m_htmlLinkValidator = new CmsRelationsValidator(this);
         // initialize the lock list for the "CreateResource" method, use Vector for most efficient synchronization 
         m_concurrentCreateResourceLocks = new Vector();
     }
@@ -3790,36 +3732,33 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public boolean isInsideCurrentProject(CmsDbContext dbc, String resourcename) {
 
+        return isInsideProject(dbc, resourcename, dbc.currentProject());
+    }
+
+    /**
+     * Checks if the specified resource is inside a project.<p>
+     * 
+     * @param dbc the current database context
+     * @param resourcename the specified resource name (full path)
+     * @param project the project to check against
+     * @return <code>true</code>, if the specified resource is inside the project
+     */
+    public boolean isInsideProject(CmsDbContext dbc, String resourcename, CmsProject project) {
+
         List projectResources = null;
 
         try {
-            projectResources = readProjectResources(dbc, dbc.currentProject());
+            projectResources = readProjectResources(dbc, project);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_1,
-                    resourcename), e);
+                    Messages.LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_2,
+                    resourcename,
+                    project.getName()), e);
             }
             return false;
         }
         return CmsProject.isInsideProject(projectResources, resourcename);
-    }
-
-    /**
-     * 
-     * Proves if a resource is locked.<p>
-     * 
-     * @see org.opencms.lock.CmsLockManager#isLocked(org.opencms.db.CmsDriverManager, CmsDbContext, CmsResource)
-     * 
-     * @param dbc the current database context
-     * @param resource the resource
-     * 
-     * @return true, if and only if the resource is currently locked
-     * @throws CmsException if something goes wrong
-     */
-    public boolean isLocked(CmsDbContext dbc, CmsResource resource) throws CmsException {
-
-        return m_lockManager.isLocked(this, dbc, resource);
     }
 
     /**
@@ -3964,39 +3903,45 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsUser lockedBy(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        return readUser(dbc, m_lockManager.getLock(this, dbc, resource).getUserId());
+        return readUser(dbc, m_lockManager.getLock(this, dbc, resource, true).getUserId());
     }
 
     /**
      * Locks a resource.<p>
      *
-     * The <code>mode</code> parameter controls what kind of lock is used.
-     * Possible values for this parameter are: 
+     * The <code>type</code> parameter controls what kind of lock is used.<br>
+     * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.lock.CmsLock#COMMON}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLock#TEMPORARY}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLockType#EXCLUSIVE}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLockType#WORKFLOW}</code></li>
      * </ul><p>
      * 
      * @param dbc the current database context
      * @param resource the resource to lock
-     * @param mode flag indicating the mode for the lock
+     * @param project the project for locking the resource
+     * @param type type of the lock
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#lockResource(String, int)
-     * @see I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see CmsObject#lockResource(String)
+     * @see CmsObject#lockResourceTemporary(String)
+     * @see CmsObject#lockResourceInWorkflow(String)
+     * 
+     * @see org.opencms.file.types.I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, CmsProject, CmsLockType)
      */
-    public void lockResource(CmsDbContext dbc, CmsResource resource, int mode) throws CmsException {
+    public void lockResource(CmsDbContext dbc, CmsResource resource, CmsProject project, CmsLockType type)
+    throws CmsException {
 
         // update the resource cache
         clearResourceCache();
 
         // add the resource to the lock dispatcher
-        m_lockManager.addResource(this, dbc, resource, dbc.currentUser().getId(), dbc.currentProject().getId(), mode);
+        m_lockManager.addResource(this, dbc, resource, dbc.currentUser(), project.getId(), type);
 
         if ((resource.getState() != CmsResource.STATE_UNCHANGED) && (resource.getState() != CmsResource.STATE_KEEP)) {
             // update the project flag of a modified resource as "last modified inside the current project"
-            m_vfsDriver.writeLastModifiedProjectId(dbc, dbc.currentProject(), dbc.currentProject().getId(), resource);
+            m_vfsDriver.writeLastModifiedProjectId(dbc, project, project.getId(), resource);
         }
 
         // we must also clear the permission cache
@@ -4091,7 +4036,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         newUser.setLastlogin(System.currentTimeMillis());
 
         // write the changed user object back to the user driver
-        m_userDriver.writeUser(dbc, newUser);
+        m_userDriver.writeUser(dbc, newUser, null);
 
         // update cache
         putUserInCache(newUser);
@@ -4170,6 +4115,96 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Moves a resource.<p>
+     * 
+     * You must ensure that the destination path is an absolute, valid and
+     * existing VFS path. Relative paths from the source are currently not supported.<p>
+     * 
+     * The moved resource will always be locked to the current user
+     * after the move operation.<p>
+     * 
+     * In case the target resource already exists, it is overwritten with the 
+     * source resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param source the resource to copy
+     * @param destination the name of the copy destination with complete path
+     * @param internal if set nothing more than the path is modified 
+     * @param checkCreate if set the create resource lock is checked
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#moveResource(CmsRequestContext, CmsResource, String)
+     */
+    public void moveResource(
+        CmsDbContext dbc,
+        CmsResource source,
+        String destination,
+        boolean internal,
+        boolean checkCreate) throws CmsException {
+
+        if (checkCreate) {
+            // check the concurrent creation
+            checkCreateResourceLock(dbc, destination);
+        }
+        try {
+            // avoid concurrent creation issues
+            m_concurrentCreateResourceLocks.add(destination);
+
+            CmsFolder destinationFolder = readFolder(
+                dbc,
+                CmsResource.getParentFolder(destination),
+                CmsResourceFilter.IGNORE_EXPIRATION);
+            m_securityManager.checkPermissions(
+                dbc,
+                destinationFolder,
+                CmsPermissionSet.ACCESS_WRITE,
+                false,
+                CmsResourceFilter.IGNORE_EXPIRATION);
+
+            m_vfsDriver.moveResource(dbc, dbc.getRequestContext().currentProject().getId(), source, destination);
+
+            if (!internal) {
+                source.setState(source.getState() == CmsResource.STATE_NEW ? CmsResource.STATE_NEW
+                : CmsResource.STATE_CHANGED);
+                // safe since this operation always uses the ids instead of the resource path
+                m_vfsDriver.writeResourceState(
+                    dbc,
+                    dbc.currentProject(),
+                    source,
+                    CmsDriverManager.UPDATE_STRUCTURE_STATE);
+            }
+
+            // flush all relevant caches
+            clearAccessControlListCache();
+            m_propertyCache.clear();
+
+            List resources = new ArrayList(4);
+            // source
+            resources.add(source);
+            try {
+                resources.add(readFolder(dbc, CmsResource.getParentFolder(source.getRootPath()), CmsResourceFilter.ALL));
+            } catch (Exception e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e);
+                }
+            }
+            // destination
+            resources.add(readResource(dbc, destination, CmsResourceFilter.ALL));
+            resources.add(destinationFolder);
+
+            // fire the events
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MOVED, Collections.singletonMap(
+                "resources",
+                resources)));
+
+        } finally {
+            // remove the create lock
+            m_concurrentCreateResourceLocks.remove(destination);
+        }
+    }
+
+    /**
      * Moves a resource to the "lost and found" folder.<p>
      * 
      * The method can also be used to check get the name of a resource
@@ -4178,7 +4213,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * must be set to <code>true</code>.<p>
      * 
      * @param dbc the current database context
-     * @param resourcename the name of the resource to apply this operation to
+     * @param resource the resource to apply this operation to
      * @param returnNameOnly if <code>true</code>, only the name of the resource in the "lost and found" 
      *        folder is returned, the move operation is not really performed
      * 
@@ -4190,35 +4225,43 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @see CmsObject#moveToLostAndFound(String)
      * @see CmsObject#getLostAndFoundName(String)
      */
-    public String moveToLostAndFound(CmsDbContext dbc, String resourcename, boolean returnNameOnly)
+    public String moveToLostAndFound(CmsDbContext dbc, CmsResource resource, boolean returnNameOnly)
     throws CmsException, CmsIllegalArgumentException {
 
-        CmsRequestContext context = dbc.getRequestContext();
-        String siteRoot = context.getSiteRoot();
-        Stack storage = new Stack();
-        context.setSiteRoot("/");
+        String resourcename = dbc.removeSiteRoot(resource.getRootPath());
+
+        String siteRoot = dbc.getRequestContext().getSiteRoot();
+        dbc.getRequestContext().setSiteRoot("/");
         String destination = CmsDriverManager.LOST_AND_FOUND_FOLDER + resourcename;
-        // create the require folders if nescessary
-        String des = destination;
-        // collect all folders...
+        // create the required folders if necessary
         try {
-            while (des.indexOf('/') == 0) {
-                des = des.substring(0, des.lastIndexOf('/'));
-                storage.push(des.concat("/"));
-            }
+            // collect all folders...
+            String folderPath = CmsResource.getParentFolder(destination);
+            folderPath = folderPath.substring(1, folderPath.length() - 1); // cut out leading and trailing '/'
+            Iterator folders = CmsStringUtil.splitAsList(folderPath, '/').iterator();
             // ...now create them....
-            while (storage.size() != 0) {
-                des = (String)storage.pop();
+            folderPath = "/";
+            while (folders.hasNext()) {
+                folderPath += folders.next().toString() + "/";
                 try {
-                    readFolder(dbc, des, CmsResourceFilter.IGNORE_EXPIRATION);
+                    readFolder(dbc, folderPath, CmsResourceFilter.IGNORE_EXPIRATION);
                 } catch (Exception e1) {
+                    if (returnNameOnly) {
+                        // we can use the original name without risk, and we do not need to recreate the parent folders 
+                        break;
+                    }
                     // the folder is not existing, so create it
-                    createResource(dbc, des, CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, Collections.EMPTY_LIST);
+                    createResource(
+                        dbc,
+                        folderPath,
+                        CmsResourceTypeFolder.RESOURCE_TYPE_ID,
+                        null,
+                        Collections.EMPTY_LIST);
                 }
             }
             // check if this resource name does already exist
-            // if so add a psotfix to the name
-            des = destination;
+            // if so add a postfix to the name
+            String des = destination;
             int postfix = 1;
             boolean found = true;
             while (found) {
@@ -4250,8 +4293,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             destination = des;
 
             if (!returnNameOnly) {
-                // move the existing resource to the lost and foud folder
-                CmsResource resource = readResource(dbc, resourcename, CmsResourceFilter.ALL);
+                // do not use the move semantic here! to prevent links pointing to the lost & found folder
                 copyResource(dbc, resource, destination, CmsResource.COPY_AS_SIBLING);
                 deleteResource(dbc, resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
             }
@@ -4259,7 +4301,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             throw e2;
         } finally {
             // set the site root to the old value again
-            context.setSiteRoot(siteRoot);
+            dbc.getRequestContext().setSiteRoot(siteRoot);
         }
         return destination;
     }
@@ -4476,7 +4518,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 Iterator i = OpenCms.getModuleManager().getModuleNames().iterator();
                 while (i.hasNext()) {
                     CmsModule module = OpenCms.getModuleManager().getModule(i.next().toString());
-                    if (module != null && module.getActionInstance() != null) {
+                    if ((module != null) && (module.getActionInstance() != null)) {
                         module.getActionInstance().publishProject(cms, publishList, backupTagId, report);
                     }
                 }
@@ -4511,30 +4553,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Reactivates a task.<p>
-     * 
-     * Setting its state to <code>{@link CmsTaskService#TASK_STATE_STARTED}</code> and
-     * the percentage to <b>zero</b>.<p>
-     *
-     * @param dbc the current database context
-     * @param taskId the id of the task to reactivate
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public void reactivateTask(CmsDbContext dbc, int taskId) throws CmsException {
-
-        CmsTask task = m_workflowDriver.readTask(dbc, taskId);
-        task.setState(CmsTaskService.TASK_STATE_STARTED);
-        task.setPercentage(0);
-        task = m_workflowDriver.writeTask(dbc, task);
-        m_workflowDriver.writeSystemTaskLog(dbc, taskId, "Task was reactivated from "
-            + dbc.currentUser().getFirstname()
-            + " "
-            + dbc.currentUser().getLastname()
-            + '.');
-    }
-
-    /**
      * Reads an access control entry from the cms.<p>
      * 
      * The access control entries of a resource are readable by everyone.
@@ -4549,21 +4567,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         return m_userDriver.readAccessControlEntry(dbc, dbc.currentProject(), resource.getResourceId(), principal);
-    }
-
-    /**
-     * Reads the agent of a task.<p>
-     *
-     * @param dbc the current database context
-     * @param task the task to read the agent from
-     * 
-     * @return the owner of a task
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readAgent(CmsDbContext dbc, CmsTask task) throws CmsException {
-
-        return readUser(dbc, task.getAgentUser());
     }
 
     /**
@@ -4589,7 +4592,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resource.getRootPath(),
             resource.getResourceId());
 
-        if (backupFileHeaders != null && backupFileHeaders.size() > 1) {
+        if ((backupFileHeaders != null) && (backupFileHeaders.size() > 1)) {
             // change the order of the list
             Collections.reverse(backupFileHeaders);
         }
@@ -4665,8 +4668,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param projectId the ID of the project
      * @param resourceType &lt;0 if files and folders should be read, 0 if only folders should be read, &gt;0 if only files should be read
+     * 
      * @return a List with all resources inside the specified project
-     * @throws CmsException if somethong goes wrong
+     * 
+     * @throws CmsException if something goes wrong
      */
     public List readChangedResourcesInsideProject(CmsDbContext dbc, int projectId, int resourceType)
     throws CmsException {
@@ -4703,14 +4708,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
             currentLock = getLock(dbc, currentResource);
 
             if (currentResource.getState() != CmsResource.STATE_UNCHANGED) {
-                if ((currentLock.isNullLock() && currentResource.getProjectLastModified() == projectId)
-                    || (currentLock.getUserId().equals(dbc.currentUser().getId()) && currentLock.getProjectId() == projectId)) {
+                if ((currentLock.isNullLock() && (currentResource.getProjectLastModified() == projectId))
+                    || (currentLock.getUserId().equals(dbc.currentUser().getId()) && (currentLock.getProjectId() == projectId))) {
                     // add only resources that are 
                     // - inside the project,
                     // - changed in the project,
                     // - either unlocked, or locked for the current user in the project
-                    if ((currentResource.isFolder() && resourceType <= 0)
-                        || (currentResource.isFile() && resourceType != 0)) {
+                    if ((currentResource.isFolder() && (resourceType <= 0))
+                        || (currentResource.isFile() && (resourceType != 0))) {
                         result.add(currentResource);
                     }
                 }
@@ -4740,6 +4745,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param filter the resource filter to use
      * @param getFolders if true the child folders are included in the result
      * @param getFiles if true the child files are included in the result
+     * @param checkPermissions if the resources should be filtered with the current user permissions
      * 
      * @return a list of all child resources
      * 
@@ -4750,19 +4756,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsResource resource,
         CmsResourceFilter filter,
         boolean getFolders,
-        boolean getFiles) throws CmsException {
+        boolean getFiles,
+        boolean checkPermissions) throws CmsException {
 
         // try to get the sub resources from the cache
         String cacheKey = getCacheKey(new String[] {
             dbc.currentUser().getName(),
             getFolders ? (getFiles ? CmsCacheKey.CACHE_KEY_SUBALL : CmsCacheKey.CACHE_KEY_SUBFOLDERS)
             : CmsCacheKey.CACHE_KEY_SUBFILES,
+            checkPermissions ? "+" : "-",
             filter.getCacheId(),
             resource.getRootPath()}, dbc.currentProject());
 
         List subResources = (List)m_resourceListCache.get(cacheKey);
 
-        if (subResources != null && subResources.size() > 0) {
+        if ((subResources != null) && (subResources.size() > 0)) {
             // the parent folder is not deleted, and the sub resources were cached, no further operations required
             // we must however still apply the result filter and update the context dates
             return updateContextDates(dbc, subResources, filter);
@@ -4771,16 +4779,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // read the result form the database
         subResources = m_vfsDriver.readChildResources(dbc, dbc.currentProject(), resource, getFolders, getFiles);
 
-        for (int i = 0; i < subResources.size(); i++) {
-            CmsResource currentResource = (CmsResource)subResources.get(i);
-            int perms = m_securityManager.hasPermissions(
-                dbc,
-                currentResource,
-                CmsPermissionSet.ACCESS_READ,
-                true,
-                filter);
-            if (CmsSecurityManager.PERM_DENIED == perms) {
-                subResources.remove(i--);
+        if (checkPermissions) {
+            for (int i = 0; i < subResources.size(); i++) {
+                CmsResource currentResource = (CmsResource)subResources.get(i);
+                int perms = m_securityManager.hasPermissions(
+                    dbc,
+                    currentResource,
+                    CmsPermissionSet.ACCESS_READ,
+                    true,
+                    filter);
+                if (CmsSecurityManager.PERM_DENIED == perms) {
+                    subResources.remove(i--);
+                }
             }
         }
 
@@ -4851,52 +4861,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Reads all given tasks from a user for a project.<p>
-     *
-     * The <code>tasktype</code> parameter will filter the tasks.
-     * The possible values for this parameter are:<br>
-     * <ul>
-     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
-     * </ul>
-     *
-     * @param dbc the current database context
-     * @param projectId the id of the project in which the tasks are defined
-     * @param ownerName the owner of the task
-     * @param taskType the type of task you want to read
-     * @param orderBy specifies how to order the tasks
-     * @param sort sorting of the tasks
-     * 
-     * @return a list of given <code>{@link CmsTask}</code> objects for a user for a project
-     * 
-     * @throws CmsException if operation was not successful
-     */
-    public List readGivenTasks(
-        CmsDbContext dbc,
-        int projectId,
-        String ownerName,
-        int taskType,
-        String orderBy,
-        String sort) throws CmsException {
-
-        CmsProject project = null;
-
-        CmsUser owner = null;
-
-        if (ownerName != null) {
-            owner = readUser(dbc, ownerName);
-        }
-
-        if (projectId != CmsDbUtil.UNKNOWN_ID) {
-            project = readProject(dbc, projectId);
-        }
-
-        return m_workflowDriver.readTasks(dbc, project, null, owner, null, taskType, orderBy, sort);
-    }
-
-    /**
      * Reads the group of a project.<p>
      *
      * @param dbc the current database context
@@ -4923,21 +4887,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         return group;
-    }
-
-    /**
-     * Reads the group (role) of a task.<p>
-     *
-     * @param dbc the current database context
-     * @param task the task to read from
-     * 
-     * @return the group of a resource
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public CmsGroup readGroup(CmsDbContext dbc, CmsTask task) throws CmsException {
-
-        return m_userDriver.readGroup(dbc, task.getRole());
     }
 
     /**
@@ -4978,6 +4927,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Reads the locks that were saved to the database in the previous run of OpenCms.<p>
+     * 
+     * @param dbc the current database context
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void readLocks(CmsDbContext dbc) throws CmsException {
+
+        m_lockManager.readLocks(this, dbc);
+    }
+
+    /**
      * Reads the manager group of a project.<p>
      *
      * @param dbc the current database context
@@ -5008,21 +4969,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Reads the original agent of a task.<p>
-     *
-     * @param dbc the current database context
-     * @param task the task to read the original agent from
-     * 
-     * @return the owner of a task
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readOriginalAgent(CmsDbContext dbc, CmsTask task) throws CmsException {
-
-        return readUser(dbc, task.getOriginalUser());
-    }
-
-    /**
      * Reads the owner of a project.<p>
      *
      * @param dbc the current database context
@@ -5034,36 +4980,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsUser readOwner(CmsDbContext dbc, CmsProject project) throws CmsException {
 
         return readUser(dbc, project.getOwnerId());
-    }
-
-    /**
-     * Reads the owner (initiator) of a task.<p>
-     * 
-     * @param dbc the current database context
-     * @param task the task to read the owner from
-     * 
-     * @return the owner of a task
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readOwner(CmsDbContext dbc, CmsTask task) throws CmsException {
-
-        return readUser(dbc, task.getInitiatorUser());
-    }
-
-    /**
-     * Reads the owner of a tasklog.<p>
-     *
-     * @param dbc the current database context
-     * @param log the tasklog
-     * 
-     * @return the owner of a resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readOwner(CmsDbContext dbc, CmsTaskLog log) throws CmsException {
-
-        return readUser(dbc, log.getUser());
     }
 
     /**
@@ -5176,25 +5092,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Reads a project of a given task.<p>
-     *
-     * @param dbc the current database context
-     * @param task the task to read the project of
-     * 
-     * @return the project of the task
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsProject readProject(CmsDbContext dbc, CmsTask task) throws CmsException {
-
-        // read the parent of the task, until it has no parents.
-        while (task.getParent() != 0) {
-            task = readTask(dbc, task.getParent());
-        }
-        return m_workflowDriver.readProject(dbc, task);
-    }
-
-    /**
      * Reads a project given the projects id.<p>
      *
      * @param dbc the current database context
@@ -5239,21 +5136,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             m_projectCache.put(name, project);
         }
         return project;
-    }
-
-    /**
-     * Reads all task log entries for a project.
-     *
-     * @param dbc the current database context
-     * @param projectId the id of the project for which the tasklog will be read
-     * 
-     * @return a list of <code>{@link CmsTaskLog}</code> objects
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List readProjectLogs(CmsDbContext dbc, int projectId) throws CmsException {
-
-        return m_workflowDriver.readProjectLogs(dbc, projectId);
     }
 
     /**
@@ -5669,7 +5551,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         List subResources = (List)m_resourceListCache.get(cacheKey);
 
-        if (subResources != null && subResources.size() > 0) {
+        if ((subResources != null) && (subResources.size() > 0)) {
             // the parent folder is not deleted, and the sub resources were cached, no further operations required
             // we must however still apply the result filter and update the context dates
             return updateContextDates(dbc, subResources, filter);
@@ -5905,154 +5787,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Reads the task with the given id.<p>
-     *
-     * @param dbc the current database context
-     * @param id the id for the task to read
-     * 
-     * @return the task with the given id
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsTask readTask(CmsDbContext dbc, int id) throws CmsException {
-
-        return m_workflowDriver.readTask(dbc, id);
-    }
-
-    /**
-     * Reads log entries for a task.<p>
-     *
-     * @param dbc the current satabase context
-     * @param taskid the task for the tasklog to read
-     * 
-     * @return a list of <code>{@link CmsTaskLog}</code> objects
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List readTaskLogs(CmsDbContext dbc, int taskid) throws CmsException {
-
-        return m_workflowDriver.readTaskLogs(dbc, taskid);
-    }
-
-    /**
-     * Reads all tasks for a project.<p>
-     *
-     * The <code>tasktype</code> parameter will filter the tasks.
-     * The possible values are:<br>
-     * <ul>
-     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
-     * </ul><p>
-     *
-     * @param dbc the current database context
-     * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks
-     * @param tasktype the type of task you want to read
-     * @param orderBy specifies how to order the tasks
-     * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null
-     * 
-     * @return a list of <code>{@link CmsTask}</code> objects for the project
-     * 
-     * @throws CmsException if operation was not successful
-     */
-    public List readTasksForProject(CmsDbContext dbc, int projectId, int tasktype, String orderBy, String sort)
-    throws CmsException {
-
-        CmsProject project = null;
-
-        if (projectId != CmsDbUtil.UNKNOWN_ID) {
-            project = readProject(dbc, projectId);
-        }
-        return m_workflowDriver.readTasks(dbc, project, null, null, null, tasktype, orderBy, sort);
-    }
-
-    /**
-     * Reads all tasks for a role in a project.<p>
-     *
-     * The <code>tasktype</code> parameter will filter the tasks.
-     * The possible values for this parameter are:<br>
-     * <ul>
-     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
-     * </ul><p>
-     *
-     * @param dbc the current database context
-     * @param projectId the id of the Project in which the tasks are defined
-     * @param roleName the role who has to process the task
-     * @param tasktype the type of task you want to read
-     * @param orderBy specifies how to order the tasks
-     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
-     * 
-     * @return list of <code>{@link CmsTask}</code> objects for the role
-     * 
-     * @throws CmsException if operation was not successful
-     */
-    public List readTasksForRole(
-        CmsDbContext dbc,
-        int projectId,
-        String roleName,
-        int tasktype,
-        String orderBy,
-        String sort) throws CmsException {
-
-        CmsProject project = null;
-        CmsGroup role = null;
-
-        if (roleName != null) {
-            role = readGroup(dbc, roleName);
-        }
-
-        if (projectId != CmsDbUtil.UNKNOWN_ID) {
-            project = readProject(dbc, projectId);
-        }
-
-        return m_workflowDriver.readTasks(dbc, project, null, null, role, tasktype, orderBy, sort);
-    }
-
-    /**
-     * Reads all tasks for a user in a project.<p>
-     *
-     * The <code>tasktype</code> parameter will filter the tasks.
-     * The possible values for this parameter are:<br>
-     * <ul>
-     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
-     * </ul>
-     *
-     * @param dbc the current database context
-     * @param projectId the id of the Project in which the tasks are defined
-     * @param userName the user who has to process the task
-     * @param taskType the type of task you want to read
-     * @param orderBy specifies how to order the tasks
-     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
-     * 
-     * @return a list of <code>{@link CmsTask}</code> objects for the user 
-     * 
-     * @throws CmsException if operation was not successful
-     */
-    public List readTasksForUser(
-        CmsDbContext dbc,
-        int projectId,
-        String userName,
-        int taskType,
-        String orderBy,
-        String sort) throws CmsException {
-
-        CmsUser user = readUser(dbc, userName, CmsUser.USER_TYPE_SYSTEMUSER);
-        CmsProject project = null;
-        // try to read the project, if projectId == -1 we must return the tasks of all projects
-        if (projectId != CmsDbUtil.UNKNOWN_ID) {
-            project = m_projectDriver.readProject(dbc, projectId);
-        }
-        return m_workflowDriver.readTasks(dbc, project, user, null, null, taskType, orderBy, sort);
-    }
-
-    /**
      * Returns a user object based on the id of a user.<p>
      *
      * @param dbc the current database context
@@ -6273,7 +6007,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             group = readGroup(dbc, groupname);
             //check if group exists
             if (group != null) {
-                m_userDriver.deleteUserInGroup(dbc, user.getId(), group.getId());
+                m_userDriver.deleteUserInGroup(dbc, user.getId(), group.getId(), null);
                 m_userGroupsCache.clear();
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
@@ -6345,7 +6079,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void resetPassword(CmsDbContext dbc, String username, String oldPassword, String newPassword)
     throws CmsException, CmsSecurityException {
 
-        if (oldPassword != null && newPassword != null) {
+        if ((oldPassword != null) && (newPassword != null)) {
 
             CmsUser user = null;
 
@@ -6373,7 +6107,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username));
             }
 
-            m_userDriver.writePassword(dbc, username, user.getType(), oldPassword, newPassword);
+            m_userDriver.writePassword(dbc, username, user.getType(), oldPassword, newPassword, null);
 
         } else if (CmsStringUtil.isEmpty(oldPassword)) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_PWD_OLD_MISSING_0));
@@ -6437,7 +6171,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // remove all properties
             deleteAllProperties(dbc, newFile.getRootPath());
             // write them to the restored resource
-            writePropertyObjects(dbc, newFile, backupProperties);
+            writePropertyObjects(dbc, newFile, backupProperties, false);
 
             clearResourceCache();
         }
@@ -6465,9 +6199,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (resource.getState() == CmsResource.STATE_UNCHANGED) {
             resource.setState(CmsResource.STATE_CHANGED);
         }
-        resource.setUserLastModified(dbc.currentUser().getId());
-
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE);
+
+        // modify the last modified project reference
+        resource.setProjectLastModified(dbc.currentProject().getId());
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT);
 
         // clear the cache
         clearResourceCache();
@@ -6502,7 +6238,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resource.setState(CmsResource.STATE_CHANGED);
         }
         resource.setUserLastModified(dbc.currentUser().getId());
-
+        resource.setProjectLastModified(dbc.currentProject().getId());
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
 
         // clear the cache
@@ -6534,9 +6270,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (resource.getState() == CmsResource.STATE_UNCHANGED) {
             resource.setState(CmsResource.STATE_CHANGED);
         }
-        resource.setUserLastModified(dbc.currentUser().getId());
-
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE);
+
+        // modify the last modified project reference
+        resource.setProjectLastModified(dbc.currentProject().getId());
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT);
 
         // clear the cache
         clearResourceCache();
@@ -6545,38 +6283,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
             "resource",
             resource)));
-    }
-
-    /**
-     * Set a new name for a task.<p>
-     *
-     * @param dbc the current database context
-     * @param taskId the Id of the task to set the percentage
-     * @param name the new name value
-     * 
-     * @throws CmsException if an error occurs while writing workflow system task logs
-     * @throws CmsDataAccessException if an error occurs while reading the task from or writing it to the underlying workflow driver 
-     * @throws CmsIllegalArgumentException if argument <code>name</code> is <code>null</code> or has a length of zero
-     */
-    public void setName(CmsDbContext dbc, int taskId, String name)
-    throws CmsException, CmsDataAccessException, CmsIllegalArgumentException {
-
-        if ((name == null) || name.length() == 0) {
-            throw new CmsIllegalArgumentException(org.opencms.main.Messages.get().container(
-                org.opencms.main.Messages.ERR_ILLEGAL_ARG_2,
-                "name",
-                name));
-        }
-        CmsTask task = m_workflowDriver.readTask(dbc, taskId);
-        task.setName(name);
-        task = m_workflowDriver.writeTask(dbc, task);
-        m_workflowDriver.writeSystemTaskLog(dbc, taskId, "Name was set to "
-            + name
-            + "% from "
-            + dbc.currentUser().getFirstname()
-            + " "
-            + dbc.currentUser().getLastname()
-            + '.');
     }
 
     /**
@@ -6635,71 +6341,43 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // dito as a web user
         // this time don't catch CmsObjectNotFoundException (user not found)
         user = (user != null) ? user : m_userDriver.readUser(dbc, username, CmsUser.USER_TYPE_WEBUSER);
-        m_userDriver.writePassword(dbc, username, user.getType(), null, newPassword);
+        m_userDriver.writePassword(dbc, username, user.getType(), null, newPassword, null);
     }
 
     /**
-     * Set priority of a task.<p>
-     *
-     * @param dbc the current database context
-     * @param taskId the Id of the task to set the percentage
-     * @param priority the priority value
+     * Changes the "last project" reference of a resource.<p>
      * 
-     * @throws CmsException if writing to the system task log failed
-     * @throws CmsDataAccessException if reading or writing of the task failed
-     */
-    public void setPriority(CmsDbContext dbc, int taskId, int priority) throws CmsException, CmsDataAccessException {
-
-        CmsTask task = m_workflowDriver.readTask(dbc, taskId);
-        task.setPriority(priority);
-        task = m_workflowDriver.writeTask(dbc, task);
-        m_workflowDriver.writeSystemTaskLog(dbc, taskId, "Priority was set to "
-            + priority
-            + " from "
-            + dbc.currentUser().getFirstname()
-            + " "
-            + dbc.currentUser().getLastname()
-            + '.');
-    }
-
-    /**
-     * Set a Parameter for a task.<p>
-     *
      * @param dbc the current database context
-     * @param taskId the Id of the task
-     * @param parName name of the parameter
-     * @param parValue value if the parameter
+     * @param resource the resource to touch
+     * @param projectLastModified the new last modified project of the resource
+     * @param additionalFlags additionalFlags to set 
      * 
      * @throws CmsDataAccessException if something goes wrong
-     */
-    public void setTaskPar(CmsDbContext dbc, int taskId, String parName, String parValue) throws CmsDataAccessException {
-
-        m_workflowDriver.writeTaskParameter(dbc, taskId, parName, parValue);
-    }
-
-    /**
-     * Set the timeout of a task.<p>
-     *
-     * @param dbc the current database context
-     * @param taskId the Id of the task to set the percentage
-     * @param timeout new timeout value
      * 
-     * @throws CmsException if writing to the system task log failed
-     * @throws CmsDataAccessException if reading or writing of the task failed
+     * @see CmsObject#setDateLastModified(String, long, boolean)
+     * @see I_CmsResourceType#setDateLastModified(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
-    public void setTimeout(CmsDbContext dbc, int taskId, long timeout) throws CmsException, CmsDataAccessException {
+    public void setProjectLastModified(
+        CmsDbContext dbc,
+        CmsResource resource,
+        CmsProject projectLastModified,
+        int additionalFlags) throws CmsDataAccessException {
 
-        CmsTask task = m_workflowDriver.readTask(dbc, taskId);
-        java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
-        task.setTimeOut(timestamp);
-        task = m_workflowDriver.writeTask(dbc, task);
-        m_workflowDriver.writeSystemTaskLog(dbc, taskId, "Timeout was set to "
-            + timeout
-            + " from "
-            + dbc.currentUser().getFirstname()
-            + " "
-            + dbc.currentUser().getLastname()
-            + '.');
+        // modify the last modified project reference
+        resource.setProjectLastModified(projectLastModified.getId());
+
+        // modify the resource flags
+        resource.setFlags(resource.getFlags() | additionalFlags);
+
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT);
+
+        // clear the cache
+        clearResourceCache();
+
+        // fire the event
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
+            "resource",
+            resource)));
     }
 
     /**
@@ -6708,13 +6386,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the current database context
      * @param resource the name of the resource to apply this operation to
+     * @param mode the undo mode, one of the <code>{@link CmsResource}#UNDO_XXX</code> constants 
+     *      please note that the recursive flag is ignored at this level
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#undoChanges(String, boolean)
-     * @see I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, boolean)
+     * @see CmsObject#undoChanges(String, int)
+     * @see I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, int)
      */
-    public void undoChanges(CmsDbContext dbc, CmsResource resource) throws CmsException {
+    public void undoChanges(CmsDbContext dbc, CmsResource resource, int mode) throws CmsException {
 
         if (resource.getState() == CmsResource.STATE_NEW) {
             // undo changes is impossible on a new resource
@@ -6723,165 +6403,48 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // we need this for later use
         CmsProject onlineProject = readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
+        // read the resource from the online project
+        CmsResource onlineResource = m_vfsDriver.readResource(
+            dbc,
+            CmsProject.ONLINE_PROJECT_ID,
+            resource.getStructureId(),
+            true);
 
-        // change folder or file?
-        if (resource.isFolder()) {
-
-            // read the resource from the online project
-            CmsFolder onlineFolder = m_vfsDriver.readFolder(dbc, CmsProject.ONLINE_PROJECT_ID, resource.getRootPath());
-
-            CmsFolder restoredFolder = new CmsFolder(
-                resource.getStructureId(),
-                resource.getResourceId(),
-                resource.getRootPath(),
-                onlineFolder.getTypeId(),
-                onlineFolder.getFlags(),
-                dbc.currentProject().getId(),
-                CmsResource.STATE_UNCHANGED,
-                onlineFolder.getDateCreated(),
-                onlineFolder.getUserCreated(),
-                onlineFolder.getDateLastModified(),
-                onlineFolder.getUserLastModified(),
-                resource.getSiblingCount(),
-                onlineFolder.getDateReleased(),
-                onlineFolder.getDateExpired());
-
-            // write the folder in the offline project
-            // this sets a flag so that the folder date is not set to the current time
-            restoredFolder.setDateLastModified(onlineFolder.getDateLastModified());
-
-            // write the folder
-            m_vfsDriver.writeResource(dbc, dbc.currentProject(), restoredFolder, NOTHING_CHANGED);
-
-            // restore the properties from the online project
-            m_vfsDriver.deletePropertyObjects(
-                dbc,
-                dbc.currentProject().getId(),
-                restoredFolder,
-                CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
-
-            List propertyInfos = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineFolder);
-            m_vfsDriver.writePropertyObjects(dbc, dbc.currentProject(), restoredFolder, propertyInfos);
-
-            // restore the access control entries from the online project
-            m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
-            ListIterator aceList = m_userDriver.readAccessControlEntries(
-                dbc,
-                onlineProject,
-                resource.getResourceId(),
-                false).listIterator();
-
-            while (aceList.hasNext()) {
-                CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
-                m_userDriver.createAccessControlEntry(
-                    dbc,
-                    dbc.currentProject(),
-                    resource.getResourceId(),
-                    ace.getPrincipal(),
-                    ace.getPermissions().getAllowedPermissions(),
-                    ace.getPermissions().getDeniedPermissions(),
-                    ace.getFlags());
-            }
-        } else {
-
-            // read the resource from the online project            
-            CmsResource onlineResource = m_vfsDriver.readResource(
+        CmsResource onlineResourceByPath = null;
+        try {
+            // this is needed to figure out if a moved resource overwrote a deleted one
+            onlineResourceByPath = m_vfsDriver.readResource(
                 dbc,
                 CmsProject.ONLINE_PROJECT_ID,
                 resource.getRootPath(),
                 true);
 
-            // read the content from the online project
-            CmsFile onlineContent = m_vfsDriver.readFile(
-                dbc,
-                CmsProject.ONLINE_PROJECT_ID,
-                true,
-                onlineResource.getResourceId());
-
-            CmsFile restoredFile = new CmsFile(
-                onlineResource.getStructureId(),
-                onlineResource.getResourceId(),
-                onlineContent.getContentId(),
-                onlineResource.getRootPath(),
-                onlineResource.getTypeId(),
-                onlineResource.getFlags(),
-                dbc.currentProject().getId(),
-                CmsResource.STATE_UNCHANGED,
-                onlineResource.getDateCreated(),
-                onlineResource.getUserCreated(),
-                onlineResource.getDateLastModified(),
-                onlineResource.getUserLastModified(),
-                onlineResource.getDateReleased(),
-                onlineResource.getDateExpired(),
-                0,
-                onlineResource.getLength(),
-                onlineContent.getContents());
-
-            // write the file in the offline project
-            // this sets a flag so that the file date is not set to the current time
-            restoredFile.setDateLastModified(onlineResource.getDateLastModified());
-
-            // collect the old properties
-            //List properties = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineFile);
-            List properties = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineResource);
-
-            // bugfix 1020: delete all properties (included shared), 
-            // shared properties will be recreated by the next call of #createResource(...)
-            m_vfsDriver.deletePropertyObjects(
-                dbc,
-                dbc.currentProject().getId(),
-                resource,
-                CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
-
-            // implementation notes: 
-            // undo changes can become complex e.g. if a resource was deleted, and then 
-            // another resource was copied over the deleted file as a sibling
-            // therefore we must "clean" delete the offline resource, and then create 
-            // an new resource with the create method
-            // note that this does NOT apply to folders, since a folder cannot be replaced
-            // like a resource anyway
-            deleteResource(dbc, resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
-
-            CmsResource res = createResource(
-                dbc,
-                restoredFile.getRootPath(),
-                restoredFile,
-                restoredFile.getContents(),
-                properties,
-                false);
-
-            // copy the access control entries from the online project
-            m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
-            ListIterator aceList = m_userDriver.readAccessControlEntries(
-                dbc,
-                onlineProject,
-                onlineResource.getResourceId(),
-                false).listIterator();
-
-            while (aceList.hasNext()) {
-                CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
-                m_userDriver.createAccessControlEntry(
-                    dbc,
-                    dbc.currentProject(),
-                    res.getResourceId(),
-                    ace.getPrincipal(),
-                    ace.getPermissions().getAllowedPermissions(),
-                    ace.getPermissions().getDeniedPermissions(),
-                    ace.getFlags());
+            // force undo move operation if needed
+            if ((mode < CmsResource.UNDO_MOVE_CONTENT)
+                && !onlineResourceByPath.getRootPath().equals(onlineResource.getRootPath())) {
+                mode += 2; // keep the same semantic but including move 
             }
-
-            // restore the state to unchanged 
-            res.setState(CmsResource.STATE_UNCHANGED);
-            m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL);
+        } catch (Exception e) {
+            // ok
         }
 
-        // update the cache
-        clearResourceCache();
-        m_propertyCache.clear();
-
-        OpenCms.fireCmsEvent(new CmsEvent(
-            I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-            Collections.singletonMap("resource", resource)));
+        boolean moved = !onlineResource.getRootPath().equals(resource.getRootPath());
+        // undo move operation if required
+        if (moved && (mode > CmsResource.UNDO_CONTENT_RECURSIVE)) {
+            moveResource(dbc, resource, onlineResource.getRootPath(), true, true);
+            if ((onlineResourceByPath != null)
+                && !onlineResourceByPath.getRootPath().equals(onlineResource.getRootPath())) {
+                // was moved over deleted, so the deleted file has to be undone
+                undoContentChanges(dbc, onlineProject, null, onlineResourceByPath, CmsResource.STATE_UNCHANGED, true);
+            }
+        }
+        // undo content changes
+        int newState = CmsResource.STATE_UNCHANGED;
+        if (moved && (mode < CmsResource.UNDO_MOVE_CONTENT)) {
+            newState = CmsResource.STATE_CHANGED;
+        }
+        undoContentChanges(dbc, onlineProject, resource, onlineResource, newState, moved
+            && (mode > CmsResource.UNDO_CONTENT_RECURSIVE));
     }
 
     /**
@@ -6896,7 +6459,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (project.getFlags() == CmsProject.PROJECT_STATE_UNLOCKED) {
 
             // unlock all resources in the project
-            m_lockManager.removeResourcesInProject(project.getId());
+            m_lockManager.removeResourcesInProject(project.getId(), false, false);
             clearResourceCache();
             m_projectCache.clear();
             // we must also clear the permission cache
@@ -7057,6 +6620,54 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Updates/Creates the given relations for the given resource.<p>
+     * 
+     * @param dbc the db context
+     * @param resource the resource to update the relations for
+     * @param relations the relations to update
+     * 
+     * @return the list of new relations
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#updateRelationsForResource(CmsRequestContext, CmsResource, List)
+     */
+    public List updateRelationsForResource(CmsDbContext dbc, CmsResource resource, List relations) throws CmsException {
+
+        List newRelations = new ArrayList();
+        // clean the relation information for this resource
+        deleteRelationsForResource(dbc, resource, CmsRelationFilter.TARGETS);
+        // build the links again
+        if (resource.getLength() > 0) {
+            // create new relation information based on the content
+            Iterator itRelations = relations.iterator();
+            while (itRelations.hasNext()) {
+                CmsLink link = (CmsLink)itRelations.next();
+                if (link.isInternal()) { // only update internal links
+                    CmsRelation relation;
+                    try {
+                        CmsResource target = readResource(dbc, link.getTarget(), CmsResourceFilter.ALL);
+                        relation = new CmsRelation(resource, target, link.getType());
+                    } catch (Exception e) {
+                        // we still need the broken links
+                        relation = new CmsRelation(
+                            resource.getStructureId(),
+                            resource.getRootPath(),
+                            CmsUUID.getNullUUID(),
+                            link.getTarget(),
+                            CmsResource.DATE_RELEASED_DEFAULT,
+                            CmsResource.DATE_EXPIRED_DEFAULT,
+                            link.getType());
+                    }
+                    createRelation(dbc, relation);
+                    newRelations.add(relation);
+                }
+            }
+        }
+        return newRelations;
+    }
+
+    /**
      * Returns <code>true</code> if a user is member of the given group.<p>
      * 
      * @param dbc the current database context
@@ -7079,26 +6690,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Validates the HTML links in the unpublished files of the specified
-     * publish list, if a file resource type implements the interface 
-     * <code>{@link org.opencms.validation.I_CmsXmlDocumentLinkValidatable}</code>.<p>
-     * 
-     * @param cms the current user's Cms object
-     * @param publishList an OpenCms publish list
-     * @param report a report to write the messages to
-     * 
-     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names
-     * 
-     * @throws Exception if something goes wrong
-     * 
-     * @see #fillPublishList(CmsDbContext, CmsPublishList)
-     */
-    public Map validateHtmlLinks(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws Exception {
-
-        return getHtmlLinkValidator().validateResources(cms, publishList.getFileList(), report);
-    }
-
-    /**
      * This method checks if a new password follows the rules for
      * new passwords, which are defined by a Class implementing the 
      * <code>{@link org.opencms.security.I_CmsPasswordHandler}</code> 
@@ -7113,6 +6704,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void validatePassword(String password) throws CmsSecurityException {
 
         OpenCms.getPasswordHandler().validatePassword(password);
+    }
+
+    /**
+     * Validates the relations for the given resources.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param resources the resources to validate during publishing 
+     *              or <code>null</code> for all in current project
+     * @param report a report to write the messages to
+     * 
+     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public Map validateRelations(CmsObject cms, List resources, I_CmsReport report) throws Exception {
+
+        return getHtmlLinkValidator().validateResources(cms, resources, report);
     }
 
     /**
@@ -7326,8 +6934,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
 
         m_groupCache.remove(new CacheId(group));
-        m_userDriver.writeGroup(dbc, group);
+        m_userDriver.writeGroup(dbc, group, null);
         m_groupCache.put(new CacheId(group), group);
+    }
+
+    /**
+     * Writes the locks that are currently stored in-memory to the database to allow restoring them  
+     * in future server startups.<p> 
+     * 
+     * This overwrites the locks previously stored in the underlying database table.<p>
+     * 
+     * @param dbc the current database context 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void writeLocks(CmsDbContext dbc) throws CmsException {
+
+        m_lockManager.writeLocks(this, dbc);
     }
 
     /**
@@ -7370,13 +6993,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 return;
             }
 
+            // test if and what state should be updated
+            // 0: none, 1: str, 2: res
+            int updateState = getUpdateState(dbc, resource, Collections.singletonList(property));
+
             // write the property
             m_vfsDriver.writePropertyObject(dbc, dbc.currentProject(), resource, property);
 
-            // update the resource state
-            resource.setUserLastModified(dbc.currentUser().getId());
-            m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_STATE);
-
+            if (updateState > 0) {
+                updateState(dbc, resource, updateState == 2);
+            }
         } finally {
             // update the driver manager cache
             clearResourceCache();
@@ -7400,13 +7026,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param resource the resource to write the properties for
      * @param properties the list of properties to write
+     * @param updateState if <code>true</code> the state of the resource will be updated
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#writePropertyObjects(String, List)
      * @see I_CmsResourceType#writePropertyObjects(CmsObject, CmsSecurityManager, CmsResource, List)
      */
-    public void writePropertyObjects(CmsDbContext dbc, CmsResource resource, List properties) throws CmsException {
+    public void writePropertyObjects(CmsDbContext dbc, CmsResource resource, List properties, boolean updateState)
+    throws CmsException {
 
         if ((properties == null) || (properties.size() == 0)) {
             // skip empty or null lists
@@ -7428,10 +7056,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
 
+            // test if and what state should be updated
+            // 0: none, 1: res, 2: str
+            int updateStateValue = 0;
+            if (updateState) {
+                updateStateValue = getUpdateState(dbc, resource, properties);
+            }
+
             for (int i = 0; i < properties.size(); i++) {
                 // write the property
                 CmsProperty property = (CmsProperty)properties.get(i);
                 m_vfsDriver.writePropertyObject(dbc, dbc.currentProject(), resource, property);
+            }
+
+            if (updateStateValue > 0) {
+                updateState(dbc, resource, updateStateValue == 2);
             }
         } finally {
             // update the driver manager cache
@@ -7503,37 +7142,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Writes a new user tasklog for a task.<p>
-     *
-     * @param dbc the current database context
-     * @param taskid the Id of the task
-     * @param comment description for the log
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void writeTaskLog(CmsDbContext dbc, int taskid, String comment) throws CmsException {
-
-        m_workflowDriver.writeTaskLog(dbc, taskid, dbc.currentUser().getId(), new java.sql.Timestamp(
-            System.currentTimeMillis()), comment, CmsTaskService.TASKLOG_USER);
-    }
-
-    /**
-     * Writes a new task log entry for a task.<p>
-     *
-     * @param dbc the current database context
-     * @param taskId the Id of the task
-     * @param comment description for the log
-     * @param type type of the tasklog. User tasktypes must be greater then 100
-     * 
-     * @throws CmsException something goes wrong
-     */
-    public void writeTaskLog(CmsDbContext dbc, int taskId, String comment, int type) throws CmsException {
-
-        m_workflowDriver.writeTaskLog(dbc, taskId, dbc.currentUser().getId(), new java.sql.Timestamp(
-            System.currentTimeMillis()), comment, type);
-    }
-
-    /**
      * Updates the user information. <p>
      * 
      * The user id has to be a valid OpenCms user id.<br>
@@ -7549,7 +7157,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException {
 
         clearUserCache(user);
-        m_userDriver.writeUser(dbc, user);
+        m_userDriver.writeUser(dbc, user, null);
         // update the cache
         putUserInCache(user);
     }
@@ -7572,7 +7180,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void writeWebUser(CmsDbContext dbc, CmsUser user) throws CmsException {
 
         clearUserCache(user);
-        m_userDriver.writeUser(dbc, user);
+        m_userDriver.writeUser(dbc, user, null);
         // update the cache
         putUserInCache(user);
     }
@@ -7622,11 +7230,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_VFS_DRIVER_0), t);
             }
             try {
-                m_workflowDriver.destroy();
-            } catch (Throwable t) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_WORKFLOW_DRIVER_0), t);
-            }
-            try {
                 m_backupDriver.destroy();
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_BACKUP_DRIVER_0), t);
@@ -7659,9 +7262,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             m_projectDriver = null;
             m_userDriver = null;
             m_vfsDriver = null;
-            m_workflowDriver = null;
             m_backupDriver = null;
 
+            m_lockManager = null;
             m_htmlLinkValidator = null;
         } catch (Throwable t) {
             // ignore
@@ -7695,6 +7298,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         return true;
+    }
+
+    /**
+     * Checks the lock for creating new resources.<p>
+     * 
+     * potential issue with this solution: <br>
+     * in theory, someone _without_ write permissions could "block" the concurrent creation of a resource
+     * for someone _with_ permissions this way since the permissions have not been checked yet.<p>
+     * 
+     * @param dbc the db context
+     * @param resourcePath the destination resource path to check for
+     * 
+     * @throws CmsVfsResourceAlreadyExistsException if the resource is already locked 
+     */
+    private void checkCreateResourceLock(CmsDbContext dbc, String resourcePath)
+    throws CmsVfsResourceAlreadyExistsException {
+
+        if (m_concurrentCreateResourceLocks.contains(resourcePath)) {
+            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_CURRENTLY_CREATED_1,
+                dbc.removeSiteRoot(resourcePath)));
+        }
     }
 
     /**
@@ -7865,8 +7490,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (!lock.isNullLock()) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the TestPublishIssues.testPublishScenarioE problem.
-                    if (lock.getType() == CmsLock.TYPE_SHARED_INHERITED
-                        || lock.getType() == CmsLock.TYPE_SHARED_EXCLUSIVE) {
+                    if (lock.isShared()) {
                         if (res.getState() != CmsResource.STATE_DELETED) {
                             continue;
                         }
@@ -7928,8 +7552,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (!lock.isNullLock()) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the TestPublishIssues.testPublishScenarioE problem.
-                    if (lock.getType() == CmsLock.TYPE_SHARED_INHERITED
-                        || lock.getType() == CmsLock.TYPE_SHARED_EXCLUSIVE) {
+                    if (lock.isShared()) {
                         if (res.getState() != CmsResource.STATE_DELETED) {
                             continue;
                         }
@@ -7981,7 +7604,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             inheritedOnly ? "+" : "-",
             forFolder ? "+" : "-",
             Integer.toString(depth),
-            resource.getRootPath()}, dbc.currentProject());
+            resource.getStructureId().toString()}, dbc.currentProject());
 
         CmsAccessControlList acl = (CmsAccessControlList)m_accessControlListCache.get(cacheKey);
 
@@ -7990,23 +7613,32 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return acl;
         }
 
-        String parentPath = CmsResource.getParentFolder(resource.getRootPath());
         // otherwise, get the acl of the parent or a new one
-        if (parentPath != null) {
-            CmsResource parentResource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getId(), parentPath);
-            // recurse
+        CmsResource parentResource = null;
+        try {
+            // try to recurse over the id
+            parentResource = m_vfsDriver.readParentFolder(dbc, dbc.currentProject().getId(), resource.getStructureId());
+        } catch (CmsVfsResourceNotFoundException e) {
+            // should never happen, but try with the path
+            String parentPath = CmsResource.getParentFolder(resource.getRootPath());
+            if (parentPath != null) {
+                parentResource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getId(), parentPath);
+            }
+        }
+        if (parentResource != null) {
             acl = (CmsAccessControlList)getAccessControlList(dbc, parentResource, inheritedOnly, forFolder, depth + 1).clone();
-        } else {
+        }
+        if (acl == null) {
             acl = new CmsAccessControlList();
         }
 
-        if (!(depth == 0 && inheritedOnly)) {
+        if (!((depth == 0) && inheritedOnly)) {
 
             ListIterator ace = m_userDriver.readAccessControlEntries(
                 dbc,
                 dbc.currentProject(),
                 resource.getResourceId(),
-                depth > 1 || (depth > 0 && forFolder)).listIterator();
+                (depth > 1) || ((depth > 0) && forFolder)).listIterator();
 
             while (ace.hasNext()) {
                 CmsAccessControlEntry acEntry = (CmsAccessControlEntry)ace.next();
@@ -8033,8 +7665,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param prefix a prefix for the key
      * @param flag a boolean flag for the key (only used if prefix is not null)
-     * @param projectId the project for which to genertate the key
-     * @param resource the resource for which to genertate the key
+     * @param projectId the project for which to generate the key
+     * @param resource the resource for which to generate the key
      * @return String a cache key build from the provided information
      */
     private String getCacheKey(String prefix, boolean flag, int projectId, String resource) {
@@ -8072,6 +7704,69 @@ public final class CmsDriverManager implements I_CmsEventListener {
             b.append(project.isOnlineProject() ? '+' : '-');
         }
         return b.toString();
+    }
+
+    /**
+     * Returns if and what state needs to be updated.<p>
+     * 
+     * @param dbc the db context
+     * @param resource the resource
+     * @param properties the properties to check
+     * 
+     * @return 0: none, 1: structure, 2: resource
+     * 
+     * @throws CmsDataAccessException
+     */
+    private int getUpdateState(CmsDbContext dbc, CmsResource resource, List properties) throws CmsDataAccessException {
+
+        int updateState = 0;
+        Iterator it = properties.iterator();
+        while (it.hasNext() && (updateState < 2)) {
+            CmsProperty property = (CmsProperty)it.next();
+
+            // read existing property
+            CmsProperty existingProperty = m_vfsDriver.readPropertyObject(
+                dbc,
+                property.getName(),
+                dbc.currentProject(),
+                resource);
+
+            // check the shared property
+            if (property.getResourceValue() != null) {
+                if (property.isDeleteResourceValue()) {
+                    if (existingProperty.getResourceValue() != null) {
+                        updateState = 2; // deleted
+                    }
+                } else {
+                    if (existingProperty.getResourceValue() == null) {
+                        updateState = 2; // created
+                    } else {
+                        if (!property.getResourceValue().equals(existingProperty.getResourceValue())) {
+                            updateState = 2; // updated
+                        }
+                    }
+                }
+            }
+            if (updateState == 0) {
+                // check the individual property only if needed
+                if (property.getStructureValue() != null) {
+                    if (property.isDeleteStructureValue()) {
+                        if (existingProperty.getStructureValue() != null) {
+                            updateState = 1; // deleted
+                        }
+                    } else {
+                        if (existingProperty.getStructureValue() == null) {
+                            updateState = 1; // created
+                        } else {
+                            if (!property.getStructureValue().equals(existingProperty.getStructureValue())) {
+                                updateState = 1; // updated
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return updateState;
     }
 
     /**
@@ -8220,6 +7915,187 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Undoes all content changes of a resource.<p>
+     * 
+     * @param dbc the database context
+     * @param onlineProject the online project
+     * @param offlineResource the offline resource, or <code>null</code> if deleted
+     * @param onlineResource the online resource
+     * @param newState the new resource state
+     * @param moveUndone is a move operation on the same resource has been made
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void undoContentChanges(
+        CmsDbContext dbc,
+        CmsProject onlineProject,
+        CmsResource offlineResource,
+        CmsResource onlineResource,
+        int newState,
+        boolean moveUndone) throws CmsException {
+
+        String path = ((moveUndone || (offlineResource == null)) ? onlineResource.getRootPath()
+        : offlineResource.getRootPath());
+
+        // change folder or file?
+        if (onlineResource.isFolder()) {
+
+            CmsFolder restoredFolder = new CmsFolder(
+                onlineResource.getStructureId(),
+                onlineResource.getResourceId(),
+                path,
+                onlineResource.getTypeId(),
+                onlineResource.getFlags(),
+                dbc.currentProject().getId(),
+                newState,
+                onlineResource.getDateCreated(),
+                onlineResource.getUserCreated(),
+                onlineResource.getDateLastModified(),
+                onlineResource.getUserLastModified(),
+                1,
+                onlineResource.getDateReleased(),
+                onlineResource.getDateExpired());
+
+            // write the folder in the offline project
+            // this sets a flag so that the folder date is not set to the current time
+            restoredFolder.setDateLastModified(onlineResource.getDateLastModified());
+
+            // write the folder
+            m_vfsDriver.writeResource(dbc, dbc.currentProject(), restoredFolder, NOTHING_CHANGED);
+
+            // restore the properties from the online project
+            m_vfsDriver.deletePropertyObjects(
+                dbc,
+                dbc.currentProject().getId(),
+                restoredFolder,
+                CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+
+            List propertyInfos = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineResource);
+            m_vfsDriver.writePropertyObjects(dbc, dbc.currentProject(), restoredFolder, propertyInfos);
+
+            // restore the access control entries from the online project
+            m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), onlineResource.getResourceId());
+            ListIterator aceList = m_userDriver.readAccessControlEntries(
+                dbc,
+                onlineProject,
+                onlineResource.getResourceId(),
+                false).listIterator();
+
+            while (aceList.hasNext()) {
+                CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
+                m_userDriver.createAccessControlEntry(
+                    dbc,
+                    dbc.currentProject(),
+                    onlineResource.getResourceId(),
+                    ace.getPrincipal(),
+                    ace.getPermissions().getAllowedPermissions(),
+                    ace.getPermissions().getDeniedPermissions(),
+                    ace.getFlags());
+            }
+        } else {
+
+            CmsFile onlineFile = m_vfsDriver.readFile(
+                dbc,
+                CmsProject.ONLINE_PROJECT_ID,
+                true,
+                onlineResource.getResourceId());
+
+            CmsFile restoredFile = new CmsFile(
+                onlineResource.getStructureId(),
+                onlineResource.getResourceId(),
+                onlineFile.getContentId(),
+                path,
+                onlineResource.getTypeId(),
+                onlineResource.getFlags(),
+                dbc.currentProject().getId(),
+                newState,
+                onlineResource.getDateCreated(),
+                onlineResource.getUserCreated(),
+                onlineResource.getDateLastModified(),
+                onlineResource.getUserLastModified(),
+                onlineResource.getDateReleased(),
+                onlineResource.getDateExpired(),
+                0,
+                onlineResource.getLength(),
+                onlineFile.getContents());
+
+            // write the file in the offline project
+            // this sets a flag so that the file date is not set to the current time
+            restoredFile.setDateLastModified(onlineResource.getDateLastModified());
+
+            // collect the old properties
+            List properties = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineResource);
+
+            if (offlineResource != null) {
+                // bugfix 1020: delete all properties (included shared), 
+                // shared properties will be recreated by the next call of #createResource(...)
+                m_vfsDriver.deletePropertyObjects(
+                    dbc,
+                    dbc.currentProject().getId(),
+                    onlineResource,
+                    CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+
+                // implementation notes: 
+                // undo changes can become complex e.g. if a resource was deleted, and then 
+                // another resource was copied over the deleted file as a sibling
+                // therefore we must "clean" delete the offline resource, and then create 
+                // an new resource with the create method
+                // note that this does NOT apply to folders, since a folder cannot be replaced
+                // like a resource anyway
+                deleteResource(dbc, offlineResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+            }
+            CmsResource res = createResource(
+                dbc,
+                restoredFile.getRootPath(),
+                restoredFile,
+                restoredFile.getContents(),
+                properties,
+                false);
+
+            // copy the access control entries from the online project
+            if (offlineResource != null) {
+                m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), onlineResource.getResourceId());
+            }
+            ListIterator aceList = m_userDriver.readAccessControlEntries(
+                dbc,
+                onlineProject,
+                onlineResource.getResourceId(),
+                false).listIterator();
+
+            while (aceList.hasNext()) {
+                CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
+                m_userDriver.createAccessControlEntry(
+                    dbc,
+                    dbc.currentProject(),
+                    res.getResourceId(),
+                    ace.getPrincipal(),
+                    ace.getPermissions().getAllowedPermissions(),
+                    ace.getPermissions().getDeniedPermissions(),
+                    ace.getFlags());
+            }
+
+            // restore the state to unchanged 
+            res.setState(newState);
+            m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL);
+        }
+
+        // update the cache
+        clearResourceCache();
+        m_propertyCache.clear();
+
+        if (offlineResource != null) {
+            OpenCms.fireCmsEvent(new CmsEvent(
+                I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                Collections.singletonMap("resource", offlineResource)));
+        } else {
+            OpenCms.fireCmsEvent(new CmsEvent(
+                I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                Collections.singletonMap("resource", onlineResource)));
+        }
+    }
+
+    /**
      * Updates the date information in the database context.<p>
      * 
      * @param dbc the context to update
@@ -8265,5 +8141,36 @@ public final class CmsDriverManager implements I_CmsEventListener {
             updateContextDates(dbc, resource);
         }
         return result;
+    }
+
+    /**
+     * Updates the state of a resource, depending on the <code>resourceState</code> parameter.<p>
+     * 
+     * @param dbc the db context
+     * @param resource the resource
+     * @param resourceState if <code>true</code> the resource state will be updated, if not just the structure state.
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    private void updateState(CmsDbContext dbc, CmsResource resource, boolean resourceState)
+    throws CmsDataAccessException {
+
+        if (resourceState) {
+            // update the whole resource state
+            resource.setUserLastModified(dbc.currentUser().getId());
+            m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_STATE);
+        } else {
+            // update date and user last modified
+            resource.setUserLastModified(dbc.currentUser().getId());
+            resource.setDateLastModified(System.currentTimeMillis());
+            m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
+            // update project last modified
+            resource.setProjectLastModified(dbc.currentProject().getId());
+            m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT);
+            // update the structure state
+            resource.setState(resource.getState() == CmsResource.STATE_NEW ? CmsResource.STATE_NEW
+            : CmsResource.STATE_CHANGED);
+            m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE_STATE);
+        }
     }
 }

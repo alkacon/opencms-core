@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.16.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,9 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,10 +78,19 @@ public class CmsUndoChanges extends CmsMultiDialog {
     /** Request parameter name for the recursive flag.<p> */
     public static final String PARAM_RECURSIVE = "recursive";
 
+    /** Request parameter name for the move flag.<p> */
+    public static final String PARAM_MOVE = "move";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUndoChanges.class);
 
+    /** The single current resource. */
     private CmsResource m_currentResource;
+
+    /** The undo move operation flag parameter value. */
+    private String m_paramMove;
+
+    /** The undo recursively flag parameter value. */
     private String m_paramRecursive;
 
     /**
@@ -114,8 +125,32 @@ public class CmsUndoChanges extends CmsMultiDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
+            boolean isFolder = false;
+            String source = (String)getResourceList().get(0);
+            if (!isMultiOperation()) {
+                CmsResource resource = getCms().readResource(source, CmsResourceFilter.ALL);
+                isFolder = resource.isFolder();
+            }
+            // get the folders to refresh
+            List folderList = new ArrayList(1 + getResourceList().size());
+            folderList.add(CmsResource.getParentFolder(source));
+            Iterator it = getResourceList().iterator();
+            while (it.hasNext()) {
+                String res = (String)it.next();
+                String target = getCms().resourceOriginalPath(res);
+                if (!target.equals(res)) {
+                    CmsResource resource = getCms().readResource(res, CmsResourceFilter.ALL);
+                    if (resource.isFolder()) {
+                        folderList.add(CmsResource.getParentFolder(target));
+                    }
+                }
+            }
             if (performDialogOperation()) {
-                // if no exception is caused undo changes operation was successful
+                // if no exception is caused and "true" is returned move operation was successful
+                if (isMultiOperation() || isFolder) {
+                    // set request attribute to reload the explorer tree view
+                    getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
+                }
                 actionCloseDialog();
             } else {
                 // "false" returned, display "please wait" screen
@@ -128,6 +163,31 @@ public class CmsUndoChanges extends CmsMultiDialog {
     }
 
     /**
+     * Checks if the resource operation is an operation on at least one moved resource.<p>
+     * 
+     * @return true if the operation an operation on at least one moved resource, otherwise false
+     */
+    protected boolean isOperationOnMovedResource() {
+
+        Iterator i = getResourceList().iterator();
+        while (i.hasNext()) {
+            String resName = (String)i.next();
+            try {
+                if (!getCms().resourceOriginalPath(resName).equals(resName)) {
+                    // found a moved resource
+                    return true;
+                }
+            } catch (CmsException e) {
+                // can usually be ignored
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns the HTML for the undo changes options and detailed output for single resource operations.<p>
      * 
      * @return the HTML for the undo changes options
@@ -136,34 +196,78 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
         StringBuffer result = new StringBuffer(256);
 
+        boolean isMoved = isOperationOnMovedResource();
         if (!isMultiOperation()) {
             result.append(dialogSpacer());
             result.append(key(Messages.GUI_UNDO_LASTMODIFIED_INFO_3, new Object[] {
                 getFileName(),
                 getLastModifiedDate(),
                 getLastModifiedUser()}));
+            if (isMoved) {
+                result.append(dialogSpacer());
+                try {
+                    result.append(key(Messages.GUI_UNDO_MOVE_OPERATION_INFO_2, new Object[] {
+                        getFileName(),
+                        getCms().resourceOriginalPath(getParamResource())}));
+                } catch (CmsException e) {
+                    // should never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e);
+                    }
+                }
+            }
         }
         result.append(dialogSpacer());
         result.append(key(Messages.GUI_UNDO_CONFIRMATION_0));
+        if (isMoved || isOperationOnFolder()) {
+            // show undo move option if both options are available
+            result.append(dialogSpacer());
+            result.append("<input type=\"checkbox\" name=\"");
+            result.append(PARAM_MOVE);
+            result.append("\" value=\"true\" checked='checked'>&nbsp;");
+            if (isMultiOperation()) {
+                result.append(key(Messages.GUI_UNDO_CHANGES_MOVE_MULTI_SUBRESOURCES_0));
+            } else {
+                result.append(key(Messages.GUI_UNDO_CHANGES_MOVE_SUBRESOURCES_0));
+            }
+        } else {
+            if (isMoved) {
+                result.append(dialogSpacer());
+                result.append("<input type=\"hidden\" name=\"");
+                result.append(PARAM_MOVE);
+                result.append("\" value=\"true\">&nbsp;");
+            }
+        }
         if (isOperationOnFolder()) {
             // show recursive option if folder(s) is/are selected
             result.append(dialogSpacer());
+            result.append(dialogBlockStart(key(Messages.GUI_UNDO_CHANGES_RECURSIVE_TITLE_0)));
             result.append("<input type=\"checkbox\" name=\"");
             result.append(PARAM_RECURSIVE);
             result.append("\" value=\"true\">&nbsp;");
             if (isMultiOperation()) {
-                result.append(key(Messages.GUI_UNDO_CHANGES_MULTI_SUBRESOURCES_0));
+                result.append(key(Messages.GUI_UNDO_CHANGES_RECURSIVE_MULTI_SUBRESOURCES_0));
             } else {
-                result.append(key(Messages.GUI_UNDO_CHANGES_SUBRESOURCES_0));
+                result.append(key(Messages.GUI_UNDO_CHANGES_RECURSIVE_SUBRESOURCES_0));
             }
+            result.append(dialogBlockEnd());
         }
-
         return result.toString();
     }
 
     /**
+     * Returns the undo move operation flag parameter value.<p>
+     *
+     * @return the undo move operation flag parameter value
+     */
+    public String getParamMove() {
+
+        return m_paramMove;
+    }
+
+    /**
      * Returns the value of the recursive parameter, 
-     * or null if this parameter was not provided.<p>
+     * or <code>null</code> if this parameter was not provided.<p>
      * 
      * The recursive parameter on folders decides if all subresources
      * of the folder should be unchanged, too.<p>
@@ -173,6 +277,16 @@ public class CmsUndoChanges extends CmsMultiDialog {
     public String getParamRecursive() {
 
         return m_paramRecursive;
+    }
+
+    /**
+     * Sets the undo move operation flag parameter value.<p>
+     *
+     * @param paramMove the undo move operation flag to set
+     */
+    public void setParamMove(String paramMove) {
+
+        m_paramMove = paramMove;
     }
 
     /**
@@ -260,7 +374,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
             setDialogTitle(Messages.GUI_UNDO_CHANGES_1, Messages.GUI_UNDO_CHANGES_MULTI_2);
         }
 
-        if (! isMultiOperation()) {
+        if (!isMultiOperation()) {
             // collect resource to display information on single operation dialog
             try {
                 setCurrentResource(getCms().readResource(getParamResource(), CmsResourceFilter.ALL));
@@ -289,10 +403,18 @@ public class CmsUndoChanges extends CmsMultiDialog {
             // return false, this will trigger the "please wait" screen
             return false;
         }
-        
+
         // get the flag if the undo changes is recursive from request parameter
         boolean undoRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
-        
+        boolean undoMove = Boolean.valueOf(getParamMove()).booleanValue();
+
+        int mode = CmsResource.UNDO_CONTENT;
+        if (!undoMove) {
+            mode = undoRecursive ? CmsResource.UNDO_CONTENT_RECURSIVE : CmsResource.UNDO_CONTENT;
+        } else {
+            mode = undoRecursive ? CmsResource.UNDO_MOVE_CONTENT_RECURSIVE : CmsResource.UNDO_MOVE_CONTENT;
+        }
+
         Iterator i = getResourceList().iterator();
         // iterate the resources to delete
         while (i.hasNext()) {
@@ -301,7 +423,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
                 // lock resource if autolock is enabled
                 checkLock(resName);
                 // undo changes on the resource
-                getCms().undoChanges(resName, undoRecursive);
+                getCms().undoChanges(resName, mode);
             } catch (CmsException e) {
                 if (isMultiOperation()) {
                     // collect exceptions to create a detailed output

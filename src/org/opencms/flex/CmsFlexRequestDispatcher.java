@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2006/03/27 14:52:35 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.44.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.44.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,13 +149,12 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         }
 
         CmsFlexController controller = CmsFlexController.getController(req);
-        CmsObject cms = controller.getCmsObject();
         CmsResource resource = null;
 
         if ((m_extTarget == null) && (controller != null)) {
             // check if the file exists in the VFS, if not set external target
             try {
-                resource = cms.readResource(m_vfsTarget);
+                resource = controller.getCmsObject().readResource(m_vfsTarget);
             } catch (CmsVfsResourceNotFoundException e) {
                 // file not found in VFS, treat it as external file
                 m_extTarget = m_vfsTarget;
@@ -169,9 +168,9 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         if ((m_extTarget != null) || (controller == null)) {
             includeExternal(req, res);
         } else if (controller.isForwardMode()) {
-            includeInternalNoCache(req, res, controller, cms, resource);
+            includeInternalNoCache(req, res, controller, controller.getCmsObject(), resource);
         } else {
-            includeInternalWithCache(req, res, controller, cms, resource);
+            includeInternalWithCache(req, res, controller, controller.getCmsObject(), resource);
         }
     }
 

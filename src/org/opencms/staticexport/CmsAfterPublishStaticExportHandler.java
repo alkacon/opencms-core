@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.19.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.4.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -122,6 +122,9 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             do {
                 // get all template resources which are potential candidates for a static export
                 publishedTemplateResources = cmsExportObject.readStaticExportResources(linkMode, timestamp);
+                if (publishedTemplateResources == null) {
+                    break;
+                }
                 newTemplateLinksFound = publishedTemplateResources.size() > 0;
                 if (newTemplateLinksFound) {
                     if (linkMode == CmsStaticExportManager.EXPORT_LINK_WITHOUT_PARAMETER) {
@@ -144,7 +147,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         }
                     }
                     // leave if no template left
-                    if (publishedTemplateResources == null || publishedTemplateResources.isEmpty()) {
+                    if (publishedTemplateResources.isEmpty()) {
                         break;
                     }
                     // export
@@ -217,14 +220,6 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     }
 
     /**
-     * @see org.opencms.staticexport.A_CmsOnDemandStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
-     */
-    protected List getRelatedFilesToPurge(String exportFileName, String vfsName) {
-
-        return Collections.EMPTY_LIST;
-    }
-
-    /**
      * Starts the static export on publish.<p>
      * 
      * Exports all modified resources after a publish process into the real FS.<p>
@@ -236,7 +231,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      * @throws IOException in case of erros writing to the export output stream
      * @throws ServletException in case of errors accessing the servlet 
      */
-    private void exportAfterPublish(CmsUUID publishHistoryId, I_CmsReport report)
+    protected void exportAfterPublish(CmsUUID publishHistoryId, I_CmsReport report)
     throws CmsException, IOException, ServletException {
 
         // first check if the test resource was published already
@@ -286,7 +281,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      * @throws IOException in case of erros writing to the export output stream
      * @throws ServletException in case of errors accessing the servlet 
      */
-    private boolean exportNonTemplateResources(CmsObject cms, List publishedResources, I_CmsReport report)
+    protected boolean exportNonTemplateResources(CmsObject cms, List publishedResources, I_CmsReport report)
     throws CmsException, IOException, ServletException {
 
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
@@ -433,7 +428,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      * @param publishedTemplateResources list of potential candidates to export
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file    
      */
-    private void exportTemplateResources(CmsObject cms, List publishedTemplateResources, I_CmsReport report) {
+    protected void exportTemplateResources(CmsObject cms, List publishedTemplateResources, I_CmsReport report) {
 
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
         int size = publishedTemplateResources.size();
@@ -563,6 +558,14 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     }
 
     /**
+     * @see org.opencms.staticexport.A_CmsOnDemandStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
+     */
+    protected List getRelatedFilesToPurge(String exportFileName, String vfsName) {
+
+        return Collections.EMPTY_LIST;
+    }
+
+    /**
      * Creates a list of <code>{@link CmsPulishedResource}</code> objects containing all related resources of the VFS tree.<p>
      * 
      * If the static export has been triggered by the OpenCms workplace, publishedResources is null and all resources in the VFS tree are returned.<p>
@@ -575,7 +578,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      * 
      * @throws CmsException in case of errors accessing the VFS
      */
-    private List getRelatedResources(CmsObject cms, List publishedResources) throws CmsException {
+    protected List getRelatedResources(CmsObject cms, List publishedResources) throws CmsException {
 
         try {
             // switch to root site

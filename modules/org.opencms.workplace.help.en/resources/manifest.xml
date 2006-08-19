@@ -3,21 +3,19 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<opencms_version>6.5.0</opencms_version>
+		<createdate>Wed, 12 Jul 2006 15:20:06 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>5</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.help.en</name>
 		<nicename><![CDATA[OpenCms 6 Workplace english online help]]></nicename>
 		<group>OpenCms Online Help</group>
 		<class/>
-		<description><![CDATA[
-<p>This module contains the english online help pages for the OpenCms workplace.</p>
-<p><i>(c) 2006 by Alkacon Software</i></p>
-]]></description>
-		<version>1.2.0</version>
+		<description><![CDATA[<p>This module contains the english online help pages for the OpenCms workplace.</p>
+<p><i>(c) 2006 by Alkacon Software</i></p>]]></description>
+		<version>1.2.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 22:00:00 GMT</datecreated>
@@ -39,32 +37,29 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -88,6 +83,7 @@
 		<file>
 			<destination>system/workplace/locales</destination>
 			<type>folder</type>
+			<uuidstructure>82b7ea68-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -99,6 +95,7 @@
 		<file>
 			<destination>system/workplace/locales/en</destination>
 			<type>folder</type>
+			<uuidstructure>82bca55e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -110,6 +107,7 @@
 		<file>
 			<destination>system/workplace/locales/en/help</destination>
 			<type>folder</type>
+			<uuidstructure>04d2f466-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -136,6 +134,7 @@
 			<source>system/workplace/locales/en/help/contribute.html</source>
 			<destination>system/workplace/locales/en/help/contribute.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04d56569-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>457ca98b-e7a8-11d9-8012-a1f5610ecc83</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -162,6 +161,7 @@
 			<source>system/workplace/locales/en/help/index.html</source>
 			<destination>system/workplace/locales/en/help/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04d7af5e-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>984e4104-d1d3-11d9-ac19-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -191,6 +191,7 @@
 		<file>
 			<destination>system/workplace/locales/en/help/administration</destination>
 			<type>folder</type>
+			<uuidstructure>04da2065-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -216,6 +217,7 @@
 			<source>system/workplace/locales/en/help/administration/index.html</source>
 			<destination>system/workplace/locales/en/help/administration/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04dc9069-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>f74e98f9-d29a-11d9-9e1a-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -245,6 +247,7 @@
 		<file>
 			<destination>system/workplace/locales/en/help/administration/accounts</destination>
 			<type>folder</type>
+			<uuidstructure>04deda60-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -270,6 +273,7 @@
 			<source>system/workplace/locales/en/help/administration/accounts/edit_user.html</source>
 			<destination>system/workplace/locales/en/help/administration/accounts/edit_user.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04e14b64-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>f824c551-e7b0-11d9-b351-d5c12ccb7197</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -304,6 +308,7 @@
 			<source>system/workplace/locales/en/help/administration/accounts/index.html</source>
 			<destination>system/workplace/locales/en/help/administration/accounts/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04e3bc6b-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>20a75d8a-e7b0-11d9-b351-d5c12ccb7197</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -325,6 +330,7 @@
 		<file>
 			<destination>system/workplace/locales/en/help/administration/accounts/new_user.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04e6065f-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>f824c551-e7b0-11d9-b351-d5c12ccb7197</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -358,6 +364,7 @@
 		<file>
 			<destination>system/workplace/locales/en/help/administration/projects</destination>
 			<type>folder</type>
+			<uuidstructure>04e87766-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -383,6 +390,7 @@
 			<source>system/workplace/locales/en/help/administration/projects/history.html</source>
 			<destination>system/workplace/locales/en/help/administration/projects/history.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04eac15a-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>43c24bfd-e7af-11d9-b351-d5c12ccb7197</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -413,6 +421,7 @@
 			<source>system/workplace/locales/en/help/administration/projects/index.html</source>
 			<destination>system/workplace/locales/en/help/administration/projects/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04efa360-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>bae56467-e722-11d9-9920-d5c12ccb7197</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -435,6 +444,7 @@
 			<source>system/workplace/locales/en/help/administration/projects/new.html</source>
 			<destination>system/workplace/locales/en/help/administration/projects/new.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04efa364-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d474da58-e7a8-11d9-a572-d5c12ccb7197</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -465,6 +475,7 @@
 			<source>system/workplace/locales/en/help/administration/projects/settings.html</source>
 			<destination>system/workplace/locales/en/help/administration/projects/settings.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04f1ed5a-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>89fc9e2e-e7ae-11d9-b351-d5c12ccb7197</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -494,6 +505,7 @@
 		<file>
 			<destination>system/workplace/locales/en/help/editors</destination>
 			<type>folder</type>
+			<uuidstructure>04f6cf61-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -519,6 +531,7 @@
 			<source>system/workplace/locales/en/help/editors/index.html</source>
 			<destination>system/workplace/locales/en/help/editors/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04f6cf65-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>85cd4007-d377-11d9-89d3-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -549,6 +562,7 @@
 			<source>system/workplace/locales/en/help/editors/msdhtml.html</source>
 			<destination>system/workplace/locales/en/help/editors/msdhtml.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>04fb8a5b-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a44478a7-d377-11d9-89d3-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -578,6 +592,7 @@
 		<file>
 			<destination>system/workplace/locales/en/help/explorer</destination>
 			<type>folder</type>
+			<uuidstructure>04fdd452-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -603,6 +618,7 @@
 			<source>system/workplace/locales/en/help/explorer/history.html</source>
 			<destination>system/workplace/locales/en/help/explorer/history.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>05004556-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>38f29c8a-e7b9-11d9-8012-a1f5610ecc83</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -633,6 +649,7 @@
 			<source>system/workplace/locales/en/help/explorer/index.html</source>
 			<destination>system/workplace/locales/en/help/explorer/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>0502b65c-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6d98dfa5-d1d3-11d9-ac19-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -663,6 +680,7 @@
 			<source>system/workplace/locales/en/help/explorer/preferences.html</source>
 			<destination>system/workplace/locales/en/help/explorer/preferences.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>05050052-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>5552dab4-d29a-11d9-9e1a-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -693,6 +711,7 @@
 			<source>system/workplace/locales/en/help/explorer/publishresource.html</source>
 			<destination>system/workplace/locales/en/help/explorer/publishresource.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>05077158-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>84670ea5-e71b-11d9-88be-a1f5610ecc83</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -723,6 +742,7 @@
 			<source>system/workplace/locales/en/help/explorer/touch.html</source>
 			<destination>system/workplace/locales/en/help/explorer/touch.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>0509e25e-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>3179e172-e7b8-11d9-8012-a1f5610ecc83</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -752,6 +772,7 @@
 		<file>
 			<destination>system/workplace/locales/en/help/explorer/dialogs</destination>
 			<type>folder</type>
+			<uuidstructure>050c2c55-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -763,6 +784,7 @@
 		<file>
 			<destination>system/workplace/locales/en/help/images</destination>
 			<type>imagegallery</type>
+			<uuidstructure>050e9d57-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -780,44 +802,63 @@
 			<source>system/workplace/locales/en/help/images/context-menu.jpg</source>
 			<destination>system/workplace/locales/en/help/images/context-menu.jpg</destination>
 			<type>image</type>
+			<uuidstructure>0510e749-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>cd2303cd-e71a-11d9-88be-a1f5610ecc83</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:610,h:427]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/locales/en/help/images/msdhtml.jpg</source>
 			<destination>system/workplace/locales/en/help/images/msdhtml.jpg</destination>
 			<type>image</type>
+			<uuidstructure>052b260c-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fbde527e-e7ad-11d9-8012-a1f5610ecc83</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1016,h:1079]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/locales/en/help/images/preferences.jpg</source>
 			<destination>system/workplace/locales/en/help/images/preferences.jpg</destination>
 			<type>image</type>
+			<uuidstructure>057c534f-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6e33b717-e7b5-11d9-8012-a1f5610ecc83</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:629,h:213]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
+			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -829,6 +870,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help</destination>
 			<type>folder</type>
+			<uuidstructure>f41907be-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -845,6 +887,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/classes</destination>
 			<type>folder</type>
+			<uuidstructure>f41907c1-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -856,6 +899,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/classes/org</destination>
 			<type>folder</type>
+			<uuidstructure>f41b51b3-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -867,6 +911,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms</destination>
 			<type>folder</type>
+			<uuidstructure>f41dc2b5-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -878,6 +923,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace</destination>
 			<type>folder</type>
+			<uuidstructure>f41dc2b7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -889,6 +935,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help</destination>
 			<type>folder</type>
+			<uuidstructure>f42033b9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -901,6 +948,7 @@
 			<source>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties</source>
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties</destination>
 			<type>plain</type>
+			<uuidstructure>f4227daa-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>4531ec0a-d2a0-11d9-9e1a-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>

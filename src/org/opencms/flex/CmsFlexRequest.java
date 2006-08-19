@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2006/03/27 14:52:35 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.37.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.flex;
 
+import org.opencms.file.CmsBackupResourceHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.37.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,13 +126,13 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_parameters = req.getParameterMap();
         m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();
         String[] paras = req.getParameterValues(PARAMETER_FLEX);
-        boolean nocachepara = false;
+        boolean nocachepara = CmsBackupResourceHandler.isBackupRequest(req);
         boolean dorecompile = false;
         if (paras != null) {
             if (cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
                 List l = Arrays.asList(paras);
                 boolean firstCall = controller.isEmptyRequestList();
-                nocachepara = l.contains("nocache");
+                nocachepara |= l.contains("nocache");
                 dorecompile = l.contains("recompile");
                 boolean p_on = l.contains("online");
                 boolean p_off = l.contains("offline");

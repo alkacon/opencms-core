@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.15.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.security.Principal;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,7 +50,7 @@ public interface I_CmsPrincipal extends Principal {
 
     /** Upper limit for core flags, any principal object with flags greater than this value will be filtered out. */
     int FLAG_CORE_LIMIT = 65536; // 2^16
-    
+
     /** This flag is set for disabled principals in the database. */
     int FLAG_DISABLED = 1;
 

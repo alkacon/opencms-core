@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.23.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.23.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -186,8 +187,22 @@ public class CmsTree extends CmsWorkplace {
             String curTypeName = type.getTypeName();
             // get the settings for the resource type
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(curTypeName);
+            if (settings == null) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_MISSING_SETTINGS_ENTRY_1, curTypeName));
+                }
+                settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    CmsResourceTypePlain.getStaticTypeName());
+            }
             // determine if this resource type is editable for the current user
-            CmsPermissionSet permissions = settings.getAccess().getPermissions(cms);
+            CmsExplorerTypeAccess access = settings.getAccess();
+            if (access == null) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_MISSING_ACCESS_ENTRY_1, curTypeName));
+                }
+                access = OpenCms.getWorkplaceManager().getDefaultAccess();
+            }
+            CmsPermissionSet permissions = access.getPermissions(cms);
             if (permissions.requiresWritePermission()) {
                 // user is allowed to write this resource type
                 retValue.append("\taddResourceType(");
@@ -217,7 +232,7 @@ public class CmsTree extends CmsWorkplace {
 
         if (m_rootFolder == null) {
             String folder = "/";
-            if (getTreeType() == null && getSettings().getUserSettings().getRestrictExplorerView()) {
+            if ((getTreeType() == null) && getSettings().getUserSettings().getRestrictExplorerView()) {
                 folder = getSettings().getUserSettings().getStartFolder();
             }
             try {
@@ -336,7 +351,7 @@ public class CmsTree extends CmsWorkplace {
                     // change the site root for popup window with site selector
                     restoreSiteRoot = true;
                     getCms().getRequestContext().saveSiteRoot();
-                    if (newTree() && currentTargetFolder == null) {
+                    if (newTree() && (currentTargetFolder == null)) {
                         currentTargetFolder = "/";
                     }
                     getCms().getRequestContext().setSiteRoot(getSettings().getTreeSite(getTreeType()));
@@ -353,7 +368,6 @@ public class CmsTree extends CmsWorkplace {
                 }
 
                 // read the selected folder
-
                 try {
                     folder = getCms().readFolder(currentTargetFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                 } catch (CmsException e) {
@@ -470,22 +484,24 @@ public class CmsTree extends CmsWorkplace {
             result.append(getRootFolder());
             result.append("\");\n");
 
-            if (newTree()) {
-                // new tree 
-                result.append("parent.showTree(parent.tree_display.document, \"");
-                result.append(folder.getRootPath().hashCode());
-                result.append("\");\n");
-            } else {
-                // update the current tree with the childs of the selected node
-                if (resources.size() == 0) {
-                    // the node had no childs 
-                    result.append("parent.setNoChilds(\"");
+            if (folder != null) {
+                if (newTree()) {
+                    // new tree 
+                    result.append("parent.showTree(parent.tree_display.document, \"");
+                    result.append(folder.getRootPath().hashCode());
+                    result.append("\");\n");
+                } else {
+                    // update the current tree with the childs of the selected node
+                    if (resources.size() == 0) {
+                        // the node had no childs 
+                        result.append("parent.setNoChilds(\"");
+                        result.append(folder.getRootPath().hashCode());
+                        result.append("\");\n");
+                    }
+                    result.append("parent.showLoadedNodes(parent.tree_display.document,\"");
                     result.append(folder.getRootPath().hashCode());
                     result.append("\");\n");
                 }
-                result.append("parent.showLoadedNodes(parent.tree_display.document,\"");
-                result.append(folder.getRootPath().hashCode());
-                result.append("\");\n");
             }
 
             result.append("}\n");
@@ -678,19 +694,20 @@ public class CmsTree extends CmsWorkplace {
             // get the title information of the folder
             CmsProperty titleProperty = getCms().readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_TITLE, false);
 
-            if (titleProperty == null || titleProperty.isNullProperty()) {
+            if ((titleProperty == null) || titleProperty.isNullProperty()) {
                 getCms().getSitePath(resource);
                 title = resource.getRootPath();
             } else {
                 title = titleProperty.getValue();
             }
+            return getNode(resource.getRootPath(), title, resource.getTypeId(), true, resource.getState(), false);
         } catch (CmsException e) {
             // should usually never happen
             if (LOG.isInfoEnabled()) {
                 LOG.info(e);
             }
         }
-        return getNode(resource.getRootPath(), title, resource.getTypeId(), true, resource.getState(), false);
+        return "";
     }
 
     /**

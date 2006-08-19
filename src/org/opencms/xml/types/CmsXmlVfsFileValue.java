@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.18.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,8 @@ package org.opencms.xml.types;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.staticexport.CmsLink;
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsStringUtil;
@@ -49,7 +50,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.18.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,7 +116,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
 
         CmsLinkTable linkTable = new CmsLinkTable();
         if (!NO_LINK.equals(m_element.getText())) {
-            CmsLink link = new CmsLink("link0", "vfs", m_element.getText(), true);
+            CmsLink link = new CmsLink("link0", CmsRelationType.REFERENCE, m_element.getText(), true);
             linkTable.addLink(link);
         }
         return linkTable;
@@ -134,7 +135,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      */
     public String getStringValue(CmsObject cms) throws CmsRuntimeException {
 
-        if (cms != null && CmsStringUtil.isNotEmpty(m_stringValue) && !NO_LINK.equals(m_stringValue)) {
+        if ((cms != null) && CmsStringUtil.isNotEmpty(m_stringValue) && !NO_LINK.equals(m_stringValue)) {
             return cms.getRequestContext().removeSiteRoot(m_stringValue);
         } else {
             return m_stringValue;
@@ -162,7 +163,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      */
     public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
-        if (cms != null && !NO_LINK.equals(value)) {
+        if ((cms != null) && !NO_LINK.equals(value)) {
             // add site path if required
             value = CmsLinkManager.getSitePath(cms, null, value);
         }

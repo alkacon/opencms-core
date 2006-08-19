@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:36 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.24.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -54,7 +55,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,6 +142,15 @@ public interface I_CmsXmlContentHandler {
     String getPreview(CmsObject cms, CmsXmlContent content, String resourcename);
 
     /**
+     * Returns the relation type for the given value.<p>
+     * 
+     * @param value the value to get the relation type for
+     * 
+     * @return the relation type for the given value
+     */
+    CmsRelationType getRelationType(I_CmsXmlContentValue value);
+
+    /**
      * Returns the editor widget that should be used for the given XML content value.<p>
      * 
      * The handler implementations should use the "appinfo" node of the XML content definition
@@ -181,6 +191,17 @@ public interface I_CmsXmlContentHandler {
      * @throws CmsException in case something goes wrong
      */
     CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException;
+
+    /**
+     * Performs a check of the given XML document.<p>
+     * 
+     * The main difference to the {@link #resolveValidation(CmsObject, I_CmsXmlContentValue, CmsXmlContentErrorHandler)}
+     * method is that this method may silently remove some values, for instance, for broken links.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param document the document to resolve the check rules for
+     */
+    void invalidateBrokenLinks(CmsObject cms, CmsXmlContent document);
 
     /**
      * Resolves the value mappings of the given XML content value, according 

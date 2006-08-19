@@ -37,7 +37,6 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -136,10 +135,11 @@ public class CmsListDemo6 extends A_CmsListDialog {
     public void executeListSingleActions() {
 
         if (LIST_ACTION_DELETE.equals(getParamListAction())) {
-            CmsListItem item = getSelectedItem();
-            CmsUUID userId = new CmsUUID(item.getId());
             // do not really delete the user in the demo
-            //getCms().deleteUser(userId);
+            
+            // CmsListItem item = getSelectedItem();
+            // CmsUUID userId = new CmsUUID(item.getId());
+            // getCms().deleteUser(userId);
         } else {
             throwListUnsupportedActionException();
         }

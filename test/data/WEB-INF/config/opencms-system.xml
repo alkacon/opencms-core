@@ -22,7 +22,10 @@
 		</mail>
 		<scheduler />
 	   	<versionhistory enabled="true" count="10"/>		   	
-		<resourceinit />
+		<resourceinit>
+			<resourceinithandler class="org.opencms.file.CmsBackupResourceHandler"/>
+			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
+        </resourceinit>
 		<requesthandlers />
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
 			<encoding>UTF-8</encoding>
@@ -87,6 +90,10 @@
 		<content-notification>
             <notification-time>365</notification-time>
             <notification-project>Offline</notification-project>
-        </content-notification>				
+        </content-notification>	
+		<workflow>
+			<workflowmanager class="org.opencms.workflow.WorkflowTestManager"/>
+			<workflowengine class="org.opencms.workflow.WorkflowTestEngine"/>
+		</workflow>        			
 	</system>
 </opencms>

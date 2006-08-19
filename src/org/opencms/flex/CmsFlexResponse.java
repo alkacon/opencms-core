@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2006/03/27 14:52:35 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.42.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.42.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -1050,7 +1050,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             // work through result and split this with include list calls            
             int i = 0;
             int j = 0;
-            while (i < m_includeList.size() && (pos < max)) {
+            while ((i < m_includeList.size()) && (pos < max)) {
                 // look for the first FLEX_CACHE_DELIMITER char
                 while ((pos < max) && (result[pos] != FLEX_CACHE_DELIMITER)) {
                     pos++;

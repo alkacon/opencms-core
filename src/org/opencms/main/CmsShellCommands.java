@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.83.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83 $ 
+ * @version $Revision: 1.83.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -774,7 +774,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         for (int i = 0; i < acList.size(); i++) {
             CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.get(i);
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
-            if (acePrincipal.equals(principal)) {
+            if (principal.equals(acePrincipal)) {
                 String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
                 System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
             }
@@ -851,9 +851,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void purgeJspRepository() throws Exception {
 
-        OpenCms.fireCmsEvent(new CmsEvent(
-            I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
-            new HashMap(0)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, new HashMap(0)));
     }
 
     /**

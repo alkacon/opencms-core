@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2006/04/21 15:10:41 $
- * Version: $Revision: 1.4.4.2 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.4.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.2 $ 
+ * @version $Revision: 1.4.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -240,7 +240,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden(java.util.Collection)
      */
     public String paramsAsHidden(Collection excludes) {
-    
+
         StringBuffer result = new StringBuffer(512);
         Map params = new HashMap(getJsp().getRequest().getParameterMap());
         params.remove(CmsListExplorerFrameset.PARAM_PAGE);
@@ -260,7 +260,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         }
         return result.toString();
     }
-    
+
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 

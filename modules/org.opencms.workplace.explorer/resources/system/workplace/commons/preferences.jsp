@@ -1,4 +1,7 @@
-<%@ page import="org.opencms.workplace.commons.*"%><%	
+		<%@ page import="org.opencms.workplace.CmsWorkplace,
+	org.opencms.workplace.commons.*,
+	org.opencms.main.OpenCms,
+	org.opencms.db.CmsUserSettings"%><%	
 
 	// initialize the workplace class
 	CmsPreferences wp = new CmsPreferences(pageContext, request, response);
@@ -56,6 +59,7 @@ default:
 	wp.setParamAction(wp.DIALOG_OK);
 
 %><%= wp.htmlStart() %>
+<%= wp.calendarIncludes() %>
 <%= wp.bodyStart("dialog", "onunload=\"top.closeTreeWin();\"") %>
 <%= wp.dialogStart() %>
 
@@ -73,14 +77,13 @@ case 1:
 		<tr>
 			<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_LABEL_LANGUAGE_0) %></td><td><%= wp.buildSelectLanguage("name=\"" + wp.PARAM_WORKPLACE_LANGUAGE + "\" style=\"width: 200px;\"") %></td>
 			<td>&nbsp;</td>
-			<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_PREF_STARTUP_SITE_0) %></td><td><%= wp.buildSelectSite("name=\"" + wp.PARAM_WORKPLACE_SITE + "\" style=\"width: 200px;\"") %></td>
+			<td style="white-space: nowrap;width:100px;"><%= wp.key(Messages.GUI_PREF_STARTUP_SITE_0) %></td><td><%= wp.buildSelectSite("name=\"" + wp.PARAM_WORKPLACE_SITE + "\" style=\"width: 200px;\"") %></td>
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
 			<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_PREF_STARTUP_PROJECT_0) %></td><td><%= wp.buildSelectProject("name=\"" + wp.PARAM_WORKPLACE_PROJECT + "\" style=\"width: 200px;\"") %></td>
 			<td>&nbsp;</td>
-			<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_PREF_STARTUP_FOLDER_0) %></td><td><input type="text" name="<%= wp.PARAM_WORKPLACE_FOLDER %>" id="<%= wp.PARAM_WORKPLACE_FOLDER %>" value="<%= wp.getParamTabWpFolder() %>" style="width: 200px;"></td>
-			<td><input name="selectfolder" type="button" value="<%= wp.key(Messages.GUI_LABEL_SEARCH_0) %>" onClick="top.openTreeWin('preferences', false, 'main', '<%= wp.PARAM_WORKPLACE_FOLDER %>', document);" class="dialogbutton" style="width: 60px;">
+			<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_PREF_STARTUP_FOLDER_0) %></td><td cellpadding="0"><input type="text" name="<%= wp.PARAM_WORKPLACE_FOLDER %>" id="<%= wp.PARAM_WORKPLACE_FOLDER %>" value="<%= wp.getParamTabWpFolder() %>" style="width: 200px;"><%= wp.button("javascript:top.openTreeWin('preferences', false, 'main', '" + wp.PARAM_WORKPLACE_FOLDER + "', document);", null, "folder.png", Messages.GUI_LABEL_SEARCH_0, 0) %></td>
 		</tr>
 		<tr>
 			<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_PREF_STARTUP_VIEW_0) %></td><td><%= wp.buildSelectView("name=\"" + wp.PARAM_WORKPLACE_VIEW + "\" style=\"width: 200px;\"") %></td>
@@ -91,15 +94,22 @@ case 1:
 		<%= wp.dialogBlockEnd() %>
 		<%= wp.dialogSpacer() %>
 		<%= wp.dialogBlockStart(wp.key(Messages.GUI_PREF_SETTINGS_GENERAL_0)) %>
-		<table border="0" cellpadding="4" cellspacing="0">
+		<table border="0" cellpadding="0" cellspacing="0">
 			<tr>
-				<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_PREF_BUTTON_STYLE_0) %></td><td><%= wp.buildSelectWorkplaceButtonStyle("name=\"" + wp.PARAM_WORKPLACE_BUTTONSTYLE + "\" style=\"width: 200px;\"") %></td>
+				<td style="white-space: nowrap;padding:4px;"><%= wp.key(Messages.GUI_PREF_BUTTON_STYLE_0) %></td><td style="padding:4px;"><%= wp.buildSelectWorkplaceButtonStyle("name=\"" + wp.PARAM_WORKPLACE_BUTTONSTYLE + "\" style=\"width: 200px;\"") %></td>
+				<td style="padding:4px;">&nbsp;</td>
+				<td style="white-space: nowrap;width:100px;padding:4px;"><%= wp.key(Messages.GUI_LABEL_TIMEWARP_0) %></td><td style="padding:4px;"> <input type="text" id="<%= wp.PARAM_WORKPLACE_TIMEWARP %>"  name="<%= wp.PARAM_WORKPLACE_TIMEWARP %>"  style="float:left;" value="<%= wp.getParamTabWpTimewarp()%>"/></td><td style="vertical-align:top;"><a id="timewarp.widgettrigger"style="float:left;" href="#" class="button" title="<%=org.opencms.workplace.Messages.get().getBundle().key(org.opencms.workplace.Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>"><span unselectable="on" class="norm" onmouseover="className='over'" onmouseout="className='norm'" onmousedown="className='push'" onmouseup="className='over'"><img class="button" src="<%= CmsWorkplace.getSkinUri()%>buttons/calendar.png" alt="Datum wählen"></span></a><%= wp.button("javascript:document.getElementById('" + wp.PARAM_WORKPLACE_TIMEWARP + "').value='-'", "", "deletecontent.png", "reset", 0) %></td><%--
+				--%><%= wp.calendarInit(wp.PARAM_WORKPLACE_TIMEWARP, "timewarp.widgettrigger", "cR", false, false, true, "", true) %>				
 			</tr>
 			<tr>
-				<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_PREF_REPORT_TYPE_0) %></td><td><%= wp.buildSelectReportType("name=\"" + wp.PARAM_WORKPLACE_REPORTTYPE + "\" style=\"width: 200px;\"") %></td>
+				<td style="white-space: nowrap;padding:4px;"><%= wp.key(Messages.GUI_PREF_REPORT_TYPE_0) %></td><td style="padding:4px;"><%= wp.buildSelectReportType("name=\"" + wp.PARAM_WORKPLACE_REPORTTYPE + "\" style=\"width: 200px;\"") %></td>
+				<td style="padding:4px;">&nbsp;</td>
+				<td style="padding:4px;">&nbsp;</td>
 			</tr>
 			<tr>
-				<td colspan="2" style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_WORKPLACE_USEUPLOADAPPLET %>" value="true"<%= wp.isChecked(wp.getParamTabWpUseUploadApplet()) %>> <%= wp.key(Messages.GUI_PREF_USE_UPLOAD_APPLET_0) %></td>
+				<td colspan="2" style="white-space: nowrap;padding 4px;"><input type="checkbox" name="<%= wp.PARAM_WORKPLACE_USEUPLOADAPPLET %>" value="true"<%= wp.isChecked(wp.getParamTabWpUseUploadApplet()) %>> <%= wp.key(Messages.GUI_PREF_USE_UPLOAD_APPLET_0) %></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
 			</tr>
 		</table>		
 		<%= wp.dialogBlockEnd() %>
@@ -124,6 +134,7 @@ case 2:
 				theForm.<%= wp.PARAM_EXPLORER_FILEUSERCREATED %>.checked = false;
 				theForm.<%= wp.PARAM_EXPLORER_FILELOCKEDBY %>.checked = false;
 				theForm.<%= wp.PARAM_EXPLORER_FILESTATE %>.checked = false;
+				theForm.<%= wp.PARAM_EXPLORER_WORKFLOW_STATUS %>.checked = false;
 			}
 		//-->
 		</script>
@@ -146,8 +157,10 @@ case 2:
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILETITLE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileTitle()) %>> <%= wp.key(Messages.GUI_LABEL_TITLE_0) %></td>
 			<td style="width: 40px;">&nbsp;</td>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATELASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateLastModified()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_LAST_MODIFIED_0) %></td>
-			<td style="width: 40px;">&nbsp;</td>
+			<td style="width: 40px;">&nbsp;</td>		
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATERELEASED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateReleased()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_RELEASED_0) %></td>			
+			<td style="width: 40px;">&nbsp;</td>		
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_WORKFLOW_STATUS %>" value="true"<%= wp.isChecked(wp.getParamTabExWorkflowStatus()) %>> <%= wp.key(Messages.GUI_LABEL_WORKFLOW_STATUS_0) %></td>			
 		</tr>
 		<tr>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILETYPE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileType()) %>> <%= wp.key(Messages.GUI_LABEL_TYPE_0) %></td>
@@ -155,6 +168,8 @@ case 2:
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEUSERLASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserLastModified()) %>> <%= wp.key(Messages.GUI_LABEL_USER_LAST_MODIFIED_0) %></td>
 			<td>&nbsp;</td>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATEEXPIRED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateExpired()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_EXPIRED_0) %></td>
+			<td style="width: 40px;">&nbsp;</td>		
+			<td>&nbsp;</td>		
 		</tr>
 		<tr>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILESIZE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileSize()) %>> <%= wp.key(Messages.GUI_LABEL_SIZE_0) %></td>
@@ -162,6 +177,8 @@ case 2:
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATECREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateCreated()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_CREATED_0) %></td>
 			<td>&nbsp;</td>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILESTATE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileState()) %>> <%= wp.key(Messages.GUI_LABEL_STATE_0) %></td>
+			<td style="width: 40px;">&nbsp;</td>		
+			<td>&nbsp;</td>		
 		</tr>
 		<tr>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEPERMISSIONS %>" value="true"<%= wp.isChecked(wp.getParamTabExFilePermissions()) %>> <%= wp.key(Messages.GUI_LABEL_PERMISSIONS_0) %></td>
@@ -169,6 +186,8 @@ case 2:
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEUSERCREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserCreated()) %>> <%= wp.key(Messages.GUI_LABEL_CREATED_BY_0) %></td>
 			<td>&nbsp;</td>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILELOCKEDBY %>" value="true"<%= wp.isChecked(wp.getParamTabExFileLockedBy()) %>> <%= wp.key(Messages.GUI_LABEL_LOCKED_BY_0) %></td>		
+			<td style="width: 40px;">&nbsp;</td>		
+			<td>&nbsp;</td>		
 		</tr>
 		</table>
 		<%= wp.dialogBlockEnd() %>
@@ -235,37 +254,6 @@ case 4:
 	<%
 break;
 case 5:
-	// ########## workflow settings
-	%>
-		<%= wp.dialogBlockStart(wp.key(Messages.GUI_PREF_SETTINGS_GENERAL_0)) %>
-		<table border="0" cellpadding="4" cellspacing="0">
-		<tr>
-			<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_PREF_STARTUP_FILTER_0) %>:</td>
-			<td><%= wp.buildSelectFilter("name=\"" + wp.PARAM_WORKFLOW_FILTER + "\" style=\"width: 250px;\"") %></td>
-			<td style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_WORKFLOW_SHOWALLPROJECTS %>" value="true"<%= wp.isChecked(wp.getParamTabWfShowAllProjects()) %>> <%= wp.key(Messages.GUI_PREF_SHOW_ALL_PROJECTS_0) %></td>
-		</tr>
-		</table>
-		<%= wp.dialogBlockEnd() %>
-		<%= wp.dialogSpacer() %>
-		<%= wp.dialogBlockStart(wp.key(Messages.GUI_PREF_DEFAULTS_TASKS_0)) %>
-		<table border="0" cellpadding="4" cellspacing="0">
-		<tr>
-			<td><input type="checkbox" name="<%= wp.PARAM_WORKFLOW_MESSAGEACCEPTED %>" value="true"<%= wp.isChecked(wp.getParamTabWfMessageAccepted()) %>> <%= wp.key(Messages.GUI_PREF_MSG_ACCEPTED_0) %></td>
-		</tr>
-		<tr>
-			<td><input type="checkbox" name="<%= wp.PARAM_WORKFLOW_MESSAGEFORWARDED %>" value="true"<%= wp.isChecked(wp.getParamTabWfMessageForwarded()) %>> <%= wp.key(Messages.GUI_PREF_MSG_FORWARDED_0) %></td>
-		</tr>
-		<tr>
-			<td><input type="checkbox" name="<%= wp.PARAM_WORKFLOW_MESSAGECOMPLETED %>" value="true"<%= wp.isChecked(wp.getParamTabWfMessageCompleted()) %>> <%= wp.key(Messages.GUI_PREF_MSG_COMPLETED_0) %></td>
-		</tr>
-		<tr>
-			<td><input type="checkbox" name="<%= wp.PARAM_WORKFLOW_MESSAGEMEMBERS %>" value="true"<%= wp.isChecked(wp.getParamTabWfMessageMembers()) %>> <%= wp.key(Messages.GUI_PREF_MSG_MEMBERS_0) %></td>
-		</tr>
-		</table>
-		<%= wp.dialogBlockEnd() %>
-	<%
-break;
-case 6:
 	// ########## user data settings
 	%>
 		<script type="text/javascript">

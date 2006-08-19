@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.3 
  */
@@ -186,10 +186,10 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
 
         while (n != -1) {
             // zero - length items are not seen as tokens at start or end
-            if ((i < n) || (i > 0) && (i < l)) {
+            if ((i < n) || ((i > 0) && (i < l))) {
                 result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
                 // add the delimiter to the list as well
-                if (includeDelimiters && n + delimiter.length() <= l) {
+                if (includeDelimiters && (n + delimiter.length() <= l)) {
                     result.add(source.substring(n, n + delimiter.length()));
                 }
             } else {
@@ -413,7 +413,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         }
         // test if the current word contains a "&" and the following with a ";"
         // if so, we must not decode the word
-        if (nextWord != null && word.indexOf("&") > -1 && nextWord.startsWith(";")) {
+        if ((nextWord != null) && (word.indexOf("&") > -1) && nextWord.startsWith(";")) {
             return false;
         } else {
             // now scheck if the word matches one of the non decoder tokens

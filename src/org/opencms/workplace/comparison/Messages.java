@@ -1,29 +1,32 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.2.4.1 $
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
- * All rights reserved.
- * 
- * This source code is the intellectual property of Alkacon Software GmbH.
- * It is PROPRIETARY and CONFIDENTIAL.
- * Use of this source code is subject to license terms.
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
  *
- * In order to use this source code, you need written permission from 
- * Alkacon Software GmbH. Redistribution of this source code, in modified 
- * or unmodified form, is not allowed unless written permission by 
- * Alkacon Software GmbH has been given.
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
- * ALKACON SOFTWARE GMBH MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY
- * OF THIS SOURCE CODE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, OR NON-INFRINGEMENT. ALKACON SOFTWARE GMBH SHALL NOT BE LIABLE FOR ANY
- * DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
- * THIS SOURCE CODE OR ITS DERIVATIVES.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.workplace.comparison;
@@ -36,12 +39,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_ADDED_0 = "GUI_COMPARE_ADDED_0";
 

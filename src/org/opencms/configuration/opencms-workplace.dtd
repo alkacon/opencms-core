@@ -23,7 +23,6 @@
 	enableadvancedpropertytabs,
 	maxfileuploadsize?, 
 	labeledfolders?,
-	workflow?,
 	rfsfileviewsettings?,
 	explorertypes+,
 	default-preferences,
@@ -109,14 +108,6 @@
 <!ELEMENT exportpoints (exportpoint+)>
 <!ELEMENT exportpoint EMPTY>
 <!ATTLIST exportpoint uri CDATA #REQUIRED destination CDATA #REQUIRED>
-
-<!--
-# Optional workflow settings. 
-# The showmessages tag either contains "true" or "false" to add the workflow messages in the 
-# workflow mails or not. Default is "false".
--->
-<!ELEMENT workflow (showmessages)>
-<!ELEMENT showmessages (#PCDATA)>
 
 <!--
 # Enables or disables the automatic locking of resources in the explorer view.
@@ -340,14 +331,13 @@
 
 <!--
 # The default user preferences of the OpenCms workplace contains the default data 
-# for the user workplace preferences. The xml data is subdifeded into five major knots,
+# for the user workplace preferences. The xml data is subdifeded into four major knots,
 # representing the different tabs in the preferences screen in the workplace.
 -->
 <!ELEMENT default-preferences (workplace-preferences,
 				explorer-preferences,
 				dialogs-preferences,
-				editors-preferences,
-				workflow-preferences)>
+				editors-preferences)>
 
 <!--
 # The workplace preferences define the preferences of the workplace itself.
@@ -361,7 +351,8 @@
 <!ELEMENT workplace-generaloptions (buttonstyle,
 									reporttype,
 									uploadapplet,
-									publishbuttonappearance?)>
+									publishbuttonappearance?,
+									show-fileuploadbutton?)>
 <!--
 # The buttonstyle controls the appearence of the buttons on the workplace.
 # Possible values are [image|textimage|text].
@@ -388,6 +379,12 @@
 # - never: the button is never shown.
 -->	
 <!ELEMENT publishbuttonappearance (#PCDATA)>									
+	
+<!--
+# If this element is set to "true", the file upload button will be shown in the 
+# workplace explorer. This is a setting for all users.
+-->	
+<!ELEMENT show-fileuploadbutton (#PCDATA)>
 	
 <!--
 # The workplace startupsettings are used to define locale, project and view used directly
@@ -572,47 +569,6 @@
 <!ELEMENT editor EMPTY >	
 <!ATTLIST editor type CDATA #REQUIRED>
 <!ATTLIST editor value CDATA #REQUIRED>	
-
-<!--
-# The workflow preferences define the default workflow options.
--->		
-<!ELEMENT workflow-preferences (workflow-generaloptions,
-								workflow-defaultsettings)>
-
-<!--
-# The workflow general options define the general workflow options.
--->	
-<!ELEMENT workflow-generaloptions (startupfilter,
-								   showprojects)>	
-<!--
-# The startupfileter sets the default filter which is shown when opening the task view.
-# Possible values are: [mynewtasks|mytasksformyroles|alltasks|myactivetasks|
-						myactivetasksformyroles|allactivetask|mycompletedtasks|
-						mycompletedtasksformyroles|allcompletedtasks|newtaskscreatedbyme|
-						activetaskscreatedbyme|completedtaskscreatedbyme]
--->	
-<!ELEMENT startupfilter (#PCDATA)>	
-
-<!--
-# Flag to set if tasks of all projects shoudl be shown. Values are [true|false]
--->
-<!ELEMENT showprojects (#PCDATA)>	
-
-<!--
-# The workflow default setting. 
-# Each of the sub elements can either have the values "true" or "false".
--->		
-<!ELEMENT workflow-defaultsettings (message-accepted,
-								    message-forwarded,
-								    message-completed,
-								    informrolemembers
-								   )>								   
-
-<!ELEMENT message-accepted (#PCDATA)>	
-<!ELEMENT message-forwarded (#PCDATA)>	
-<!ELEMENT message-completed (#PCDATA)>	
-<!ELEMENT informrolemembers (#PCDATA)>	
-
 
 <!--
 # Include the explorer types DTD.

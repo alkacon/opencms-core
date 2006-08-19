@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2006/08/19 13:40:36 $
+ * Version: $Revision: 1.84.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84 $ 
+ * @version $Revision: 1.84.4.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -261,8 +261,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                         CmsResource target = m_cms.readResource(link);
 
                         // create a new sibling as CmsResource                         
-                        resource = new CmsResource(
-                            new CmsUUID(), // structure ID is always a new UUID
+                        resource = new CmsResource(new CmsUUID(), // structure ID is always a new UUID
                             target.getResourceId(),
                             key,
                             target.getTypeId(),
@@ -348,7 +347,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 ZipEntry entry = m_importZip.getEntry(filename);
 
                 // path to file might be relative, too
-                if (entry == null && filename.startsWith("/")) {
+                if ((entry == null) && filename.startsWith("/")) {
                     entry = m_importZip.getEntry(filename.substring(1));
                 }
                 if (entry == null) {
@@ -780,7 +779,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             propertyElement = (Element)propertyElements.get(i);
             key = CmsImport.getChildElementTextValue(propertyElement, CmsImportExportManager.N_NAME);
 
-            if (key == null || ignoredPropertyKeys.contains(key)) {
+            if ((key == null) || ignoredPropertyKeys.contains(key)) {
                 // continue if the current property (key) should be ignored or is null
                 continue;
             }

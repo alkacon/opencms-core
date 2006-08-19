@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXsltUtil.java,v $
- * Date   : $Date: 2006/07/11 11:54:53 $
- * Version: $Revision: 1.2.2.1 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.2.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,15 +52,15 @@ import javax.xml.transform.stream.StreamSource;
  *
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.2.2.1 $ 
+ * @version $Revision: 1.2.2.2 $ 
  * 
  * @since 6.2.1
  */
 public final class CmsXsltUtil {
 
-    // TODO: This class is apprently customer specific and should probably be removed from the core!
-    int todo = 0;
-    
+    /** TODO: This class is apprently customer specific and should probably be removed from the core! */
+    private int m_todo = 0;
+
     /** The delimiter to end a tag. */
     public static final String TAG_END_DELIMITER = ">";
 

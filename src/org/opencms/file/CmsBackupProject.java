@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupProject.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/08/19 13:40:39 $
+ * Version: $Revision: 1.13.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.13.8.1 $
  * 
  * @since 6.0.0 
  */
@@ -79,7 +79,6 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
      * @param projectId the id to use for this project
      * @param name the name for this project
      * @param description the description for this project
-     * @param taskId the task id for this project
      * @param ownerId the owner id for this project
      * @param groupId the group id for this project
      * @param managerGroupId the manager group id for this project
@@ -98,7 +97,6 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
         int projectId,
         String name,
         String description,
-        int taskId,
         CmsUUID ownerId,
         CmsUUID groupId,
         CmsUUID managerGroupId,
@@ -112,7 +110,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
         String nameGroupManagers,
         List projectResources) {
 
-        super(projectId, name, description, taskId, ownerId, groupId, managerGroupId, 0, dateCreated, type);
+        super(projectId, name, description, ownerId, groupId, managerGroupId, 0, dateCreated, type);
 
         m_versionId = versionId;
         if (datePublished != null) {
@@ -140,7 +138,6 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
             getId(),
             getName(),
             getDescription(),
-            getTaskId(),
             getOwnerId(),
             getGroupId(),
             getManagerGroupId(),

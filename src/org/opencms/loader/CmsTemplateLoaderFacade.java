@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsTemplateLoaderFacade.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.8.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.file.CmsResource;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,13 +52,13 @@ public class CmsTemplateLoaderFacade {
 
     /** The resource loader. */
     private I_CmsResourceLoader m_loader;
-    
+
     /** The resource requested by the user. */
     private CmsResource m_resource;
-    
+
     /** The template file attached to the resource. */
     private CmsResource m_template;
-    
+
     /**
      * Creates a new template loader facade.<p>
      * 
@@ -73,8 +73,10 @@ public class CmsTemplateLoaderFacade {
      * @param template the template to use (ignored if null)
      * @throws CmsLoaderException in case the template file does not use a loader that actually supports templates
      */
-    public CmsTemplateLoaderFacade(I_CmsResourceLoader loader, CmsResource resource, CmsResource template) throws CmsLoaderException {
-        if (! loader.isUsableForTemplates()) {
+    public CmsTemplateLoaderFacade(I_CmsResourceLoader loader, CmsResource resource, CmsResource template)
+    throws CmsLoaderException {
+
+        if (!loader.isUsableForTemplates()) {
             throw new CmsLoaderException(Messages.get().container(Messages.ERR_LOADER_NOT_TEMPLATE_ENABLED_0));
         }
         m_loader = loader;
@@ -88,37 +90,41 @@ public class CmsTemplateLoaderFacade {
      * @return the loader
      */
     public I_CmsResourceLoader getLoader() {
+
         return m_loader;
     }
-        
+
     /**
      * Returns the loaders start resource.<p>
      * 
      * @return the loaders start resource
      */
     public CmsResource getLoaderStartResource() {
+
         if (m_loader.isUsingUriWhenLoadingTemplate()) {
             return m_resource;
         } else {
             return m_template;
         }
     }
-    
+
     /**
      * Returns the resource.<p>
      * 
      * @return the resource
      */
     public CmsResource getResource() {
+
         return m_resource;
     }
-    
+
     /**
      * Returns the template.<p>
      * 
      * @return the template
      */
     public CmsResource getTemplate() {
+
         return m_template;
     }
 

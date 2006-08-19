@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestCmsPrincipal.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,42 +108,47 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         assertFalse(principal.isUser());
         assertTrue(principal.isGroup());
         assertEquals(prefixedName, principal.getPrefixedName());
-        
+
         // negative test
         prefixedName = "kaputt";
-        CmsException caught = null; 
+        CmsException caught = null;
         try {
-            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);            
+            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);
         } catch (CmsException e) {
             caught = e;
         }
         assertNotNull(caught);
         assertTrue(caught instanceof CmsSecurityException);
-        assertSame(Messages.ERR_INVALID_PRINCIPAL_1, caught.getMessageContainer().getKey());
-        
+        if (caught != null) {
+            assertSame(Messages.ERR_INVALID_PRINCIPAL_1, caught.getMessageContainer().getKey());
+        }
+
         // negative test 2
         prefixedName = CmsPrincipal.getPrefixedUser("kaputt");
-        caught = null; 
+        caught = null;
         try {
-            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);            
+            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);
         } catch (CmsException e) {
             caught = e;
         }
         assertNotNull(caught);
         assertTrue(caught instanceof CmsDbEntryNotFoundException);
-        assertSame(org.opencms.db.Messages.ERR_READ_USER_FOR_NAME_1, caught.getMessageContainer().getKey());
-        
+        if (caught != null) {
+            assertSame(org.opencms.db.Messages.ERR_READ_USER_FOR_NAME_1, caught.getMessageContainer().getKey());
+        }
+
         // negative test 3
         prefixedName = CmsPrincipal.getPrefixedGroup("kaputt");
-        caught = null; 
+        caught = null;
         try {
-            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);            
+            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);
         } catch (CmsException e) {
             caught = e;
         }
         assertNotNull(caught);
         assertTrue(caught instanceof CmsDbEntryNotFoundException);
-        assertSame(org.opencms.db.Messages.ERR_READ_GROUP_FOR_NAME_1, caught.getMessageContainer().getKey());
-
+        if (caught != null) {
+            assertSame(org.opencms.db.Messages.ERR_READ_GROUP_FOR_NAME_1, caught.getMessageContainer().getKey());
+        }
     }    
 }

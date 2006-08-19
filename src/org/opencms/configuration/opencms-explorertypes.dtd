@@ -50,8 +50,9 @@
 # If the shownavigation attribute is true, navigation properties can be editied in the special property dialog.
 #
 # Use the defaultproperty element to define the shown default properties for the special property dialog.
+# Note: property element still supported for backward compatibility, but should not longer be used
 -->
-<!ELEMENT defaultproperties (defaultproperty)*>
+<!ELEMENT defaultproperties (property|defaultproperty)*>
 <!ATTLIST defaultproperties 
     enabled (true|false|TRUE|FALSE) #REQUIRED
 	shownavigation (true|false|TRUE|FALSE) #IMPLIED>

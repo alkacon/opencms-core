@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStatusBean.java,v $
- * Date   : $Date: 2005/07/07 13:14:26 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.10.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.10.8.1 $
  * 
  * @since 6.0
  */
@@ -472,7 +472,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
         m_requestUri = (String)req.getAttribute(ERROR_REQUEST_URI);
         m_statusCode = (Integer)req.getAttribute(ERROR_STATUS_CODE);
 
-        if (m_statusCode == null || m_requestUri == null) {
+        if ((m_statusCode == null) || (m_requestUri == null)) {
             // check if the error request is invoked via Apache/HTTPd ErrorDocument and mod_jk
 
             // to use this you need to add the following to "jk.conf":

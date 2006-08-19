@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsListAction.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.9.8.1 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.9.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.tools.I_CmsHtmlIconButton;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9.8.1 $ 
+ * @version $Revision: 1.9.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,7 +53,7 @@ public interface I_CmsListAction extends I_CmsHtmlIconButton {
      * @see I_CmsHtmlIconButton#buttonHtml(org.opencms.workplace.CmsWorkplace)
      */
     String buttonHtml();
-    
+
     /**
      * Returns an optional confirmation message for the action.<p>
      * 

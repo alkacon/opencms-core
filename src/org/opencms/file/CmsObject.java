@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/07/11 12:21:13 $
- * Version: $Revision: 1.146.4.2 $
+ * Date   : $Date: 2006/08/19 13:40:39 $
+ * Version: $Revision: 1.146.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,13 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -50,7 +53,6 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
-import org.opencms.workflow.CmsTaskService;
 
 import java.util.Collections;
 import java.util.List;
@@ -83,7 +85,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.2 $
+ * @version $Revision: 1.146.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -455,6 +457,22 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource.getTypeId()).copyResourceToProject(this, m_securityManager, resource);
+    }
+
+    /**
+     * Copies a resource to another project.<p>
+     * 
+     * @param resourcename the name of the resource to copy to the project
+     * @param project the project 
+     * @throws CmsException if something goes wrong
+     */
+    public void copyResourceToProject(String resourcename, CmsProject project) throws CmsException {
+
+        // TODO: This should alwasy be done automatically, never by the user - remove this method
+        int todo_v7;
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        getResourceType(resource.getTypeId()).copyResourceToProject(this, m_securityManager, resource, project);
     }
 
     /**
@@ -1172,6 +1190,24 @@ public final class CmsObject {
     }
 
     /**
+     * Returns the lock state for a specified resource.<p>
+     * 
+     * @param resource the resource to return the lock state for
+     * @param preferExclusive if exclusive locks are preferred
+     * 
+     * @return the lock state for the specified resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsLock getLock(CmsResource resource, boolean preferExclusive) throws CmsException {
+
+        // TODO: This methods should be removed or refactored!
+        int todo_v7;
+
+        return m_securityManager.getLock(m_context, resource, preferExclusive);
+    }
+
+    /**
      * Returns the lock state for a specified resource name.<p>
      * 
      * @param resourcename the name if the resource to get the lock state for (full path)
@@ -1204,7 +1240,8 @@ public final class CmsObject {
      */
     public String getLostAndFoundName(String resourcename) throws CmsException {
 
-        return m_securityManager.moveToLostAndFound(m_context, resourcename, true);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        return m_securityManager.moveToLostAndFound(m_context, resource, true);
     }
 
     /**
@@ -1329,6 +1366,41 @@ public final class CmsObject {
             directPublishResources,
             directPublishSiblings,
             publishSubResources));
+    }
+
+    /**
+     * Returns all relations for the given resource mathing the given filter.<p> 
+     * 
+     * @param resourceName the name of the resource to retrieve the relations for
+     * @param filter the filter to match the relation 
+     * 
+     * @return a List containing
+     *      all {@link org.opencms.relations.CmsRelation} objects for the given resource mathing the given filter
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#getRelationsForResource(CmsRequestContext, CmsResource, CmsRelationFilter)
+     */
+    public List getRelationsForResource(String resourceName, CmsRelationFilter filter) throws CmsException {
+
+        CmsResource resource = readResource(resourceName);
+        List relations = m_securityManager.getRelationsForResource(m_context, resource, filter);
+        if (relations.isEmpty()) {
+            // it may be necessary to recreate the relation information for this resource
+
+            // TODO: This should not be done in the CmsObject, but in the deeper levels (CmsDriverManager)
+            int todo_v7;
+
+            I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
+            if (resourceType instanceof I_CmsLinkParseable) {
+                I_CmsLinkParseable linkValidatable = (I_CmsLinkParseable)resourceType;
+                relations = m_securityManager.updateRelationsForResource(
+                    m_context,
+                    resource,
+                    linkValidatable.parseLinks(this, CmsFile.upgrade(resource, this)));
+            }
+        }
+        return relations;
     }
 
     /**
@@ -1474,16 +1546,6 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.readChildResources(m_context, resource, filter, true, false);
-    }
-
-    /**
-     * Returns the current session info manager object.<p>
-     * 
-     * @return the current session info manager object
-     */
-    public CmsTaskService getTaskService() {
-
-        return new CmsTaskService(m_context, m_securityManager);
     }
 
     /**
@@ -1754,38 +1816,53 @@ public final class CmsObject {
     /**
      * Locks a resource.<p>
      *
-     * The mode for the lock is <code>{@link org.opencms.lock.CmsLock#COMMON}</code>.<p>
+     * This will be an exclusive, persistant lock that is removed only if the user unlocks it.<p>
      *
      * @param resourcename the name of the resource to lock (full path)
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#lockResource(String, int)
+     * @see CmsObject#lockResourceInWorkflow(String)
      */
     public void lockResource(String resourcename) throws CmsException {
 
-        lockResource(resourcename, CmsLock.COMMON);
+        lockResource(resourcename, getRequestContext().currentProject(), CmsLockType.EXCLUSIVE);
     }
 
     /**
-     * Locks a resource.<p>
+     * Locks a resource in a workflow.<p>
      *
-     * The <code>mode</code> parameter controls what kind of lock is used.<br>
-     * Possible values for this parameter are: <br>
-     * <ul>
-     * <li><code>{@link org.opencms.lock.CmsLock#COMMON}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLock#TEMPORARY}</code></li>
-     * </ul><p>
-     * 
      * @param resourcename the name of the resource to lock (full path)
-     * @param mode flag indicating the mode for the lock
+     * @param wfProject the workflow project to lock the resource in
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#lockResource(String)
      */
-    public void lockResource(String resourcename, int mode) throws CmsException {
+    public void lockResourceInWorkflow(String resourcename, CmsProject wfProject) throws CmsException {
 
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).lockResource(this, m_securityManager, resource, mode);
+        // TODO: Workflow should use special type instead of project
+        int todo_v7 = 0;
+
+        lockResource(resourcename, wfProject, CmsLockType.WORKFLOW);
+    }
+
+    /**
+     * Locks a resource temporary.<p>
+     *
+     * This will be an exclusive, temporary lock valid only for the current users session.
+     * Usually this should not be used directly, this method is intended for the OpenCms workplace only.<p>
+     *
+     * @param resourcename the name of the resource to lock (full path)
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#lockResource(String)
+     * @see CmsObject#lockResourceInWorkflow(String)
+     */
+    public void lockResourceTemporary(String resourcename) throws CmsException {
+
+        lockResource(resourcename, getRequestContext().currentProject(), CmsLockType.TEMPORARY);
     }
 
     /**
@@ -1911,6 +1988,7 @@ public final class CmsObject {
      * Moves a resource to the "lost and found" folder.<p>
      * 
      * The "lost and found" folder is a special system folder. 
+     * 
      * This operation is used e.g. during import of resources
      * when a resource with the same name but a different resource ID
      * already exists in the VFS. In this case, the imported resource is 
@@ -1926,7 +2004,8 @@ public final class CmsObject {
      */
     public String moveToLostAndFound(String resourcename) throws CmsException {
 
-        return m_securityManager.moveToLostAndFound(m_context, resourcename, false);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        return m_securityManager.moveToLostAndFound(m_context, resource, false);
     }
 
     /**
@@ -2051,7 +2130,7 @@ public final class CmsObject {
     public List readAllBackupFileHeaders(String filename) throws CmsException {
 
         CmsResource resource = readResource(filename, CmsResourceFilter.ALL);
-        return (m_securityManager.readAllBackupFileHeaders(m_context, resource));
+        return m_securityManager.readAllBackupFileHeaders(m_context, resource);
     }
 
     /**
@@ -3094,6 +3173,32 @@ public final class CmsObject {
     }
 
     /**
+     * Returns the original path of given resource, that is the online path for the resource. 
+     * If it differs from the offline path, the resource has been moved.<p>
+     * 
+     * @param resourceName a site relative resource name
+     * 
+     * @return the online path
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String resourceOriginalPath(String resourceName) throws CmsException {
+
+        // TODO: Do we really need a user acessible function for this? 
+        int todo_v7;
+
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
+        String result = m_context.removeSiteRoot(m_securityManager.resourceOriginalPath(m_context, resource));
+        // remove '/' if needed
+        if (result.charAt(result.length() - 1) == '/') {
+            if (resourceName.charAt(resourceName.length() - 1) != '/') {
+                result = result.substring(0, result.length() - 1);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Restores a file in the current project with a version from the backup archive.<p>
      * 
      * @param resourcename the name of the resource to restore from the archive (full path)
@@ -3228,6 +3333,34 @@ public final class CmsObject {
     }
 
     /**
+     * Sets the last modified project reference of a resource.<p>
+     * 
+     * @param resourcename the name of the resource
+     * @param projectLastModified the project to refer to
+     * @param additionalFlags additional flag to set
+     * @param recursive flag to indicate if all subresources should change their project references, too
+     * @throws CmsException if something goes wrong
+     */
+    public void setProjectLastModified(
+        String resourcename,
+        CmsProject projectLastModified,
+        int additionalFlags,
+        boolean recursive) throws CmsException {
+
+        // TODO: Remove this method - this should always be done automatically in the core!
+        int todo_v7;
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(resource.getTypeId()).setProjectLastModified(
+            this,
+            m_securityManager,
+            resource,
+            projectLastModified,
+            additionalFlags,
+            recursive);
+    }
+
+    /**
      * Changes the timestamp information of a resource.<p>
      * 
      * This method is used to set the "last modified" date
@@ -3276,11 +3409,11 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#undoChanges(String, boolean)
+     * @see CmsObject#undoChanges(String, int)
      */
     public void undeleteResource(String resourcename) throws CmsException {
 
-        undoChanges(resourcename, true);
+        undoChanges(resourcename, CmsResource.UNDO_CONTENT_RECURSIVE);
     }
 
     /**
@@ -3288,14 +3421,22 @@ public final class CmsObject {
      * online project to the current offline project.<p>
      * 
      * @param resourcename the name of the resource to undo the changes for (full path)
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param mode the undo mode, one of the <code>{@link CmsResource}#UNDO_XXX</code> constants
      *
      * @throws CmsException if something goes wrong
+     * 
+     * @see CmsResource#UNDO_CONTENT
+     * @see CmsResource#UNDO_CONTENT_RECURSIVE
+     * @see CmsResource#UNDO_MOVE_CONTENT
+     * @see CmsResource#UNDO_MOVE_CONTENT_RECURSIVE
      */
-    public void undoChanges(String resourcename, boolean recursive) throws CmsException {
+    public void undoChanges(String resourcename, int mode) throws CmsException {
+
+        // TODO: Exchange the int with a custom parameter class
+        int todo_v7;
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).undoChanges(this, m_securityManager, resource, recursive);
+        getResourceType(resource.getTypeId()).undoChanges(this, m_securityManager, resource, mode);
     }
 
     /**
@@ -3339,25 +3480,6 @@ public final class CmsObject {
     }
 
     /**
-     * Validates the HTML links in the unpublished files of the specified
-     * publish list, if a file resource type implements the interface 
-     * <code>{@link org.opencms.validation.I_CmsXmlDocumentLinkValidatable}</code>.<p>
-     * 
-     * @param publishList an OpenCms publish list
-     * @param report a report to write the messages to
-     * 
-     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names
-     * 
-     * @throws Exception if something goes wrong
-     * 
-     * @see org.opencms.validation.I_CmsXmlDocumentLinkValidatable
-     */
-    public Map validateHtmlLinks(CmsPublishList publishList, I_CmsReport report) throws Exception {
-
-        return m_securityManager.validateHtmlLinks(this, publishList, report);
-    }
-
-    /**
      * This method checks if a new password follows the rules for
      * new passwords, which are defined by a Class implementing the 
      * <code>{@link org.opencms.security.I_CmsPasswordHandler}</code> 
@@ -3372,6 +3494,26 @@ public final class CmsObject {
     public void validatePassword(String password) throws CmsSecurityException {
 
         m_securityManager.validatePassword(password);
+    }
+
+    /**
+     * Validates the relations for the given resources.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param resources the resources to validate during publishing 
+     *              or <code>null</code> for all in current project
+     * @param report a report to write the messages to
+     * 
+     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public Map validateRelations(List resources, I_CmsReport report) throws Exception {
+
+        // TODO: The return values should not be Strings, but custom objects
+        int todo_v7;
+
+        return m_securityManager.validateRelations(this, resources, report);
     }
 
     /**
@@ -3669,5 +3811,28 @@ public final class CmsObject {
 
         m_securityManager = securityManager;
         m_context = context;
+    }
+
+    /**
+     * Locks a resource.<p>
+     *
+     * The <code>type</code> parameter controls what kind of lock is used.<br>
+     * Possible values for this parameter are: <br>
+     * <ul>
+     * <li><code>{@link org.opencms.lock.CmsLockType#EXCLUSIVE}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLockType#WORKFLOW}</code></li>
+     * </ul><p>
+     * 
+     * @param resourcename the name of the resource to lock (full path)
+     * @param project the project to lock the resource in
+     * @param type type of the lock
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void lockResource(String resourcename, CmsProject project, CmsLockType type) throws CmsException {
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        getResourceType(resource.getTypeId()).lockResource(this, m_securityManager, resource, project, type);
     }
 }

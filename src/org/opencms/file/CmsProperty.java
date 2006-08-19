@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2006/07/20 09:57:21 $
- * Version: $Revision: 1.34.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:39 $
+ * Version: $Revision: 1.34.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.4.1 $
+ * @version $Revision: 1.34.4.2 $
  * 
  * @since 6.0.0 
  */
@@ -174,21 +174,18 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public CmsProperty() {
 
-        // noting to do, all values will be initialized with "null" or <code>"false"</code> by default
+        // nothing to do, all values will be initialized with <code>null</code> or <code>false</code> by default
     }
 
     /**
      * Creates a new CmsProperty object using the provided values.<p>
      *
-     * If <code>null</code> is supplied for the resource or structure value, this 
-     * value will not be available for this property.<p>
-     *
      * If the property definition does not exist for the resource type it
      * is automatically created when this propery is written.
      * 
      * @param name the name of the property definition
-     * @param structureValue the value to write as structure property, or <code>null</code>
-     * @param resourceValue the value to write as resource property, or <code>null</code>
+     * @param structureValue the value to write as structure property
+     * @param resourceValue the value to write as resource property 
      */
     public CmsProperty(String name, String structureValue, String resourceValue) {
 

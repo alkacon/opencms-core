@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.28.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.util.CmsUUID;
  * @author Thomas Weckert  
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.28.8.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -57,54 +57,12 @@ import org.opencms.util.CmsUUID;
  */
 public class CmsLock implements Cloneable {
 
-    /** Indicates that the lock is a common lock and doesn't expire. */
-    public static final int COMMON = 0;
-
-    /** Indicates that the lock is a temporary lock that expires is the user was logged out. */
-    public static final int TEMPORARY = 1;
-
-    /** 
-     * A lock that allows the user to edit the resource’s structure record, 
-     * it’s resource record, and its content record.<p>
-     *
-     * This lock is assigned to files that are locked via the context menu.
-     */
-    public static final int TYPE_EXCLUSIVE = 4;
-
-    /**
-     * A lock that is inherited from a locked parent folder.
-     */
-    public static final int TYPE_INHERITED = 3;
-
-    /**
-     * A lock that allows the user to edit the resource’s structure record only, 
-     * but not it’s resource record nor content record.<p>
-     * 
-     * This lock is assigned to files if a sibling of the resource record has
-     * already an exclusive lock. 
-     */
-    public static final int TYPE_SHARED_EXCLUSIVE = 2;
-
-    /**
-     * A lock that allows the user to edit the resource’s structure record only, 
-     * but not it’s resource record nor content record.<p>
-     * 
-     * This lock is assigned to resources that already have a shared exclusive lock,
-     * and then inherit a lock because one if it's parent folders gets locked.
-     */
-    public static final int TYPE_SHARED_INHERITED = 1;
-
-    /**
-     * Reserved for the Null CmsLock.
-     */
-    public static final int TYPE_UNLOCKED = 0;
-
     /** The shared null lock object. */
     private static final CmsLock NULL_LOCK = new CmsLock(
         "",
         CmsUUID.getNullUUID(),
         CmsDbUtil.UNKNOWN_ID,
-        CmsLock.TYPE_UNLOCKED);
+        CmsLockType.UNLOCKED);
 
     /** Flag to indicate if the lock is a temporary lock. */
     private int m_mode;
@@ -115,8 +73,8 @@ public class CmsLock implements Cloneable {
     /** The name of the locked resource. */
     private String m_resourceName;
 
-    /** Saves how the resource is locked. */
-    private int m_type;
+    /** Indicates how the resource is locked. */
+    private CmsLockType m_type;
 
     /** The ID of the user who locked the resource. */
     private CmsUUID m_userId;
@@ -129,31 +87,12 @@ public class CmsLock implements Cloneable {
      * @param projectId the ID of the project where the resource is locked
      * @param type flag indicating how the resource is locked
      */
-    public CmsLock(String resourceName, CmsUUID userId, int projectId, int type) {
+    public CmsLock(String resourceName, CmsUUID userId, int projectId, CmsLockType type) {
 
         m_resourceName = resourceName;
         m_userId = userId;
         m_projectId = projectId;
         m_type = type;
-        m_mode = COMMON;
-    }
-
-    /**
-     * Constructor for a new Cms lock.<p>
-     * 
-     * @param resourceName the full resource name including the site root
-     * @param userId the ID of the user who locked the resource
-     * @param projectId the ID of the project where the resource is locked
-     * @param type flag indicating how the resource is locked
-     * @param mode flag indicating the mode (temporary or common) of a lock
-     */
-    public CmsLock(String resourceName, CmsUUID userId, int projectId, int type, int mode) {
-
-        m_resourceName = resourceName;
-        m_userId = userId;
-        m_projectId = projectId;
-        m_type = type;
-        m_mode = mode;
     }
 
     /**
@@ -221,7 +160,7 @@ public class CmsLock implements Cloneable {
      * 
      * @return the type of the lock
      */
-    public int getType() {
+    public CmsLockType getType() {
 
         return m_type;
     }
@@ -245,6 +184,36 @@ public class CmsLock implements Cloneable {
     }
 
     /**
+     * Returns <code>true</code> if this is an exclusive (or temporary exclusive) lock.<p>
+     * 
+     * @return <code>true</code> if this is an exclusive (or temporary exclusive) lock
+     */
+    public boolean isExclusive() {
+
+        return (m_type == CmsLockType.EXCLUSIVE) || (m_type == CmsLockType.TEMPORARY);
+    }
+
+    /**
+     * Returns <code>true</code> if this is an inherited lock, which may either be directly or shared inherited.<p>
+     * 
+     * @return <code>true</code> if this is an inherited lock, which may either be directly or shared inherited
+     */
+    public boolean isInherited() {
+
+        return (m_type == CmsLockType.INHERITED) || (m_type == CmsLockType.SHARED_INHERITED);
+    }
+
+    /**
+     * Returns <code>true</code> if this is an directly inherited lock.<p>
+     * 
+     * @return <code>true</code> if this is an directly inherited lock
+     */
+    public boolean isInheritedDirectly() {
+
+        return m_type == CmsLockType.INHERITED;
+    }
+
+    /**
      * Proves if this CmsLock is the Null CmsLock.<p>
      * 
      * @return true if and only if this CmsLock is the Null CmsLock
@@ -252,6 +221,57 @@ public class CmsLock implements Cloneable {
     public boolean isNullLock() {
 
         return this.equals(CmsLock.NULL_LOCK);
+    }
+
+    /**
+     * Returns <code>true</code> if this is a persistant lock that should be saved when the systems shuts down.<p>
+     * 
+     * @return <code>true</code> if this is a persistant lock that should be saved when the systems shuts down
+     */
+    public boolean isPersistant() {
+
+        return (m_type == CmsLockType.EXCLUSIVE) || (m_type == CmsLockType.WORKFLOW);
+    }
+
+    /**
+     * Returns <code>true</code> if this is a shared lock.<p>
+     * 
+     * @return <code>true</code> if this is a shared lock
+     */
+    public boolean isShared() {
+
+        return (m_type == CmsLockType.SHARED_EXCLUSIVE) || (m_type == CmsLockType.SHARED_INHERITED);
+    }
+
+    /**
+     * Returns <code>true</code> if this is a temporary lock.<p>
+     * 
+     * @return <code>true</code> if this is a temporary lock
+     */
+    public boolean isTemporary() {
+
+        return m_type == CmsLockType.TEMPORARY;
+    }
+
+    /**
+     * Returns <code>true</code> if this lock is the <code>NULL</code> lock which can 
+     * be obtained by {@link #getNullLock()}.<p>
+     * 
+     * @return <code>true</code> if this lock is the <code>NULL</code> lock
+     */
+    public boolean isUnlocked() {
+
+        return m_type == CmsLockType.UNLOCKED;
+    }
+
+    /**
+     * Returns <code>true</code> if this is a workflow lock.<p>
+     * 
+     * @return <code>true</code> if this is a workflow lock
+     */
+    public boolean isWorkflow() {
+
+        return m_type == CmsLockType.WORKFLOW;
     }
 
     /**
@@ -266,23 +286,7 @@ public class CmsLock implements Cloneable {
         buf.append("resource: ");
         buf.append(this.getResourceName());
         buf.append(" type: ");
-        switch (this.getType()) {
-            case CmsLock.TYPE_EXCLUSIVE:
-                buf.append("exclusive");
-                break;
-            case CmsLock.TYPE_SHARED_EXCLUSIVE:
-                buf.append("shared exclusive");
-                break;
-            case CmsLock.TYPE_INHERITED:
-                buf.append("inherited");
-                break;
-            case CmsLock.TYPE_SHARED_INHERITED:
-                buf.append("shared inherited");
-                break;
-            default:
-                buf.append("unlocked");
-                break;
-        }
+        buf.append(m_type.toString());
         buf.append(" project: ");
         buf.append(this.getProjectId());
         buf.append(" user: ");

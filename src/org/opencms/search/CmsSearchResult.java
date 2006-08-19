@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.20.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.lucene.document.Field;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,7 +136,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
                 m_dateLastModified = DateTools.stringToDate(f.stringValue());
             } catch (ParseException exc) {
                 m_dateLastModified = null;
-            }                
+            }
         } else {
             m_dateLastModified = null;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:37 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.36.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.36.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -871,7 +871,7 @@ public class CmsResourceManager {
             i = moduleManager.getModuleNames().iterator();
             while (i.hasNext()) {
                 CmsModule module = moduleManager.getModule((String)i.next());
-                if (module != null && module.getResourceTypes().size() > 0) {
+                if ((module != null) && (module.getResourceTypes().size() > 0)) {
                     // module contains resource types                
                     if (CmsLog.INIT.isInfoEnabled()) {
                         CmsLog.INIT.info(Messages.get().getBundle().key(

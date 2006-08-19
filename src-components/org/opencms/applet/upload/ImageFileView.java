@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFileView.java,v $
- * Date   : $Date: 2005/06/27 14:21:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.swing.filechooser.FileView;
  * 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,14 +143,8 @@ public class ImageFileView extends FileView {
 
         try {
             URL imgURL = new URL(path);
-            if (imgURL != null) {
-               
-                ImageIcon img = new ImageIcon(imgURL);
-                return img;
-            } else {
-                System.err.println("Couldn't find file: " + path);
-                return null;
-            }
+            ImageIcon img = new ImageIcon(imgURL);
+            return img;
         } catch (Exception e) {
             System.err.println(e);
             return null;

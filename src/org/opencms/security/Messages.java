@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2006/06/08 09:38:46 $
- * Version: $Revision: 1.20.4.2 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.20.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.2 $ 
+ * @version $Revision: 1.20.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -191,7 +191,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-    
+
     /**
      * Hides the public constructor for this utility class.<p>
      */

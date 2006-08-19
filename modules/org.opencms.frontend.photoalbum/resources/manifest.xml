@@ -3,10 +3,10 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.0</opencms_version>
-		<createdate>Tue, 22 Nov 2005 08:00:00 GMT</createdate>
+		<opencms_version>6.5.0</opencms_version>
+		<createdate>Wed, 12 Jul 2006 15:15:49 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>5</export_version>
 	</info>
 	<module>
 		<name>org.opencms.frontend.photoalbum</name>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>Photo album frontend module to create views using OpenCms VFS image galleries.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.0</version>
+		<version>1.2.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -43,7 +43,7 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="photoalbum" key="fileicon.photoalbum" icon="photoalbum.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=photoalbum" order="61"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=photoalbum" order="61" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -56,26 +56,19 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 08 Nov 2005 09:35:02 GMT</datecreated>
+			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
+			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -87,6 +80,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.photoalbum</destination>
 			<type>folder</type>
+			<uuidstructure>93a65409-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 21 Nov 2005 14:09:36 GMT</datecreated>
@@ -98,6 +92,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.photoalbum/classes</destination>
 			<type>folder</type>
+			<uuidstructure>93ab0efb-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 21 Nov 2005 14:09:36 GMT</datecreated>
@@ -109,6 +104,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.photoalbum/classes/org</destination>
 			<type>folder</type>
+			<uuidstructure>93ad7ffd-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 21 Nov 2005 14:09:36 GMT</datecreated>
@@ -120,6 +116,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms</destination>
 			<type>folder</type>
+			<uuidstructure>93aff0ff-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 21 Nov 2005 14:09:36 GMT</datecreated>
@@ -131,6 +128,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend</destination>
 			<type>folder</type>
+			<uuidstructure>93b4abf1-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 21 Nov 2005 14:09:36 GMT</datecreated>
@@ -142,6 +140,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum</destination>
 			<type>folder</type>
+			<uuidstructure>93b71cf3-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 21 Nov 2005 14:09:50 GMT</datecreated>
@@ -154,6 +153,7 @@
 			<source>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum/messages_de.properties</source>
 			<destination>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum/messages_de.properties</destination>
 			<type>plain</type>
+			<uuidstructure>93bbd7e4-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a845c6ae-5515-11da-baff-3328c6d3b865</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -167,6 +167,7 @@
 			<source>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum/workplace.properties</source>
 			<destination>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum/workplace.properties</destination>
 			<type>plain</type>
+			<uuidstructure>93be21d6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ffa1b5fb-5137-11da-a3c8-3328c6d3b865</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -180,6 +181,7 @@
 			<source>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum/workplace_de.properties</source>
 			<destination>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum/workplace_de.properties</destination>
 			<type>plain</type>
+			<uuidstructure>93c303d8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>70998908-5522-11da-ae1e-3328c6d3b865</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -192,6 +194,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum/workplace_en.properties</destination>
 			<type>plain</type>
+			<uuidstructure>93c303da-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ffa1b5fb-5137-11da-a3c8-3328c6d3b865</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -204,6 +207,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.photoalbum/pages</destination>
 			<type>folder</type>
+			<uuidstructure>93c54dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 21 Nov 2005 14:09:36 GMT</datecreated>
@@ -216,6 +220,7 @@
 			<source>system/modules/org.opencms.frontend.photoalbum/pages/album.html</source>
 			<destination>system/modules/org.opencms.frontend.photoalbum/pages/album.html</destination>
 			<type>jsp</type>
+			<uuidstructure>93c7becd-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>3d628cea-52c3-11da-9218-3328c6d3b865</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -241,6 +246,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.photoalbum/resources</destination>
 			<type>folder</type>
+			<uuidstructure>93ca2fd3-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 21 Nov 2005 14:09:36 GMT</datecreated>
@@ -262,6 +268,7 @@
 			<source>system/modules/org.opencms.frontend.photoalbum/resources/photoalbum.css</source>
 			<destination>system/modules/org.opencms.frontend.photoalbum/resources/photoalbum.css</destination>
 			<type>plain</type>
+			<uuidstructure>93cc79c6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>33ea2283-5a95-11da-b4c1-3328c6d3b865</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -279,6 +286,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.photoalbum/schemas</destination>
 			<type>folder</type>
+			<uuidstructure>93ceeaca-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 21 Nov 2005 14:09:36 GMT</datecreated>
@@ -291,6 +299,7 @@
 			<source>system/modules/org.opencms.frontend.photoalbum/schemas/detail.xsd</source>
 			<destination>system/modules/org.opencms.frontend.photoalbum/schemas/detail.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>93d134bb-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>359194ea-5114-11da-a3c8-3328c6d3b865</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -309,6 +318,7 @@
 			<source>system/modules/org.opencms.frontend.photoalbum/schemas/overview.xsd</source>
 			<destination>system/modules/org.opencms.frontend.photoalbum/schemas/overview.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>93d134be-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2a3b8336-5114-11da-a3c8-3328c6d3b865</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -327,6 +337,7 @@
 			<source>system/modules/org.opencms.frontend.photoalbum/schemas/photoalbum.xsd</source>
 			<destination>system/modules/org.opencms.frontend.photoalbum/schemas/photoalbum.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>93d3a5c1-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>edb10202-5113-11da-a3c8-3328c6d3b865</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -344,6 +355,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -377,6 +389,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -388,6 +401,7 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
+			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -400,13 +414,19 @@
 			<source>system/workplace/resources/filetypes/photoalbum.gif</source>
 			<destination>system/workplace/resources/filetypes/photoalbum.gif</destination>
 			<type>image</type>
+			<uuidstructure>9470f736-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>43bf7413-5143-11da-a180-3328c6d3b865</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 09 Nov 2005 17:07:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>

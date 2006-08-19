@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2006/03/31 13:59:16 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/08/19 13:40:36 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -600,7 +600,7 @@ public class CmsElementRename extends CmsReport {
             }
         }
         // check if the users selected template is valid. 
-        if (templates != null && templates.containsValue(getParamTemplate())) {
+        if ((templates != null) && templates.containsValue(getParamTemplate())) {
             // iterate the xmlPages list and add all resources with the specified template to the resourcesWithTemplate list
             Iterator i = xmlPages.iterator();
             while (i.hasNext()) {
@@ -642,7 +642,7 @@ public class CmsElementRename extends CmsReport {
 
         Set templateElements = new HashSet();
 
-        if (currentTemplate != null && currentTemplate.length() > 0) {
+        if ((currentTemplate != null) && (currentTemplate.length() > 0)) {
             // template found, check template-elements property
             String elements = null;
             try {
@@ -777,13 +777,11 @@ public class CmsElementRename extends CmsReport {
     private boolean isValidTemplateElement(String template, String element) {
 
         List elements = new ArrayList(getTemplateElements(template));
-        if (elements != null) {
-            Iterator i = elements.iterator();
-            while (i.hasNext()) {
-                CmsDialogElement currElement = (CmsDialogElement)i.next();
-                if (element.equals(currElement.getName())) {
-                    return true;
-                }
+        Iterator i = elements.iterator();
+        while (i.hasNext()) {
+            CmsDialogElement currElement = (CmsDialogElement)i.next();
+            if (element.equals(currElement.getName())) {
+                return true;
             }
         }
 
@@ -802,7 +800,7 @@ public class CmsElementRename extends CmsReport {
         boolean removeEmptyElements = Boolean.valueOf(getParamRemoveEmptyElements()).booleanValue();
         boolean validateNewElement = Boolean.valueOf(getParamValidateNewElement()).booleanValue();
         // the list including at least one resource
-        if (xmlPages != null && xmlPages.size() > 0) {
+        if ((xmlPages != null) && (xmlPages.size() > 0)) {
             m_report.println(
                 Messages.get().container(Messages.RPT_RENAME_LANG_1, locale.getLanguage()),
                 I_CmsReport.FORMAT_HEADLINE);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestBackup.java,v $
- * Date   : $Date: 2006/04/13 15:56:56 $
- * Version: $Revision: 1.7.8.1 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.7.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * Unit tests for backup operation.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.7.8.1 $
+ * @version $Revision: 1.7.8.2 $
  */
 public class TestBackup extends OpenCmsTestCase {
 
@@ -74,10 +74,10 @@ public class TestBackup extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCopy.class.getName());
 
+        suite.addTest(new TestBackup("testFileBackupFileWithSiblingDate"));
         suite.addTest(new TestBackup("testCreateAndDeleteResources"));
         suite.addTest(new TestBackup("testFileHistory"));
         suite.addTest(new TestBackup("testFileBackupFileWithSibling"));
-        suite.addTest(new TestBackup("testFileBackupFileWithSiblingDate"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -248,11 +248,13 @@ public class TestBackup extends OpenCmsTestCase {
             //          now delete and publish the root
             cms.lockResource(filename);
             cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            cms.unlockResource(filename);
             cms.publishResource(filename);
 
             //          now delete and publish sibling     
             cms.lockResource(siblingname2);
             cms.deleteResource(siblingname2, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            cms.unlockResource(siblingname2);
             cms.publishResource(siblingname2);
 
             //Delete backups, keep only 3 latest versions. 
@@ -375,20 +377,22 @@ public class TestBackup extends OpenCmsTestCase {
                 }
             }
 
-            //          now delete and publish the root
+            // now delete and publish the root
             cms.lockResource(filename);
             cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            cms.unlockResource(filename);
             cms.publishResource(filename);
+            Thread.sleep(1500);
 
             // now delete and publish sibling     
             cms.lockResource(siblingname);
             cms.deleteResource(siblingname, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            cms.unlockResource(siblingname);
             cms.publishResource(siblingname);
+
             //Deleted backups
-
             cms.deleteBackups(timeToDeleted, 0, new CmsShellReport(cms.getRequestContext().getLocale()));
-            //restore root file with 
-
+            
             // create a new empty resource
             cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId(), null, null);
 
@@ -425,6 +429,7 @@ public class TestBackup extends OpenCmsTestCase {
 
             // assert that the content and version fit together
             restoredContent = getContentString(cms, file.getContents());
+            int todo; // fails with oracle, i guess it is the timestamp field fault
             assertEquals(3, allFiles.size());
             assertEquals(siblingContent, restoredContent);
             prop = cms.readPropertyObject(siblingname, CmsPropertyDefinition.PROPERTY_TITLE, false);
@@ -496,7 +501,6 @@ public class TestBackup extends OpenCmsTestCase {
         } finally {
             cms.getRequestContext().restoreSiteRoot();
         }
-
     }
 
     /**

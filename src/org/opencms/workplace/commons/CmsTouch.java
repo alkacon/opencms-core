@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsTouch.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.17.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,10 +73,10 @@ public class CmsTouch extends CmsMultiDialog {
 
     /** Request parameter name for timestamp. */
     public static final String PARAM_NEWTIMESTAMP = "newtimestamp";
-    
+
     /** Request parameter name for the recursive flag. */
     public static final String PARAM_RECURSIVE = "recursive";
-    
+
     private String m_paramNewtimestamp;
     private String m_paramRecursive;
 
@@ -213,13 +213,13 @@ public class CmsTouch extends CmsMultiDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         // check the required permissions to touch the resource       
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+        if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
         }
-        
+
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
 
@@ -285,12 +285,12 @@ public class CmsTouch extends CmsMultiDialog {
                 // collect exceptions to create a detailed output
                 addMultiOperationException(e);
             }
-        }        
+        }
         checkMultiOperationException(Messages.get(), Messages.ERR_TOUCH_MULTI_0);
-        
+
         return true;
     }
-    
+
     /**
      * Performs a touch operation for a single resource.<p>
      * 
@@ -300,12 +300,13 @@ public class CmsTouch extends CmsMultiDialog {
      * @param correctDate the flag if the new time stamp is a correct date
      * @throws CmsException if touching the resource fails
      */
-    protected void touchSingleResource(String resourceName, long timeStamp, boolean recursive, boolean correctDate) throws CmsException {
-        
+    protected void touchSingleResource(String resourceName, long timeStamp, boolean recursive, boolean correctDate)
+    throws CmsException {
+
         // lock resource if autolock is enabled
         checkLock(resourceName);
         CmsResource sourceRes = getCms().readResource(resourceName, CmsResourceFilter.ALL);
-        if (! correctDate) {
+        if (!correctDate) {
             // no date value entered, use current resource modification date
             timeStamp = sourceRes.getDateLastModified();
         }

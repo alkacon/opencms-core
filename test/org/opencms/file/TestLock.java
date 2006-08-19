@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.20.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.20.4.1 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -130,7 +130,7 @@ public class TestLock extends OpenCmsTestCase {
         // create a new resource as default test user
         cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
         // the source file must now have an exclusive lock
-        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);        
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);        
         // now delete the created resource
         cms.deleteResource(source, CmsResource.DELETE_REMOVE_SIBLINGS);
         
@@ -142,7 +142,7 @@ public class TestLock extends OpenCmsTestCase {
         cms.createResource(source, CmsResourceTypePlain.getStaticTypeId()); 
         
         // the newly created resource must now be locked to user "test2"
-        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
     }    
     
     /**
@@ -165,16 +165,16 @@ public class TestLock extends OpenCmsTestCase {
 
         // since source was not locked, destination must be locked exclusive
         // and source must still be unlocked
-        assertLock(cms, source, CmsLock.TYPE_UNLOCKED);
-        assertLock(cms, destination1, CmsLock.TYPE_EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.UNLOCKED);
+        assertLock(cms, destination1, CmsLockType.EXCLUSIVE);
         
         // copy source again
         cms.lockResource(source);        
         cms.copyResource(source, destination2, CmsResource.COPY_AS_NEW);  
         
         // both source and destination must be exlusive locked
-        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, destination2, CmsLock.TYPE_EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, destination2, CmsLockType.EXCLUSIVE);
                 
         // now some move tests
         source = "/types/jsp.jsp";
@@ -185,8 +185,7 @@ public class TestLock extends OpenCmsTestCase {
         cms.moveResource(source, destination1);
         
         // since source was locked, destination must be shared exclusive
-        assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);
-        assertLock(cms, destination1, CmsLock.TYPE_EXCLUSIVE);
+        assertLock(cms, destination1, CmsLockType.EXCLUSIVE);
     }    
     
     /**
@@ -209,17 +208,17 @@ public class TestLock extends OpenCmsTestCase {
 
         // the source file must have an exclusive lock
         // all siblings must have shared locks
-        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, sibling1, CmsLock.TYPE_SHARED_EXCLUSIVE);
-        assertLock(cms, sibling2, CmsLock.TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, sibling1, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
         
         // now unlock the source
         cms.unlockResource(source);
         
         // the source file and all sibling are unlocked now
-        assertLock(cms, source, CmsLock.TYPE_UNLOCKED);
-        assertLock(cms, sibling1, CmsLock.TYPE_UNLOCKED);
-        assertLock(cms, sibling2, CmsLock.TYPE_UNLOCKED);
+        assertLock(cms, source, CmsLockType.UNLOCKED);
+        assertLock(cms, sibling1, CmsLockType.UNLOCKED);
+        assertLock(cms, sibling2, CmsLockType.UNLOCKED);
     }    
     
     /**
@@ -241,38 +240,38 @@ public class TestLock extends OpenCmsTestCase {
         cms.lockResource(folder);
 
         // the source folder must have an exclusive lock
-        assertLock(cms, folder, CmsLock.TYPE_EXCLUSIVE);
+        assertLock(cms, folder, CmsLockType.EXCLUSIVE);
         
         // all resources in the folder must have an inherited lock        
         List resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            assertLock(cms, cms.getSitePath(res), CmsLock.TYPE_INHERITED);
+            assertLock(cms, cms.getSitePath(res), CmsLockType.INHERITED);
         }
         
         // all siblings inside the folder must have an inherited lock
-        assertLock(cms, sibling1, CmsLock.TYPE_INHERITED);
+        assertLock(cms, sibling1, CmsLockType.INHERITED);
         // all siblings outside the folder must not locked
-        assertLock(cms, sibling2, CmsLock.TYPE_UNLOCKED);
+        assertLock(cms, sibling2, CmsLockType.UNLOCKED);
         
         // now unlock the folder 
         cms.unlockResource(folder);
         
         // the source folder must be unlocked
-        assertLock(cms, folder, CmsLock.TYPE_UNLOCKED);
+        assertLock(cms, folder, CmsLockType.UNLOCKED);
         
         // all resources in the folder must be ulocked      
         resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         i = resources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            assertLock(cms, cms.getSitePath(res), CmsLock.TYPE_UNLOCKED);
+            assertLock(cms, cms.getSitePath(res), CmsLockType.UNLOCKED);
         }
         
         // all siblings outside of the folder must not locked
-        assertLock(cms, sibling1, CmsLock.TYPE_UNLOCKED);
-        assertLock(cms, sibling2, CmsLock.TYPE_UNLOCKED);
+        assertLock(cms, sibling1, CmsLockType.UNLOCKED);
+        assertLock(cms, sibling2, CmsLockType.UNLOCKED);
         
     }    
     
@@ -300,9 +299,9 @@ public class TestLock extends OpenCmsTestCase {
 
         // the source file must have an exclusive lock
         // all siblings must have shared exclusive locks
-        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, sibling1, CmsLock.TYPE_SHARED_EXCLUSIVE);
-        assertLock(cms, sibling2, CmsLock.TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, sibling1, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
         
         // lock folder
         cms.lockResource(folder);
@@ -315,21 +314,21 @@ public class TestLock extends OpenCmsTestCase {
             // the sibling to the resource "source" must have an shared inherited lock
             // all other resources must have a inherited lock
             if (cms.getSitePath(res).equals(sibling1)) {
-                assertLock(cms, cms.getSitePath(res), CmsLock.TYPE_SHARED_INHERITED);
+                assertLock(cms, cms.getSitePath(res), CmsLockType.SHARED_INHERITED);
             } else {
-                assertLock(cms, cms.getSitePath(res), CmsLock.TYPE_INHERITED);
+                assertLock(cms, cms.getSitePath(res), CmsLockType.INHERITED);
             }
         }
 
         // The siblings outside the folder keppt their previous lockstate
-        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, sibling2, CmsLock.TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
         
         // now unlock the folder
         cms.unlockResource(folder);
         
         // the source folder must be unlocked
-        assertLock(cms, folder, CmsLock.TYPE_UNLOCKED);
+        assertLock(cms, folder, CmsLockType.UNLOCKED);
         
         // all resources in the folder must be unlocked, except those siblings that had a 
         // shared inherited lock, they must get a shared exclusive lock
@@ -338,23 +337,23 @@ public class TestLock extends OpenCmsTestCase {
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
             if (cms.getSitePath(res).equals(sibling1)) {
-                assertLock(cms, cms.getSitePath(res), CmsLock.TYPE_SHARED_EXCLUSIVE);
+                assertLock(cms, cms.getSitePath(res), CmsLockType.SHARED_EXCLUSIVE);
             } else {
-                assertLock(cms, cms.getSitePath(res),  CmsLock.TYPE_UNLOCKED);
+                assertLock(cms, cms.getSitePath(res),  CmsLockType.UNLOCKED);
             }
         }
         
         // The siblings outside the folder keppt their previous lockstate
-        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, sibling2, CmsLock.TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
        
         // now unlock the source
         cms.unlockResource(source);
         
         // the source file and all sibling are unlocked now
-        assertLock(cms, source, CmsLock.TYPE_UNLOCKED);
-        assertLock(cms, sibling1, CmsLock.TYPE_UNLOCKED);
-        assertLock(cms, sibling2, CmsLock.TYPE_UNLOCKED);        
+        assertLock(cms, source, CmsLockType.UNLOCKED);
+        assertLock(cms, sibling1, CmsLockType.UNLOCKED);
+        assertLock(cms, sibling2, CmsLockType.UNLOCKED);        
         
     }    
     
@@ -382,9 +381,9 @@ public class TestLock extends OpenCmsTestCase {
 
         // the source file must have an exclusive lock
         // all siblings must have shared exclusive locks
-        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, sibling1, CmsLock.TYPE_SHARED_EXCLUSIVE);
-        assertLock(cms, sibling2, CmsLock.TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, sibling1, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
         
         // lock folder
         cms.lockResource(folder);
@@ -394,31 +393,31 @@ public class TestLock extends OpenCmsTestCase {
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            assertLock(cms, cms.getSitePath(res), CmsLock.TYPE_INHERITED);
+            assertLock(cms, cms.getSitePath(res), CmsLockType.INHERITED);
         }
 
         // The siblings outside the folder are unlocked
-        assertLock(cms, sibling1, CmsLock.TYPE_UNLOCKED);
-        assertLock(cms, sibling2, CmsLock.TYPE_UNLOCKED);
+        assertLock(cms, sibling1, CmsLockType.UNLOCKED);
+        assertLock(cms, sibling2, CmsLockType.UNLOCKED);
        
        
         // now unlock the folder
         cms.unlockResource(folder);
         
         // the source folder must be unlocked
-        assertLock(cms, folder, CmsLock.TYPE_UNLOCKED);
+        assertLock(cms, folder, CmsLockType.UNLOCKED);
         
         // all resources in the folder must be unlocked
         resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         i = resources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            assertLock(cms, cms.getSitePath(res),  CmsLock.TYPE_UNLOCKED);
+            assertLock(cms, cms.getSitePath(res),  CmsLockType.UNLOCKED);
         }
         
         // The siblings outside the folder keppt their previous lockstate
-        assertLock(cms, sibling1, CmsLock.TYPE_UNLOCKED);
-        assertLock(cms, sibling2, CmsLock.TYPE_UNLOCKED);
+        assertLock(cms, sibling1, CmsLockType.UNLOCKED);
+        assertLock(cms, sibling2, CmsLockType.UNLOCKED);
 
     }    
  
@@ -449,9 +448,9 @@ public class TestLock extends OpenCmsTestCase {
 
         // the source file must have an exclusive lock
         // all siblings must have shared locks
-        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, sibling1, CmsLock.TYPE_SHARED_EXCLUSIVE);
-        assertLock(cms, sibling2, CmsLock.TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, sibling1, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
  
         // login as user "admin"
         cms.loginUser("Admin" , "admin");
@@ -462,9 +461,9 @@ public class TestLock extends OpenCmsTestCase {
         
         // the sibling1 file must have an exclusive lock
         // all siblings of it must have shared locks
-        assertLock(cms, sibling1, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);
-        assertLock(cms, sibling2, CmsLock.TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, sibling1, CmsLockType.EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
         
         // now revoke write permissions for user "test2"
         cms.chacc(source, I_CmsPrincipal.PRINCIPAL_USER, "test2", 0, CmsPermissionSet.PERMISSION_WRITE, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
@@ -501,9 +500,9 @@ public class TestLock extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(offlineProject);
         
         // assert the locks are still there
-        assertLock(cms, sibling1, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);
-        assertLock(cms, sibling2, CmsLock.TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, sibling1, CmsLockType.EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
         
         // login as user "test1" again
         cms.loginUser("test1" , "test1");
@@ -513,9 +512,9 @@ public class TestLock extends OpenCmsTestCase {
         cms.changeLock(sibling2);
         
         // assert the locks for siblings are there
-        assertLock(cms, sibling2, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);
-        assertLock(cms, sibling1, CmsLock.TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, sibling2, CmsLockType.EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, sibling1, CmsLockType.SHARED_EXCLUSIVE);
     } 
     
     /**
@@ -538,17 +537,17 @@ public class TestLock extends OpenCmsTestCase {
 
         // since source was not locked, destination must be locked exclusive
         // and source must be locked shared
-        assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);
-        assertLock(cms, destination1, CmsLock.TYPE_EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, destination1, CmsLockType.EXCLUSIVE);
         
         // copy source again
         cms.copyResource(source, destination2, CmsResource.COPY_AS_SIBLING);  
         
         // since one sibling was already exclusive locked, 
         // new sibling must be shared locked
-        assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);
-        assertLock(cms, destination1, CmsLock.TYPE_EXCLUSIVE);        
-        assertLock(cms, destination2, CmsLock.TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, destination1, CmsLockType.EXCLUSIVE);        
+        assertLock(cms, destination2, CmsLockType.SHARED_EXCLUSIVE);
         
         // same stuff but in a different order 
         source = "/folder2/page1.html";
@@ -560,16 +559,16 @@ public class TestLock extends OpenCmsTestCase {
         cms.createSibling(source, destination1, null);
         
         // since source was locked, destination must be shared exclusive
-        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, destination1, CmsLock.TYPE_SHARED_EXCLUSIVE);    
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, destination1, CmsLockType.SHARED_EXCLUSIVE);    
         
         // create another sibling
         cms.createSibling(destination1, destination2, null);    
         // since one sibling was already exclusive locked, 
         // new sibling must be shared locked
-        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
-        assertLock(cms, destination1, CmsLock.TYPE_SHARED_EXCLUSIVE);        
-        assertLock(cms, destination2, CmsLock.TYPE_SHARED_EXCLUSIVE);    
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, destination1, CmsLockType.SHARED_EXCLUSIVE);        
+        assertLock(cms, destination2, CmsLockType.SHARED_EXCLUSIVE);    
     }    
     
     /**
@@ -594,7 +593,7 @@ public class TestLock extends OpenCmsTestCase {
         cms.lockResource(folder);
         
         // make sure the deleted file has an inherited lock
-        assertLock(cms, source, CmsLock.TYPE_INHERITED);
+        assertLock(cms, source, CmsLockType.INHERITED);
     }
         
     /**
@@ -612,7 +611,7 @@ public class TestLock extends OpenCmsTestCase {
         long timestamp = System.currentTimeMillis();
         
         // make sure source is not locked
-        assertLock(cms, source, CmsLock.TYPE_UNLOCKED);                
+        assertLock(cms, source, CmsLockType.UNLOCKED);                
         
         CmsFile file = cms.readFile(source);
                 
@@ -766,7 +765,7 @@ public class TestLock extends OpenCmsTestCase {
         cms.unlockResource(source);
         
         // make sure original resource is still unchanged
-        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);        
     }      
 }
 

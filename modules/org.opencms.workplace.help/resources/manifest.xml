@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.0</opencms_version>
-		<createdate>Wed, 27 Jul 2005 14:21:45 GMT</createdate>
+		<opencms_version>6.5.0</opencms_version>
+		<createdate>Wed, 12 Jul 2006 15:19:53 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>5</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.help</name>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module installs the basic templates required for the online help in all languages.</p>
 <p><i>(c) 2006 by Alkacon Software</i></p>]]></description>
-		<version>1.2.0</version>
+		<version>1.2.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -36,26 +36,19 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 22 Jul 2005 08:53:24 GMT</datecreated>
+			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
+			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -67,6 +60,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help</destination>
 			<type>folder</type>
+			<uuidstructure>f41907be-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -83,6 +77,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/classes</destination>
 			<type>folder</type>
+			<uuidstructure>f41907c1-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -94,6 +89,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/classes/org</destination>
 			<type>folder</type>
+			<uuidstructure>f41b51b3-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -105,6 +101,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms</destination>
 			<type>folder</type>
+			<uuidstructure>f41dc2b5-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -116,6 +113,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace</destination>
 			<type>folder</type>
+			<uuidstructure>f41dc2b7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -127,6 +125,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help</destination>
 			<type>folder</type>
+			<uuidstructure>f42033b9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -139,6 +138,7 @@
 			<source>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties</source>
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties</destination>
 			<type>plain</type>
+			<uuidstructure>f4227daa-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>4531ec0a-d2a0-11d9-9e1a-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -152,6 +152,7 @@
 			<source>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings_de.properties</source>
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings_de.properties</destination>
 			<type>plain</type>
+			<uuidstructure>f424eeac-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>9a4116a5-f453-11d9-b08b-1950d6847260</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -164,6 +165,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/elements</destination>
 			<type>folder</type>
+			<uuidstructure>f424eeaf-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 13 Jul 2005 14:12:49 GMT</datecreated>
@@ -176,6 +178,7 @@
 			<source>system/modules/org.opencms.workplace.help/elements/search.jsp</source>
 			<destination>system/modules/org.opencms.workplace.help/elements/search.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>f42738a0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d3c11c0e-f505-11d9-a9a0-55fa789c6c3d</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -202,6 +205,7 @@
 			<source>system/modules/org.opencms.workplace.help/elements/sitemap.jsp</source>
 			<destination>system/modules/org.opencms.workplace.help/elements/sitemap.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>f429a9a8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>3aff1091-f3a8-11d9-8d82-91fe884058f0</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -223,6 +227,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/jsptemplates</destination>
 			<type>folder</type>
+			<uuidstructure>f42c1aad-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -235,6 +240,7 @@
 			<source>system/modules/org.opencms.workplace.help/jsptemplates/help</source>
 			<destination>system/modules/org.opencms.workplace.help/jsptemplates/help</destination>
 			<type>jsp</type>
+			<uuidstructure>f42e649e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>51129e3d-d435-11d9-83b9-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -273,6 +279,7 @@
 			<source>system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp</source>
 			<destination>system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>f430d5a6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d5e0b9c1-d1c4-11d9-926a-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -299,6 +306,7 @@
 			<source>system/modules/org.opencms.workplace.help/jsptemplates/help_head.jsp</source>
 			<destination>system/modules/org.opencms.workplace.help/jsptemplates/help_head.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>f43346ab-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d5e9e187-d1c4-11d9-926a-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -316,6 +324,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.help/resources</destination>
 			<type>folder</type>
+			<uuidstructure>f435909f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -333,19 +342,26 @@
 			<source>system/modules/org.opencms.workplace.help/resources/back.png</source>
 			<destination>system/modules/org.opencms.workplace.help/resources/back.png</destination>
 			<type>image</type>
+			<uuidstructure>f43590a1-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2e6e7e1f-d1e1-11d9-b78e-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.workplace.help/resources/close.png</source>
 			<destination>system/modules/org.opencms.workplace.help/resources/close.png</destination>
 			<type>image</type>
+			<uuidstructure>f43801a4-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>90ad65f7-d1e1-11d9-b78e-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -359,58 +375,83 @@
 			<source>system/modules/org.opencms.workplace.help/resources/contents.png</source>
 			<destination>system/modules/org.opencms.workplace.help/resources/contents.png</destination>
 			<type>image</type>
+			<uuidstructure>f43a4b96-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a656d277-d1d4-11d9-b883-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.workplace.help/resources/nav_a.gif</source>
 			<destination>system/modules/org.opencms.workplace.help/resources/nav_a.gif</destination>
 			<type>image</type>
+			<uuidstructure>f43cbc99-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fd3ee229-d27a-11d9-bd76-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:9]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.workplace.help/resources/nav_i.gif</source>
 			<destination>system/modules/org.opencms.workplace.help/resources/nav_i.gif</destination>
 			<type>image</type>
+			<uuidstructure>f43f2d9c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fd4c9dcc-d27a-11d9-bd76-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:9]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.workplace.help/resources/next.png</source>
 			<destination>system/modules/org.opencms.workplace.help/resources/next.png</destination>
 			<type>image</type>
+			<uuidstructure>f441778f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>33876ba3-d1e1-11d9-b78e-01ff5ab8f021</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.workplace.help/resources/search.js</source>
 			<destination>system/modules/org.opencms.workplace.help/resources/search.js</destination>
 			<type>plain</type>
+			<uuidstructure>f443e892-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d7e19e32-f526-11d9-970c-55fa789c6c3d</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2006/03/28 13:10:02 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.44.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.44.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -292,7 +292,7 @@ public class CmsToolManager {
 
         CmsToolUserData userData = getUserData(wp);
         String root = ROOTKEY_DEFAULT;
-        if (userData != null && m_roots.getObject(userData.getRootKey()) != null) {
+        if ((userData != null) && (m_roots.getObject(userData.getRootKey()) != null)) {
             root = userData.getRootKey();
         }
         return (CmsToolRootHandler)m_roots.getObject(root);
@@ -396,7 +396,7 @@ public class CmsToolManager {
             // filter for path
             if (baseTool.equals(TOOLPATH_SEPARATOR) || path.startsWith(baseTool + TOOLPATH_SEPARATOR)) {
                 // filter sub tree
-                if (includeSubtools || path.indexOf(TOOLPATH_SEPARATOR, baseTool.length() + 1) < 0) {
+                if (includeSubtools || (path.indexOf(TOOLPATH_SEPARATOR, baseTool.length() + 1) < 0)) {
                     toolList.add(tool);
                 }
             }
@@ -438,7 +438,7 @@ public class CmsToolManager {
     public boolean hasToolPathForUrl(String url) {
 
         List toolPaths = (List)m_urls.getObject(url);
-        return (toolPaths != null && !toolPaths.isEmpty());
+        return ((toolPaths != null) && !toolPaths.isEmpty());
     }
 
     /**
@@ -733,8 +733,8 @@ public class CmsToolManager {
         while (it.hasNext()) {
             I_CmsToolHandler handler = (I_CmsToolHandler)it.next();
             int myLen = CmsStringUtil.splitAsArray(handler.getPath(), TOOLPATH_SEPARATOR).length;
-            if ((len == myLen && !handler.getPath().equals(TOOLPATH_SEPARATOR))
-                || (len == 1 && handler.getPath().equals(TOOLPATH_SEPARATOR))) {
+            if (((len == myLen) && !handler.getPath().equals(TOOLPATH_SEPARATOR))
+                || ((len == 1) && handler.getPath().equals(TOOLPATH_SEPARATOR))) {
                 found = true;
                 registerAdminTool(cms, toolRoot, handler);
             }

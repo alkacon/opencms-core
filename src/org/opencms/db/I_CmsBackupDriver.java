@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.52.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.52.8.1 $
  * 
  * @since 6.0.0
  */
@@ -296,10 +296,7 @@ public interface I_CmsBackupDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeBackupProject(
-        CmsDbContext dbc,
-        int tagId,
-        long publishDate) throws CmsDataAccessException;
+    void writeBackupProject(CmsDbContext dbc, int tagId, long publishDate) throws CmsDataAccessException;
 
     /**
      * Writes the properties of a resource to the backup.<p>

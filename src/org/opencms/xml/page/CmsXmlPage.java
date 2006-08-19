@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2006/07/20 13:35:40 $
- * Version: $Revision: 1.32.4.4 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.32.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.4 $ 
+ * @version $Revision: 1.32.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,20 +91,11 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     /** Name of the name attribute of the elements node. */
     public static final String ATTRIBUTE_ENABLED = "enabled";
 
-    /** Name of the internal attribute of the link node. */
-    public static final String ATTRIBUTE_INTERNAL = "internal";
-
     /** Name of the language attribute of the elements node. */
     public static final String ATTRIBUTE_LANGUAGE = "language";
 
     /** Name of the name attribute of the elements node. */
     public static final String ATTRIBUTE_NAME = "name";
-
-    /** Name of the type attribute of the elements node. */
-    public static final String ATTRIBUTE_TYPE = "type";
-
-    /** Name of the anchor node. */
-    public static final String NODE_ANCHOR = "anchor";
 
     /** Name of the element node. */
     public static final String NODE_CONTENT = "content";
@@ -123,15 +114,6 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /** Name of the page node. */
     public static final String NODE_PAGES = "pages";
-
-    /** Name of the query node. */
-    public static final String NODE_QUERY = "query";
-
-    /** Name of the target node. */
-    public static final String NODE_TARGET = "target";
-
-    /** Name of the uuid node. */
-    public static final String NODE_UUID = "uuid";
 
     /** Property to check if relative links are allowed. */
     public static final String PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
@@ -345,7 +327,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         if (value != null) {
             Element element = value.getElement();
             Attribute enabled = element.attribute(ATTRIBUTE_ENABLED);
-            return (enabled == null || Boolean.valueOf(enabled.getValue()).booleanValue());
+            return ((enabled == null) || Boolean.valueOf(enabled.getValue()).booleanValue());
         }
 
         return false;
@@ -474,15 +456,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         // XML pages currently do not support validation
         return new CmsXmlContentErrorHandler();
     }
-    
-    /**
-     * @see org.opencms.xml.I_CmsXmlDocument#validate(org.opencms.file.CmsObject, java.util.Locale)
-     */
-    public CmsXmlContentErrorHandler validate(CmsObject cms, Locale locale) {
-        // XML pages currently do not support validation
-        return new CmsXmlContentErrorHandler();
-    }
-    
+
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
      */
@@ -521,7 +495,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
                     // add the element type bookmark
                     addBookmark(CmsXmlUtils.createXpathElement(name, 1), locale, enabled, value);
-                } 
+                }
                 addLocale(locale);
             }
         } catch (NullPointerException e) {

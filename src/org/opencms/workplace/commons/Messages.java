@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.15.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -401,7 +401,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_HISTORY_SECOND_VERSION_0 = "GUI_HISTORY_SECOND_VERSION_0";
 
     /** Message constant for key in the resource bundle. */
-
     public static final String GUI_INPUT_ADRESS_0 = "GUI_INPUT_ADRESS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -465,6 +464,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_OK_0 = "GUI_LABEL_OK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_PERMALINK_0 = "GUI_LABEL_PERMALINK_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_PERMISSIONS_0 = "GUI_LABEL_PERMISSIONS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -489,6 +491,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_SUMMARY_0 = "GUI_LABEL_SUMMARY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_TIMEWARP_0 = "GUI_LABEL_TIMEWARP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_TITLE_0 = "GUI_LABEL_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -508,6 +513,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_VERSION_0 = "GUI_LABEL_VERSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_WORKFLOW_STATUS_0 = "GUI_LABEL_WORKFLOW_STATUS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_CHANGE_CONFIRMATION_0 = "GUI_LOCK_CHANGE_CONFIRMATION_0";
@@ -724,9 +732,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_PANEL_EXPLORER_0 = "GUI_PREF_PANEL_EXPLORER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREF_PANEL_TASK_0 = "GUI_PREF_PANEL_TASK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_PANEL_USER_0 = "GUI_PREF_PANEL_USER_0";
@@ -1026,19 +1031,37 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_UNDO_CHANGES_1 = "GUI_UNDO_CHANGES_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_CHANGES_CONTENT_MULTI_SUBRESOURCES_0 = "GUI_UNDO_CHANGES_CONTENT_MULTI_SUBRESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_CHANGES_CONTENT_SUBRESOURCES_0 = "GUI_UNDO_CHANGES_CONTENT_SUBRESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_CHANGES_MOVE_MULTI_SUBRESOURCES_0 = "GUI_UNDO_CHANGES_MOVE_MULTI_SUBRESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_CHANGES_MOVE_SUBRESOURCES_0 = "GUI_UNDO_CHANGES_MOVE_SUBRESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_CHANGES_MULTI_2 = "GUI_UNDO_CHANGES_MULTI_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_CHANGES_MULTI_SUBRESOURCES_0 = "GUI_UNDO_CHANGES_MULTI_SUBRESOURCES_0";
+    public static final String GUI_UNDO_CHANGES_RECURSIVE_MULTI_SUBRESOURCES_0 = "GUI_UNDO_CHANGES_RECURSIVE_MULTI_SUBRESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_CHANGES_SUBRESOURCES_0 = "GUI_UNDO_CHANGES_SUBRESOURCES_0";
+    public static final String GUI_UNDO_CHANGES_RECURSIVE_SUBRESOURCES_0 = "GUI_UNDO_CHANGES_RECURSIVE_SUBRESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_CHANGES_RECURSIVE_TITLE_0 = "GUI_UNDO_CHANGES_RECURSIVE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_CONFIRMATION_0 = "GUI_UNDO_CONFIRMATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_LASTMODIFIED_INFO_3 = "GUI_UNDO_LASTMODIFIED_INFO_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_MOVE_OPERATION_INFO_2 = "GUI_UNDO_MOVE_OPERATION_INFO_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERSELECTION_GROUP_BLOCK_1 = "GUI_USERSELECTION_GROUP_BLOCK_1";
@@ -1089,13 +1112,14 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERROR_INCLUDE_FAILED_1 = "LOG_ERROR_INCLUDE_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
-
     public static final String LOG_SET_PROJECT_NAME_FAILED_0 = "LOG_SET_PROJECT_NAME_FAILED_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.commons.messages";
+
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
     /**Postfix to create task key. */
     private static final String TASK_POSTFIX = "_0";
 

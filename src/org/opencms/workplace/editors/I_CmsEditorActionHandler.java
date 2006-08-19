@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsObject;
@@ -46,18 +47,18 @@ import javax.servlet.jsp.JspException;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.8.1 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsEditorActionHandler {
-    
+
     /** Prefix for direct edit end elements, used on JPS pages that supply the direct edit html. */
     String DIRECT_EDIT_AREA_END = "end_directedit";
-    
+
     /** Prefix for direct edit start elements, used on JPS pages that supply the direct edit html. */
     String DIRECT_EDIT_AREA_START = "start_directedit";
-    
+
     /** Key to identify the direct edit configuration file. */
     String DIRECT_EDIT_INCLUDE_FILE_URI = "__directEditIncludeFileUri";
 
@@ -66,43 +67,43 @@ public interface I_CmsEditorActionHandler {
 
     /** Element name for direct edit includes. */
     String DIRECT_EDIT_INCLUDES = "directedit_includes";
-    
+
     /** Constant for: direct edit mode disabled. */
     String DIRECT_EDIT_MODE_DISABLED = "disabled";
-    
+
     /** Constant for: direct edit mode enabled. */
     String DIRECT_EDIT_MODE_ENABLED = "enabled";
-    
+
     /** Constant for: direct edit mode inactive. */
     String DIRECT_EDIT_MODE_INACTIVE = "inactive";
 
     /** Option value that indicates the "delete" button should be displayed. */
     String DIRECT_EDIT_OPTION_DELETE = "delete";
-    
+
     /** Option value that indicates the "edit" button should be displayed. */
     String DIRECT_EDIT_OPTION_EDIT = "edit";
 
     /** Option value that indicates the "new" button should be displayed. */
     String DIRECT_EDIT_OPTION_NEW = "new";
-    
-    /** Key to identify the edit button style, used on JPS pages that supply the direct edit html. */  
+
+    /** Key to identify the edit button style, used on JPS pages that supply the direct edit html. */
     String DIRECT_EDIT_PARAM_BUTTONSTYLE = "__directEditButtonStyle";
-    
-    /** Key to identify the edit element, used on JPS pages that supply the direct edit html. */  
+
+    /** Key to identify the edit element, used on JPS pages that supply the direct edit html. */
     String DIRECT_EDIT_PARAM_ELEMENT = "__directEditElement";
-    
-    /** Key to identify the edit language, used on JPS pages that supply the direct edit html. */  
+
+    /** Key to identify the edit language, used on JPS pages that supply the direct edit html. */
     String DIRECT_EDIT_PARAM_LOCALE = "__directEditLocale";
-    
+
     /** Key to identify the link to use for the "new" button (if enabled). */
     String DIRECT_EDIT_PARAM_NEWLINK = "__directEditNewLink";
-    
+
     /** Key to identify additional direct edit options, used e.g. to control which direct edit buttons are displayed */
     String DIRECT_EDIT_PARAM_OPTIONS = "__directEditOptions";
-    
+
     /** Key to identify the edit target, used on JPS pages that supply the direct edit html. */
     String DIRECT_EDIT_PARAM_TARGET = "__directEditTarget";
-            
+
     /**
      * Performs an action which is configurable in the implementation of the interface, e.g. save, exit, publish.<p>
      * 
@@ -112,14 +113,14 @@ public interface I_CmsEditorActionHandler {
      * @throws JspException if including a JSP fails
      */
     void editorAction(CmsEditor editor, CmsJspActionElement jsp) throws IOException, JspException;
-    
+
     /**
      * Returns the key name of the button displayed in the editor.<p>
      * 
      * @return the key name of the button
      */
     String getButtonName();
-    
+
     /**
      * Returns the URL of the button displayed in the editor.<p>
      * 
@@ -128,7 +129,7 @@ public interface I_CmsEditorActionHandler {
      * @return the URL of the button
      */
     String getButtonUrl(CmsJspActionElement jsp, String resourceName);
-    
+
     /**
      * Checks the current edit mode.<p>
      * The mode is used to select the appropriate elements for displaying the direct edit button.
@@ -148,7 +149,7 @@ public interface I_CmsEditorActionHandler {
      * @return the current edit mode ( null | inactive | disabled | enabled )
      */
     String getEditMode(CmsObject cmsObject, String filename, String element, ServletRequest req);
-    
+
     /**
      * Returns true if the customized button should be active, otherwise false.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2006/04/18 07:43:40 $
- * Version: $Revision: 1.141.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:39 $
+ * Version: $Revision: 1.141.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.141.4.1 $
+ * @version $Revision: 1.141.4.2 $
  * 
  * @since 6.0.0 
  */
@@ -266,8 +266,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         PreparedStatement stmt = null;
 
         try {
-            if (internalCountProperties(dbc, metadef, CmsProject.ONLINE_PROJECT_ID) != 0
-                || internalCountProperties(dbc, metadef, Integer.MAX_VALUE) != 0) {
+            if ((internalCountProperties(dbc, metadef, CmsProject.ONLINE_PROJECT_ID) != 0)
+                || (internalCountProperties(dbc, metadef, Integer.MAX_VALUE) != 0)) {
 
                 throw new CmsDbConsistencyException(Messages.get().container(
                     Messages.ERR_ERROR_DELETING_PROPERTYDEF_1,
@@ -292,6 +292,15 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(org.opencms.db.CmsDbContext, java.util.List, int)
      */
     public void deleteBackups(CmsDbContext dbc, List existingBackups, int maxVersions) throws CmsDataAccessException {
+
+        String strBacks = "";
+        Iterator it = existingBackups.iterator();
+        while (it.hasNext()) {
+            strBacks += ((CmsBackupResource)it.next()).getRootPath();
+            if (it.hasNext()) {
+                strBacks += ", ";
+            }
+        }
 
         PreparedStatement stmt1 = null;
         PreparedStatement stmt2 = null;
@@ -385,7 +394,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
-        if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
+        if ((successiveDrivers != null) && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(
                     Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1,
@@ -566,7 +575,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
                     res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
                     res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
-                    res.getInt(m_sqlManager.readQuery("C_PROJECTS_TASK_ID")),
                     new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
                     new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
                     new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
@@ -638,6 +646,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READLAST_BACKUP");
             res = stmt.executeQuery();
+
+            // TODO: this is not really efficient!!
             int i = 0;
             int max = 300;
 
@@ -648,7 +658,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     res.getInt("PROJECT_ID"),
                     res.getString("PROJECT_NAME"),
                     res.getString("PROJECT_DESCRIPTION"),
-                    res.getInt("TASK_ID"),
                     new CmsUUID(res.getString("USER_ID")),
                     new CmsUUID(res.getString("GROUP_ID")),
                     new CmsUUID(res.getString("MANAGERGROUP_ID")),
@@ -686,6 +695,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_READ_MAXVERSION");
+            int todo; // this will return different values for mysql and for oracle!
             stmt.setTimestamp(1, new Timestamp(maxdate));
             res = stmt.executeQuery();
             if (res.next()) {
@@ -955,7 +965,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setString(13, currentProject.getDescription());
             stmt.setLong(14, currentProject.getDateCreated());
             stmt.setInt(15, currentProject.getType());
-            stmt.setInt(16, currentProject.getTaskId());
+            int todo = 0; // remove field
+            stmt.setInt(16, 0);
             stmt.executeUpdate();
 
             m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -1447,14 +1458,18 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * that have more then <code>versions</code> entries.<p> 
      *
      * It looks up only resource with sibling.
-     * It’s slow in compare to {@link #deleteBackupByMaxTag} because it needs to loop over database for all resources having such number of version.
+     * It’s slow in compare to {@link #deleteBackupByMaxTag} because it needs to loop over 
+     * database for all resources having such number of version.
      * 
-     * TODO: Changes in DB schema. Add column structure_id in tables cms_backup_contents, cms_backup_properties, cms_backup_resource. This action eliminated
+     * TODO: Changes in DB schema. Add column structure_id in tables cms_backup_contents, 
+     * cms_backup_properties, cms_backup_resource. This action eliminated
      * the loop and number of DELETE statement will not depend from number deleted version
      * 
      * @param dbc the current database context
      * @param versions how many versions to keep
+     * 
      * @throws CmsDataAccessException
+     * 
      * @see org.opencms.db.generic#deleteBackup(CmsDbContext dbc, CmsBackupResource resource, int tag, int versions)
      */
     private void deleteByVersionsCountWithSibling(CmsDbContext dbc, int versions) throws CmsDataAccessException {
@@ -1473,7 +1488,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         String backupId = null;
         Map structureVersionsId = new HashMap();
         Set structIdSet = new HashSet();
-       
+
         // first get all resource ids of the entries which has more version as need
         try {
             conn = m_sqlManager.getConnection(dbc);

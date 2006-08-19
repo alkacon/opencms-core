@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.26.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.lucene.index.IndexWriter;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.26.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,7 +147,7 @@ public class CmsIndexingThread extends Thread {
                 m_threadManager.addDocument(m_res, m_index.getLocale(), doc);
             }
 
-            if (m_report != null && !isInterrupted()) {
+            if ((m_report != null) && !isInterrupted()) {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                     I_CmsReport.FORMAT_OK);
@@ -163,9 +163,9 @@ public class CmsIndexingThread extends Thread {
         } catch (Exception exc) {
             // Ignore exception caused by empty documents, so that the report is not messed up with error message
             Throwable cause = exc.getCause();
-            if ((cause != null && cause instanceof CmsIndexException && ((CmsIndexException)cause).getMessageContainer().getKey().equals(
+            if (((cause != null) && (cause instanceof CmsIndexException) && ((CmsIndexException)cause).getMessageContainer().getKey().equals(
                 org.opencms.search.documents.Messages.ERR_NO_CONTENT_1))
-                || (exc instanceof CmsIndexException && ((CmsIndexException)exc).getMessageContainer().getKey().equals(
+                || ((exc instanceof CmsIndexException) && ((CmsIndexException)exc).getMessageContainer().getKey().equals(
                     org.opencms.search.documents.Messages.ERR_NO_CONTENT_1))) {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2006/04/28 13:10:42 $
- * Version: $Revision: 1.25.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.25.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.util.CmsStringUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -57,7 +56,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25.4.1 $ 
+ * @version $Revision: 1.25.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,6 +83,72 @@ public class CmsSetupDb extends Object {
         m_errors = new Vector();
         m_basePath = basePath;
         m_errorLogging = true;
+    }
+
+    /**
+     * Returns an optional warning message if needed, <code>null</code> if not.<p> 
+     * 
+     * @param db the selected database key
+     * 
+     * @return html warning, or <code>null</code> if no warning
+     */
+    public String checkVariables(String db) {
+
+        StringBuffer html = new StringBuffer(512);
+        if (m_con == null) {
+            return null; // prior error, trying to get a connection
+        }
+        SQLException exception = null;
+        if (db.equals("mysql")) { // just for 4.0, > is not needed, < is not supported.
+            String statement = "SELECT @@max_allowed_packet;";
+            Statement stmt = null;
+            ResultSet rs = null;
+            long map = 0;
+            try {
+                stmt = m_con.createStatement();
+                rs = stmt.executeQuery(statement);
+                if (rs.next()) {
+                    map = rs.getLong(1);
+                }
+            } catch (SQLException e) {
+                exception = e;
+            } finally {
+                if (stmt != null) {
+                    try {
+                        stmt.close();
+                    } catch (SQLException e) {
+                        // ignore
+                    }
+                }
+            }
+            if (exception == null) {
+                if (map > 0) {
+                    html.append("MySQL system variable <code>'max_allowed_packet'</code> is set to ");
+                    html.append(map);
+                    html.append(" Bytes.<p>\n");
+                }
+                html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
+                if (map < 15 * 1024 * 1024) {
+                    m_errors.addElement("<b>Your <code>'max_allowed_packet'</code> variable is set to less than 16Mb ("
+                        + map
+                        + ").</b>\n"
+                        + "The recommended value for running OpenCms is 16Mb."
+                        + "Please change your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).\n");
+                }
+            }
+        }
+        if ((exception != null) || db.equals("mysql_3")) {
+            html.append("<i>OpenCms was not able to detect the value of your <code>'max_allowed_packet'</code> variable.</i><p>\n");
+            html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
+            html.append("<b>The recommended value for running OpenCms is 16Mb, please set it in your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).</b>\n");
+            if (exception != null) {
+                html.append(CmsException.getStackTraceAsString(exception));
+            }
+        }
+        if (html.length() == 0) {
+            return null;
+        }
+        return html.toString();
     }
 
     /**
@@ -275,72 +340,6 @@ public class CmsSetupDb extends Object {
     }
 
     /**
-     * Returns an optional warning message if needed, <code>null</code> if not.<p> 
-     * 
-     * @param db the selected database key
-     * 
-     * @return html warning, or <code>null</code> if no warning
-     */
-    public String checkVariables(String db) {
-
-        StringBuffer html = new StringBuffer(512);
-        if (m_con == null) {
-            return null; // prior error, trying to get a connection
-        }
-        SQLException exception = null;
-        if (db.equals("mysql")) { // just for 4.0, > is not needed, < is not supported.
-            String statement = "SELECT @@max_allowed_packet;";
-            Statement stmt = null;
-            ResultSet rs = null;
-            long map = 0;
-            try {
-                stmt = m_con.createStatement();
-                rs = stmt.executeQuery(statement);
-                if (rs.next()) {
-                    map = rs.getLong(1);
-                }
-            } catch (SQLException e) {
-                exception = e;
-            } finally {
-                if (stmt != null) {
-                    try {
-                        stmt.close();
-                    } catch (SQLException e) {
-                        // ignore
-                    }
-                }
-            }
-            if (exception == null) {
-                if (map > 0) {
-                    html.append("MySQL system variable <code>'max_allowed_packet'</code> is set to ");
-                    html.append(map);
-                    html.append(" Bytes.<p>\n");
-                }
-                html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
-                if (map < 15 * 1024 * 1024) {
-                    m_errors.addElement("<b>Your <code>'max_allowed_packet'</code> variable is set to less than 16Mb ("
-                        + map
-                        + ").</b>\n"
-                        + "The recommended value for running OpenCms is 16Mb."
-                        + "Please change your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).\n");
-                }
-            }
-        } 
-        if (exception != null || db.equals("mysql_3")) {
-            html.append("<i>OpenCms was not able to detect the value of your <code>'max_allowed_packet'</code> variable.</i><p>\n");
-            html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
-            html.append("<b>The recommended value for running OpenCms is 16Mb, please set it in your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).</b>\n");
-            if (exception != null) {
-                html.append(CmsException.getStackTraceAsString(exception));
-            }
-        }
-        if (html.length() == 0) {
-            return null;
-        }
-        return html.toString();
-    }
-
-    /**
      * Calls an update script.<p>
      * 
      * @param updateScript the update script code
@@ -394,7 +393,6 @@ public class CmsSetupDb extends Object {
         // parse the setup script 
         try {
             reader = new LineNumberReader(inputReader);
-            line = null;
 
             while (true) {
                 line = reader.readLine();
@@ -482,7 +480,6 @@ public class CmsSetupDb extends Object {
     private void executeSql(String databaseKey, String sqlScript, Map replacers, boolean abortOnError) {
 
         String filename = null;
-        InputStreamReader reader = null;
         try {
             filename = m_basePath
                 + "setup"
@@ -497,14 +494,6 @@ public class CmsSetupDb extends Object {
             if (m_errorLogging) {
                 m_errors.addElement("Database setup SQL script not found: " + filename);
                 m_errors.addElement(CmsException.getStackTraceAsString(e));
-            }
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (Exception e) {
-                // noop
             }
         }
     }

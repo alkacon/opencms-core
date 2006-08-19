@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.16.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.main;
 
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.util.CmsUUID;
 
@@ -43,7 +44,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 /**
- * The OpenCms "Grim Reaper" thread store where all system Threads are maintained.<p>
+ * The OpenCms "Grim Reaper" thread store were all system Threads are maintained.<p>
  *
  * This thread executes all 60 seconds and checks if report threads are still active.
  * A report thread usually waits for a user to get the contents written to the report.
@@ -57,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.16.4.1 $
  * 
  * @since 6.0.0
  */
@@ -69,19 +70,25 @@ public class CmsThreadStore extends Thread {
     /** Indicates that this thread store is alive. */
     private boolean m_alive;
 
+    private CmsSecurityManager m_securityManager;
+
     /** A map to store all system Threads in. */
     private Map m_threads;
 
     /**
      * Hides the public constructor.<p>
+     * 
+     * @param securityManager needed for scheduling "undercover-jobs" 
+     *      that increase stability and fault tolerance
      */
-    protected CmsThreadStore() {
+    protected CmsThreadStore(CmsSecurityManager securityManager) {
 
         super(new ThreadGroup("OpenCms Thread Store"), "OpenCms: Grim Reaper");
         setDaemon(true);
         // Hashtable is still the most efficient form of a synchronized HashMap
         m_threads = new Hashtable();
         m_alive = true;
+        m_securityManager = securityManager;
         start();
     }
 
@@ -170,6 +177,15 @@ public class CmsThreadStore extends Thread {
                     }
                 } catch (Throwable t) {
                     LOG.error(Messages.get().getBundle().key(Messages.LOG_THREADSTORE_CHECK_SESSIONS_ERROR_0), t);
+                }
+                // additionally every 5 minutes: save the resource locks to db
+                try {
+                    m_securityManager.writeLocks();
+                } catch (Throwable t) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(org.opencms.lock.Messages.get().getBundle().key(
+                            org.opencms.lock.Messages.ERR_WRITE_LOCKS_0), t);
+                    }
                 }
             }
         }

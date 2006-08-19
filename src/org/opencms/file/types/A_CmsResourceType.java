@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.42.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,15 +36,17 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
-import org.opencms.lock.CmsLock;
+import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
@@ -64,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.42.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -270,6 +272,18 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     throws CmsException {
 
         securityManager.copyResourceToProject(cms.getRequestContext(), resource);
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#copyResourceToProject(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsProject)
+     */
+    public void copyResourceToProject(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsProject project) throws CmsException {
+
+        securityManager.copyResourceToProject(cms.getRequestContext(), resource, project);
     }
 
     /**
@@ -544,60 +558,53 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsProject, org.opencms.lock.CmsLockType)
      */
-    public void lockResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int mode)
-    throws CmsException {
+    public void lockResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsProject project,
+        CmsLockType type) throws CmsException {
 
-        securityManager.lockResource(cms.getRequestContext(), resource, mode);
+        securityManager.lockResource(cms.getRequestContext(), resource, project, type);
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String)
+     * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
      */
     public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
-    throws CmsException {
+    throws CmsException, CmsIllegalArgumentException {
 
         String dest = cms.getRequestContext().addSiteRoot(destination);
-
         if (resource.getRootPath().equals(dest)) {
             // move to target with same name is not allowed
             throw new CmsVfsException(org.opencms.file.Messages.get().container(
                 org.opencms.file.Messages.ERR_MOVE_SAME_NAME_1,
                 destination));
         }
-
-        // check if the user has write access and if resource is locked
-        // done here since copy is ok without lock, but delete is not
-        securityManager.checkPermissions(
-            cms.getRequestContext(),
-            resource,
-            CmsPermissionSet.ACCESS_WRITE,
-            true,
-            CmsResourceFilter.IGNORE_EXPIRATION);
-
-        // check if the resource to move is new or existing
-        boolean isNew = resource.getState() == CmsResource.STATE_NEW;
-
-        copyResource(cms, securityManager, resource, destination, CmsResource.COPY_AS_SIBLING);
-
-        deleteResource(cms, securityManager, resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
-
-        // make sure lock is switched
-        CmsResource destinationResource = securityManager.readResource(
-            cms.getRequestContext(),
-            dest,
-            CmsResourceFilter.ALL);
-
-        if (isNew) {
-            // if the source was new, destination must get a new lock
-            securityManager.lockResource(cms.getRequestContext(), destinationResource, CmsLock.COMMON);
-        } else {
-            // if source existed, destination must "steal" the lock 
-            securityManager.changeLock(cms.getRequestContext(), destinationResource);
+        // check the destination
+        try {
+            securityManager.readResource(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
+            throw new CmsVfsException(org.opencms.file.Messages.get().container(
+                org.opencms.file.Messages.ERR_OVERWRITE_RESOURCE_2,
+                cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
+                destination));
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok
         }
+
+        // move
+        securityManager.moveResource(cms.getRequestContext(), resource, dest);
+
+        // touch
+        CmsResource file = securityManager.readResource(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
+        writeFile(cms, securityManager, CmsFile.upgrade(file, cms));
     }
 
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#removeResourceFromProject(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource)
+     */
     public void removeResourceFromProject(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
     throws CmsException {
 
@@ -675,6 +682,20 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
+     * @see org.opencms.file.types.I_CmsResourceType#setProjectLastModified(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsProject, int, boolean)
+     */
+    public void setProjectLastModified(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsProject projectLastModified,
+        int additionalFlags,
+        boolean recursive) throws CmsException {
+
+        securityManager.setProjectLastModified(cms.getRequestContext(), resource, projectLastModified, additionalFlags);
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -692,12 +713,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
      */
-    public void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
+    public void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int mode)
     throws CmsException {
 
-        securityManager.undoChanges(cms.getRequestContext(), resource);
+        securityManager.undoChanges(cms.getRequestContext(), resource, mode);
     }
 
     /**

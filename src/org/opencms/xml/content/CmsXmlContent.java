@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2006/07/11 11:00:27 $
- * Version: $Revision: 1.36.4.3 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.36.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.3 $ 
+ * @version $Revision: 1.36.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,6 +107,31 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     }
 
     /**
+     * Creates a new XML content based on the provided XML document.<p>
+     * 
+     * The given encoding is used when marshalling the XML again later.<p>
+     * 
+     * @param cms the cms context, if <code>null</code> no link validation is performed 
+     * @param document the document to create the xml content from
+     * @param encoding the encoding of the xml content
+     * @param resolver the XML entitiy resolver to use
+     */
+    protected CmsXmlContent(CmsObject cms, Document document, String encoding, EntityResolver resolver) {
+
+        // must set document first to be able to get the content definition
+        m_document = document;
+        // for the next line to work the document must already be available
+        m_contentDefinition = getContentDefinition(resolver);
+        // initialize the XML content structure
+        initDocument(m_document, encoding, m_contentDefinition);
+        // check invalid links
+        if (cms != null) {
+            // this will remove all invalid links
+            getContentDefinition().getContentHandler().invalidateBrokenLinks(cms, this);
+        }
+    }
+
+    /**
      * Create a new XML content based on the given content definiton,
      * that will have one language node for the given locale all initialized with default values.<p> 
      * 
@@ -125,25 +150,11 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         Document document = contentDefinition.createDocument(cms, this, locale);
         // initialize the XML content structure
         initDocument(document, encoding, m_contentDefinition);
-    }
-
-    /**
-     * Creates a new XML content based on the provided XML document.<p>
-     * 
-     * The given encoding is used when marshalling the XML again later.<p>
-     * 
-     * @param document the document to create the xml content from
-     * @param encoding the encoding of the xml content
-     * @param resolver the XML entitiy resolver to use
-     */
-    protected CmsXmlContent(Document document, String encoding, EntityResolver resolver) {
-
-        // must set document first to be able to get the content definition
-        m_document = document;
-        // for the next line to work the document must already be available
-        m_contentDefinition = getContentDefinition(resolver);
-        // initialize the XML content structure
-        initDocument(m_document, encoding, m_contentDefinition);
+        // check invalid links (they could come from default values)
+        if (cms != null) {
+            // this will remove all invalid links
+            getContentDefinition().getContentHandler().invalidateBrokenLinks(cms, this);
+        }
     }
 
     /**
@@ -407,18 +418,6 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     }
 
     /**
-     * @see org.opencms.xml.I_CmsXmlDocument#validate(org.opencms.file.CmsObject, java.util.Locale)
-     */
-    public CmsXmlContentErrorHandler validate(CmsObject cms, Locale locale) {
-
-        // iterate through all initialized value nodes in this XML content
-        CmsXmlContentValidationVisitor visitor = new CmsXmlContentValidationVisitor(cms);
-        visitAllValuesWith(visitor, locale);
-
-        return visitor.getErrorHandler();
-    }
-
-    /**
      * Visits all values of this XML content with the given value visitor.<p>
      * 
      * Please note that the order in which the values are visited may NOT be the
@@ -437,33 +436,6 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             String key = (String)bookmarks.get(i);
             I_CmsXmlContentValue value = (I_CmsXmlContentValue)getBookmark(key);
             visitor.visit(value);
-        }
-    }
-
-    /**
-     * Visits all values for the given locale of this XML content with the given value visitor.<p>
-     * 
-     * Please note that the order in which the values are visited may NOT be the
-     * order they apper in the XML document. It is ensured that the the parent 
-     * of a nested value is visited before the element it contains.<p>
-     * 
-     * @param visitor the value visitor implementation to visit the values with
-     * @param locale the locale to check
-     */
-    public void visitAllValuesWith(I_CmsXmlContentValueVisitor visitor, Locale locale) {
-
-        String bookmarkPrefix = super.getBookmarkName("", locale);
-
-        List bookmarks = new ArrayList(getBookmarks());
-        Collections.sort(bookmarks);
-
-        for (int i = 0; i < bookmarks.size(); i++) {
-
-            String key = (String)bookmarks.get(i);
-            if (key.startsWith(bookmarkPrefix)) {
-                I_CmsXmlContentValue value = (I_CmsXmlContentValue)getBookmark(key);
-                visitor.visit(value);
-            }
         }
     }
 

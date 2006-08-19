@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.22.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,30 +38,46 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.CmsXmlHtmlValue;
+import org.opencms.xml.types.CmsXmlVfsFileReferenceValue;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Resource type descriptor for the type "xmlcontent".<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.8.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsResourceTypeXmlContent extends A_CmsResourceType {
+public class CmsResourceTypeXmlContent extends A_CmsResourceType implements I_CmsLinkParseable {
 
     /** Configuration key for the (optional) schema. */
     public static final String CONFIGURATION_SCHEMA = "schema";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContent.class);
 
     /** The (optional) schema of this resource. */
     private String m_schema;
@@ -111,6 +127,18 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
     }
 
     /**
+     * @see org.opencms.file.types.A_CmsResourceType#deleteResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int)
+     */
+    public void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int siblingMode)
+    throws CmsException {
+
+        // delete the resource
+        super.deleteResource(cms, securityManager, resource, siblingMode);
+        // delete the links for this resource
+        securityManager.deleteRelationsForResource(cms.getRequestContext(), resource, CmsRelationFilter.TARGETS);
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#getCachePropertyDefault()
      */
     public String getCachePropertyDefault() {
@@ -151,6 +179,68 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
     }
 
     /**
+     * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
+     */
+    public List parseLinks(CmsObject cms, CmsFile file) {
+
+        CmsXmlContent xmlContent;
+        long requestTime = cms.getRequestContext().getRequestTime();
+        try {
+            // prevent the check rules to remove the broken links
+            cms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
+            xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(org.opencms.db.Messages.get().getBundle().key(
+                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                    cms.getSitePath(file)), e);
+            }
+            return Collections.EMPTY_LIST;
+        } finally {
+            cms.getRequestContext().setRequestTime(requestTime);
+        }
+
+        List links = new ArrayList();
+        List locales = xmlContent.getLocales();
+
+        // iterate over all languages
+        Iterator i = locales.iterator();
+        while (i.hasNext()) {
+            Locale locale = (Locale)i.next();
+            List values = xmlContent.getValues(locale);
+
+            // iterate over all body elements per language
+            Iterator j = values.iterator();
+            while (j.hasNext()) {
+                I_CmsXmlContentValue value = (I_CmsXmlContentValue)j.next();
+                if (value instanceof CmsXmlHtmlValue) {
+                    CmsXmlHtmlValue htmlValue = (CmsXmlHtmlValue)value;
+                    CmsLinkTable linkTable = htmlValue.getLinkTable();
+
+                    // iterate over all links inside a body element
+                    Iterator k = linkTable.iterator();
+                    while (k.hasNext()) {
+                        CmsLink link = (CmsLink)k.next();
+
+                        // external links are ommitted
+                        if (link.isInternal()) {
+                            link.checkConsistency(cms);
+                            links.add(link);
+                        }
+                    }
+                } else if (value instanceof CmsXmlVfsFileReferenceValue) {
+                    CmsXmlVfsFileReferenceValue refValue = (CmsXmlVfsFileReferenceValue)value;
+                    CmsLink link = refValue.getLink(cms);
+                    if (link != null) {
+                        links.add(link);
+                    }
+                }
+            }
+        }
+        return links;
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsSecurityManager, CmsFile)
      */
     public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
@@ -167,8 +257,13 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, false);
         // call the content handler for post-processing
         resource = xmlContent.getContentDefinition().getContentHandler().prepareForWrite(cms, xmlContent, resource);
-        // now write the file
-        return super.writeFile(cms, securityManager, resource);
-    }
 
+        // now write the file
+        CmsFile file = super.writeFile(cms, securityManager, resource);
+
+        // update the relation after writting!!
+        securityManager.updateRelationsForResource(cms.getRequestContext(), resource, parseLinks(cms, resource));
+
+        return file;
+    }
 }

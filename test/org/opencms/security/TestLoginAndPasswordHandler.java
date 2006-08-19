@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestLoginAndPasswordHandler.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.7.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Tests login and password related functions.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.7.4.1 $
  * 
  * @since 6.0
  */
@@ -123,8 +123,10 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
             error = e;
         }        
         assertNotNull(error);
-        assertSame(Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1, error.getMessageContainer().getKey());
-        assertTrue(error.getMessage().indexOf(message) > 0);
+        if (error != null) {
+            assertSame(Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1, error.getMessageContainer().getKey());
+            assertTrue(error.getMessage().indexOf(message) > 0);
+        }
         
         cms.loginUser(adminUser, "admin");
         
@@ -163,8 +165,10 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
             error = e;
         }        
         assertNotNull(error);
-        assertSame(Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1, error.getMessageContainer().getKey());
-        assertTrue(error.getMessage().indexOf(message) > 0);
+        if (error != null) {
+            assertSame(Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1, error.getMessageContainer().getKey());
+            assertTrue(error.getMessage().indexOf(message) > 0);
+        }
         
         cms.loginUser(adminUser, "admin");
         OpenCms.getLoginManager().removeLoginMessage(cms);        
@@ -196,7 +200,9 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
             error = e;
         }        
         assertNotNull(error);
-        assertSame(Messages.ERR_LOGIN_FAILED_3, error.getMessageContainer().getKey());
+        if (error != null) {
+            assertSame(Messages.ERR_LOGIN_FAILED_3, error.getMessageContainer().getKey());
+        }
         
         error = null;
         try {
@@ -206,7 +212,9 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
             error = e;
         }        
         assertNotNull(error);        
-        assertSame(Messages.ERR_LOGIN_FAILED_NO_USER_3, error.getMessageContainer().getKey());
+        if (error != null) {
+            assertSame(Messages.ERR_LOGIN_FAILED_NO_USER_3, error.getMessageContainer().getKey());
+        }
         
         String test1User = "test1";
         // now try a different user
@@ -229,8 +237,10 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         } catch (CmsAuthentificationException e) {
             error = e;
         }        
-        assertNotNull(error);        
-        assertSame(Messages.ERR_LOGIN_FAILED_DISABLED_3, error.getMessageContainer().getKey());
+        assertNotNull(error);       
+        if (error != null) {
+            assertSame(Messages.ERR_LOGIN_FAILED_DISABLED_3, error.getMessageContainer().getKey());
+        }
         
         // enable the test1 user again
         test1.setEnabled(true);

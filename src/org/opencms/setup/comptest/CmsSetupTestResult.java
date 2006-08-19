@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/CmsSetupTestResult.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,12 @@
 
 package org.opencms.setup.comptest;
 
-
-
 /**
  * Contains info about the result of a setup test.<p>
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,7 +59,7 @@ public class CmsSetupTestResult extends Object implements Cloneable {
 
     /** A string describing the result of the test.<p> */
     private String m_result;
-    
+
     /** Test warning flag. */
     private boolean m_yellow;
 

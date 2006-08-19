@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/07/31 13:40:19 $
- * Version: $Revision: 1.121.4.3 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.121.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.3 $ 
+ * @version $Revision: 1.121.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1794,7 +1794,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param rfsName the name of the RFS resource
      * @return the name of the VFS resource
      */
-    /*package*/String getVfsNameInternal(CmsObject cms, String rfsName) {
+    String getVfsNameInternal(CmsObject cms, String rfsName) {
 
         String vfsName = null;
         CmsResource resource;
@@ -1839,7 +1839,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         match = false;
                         continue;
                     } catch (CmsException e) {
-                        rfsName = null;
                         break;
                     }
                 }
@@ -1964,12 +1963,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
                 vfsName = getVfsNameInternal(cms, rfsName);
                 if (vfsName != null) {
-                    match = true;
-                    try {
-                        resource = cms.readResource(vfsName);
-                    } catch (CmsException e) {
-                        rfsName = null;
-                    }
+                    match = cms.existsResource(vfsName);
                 }
 
                 if (!match) {
@@ -2197,34 +2191,34 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         try {
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             resources = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
-        } catch (CmsException e) {
-            resources = Collections.EMPTY_LIST;
-        }
 
-        synchronized (m_lockSetExportnames) {
-            m_exportnameResources = new HashMap(resources.size());
-            for (int i = 0, n = resources.size(); i < n; i++) {
-                CmsResource res = (CmsResource)resources.get(i);
-                try {
-                    String foldername = cms.getSitePath(res);
-                    String exportname = cms.readPropertyObject(
-                        foldername,
-                        CmsPropertyDefinition.PROPERTY_EXPORTNAME,
-                        false).getValue();
-                    if (exportname != null) {
-                        if (exportname.charAt(exportname.length() - 1) != '/') {
-                            exportname = exportname + "/";
+            synchronized (m_lockSetExportnames) {
+                m_exportnameResources = new HashMap(resources.size());
+                for (int i = 0, n = resources.size(); i < n; i++) {
+                    CmsResource res = (CmsResource)resources.get(i);
+                    try {
+                        String foldername = cms.getSitePath(res);
+                        String exportname = cms.readPropertyObject(
+                            foldername,
+                            CmsPropertyDefinition.PROPERTY_EXPORTNAME,
+                            false).getValue();
+                        if (exportname != null) {
+                            if (exportname.charAt(exportname.length() - 1) != '/') {
+                                exportname = exportname + "/";
+                            }
+                            if (exportname.charAt(0) != '/') {
+                                exportname = "/" + exportname;
+                            }
+                            m_exportnameResources.put(exportname, foldername);
                         }
-                        if (exportname.charAt(0) != '/') {
-                            exportname = "/" + exportname;
-                        }
-                        m_exportnameResources.put(exportname, foldername);
+                    } catch (CmsException e) {
+                        // ignore, folder will not be added
                     }
-                } catch (CmsException e) {
-                    // ignore exception, folder will no be added
                 }
+                m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
             }
-            m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
+        } catch (CmsException e) {
+            // ignore, no resources will be added at all
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
@@ -2258,40 +2252,37 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         createExportFolder(exportPath, rfsName);
         // generate export file instance and output stream
         exportFile = new File(exportFileName);
+        // write new exported file content
+        try {
+            FileOutputStream exportStream = new FileOutputStream(exportFile);
+            exportStream.write(content);
+            exportStream.close();
 
-        if (exportFile != null) {
-            // write new exported file content
-            try {
-                FileOutputStream exportStream = new FileOutputStream(exportFile);
-                exportStream.write(content);
-                exportStream.close();
-
-                // log export success 
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORTED_2, vfsName, exportFileName));
-                }
-
-            } catch (Throwable t) {
-                throw new CmsStaticExportException(Messages.get().container(
-                    Messages.ERR_OUTPUT_STREAM_1,
-                    exportFileName), t);
+            // log export success 
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORTED_2, vfsName, exportFileName));
             }
-            // update the file with the modification date from the server
-            if (req != null) {
-                Long dateLastModified = (Long)req.getAttribute(CmsRequestUtil.HEADER_OPENCMS_EXPORT);
-                if ((dateLastModified != null) && (dateLastModified.longValue() != -1)) {
-                    exportFile.setLastModified((dateLastModified.longValue() / 1000) * 1000);
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_SET_LAST_MODIFIED_2,
-                            exportFile.getName(),
-                            new Long((dateLastModified.longValue() / 1000) * 1000)));
-                    }
+
+        } catch (Throwable t) {
+            throw new CmsStaticExportException(
+                Messages.get().container(Messages.ERR_OUTPUT_STREAM_1, exportFileName),
+                t);
+        }
+        // update the file with the modification date from the server
+        if (req != null) {
+            Long dateLastModified = (Long)req.getAttribute(CmsRequestUtil.HEADER_OPENCMS_EXPORT);
+            if ((dateLastModified != null) && (dateLastModified.longValue() != -1)) {
+                exportFile.setLastModified((dateLastModified.longValue() / 1000) * 1000);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_SET_LAST_MODIFIED_2,
+                        exportFile.getName(),
+                        new Long((dateLastModified.longValue() / 1000) * 1000)));
                 }
-            } else {
-                // otherweise take the last modification date form the OpenCms resource
-                exportFile.setLastModified((resource.getDateLastModified() / 1000) * 1000);
             }
+        } else {
+            // otherweise take the last modification date form the OpenCms resource
+            exportFile.setLastModified((resource.getDateLastModified() / 1000) * 1000);
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.16.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -272,7 +272,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
                 String resName = (String)i.next();
                 try {
                     CmsResource res = getCms().readResource(resName);
-                    if (res.isFolder() && getCms().countLockedResources(resName) > 0) {
+                    if (res.isFolder() && (getCms().countLockedResources(resName) > 0)) {
                         // found folder with locked subresources, set flag to show confirmation dialog
                         setHasLockedSubResources(true);
                         return true;

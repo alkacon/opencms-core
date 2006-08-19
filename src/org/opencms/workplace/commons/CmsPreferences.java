@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2006/03/29 08:50:11 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.31.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -48,7 +49,6 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workflow.CmsTaskService;
 import org.opencms.workplace.CmsTabDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -79,19 +79,19 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the user preferences dialog.<p> 
+ * Provides methods for the user preferences dialog. <p>
  * 
  * The following files use this class:
  * <ul>
  * <li>/commons/preferences.jsp
  * </ul>
- * <p>
- *
- * @author  Andreas Zahner 
+ * <p> 
  * 
- * @version $Revision: 1.31 $ 
+ * @author Andreas Zahner
  * 
- * @since 6.0.0 
+ * @version $Revision: 1.31.4.1 $
+ * 
+ * @since 6.0.0
  */
 public class CmsPreferences extends CmsTabDialog {
 
@@ -188,6 +188,9 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name for the explorer file user last modified. */
     public static final String PARAM_EXPLORER_FILEUSERLASTMODIFIED = "tabexfileuserlastmodified";
 
+    /** Request parameter name for the explorer file state. */
+    public static final String PARAM_EXPLORER_WORKFLOW_STATUS = "tabexworkflowstatus";
+
     /** Request parameter name for the new password. */
     public static final String PARAM_NEWPASSWORD = "newpassword";
 
@@ -236,6 +239,9 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name for the workplace start site. */
     public static final String PARAM_WORKPLACE_SITE = "tabwpsite";
 
+    /** Request parameter name for the user language. */
+    public static final String PARAM_WORKPLACE_TIMEWARP = "tabwptimewarp";
+
     /** Request parameter name for the workplace use upload applet. */
     public static final String PARAM_WORKPLACE_USEUPLOADAPPLET = "tabwpuseuploadapplet";
 
@@ -245,10 +251,8 @@ public class CmsPreferences extends CmsTabDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPreferences.class);
 
-    /** Constant for filter. */
-    private static final String SPACER = "------------------------------------------------";
-
     private String m_paramNewPassword;
+
     private String m_paramOldPassword;
 
     /** User settings object used to store the dialog field values. */
@@ -314,7 +318,7 @@ public class CmsPreferences extends CmsTabDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         request.setAttribute(SESSION_WORKPLACE_CLASS, this);
 
-        // special case: set the preferred editor settings in the user settings object  
+        // special case: set the preferred editor settings in the user settings object
         CmsUserSettings userSettings = new CmsUserSettings(getCms(), getSettings().getUser());
         // first set the old preferred editors
         m_userSettings.setEditorSettings(userSettings.getEditorSettings());
@@ -324,7 +328,7 @@ public class CmsPreferences extends CmsTabDialog {
             String paramName = (String)en.nextElement();
             if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX)) {
                 String paramValue = request.getParameter(paramName);
-                if (paramValue != null && !INPUT_DEFAULT.equals(paramValue.trim())) {
+                if ((paramValue != null) && !INPUT_DEFAULT.equals(paramValue.trim())) {
                     // set selected editor for this resource type
                     m_userSettings.setPreferredEditor(
                         paramName.substring(PARAM_PREFERREDEDITOR_PREFIX.length()),
@@ -364,7 +368,7 @@ public class CmsPreferences extends CmsTabDialog {
         // now determine if the dialog has to be closed or not
         try {
             if (DIALOG_SET.equals(getParamAction())) {
-                // after "set" action, leave dialog open 
+                // after "set" action, leave dialog open
                 Map params = new HashMap();
                 params.put(PARAM_TAB, String.valueOf(getActiveTab()));
                 params.put(PARAM_SETPRESSED, Boolean.TRUE.toString());
@@ -502,46 +506,8 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
-     * Builds the html for the task startup filter select box.<p>
-     * 
-     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
-     * @return the html for the task startup filter select box
-     */
-    public String buildSelectFilter(String htmlAttributes) {
-
-        List options = new ArrayList(16);
-        List values = new ArrayList(16);
-        int selectedIndex = -1;
-        int counter = 0;
-
-        for (int i = 1; i < 4; i++) {
-            for (char k = 'a'; k < 'd'; k++) {
-                options.add(key(
-                    Messages.getTaskKey(CmsTaskService.TASK_FILTER + k + i)));
-                values.add("" + k + i);
-                if (("" + k + i).equals(getParamTabWfFilter())) {
-                    selectedIndex = counter;
-                }
-                counter++;
-            }
-            options.add(SPACER);
-            values.add("");
-            counter++;
-        }
-        for (int i = 1; i < 4; i++) {
-            options.add(key(Messages.getTaskKey(CmsTaskService.TASK_FILTER + "d" + i)));
-            values.add("d" + i);
-            if (("d" + i).equals(getParamTabWfFilter())) {
-                selectedIndex = counter;
-            }
-            counter++;
-        }
-        return buildSelect(htmlAttributes, options, values, selectedIndex);
-    }
-
-    /**
      * Builds the html for the language select box of the start settings.<p>
-     *  
+     * 
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the language select box
      */
@@ -578,7 +544,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the preferred editors select boxes of the editor settings.<p>
-     *  
+     * 
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the preferred editors select boxes
      */
@@ -603,18 +569,18 @@ public class CmsPreferences extends CmsTabDialog {
             }
 
             while (rankResources.size() > 0) {
-                // get editor configuration with lowest order 
+                // get editor configuration with lowest order
                 Float keyVal = (Float)rankResources.firstKey();
                 String currentResourceType = (String)rankResources.get(keyVal);
 
                 SortedMap availableEditors = (TreeMap)resourceEditors.get(currentResourceType);
-                if (availableEditors != null && availableEditors.size() > 0) {
+                if ((availableEditors != null) && (availableEditors.size() > 0)) {
                     String preSelection = computeEditorPreselection(request, currentResourceType);
                     List options = new ArrayList(availableEditors.size() + 1);
                     List values = new ArrayList(availableEditors.size() + 1);
                     options.add(key(Messages.GUI_PREF_EDITOR_BEST_0));
                     values.add(INPUT_DEFAULT);
-                    // second: iteration over the available editors for the resource type                   
+                    // second: iteration over the available editors for the resource type
                     int selectedIndex = 0;
                     int counter = 1;
                     while (availableEditors.size() > 0) {
@@ -650,7 +616,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Builds the html for the project select box of the start settings.<p>
      * 
-     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the project select box
      */
     public String buildSelectProject(String htmlAttributes) {
@@ -667,7 +633,7 @@ public class CmsPreferences extends CmsTabDialog {
             for (int i = 0, n = allProjects.size(); i < n; i++) {
                 CmsProject project = (CmsProject)allProjects.get(i);
                 options.add(project.getName());
-                //values.add("" + project.getId());
+                // values.add("" + project.getId());
                 values.add(project.getName());
                 if (startProject.equals(project.getName())) {
                     checkedIndex = i;
@@ -756,7 +722,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Returns a html select box filled with the views accessible by the current user.<p>
      * 
-     * @param htmlAttributes attributes that will be inserted into the generated html 
+     * @param htmlAttributes attributes that will be inserted into the generated html
      * @return a html select box filled with the views accessible by the current user
      */
     public String buildSelectView(String htmlAttributes) {
@@ -885,7 +851,7 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
-     * Returns the old password value.<p>
+     * Returns the old password value. <p>
      * 
      * @return the old password value
      */
@@ -1135,63 +1101,13 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
-     * Returns the "task startup filter" setting.<p>
+     * Returns the "display workplace status" setting.<p>
      * 
-     * @return the "task startup filter" setting
+     * @return <code>"true"</code> if the file last modified by input field is checked, otherwise ""
      */
-    public String getParamTabWfFilter() {
+    public String getParamTabExWorkflowStatus() {
 
-        return m_userSettings.getTaskStartupFilter();
-    }
-
-    /**
-     * Returns the "message when accepted" setting.<p>
-     * 
-     * @return the "message when accepted" setting
-     */
-    public String getParamTabWfMessageAccepted() {
-
-        return isParamEnabled(m_userSettings.getTaskMessageAccepted());
-    }
-
-    /**
-     * Returns the "message when completed" setting.<p>
-     * 
-     * @return the "message when completed" setting
-     */
-    public String getParamTabWfMessageCompleted() {
-
-        return isParamEnabled(m_userSettings.getTaskMessageCompleted());
-    }
-
-    /**
-     * Returns the "message when forwarded" setting.<p>
-     * 
-     * @return the "message when forwarded" setting
-     */
-    public String getParamTabWfMessageForwarded() {
-
-        return isParamEnabled(m_userSettings.getTaskMessageForwarded());
-    }
-
-    /**
-     * Returns the "inform all role members" setting.<p>
-     * 
-     * @return <code>"true"</code> if the "inform all role members" input field is checked, otherwise ""
-     */
-    public String getParamTabWfMessageMembers() {
-
-        return isParamEnabled(m_userSettings.getTaskMessageMembers());
-    }
-
-    /**
-     * returns the "show all projects" setting.<p>
-     * 
-     * @return the "show all projects" setting
-     */
-    public String getParamTabWfShowAllProjects() {
-
-        return isParamEnabled(m_userSettings.getTaskShowAllProjects());
+        return isParamEnabled(m_userSettings.showExplorerWorkflowState());
     }
 
     /**
@@ -1265,6 +1181,24 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * Get the "user timewparp" setting in form of a formatted date string.<p>
+     * 
+     * If no timewarp has been chosen, a value "-" will be returned.<p>
+     * 
+     * @return the "user timewpar" setting in form of a formatted date string
+     */
+    public String getParamTabWpTimewarp() {
+
+        String result;
+        if (m_userSettings.getTimeWarp() == CmsContextInfo.CURRENT_TIME) {
+            result = "-";
+        } else {
+            result = getCalendarLocalizedTime(m_userSettings.getTimeWarp());
+        }
+        return result;
+    }
+
+    /**
      * Returns the "use upload applet" setting.<p>
      * 
      * @return <code>"true"</code> if the "use upload applet" input is checked, otherwise ""
@@ -1309,7 +1243,6 @@ public class CmsPreferences extends CmsTabDialog {
         tabList.add(key(Messages.GUI_PREF_PANEL_EXPLORER_0));
         tabList.add(key(Messages.GUI_PREF_PANEL_DIALOGS_0));
         tabList.add(key(Messages.GUI_PREF_PANEL_EDITORS_0));
-        tabList.add(key(Messages.GUI_PREF_PANEL_TASK_0));
         tabList.add(key(Messages.GUI_PREF_PANEL_USER_0));
         return tabList;
     }
@@ -1318,7 +1251,7 @@ public class CmsPreferences extends CmsTabDialog {
      * Helper method to add the "checked" attribute to an input field.<p>
      * 
      * @param paramValue the parameter value, if <code>"true"</code>, the "checked" attribute will be returned 
-     * @return the "checked" attribute or an empty String 
+     * @return the "checked" attribute or an empty String
      */
     public String isChecked(String paramValue) {
 
@@ -1617,66 +1550,13 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
-     * Sets the "task startup filter" setting.<p>
+     * Sets the "display workflow state in explorer" setting.<p>
      * 
-     * @param filter the "task startup filter" setting
+     * @param value <code>"true"</code> to enable the "display workflow state" setting, all others to disable
      */
-    public void setParamTabWfFilter(String filter) {
+    public void setParamTabExWorkflowStatus(String value) {
 
-        if ("".equals(filter)) {
-            filter = "a1";
-        }
-        m_userSettings.setTaskStartupFilter(filter);
-    }
-
-    /**
-     * Sets the "message when accepted" setting.<p>
-     * 
-     * @param value the "message when accepted" setting
-     */
-    public void setParamTabWfMessageAccepted(String value) {
-
-        m_userSettings.setTaskMessageAccepted(Boolean.valueOf(value).booleanValue());
-    }
-
-    /**
-     * Sets the "message when completed" setting.<p>
-     * 
-     * @param value the "message when completed" setting
-     */
-    public void setParamTabWfMessageCompleted(String value) {
-
-        m_userSettings.setTaskMessageCompleted(Boolean.valueOf(value).booleanValue());
-    }
-
-    /**
-     * Sets the "message when forwarded" setting.<p>
-     * 
-     * @param value the "message when forwarded" setting
-     */
-    public void setParamTabWfMessageForwarded(String value) {
-
-        m_userSettings.setTaskMessageForwarded(Boolean.valueOf(value).booleanValue());
-    }
-
-    /**
-     * Sets the "inform all role members" setting.<p>
-     * 
-     * @param value <code>"true"</code> to enable the "inform all role members" setting, all others to disable
-     */
-    public void setParamTabWfMessageMembers(String value) {
-
-        m_userSettings.setTaskMessageMembers(Boolean.valueOf(value).booleanValue());
-    }
-
-    /**
-     * Sets the "show all projects" setting.<p>
-     * 
-     * @param value the "show all projects" setting
-     */
-    public void setParamTabWfShowAllProjects(String value) {
-
-        m_userSettings.setTaskShowAllProjects(Boolean.valueOf(value).booleanValue());
+        m_userSettings.setShowExplorerWorkflowState(Boolean.valueOf(value).booleanValue());
     }
 
     /**
@@ -1757,9 +1637,32 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * Sets the "user timewparp" setting.<p>
+     * 
+     * To delete a timewarp setting for the current user, provide <code>"-"</code> as value.<p>
+     * 
+     * @param value a String representation of an date in the formate as required by
+     *      {@link CmsWorkplace#getCalendarDate(String, boolean)}
+     */
+    public void setParamTabWpTimeWarp(String value) {
+
+        long datetimestamp = CmsContextInfo.CURRENT_TIME;
+        // check for "delete value"
+        if (CmsStringUtil.isNotEmpty(value) && !"-".equals(value)) {
+            try {
+                datetimestamp = getCalendarDate(value, true);
+            } catch (Exception e) {
+                // reset timewarp setting in case of exception
+            }
+        }
+        m_userSettings.setTimeWarp(datetimestamp);
+    }
+
+    /**
      * Sets the "use upload applet" setting.<p>
      * 
-     * @param value <code>"true"</code> to enable the "use upload applet" setting, all others to disable
+     * @param value <code>"true"</code> to enable the "use upload applet" setting, all others to
+     *        disable
      */
     public void setParamTabWpUseUploadApplet(String value) {
 
@@ -1791,7 +1694,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_SET.equals(getParamAction())) {
             setAction(ACTION_SET);
         } else if (DIALOG_OK.equals(getParamAction())) {
@@ -1809,7 +1712,7 @@ public class CmsPreferences extends CmsTabDialog {
             }
 
             setAction(ACTION_DEFAULT);
-            // build title for preferences dialog     
+            // build title for preferences dialog
             setParamTitle(key(Messages.GUI_PREF_0));
         }
 
@@ -1883,7 +1786,7 @@ public class CmsPreferences extends CmsTabDialog {
      * Returns the preferred editor preselection value either from the request, if not present, from the user settings.<p>
      * 
      * @param request the current http servlet request
-     * @param resourceType the preferred editors resource type 
+     * @param resourceType the preferred editors resource type
      * @return the preferred editor preselection value or null, if none found
      */
     private String computeEditorPreselection(HttpServletRequest request, String resourceType) {

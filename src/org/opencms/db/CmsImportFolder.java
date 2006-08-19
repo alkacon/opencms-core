@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2006/03/27 14:52:24 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.33.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.33.4.1 $
  * 
  * @since 6.0.0
  */
@@ -219,7 +219,7 @@ public class CmsImportFolder {
 
         int todo = 0;
         // TODO: this method looks very crude, it should be re-written sometime...
-        
+
         boolean isFolder = false;
         boolean exit = false;
         int j, r, stop, charsRead, size;
@@ -274,7 +274,7 @@ public class CmsImportFolder {
                 actImportPath += path[r];
                 actImportPath += "/";
             }
-            if (!isFolder) {                               
+            if (!isFolder) {
                 // import file into cms
                 int type = OpenCms.getResourceManager().getDefaultTypeForName(path[path.length - 1]).getTypeId();
                 size = new Long(entry.getSize()).intValue();

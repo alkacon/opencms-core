@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.26.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.notification.CmsContentNotificationJob;
+import org.opencms.relations.CmsExternalLinksValidator;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.jobs.CmsCreateImageSizeJob;
 import org.opencms.scheduler.jobs.CmsImageCacheCleanupJob;
@@ -44,7 +45,6 @@ import org.opencms.scheduler.jobs.CmsPublishJob;
 import org.opencms.scheduler.jobs.CmsStaticExportJob;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.validation.CmsPointerLinkValidator;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsComboWidget;
 import org.opencms.widgets.CmsInputWidget;
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.26.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -285,7 +285,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             null,
             key(Messages.GUI_EDITOR_CRONCLASS_STATICEXPORT_0)));
         result.add(new CmsSelectWidgetOption(
-            CmsPointerLinkValidator.class.getName(),
+            CmsExternalLinksValidator.class.getName(),
             false,
             null,
             key(Messages.GUI_EDITOR_CRONCLASS_POINTERVALIDATION_0)));

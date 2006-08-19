@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/08/19 13:40:36 $
+ * Version: $Revision: 1.13.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,6 +216,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1 = "LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMPORTEXPORT_REWRITING_1 = "LOG_IMPORTEXPORT_REWRITING_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTEXPORT_SET_CONVERT_PARAMETER_1 = "LOG_IMPORTEXPORT_SET_CONVERT_PARAMETER_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsPowerPoint.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.8.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.poi.util.LittleEndian;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,7 +83,7 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
         POIFSReader reader = new POIFSReader();
         reader.registerListener(this);
         reader.read(in);
-        
+
         // extract all information
         Map metaInfo = extractMetaInformation();
         String result = removeControlChars(m_buffer.toString());
@@ -139,7 +139,7 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
                         m_buffer.append(CmsEncoder.createString(buf, encoding));
                         i = end;
                     default:
-                // noop                                           
+                        // noop                                           
                 }
             }
         } catch (Exception e) {

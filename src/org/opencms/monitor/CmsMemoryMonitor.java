@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2006/03/27 14:53:04 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.58.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.58.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -490,7 +490,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
                 Object obj = values[i];
 
-                if (obj instanceof Map && depth < MAX_DEPTH) {
+                if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
                     keySize += getKeySize((Map)obj, depth + 1);
                     continue;
                 }
@@ -578,12 +578,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     obj = ((CmsFlexCacheVariation)obj).m_map;
                 }
 
-                if (obj instanceof Map && depth < MAX_DEPTH) {
+                if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
                     totalSize += getValueSize((Map)obj, depth + 1);
                     continue;
                 }
 
-                if (obj instanceof List && depth < MAX_DEPTH) {
+                if ((obj instanceof List) && (depth < MAX_DEPTH)) {
                     totalSize += getValueSize((List)obj, depth + 1);
                     continue;
                 }
@@ -626,12 +626,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     obj = ((CmsFlexCacheVariation)obj).m_map;
                 }
 
-                if (obj instanceof Map && depth < MAX_DEPTH) {
+                if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
                     totalSize += getValueSize((Map)obj, depth + 1);
                     continue;
                 }
 
-                if (obj instanceof List && depth < MAX_DEPTH) {
+                if ((obj instanceof List) && (depth < MAX_DEPTH)) {
                     totalSize += getValueSize((List)obj, depth + 1);
                     continue;
                 }
@@ -791,7 +791,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         List receivers = new ArrayList();
         List receiverEmails = m_configuration.getEmailReceiver();
         try {
-            if (from != null && receiverEmails != null && !receiverEmails.isEmpty()) {
+            if ((from != null) && (receiverEmails != null) && !receiverEmails.isEmpty()) {
                 Iterator i = receiverEmails.iterator();
                 while (i.hasNext()) {
                     receivers.add(new InternetAddress((String)i.next()));

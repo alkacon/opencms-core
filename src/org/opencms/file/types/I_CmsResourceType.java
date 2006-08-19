@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.29.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,10 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 
@@ -68,7 +70,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.29.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -243,6 +245,22 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      */
     void copyResourceToProject(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
     throws CmsException, CmsIllegalArgumentException;
+
+    /**
+     * Copies a resource to another project.<p>
+     * 
+     * @param cms the initialized CmsObject
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the resource to apply this operation to
+     * @param project the project to copy the resource to
+     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>resource</code> argument is null or of length 0
+     */
+    void copyResourceToProject(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsProject project) throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Creates a new resource of the given resource type
@@ -477,25 +495,31 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     /**
      * Locks a resource.<p>
      *
-     * The <code>mode</code> parameter controls what kind of lock is used.<br>
+     * The <code>type</code> parameter controls what kind of lock is used.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.lock.CmsLock#COMMON}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLock#TEMPORARY}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLockType#EXCLUSIVE}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLockType#WORKFLOW}</code></li>
      * </ul><p>
      * 
      * @param cms the initialized CmsObject
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to lock
-     * @param mode flag indicating the mode for the lock
+     * @param project the project to lock the resource to
+     * @param type type of the lock
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#lockResource(String, int)
+     * @see CmsObject#lockResource(String)
      * @see CmsSecurityManager#lockResource(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
-    void lockResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int mode)
-    throws CmsException;
+    void lockResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsProject project,
+        CmsLockType type) throws CmsException;
 
     /**
      * Moves a resource to the given destination.<p>
@@ -652,6 +676,29 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         boolean recursive) throws CmsException;
 
     /**
+     * Changes the "last modified" project reference of a resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the resource to touch
+     * @param projectLastModified the new project reference of the resource
+     * @param additionalFlags additional Flags to set
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#setDateLastModified(String, long, boolean)
+     * @see CmsSecurityManager#setDateLastModified(org.opencms.file.CmsRequestContext, CmsResource, long)
+     */
+    void setProjectLastModified(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsProject projectLastModified,
+        int additionalFlags,
+        boolean recursive) throws CmsException;
+
+    /**
      * Undos all changes in the resource by restoring the version from the 
      * online project to the current offline project.<p>
      * 
@@ -660,14 +707,19 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to undo the changes for
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param mode the undo mode, one of the <code>{@link CmsResource}#UNDO_XXX</code> constants
      *
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#undoChanges(String, boolean)
-     * @see CmsSecurityManager#undoChanges(org.opencms.file.CmsRequestContext, CmsResource)
+     * @see CmsResource#UNDO_MOVE
+     * @see CmsResource#UNDO_CONTENT
+     * @see CmsResource#UNDO_CONTENT_RECURSIVE
+     * @see CmsResource#UNDO_MOVE_CONTENT
+     * @see CmsResource#UNDO_MOVE_CONTENT_RECURSIVE
+     * @see CmsObject#undoChanges(String, int)
+     * @see CmsSecurityManager#undoChanges(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
-    void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
+    void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int mode)
     throws CmsException;
 
     /**

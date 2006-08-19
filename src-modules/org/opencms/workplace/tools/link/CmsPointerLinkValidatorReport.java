@@ -1,7 +1,7 @@
 /*
- * File   :
- * Date   : 
- * Version: 
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsPointerLinkValidatorReport.java,v $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.8.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.report.I_CmsReportThread;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.list.A_CmsListReport;
-import org.opencms.workplace.threads.CmsPointerLinkValidatorThread;
+import org.opencms.workplace.threads.CmsExternalLinksValidatorThread;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.HashMap;
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,7 +102,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
             default:
-                CmsPointerLinkValidatorThread thread = new CmsPointerLinkValidatorThread(getCms());
+                CmsExternalLinksValidatorThread thread = new CmsExternalLinksValidatorThread(getCms());
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
                 Map params = new HashMap(1);
@@ -118,7 +118,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
      */
     public I_CmsReportThread initializeThread() {
 
-        return new CmsPointerLinkValidatorThread(getCms());
+        return new CmsExternalLinksValidatorThread(getCms());
     }
 
     /**

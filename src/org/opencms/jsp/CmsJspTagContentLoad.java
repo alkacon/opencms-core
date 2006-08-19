@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.31.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsBackupResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -48,6 +50,7 @@ import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -62,7 +65,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.31.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,7 +196,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
      */
     protected static String getResourceName(CmsObject cms, I_CmsXmlContentContainer contentContainer) {
 
-        if (contentContainer != null && contentContainer.getResourceName() != null) {
+        if ((contentContainer != null) && (contentContainer.getResourceName() != null)) {
             return contentContainer.getResourceName();
         } else if (cms != null) {
             return cms.getRequestContext().getUri();
@@ -724,13 +727,14 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
         pageAttribCount += CmsStringUtil.isNotEmpty(m_pageSize) ? 1 : 0;
         pageAttribCount += CmsStringUtil.isNotEmpty(m_pageIndex) ? 1 : 0;
 
-        if (pageAttribCount > 0 && pageAttribCount < 2) {
+        if ((pageAttribCount > 0) && (pageAttribCount < 2)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_TAG_CONTENTLOAD_INDEX_SIZE_0));
         }
 
-        boolean noAncestor = (container == null);
-        if (noAncestor) {
+        I_CmsXmlContentContainer usedContainer;
+        if (container == null) {
             // no preloading ancestor has been found
+            usedContainer = this;
             if (CmsStringUtil.isEmpty(m_collector)) {
                 // check if the tag contains a collector attribute
                 throw new CmsIllegalArgumentException(Messages.get().container(
@@ -741,7 +745,9 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0));
             }
-            container = this;
+        } else {
+            // use provided container (preloading ancestor)
+            usedContainer = container;
         }
 
         if (m_preload) {
@@ -754,14 +760,14 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
         m_cms = m_controller.getCmsObject();
 
         // get the resource name from the selected container
-        String resourcename = getResourceName(m_cms, container);
+        String resourcename = getResourceName(m_cms, usedContainer);
 
         // initialize a string mapper to resolve EL like strings in tag attributes
         CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(m_cms).setJspPageContext(pageContext).setResourceName(
             resourcename).setKeepEmptyMacros(true);
 
         // resolve the collector name
-        if (noAncestor) {
+        if (container == null) {
             // no preload parent container, initialize new values
             m_collectorName = resolver.resolveMacros(getCollector());
             // resolve the parameter
@@ -769,12 +775,12 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             m_collectorResult = null;
         } else {
             // preload parent content container available, use values from this container
-            m_collectorName = container.getCollectorName();
-            m_collectorParam = container.getCollectorParam();
-            m_collectorResult = container.getCollectorResult();
+            m_collectorName = usedContainer.getCollectorName();
+            m_collectorParam = usedContainer.getCollectorParam();
+            m_collectorResult = usedContainer.getCollectorResult();
             if (m_locale == null) {
                 // use locale from ancestor if available
-                m_locale = container.getXmlDocumentLocale();
+                m_locale = usedContainer.getXmlDocumentLocale();
             }
         }
 
@@ -812,6 +818,25 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
                 if (createParam != null) {
                     // use "create link" only if collector supports it
                     m_directEditCreateLink = CmsEncoder.encode(m_collectorName + "|" + createParam);
+                }
+            }
+
+            // check if a backup resource is displayed
+            if (m_collectorResult != null) {
+                CmsBackupResource backRes = CmsBackupResourceHandler.getBackupResouce(pageContext.getRequest());
+                if (backRes != null) {
+                    // a backup resource was requested, make sure this is displayed if contained in the result list
+                    List modifiedResult = new ArrayList(m_collectorResult.size());
+                    Iterator i = m_collectorResult.iterator();
+                    while (i.hasNext()) {
+                        CmsResource res = (CmsResource)i.next();
+                        if (backRes.equals(res)) {
+                            modifiedResult.add(backRes);
+                        } else {
+                            modifiedResult.add(res);
+                        }
+                    }
+                    m_collectorResult = modifiedResult;
                 }
             }
 

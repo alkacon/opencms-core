@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.14.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.List;
  * 
  * @author Antonio Core 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.14.8.1 $
  * 
  * @since 6.0.0 
  */
@@ -113,7 +113,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         } catch (Exception e) {
             throw new CmsDbException(Messages.get().container(
                 Messages.ERR_DELETE_BACKUP_VERSIONS_1,
-                currentResource.getRootPath()), e);
+                currentResource == null ? "null" : currentResource.getRootPath()), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt1, null);
             m_sqlManager.closeAll(dbc, conn, stmt2, null);
@@ -155,7 +155,6 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                     res.getInt("PROJECT_ID"),
                     res.getString("PROJECT_NAME"),
                     res.getString("PROJECT_DESCRIPTION"),
-                    res.getInt("TASK_ID"),
                     new CmsUUID(res.getString("USER_ID")),
                     new CmsUUID(res.getString("GROUP_ID")),
                     new CmsUUID(res.getString("MANAGERGROUP_ID")),

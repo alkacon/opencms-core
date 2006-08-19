@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.24.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,49 +80,49 @@ public class CmsChacc extends CmsDialog {
 
     /** Value for the action: add an access control entry. */
     public static final int ACTION_ADDACE = 300;
-    
+
     /** Value for the action: delete the permissions. */
     public static final int ACTION_DELETE = 200;
-    
+
     /** Value for the action: set the internal use flag. */
     public static final int ACTION_INTERNALUSE = 400;
 
     /** Request parameter value for the action: add an access control entry. */
     public static final String DIALOG_ADDACE = "addace";
-    
+
     /** Request parameter value for the action: delete the permissions. */
     public static final String DIALOG_DELETE = "delete";
-    
+
     /** Request parameter value for the action: set the internal use flag. */
     public static final String DIALOG_INTERNALUSE = "internaluse";
-    
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "chacc";
 
     /** Request parameter name for the inherit permissions parameter. */
     public static final String PARAM_INHERIT = "inherit";
-    
+
     /** Request parameter name for the internal use only flag. */
     public static final String PARAM_INTERNAL = "internal";
-    
+
     /** Request parameter name for the name parameter. */
     public static final String PARAM_NAME = "name";
-    
+
     /** Request parameter name for the overwrite inherited permissions parameter. */
     public static final String PARAM_OVERWRITEINHERITED = "overwriteinherited";
-    
+
     /** Request parameter name for the responsible parameter. */
     public static final String PARAM_RESPONSIBLE = "responsible";
-    
+
     /** Request parameter name for the type parameter. */
     public static final String PARAM_TYPE = "type";
-    
+
     /** Request parameter name for the view parameter. */
     public static final String PARAM_VIEW = "view";
 
     /** Constant for the request parameters suffix: allow. */
     public static final String PERMISSION_ALLOW = "allow";
-    
+
     /** Constant for the request parameters suffix: deny. */
     public static final String PERMISSION_DENY = "deny";
 
@@ -143,7 +143,7 @@ public class CmsChacc extends CmsDialog {
 
     /** The name parameter. */
     private String m_paramName;
-    
+
     /** The type parameter. */
     private String m_paramType;
 
@@ -279,7 +279,7 @@ public class CmsChacc extends CmsDialog {
         String inherit = request.getParameter(PARAM_INHERIT);
         String overWriteInherited = request.getParameter(PARAM_OVERWRITEINHERITED);
         String responsible = request.getParameter(PARAM_RESPONSIBLE);
-        
+
         // get the new permissions
         Set permissionKeys = CmsPermissionSet.getPermissionKeys();
         int allowValue = 0;
@@ -343,7 +343,7 @@ public class CmsChacc extends CmsDialog {
             } else {
                 flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE;
             }
-            
+
             if (Boolean.valueOf(responsible).booleanValue()) {
                 flags |= CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE;
             } else {
@@ -389,7 +389,10 @@ public class CmsChacc extends CmsDialog {
      */
     public String buildCurrentPermissions() {
 
-        StringBuffer result = new StringBuffer(dialogToggleStart(key(Messages.GUI_PERMISSION_USER_0), "userpermissions", getSettings().getUserSettings().getDialogExpandUserPermissions()));
+        StringBuffer result = new StringBuffer(dialogToggleStart(
+            key(Messages.GUI_PERMISSION_USER_0),
+            "userpermissions",
+            getSettings().getUserSettings().getDialogExpandUserPermissions()));
         result.append(dialogWhiteBoxStart());
         result.append(buildPermissionEntryForm(getSettings().getUser().getId(), getCurPermissions(), false, false));
         result.append(dialogWhiteBoxEnd());
@@ -421,6 +424,7 @@ public class CmsChacc extends CmsDialog {
      * @return the HTML code for the detail view selector
      */
     public static String buildSummaryDetailsButtons(CmsDialog wp) {
+
         StringBuffer result = new StringBuffer(512);
         // create detail view selector 
         result.append("<table border=\"0\">\n<tr>\n\t<td>");
@@ -436,8 +440,8 @@ public class CmsChacc extends CmsDialog {
         // set parameters to show correct hidden input fields
         wp.setParamAction(null);
         result.append(wp.paramsAsHidden());
-        result.append("\t<input  type=\"submit\" class=\"dialogbutton\" value=\"").append(wp.key(Messages.GUI_LABEL_SUMMARY_0)).append(
-            "\"");
+        result.append("\t<input  type=\"submit\" class=\"dialogbutton\" value=\"").append(
+            wp.key(Messages.GUI_LABEL_SUMMARY_0)).append("\"");
         if (!"long".equals(selectedView)) {
             result.append(" disabled=\"disabled\"");
         }
@@ -450,18 +454,17 @@ public class CmsChacc extends CmsDialog {
         result.append(PARAM_VIEW);
         result.append("\" value=\"long\">\n");
         result.append(wp.paramsAsHidden());
-        result.append("\t<input type=\"submit\" class=\"dialogbutton\" value=\"").append(wp.key(Messages.GUI_LABEL_DETAILS_0)).append(
-            "\"");
+        result.append("\t<input type=\"submit\" class=\"dialogbutton\" value=\"").append(
+            wp.key(Messages.GUI_LABEL_DETAILS_0)).append("\"");
         if ("long".equals(selectedView)) {
             result.append(" disabled=\"disabled\"");
         }
         result.append(">\n");
         result.append("\t</td>\n\t</form>\n");
-        result.append("</tr>\n</table>\n");   
+        result.append("</tr>\n</table>\n");
         return result.toString();
     }
-    
-    
+
     /**
      * Builds a String with HTML code to display the inherited and own access control entries of a resource.<p>
      * 
@@ -469,7 +472,9 @@ public class CmsChacc extends CmsDialog {
      */
     public String buildRightsList() {
 
-        StringBuffer result = new StringBuffer(dialogToggleStart(key(Messages.GUI_PERMISSION_BEQUEATH_SUBFOLDER_0), "inheritedpermissions", 
+        StringBuffer result = new StringBuffer(dialogToggleStart(
+            key(Messages.GUI_PERMISSION_BEQUEATH_SUBFOLDER_0),
+            "inheritedpermissions",
             getSettings().getUserSettings().getDialogExpandInheritedPermissions() || getShowInheritedPermissions()));
 
         //result.append(buildSummaryDetailsButtons(this));
@@ -632,7 +637,7 @@ public class CmsChacc extends CmsDialog {
             if (resource.isFolder()) {
                 // only folders have the inherit option activated
                 setInheritOption(true);
-                if (! resName.endsWith("/")) {
+                if (!resName.endsWith("/")) {
                     // append manually a "/" to folder name to avoid issues with check if resource is in project
                     resName += "/";
                 }
@@ -643,12 +648,11 @@ public class CmsChacc extends CmsDialog {
                 LOG.info(e.getLocalizedMessage());
             }
         }
-        
+
         // check the current users permission to change access control entries
-        if ((!getCms().getRequestContext().currentProject().isOnlineProject() && getCms().isInsideCurrentProject(resName))
-            && (getCms().hasRole(CmsRole.VFS_MANAGER) || ((m_curPermissions.getAllowedPermissions() 
-            & CmsPermissionSet.PERMISSION_CONTROL) > 0 && !((m_curPermissions.getDeniedPermissions() 
-            & CmsPermissionSet.PERMISSION_CONTROL) > 0)))) {
+        if ((!getCms().getRequestContext().currentProject().isOnlineProject() && getCms().isInsideCurrentProject(
+            resName))
+            && (getCms().hasRole(CmsRole.VFS_MANAGER) || (((m_curPermissions.getAllowedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0) && !((m_curPermissions.getDeniedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0)))) {
             setEditable(true);
         }
     }
@@ -915,7 +919,7 @@ public class CmsChacc extends CmsDialog {
         }
         return false;
     }
-    
+
     /**
      * Sets the current users permissions on the resource.
      * This is set in the init() method.<p>
@@ -992,15 +996,16 @@ public class CmsChacc extends CmsDialog {
             result.append(paramsAsHidden());
             result.append("<table border=\"0\" width=\"100%\">\n");
             result.append("<tr>\n");
-            result.append("\t<td>").append(buildSelect("name=\"" + PARAM_TYPE + "\"", options, optionValues, -1)).append("</td>\n");
+            result.append("\t<td>").append(buildSelect("name=\"" + PARAM_TYPE + "\"", options, optionValues, -1)).append(
+                "</td>\n");
             result.append("\t<td class=\"maxwidth\"><input type=\"text\" class=\"maxwidth\" name=\"");
             result.append(PARAM_NAME);
             result.append("\" value=\"\"></td>\n");
             result.append("\t<td><input class=\"dialogbutton\" style=\"width: 60px;\" type=\"button\" value=\"");
             result.append(key(Messages.GUI_LABEL_SEARCH_0)).append(
                 "\" onClick=\"javascript:openDialogWin('chaccbrowser.jsp','UserGroup');\"></td>\n");
-            result.append("\t<td><input class=\"dialogbutton\" type=\"submit\" value=\"").append(key(Messages.GUI_LABEL_ADD_0)).append(
-                "\"></td>\n");
+            result.append("\t<td><input class=\"dialogbutton\" type=\"submit\" value=\"").append(
+                key(Messages.GUI_LABEL_ADD_0)).append("\"></td>\n");
             result.append("</tr>\n");
             result.append("</form>\n");
             result.append("</table>\n");
@@ -1178,7 +1183,8 @@ public class CmsChacc extends CmsDialog {
 
         if (extendedView) {
             // for extended view, add short permissions and hidden div
-            result.append("&nbsp;(").append(entry.getPermissions().getPermissionString()).append(entry.getResponsibleString()).append(")");
+            result.append("&nbsp;(").append(entry.getPermissions().getPermissionString()).append(
+                entry.getResponsibleString()).append(")");
             result.append(dialogRow(HTML_END));
             // show the resource from which the ace is inherited if present
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(inheritRes)) {
@@ -1248,8 +1254,8 @@ public class CmsChacc extends CmsDialog {
             result.append("\t<td class=\"dialogpermissioncell\">").append(key(Messages.GUI_LABEL_RESPONSIBLE_0)).append(
                 "</td>\n");
             result.append("\t<td class=\"dialogpermissioncell textcenter\">");
-            result.append("<input type=\"checkbox\" name=\"").append(PARAM_RESPONSIBLE).append(
-                "\" value=\"true\"").append(disabled);
+            result.append("<input type=\"checkbox\" name=\"").append(PARAM_RESPONSIBLE).append("\" value=\"true\"").append(
+                disabled);
             if (isResponsible(entry.getFlags())) {
                 result.append(" checked=\"checked\"");
             }
@@ -1259,8 +1265,8 @@ public class CmsChacc extends CmsDialog {
 
             // show overwrite inherited checkbox
             result.append("<tr>\n");
-            result.append("\t<td class=\"dialogpermissioncell\">").append(key(Messages.GUI_PERMISSION_OVERWRITE_INHERITED_0)).append(
-                "</td>\n");
+            result.append("\t<td class=\"dialogpermissioncell\">").append(
+                key(Messages.GUI_PERMISSION_OVERWRITE_INHERITED_0)).append("</td>\n");
             result.append("\t<td class=\"dialogpermissioncell textcenter\">");
             result.append("<input type=\"checkbox\" name=\"").append(PARAM_OVERWRITEINHERITED).append(
                 "\" value=\"true\"").append(disabled);
@@ -1274,8 +1280,8 @@ public class CmsChacc extends CmsDialog {
             // show inherit permissions checkbox on folders
             if (getInheritOption()) {
                 result.append("<tr>\n");
-                result.append("\t<td class=\"dialogpermissioncell\">").append(key(Messages.GUI_PERMISSION_INHERIT_ON_SUBFOLDERS_0)).append(
-                    "</td>\n");
+                result.append("\t<td class=\"dialogpermissioncell\">").append(
+                    key(Messages.GUI_PERMISSION_INHERIT_ON_SUBFOLDERS_0)).append("</td>\n");
                 result.append("\t<td class=\"dialogpermissioncell textcenter\">");
                 result.append("<input type=\"checkbox\" name=\"").append(PARAM_INHERIT).append("\" value=\"true\"").append(
                     disabled);
@@ -1299,8 +1305,8 @@ public class CmsChacc extends CmsDialog {
             // set parameters to show correct hidden input fields
             setParamAction(DIALOG_DELETE);
             result.append(paramsAsHidden());
-            result.append("\t\t<input class=\"dialogbutton\" type=\"submit\" value=\"").append(key(Messages.GUI_LABEL_DELETE_0)).append(
-                "\">\n");
+            result.append("\t\t<input class=\"dialogbutton\" type=\"submit\" value=\"").append(
+                key(Messages.GUI_LABEL_DELETE_0)).append("\">\n");
             result.append("\t\t</form>\n");
             result.append("\t</td>\n");
             result.append("</tr>\n");
@@ -1411,7 +1417,7 @@ public class CmsChacc extends CmsDialog {
      * @return HTML code for the responsibles of the current resource
      */
     public String buildResponsibleList(boolean show) {
-    
+
         List parentResources = new ArrayList();
         Map responsibles = new HashMap();
         CmsObject cms = getCms();
@@ -1443,16 +1449,16 @@ public class CmsChacc extends CmsDialog {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e.getLocalizedMessage());
                 }
-            }    
-        }    
-    
+            }
+        }
+
         if (responsibles.size() == 0) {
-            
+
             return key(Messages.GUI_AVAILABILITY_NO_RESPONSIBLES_0);
-        }    
+        }
         StringBuffer result = new StringBuffer(512);
         result.append(dialogToggleStart(key(Messages.GUI_AVAILABILITY_RESPONSIBLES_0), "responsibles", show));
-        
+
         result.append(dialogWhiteBoxStart());
         i = responsibles.keySet().iterator();
         while (i.hasNext()) {

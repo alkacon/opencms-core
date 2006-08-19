@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.35.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.35.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -466,7 +466,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         result.append(", type=");
         result.append(getTypeName());
         result.append(", path=");
-        result.append(getPath());
+        result.append(m_element == null ? null : getPath());
         String value;
         try {
             value = "'" + getStringValue(null) + "'";
@@ -475,7 +475,6 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         }
         result.append(", value=");
         result.append(value);
-
         return result.toString();
     }
 

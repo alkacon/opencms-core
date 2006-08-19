@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2006/06/12 10:30:30 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.1.0 
  */
@@ -249,7 +249,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 ret = metadata.getSearchAction().filter(ret, state.getFilter());
             }
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(state.getColumn())) {
-                if (metadata.getColumnDefinition(state.getColumn()) != null
+                if ((metadata.getColumnDefinition(state.getColumn()) != null)
                     && metadata.getColumnDefinition(state.getColumn()).isSorteable()) {
                     // sort
                     I_CmsListItemComparator c = metadata.getColumnDefinition(state.getColumn()).getListItemComparator();

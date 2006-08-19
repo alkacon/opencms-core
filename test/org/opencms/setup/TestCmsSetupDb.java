@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupDb.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.11.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.setup;
 
-import org.opencms.scheduler.TestCmsSchedulerInSystem;
 import org.opencms.test.OpenCmsTestCase;
 
 import junit.framework.Test;
@@ -42,7 +41,7 @@ import junit.framework.TestSuite;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.11.8.1 $
  * 
  * @since 6.0.0
  */
@@ -66,7 +65,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
     public static Test suite() {
 
         TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSchedulerInSystem.class.getName());
+        suite.setName(TestCmsSetupDb.class.getName());
 
         suite.addTest(new TestCmsSetupDb("testCreateDatabase"));
         suite.addTest(new TestCmsSetupDb("testCreateTables"));

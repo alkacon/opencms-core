@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2006/07/26 14:53:14 $
- * Version: $Revision: 1.45.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:39 $
+ * Version: $Revision: 1.45.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,20 @@
 
 package org.opencms.file;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsPermalinkResourceHandler;
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
 import java.util.Comparator;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Base class for all OpenCms VFS resources like <code>{@link CmsFile}</code> or <code>{@link CmsFolder}</code>.<p>
@@ -45,7 +53,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.1 $
+ * @version $Revision: 1.45.4.2 $
  * 
  * @since 6.0.0 
  */
@@ -183,6 +191,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** Flag to indicate that this is an internal resource, that can't be accessed directly. */
     public static final int FLAG_INTERNAL = 512;
 
+    /** Flag to indicate that this ressource is assigned to a workflow project. */
+    public static final int FLAG_INWORKFLOW = 256;
+
     /** The resource is linked inside a site folder specified in the OpenCms configuration. */
     public static final int FLAG_LABELED = 2;
 
@@ -213,6 +224,21 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** Flag for leaving a date unchanged during a touch operation. */
     public static final long TOUCH_DATE_UNCHANGED = -1;
 
+    /** We dont want to have more int constants for UNDO_xxx, refactor to parameter class. */
+    private int m_todo_v7;
+
+    /** Indicates that the undo method will only undo content changes. */
+    public static final int UNDO_CONTENT = 1;
+
+    /** Indicates that the undo method will only recursive undo content changes. */
+    public static final int UNDO_CONTENT_RECURSIVE = 2;
+
+    /** Indicates that the undo method will undo move operations and content changes. */
+    public static final int UNDO_MOVE_CONTENT = 3;
+
+    /** Indicates that the undo method will undo move operations and recursive content changes. */
+    public static final int UNDO_MOVE_CONTENT_RECURSIVE = 4;
+
     /** The vfs path of the channel folder. */
     public static final String VFS_FOLDER_CHANNELS = "/channels";
 
@@ -221,6 +247,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The vfs path of the system folder. */
     public static final String VFS_FOLDER_SYSTEM = "/system";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResource.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 257325098790850498L;
@@ -372,6 +401,39 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
+     * Returns the extension of a resource.<p>
+     * 
+     * The extension of a file is the part of the name after the last dot.
+     * The extension of a folder is empty.<p>
+     * 
+     * Example: <code>/index.html.pdf</code> has the extension <code>pdf</code>.
+     * 
+     * @param resourceName the resource to get the extension for
+     * 
+     * @return the extension of a resource
+     */
+    public static String getExtension(String resourceName) {
+
+        // TODO: There is a method like this in the util package already
+        int todo_v7 = 0;
+
+        // if the resource name indicates a folder
+        if (resourceName.endsWith("/")) {
+            return "";
+        }
+        // get just the name of the resource
+        String name = getName(resourceName);
+        // get the position of the last dot
+        int pos = name.lastIndexOf('.');
+        // if no dot or if no chars after the dot
+        if ((pos < 0) || ((pos + 1) == name.length())) {
+            return "";
+        }
+        // return the extension
+        return name.substring(pos + 1);
+    }
+
+    /**
      * Returns the folder path of the resource with the given name,
      * if the resource is a folder (i.e. ends with a "/"), the complete path of the folder 
      * is returned (not the parent folder path).<p>
@@ -413,6 +475,46 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         String parent = (resource.substring(0, resource.length() - 1));
         // now as the name does not end with "/", check for the last "/" which is the parent folder name
         return resource.substring(parent.lastIndexOf('/') + 1);
+    }
+
+    /**
+     * Returns the online link for the given resource.<p>
+     * 
+     * Like
+     * <code>http://site.enterprise.com:8080/index.html</code>.<p>
+     * 
+     * @param cms the cms context
+     * @param resourceName the resource to generate the online link for
+     * 
+     * @return the online link
+     */
+    public static String getOnlineLink(CmsObject cms, String resourceName) {
+
+        // TODO: Remove this method from CmsResource 
+        int todo_v7 = 0;
+
+        String onlineLink = "";
+        try {
+            CmsSite currentSite = CmsSiteManager.getCurrentSite(cms);
+            CmsProject currentProject = cms.getRequestContext().currentProject();
+            try {
+                cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                onlineLink = OpenCms.getLinkManager().substituteLink(cms, resourceName, currentSite.getSiteRoot());
+            } finally {
+                cms.getRequestContext().setCurrentProject(currentProject);
+            }
+            String serverPrefix = currentSite.getServerPrefix(cms, resourceName);
+            if (!onlineLink.startsWith(serverPrefix)) {
+                onlineLink = serverPrefix + onlineLink;
+            }
+        } catch (CmsException e) {
+            // should never happen
+            onlineLink = e.getLocalizedMessage();
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e);
+            }
+        }
+        return onlineLink;
     }
 
     /**
@@ -499,6 +601,47 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
+     * Returns the perma link for the given resource.<p>
+     * 
+     * Like
+     * <code>http://site.enterprise.com:8080/permalink/4b65369f-1266-11db-8360-bf0f6fbae1f8.html</code>.<p>
+     * 
+     * @param cms the cms context
+     * @param resourceName the resource to generate the perma link for
+     * 
+     * @return the perma link
+     */
+    public static String getPermalink(CmsObject cms, String resourceName) {
+
+        // TODO: Remove this method from CmsResource 
+        int todo_v7 = 0;
+
+        String permalink = "";
+        try {
+            permalink = OpenCms.getLinkManager().substituteLink(cms, CmsPermalinkResourceHandler.PERMALINK_HANDLER);
+            String id = cms.readResource(resourceName, CmsResourceFilter.ALL).getStructureId().toString();
+            permalink += id;
+            String ext = getExtension(resourceName);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ext)) {
+                permalink += "." + getExtension(resourceName);
+            }
+            String serverPrefix = CmsSiteManager.getCurrentSite(cms).getServerPrefix(
+                cms,
+                CmsPermalinkResourceHandler.PERMALINK_HANDLER);
+            if (!permalink.startsWith(serverPrefix)) {
+                permalink = serverPrefix + permalink;
+            }
+        } catch (CmsException e) {
+            // if not enough permissions
+            permalink = Messages.get().container(Messages.ERR_PERMALINK_1, resourceName).key();
+            if (LOG.isErrorEnabled()) {
+                LOG.error(permalink, e);
+            }
+        }
+        return permalink;
+    }
+
+    /**
      * Returns true if the resource name is a folder name, i.e. ends with a "/".<p>
      * 
      * @param resource the resource to check
@@ -507,6 +650,34 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public static boolean isFolder(String resource) {
 
         return CmsStringUtil.isNotEmpty(resource) && (resource.charAt(resource.length() - 1) == '/');
+    }
+
+    /**
+     * Checks if there are at least one character in the folder name,
+     * also ensures that it starts and ends with a '/'.<p>
+     *
+     * @param resourcename folder name to check (complete path)
+     * @return the validated folder name
+     * 
+     * @throws CmsIllegalArgumentException if the folder name is empty or <code>null</code>
+     */
+    public static String validateFoldername(String resourcename) throws CmsIllegalArgumentException {
+
+        // TODO: Do we need this method here?
+        int todo_v7 = 0;
+
+        if (CmsStringUtil.isEmpty(resourcename)) {
+            throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1,
+                resourcename));
+        }
+        if (!CmsResource.isFolder(resourcename)) {
+            resourcename = resourcename.concat("/");
+        }
+        if (resourcename.charAt(0) != '/') {
+            resourcename = "/".concat(resourcename);
+        }
+        return resourcename;
     }
 
     /**
@@ -921,6 +1092,19 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
+     * Sets the project last modified of this resource.<p>
+     * 
+     * @param projectId the project id
+     */
+    public void setProjectLastModified(int projectId) {
+
+        // TODO: This should not be a public accessible set method
+        int todo_v7 = 0;
+
+        m_projectLastModified = projectId;
+    }
+
+    /**
      * Sets the state of this resource.<p>
      *
      * @param state the state to set
@@ -995,4 +1179,5 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
         return result.toString();
     }
+
 }

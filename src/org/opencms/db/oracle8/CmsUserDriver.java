@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle8/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/24 16:27:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.1.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,23 @@
 
 package org.opencms.db.oracle8;
 
+import org.opencms.db.generic.CmsSqlManager;
+
 /**
  * Oracle8 implementation of the user driver methods.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.1.8.1 $
  * @since 6.0.0 
  */
 public class CmsUserDriver extends org.opencms.db.oracle.CmsUserDriver {
 
-    // no modifications needed
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#initSqlManager(String)
+     */
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
+
+        return CmsSqlManager.getInstance(classname);
+    }
 }

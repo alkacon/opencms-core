@@ -47,7 +47,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 2.0.0 
  */
@@ -181,7 +181,7 @@ public class CmsMultiException extends CmsException {
         }
         return result.toString();
     }
-    
+
     /**
      * Returns the individual message (if set) or an empty String.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImagePreview.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.11.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.swing.JFileChooser;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,13 +100,11 @@ public class ImagePreview extends JComponent implements PropertyChangeListener {
         }
         // load the image
         ImageIcon tmpIcon = new ImageIcon(m_file.getPath());
-        if (tmpIcon != null) {
-            if (tmpIcon.getIconWidth() > 190) {
-                //  scale it to the maximum width of 190 pixel if newscessary 
-                m_thumbnail = new ImageIcon(tmpIcon.getImage().getScaledInstance(190, -1, Image.SCALE_DEFAULT));
-            } else { //no need to miniaturize
-                m_thumbnail = tmpIcon;
-            }
+        if (tmpIcon.getIconWidth() > 190) {
+            //  scale it to the maximum width of 190 pixel if newscessary 
+            m_thumbnail = new ImageIcon(tmpIcon.getImage().getScaledInstance(190, -1, Image.SCALE_DEFAULT));
+        } else { //no need to miniaturize
+            m_thumbnail = tmpIcon;
         }
     }
 

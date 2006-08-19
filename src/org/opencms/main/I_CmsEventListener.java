@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2006/04/20 09:20:03 $
- * Version: $Revision: 1.29.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.29.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.29.4.1 $ 
+ * @version $Revision: 1.29.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -74,7 +74,7 @@ public interface I_CmsEventListener {
 
     /** Key name for passing a publish history id in the data map. */
     String KEY_PUBLISHID = "publishHistoryId";
-    
+
     /** Key name for passing a publish list in the data map. */
     String KEY_PUBLISHLIST = "publishList";
 
@@ -91,6 +91,11 @@ public interface I_CmsEventListener {
 
     /** 
      * Event "user has logged in".<p>
+     *
+     * Event data:
+     * <ul>
+     * <li>key "data" (mandatory): the user who was logged in</li>
+     * </ul>
      *
      * @see org.opencms.file.CmsObject#loginUser(String, String) 
      */
@@ -111,7 +116,7 @@ public interface I_CmsEventListener {
      * @see #EVENT_BEFORE_PUBLISH_PROJECT
      */
     int EVENT_PUBLISH_PROJECT = 2;
-    
+
     /**
      * Event "a project is to published" (but has not yet been published).<p>
      * 
@@ -249,6 +254,13 @@ public interface I_CmsEventListener {
     int EVENT_UPDATE_EXPORTS = 19;
 
     /**
+     * @see #EVENT_RESOURCE_CREATED
+     * @see #EVENT_RESOURCE_COPIED
+     * @see #EVENT_RESOURCE_DELETED
+     */
+    int EVENT_RESOURCE_MOVED = 22;
+
+    /**
      * @see #EVENT_RESOURCE_AND_PROPERTIES_MODIFIED
      */
     int EVENT_RESOURCE_CREATED = 23;
@@ -292,8 +304,8 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_PROPERTY_DEFINITION_CREATED = 28;
-
-    /**
+    
+    /** 
      * Acknowledge the occurrence of the specified event, implement this 
      * method to check for CmsEvents in your class.
      *

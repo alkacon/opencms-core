@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.35.4.4 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.35.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.4 $ 
+ * @version $Revision: 1.35.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -346,7 +346,7 @@ public class CmsHtmlList {
      */
     public int getSize() {
 
-        if (m_metadata.isSelfManaged() && m_size != 0) {
+        if (m_metadata.isSelfManaged() && (m_size != 0)) {
             return m_size;
         }
         return getContent().size();
@@ -389,7 +389,7 @@ public class CmsHtmlList {
      */
     public int getTotalSize() {
 
-        if (m_metadata.isSelfManaged() && m_totalSize != 0) {
+        if (m_metadata.isSelfManaged() && (m_totalSize != 0)) {
             return m_totalSize;
         }
         return getAllContent().size();
@@ -584,7 +584,7 @@ public class CmsHtmlList {
     public void setCurrentPage(int currentPage) throws CmsIllegalArgumentException {
 
         if (getSize() != 0) {
-            if (currentPage < 1 || currentPage > getNumberOfPages()) {
+            if ((currentPage < 1) || (currentPage > getNumberOfPages())) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.ERR_LIST_INVALID_PAGE_1,
                     new Integer(currentPage)));
@@ -668,7 +668,7 @@ public class CmsHtmlList {
      */
     public void setSortedColumn(String sortedColumn) throws CmsIllegalArgumentException {
 
-        if (getMetadata().getColumnDefinition(sortedColumn) == null
+        if ((getMetadata().getColumnDefinition(sortedColumn) == null)
             || !getMetadata().getColumnDefinition(sortedColumn).isSorteable()) {
             return;
         }
@@ -811,7 +811,7 @@ public class CmsHtmlList {
 
         StringBuffer html = new StringBuffer(512);
         // help & confirmation text for actions if needed
-        if (!isPrintable() && m_visibleItems != null && !m_visibleItems.isEmpty()) {
+        if (!isPrintable() && (m_visibleItems != null) && !m_visibleItems.isEmpty()) {
             Iterator cols = getMetadata().getColumnDefinitions().iterator();
             while (cols.hasNext()) {
                 CmsListColumnDefinition col = (CmsListColumnDefinition)cols.next();

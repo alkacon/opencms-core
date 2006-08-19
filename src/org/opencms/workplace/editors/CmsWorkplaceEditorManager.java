@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.10.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -209,7 +209,7 @@ public class CmsWorkplaceEditorManager {
         }
         if (preferredEditorSetting != null) {
             CmsWorkplaceEditorConfiguration preferredConf = filterPreferredEditor(preferredEditorSetting);
-            if (preferredConf != null && preferredConf.isWidgetEditor() && preferredConf.matchesBrowser(userAgent)) {
+            if ((preferredConf != null) && preferredConf.isWidgetEditor() && preferredConf.matchesBrowser(userAgent)) {
                 // return preferred editor only if it matches the current users browser
                 return preferredConf.getWidgetEditor();
             }
@@ -301,7 +301,7 @@ public class CmsWorkplaceEditorManager {
         }
         if (preferredEditorSetting != null) {
             CmsWorkplaceEditorConfiguration preferredConf = filterPreferredEditor(preferredEditorSetting);
-            if (preferredConf != null && preferredConf.matchesBrowser(userAgent)) {
+            if ((preferredConf != null) && preferredConf.matchesBrowser(userAgent)) {
                 // return preferred editor only if it matches the current users browser
                 return preferredConf.getEditorUri();
             }

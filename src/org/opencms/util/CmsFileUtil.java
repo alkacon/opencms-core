@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/07/19 14:58:44 $
- * Version: $Revision: 1.24.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.24.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.1 $ 
+ * @version $Revision: 1.24.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -582,8 +582,13 @@ public final class CmsFileUtil {
         // read in the bytes
         int offset = 0;
         int numRead = 0;
-        while ((offset < bytes.length) && ((numRead = in.read(bytes, offset, bytes.length - offset)) >= 0)) {
-            offset += numRead;
+        while (offset < size) {
+            numRead = in.read(bytes, offset, size - offset);
+            if (numRead >= 0) {
+                offset += numRead;
+            } else {
+                break;
+            }
         }
 
         // close the input stream and return bytes

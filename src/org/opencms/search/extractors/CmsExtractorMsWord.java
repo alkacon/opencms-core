@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsWord.java,v $
- * Date   : $Date: 2005/07/29 10:35:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.8.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.textmining.text.extraction.WordExtractor;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,7 +88,7 @@ public final class CmsExtractorMsWord extends A_CmsTextExtractorMsOfficeBase {
 
         // free some memory
         cleanup();
-        
+
         // return the final result
         return new CmsExtractionResult(result, metaInfo);
     }

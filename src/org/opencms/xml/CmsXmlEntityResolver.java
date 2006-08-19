@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2006/04/13 08:01:21 $
- * Version: $Revision: 1.24.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.24.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.1 $ 
+ * @version $Revision: 1.24.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,6 +145,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             I_CmsEventListener.EVENT_CLEAR_CACHES,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT,
             I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
+            I_CmsEventListener.EVENT_RESOURCE_MOVED,
             I_CmsEventListener.EVENT_RESOURCE_DELETED});
 
         // cache the base widget type XML schema definitions
@@ -223,6 +224,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 uncacheSystemId(resource.getRootPath());
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_DELETED:
+            case I_CmsEventListener.EVENT_RESOURCE_MOVED:
                 List resources = (List)event.getData().get("resources");
                 for (int i = 0; i < resources.size(); i++) {
                     resource = (CmsResource)resources.get(i);
@@ -230,7 +232,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 }
                 break;
             default:
-        // no operation
+                // no operation
         }
     }
 

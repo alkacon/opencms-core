@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2006/08/19 13:40:36 $
+ * Version: $Revision: 1.84.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84 $ 
+ * @version $Revision: 1.84.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -392,8 +392,8 @@ public class CmsExport {
 
                 if (getCms().getRequestContext().currentProject().isOnlineProject()
                     || (m_includeUnchanged)
-                    || state == CmsResource.STATE_NEW
-                    || state == CmsResource.STATE_CHANGED) {
+                    || (state == CmsResource.STATE_NEW)
+                    || (state == CmsResource.STATE_CHANGED)) {
                     if ((state != CmsResource.STATE_DELETED)
                         && (!file.getName().startsWith("~"))
                         && (age >= m_contentAge)) {
@@ -570,8 +570,8 @@ public class CmsExport {
 
                 if (getCms().getRequestContext().currentProject().isOnlineProject()
                     || (m_includeUnchanged)
-                    || state == CmsResource.STATE_NEW
-                    || state == CmsResource.STATE_CHANGED) {
+                    || (state == CmsResource.STATE_NEW)
+                    || (state == CmsResource.STATE_CHANGED)) {
                     if ((state != CmsResource.STATE_DELETED) && (age >= m_contentAge)) {
                         // check if this is a system-folder and if it should be included.
                         String export = getCms().getSitePath(folder);
@@ -916,6 +916,29 @@ public class CmsExport {
     }
 
     /**
+     * Adds a property node to the manifest.xml.<p>
+     * 
+     * @param propertiesElement the parent element to append the node to
+     * @param propertyName the name of the property
+     * @param propertyValue the value of the property
+     * @param shared if <code>true</code>, add a shared property attribute to the generated property node
+     */
+    private void addPropertyNode(Element propertiesElement, String propertyName, String propertyValue, boolean shared) {
+
+        if (propertyValue != null) {
+            Element propertyElement = propertiesElement.addElement(CmsImportExportManager.N_PROPERTY);
+            if (shared) {
+                // add "type" attribute to the property node in case of a shared/resource property value
+                propertyElement.addAttribute(
+                    CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE,
+                    CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE_SHARED);
+            }
+            propertyElement.addElement(CmsImportExportManager.N_NAME).addText(propertyName);
+            propertyElement.addElement(CmsImportExportManager.N_VALUE).addCDATA(propertyValue);
+        }
+    }
+
+    /**
      * Writes the data for a resource (like access-rights) to the <code>manifest.xml</code> file.<p>
      * 
      * @param resource the resource to get the data from
@@ -927,10 +950,6 @@ public class CmsExport {
     throws CmsImportExportException, SAXException {
 
         try {
-            CmsProperty property = null;
-            String key = null, value = null;
-            Element propertyElement = null;
-
             // define the file node
             Element fileElement = m_resourceNode.addElement(CmsImportExportManager.N_FILE);
 
@@ -970,6 +989,8 @@ public class CmsExport {
             fileElement.addElement(CmsImportExportManager.N_TYPE).addText(
                 OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
 
+            //  <uuidstructure>
+            fileElement.addElement(CmsImportExportManager.N_UUIDSTRUCTURE).addText(resource.getStructureId().toString());
             if (resource.isFile()) {
                 //  <uuidresource>
                 fileElement.addElement(CmsImportExportManager.N_UUIDRESOURCE).addText(
@@ -1017,33 +1038,12 @@ public class CmsExport {
             Element propertiesElement = fileElement.addElement(CmsImportExportManager.N_PROPERTIES);
             List properties = getCms().readPropertyObjects(getCms().getSitePath(resource), false);
             for (int i = 0, n = properties.size(); i < n; i++) {
-                property = (CmsProperty)properties.get(i);
-
+                CmsProperty property = (CmsProperty)properties.get(i);
                 if (isIgnoredProperty(property)) {
                     continue;
                 }
-
-                key = property.getName();
-
-                for (int j = 0; j < 2; j++) {
-                    // iterations made here:
-                    // 0) append individual/structure property value
-                    // 1) append shared/resource property value
-                    if ((j == 0 && (value = property.getStructureValue()) != null)
-                        || (j == 1 && (value = property.getResourceValue()) != null)) {
-                        propertyElement = propertiesElement.addElement(CmsImportExportManager.N_PROPERTY);
-
-                        if (j == 1) {
-                            // add a type attrib. to the property node in case of a shared/resource property value
-                            propertyElement.addAttribute(
-                                CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE,
-                                CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE_SHARED);
-                        }
-
-                        propertyElement.addElement(CmsImportExportManager.N_NAME).addText(key);
-                        propertyElement.addElement(CmsImportExportManager.N_VALUE).addCDATA(value);
-                    }
-                }
+                addPropertyNode(propertiesElement, property.getName(), property.getStructureValue(), false);
+                addPropertyNode(propertiesElement, property.getName(), property.getResourceValue(), true);
             }
 
             // append the nodes for access control entries

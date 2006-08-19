@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractor.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.8.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.InputStream;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,15 +144,15 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
                 case Character.START_PUNCTUATION:
                 case Character.END_PUNCTUATION:
                 case Character.OTHER_PUNCTUATION:
-                // letters
+                    // letters
                 case Character.OTHER_LETTER:
                 case Character.MODIFIER_LETTER:
                 case Character.UPPERCASE_LETTER:
                 case Character.TITLECASE_LETTER:
                 case Character.LOWERCASE_LETTER:
-                // digits
+                    // digits
                 case Character.DECIMAL_DIGIT_NUMBER:
-                // spaces
+                    // spaces
                 case Character.SPACE_SEPARATOR:
                     result.append(ch);
                     wasUnwanted = false;
@@ -167,7 +167,7 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
                 // symbols
                 case Character.MATH_SYMBOL:
                 case Character.OTHER_SYMBOL:
-                // other stuff:
+                    // other stuff:
                 case Character.CONTROL:
                 case Character.COMBINING_SPACING_MARK:
                 case Character.ENCLOSING_MARK:

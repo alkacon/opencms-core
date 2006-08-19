@@ -1,7 +1,7 @@
 /*
- * File   :
- * Date   : 
- * Version: 
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.12.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,12 +49,13 @@ import org.opencms.importexport.CmsImportExportException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
 import org.opencms.report.I_CmsReport;
-import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.page.CmsXmlPage;
@@ -86,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -694,7 +695,7 @@ public class CmsHtmlImport {
         if (translatedLink == null) {
             translatedLink = "#";
         }
-        
+
         return translatedLink;
     }
 
@@ -847,9 +848,7 @@ public class CmsHtmlImport {
                                     vfsFileName));
                             } else {
 
-                                m_report.print(
-                                    Messages.get().container(Messages.RPT_IMPORT_0),
-                                    I_CmsReport.FORMAT_NOTE);
+                                m_report.print(Messages.get().container(Messages.RPT_IMPORT_0), I_CmsReport.FORMAT_NOTE);
                                 m_report.print(org.opencms.report.Messages.get().container(
                                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                                     vfsFileName));
@@ -884,12 +883,10 @@ public class CmsHtmlImport {
                                 } else {
                                     try {
                                         CmsLock lock = m_cmsObject.getLock(vfsFileName);
-                                        if (lock.getType() != CmsLock.TYPE_EXCLUSIVE) {
+                                        if (lock.getType() != CmsLockType.EXCLUSIVE) {
                                             m_cmsObject.lockResource(vfsFileName);
                                         }
-                                        m_cmsObject.deleteResource(
-                                            vfsFileName,
-                                            CmsResource.DELETE_PRESERVE_SIBLINGS);
+                                        m_cmsObject.deleteResource(vfsFileName, CmsResource.DELETE_PRESERVE_SIBLINGS);
                                     } catch (CmsException e) {
                                         // the file did not exist, so create it                                     
                                     } finally {
@@ -996,11 +993,11 @@ public class CmsHtmlImport {
                     CmsLink link = (CmsLink)i.next();
                     String target = link.getTarget();
                     // do only update internal links 
-                    if (target.indexOf("://") == 0) {
-                        //if (!target.startsWith("http") && !target.startsWith("mailto")) {
+                    if (link.isInternal()) {
                         target = m_cmsObject.getRequestContext().getFileTranslator().translateResource(target);
                         // update link
                         link.updateLink(target, link.getAnchor(), link.getQuery());
+                        link.checkConsistency(m_cmsObject);
                     }
                 }
                 // marshal xml page and get the content
@@ -1018,7 +1015,7 @@ public class CmsHtmlImport {
                         // try if the file is there
                         oldProperties = m_cmsObject.readPropertyObjects(vfsFileName, false);
                         CmsLock lock = m_cmsObject.getLock(vfsFileName);
-                        if (lock.getType() != CmsLock.TYPE_EXCLUSIVE) {
+                        if (lock.getType() != CmsLockType.EXCLUSIVE) {
                             m_cmsObject.lockResource(vfsFileName);
                         }
                         m_cmsObject.deleteResource(vfsFileName, CmsResource.DELETE_PRESERVE_SIBLINGS);
@@ -1037,11 +1034,11 @@ public class CmsHtmlImport {
                     }
                 }
                 // create all properties and put them in an ArrayList
-                Enumeration en = properties.keys();
+                Iterator it = properties.keySet().iterator();
                 List propertyList = new ArrayList();
-                while (en.hasMoreElements()) {
+                while (it.hasNext()) {
                     // get property and value
-                    String propertyKey = (String)en.nextElement();
+                    String propertyKey = (String)it.next();
                     String propertyVal = (String)properties.get(propertyKey);
                     // create new Property Object
                     CmsProperty property = new CmsProperty(propertyKey, propertyVal, propertyVal);
@@ -1050,7 +1047,7 @@ public class CmsHtmlImport {
                     // add new property to the list
                     propertyList.add(property);
                 }
-                // try to write the property
+                // try to write the properties
                 try {
                     m_cmsObject.writePropertyObjects(vfsFileName, propertyList);
                     // write the old properties if available
@@ -1296,7 +1293,7 @@ public class CmsHtmlImport {
                 folderName = m_inputDir + "\\" + folderName;
                 File folder = new File(folderName);
 
-                if ((folder != null) && (folder.isDirectory())) {
+                if (folder.isDirectory()) {
                     vfsName = m_destinationDir + relativeName.substring(0, relativeName.indexOf(".")) + "/index.html";
                     // System.err.println("MOVING "+ relativeName + " -> " + name.substring(0,name.indexOf("."))+"/index.html");
                 } else {

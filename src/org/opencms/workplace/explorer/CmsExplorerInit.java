@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerInit.java,v $
- * Date   : $Date: 2006/06/14 13:38:39 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -68,7 +68,7 @@ public class CmsExplorerInit extends CmsWorkplace {
 
         super(jsp);
     }
-    
+
     /**
      * Builds the Javascript for the Workplace context menus.<p>
      * 
@@ -87,21 +87,21 @@ public class CmsExplorerInit extends CmsWorkplace {
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
             if (settings != null) {
                 // append the context menu of the current resource type 
-                result.append(settings.getContextMenu().getJSEntries(
-                    getCms(),
-                    settings,
-                    resTypeId,
-                    getMessages()));
+                result.append(settings.getContextMenu().getJSEntries(getCms(), settings, resTypeId, getMessages()));
             }
         }
-        
+
         result.append("\n");
         // add generic multi context menu to JS
-        result.append(OpenCms.getWorkplaceManager().getMultiContextMenu().getJSEntries(getCms(), null, -1, getMessages()));
+        result.append(OpenCms.getWorkplaceManager().getMultiContextMenu().getJSEntries(
+            getCms(),
+            null,
+            -1,
+            getMessages()));
 
         return result.toString();
     }
-    
+
     /**
      * Returns the file settings for the Workplace explorer view.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/08/19 13:40:47 $
+ * Version: $Revision: 1.22.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,7 +239,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
         if (isEditable()) {
             int okButton = BUTTON_OK;
-            if (getParamDialogmode() != null && getParamDialogmode().startsWith(MODE_WIZARD)) {
+            if ((getParamDialogmode() != null) && getParamDialogmode().startsWith(MODE_WIZARD)) {
                 // in wizard mode, display finish button instead of ok button
                 okButton = BUTTON_FINISH;
             }
@@ -325,7 +325,10 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         result.append(buildTableRowEnd());
 
         // create NavText input row
-        result.append(buildPropertyEntry(CmsPropertyDefinition.PROPERTY_NAVTEXT, key(Messages.GUI_LABEL_NAVTEXT_0), editable));
+        result.append(buildPropertyEntry(
+            CmsPropertyDefinition.PROPERTY_NAVTEXT,
+            key(Messages.GUI_LABEL_NAVTEXT_0),
+            editable));
 
         // create NavPos select box row
         result.append(buildTableRowStart(key(Messages.GUI_CHNAV_INSERT_AFTER_0)));
@@ -386,7 +389,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 propValue = propValue.trim();
             }
             propValue = CmsEncoder.escapeXml(propValue);
-            
+
             // create text input field
             result.append("<input type=\"text\" class=\"maxwidth\"");
             result.append(" name=\"");
@@ -403,7 +406,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             }
             result.append(disabled);
             result.append(">");
-            
+
             // create hidden field for value
             result.append("<input type=\"hidden\" name=\"");
             result.append(PREFIX_HIDDEN);
@@ -416,7 +419,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             result.append("\">");
             result.append("</td>\n");
             result.append("\t<td class=\"textcenter\">");
-            
+
             // create activate/deactivate checkbox
             result.append("<input type=\"checkbox\" name=\"");
             result.append(PREFIX_USEPROPERTY);
@@ -535,7 +538,9 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             try {
                 includeErrorpage(this, e);
             } catch (JspException exc) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_INCLUDE_FAILED_1, FILE_DIALOG_SCREEN_ERRORPAGE));
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_ERROR_INCLUDE_FAILED_1,
+                    FILE_DIALOG_SCREEN_ERRORPAGE));
             }
         }
     }
@@ -694,7 +699,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             if (!propValue.equals(oldValue)) {
                 // lock resource if autolock is enabled
                 checkLock(getParamResource());
-                if (currentProperty.getStructureValue() == null && currentProperty.getResourceValue() == null) {
+                if ((currentProperty.getStructureValue() == null) && (currentProperty.getResourceValue() == null)) {
                     // new property, determine setting from OpenCms workplace configuration
                     if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
                         currentProperty.setStructureValue(propValue);

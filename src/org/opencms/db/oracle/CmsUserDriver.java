@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.55.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.55.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -240,9 +240,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser)
+     * @see org.opencms.db.I_CmsUserDriver#writeUser(CmsDbContext, CmsUser, Object)
      */
-    public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
+    public void writeUser(CmsDbContext dbc, CmsUser user, Object reservedParam) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -250,7 +250,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         try {
 
             // get connection
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection(dbc, reservedParam);
 
             // write data to database
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_WRITE");
@@ -267,7 +267,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.close();
             stmt = null;
 
-            internalWriteUserInfo(dbc, user.getId(), user.getAdditionalInfo(), null);
+            internalWriteUserInfo(dbc, user.getId(), user.getAdditionalInfo(), reservedParam);
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
@@ -305,14 +305,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             byte[] value = internalSerializeAdditionalUserInfo(additionalInfo);
 
             // get connection
-            if (reservedParam == null) {
-                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection(dbc);
-            } else {
-                // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(dbc, ((Integer)reservedParam).intValue());
-            }
-
+            conn = m_sqlManager.getConnection(dbc, reservedParam);
             wasInTransaction = !conn.getAutoCommit();
             if (!wasInTransaction) {
                 conn.setAutoCommit(false);

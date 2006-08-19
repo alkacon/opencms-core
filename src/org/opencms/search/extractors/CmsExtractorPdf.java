@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorPdf.java,v $
- * Date   : $Date: 2005/07/29 12:13:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.pdfbox.util.PDFTextStripper;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,7 +87,7 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
             parser.parse();
 
             pdfDocument = parser.getPDDocument();
-            
+
             // check for encryption
             if (pdfDocument.isEncrypted()) {
                 DocumentEncryption decryptor = new DocumentEncryption(pdfDocument);
@@ -140,7 +140,7 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
             // free some memory
             stripper = null;
             info = null;
-            
+
             // return the final result
             return new CmsExtractionResult(result, metaInfo);
 

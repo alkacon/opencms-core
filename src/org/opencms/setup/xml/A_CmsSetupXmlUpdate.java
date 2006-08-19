@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/A_CmsSetupXmlUpdate.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.8 
  */
@@ -106,14 +106,14 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
             updateDoc(doc, newDoc, xpath);
             boolean exe = executeUpdate(newDoc, xpath);
             modified = modified || exe;
-            if (parentPath == null && exe) {
+            if ((parentPath == null) && exe) {
                 Node node = newDoc.selectSingleNode(xpath);
                 if (node != null) {
                     ret += CmsXmlUtils.marshal(node, CmsEncoder.ENCODING_UTF_8);
                 }
             }
         }
-        if (parentPath != null && modified) {
+        if ((parentPath != null) && modified) {
             Node node = newDoc.selectSingleNode(parentPath);
             if (node != null) {
                 ret += CmsXmlUtils.marshal(node, CmsEncoder.ENCODING_UTF_8);
@@ -121,7 +121,7 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
         }
         return ret.trim();
     }
-    
+
     /**
      * Updates the given doc inserting the given node corresponding to the given xpath.<p>
      * 
@@ -146,7 +146,7 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
      * @return common parent path
      */
     protected String getCommonPath() {
-        
+
         return null;
     }
 

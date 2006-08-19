@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/maxdb/Attic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.1.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * @author Clovis Wichoski
  * @author Fabiano Rech  
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.1.8.1 $
  * 
  * @since 6.0.0 
  */
@@ -93,7 +93,6 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                     res.getInt("PROJECT_ID"),
                     res.getString("PROJECT_NAME"),
                     res.getString("PROJECT_DESCRIPTION"),
-                    res.getInt("TASK_ID"),
                     new CmsUUID(res.getString("USER_ID")),
                     new CmsUUID(res.getString("GROUP_ID")),
                     new CmsUUID(res.getString("MANAGERGROUP_ID")),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.57.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.57.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,9 +216,9 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Returns if the explorer should show VFS links of a resource.<p>
+     * Returns <code>true</code> if the explorer should show the siblings of a resource.<p>
      * 
-     * @return true, if VFS links should be shown, otherwise false
+     * @return <code>true</code> if the explorer should show the siblings of a resource
      */
     public boolean getExplorerShowLinks() {
 

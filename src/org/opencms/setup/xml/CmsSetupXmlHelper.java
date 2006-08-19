@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsSetupXmlHelper.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -180,7 +180,7 @@ public class CmsSetupXmlHelper {
             while (it.hasNext()) {
                 String nodeName = (String)it.next();
                 // if a string condition contains '/'
-                while (nodeName.indexOf("='") > 0 && nodeName.indexOf("']") < 0) {
+                while ((nodeName.indexOf("='") > 0) && (nodeName.indexOf("']") < 0)) {
                     nodeName += "/" + (String)it.next();
                 }
                 Node node = currentNode.selectSingleNode(nodeName);

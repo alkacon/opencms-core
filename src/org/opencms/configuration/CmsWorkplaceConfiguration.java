@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/07/12 16:53:56 $
- * Version: $Revision: 1.40.4.3 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.40.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.3 $
+ * @version $Revision: 1.40.4.4 $
  * 
  * @since 6.0.0
  */
@@ -241,9 +241,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the helptext node. */
     public static final String N_HELPTEXT = "helptext";
 
-    /** The node name of the inform role members node. */
-    public static final String N_INFORMROLEMEMBERS = "informrolemembers";
-
     /** The subname of the rfsfilesettings/isLogfile node. */
     public static final String N_ISLOGFILE = "isLogfile";
 
@@ -264,15 +261,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the "max file upload size" node. */
     public static final String N_MAXUPLOADSIZE = "maxfileuploadsize";
-
-    /** The node name of the message-accepted node. */
-    public static final String N_MESSAGEACCEPTED = "message-accepted";
-
-    /** The node name of the message-completed node. */
-    public static final String N_MESSAGECOMPLETED = "message-completed";
-
-    /** The node name of the message-forwarded node. */
-    public static final String N_MESSAGEFORWARDED = "message-forwarded";
 
     /** The name of the context menu node. */
     public static final String N_MULTICONTEXTMENU = "multicontextmenu";
@@ -313,23 +301,26 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the show lock node. */
     public static final String N_SHOWEXPORTSETTINGS = "showexportsettings";
 
+    /** The node name of the "show file upload button" option. */
+    public static final String N_SHOWFILEUPLOADBUTTON = "show-fileuploadbutton";
+
     /** The node name of the show lock node. */
     public static final String N_SHOWLOCK = "showlock";
 
     /** The node name of the show messages node. */
     public static final String N_SHOWMESSAGES = "showmessages";
 
-    /** The node name of the showprojects node. */
-    public static final String N_SHOWPROJECTS = "showprojects";
-
     /** The node name of the size column node. */
     public static final String N_SIZE = "show-size";
 
-    /** The node name of the startupfilter node. */
-    public static final String N_STARTUPFILTER = "startupfilter";
-
     /** The node name of the state column node. */
     public static final String N_STATE = "show-state";
+
+    /**
+     * The node name of the timewarp node: This is not persisted in configuration as a default
+     * setting yet but only used for the additional info of the user.
+     */
+    public static final String N_TIMEWARP = "timewarp";
 
     /** The node name of the title column node. */
     public static final String N_TITLE = "show-title";
@@ -354,18 +345,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The subname of the rfsfilesettings/windowSize node. */
     public static final String N_WINDOWSIZE = "windowSize";
-
-    /** The node name of the workflow node. */
-    public static final String N_WORKFLOW = "workflow";
-
-    /** The node name of the workflow default settings node. */
-    public static final String N_WORKFLOWDEFAULTSETTINGS = "workflow-defaultsettings";
-
-    /** The node name of the workflow general options node. */
-    public static final String N_WORKFLOWGENERALOPTIONS = "workflow-generaloptions";
-
-    /** The node name of the workflow preferences node. */
-    public static final String N_WORKFLOWPREFERENCES = "workflow-preferences";
 
     /** The node name of the master workplace node. */
     public static final String N_WORKPLACE = "workplace";
@@ -446,6 +425,23 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES,
             1,
             A_SHOWNAVIGATION);
+
+        digester.addCallMethod("*/"
+            + N_EXPLORERTYPE
+            + "/"
+            + N_EDITOPTIONS
+            + "/"
+            + N_DEFAULTPROPERTIES
+            + "/"
+            + N_PROPERTY, "addProperty", 1);
+        digester.addCallParam("*/"
+            + N_EXPLORERTYPE
+            + "/"
+            + N_EDITOPTIONS
+            + "/"
+            + N_DEFAULTPROPERTIES
+            + "/"
+            + N_PROPERTY, 0, A_NAME);
 
         digester.addCallMethod("*/"
             + N_EXPLORERTYPE
@@ -759,9 +755,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LOCALIZEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
 
-        // add workflow settings
-        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_WORKFLOW + "/" + N_SHOWMESSAGES, "setWorkflowMessage", 0);
-
         // add fileViewSettings rules
         digester.addObjectCreate("*/" + N_RFSFILEVIEWESETTINGS, CmsRfsFileViewer.class);
         digester.addBeanPropertySetter("*/" + N_RFSFILEVIEWESETTINGS + "/" + N_FILEPATH);
@@ -823,7 +816,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_WORKPLACEGENERALOPTIONS
             + "/"
             + N_PUBLISHBUTTONAPPEARANCE, "setPublishButtonAppearance", 0);
-
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACEGENERALOPTIONS
+            + "/"
+            + N_SHOWFILEUPLOADBUTTON, "setShowFileUploadButton", 0);
         // add workplace preferences startupsettings rules 
         digester.addCallMethod("*/"
             + N_WORKPLACE
@@ -1176,70 +1178,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + "/"
             + N_EDITOR, 1, A_VALUE);
 
-        // add workflow generaloptions rules
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKFLOWPREFERENCES
-            + "/"
-            + N_WORKFLOWGENERALOPTIONS
-            + "/"
-            + N_STARTUPFILTER, "setTaskStartupFilterDefault", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKFLOWPREFERENCES
-            + "/"
-            + N_WORKFLOWGENERALOPTIONS
-            + "/"
-            + N_SHOWPROJECTS, "setTaskShowAllProjects", 0);
-
-        // add workflow defaultsettings rules
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKFLOWPREFERENCES
-            + "/"
-            + N_WORKFLOWDEFAULTSETTINGS
-            + "/"
-            + N_MESSAGEACCEPTED, "setTaskMessageAccepted", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKFLOWPREFERENCES
-            + "/"
-            + N_WORKFLOWDEFAULTSETTINGS
-            + "/"
-            + N_MESSAGEFORWARDED, "setTaskMessageForwarded", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKFLOWPREFERENCES
-            + "/"
-            + N_WORKFLOWDEFAULTSETTINGS
-            + "/"
-            + N_MESSAGECOMPLETED, "setTaskMessageCompleted", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKFLOWPREFERENCES
-            + "/"
-            + N_WORKFLOWDEFAULTSETTINGS
-            + "/"
-            + N_INFORMROLEMEMBERS, "setTaskMessageMembers", 0);
-
         // add tool-manager
         String rulePath = "*/" + N_TOOLMANAGER;
         digester.addObjectCreate(rulePath, CmsToolManager.class);
@@ -1320,12 +1258,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         i = m_workplaceManager.getLabelSiteFolders().iterator();
         while (i.hasNext()) {
             labeledElement.addElement(N_RESOURCE).addAttribute(A_URI, (String)i.next());
-        }
-
-        // add <workflow> node
-        if (m_workplaceManager.isEnableWorkflowMessages()) {
-            Element workflow = workplaceElement.addElement(N_WORKFLOW);
-            workflow.addElement(N_SHOWMESSAGES).setText(String.valueOf(m_workplaceManager.isEnableWorkflowMessages()));
         }
 
         // add <rfsfileviewsettings> node
@@ -1419,6 +1351,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             workplaceGeneraloptions.addElement(N_PUBLISHBUTTONAPPEARANCE).setText(
                 m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance());
         }
+        // add the <show-fileuploadbutton> node
+        workplaceGeneraloptions.addElement(N_SHOWFILEUPLOADBUTTON).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowFileUploadButtonString());
         // add the <workplace-startupsettings> node
         Element workplaceStartupsettings = workplacePreferences.addElement(N_WORKPLACESTARTUPSETTINGS);
         // add the <locale> node
@@ -1541,31 +1476,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             editor.addAttribute(A_TYPE, type);
             editor.addAttribute(A_VALUE, value);
         }
-
-        // add the <workflow-prefernces> node
-        Element workflowPreferences = defaultPreferences.addElement(N_WORKFLOWPREFERENCES);
-        // add the <workflow-generaloptions> node
-        Element workflowGeneraloptions = workflowPreferences.addElement(N_WORKFLOWGENERALOPTIONS);
-        // add the <startupfilter> node
-        workflowGeneraloptions.addElement(N_STARTUPFILTER).setText(
-            m_workplaceManager.getDefaultUserSettings().getTaskStartupFilterDefault());
-        // add the <showprojects> node
-        workflowGeneraloptions.addElement(N_SHOWPROJECTS).setText(
-            m_workplaceManager.getDefaultUserSettings().getTaskShowAllProjectsString());
-        // add the <workflow-defaultsettings> node
-        Element workflowDefaultsettings = workflowPreferences.addElement(N_WORKFLOWDEFAULTSETTINGS);
-        // add the <message-accepted> node
-        workflowDefaultsettings.addElement(N_MESSAGEACCEPTED).setText(
-            m_workplaceManager.getDefaultUserSettings().getTaskMessageAcceptedString());
-        // add the <message-forwarded> node
-        workflowDefaultsettings.addElement(N_MESSAGEFORWARDED).setText(
-            m_workplaceManager.getDefaultUserSettings().getTaskMessageForwardedString());
-        // add the <message-completed> node
-        workflowDefaultsettings.addElement(N_MESSAGECOMPLETED).setText(
-            m_workplaceManager.getDefaultUserSettings().getTaskMessageCompletedString());
-        // add the <informrolemembers> node
-        workflowDefaultsettings.addElement(N_INFORMROLEMEMBERS).setText(
-            m_workplaceManager.getDefaultUserSettings().getTaskMessageMembersString());
 
         Element toolManagerElement = workplaceElement.addElement(N_TOOLMANAGER);
         Element rootsElement = toolManagerElement.addElement(N_ROOTS);

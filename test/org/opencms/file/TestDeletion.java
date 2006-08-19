@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.8.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
@@ -51,7 +52,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.4.1 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -80,6 +81,7 @@ public class TestDeletion extends OpenCmsTestCase {
         suite.addTest(new TestDeletion("testGroupDeletion"));
         suite.addTest(new TestDeletion("testAdvancedGroupDeletion"));
         suite.addTest(new TestDeletion("testUserDeletion"));
+        suite.addTest(new TestDeletion("testDeleteFolderWithUnvisibleResources"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -95,31 +97,6 @@ public class TestDeletion extends OpenCmsTestCase {
         };
 
         return wrapper;
-    }
-
-    /**
-     * Tests user group deletion.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testGroupDeletion() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing user group deletion");
-
-        String groupname = "deleteGroup";
-
-        List expected = cms.getGroups();
-
-        // create group
-        cms.createGroup(groupname, "deleteMe", I_CmsPrincipal.FLAG_ENABLED, "Users");
-
-        // now delete the group again
-        cms.deleteGroup(groupname);
-
-        List actual = cms.getGroups();
-
-        assertEquals(expected, actual);
     }
 
     /**
@@ -162,10 +139,10 @@ public class TestDeletion extends OpenCmsTestCase {
         // remember group data
         List childs = cms.getChild(testGroup.getName());
         List users = cms.getUsersOfGroup(testGroup.getName());
-        
+
         // delete the test group
         cms.deleteGroup(testGroup.getId(), testGroup2.getId());
-        
+
         // check ace for the resource
         boolean found = false;
         Iterator it = cms.getAccessControlEntries(resName, false).iterator();
@@ -182,7 +159,7 @@ public class TestDeletion extends OpenCmsTestCase {
             }
         }
         assertTrue(found);
-        
+
         // check group data
         assertEquals(childs, cms.getChild(testGroup2.getName()));
         assertEquals(users, cms.getUsersOfGroup(testGroup2.getName()));
@@ -192,7 +169,69 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.setParentGroup(OpenCms.getDefaultUsers().getGroupUsers(), null);
         cms.deleteGroup(testGroup2.getName());
     }
-    
+
+    /**
+     * Tests to delete a folder structure with unvisible resources inside.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testDeleteFolderWithUnvisibleResources() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to delete a folder structure with invisible resources inside");
+
+        // Creating paths
+        String folder = "/mytestfolder/";
+        String file = "index.html";
+
+        // create structure
+        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(folder + file, CmsResourceTypePlain.getStaticTypeId());
+        // change permissions
+        cms.chacc(folder + file, I_CmsPrincipal.PRINCIPAL_USER, "test2", "-r+v+i");
+        // unlock resources
+        cms.unlockResource(folder);
+        // publish
+        cms.publishResource(folder);
+
+        // lock the whole folder as test2
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.lockResource(folder);
+
+        // delete the folder
+        cms.deleteResource(folder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        assertEquals(cms.readResource(folder + file, CmsResourceFilter.ALL).getState(), CmsResource.STATE_DELETED);
+    }
+
+    /**
+     * Tests user group deletion.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testGroupDeletion() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing user group deletion");
+
+        String groupname = "deleteGroup";
+
+        List expected = cms.getGroups();
+
+        // create group
+        cms.createGroup(groupname, "deleteMe", I_CmsPrincipal.FLAG_ENABLED, "Users");
+
+        // now delete the group again
+        cms.deleteGroup(groupname);
+
+        List actual = cms.getGroups();
+
+        assertEquals(expected, actual);
+    }
+
     /**
      * Tests user deletion.<p>
      * 
@@ -213,7 +252,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.chacc("/", I_CmsPrincipal.PRINCIPAL_USER, testUser1.getName(), "+r+w+v+i+c");
         cms.unlockResource("/");
         cms.publishProject();
-        
+
         cms.loginUser(testUser1.getName(), "test1");
         CmsProject offline = cms.readProject("Offline");
         cms.getRequestContext().setCurrentProject(offline);

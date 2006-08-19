@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsDiffViewMode.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.0.0
  */
@@ -69,7 +69,7 @@ public final class CmsDiffViewMode implements Serializable {
 
     /** Array constant for all available align types. */
     private static final CmsDiffViewMode[] VALUE_ARRAY = {ALL, DIFF_ONLY};
-    
+
     /** List of mode constants. */
     public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 

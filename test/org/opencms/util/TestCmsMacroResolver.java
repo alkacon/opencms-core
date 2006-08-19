@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsMacroResolver.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.9.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import junit.framework.TestCase;
  * Test cases for {@link org.opencms.util.CmsMacroResolver}.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.4.1 $
  */
 public class TestCmsMacroResolver extends TestCase {
       
@@ -52,6 +52,79 @@ public class TestCmsMacroResolver extends TestCase {
      */
     public TestCmsMacroResolver(String arg0) {
         super(arg0);
+    }
+    
+    private static final String MACRO_TEST_I1 = "<div class=\'pathbar\'>&nbsp;</div>\r\n"
+        + "<div class=\'screenTitle\'>\r\n"
+        + "   <table width=\'100%\' cellspacing=\'0\'>\r\n"
+        + "       <tr>\r\n"
+        + "           <td>\r\n"
+        + "${key."
+        + org.opencms.xml.content.Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_2
+        + "}\r\n"
+        + "           </td>       </tr>\r\n"
+        + "   </table>\r\n"
+        + "</div>";
+    
+    private static final String MACRO_TEST_R1 = "<div class=\'pathbar\'>&nbsp;</div>\r\n"
+        + "<div class=\'screenTitle\'>\r\n"
+        + "   <table width=\'100%\' cellspacing=\'0\'>\r\n"
+        + "       <tr>\r\n"
+        + "           <td>\r\n"
+        + "Invalid value \"{0}\" according to rule {1}\r\n"
+        + "           </td>       </tr>\r\n"
+        + "   </table>\r\n"
+        + "</div>";
+    
+    /**
+     * Tests some basic resolver functions.<p>
+     */
+    public void testBasicResolverFunctions() {
+        
+        String value = "VALUE";
+        String processed = CmsMacroResolver.formatMacro(value);
+        assertEquals("%(VALUE)", processed);
+        assertTrue(CmsMacroResolver.isMacro(processed));
+        assertEquals(value, CmsMacroResolver.stripMacro(processed));
+        
+        // check old macro syntax
+        processed = "${VALUE}"; 
+        assertTrue(CmsMacroResolver.isMacro(processed));
+        assertEquals(value, CmsMacroResolver.stripMacro(processed));        
+    }
+    
+    /**
+     * Tests some issues encounteerd when introducing the new macro style.<p>
+     */
+    public void testResolverIssues() {
+        
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+        resolver.addMacro("test", "REPLACED");
+        
+        String content, result;
+                        
+        content = "<<This is % a prefix >>${test}- % $ -%(test)";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is % a prefix >>REPLACED- % $ -REPLACED", result);
+
+        content = "<<This is % a prefix >>%(test)- $ % -${test}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is % a prefix >>REPLACED- $ % -REPLACED", result);
+       
+        content = "<<This is $ a prefix >>%(test)- $ % -${test}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is $ a prefix >>REPLACED- $ % -REPLACED", result);
+        
+        content = "<<This is $ a prefix >>${test}- % $ -%(test)";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is $ a prefix >>REPLACED- % $ -REPLACED", result);
+        
+        // add the messages to the resolver
+        CmsMessages messages = new CmsMessages(org.opencms.xml.content.Messages.get().getBundleName(), Locale.ENGLISH);       
+        resolver.setMessages(messages);
+        
+        result = resolver.resolveMacros(MACRO_TEST_I1);
+        assertEquals(MACRO_TEST_R1, result);
     }
     
     /**
@@ -247,8 +320,211 @@ public class TestCmsMacroResolver extends TestCase {
         content = "${test}<<This is a prefix >>${test}${unknown}${test}<<This is a suffix>>${test}";
         result  = resolver.resolveMacros(content);
         assertEquals("REPLACED<<This is a prefix >>REPLACED${unknown}REPLACED<<This is a suffix>>REPLACED", result);                
-    }       
+    }             
     
+    
+    /**
+     * Tests the macro resolver main functions, new syntax.<p>
+     */
+    public void testResolveMacrosNewSyntax() {
+           
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+        resolver.addMacro("test", "REPLACED");
+        
+        String content, result;
+        
+        content = "<<This is a prefix >>%(test)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>REPLACED<<This is a suffix>>", result);
+        
+        content = "%(test)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("REPLACED<<This is a suffix>>", result);        
+        
+        content = "<<This is a prefix >>%(test)";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>REPLACED", result);
+        
+        content = "<<This is a prefix >>%<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%<<This is a suffix>>", result);            
+
+        content = "%<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("%<<This is a suffix>>", result);        
+        
+        content = "%(<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("%(<<This is a suffix>>", result);  
+        
+        content = "<<This is a prefix >>%";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%", result);
+        
+        content = "<<This is a prefix >>%(";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%(", result);
+        
+        content = "<<This is a prefix >>%()<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >><<This is a suffix>>", result);  
+        
+        content = "<<This is a prefix >>%(unknown)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >><<This is a suffix>>", result);
+        
+        content = "<<This is a prefix >>%(test<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%(test<<This is a suffix>>", result);
+        
+        content = "<<This is a prefix >>%(";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%(", result);
+        
+        content = "<<This is a prefix >>%(%()";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%(", result);
+        
+        content = "%(%<<This %)( is%)% a ((pr%((%(efix >>%(%()";
+        result  = resolver.resolveMacros(content);
+        assertEquals("%(%<<This %)( is%)% a ((pr%((%(efix >>%(", result);
+        
+        // test for unknown macros       
+        
+        content = "<<This is a prefix >>%(unknown)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >><<This is a suffix>>", result);
+                
+        content = "<<This is a prefix >>%(unknown)";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>", result);
+        
+        content = "%(unknown)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a suffix>>", result);   
+        
+        content = "%(test)<<This is a prefix >>%(test)%(unknown)%(test)<<This is a suffix>>%(test)";
+        result  = resolver.resolveMacros(content);
+        assertEquals("REPLACED<<This is a prefix >>REPLACEDREPLACED<<This is a suffix>>REPLACED", result);   
+        
+        // set the "keep unknown macros" flag
+        resolver.setKeepEmptyMacros(true);        
+        
+        content = "<<This is a prefix >>%(%()";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%(%()", result);
+        
+        content = "<<This is a prefix >>%(unknown)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%(unknown)<<This is a suffix>>", result);
+        
+        content = "<<This is a prefix >>%(unknown)";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%(unknown)", result);
+        
+        content = "%(unknown)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("%(unknown)<<This is a suffix>>", result);   
+        
+        content = "%(test)<<This is a prefix >>%(test)%(unknown)%(test)<<This is a suffix>>%(test)";
+        result  = resolver.resolveMacros(content);
+        assertEquals("REPLACED<<This is a prefix >>REPLACED%(unknown)REPLACED<<This is a suffix>>REPLACED", result);                
+    } 
+
+    /**
+     * Tests the macro resolver main functions, combined syntax.<p>
+     */
+    public void testResolveMacrosCombinedSyntax() {
+           
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+        resolver.addMacro("test", "REPLACED");
+        
+        String content, result;
+        
+        content = "<<This is a prefix >>%(test)-${test}<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>REPLACED-REPLACED<<This is a suffix>>", result);
+        
+        content = "<<This is a prefix >>%{test}<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%{test}<<This is a suffix>>", result);
+        
+        content = "<<This is a prefix >>%(test}-%{test)-%{test}-${test)-$(test}-$(test)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        // assertEquals("<<This is a prefix >>%(test}-%{test)-%{test}-${test)-$(test}-$(test)<<This is a suffix>>", result);
+        
+        content = "${test}-%(test)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("REPLACED-REPLACED<<This is a suffix>>", result);        
+        
+        content = "<<This is a prefix >>${test}-%(test)";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>REPLACED-REPLACED", result);
+        
+        content = "<<This is a prefix >>%$<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%$<<This is a suffix>>", result);            
+
+        content = "%$<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("%$<<This is a suffix>>", result);        
+        
+        content = "%(${<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("%(${<<This is a suffix>>", result);  
+        
+        content = "<<This is a prefix >>$%";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>$%", result);
+        
+        content = "<<This is a prefix >>%(${";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%(${", result);
+        
+        content = "<<This is a prefix >>%()${}<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >><<This is a suffix>>", result);  
+        
+        content = "<<This is a prefix >>%(unknown)${unknown}<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >><<This is a suffix>>", result);
+        
+        content = "<<This is a prefix >>%(test${test<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%(test${test<<This is a suffix>>", result);
+        
+        content = "<<This is a prefix >>%${(%()${}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%${(", result);
+        
+        content = "<<This is a prefix >>%(a${b}c)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >><<This is a suffix>>", result);
+
+        content = "<<This is a prefix >>%(a${test}c)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >><<This is a suffix>>", result);
+
+        content = "<<This is a prefix >>${a%(test)c}<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >><<This is a suffix>>", result);
+
+        content = "<<This is a prefix >>${a${test}c$}<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>${aREPLACEDc$}<<This is a suffix>>", result);
+
+        content = "<<This is a prefix >>%(a%(test)c%)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%(aREPLACEDc%)<<This is a suffix>>", result);
+        
+        content = "<<This is a prefix >>${a${test}c)<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>${aREPLACEDc)<<This is a suffix>>", result);
+
+        content = "<<This is a prefix >>%(a%(test)c}<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>%(aREPLACEDc}<<This is a suffix>>", result);
+    } 
     
     /**
      * Tests a minimal interface implementation.<p>

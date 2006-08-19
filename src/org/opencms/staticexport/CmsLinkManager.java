@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/04/28 08:45:56 $
- * Version: $Revision: 1.60.4.2 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.60.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,11 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsExternalLinksValidationResult;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.validation.CmsPointerLinkValidationResult;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.net.MalformedURLException;
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.2 $ 
+ * @version $Revision: 1.60.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,7 +70,7 @@ public class CmsLinkManager {
     private static URL m_baseUrl;
 
     /** Stores the results of a extern link validation. */
-    private CmsPointerLinkValidationResult m_pointerLinkValidationResult;
+    private CmsExternalLinksValidationResult m_pointerLinkValidationResult;
 
     /**
      * Public constructor.<p>
@@ -104,7 +104,7 @@ public class CmsLinkManager {
      */
     public static String getAbsoluteUri(String relativeUri, String baseUri) {
 
-        if ((relativeUri == null) || (relativeUri.length() >= 1 && relativeUri.charAt(0) == '/')) {
+        if ((relativeUri == null) || ((relativeUri.length() >= 1) && (relativeUri.charAt(0) == '/'))) {
             // uri is null or already absolute
             return relativeUri;
         }
@@ -336,7 +336,7 @@ public class CmsLinkManager {
      * 
      * @return the result of the last extern link validation
      */
-    public CmsPointerLinkValidationResult getPointerLinkValidationResult() {
+    public CmsExternalLinksValidationResult getPointerLinkValidationResult() {
 
         return m_pointerLinkValidationResult;
     }
@@ -346,7 +346,7 @@ public class CmsLinkManager {
      * 
      * @param externLinkValidationResult the result a extern link validation
      */
-    public void setPointerLinkValidationResult(CmsPointerLinkValidationResult externLinkValidationResult) {
+    public void setPointerLinkValidationResult(CmsExternalLinksValidationResult externLinkValidationResult) {
 
         m_pointerLinkValidationResult = externLinkValidationResult;
     }
@@ -554,7 +554,7 @@ public class CmsLinkManager {
             }
 
             // add cut off parameters and return the result
-            if (parameters != null) {
+            if ((parameters != null) && (resultLink != null)) {
                 resultLink = resultLink.concat(parameters);
             }
 

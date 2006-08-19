@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.6.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -271,7 +271,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                 String name = (String)itMods.next();
                 CmsModuleVersion instVer = (CmsModuleVersion)installedModules.get(name);
                 CmsModuleVersion availVer = ((CmsModule)availableModules.get(name)).getVersion();
-                boolean uptodate = (instVer != null && instVer.compareTo(availVer) >= 0);
+                boolean uptodate = ((instVer != null) && (instVer.compareTo(availVer) >= 0));
                 if (uptodate) {
                     m_uptodateModules.add(name);
                 } else {
@@ -551,7 +551,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         // 5) because the setup bean implements I_CmsShellCommands, the shell constructor can pass the shell's CmsObject back to the setup bean
         // 6) thus, the setup bean can do things with the Cms
 
-        if (m_cms != null && m_installModules != null) {
+        if ((m_cms != null) && (m_installModules != null)) {
             Set utdModules = new HashSet(getUptodateModules());
             I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
             for (int i = 0; i < m_installModules.size(); i++) {

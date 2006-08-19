@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.25.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.25.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,11 +147,10 @@ public class CmsIndexingThreadManager extends Thread {
             return;
         }
 
-        Document cachedDoc;
-        if ((m_documentCache != null)
-            && ((cachedDoc = (Document)m_documentCache.get(res.getId().toString().concat(index.getLocale()))) != null)) {
+        Document cachedDoc = m_documentCache == null ? null
+        : (Document)m_documentCache.get(res.getId().toString().concat(index.getLocale()));
+        if (cachedDoc != null) {
             // search document for the resource has already been cached, just re-use without extra Thread
-
             m_fileCounter++;
             m_returnedCounter++;
             try {
@@ -279,9 +278,7 @@ public class CmsIndexingThreadManager extends Thread {
         try {
             // wait 30 seconds for the initial indexing
             Thread.sleep(30000);
-
-            while (m_fileCounter > m_returnedCounter && max-- > 0) {
-
+            while ((m_fileCounter > m_returnedCounter) && (max-- > 0)) {
                 Thread.sleep(30000);
                 // wait 30 seconds before we start checking for "dead" index threads
                 if (LOG.isWarnEnabled()) {
@@ -290,7 +287,6 @@ public class CmsIndexingThreadManager extends Thread {
                         new Integer(m_abandonedCounter),
                         new Integer((m_fileCounter - m_returnedCounter))));
                 }
-
             }
         } catch (Exception exc) {
             // noop

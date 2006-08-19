@@ -279,7 +279,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         }
         return ret;
     }
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */

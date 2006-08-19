@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.15.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -197,7 +197,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
         try {
             CmsLock lock = getCms().getLock(newRes);
             // if the new resource has no exclusive lock, set the editProps flag to false
-            if (lock.getType() != CmsLock.TYPE_EXCLUSIVE) {
+            if (! lock.isExclusive()) {
                 editProps = false;
             }
         } catch (CmsException e) {

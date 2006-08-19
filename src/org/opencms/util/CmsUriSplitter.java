@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUriSplitter.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,12 @@ import java.net.URI;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.3.4.1 $
  */
 public class CmsUriSplitter {
+
+    /** Empty (non null) StringBuffer constant. */
+    private static final StringBuffer EMPTY_BUFFER = new StringBuffer(0);
 
     /** The anchor part of the uri, for example <code>someanchor</code>. */
     private String m_anchor;
@@ -118,14 +121,13 @@ public class CmsUriSplitter {
 
             // use simple parsing
             StringBuffer prefix = new StringBuffer(uri.length());
-            StringBuffer anchor = null;
-            StringBuffer query = null;
+            StringBuffer anchor = EMPTY_BUFFER;
+            StringBuffer query = EMPTY_BUFFER;
 
             int len = uri.length();
             int cur = 0;
 
             for (int i = 0; i < len; i++) {
-
                 char c = uri.charAt(i);
                 if (c == '#') {
                     // start of anchor
@@ -159,10 +161,10 @@ public class CmsUriSplitter {
             if (prefix.length() > 0) {
                 m_prefix = prefix.toString();
             }
-            if ((anchor != null) && (anchor.length() > 0)) {
+            if (anchor.length() > 0) {
                 m_anchor = anchor.toString();
             }
-            if ((query != null) && (query.length() > 0)) {
+            if (query.length() > 0) {
                 m_query = query.toString();
             }
         }

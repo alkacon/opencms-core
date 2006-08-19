@@ -3,21 +3,19 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<opencms_version>6.5.0</opencms_version>
+		<createdate>Wed, 12 Jul 2006 15:20:47 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>5</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.history</name>
 		<nicename><![CDATA[OpenCms 6 File history administration tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
-		<description><![CDATA[
-<p>This module contains the OpenCms administration tools for managing the file history feature.</p>
-<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
-]]></description>
-		<version>1.2.0</version>
+		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the file history feature.</p>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.2.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -40,6 +38,19 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
+			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -49,19 +60,9 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/org.opencms.workplace.tools.history</destination>
 			<type>folder</type>
+			<uuidstructure>df00cb0e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
@@ -73,6 +74,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.tools.history/lib</destination>
 			<type>folder</type>
+			<uuidstructure>df033c10-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
@@ -85,6 +87,7 @@
 			<source>system/modules/org.opencms.workplace.tools.history/lib/org.opencms.workplace.tools.history.jar</source>
 			<destination>system/modules/org.opencms.workplace.tools.history/lib/org.opencms.workplace.tools.history.jar</destination>
 			<type>plain</type>
+			<uuidstructure>df0a6801-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2b441159-3b29-11da-8883-df763b25cc68</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -93,10 +96,11 @@
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
-		</file>		
+		</file>
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -122,7 +126,7 @@
 					<flags>38</flags>
 					<permissionset>
 						<allowed>0</allowed>
-						<denied>15</denied>
+						<denied>30</denied>
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
@@ -130,6 +134,7 @@
 		<file>
 			<destination>system/workplace/admin</destination>
 			<type>folder</type>
+			<uuidstructure>825fb7db-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -140,12 +145,17 @@
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Administration View]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/admin/history</destination>
 			<type>folder</type>
+			<uuidstructure>df0f22f4-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -186,6 +196,7 @@
 		<file>
 			<destination>system/workplace/admin/history/clearhistory</destination>
 			<type>folder</type>
+			<uuidstructure>df164eed-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -227,7 +238,8 @@
 			<source>system/workplace/admin/history/clearhistory/index.jsp</source>
 			<destination>system/workplace/admin/history/clearhistory/index.jsp</destination>
 			<type>jsp</type>
-
+			<uuidstructure>df1b09e6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>df1b09e5-11b7-11db-91cd-fdbae480bac9</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -244,6 +256,7 @@
 		<file>
 			<destination>system/workplace/admin/history/settings</destination>
 			<type>folder</type>
+			<uuidstructure>df2235da-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -285,7 +298,8 @@
 			<source>system/workplace/admin/history/settings/index.jsp</source>
 			<destination>system/workplace/admin/history/settings/index.jsp</destination>
 			<type>jsp</type>
-
+			<uuidstructure>df2961d3-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>df2961d2-11b7-11db-91cd-fdbae480bac9</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -302,6 +316,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -313,6 +328,7 @@
 		<file>
 			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>
+			<uuidstructure>c3a8d33c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -324,6 +340,7 @@
 		<file>
 			<destination>system/workplace/resources/tools/history</destination>
 			<type>folder</type>
+			<uuidstructure>dfc92449-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -335,6 +352,7 @@
 		<file>
 			<destination>system/workplace/resources/tools/history/icons</destination>
 			<type>folder</type>
+			<uuidstructure>dfcb6e3b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -346,6 +364,7 @@
 		<file>
 			<destination>system/workplace/resources/tools/history/icons/big</destination>
 			<type>folder</type>
+			<uuidstructure>dfcddf3d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -358,33 +377,63 @@
 			<source>system/workplace/resources/tools/history/icons/big/history.png</source>
 			<destination>system/workplace/resources/tools/history/icons/big/history.png</destination>
 			<type>image</type>
-
+			<uuidstructure>dfd50b2f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>dfd50b2e-11b7-11db-91cd-fdbae480bac9</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/history/icons/big/history_clear.png</source>
 			<destination>system/workplace/resources/tools/history/icons/big/history_clear.png</destination>
 			<type>image</type>
-
+			<uuidstructure>dfd9c623-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>dfd9c622-11b7-11db-91cd-fdbae480bac9</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/history/icons/big/history_settings.png</source>
 			<destination>system/workplace/resources/tools/history/icons/big/history_settings.png</destination>
 			<type>image</type>
-
+			<uuidstructure>dfde8117-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>dfde8116-11b7-11db-91cd-fdbae480bac9</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/history/icons/small</destination>
+			<type>folder</type>
+			<uuidstructure>dfe33c0b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -394,26 +443,22 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/history/icons/small</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>        
-		<file>
 			<source>system/workplace/resources/tools/history/icons/small/history.png</source>
 			<destination>system/workplace/resources/tools/history/icons/small/history.png</destination>
 			<type>image</type>
+			<uuidstructure>dfe81e0d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>dfe81e0c-11b7-11db-91cd-fdbae480bac9</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>

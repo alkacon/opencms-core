@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2006/07/20 09:57:21 $
- * Version: $Revision: 1.23.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.23.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.23.4.1 $
+ * @version $Revision: 1.23.4.2 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -123,9 +123,9 @@ public class TestProperty extends OpenCmsTestCase {
         CmsProperty prop;
         prop = cms.readPropertyObject(source, CmsPropertyDefinition.PROPERTY_TITLE, false);
         
-        // basic asserts so we know for shure where we start
-        assertEquals("Sample Article 1", prop.getValue());
-        assertEquals("Sample Article 1", prop.getStructureValue());
+        // basic asserts so we know for sure where we start
+        assertEquals("Sample article 1  (>>SearchEgg1<<)", prop.getValue());
+        assertEquals("Sample article 1  (>>SearchEgg1<<)", prop.getStructureValue());
         assertNull(prop.getResourceValue());
         
         // simple list asserts

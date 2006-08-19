@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/04/26 14:38:33 $
- * Version: $Revision: 1.34.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.34.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,15 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,14 +67,17 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34.4.1 $ 
+ * @version $Revision: 1.34.4.2 $ 
  * 
  * @since 6.0.0 
  */
-public abstract class CmsEditor extends CmsDialog {
+public abstract class CmsEditor extends CmsEditorBase {
 
     /** Value for the action: change the body. */
     public static final int ACTION_CHANGE_BODY = 124;
+
+    /** Value for the action: delete the current locale. */
+    public static final int ACTION_DELETELOCALE = 140;
 
     /** Value for the action: exit. */
     public static final int ACTION_EXIT = 122;
@@ -101,6 +106,9 @@ public abstract class CmsEditor extends CmsDialog {
     /** Value for the action parameter: cleanup content. */
     public static final String EDITOR_CLEANUP = "cleanup";
 
+    /** Value for the action parameter: delete the current locale. */
+    public static final String EDITOR_DELETELOCALE = "deletelocale";
+
     /** Value for the action parameter: exit editor. */
     public static final String EDITOR_EXIT = "exit";
 
@@ -122,8 +130,8 @@ public abstract class CmsEditor extends CmsDialog {
     /** Value for the action parameter: an error occured. */
     public static final String EDITOR_SHOW_ERRORMESSAGE = "error";
 
-    /** Stores the VFS editor path. */
-    public static final String PATH_EDITORS = PATH_WORKPLACE + "editors/";
+    /** Marker for empty locale in locale selection. */
+    public static final String EMPTY_LOCALE = " [-]";
 
     /** Parameter name for the request parameter "backlink". */
     public static final String PARAM_BACKLINK = "backlink";
@@ -155,12 +163,17 @@ public abstract class CmsEditor extends CmsDialog {
     /** Parameter name for the request parameter "tempfile". */
     public static final String PARAM_TEMPFILE = "tempfile";
 
+    /** Stores the VFS editor path. */
+    public static final String PATH_EDITORS = PATH_WORKPLACE + "editors/";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEditor.class);
 
+    /** A cloned cms instance that prevents the broken link remotion during unmarshalling. */
+    private CmsObject m_cloneCms;
+
     /** The encoding to use (will be read from the file property). */
     private String m_fileEncoding;
-
     // some private members for parameter storage
     private String m_paramBackLink;
     private String m_paramContent;
@@ -171,6 +184,7 @@ public abstract class CmsEditor extends CmsDialog {
     private String m_paramLoadDefault;
     private String m_paramModified;
     private String m_paramOldelementlanguage;
+
     private String m_paramTempFile;
 
     /** Helper variable to store the uri to the editors pictures. */
@@ -226,11 +240,41 @@ public abstract class CmsEditor extends CmsDialog {
         List options = new ArrayList(locales.size());
         List selectList = new ArrayList(locales.size());
         int currentIndex = -1;
+
+        String filename = resource;
+
+        //get the locales already used in the resource
+        List contentLocales = new ArrayList();
+        try {
+
+            CmsResource res = getCms().readResource(filename);
+
+            String temporaryFilename = CmsResource.getFolderPath(resource)
+                + CmsWorkplace.TEMP_FILE_PREFIX
+                + res.getName();
+            if (getCms().existsResource(temporaryFilename)) {
+                res = getCms().readResource(temporaryFilename);
+            }
+            CmsFile file = CmsFile.upgrade(res, getCms());
+            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
+            contentLocales = xmlContent.getLocales();
+        } catch (CmsException e) {
+            // to nothing here in case the resource could not be opened
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, filename), e);
+            }
+        }
+
         for (int counter = 0; counter < locales.size(); counter++) {
             // create the list of options and values
             Locale curLocale = (Locale)locales.get(counter);
             selectList.add(curLocale.toString());
-            options.add(curLocale.getDisplayName(getLocale()));
+            StringBuffer buf = new StringBuffer();
+            buf.append(curLocale.getDisplayName(getLocale()));
+            if (!contentLocales.contains(curLocale)) {
+                buf.append(EMPTY_LOCALE);
+            }
+            options.add(buf.toString());
             if (curLocale.equals(selectedLocale)) {
                 // set the selected index of the selector
                 currentIndex = counter;
@@ -239,7 +283,7 @@ public abstract class CmsEditor extends CmsDialog {
 
         if (currentIndex == -1) {
             // no matching element language found, use first element language in list
-            if (selectList != null && selectList.size() > 0) {
+            if (selectList.size() > 0) {
                 currentIndex = 0;
                 setParamElementlanguage((String)selectList.get(0));
             }
@@ -342,13 +386,56 @@ public abstract class CmsEditor extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#checkLock(java.lang.String, int)
      */
-    public void checkLock(String resource, int mode) throws CmsException {
+    public void checkLock(String resource, CmsLockType type) throws CmsException {
 
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
         if (!getCms().getLock(res).isNullLock()) {
             setParamModified(Boolean.TRUE.toString());
         }
-        super.checkLock(resource, mode);
+        super.checkLock(resource, type);
+    }
+
+    /**
+     * Generates a button for delte locale.<p>
+     * 
+     * @param href the href link for the button, if none is given the button will be disabled
+     * @param target the href link target for the button, if none is given the target will be same window
+     * @param image the image name for the button, skin path will be automattically added as prefix
+     * @param label the label for the text of the button 
+     * @param type 0: image only (default), 1: image and text, 2: text only
+     * 
+     * @return a button for the OpenCms workplace
+     */
+    public String deleteLocaleButton(String href, String target, String image, String label, int type) {
+
+        String filename = getParamResource();
+
+        try {
+            CmsResource res = getCms().readResource(filename);
+
+            String temporaryFilename = CmsResource.getFolderPath(filename)
+                + CmsWorkplace.TEMP_FILE_PREFIX
+                + res.getName();
+            if (getCms().existsResource(temporaryFilename)) {
+                res = getCms().readResource(temporaryFilename);
+            }
+            CmsFile file = CmsFile.upgrade(res, getCms());
+            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
+            int locales = xmlContent.getLocales().size();
+            // there are less than 2 locales, so disable the delete locale button
+            if (locales < 2) {
+                href = null;
+                target = null;
+                image += "_in";
+            }
+        } catch (CmsException e) {
+            // to nothing here in case the resource could not be opened
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, filename), e);
+            }
+        }
+        return button(href, target, image, label, type, getSkinUri() + "buttons/");
+
     }
 
     /**
@@ -509,7 +596,7 @@ public abstract class CmsEditor extends CmsDialog {
 
         m_paramBackLink = backLink;
     }
-   
+
     /**
      * Sets the content of the editor.<p>
      * 
@@ -654,7 +741,7 @@ public abstract class CmsEditor extends CmsDialog {
             // now replace the content of the original file
             CmsFile orgFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
             orgFile.setContents(tempFile.getContents());
-            getCms().writeFile(orgFile);
+            getCloneCms().writeFile(orgFile);
         } else {
             getCms().copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
         }
@@ -663,7 +750,7 @@ public abstract class CmsEditor extends CmsDialog {
         if ((flags & CmsResource.FLAG_TEMPFILE) == CmsResource.FLAG_TEMPFILE) {
             flags ^= CmsResource.FLAG_TEMPFILE;
             getCms().chflags(getParamResource(), flags);
-        }       
+        }
     }
 
     /**
@@ -701,10 +788,7 @@ public abstract class CmsEditor extends CmsDialog {
         // copy the file to edit to a temporary file
         try {
             getCms().copyResource(getCms().getSitePath(file), temporaryFilename, CmsResource.COPY_AS_NEW);
-            getCms().setDateLastModified(
-                temporaryFilename,
-                System.currentTimeMillis(),
-                false);
+            getCms().setDateLastModified(temporaryFilename, System.currentTimeMillis(), false);
             // set the temporary file flag
             int flags = getCms().readResource(temporaryFilename, CmsResourceFilter.ALL).getFlags();
             if ((flags & CmsResource.FLAG_TEMPFILE) == 0) {
@@ -803,6 +887,24 @@ public abstract class CmsEditor extends CmsDialog {
     protected String encodeContent(String content) {
 
         return CmsEncoder.escapeWBlanks(content, CmsEncoder.ENCODING_UTF_8);
+    }
+
+    /** 
+     * Returns a cloned cms instance that prevents the time range resource filter check.<p> 
+     * 
+     * Use it always for unmarschalling and file writing.<p>
+     * 
+     * @return a cloned cms instance that prevents the time range resource filter check
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsObject getCloneCms() throws CmsException {
+
+        if (m_cloneCms == null) {
+            m_cloneCms = OpenCms.initCmsObject(getCms());
+            m_cloneCms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
+        }
+        return m_cloneCms;
     }
 
     /**

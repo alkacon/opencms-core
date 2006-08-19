@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Test2Links 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test14.xsd">
+  
+	<Test2Link language="en">
+		<Html>
+			<links>
+				<link name="link0" type="IMG" internal="true">
+					<target><![CDATA[/sites/default/folder1/image2.gif]]></target>
+					<uuid>a7b5d298-b3ab-11d8-b3e3-514d35713fed</uuid>
+				</link>
+			</links>
+			<content><![CDATA[<img src="${link0}">]]></content>
+		</Html>
+		<VfsLink>
+			<link>
+				<target><![CDATA[/sites/default/folder1/image2.gif]]></target>
+				<uuid>a7b5d298-b3ab-11d8-b3e3-514d35713fed</uuid>
+			</link>
+		</VfsLink>
+	</Test2Link>
+</Test2Links>

@@ -1,0 +1,183 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLinkUpdateUtil.java,v $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.1.2.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.relations;
+
+import org.dom4j.Attribute;
+import org.dom4j.Element;
+
+/**
+ * An utility class for updating the link xml node.<p>
+ * 
+ * @author Michael Moossen 
+ * 
+ * @version $Revision: 1.1.2.1 $ 
+ * 
+ * @since 6.0.0 
+ */
+public final class CmsLinkUpdateUtil {
+
+    /**
+     * Prevents the instanciation of this utility class.<p>
+     */
+    private CmsLinkUpdateUtil() {
+
+        // no-op
+    }
+
+    /**
+     * Updates the link node in the underlying XML page document.<p>
+     * 
+     * @param link the link to update
+     * @param element the &lt;link&gt; element to update
+     * @param updateOnly if set and the element has no {@link CmsLink#NODE_TARGET} subelement, so no action if executed at all
+     */
+    public static void updateXml(CmsLink link, Element element, boolean updateOnly) {
+
+        // if element is not null
+        if (element != null) {
+            if (!updateOnly || (element.element(CmsLink.NODE_TARGET) != null)) {
+                String strId = (link.getStructureId() == null ? null : link.getStructureId().toString());
+                updateNode(element, CmsLink.NODE_TARGET, link.getTarget(), true);
+                updateNode(element, CmsLink.NODE_UUID, strId, false);
+                updateNode(element, CmsLink.NODE_ANCHOR, link.getAnchor(), true);
+                updateNode(element, CmsLink.NODE_QUERY, link.getQuery(), true);
+            }
+        }
+    }
+
+    /**
+     * Updates the type for a link xml element node.<p>
+     * 
+     * @param element the link element node to update
+     * @param type the relation type to set
+     */
+    public static void updateType(Element element, CmsRelationType type) {
+
+        updateAttribute(element, CmsLink.ATTRIBUTE_TYPE, type.toString());
+    }
+
+    /**
+     * Updates the given xml element attribute with the given value.<p> 
+     * 
+     * @param parent the element to set the attribute for
+     * @param attrName the attribute name
+     * @param value the value to set, or <code>null</code> to remove
+     */
+    private static void updateAttribute(Element parent, String attrName, String value) {
+
+        if (parent != null) {
+            Attribute attribute = parent.attribute(attrName);
+            if (value != null) {
+                if (attribute == null) {
+                    parent.addAttribute(attrName, value);
+                } else {
+                    attribute.setValue(value);
+                }
+            } else {
+                // remove only if exists
+                if (attribute != null) {
+                    parent.remove(attribute);
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates the given xml node with the given value.<p>
+     * 
+     * @param parent the parent node
+     * @param nodeName the node to update
+     * @param value the value to use to update the given node, can be <code>null</code>
+     * @param cdata if the value should be in a CDATA section or not
+     */
+    private static void updateNode(Element parent, String nodeName, String value, boolean cdata) {
+
+        // get current node element
+        Element nodeElement = parent.element(nodeName);
+        if (value != null) {
+            if (nodeElement == null) {
+                // element wasn't there before, add element and set value
+                nodeElement = parent.addElement(nodeName);
+            }
+            if (nodeElement != null) {
+                // element is there, update element value
+                nodeElement.clearContent();
+                if (cdata) {
+                    nodeElement.addCDATA(value);
+                } else {
+                    nodeElement.addText(value);
+                }
+            }
+        } else {
+            // remove only if element exists
+            if (nodeElement != null) {
+                // remove element
+                parent.remove(nodeElement);
+            }
+        }
+    }
+
+    /**
+     * Updates the given xml element with this link information.<p>
+     * 
+     * @param link the link to get the information from
+     * @param element the &lt;link&gt; element to update
+     */
+    public static void updateXmlForVfsFileReference(CmsLink link, Element element) {
+
+        // if element is not null
+        if (element != null) {
+            // update the type attribute
+            updateAttribute(element, CmsLink.ATTRIBUTE_TYPE, link.getType().toString());
+            // update the sub-elements
+            updateXml(link, element, false);
+        }
+    }
+
+    /**
+     * Updates the given xml element with this link information.<p>
+     * 
+     * @param link the link to get the information from
+     * @param element the &lt;link&gt; element to update
+     */
+    public static void updateXmlForHtmlValue(CmsLink link, Element element) {
+
+        // if element is not null
+        if (element != null) {
+            // update the additional attributes
+            updateAttribute(element, CmsLink.ATTRIBUTE_NAME, link.getName());
+            updateAttribute(element, CmsLink.ATTRIBUTE_INTERNAL, Boolean.toString(link.isInternal()));
+            // update the common sub-elements and attributes
+            updateXmlForVfsFileReference(link, element);
+        }
+    }
+}

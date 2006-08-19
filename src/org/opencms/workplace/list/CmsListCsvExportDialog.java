@@ -54,7 +54,7 @@ public class CmsListCsvExportDialog extends CmsDialog {
 
     /** List class paramater value. */
     private String m_paramListclass;
-    
+
     /**
      * Public constructor.<p>
      * 
@@ -73,11 +73,11 @@ public class CmsListCsvExportDialog extends CmsDialog {
      * @throws ClassNotFoundException if the list dialog class is not found
      */
     public String generateCsv() throws ClassNotFoundException {
-        
+
         CmsHtmlList list = A_CmsListDialog.getListObject(Class.forName(getParamListclass()), getSettings());
         return list.listCsv();
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -90,25 +90,23 @@ public class CmsListCsvExportDialog extends CmsDialog {
         this(new CmsJspActionElement(context, req, res));
     }
 
-    
     /**
      * Returns the value for the List class parameter.<p>
      *
      * @return the value for the List class parameter
      */
     public String getParamListclass() {
-    
+
         return m_paramListclass;
     }
 
-    
     /**
      * Sets the value for the List class parameter.<p>
      *
      * @param listclass the value for the List class parameter to set
      */
     public void setParamListclass(String listclass) {
-    
+
         m_paramListclass = listclass;
     }
 

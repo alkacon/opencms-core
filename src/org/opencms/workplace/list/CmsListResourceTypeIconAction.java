@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceTypeIconAction.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,7 +64,7 @@ public class CmsListResourceTypeIconAction extends CmsListExplorerDirectAction {
      */
     public CmsMessageContainer getHelpText() {
 
-        if (super.getHelpText() == null || super.getHelpText().equals(EMPTY_MESSAGE)) {
+        if ((super.getHelpText() == null) || super.getHelpText().equals(EMPTY_MESSAGE)) {
             return Messages.get().container(Messages.GUI_EXPLORER_LIST_ACTION_RES_HELP_0);
         }
         return super.getHelpText();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsMultiListDialog.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.JspWriter;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -210,7 +210,6 @@ public class CmsMultiListDialog {
      */
     protected String defaultActionHtmlStart() {
 
-        return m_activeWp.getList().listJs()
-            + m_activeWp.dialogContentStart(getActiveWp().getParamTitle());
+        return m_activeWp.getList().listJs() + m_activeWp.dialogContentStart(getActiveWp().getParamTitle());
     }
 }

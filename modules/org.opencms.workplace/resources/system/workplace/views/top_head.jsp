@@ -29,9 +29,6 @@
         var link = document.forms.wpViewSelect.wpView.options[document.forms.wpViewSelect.wpView.selectedIndex].value;
         window.top.body.location.href = link;
     }
-    
-    // this can be removed after legacy views are not longer active
-	var helpUrl = ""; 
 
     function doReload() {
 		window.top.location.href = "<%= wp.getWorkplaceReloadUri() %>";

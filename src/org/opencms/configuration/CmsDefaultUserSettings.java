@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.17.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,9 +46,9 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.17.4.1 $
  * 
- * @since 6.0.0
+ * @since 6.0.0 
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
 
@@ -58,41 +58,14 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /** Array list for fast lookup of "button styles". */
     public static final List BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
 
-    /** Array of the "task startupfilter" nicenames. */
-    public static final String[] FILTER_NAMES = {
-        "mynewtasks",
-        "mytasksformyroles",
-        "alltasks",
-        "myactivetasks",
-        "myactivetasksformyroles",
-        "allactivetasks",
-        "mycompletedtasks",
-        "mycompletedtasksformyroles",
-        "allcompletedtasks",
-        "newtaskscreatedbyme",
-        "activetaskscreatedbyme",
-        "completedtaskscreatedbyme"};
+    /** Publish button appearance: show always. */
+    public static final String PUBLISHBUTTON_SHOW_ALWAYS = "always";
 
-    /** Array list for fast lookup of "task startupfilter" nicenames. */
-    public static final List FILTER_NAMES_LIST = Collections.unmodifiableList(Arrays.asList(FILTER_NAMES));
+    /** Publish button appearance: show auto (only if user has publish permissions). */
+    public static final String PUBLISHBUTTON_SHOW_AUTO = "auto";
 
-    /**  Array of the "task startupfilter" values. */
-    public static final String[] FILTER_VALUES = {
-        "a1",
-        "b1",
-        "c1",
-        "a2",
-        "b2",
-        "c2",
-        "a3",
-        "b3",
-        "c3",
-        "d1",
-        "d2",
-        "d3"};
-
-    /** Array list for fast lookup of "task startupfilter" values. */
-    public static final List FILTER_VALUES_LIST = Collections.unmodifiableList(Arrays.asList(FILTER_VALUES));
+    /** Publish button appearance: show never. */
+    public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
     /** Parameter for buttonstyle text & image. */
     private static final int BUTTONSTYLE_TEXTIMAGE = 1;
@@ -167,6 +140,8 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      * Returns the default setting for expanding inherited permissions in the dialog.<p>
      * 
      * @return true if inherited permissions should be expanded, otherwise false
+     * 
+     * @see #getDialogExpandInheritedPermissions()
      */
     public String getDialogExpandInheritedPermissionsString() {
 
@@ -177,6 +152,8 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      * Returns the default setting for expanding the users permissions in the dialog.<p>
      * 
      * @return true if the users permissions should be expanded, otherwise false
+     * 
+     * @see #getDialogExpandUserPermissions()
      */
     public String getDialogExpandUserPermissionsString() {
 
@@ -380,7 +357,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file last modified by should be shown in explorer view.<p>
      * 
-     * @return <code>"true"</code> if the file last modified by should be shown, otherwise <code>"false"</code>
+     * @return <code>"true"</code> if the file last modified by should be shown, otherwise <code>"false"</code> 
      */
     public String getShowExplorerFileUserLastModified() {
 
@@ -388,70 +365,23 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
-     * Determines if a message should be sent if the task is accepted.<p>
+     * Returns a string representation of the show file upload button flag.<p>
      * 
-     * @return <code>"true"</code> if a message should be sent if the task is accepted, otherwise <code>"false"</code>
-     */
-    public String getTaskMessageAcceptedString() {
-
-        return String.valueOf(getTaskMessageAccepted());
-    }
-
-    /**
-     * Determines if a message should be sent if the task is completed.<p>
+     * @return string representation of the show file upload button flag
      * 
-     * @return <code>"true"</code> if a message should be sent if the task is completed, otherwise <code>"false"</code>
+     * @see #getShowFileUploadButton()
      */
-    public String getTaskMessageCompletedString() {
+    public String getShowFileUploadButtonString() {
 
-        return String.valueOf(getTaskMessageCompleted());
-    }
-
-    /**
-     * Determines if a message should be sent if the task is forwarded.<p>
-     * 
-     * @return <code>"true"</code> if a message should be sent if the task is forwarded, otherwise <code>"false"</code>
-     */
-    public String getTaskMessageForwardedString() {
-
-        return String.valueOf(getTaskMessageForwarded());
-    }
-
-    /**
-     * Determines if all role members should be informed about the task.<p>
-     * 
-     * @return <code>"true"</code> if all role members should be informed about the task, otherwise <code>"false"</code>
-     */
-    public String getTaskMessageMembersString() {
-
-        return String.valueOf(getTaskMessageMembers());
-    }
-
-    /**
-     * Determines if all projects should be shown in tasks view.<p>
-     * 
-     * @return <code>"true"</code> if all projects should be shown in tasks view, otherwise <code>"false"</code>
-     */
-    public String getTaskShowAllProjectsString() {
-
-        return String.valueOf(getTaskShowAllProjects());
-    }
-
-    /**
-     * Gets the startup filter for the tasks view.<p>
-     * 
-     * @return the startup filter for the tasks view
-     */
-    public String getTaskStartupFilterDefault() {
-
-        int defaultFilter = FILTER_VALUES_LIST.indexOf(getTaskStartupFilter());
-        return FILTER_NAMES[defaultFilter];
+        return String.valueOf(getShowFileUploadButton());
     }
 
     /**
      * Returns a string representation of the upload Applet flag.<p>
      * 
      * @return string representation of the uploadApplet flag
+     * 
+     * @see #useUploadApplet()
      */
     public String getUploadAppletString() {
 
@@ -462,6 +392,8 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      * Returns a string representation of the workplace button style.<p>
      * 
      * @return string representation of the workplace button style
+     * 
+     * @see #getWorkplaceButtonStyle()
      */
     public String getWorkplaceButtonStyleString() {
 
@@ -776,6 +708,16 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
+     * Controls whether to display a file upload icon or not.<p>
+     * 
+     * @param flag <code>"true"</code> or <code>"false"</code> to flag the use of the file upload button
+     */
+    public void setShowFileUploadButton(String flag) {
+
+        setShowFileUploadButton(Boolean.valueOf(flag).booleanValue());
+    }
+
+    /**
      *  Sets if the lock dialog should be shown.<p>
      * 
      * @param mode true if the lock dialog should be shown, otherwise false
@@ -783,75 +725,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setShowLockDialog(String mode) {
 
         setDialogShowLock(Boolean.valueOf(mode).booleanValue());
-    }
-
-    /**
-     * Sets if a message should be sent if the task is accepted.<p>
-     * 
-     * @param mode true if a message should be sent if the task is accepted, otherwise false
-     */
-    public void setTaskMessageAccepted(String mode) {
-
-        setTaskMessageAccepted(Boolean.valueOf(mode).booleanValue());
-    }
-
-    /**
-     * Sets if a message should be sent if the task is completed.<p>
-     * 
-     * @param mode true if a message should be sent if the task is completed, otherwise false
-     */
-    public void setTaskMessageCompleted(String mode) {
-
-        setTaskMessageCompleted(Boolean.valueOf(mode).booleanValue());
-    }
-
-    /**
-     * Sets if a message should be sent if the task is forwarded.<p>
-     * 
-     * @param mode true if a message should be sent if the task is forwarded, otherwise false
-     */
-    public void setTaskMessageForwarded(String mode) {
-
-        setTaskMessageForwarded(Boolean.valueOf(mode).booleanValue());
-    }
-
-    /**
-     * Sets if all role members should be informed about the task.<p>
-     * 
-     * @param mode true if all role members should be informed about the task, otherwise false
-     */
-    public void setTaskMessageMembers(String mode) {
-
-        setTaskMessageMembers(Boolean.valueOf(mode).booleanValue());
-    }
-
-    /**
-     * Sets if all projects should be shown in tasks view.<p>
-     * 
-     * @param mode true if all projects should be shown in tasks view, otherwise false
-     */
-    public void setTaskShowAllProjects(String mode) {
-
-        setTaskShowAllProjects(Boolean.valueOf(mode).booleanValue());
-
-    }
-
-    /**
-     * Sets the startup filter for the tasks view.<p>
-     * 
-     * @param filter the startup filter for the tasks view
-     */
-    public void setTaskStartupFilterDefault(String filter) {
-
-        int defaultFilter = 0;
-        try {
-            if (filter != null) {
-                defaultFilter = FILTER_NAMES_LIST.indexOf(filter);
-            }
-        } catch (Exception e) {
-            // do nothing, use the default value
-        }
-        setTaskStartupFilter(FILTER_VALUES[defaultFilter]);
     }
 
     /**

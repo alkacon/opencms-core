@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.22.4.2 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.22.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22.4.2 $ 
+ * @version $Revision: 1.22.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -538,7 +538,7 @@ public class CmsListMetadata {
             StringBuffer style = new StringBuffer(64);
             html.append("<td");
             CmsListColumnAlignEnum align = col.getAlign();
-            if (align != CmsListColumnAlignEnum.ALIGN_LEFT && CmsStringUtil.isNotEmpty(align.toString())) {
+            if ((align != CmsListColumnAlignEnum.ALIGN_LEFT) && CmsStringUtil.isNotEmpty(align.toString())) {
                 style.append("text-align: ");
                 style.append(col.getAlign());
                 style.append("; ");
@@ -572,7 +572,7 @@ public class CmsListMetadata {
         while (itDet.hasNext()) {
             CmsListItemDetails lid = (CmsListItemDetails)itDet.next();
             if (lid.isVisible()
-                && item.get(lid.getId()) != null
+                && (item.get(lid.getId()) != null)
                 && CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.get(lid.getId()).toString())) {
                 int padCols = 0;
                 itCols = m_columns.elementList().iterator();

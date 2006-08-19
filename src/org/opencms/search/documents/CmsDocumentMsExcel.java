@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentMsExcel.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.FileNotFoundException;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,7 +79,7 @@ public class CmsDocumentMsExcel extends A_CmsVfsDocument {
             return CmsExtractorMsExcel.getExtractor().extractText(file.getContents());
         } catch (Exception e) {
             if (e instanceof FileNotFoundException) {
-                if (e.getMessage() != null && e.getMessage().indexOf("Workbook") > 0) {
+                if ((e.getMessage() != null) && (e.getMessage().indexOf("Workbook") > 0)) {
                     // special case: catch Excel95 format error
                     throw new CmsIndexException(Messages.get().container(
                         Messages.ERR_NO_EXCEL_FORMAT_1,

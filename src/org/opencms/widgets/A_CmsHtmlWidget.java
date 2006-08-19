@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.0.1 
  */
@@ -169,7 +169,7 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
 
         // generate button row start HTML
         result.append(buildOpenCmsButtonRow(CmsWorkplace.HTML_START, widgetDialog));
-        
+
         // build the link buttons
         if (getHtmlWidgetOption().showLinkDialog()) {
             result.append(widgetDialog.button("javascript:setActiveEditor('"

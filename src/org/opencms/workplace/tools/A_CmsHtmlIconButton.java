@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.21.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,7 +129,18 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String confirmationMessage,
         String onClick) {
 
-        return defaultButtonHtml(jsp, style, id, id, name, helpText, enabled, iconPath, confirmationMessage, onClick, false);
+        return defaultButtonHtml(
+            jsp,
+            style,
+            id,
+            id,
+            name,
+            helpText,
+            enabled,
+            iconPath,
+            confirmationMessage,
+            onClick,
+            false);
     }
 
     /**
@@ -247,8 +258,8 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
                 html.append("<br>");
             }
         }
-        if (style != CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY && CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath) && style != CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
+        if ((style != CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath) && (style != CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT)) {
                 html.append("&nbsp;");
             }
             if (enabled) {

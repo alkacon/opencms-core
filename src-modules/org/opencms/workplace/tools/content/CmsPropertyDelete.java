@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyDelete.java,v $
- * Date   : $Date: 2006/03/31 13:59:16 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/08/19 13:40:36 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * @author  Andreas Zahner 
  * @author  Armen Markarian 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,7 +155,7 @@ public class CmsPropertyDelete extends CmsDialog {
                         // value which was deleted at a sibling which was already processed
                         if (!property.isNullProperty()) {
                             CmsLock lock = getCms().getLock(resource);
-                            if (lock.getType() == CmsLock.TYPE_UNLOCKED) {
+                            if (lock.isUnlocked()) {
                                 // lock the resource for the current (Admin) user
                                 getCms().lockResource(resource.getRootPath());
                             }
@@ -372,7 +372,7 @@ public class CmsPropertyDelete extends CmsDialog {
             // get the lock state for the resource
             CmsLock lock = getCms().getLock(resource);
             // add this resource to the list if this is locked by another user
-            if (lock.getType() != CmsLock.TYPE_UNLOCKED
+            if (!lock.isUnlocked()
                 && !lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
                 lockedResourcesByOtherUser.add(resource);
             }

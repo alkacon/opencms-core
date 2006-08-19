@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,24 +39,24 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.8.1 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_CONFIG_FROZEN_0 = "ERR_CONFIG_FROZEN_0";    
-    
+    public static final String ERR_CONFIG_FROZEN_0 = "ERR_CONFIG_FROZEN_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DUPLICATE_SERVER_NAME_1 = "ERR_DUPLICATE_SERVER_NAME_1";
-       
+
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_DEFAULT_SITE_ROOT_0 = "INIT_DEFAULT_SITE_ROOT_0";    
-  
+    public static final String INIT_DEFAULT_SITE_ROOT_0 = "INIT_DEFAULT_SITE_ROOT_0";
+
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_DEFAULT_SITE_ROOT_1 = "INIT_DEFAULT_SITE_ROOT_1";    
-    
+    public static final String INIT_DEFAULT_SITE_ROOT_1 = "INIT_DEFAULT_SITE_ROOT_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String INIT_NO_ROOT_FOLDER_1 = "INIT_NO_ROOT_FOLDER_1";
 
@@ -71,10 +71,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_START_SITE_CONFIG_0 = "INIT_START_SITE_CONFIG_0";
-    
+
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKPLACE_SITE_0 = "INIT_WORKPLACE_SITE_0";    
-    
+    public static final String INIT_WORKPLACE_SITE_0 = "INIT_WORKPLACE_SITE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WORKPLACE_SITE_1 = "INIT_WORKPLACE_SITE_1";
 
@@ -83,9 +83,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_SITE_PROP_FAILED_0 = "LOG_READ_SITE_PROP_FAILED_0";
-    
-    
-    
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.site.messages";
 

@@ -1850,6 +1850,12 @@
 			<flags>6</flags>
 			<parentgroup/>
 		</groupdata>
+		<groupdata>
+			<name>group3</name>
+			<description><![CDATA[group3]]></description>
+			<flags>6</flags>
+			<parentgroup/>
+		</groupdata>
 		<userdata>
 			<name>test1</name>
 			<password><![CDATA[V2hCZWk1MUE0VEtYZ05ZdW9pWmRpZz09]]></password>

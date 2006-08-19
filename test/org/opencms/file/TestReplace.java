@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReplace.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.8.1 $
  */
 public class TestReplace extends OpenCmsTestCase {
   
@@ -114,7 +114,7 @@ public class TestReplace extends OpenCmsTestCase {
         // user lastmodified must be current user
         assertUserLastModified(cms, path, cms.getRequestContext().currentUser());
         // assert lock state
-        assertLock(cms, path, CmsLock.TYPE_EXCLUSIVE);
+        assertLock(cms, path, CmsLockType.EXCLUSIVE);
         // assert new content
         assertContent(cms, path, contentStr.getBytes());
         // now check the rest of the attributes

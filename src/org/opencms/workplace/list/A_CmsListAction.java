@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListAction.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.16.8.1 $
+ * Date   : $Date: 2006/08/19 13:40:40 $
+ * Version: $Revision: 1.16.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16.8.1 $ 
+ * @version $Revision: 1.16.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,7 +69,7 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
         }
         setConfirmationMessage(null);
     }
-    
+
     /**
      * Generates html for the confirmation message when having one confirmation message
      * for several actions.<p>
@@ -94,7 +94,7 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
      * @see org.opencms.workplace.list.I_CmsListAction#buttonHtml()
      */
     public String buttonHtml() {
-    
+
         return buttonHtml(getWp());
     }
 

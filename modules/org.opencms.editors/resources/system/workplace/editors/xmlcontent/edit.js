@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2006/04/12 09:54:13 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -114,6 +114,11 @@ function buttonAction(para) {
 		_form.action.value = actionCorrectXml;
 		_form.submit();
 		break;
+	case 14:
+		// delete the current locale content
+		_form.action.value = actionDeleteLocale;
+		_form.submit();
+		break;
 	default:
 		alert("No action defined for this button!");
 		break;
@@ -193,6 +198,10 @@ function checkElementLanguage(newValue) {
 	} catch (e) {
 		// ignore
 	}
+
+
+	
+
 }
 
 // submits the checked form for customized action button and considers delayed string insertion

@@ -18,6 +18,7 @@
 			<xsd:element name="Text" type="OpenCmsHtml" />
 			<xsd:element name="Release" type="OpenCmsDateTime" />			
 			<xsd:element name="Author" type="OpenCmsString" />
+			<xsd:element name="Homepage" type="OpenCmsVfsFileReference" minOccurs="0" maxOccurs="2"/>
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>

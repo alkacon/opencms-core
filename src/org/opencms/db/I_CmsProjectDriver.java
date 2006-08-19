@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.76.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
-import org.opencms.workflow.CmsTask;
 
 import java.util.List;
 import java.util.Set;
@@ -53,7 +52,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.76.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -72,7 +71,6 @@ public interface I_CmsProjectDriver {
      * @param owner the owner of the project
      * @param group the group for the project
      * @param managergroup the managergroup for the project
-     * @param task the base workflow task for the project
      * @param name the name of the project to create
      * @param description the description for the project
      * @param flags the flags for the project
@@ -88,7 +86,6 @@ public interface I_CmsProjectDriver {
         CmsUser owner,
         CmsGroup group,
         CmsGroup managergroup,
-        CmsTask task,
         String name,
         String description,
         int flags,
@@ -374,6 +371,19 @@ public interface I_CmsProjectDriver {
         int maxVersions) throws CmsException;
 
     /**
+     * Reads the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt; </code> 
+     * that were saved to the database in the previous run of OpenCms.<p>
+     * 
+     * @param dbc the current database context
+     * 
+     * @return the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt; </code> 
+     *      that were saved to the database in the previous run of OpenCms.
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List readLocks(CmsDbContext dbc) throws CmsDataAccessException;
+
+    /**
      * Reads a project given the projects id.<p>
      *
      * @param dbc the current database context
@@ -535,6 +545,21 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
+
+    /**
+     * Writes the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt; </code> 
+     * to the database for reuse in the next run of OpenCms.<p>   
+     * 
+     * This method must only be called at startup or the in-memory locking will overwritten.<p>
+     * 
+     * @param dbc the current database context
+     * 
+     * @param locks the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt;</code> that 
+     *      currently exist in OpenCms ({@link org.opencms.CmsLockManager}) 
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void writeLocks(CmsDbContext dbc, List locks) throws CmsDataAccessException;
 
     /**
      * Writes an already existing project.<p>

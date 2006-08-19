@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.16.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.16.4.1 $
  */
 public class TestProjects extends OpenCmsTestCase {
   
@@ -209,7 +209,7 @@ public class TestProjects extends OpenCmsTestCase {
         cms.deleteProject(project.getId());
 
         // ensure that the original resources are unchanged
-        assertFilter(cms, resource, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);      
+        assertFilter(cms, resource, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);      
         
         // all resources within the folder must  be unchanged now
         Iterator j = cms.readResources(resource, CmsResourceFilter.ALL, true).iterator();
@@ -218,7 +218,7 @@ public class TestProjects extends OpenCmsTestCase {
             String resName = cms.getSitePath(res);
                         
             // now evaluate the result
-            assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
+            assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         }            
     }
     

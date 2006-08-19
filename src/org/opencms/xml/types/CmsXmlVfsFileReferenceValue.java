@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/Attic/CmsXmlVfsFileReferenceValue.java,v $
- * Date   : $Date: 2006/07/13 14:56:32 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,10 @@ package org.opencms.xml.types;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.staticexport.CmsLink;
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsLinkUpdateUtil;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
 
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.0.0 
  */
@@ -133,31 +133,20 @@ public class CmsXmlVfsFileReferenceValue extends A_CmsXmlContentValue {
     /**
      * Returns the link table of this XML page element.<p>
      * 
+     * @param cms the cms context, can be <code>null</code> but no link check is performed
+     * 
      * @return the link table of this XML page element
      */
-    public CmsLink getLink() {
+    public CmsLink getLink(CmsObject cms) {
 
         Element linkElement = m_element.element(CmsXmlPage.NODE_LINK);
         if (linkElement == null) {
             return null;
         }
-        Element uuid = linkElement.element(CmsXmlPage.NODE_UUID);
-        Element target = linkElement.element(CmsXmlPage.NODE_TARGET);
-        Element anchor = linkElement.element(CmsXmlPage.NODE_ANCHOR);
-        Element query = linkElement.element(CmsXmlPage.NODE_QUERY);
-
-        if (target == null || CmsStringUtil.isEmptyOrWhitespaceOnly(target.getText())) {
-            return null;
-        }
-        CmsLink link = new CmsLink(
-            m_element,
-            "link0",
-            "VFSREF",
-            (uuid != null) ? new CmsUUID(uuid.getText()) : null,
-            target.getText(),
-            (anchor != null) ? anchor.getText() : null,
-            (query != null) ? query.getText() : null,
-            true);
+        CmsLinkUpdateUtil.updateType(linkElement, getContentDefinition().getContentHandler().getRelationType(this));
+        CmsLink link = new CmsLink(linkElement);
+        // link management check
+        link.checkConsistency(cms);
 
         return link;
     }
@@ -188,7 +177,7 @@ public class CmsXmlVfsFileReferenceValue extends A_CmsXmlContentValue {
     public String getStringValue(CmsObject cms) throws CmsRuntimeException {
 
         if (m_stringValue == null) {
-            m_stringValue = createStringValue();
+            m_stringValue = createStringValue(cms);
         }
         return m_stringValue;
     }
@@ -215,45 +204,44 @@ public class CmsXmlVfsFileReferenceValue extends A_CmsXmlContentValue {
     public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
         m_element.clearContent();
-        if (value == null) {            
+        if (value == null) {
             return;
         }
-        if (cms != null && value != null) {
-            value = CmsLinkManager.getSitePath(cms, null, value);
+        String path = value;
+        if (cms != null) {
+            // get the site path
+            path = CmsLinkManager.getSitePath(cms, null, path);
         }
-        CmsLink link = new CmsLink("link0", "VFSREF", value, true);
-        Element linkElement = m_element.addElement(CmsXmlPage.NODE_LINK);
-
-        if (link.getStructureId() != null) {
-            linkElement.addElement(CmsXmlPage.NODE_UUID).addCDATA(link.getStructureId().toString());
+        if (path == null) {
+            return;
         }
-        linkElement.addElement(CmsXmlPage.NODE_TARGET).addCDATA(link.getTarget());
-
-        if (link.getAnchor() != null) {
-            linkElement.addElement(CmsXmlPage.NODE_ANCHOR).addCDATA(link.getAnchor());
-        }
-
-        if (link.getQuery() != null) {
-            linkElement.addElement(CmsXmlPage.NODE_QUERY).addCDATA(link.getQuery());
-        }
-
+        CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(this);
+        CmsLink link = new CmsLink("link0", type, path, true);
+        // link management check
+        link.checkConsistency(cms);
+        // update xml node
+        CmsLinkUpdateUtil.updateXmlForVfsFileReference(link, m_element.addElement(CmsXmlPage.NODE_LINK));
         // ensure the String value is re-calculated next time
         m_stringValue = null;
-
     }
 
     /**
      * Creates the String value for this vfs file reference value element.<p>
      * 
+     * @param cms the cms context
+     * 
      * @return the String value for this vfs file reference value element
      */
-    private String createStringValue() {
+    private String createStringValue(CmsObject cms) {
 
         Attribute enabled = m_element.attribute(CmsXmlPage.ATTRIBUTE_ENABLED);
 
         String content = "";
-        if (getLink() != null && (enabled == null || Boolean.valueOf(enabled.getText()).booleanValue())) {
-            content = getLink().getVfsUri();
+        if ((enabled == null) || Boolean.valueOf(enabled.getText()).booleanValue()) {
+            CmsLink link = getLink(cms);
+            if (link != null) {
+                content = link.getVfsUri();
+            }
         }
         return content;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsDbContextFactory.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.5.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,30 +28,29 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.db;
 
 import org.opencms.file.CmsRequestContext;
-
 
 /**
  * This interface defines a factory to create runtime info objects.<p>
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.5.8.1 $
  * 
  * @since 6.0.0
  */
 public interface I_CmsDbContextFactory {
-    
+
     /**
      * Initializes the runtime info factory with the OpenCms driver manager.<p>
      * 
      * @param driverManager the initialized OpenCms driver manager
      */
     void initialize(CmsDriverManager driverManager);
-    
+
     /**
      * Returns a new database context based on the given user request context.<p>
      * 
@@ -60,11 +59,11 @@ public interface I_CmsDbContextFactory {
      * @return a new database context based on the given user request context
      */
     CmsDbContext getDbContext(CmsRequestContext context);
-    
+
     /**
      * Returns a new database context.<p>
      * 
      * @return a new database context
-     */    
+     */
     CmsDbContext getDbContext();
 }

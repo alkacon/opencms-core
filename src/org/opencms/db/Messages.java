@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2006/07/11 12:21:13 $
- * Version: $Revision: 1.43.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.43.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.1 $
+ * @version $Revision: 1.43.4.2 $
  * 
  * @since 6.0.0 
  */
@@ -145,6 +145,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CREATE_PROPDEF_1 = "ERR_CREATE_PROPDEF_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_CREATE_RELATION_3 = "ERR_CREATE_RELATION_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_RESOURCE_1 = "ERR_CREATE_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -173,6 +176,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_PROPERTY_1 = "ERR_DELETE_PROPERTY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_RELATIONS_1 = "ERR_DELETE_RELATIONS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_RESOURCE_1 = "ERR_DELETE_RESOURCE_1";
@@ -310,10 +316,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MODE_ENUM_PARSE_2 = "ERR_MODE_ENUM_PARSE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_MOVE_RESOURCE_2 = "ERR_MOVE_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_TO_LOST_AND_FOUND_1 = "ERR_MOVE_TO_LOST_AND_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_ZIPFILE_1 = "ERR_NO_ZIPFILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ONLINE_RESOURCE_EXISTS_2 = "ERR_ONLINE_RESOURCE_EXISTS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PERM_DENIED_2 = "ERR_PERM_DENIED_2";
@@ -409,7 +421,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_PROJECT_RESOURCES_2 = "ERR_READ_PROJECT_RESOURCES_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_PROJECT_VIEW_2 = "ERR_READ_PROJECT_VIEW_2";
+    public static final String ERR_READ_PROJECT_VIEW_1 = "ERR_READ_PROJECT_VIEW_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_PROP_FOR_RESOURCE_2 = "ERR_READ_PROP_FOR_RESOURCE_2";
@@ -422,6 +434,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_PUBLISHED_RESOURCES_FOR_ID_1 = "ERR_READ_PUBLISHED_RESOURCES_FOR_ID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_RELATIONS_1 = "ERR_READ_RELATIONS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_RESOURCE_1 = "ERR_READ_RESOURCE_1";
@@ -502,6 +517,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_RESET_PASSWORD_1 = "ERR_RESET_PASSWORD_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_LOCKED_IN_WORKFLOW_1 = "ERR_RESOURCE_LOCKED_IN_WORKFLOW_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3 = "ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_RESTORE_RESOURCE_2 = "ERR_RESTORE_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
@@ -520,6 +541,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SET_PASSWORD_1 = "ERR_SET_PASSWORD_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SET_PROJECT_LAST_MODIFIED_2 = "ERR_SET_PROJECT_LAST_MODIFIED_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_TASK_NAME_2 = "ERR_SET_TASK_NAME_2";
 
     /** Message constant for key in the resource bundle. */
@@ -530,6 +554,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_TASK_TIMEOUT_2 = "ERR_SET_TASK_TIMEOUT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TEST_CHANGED_CONTENT_1 = "ERR_TEST_CHANGED_CONTENT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TEST_MOVED_RESOURCE_1 = "ERR_TEST_MOVED_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNDO_CHANGES_FOR_RESOURCE_1 = "ERR_UNDO_CHANGES_FOR_RESOURCE_1";
@@ -557,6 +587,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNSUPPORTED_OPERATION_2 = "ERR_UNSUPPORTED_OPERATION_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPDATE_RELATIONS_1 = "ERR_UPDATE_RELATIONS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_USER_CANT_DELETE_ITSELF_USER_0 = "ERR_USER_CANT_DELETE_ITSELF_USER_0";
@@ -700,7 +733,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_USERS_GROUP_1 = "INIT_USERS_GROUP_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_1 = "LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_1";
+    public static final String LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_2 = "LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CLOSE_CONN_POOL_ERROR_1 = "LOG_CLOSE_CONN_POOL_ERROR_1";

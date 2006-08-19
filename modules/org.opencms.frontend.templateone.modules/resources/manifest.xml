@@ -3,22 +3,20 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<opencms_version>6.5.0</opencms_version>
+		<createdate>Wed, 12 Jul 2006 15:16:37 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>5</export_version>
 	</info>
 	<module>
 		<name>org.opencms.frontend.templateone.modules</name>
 		<nicename><![CDATA[OpenCms 6 Template One modules]]></nicename>
 		<group>Template One</group>
 		<class/>
-		<description><![CDATA[
-<p>This module contains several modules for use with the configurable template one.</p>
+		<description><![CDATA[<p>This module contains several modules for use with the configurable template one.</p>
 <p>Install this module if you want to work with news, articles, job offerings, and so on.</p>
-<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
-]]></description>
-		<version>2.0.0</version>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>2.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -124,7 +122,7 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="news" key="fileicon.news" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=news" order="50"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=news" order="50" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -132,7 +130,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="faq" key="fileicon.faq" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=faq" order="51"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=faq" order="51" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -140,7 +138,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="event" key="fileicon.event" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=event" order="52"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=event" order="52" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -148,7 +146,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="job" key="fileicon.job" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=job" order="53"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=job" order="53" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -156,7 +154,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="linklist" key="fileicon.linklist" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=linklist" order="54"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=linklist" order="54" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -177,26 +175,19 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
+			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -208,6 +199,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules</destination>
 			<type>folder</type>
+			<uuidstructure>a6bb951a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -224,6 +216,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes</destination>
 			<type>folder</type>
+			<uuidstructure>a6bddf0d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -235,6 +228,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org</destination>
 			<type>folder</type>
+			<uuidstructure>a6c2c10f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -246,6 +240,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms</destination>
 			<type>folder</type>
+			<uuidstructure>a6c50b01-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -257,6 +252,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend</destination>
 			<type>folder</type>
+			<uuidstructure>a6c9ed03-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -268,6 +264,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone</destination>
 			<type>folder</type>
+			<uuidstructure>a6cc36f5-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -279,6 +276,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules</destination>
 			<type>folder</type>
+			<uuidstructure>a6d0f1e7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -291,6 +289,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace.properties</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace.properties</destination>
 			<type>plain</type>
+			<uuidstructure>a6dcffd8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ab074eda-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -304,6 +303,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace_de.properties</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace_de.properties</destination>
 			<type>plain</type>
+			<uuidstructure>a6df49ca-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>bf2685cf-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -316,6 +316,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace_en.properties</destination>
 			<type>plain</type>
+			<uuidstructure>a6e1bacc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ab074eda-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -328,6 +329,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources</destination>
 			<type>folder</type>
+			<uuidstructure>a6e1bace-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -339,6 +341,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/_configuration</destination>
 			<type>folder</type>
+			<uuidstructure>a6e404c0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 20 Dec 2005 15:04:38 GMT</datecreated>
@@ -351,6 +354,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/_configuration/layoutright</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/_configuration/layoutright</destination>
 			<type>layout</type>
+			<uuidstructure>a6e675c1-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0650c6f9-716a-11da-9603-15cf0a83806f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -376,6 +380,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules</destination>
 			<type>folder</type>
+			<uuidstructure>a6e8e6c7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -400,6 +405,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/events</destination>
 			<type>folder</type>
+			<uuidstructure>a6eb30bf-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -425,6 +431,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/events/event_0001.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/events/event_0001.html</destination>
 			<type>event</type>
+			<uuidstructure>a6eda0c3-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c8c1fd86-aa8c-11d9-bc9f-bd9a46e52910</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -450,6 +457,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/faq</destination>
 			<type>folder</type>
+			<uuidstructure>a6f011cc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -475,6 +483,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/faq/faq_0001.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/faq/faq_0001.html</destination>
 			<type>faq</type>
+			<uuidstructure>a6f25bc0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c8ce3292-aa8c-11d9-bc9f-bd9a46e52910</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -500,6 +509,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/jobs</destination>
 			<type>folder</type>
+			<uuidstructure>a6f4ccc6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -525,6 +535,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/jobs/job_0001.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/jobs/job_0001.html</destination>
 			<type>job</type>
+			<uuidstructure>a6f716ba-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c8da679f-aa8c-11d9-bc9f-bd9a46e52910</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -550,6 +561,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/linklist</destination>
 			<type>folder</type>
+			<uuidstructure>a6f987c0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 04 Nov 2005 13:53:21 GMT</datecreated>
@@ -562,6 +574,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/linklist/link_0001.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/linklist/link_0001.html</destination>
 			<type>linklist</type>
+			<uuidstructure>a6fbf8c1-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>68be8861-4d3a-11da-b018-a1e522a0389c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -591,6 +604,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/news</destination>
 			<type>folder</type>
+			<uuidstructure>a6fe42b8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -620,6 +634,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/news/news_0001.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/news/news_0001.html</destination>
 			<type>news</type>
+			<uuidstructure>a700b3c0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c8eb3092-aa8c-11d9-bc9f-bd9a46e52910</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -641,6 +656,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements</destination>
 			<type>folder</type>
+			<uuidstructure>a70324c5-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -653,6 +669,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-address.txt</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-address.txt</destination>
 			<type>plain</type>
+			<uuidstructure>a70324c6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>751e6403-5421-11d9-b822-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -666,6 +683,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-date.txt</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-date.txt</destination>
 			<type>plain</type>
+			<uuidstructure>a7056eb8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>97a3a496-5424-11d9-b822-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -679,6 +697,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-eventaddress.txt</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-eventaddress.txt</destination>
 			<type>plain</type>
+			<uuidstructure>a707dfba-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>af200746-acb5-11d9-bf5c-15f264efb4e6</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -692,6 +711,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-eventlink.txt</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-eventlink.txt</destination>
 			<type>plain</type>
+			<uuidstructure>a707dfbc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>36b3729b-acb8-11d9-bf5c-15f264efb4e6</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -705,6 +725,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-externallink.txt</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-externallink.txt</destination>
 			<type>plain</type>
+			<uuidstructure>a70a29ae-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>1b33de6a-5424-11d9-b822-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -718,6 +739,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-faqparagraph.txt</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-faqparagraph.txt</destination>
 			<type>plain</type>
+			<uuidstructure>a70c9ab0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a5d1a9a1-946c-11d9-ace3-eb1fdbd690a5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -731,6 +753,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-image.txt</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-image.txt</destination>
 			<type>plain</type>
+			<uuidstructure>a70f0bb2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>712695c3-5424-11d9-b822-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -744,6 +767,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-internallink.txt</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-internallink.txt</destination>
 			<type>plain</type>
+			<uuidstructure>a70f0bb4-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>5b50d97e-b19c-11d9-a035-2104bf2980ca</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -757,6 +781,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_events_center.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_events_center.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>a71155a6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>192353ad-a512-11d9-bbc8-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -783,6 +808,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_events_right.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_events_right.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>a713c6ab-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d273f7c2-a5b1-11d9-9d1d-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -809,6 +835,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_faqs_center.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_faqs_center.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>a71637b0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>91f913a4-a5ba-11d9-9d1d-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -831,6 +858,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_faqs_center_long.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_faqs_center_long.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>a71881a4-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>08834f98-a683-11d9-a9ed-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -853,6 +881,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_jobs_center.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_jobs_center.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>a71af2a8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a0e02bf0-a04a-11d9-861d-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -860,13 +889,13 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>cache</name>
 					<value><![CDATA[uri;params=(count,elementcount,folder,categoryfolder,collector,pageIndex)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -879,6 +908,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_jobs_right.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_jobs_right.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>a71d3c9d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fa86a553-a5b2-11d9-9d1d-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -905,6 +935,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_links_center.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_links_center.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>a71fada2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2ad885e9-4c62-11da-bc03-a1e522a0389c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -927,6 +958,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_links_right.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_links_right.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>a7221ea6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>1cc5ea15-4d17-11da-9c9b-a1e522a0389c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -953,6 +985,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_news_center.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_news_center.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>a724689b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ffe0a782-a5a5-11d9-b7ac-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -979,6 +1012,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_news_right.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_news_right.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>a726d9a0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c032bdb6-501b-11d9-889e-2de49c45b2e5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1005,6 +1039,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/seturi.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/seturi.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>a7294aa5-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>32342930-29cb-11da-af37-67e4bdd36d95</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1012,13 +1047,13 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>cache</name>
 					<value><![CDATA[never]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -1030,6 +1065,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages</destination>
 			<type>folder</type>
+			<uuidstructure>a72b949b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -1042,6 +1078,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html</destination>
 			<type>jsp</type>
+			<uuidstructure>a72b949c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>3c595376-5331-11d9-b7cd-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1068,6 +1105,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html</destination>
 			<type>jsp</type>
+			<uuidstructure>a7304f91-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>21f158be-5295-11d9-a418-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1094,6 +1132,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html</destination>
 			<type>jsp</type>
+			<uuidstructure>a732c096-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>8447f744-5353-11d9-9d85-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1120,6 +1159,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/pages/detail-layout.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-layout.html</destination>
 			<type>jsp</type>
+			<uuidstructure>a735319b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>3c5346df-716f-11da-8617-15cf0a83806f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1138,6 +1178,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/pages/detail-links.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-links.html</destination>
 			<type>jsp</type>
+			<uuidstructure>a735319e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a105e4d2-4c55-11da-a87b-a1e522a0389c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1160,6 +1201,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html</destination>
 			<type>jsp</type>
+			<uuidstructure>a7377b92-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ec483227-5020-11d9-b83c-2de49c45b2e5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1181,6 +1223,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas</destination>
 			<type>folder</type>
+			<uuidstructure>a73c5d97-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -1193,6 +1236,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/address.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/address.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a73c5d98-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>cc8110d9-541f-11d9-b822-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1211,6 +1255,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/attachment.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/attachment.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a73ea78b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>f3d48bfb-4d22-11d9-b991-636f59544321</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1229,6 +1274,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a741188e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fe568d16-5295-11d9-a418-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1247,6 +1293,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_additionaldates.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_additionaldates.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a7436281-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>1bde6334-ec9d-11d9-a038-8b6885970dc7</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1265,6 +1312,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_address.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_address.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a7484484-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>b60b9914-abf9-11d9-af0f-15f264efb4e6</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1283,6 +1331,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_charges.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_charges.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a7484487-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>7ce076d4-abf6-11d9-af0f-15f264efb4e6</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1301,6 +1350,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_dates.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_dates.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a74a8e7a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>4b5161be-abf2-11d9-af0f-15f264efb4e6</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1319,6 +1369,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_extended.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_extended.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a74cff7d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0d1d72b6-acfc-11d9-a7de-15f264efb4e6</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1337,6 +1388,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_organization.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_organization.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a74f7080-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>4e0d084a-abfe-11d9-af0f-15f264efb4e6</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1355,6 +1407,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/externallink.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/externallink.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a751ba73-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>080b37f6-4d22-11d9-b991-636f59544321</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1373,6 +1426,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/faq.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/faq.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a751ba76-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>f44e8e0e-528f-11d9-8735-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1391,6 +1445,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/faqparagraph.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/faqparagraph.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a7542b79-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>f992cd50-9467-11d9-8c73-eb1fdbd690a5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1409,6 +1464,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/image.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/image.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a756756c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d24da95a-4f6b-11d9-a0f3-2de49c45b2e5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1427,6 +1483,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/internallink.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/internallink.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a758e66f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>15389f09-4f6a-11d9-a0f3-2de49c45b2e5</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1445,6 +1502,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/job.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/job.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a75b5772-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>62ab3057-5352-11d9-9ec3-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1463,6 +1521,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/job_extended.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/job_extended.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a75da165-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2f7b9c73-b0cb-11d9-9e09-2104bf2980ca</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1481,6 +1540,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/layoutitem.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/layoutitem.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a75da168-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>e2af9d97-7077-11da-a93c-15cf0a83806f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1499,6 +1559,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/layouts.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/layouts.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a760126b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>1cc4b952-7075-11da-a93c-15cf0a83806f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1517,6 +1578,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/linklist.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/linklist.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a762836e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>bb2cc9a0-4c50-11da-bc0d-a1e522a0389c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1535,6 +1597,7 @@
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>a764cd61-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>58e1421e-4d20-11d9-b991-636f59544321</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1552,6 +1615,7 @@
 		<file>
 			<destination>modulesdemo</destination>
 			<type>microsite</type>
+			<uuidstructure>a7673e65-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -1605,6 +1669,7 @@
 			<source>modulesdemo/events.html</source>
 			<destination>modulesdemo/events.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>a76bf96c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>13e9362d-b739-11d9-8a2d-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1643,6 +1708,7 @@
 			<source>modulesdemo/faq.html</source>
 			<destination>modulesdemo/faq.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>a770b46a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>27ee2e64-b739-11d9-8a2d-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1681,6 +1747,7 @@
 			<source>modulesdemo/index.html</source>
 			<destination>modulesdemo/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>a7732572-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>4252d5d4-b703-11d9-9e31-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1715,6 +1782,7 @@
 			<source>modulesdemo/jobs.html</source>
 			<destination>modulesdemo/jobs.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>a7759579-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>3940b0cb-b739-11d9-8a2d-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1757,6 +1825,7 @@
 			<source>modulesdemo/linklistdemo.html</source>
 			<destination>modulesdemo/linklistdemo.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>a77a5075-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a66c94d7-4c71-11da-9ebe-a1e522a0389c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1795,6 +1864,7 @@
 			<source>modulesdemo/news.html</source>
 			<destination>modulesdemo/news.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>a77c9a6d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>46b97b72-b739-11d9-8a2d-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1832,6 +1902,7 @@
 		<file>
 			<destination>modulesdemo/_configuration</destination>
 			<type>folder</type>
+			<uuidstructure>a77f0b76-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -1849,6 +1920,7 @@
 			<source>modulesdemo/_configuration/configuration_common</source>
 			<destination>modulesdemo/_configuration/configuration_common</destination>
 			<type>xmlcontent</type>
+			<uuidstructure>a7817c78-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6ec65788-e7fb-11d9-8910-45827a23a0d1</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1867,6 +1939,7 @@
 			<source>modulesdemo/_configuration/configuration_css</source>
 			<destination>modulesdemo/_configuration/configuration_css</destination>
 			<type>xmlcontent</type>
+			<uuidstructure>a783c66b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6ecc720d-e7fb-11d9-8910-45827a23a0d1</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1885,6 +1958,7 @@
 			<source>modulesdemo/_configuration/configuration_links</source>
 			<destination>modulesdemo/_configuration/configuration_links</destination>
 			<type>xmlcontent</type>
+			<uuidstructure>a786376e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6ecf7f52-e7fb-11d9-8910-45827a23a0d1</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1903,6 +1977,7 @@
 			<source>modulesdemo/_configuration/imprint</source>
 			<destination>modulesdemo/_configuration/imprint</destination>
 			<type>xmlcontent</type>
+			<uuidstructure>a788a871-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d4920099-1dbe-11d9-828b-95b5e57c814c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1924,6 +1999,7 @@
 		<file>
 			<destination>modulesdemo/moduleimages</destination>
 			<type>imagegallery</type>
+			<uuidstructure>a788a876-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -1941,6 +2017,7 @@
 			<source>modulesdemo/moduleimages/aufschnitt.gif</source>
 			<destination>modulesdemo/moduleimages/aufschnitt.gif</destination>
 			<type>image</type>
+			<uuidstructure>a78af268-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>07debee4-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1952,6 +2029,10 @@
 					<name>Title</name>
 					<value><![CDATA[Aufschnitt]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:480,h:643]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -1959,6 +2040,7 @@
 			<source>modulesdemo/moduleimages/bull.jpg</source>
 			<destination>modulesdemo/moduleimages/bull.jpg</destination>
 			<type>image</type>
+			<uuidstructure>a7bf6fec-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>f714b019-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1970,6 +2052,10 @@
 					<name>Title</name>
 					<value><![CDATA[Bull]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:400,h:350]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -1977,6 +2063,7 @@
 			<source>modulesdemo/moduleimages/leberwurst.gif</source>
 			<destination>modulesdemo/moduleimages/leberwurst.gif</destination>
 			<type>image</type>
+			<uuidstructure>a7c69be0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>07f2950d-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1988,6 +2075,10 @@
 					<name>Title</name>
 					<value><![CDATA[Leberwurst]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:182,h:150]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -1995,6 +2086,7 @@
 			<source>modulesdemo/moduleimages/salami.jpg</source>
 			<destination>modulesdemo/moduleimages/salami.jpg</destination>
 			<type>image</type>
+			<uuidstructure>a7c8e5d4-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0724487e-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2006,6 +2098,10 @@
 					<name>Title</name>
 					<value><![CDATA[Salami]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:300,h:207]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -2013,6 +2109,7 @@
 			<source>modulesdemo/moduleimages/sausage.gif</source>
 			<destination>modulesdemo/moduleimages/sausage.gif</destination>
 			<type>image</type>
+			<uuidstructure>a7cdc7d8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>07e1cc27-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2024,6 +2121,10 @@
 					<name>Title</name>
 					<value><![CDATA[Sausage]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:200,h:150]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -2031,6 +2132,7 @@
 			<source>modulesdemo/moduleimages/soccer_small.jpg</source>
 			<destination>modulesdemo/moduleimages/soccer_small.jpg</destination>
 			<type>image</type>
+			<uuidstructure>a7d4f3cc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>14c3dc43-b735-11d9-bfc9-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2042,6 +2144,10 @@
 					<name>Title</name>
 					<value><![CDATA[Soccer]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:400,h:266]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -2049,6 +2155,7 @@
 			<source>modulesdemo/moduleimages/weisswurst.gif</source>
 			<destination>modulesdemo/moduleimages/weisswurst.gif</destination>
 			<type>image</type>
+			<uuidstructure>a7f63770-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>07e7e6aa-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2060,12 +2167,17 @@
 					<name>Title</name>
 					<value><![CDATA[Weisswurst]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:165,h:165]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>modulesdemo/modules</destination>
 			<type>folder</type>
+			<uuidstructure>a7fd6365-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2086,6 +2198,7 @@
 		<file>
 			<destination>modulesdemo/modules/events</destination>
 			<type>folder</type>
+			<uuidstructure>a7fd6369-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2107,6 +2220,7 @@
 			<source>modulesdemo/modules/events/event_0001.html</source>
 			<destination>modulesdemo/modules/events/event_0001.html</destination>
 			<type>event</type>
+			<uuidstructure>a7ffd46c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>687cb2d5-5436-11d9-a9f0-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2133,6 +2247,7 @@
 			<source>modulesdemo/modules/events/event_0002.html</source>
 			<destination>modulesdemo/modules/events/event_0002.html</destination>
 			<type>event</type>
+			<uuidstructure>a8070061-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>da6ced42-b590-11d9-86c5-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2155,6 +2270,7 @@
 			<source>modulesdemo/modules/events/event_0003.html</source>
 			<destination>modulesdemo/modules/events/event_0003.html</destination>
 			<type>event</type>
+			<uuidstructure>a8094a55-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>13027129-b592-11d9-86c5-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2176,6 +2292,7 @@
 		<file>
 			<destination>modulesdemo/modules/faq</destination>
 			<type>folder</type>
+			<uuidstructure>a80bbb5a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2197,6 +2314,7 @@
 			<source>modulesdemo/modules/faq/faq_0001.html</source>
 			<destination>modulesdemo/modules/faq/faq_0001.html</destination>
 			<type>faq</type>
+			<uuidstructure>a812e74d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>8782e9f9-b58d-11d9-bf1f-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2215,6 +2333,7 @@
 			<source>modulesdemo/modules/faq/faq_0002.html</source>
 			<destination>modulesdemo/modules/faq/faq_0002.html</destination>
 			<type>faq</type>
+			<uuidstructure>a812e750-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ee4d6ab2-b58c-11d9-bf1f-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2233,6 +2352,7 @@
 			<source>modulesdemo/modules/faq/faq_0003.html</source>
 			<destination>modulesdemo/modules/faq/faq_0003.html</destination>
 			<type>faq</type>
+			<uuidstructure>a8153143-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>5e21d1c6-b64a-11d9-9727-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2250,6 +2370,7 @@
 		<file>
 			<destination>modulesdemo/modules/faq/feedback</destination>
 			<type>folder</type>
+			<uuidstructure>a817a247-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2267,6 +2388,7 @@
 			<source>modulesdemo/modules/faq/feedback/faq_0001.html</source>
 			<destination>modulesdemo/modules/faq/feedback/faq_0001.html</destination>
 			<type>faq</type>
+			<uuidstructure>a81a1349-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ac6545f6-b58b-11d9-bf1f-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2284,6 +2406,7 @@
 		<file>
 			<destination>modulesdemo/modules/faq/license</destination>
 			<type>folder</type>
+			<uuidstructure>a81a134d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2301,6 +2424,7 @@
 			<source>modulesdemo/modules/faq/license/faq_0001.html</source>
 			<destination>modulesdemo/modules/faq/license/faq_0001.html</destination>
 			<type>faq</type>
+			<uuidstructure>a81c5d3f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fa554b09-b58d-11d9-86c5-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2319,6 +2443,7 @@
 			<source>modulesdemo/modules/faq/license/faq_0002.html</source>
 			<destination>modulesdemo/modules/faq/license/faq_0002.html</destination>
 			<type>faq</type>
+			<uuidstructure>a8213f42-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6ac5202b-b58d-11d9-bf1f-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2336,6 +2461,7 @@
 		<file>
 			<destination>modulesdemo/modules/jobs</destination>
 			<type>folder</type>
+			<uuidstructure>a8238936-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2357,6 +2483,7 @@
 			<source>modulesdemo/modules/jobs/job_0001.html</source>
 			<destination>modulesdemo/modules/jobs/job_0001.html</destination>
 			<type>job</type>
+			<uuidstructure>a825fa39-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c154b1da-5420-11d9-b822-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2383,6 +2510,7 @@
 			<source>modulesdemo/modules/jobs/job_0002.html</source>
 			<destination>modulesdemo/modules/jobs/job_0002.html</destination>
 			<type>job</type>
+			<uuidstructure>a828442e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>af2058ae-b594-11d9-86c5-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2405,6 +2533,7 @@
 			<source>modulesdemo/modules/jobs/job_0003.html</source>
 			<destination>modulesdemo/modules/jobs/job_0003.html</destination>
 			<type>job</type>
+			<uuidstructure>a82ab532-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>9d46fdc5-b595-11d9-86c5-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2426,6 +2555,7 @@
 		<file>
 			<destination>modulesdemo/modules/linklist</destination>
 			<type>folder</type>
+			<uuidstructure>a82d2637-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 03 Nov 2005 13:56:20 GMT</datecreated>
@@ -2443,6 +2573,7 @@
 			<source>modulesdemo/modules/linklist/link_0001.html</source>
 			<destination>modulesdemo/modules/linklist/link_0001.html</destination>
 			<type>linklist</type>
+			<uuidstructure>a82f7029-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d7884c41-4c71-11da-9ebe-a1e522a0389c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2473,6 +2604,7 @@
 			<source>modulesdemo/modules/linklist/link_0002.html</source>
 			<destination>modulesdemo/modules/linklist/link_0002.html</destination>
 			<type>linklist</type>
+			<uuidstructure>a831e12f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6565a4aa-4c77-11da-8552-a1e522a0389c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2502,6 +2634,7 @@
 		<file>
 			<destination>modulesdemo/modules/news</destination>
 			<type>folder</type>
+			<uuidstructure>a8345236-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2527,6 +2660,7 @@
 			<source>modulesdemo/modules/news/news_0001.html</source>
 			<destination>modulesdemo/modules/news/news_0001.html</destination>
 			<type>news</type>
+			<uuidstructure>a8369c2a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>f8257305-542f-11d9-94b2-5777c119166f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2549,6 +2683,7 @@
 			<source>modulesdemo/modules/news/news_0002.html</source>
 			<destination>modulesdemo/modules/news/news_0002.html</destination>
 			<type>news</type>
+			<uuidstructure>a8390d2e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>96f4344b-b583-11d9-bf1f-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2571,6 +2706,7 @@
 			<source>modulesdemo/modules/news/news_0003.html</source>
 			<destination>modulesdemo/modules/news/news_0003.html</destination>
 			<type>news</type>
+			<uuidstructure>a83b5722-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>13afe5e3-b586-11d9-bf1f-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2593,6 +2729,7 @@
 			<source>modulesdemo/modules/news/news_0004.html</source>
 			<destination>modulesdemo/modules/news/news_0004.html</destination>
 			<type>news</type>
+			<uuidstructure>a83dc826-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>460f67f3-b586-11d9-bf1f-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2615,6 +2752,7 @@
 			<source>modulesdemo/modules/news/news_0005.html</source>
 			<destination>modulesdemo/modules/news/news_0005.html</destination>
 			<type>news</type>
+			<uuidstructure>a83dc82a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6b4fff33-b586-11d9-bf1f-5fde9e2f6a72</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2636,6 +2774,7 @@
 		<file>
 			<destination>modulesdemo/side-elements</destination>
 			<type>folder</type>
+			<uuidstructure>a842831f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2648,6 +2787,7 @@
 			<source>modulesdemo/side-elements/side-jobs.html</source>
 			<destination>modulesdemo/side-elements/side-jobs.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>a8428320-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>83837d13-b7bb-11d9-ba72-ddc62aad31dd</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2669,6 +2809,7 @@
 		<file>
 			<destination>system/shared</destination>
 			<type>folder</type>
+			<uuidstructure>8253d0e9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2685,6 +2826,7 @@
 		<file>
 			<destination>system/shared/templateone</destination>
 			<type>folder</type>
+			<uuidstructure>a844f425-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2696,6 +2838,7 @@
 		<file>
 			<destination>system/shared/templateone/center</destination>
 			<type>folder</type>
+			<uuidstructure>a8476527-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2708,6 +2851,7 @@
 			<source>system/shared/templateone/center/events</source>
 			<destination>system/shared/templateone/center/events</destination>
 			<type>plain</type>
+			<uuidstructure>a849af18-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>860fe69b-a5db-11d9-b9ed-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2734,6 +2878,7 @@
 			<source>system/shared/templateone/center/faq</source>
 			<destination>system/shared/templateone/center/faq</destination>
 			<type>plain</type>
+			<uuidstructure>a84c2020-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2940661c-a5da-11d9-b9ed-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2760,6 +2905,7 @@
 			<source>system/shared/templateone/center/jobs</source>
 			<destination>system/shared/templateone/center/jobs</destination>
 			<type>plain</type>
+			<uuidstructure>a84e6a15-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>00bd79de-a504-11d9-8374-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2786,6 +2932,7 @@
 			<source>system/shared/templateone/center/linklist</source>
 			<destination>system/shared/templateone/center/linklist</destination>
 			<type>plain</type>
+			<uuidstructure>a850db1a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fe98dd54-4c70-11da-bc03-a1e522a0389c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2812,6 +2959,7 @@
 			<source>system/shared/templateone/center/news</source>
 			<destination>system/shared/templateone/center/news</destination>
 			<type>plain</type>
+			<uuidstructure>a8534c1f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>76835725-a5db-11d9-b9ed-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2837,6 +2985,7 @@
 		<file>
 			<destination>system/shared/templateone/right</destination>
 			<type>folder</type>
+			<uuidstructure>a8559615-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2849,6 +2998,7 @@
 			<source>system/shared/templateone/right/events</source>
 			<destination>system/shared/templateone/right/events</destination>
 			<type>plain</type>
+			<uuidstructure>a8559616-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>54fd9291-a5dd-11d9-b9ed-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2872,47 +3022,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/shared/templateone/right/events_news</source>
-			<destination>system/shared/templateone/right/events_news</destination>
-			<type>plain</type>
-			<uuidresource>caf21b1b-a5dd-11d9-b9ed-916a98ed6cbb</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[templateonedialog.layout.right.events_news]]></value>
-				</property>
-				<property>
-					<name>layout.2.type</name>
-					<value><![CDATA[event]]></value>
-				</property>
-				<property>
-					<name>layout.1.count</name>
-					<value><![CDATA[3]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[List news and events on right side]]></value>
-				</property>
-				<property>
-					<name>layout.2.count</name>
-					<value><![CDATA[3]]></value>
-				</property>
-				<property>
-					<name>layout.1.type</name>
-					<value><![CDATA[news]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/shared/templateone/right/linklist</source>
 			<destination>system/shared/templateone/right/linklist</destination>
 			<type>plain</type>
+			<uuidstructure>a85cc21c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>23de2f7c-4c71-11da-bc03-a1e522a0389c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2939,6 +3052,7 @@
 			<source>system/shared/templateone/right/news</source>
 			<destination>system/shared/templateone/right/news</destination>
 			<type>plain</type>
+			<uuidstructure>a85f3321-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d49139ca-a5ae-11d9-9395-916a98ed6cbb</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2964,6 +3078,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2997,6 +3112,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -3008,6 +3124,7 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
+			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -3020,13 +3137,19 @@
 			<source>system/workplace/resources/filetypes/article.gif</source>
 			<destination>system/workplace/resources/filetypes/article.gif</destination>
 			<type>image</type>
+			<uuidstructure>a8fa1298-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a17837da-2769-11d9-a415-1fd2a335da0f</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>

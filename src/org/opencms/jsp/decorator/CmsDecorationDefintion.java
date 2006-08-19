@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationDefintion.java,v $
- * Date   : $Date: 2006/03/27 14:52:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.3 
  */
@@ -344,9 +344,8 @@ public class CmsDecorationDefintion {
             // 2) the bundle has a locale and the locale of the map is equal or a sublocale
             // 3) the bundle has a locale and the map has no locale
             if ((locale == null)
-                || (locale != null && decMap.getLocale() != null && locale.getDisplayLanguage().equals(
-                    decMap.getLocale().getDisplayLanguage()))
-                || (locale != null && decMap.getLocale() == null)) {
+                || ((decMap.getLocale() == null))
+                || (locale.getDisplayLanguage().equals(decMap.getLocale().getDisplayLanguage()))) {
                 decorationBundle.putAll(decMap.getDecorationMap());
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(
@@ -393,7 +392,8 @@ public class CmsDecorationDefintion {
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            if (cms.getSitePath(res).startsWith(basename) && res.getTypeId() == CmsResourceTypePlain.getStaticTypeId()) {
+            if (cms.getSitePath(res).startsWith(basename)
+                && (res.getTypeId() == CmsResourceTypePlain.getStaticTypeId())) {
                 files.add(res);
             }
         }

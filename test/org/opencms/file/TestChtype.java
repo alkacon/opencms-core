@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChtype.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chtype" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.8.1 $
  */
 public class TestChtype extends OpenCmsTestCase {
   
@@ -69,7 +69,7 @@ public class TestChtype extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestChtype.class.getName());
                 
-        suite.addTest(new TestChtype("testChtypNewFile"));
+        suite.addTest(new TestChtype("testChtypeNewFile"));
                
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -95,7 +95,7 @@ public class TestChtype extends OpenCmsTestCase {
      * @param newResType the new resource tpye
      * @throws Throwable if something goes wrong
      */
-    public static void chtypNewFile(OpenCmsTestCase tc, CmsObject cms, String resource1, int originalResType, int newResType) throws Throwable {            
+    public static void chtypeNewFile(OpenCmsTestCase tc, CmsObject cms, String resource1, int originalResType, int newResType) throws Throwable {            
       
         // create a new resource
         cms.createResource(resource1, originalResType);        
@@ -118,10 +118,10 @@ public class TestChtype extends OpenCmsTestCase {
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testChtypNewFile() throws Throwable {
+    public void testChtypeNewFile() throws Throwable {
         CmsObject cms = getCmsObject();     
         echo("Testing chtype on a new file");
-        chtypNewFile(this, cms, "/chtype.txt", CmsResourceTypePlain.getStaticTypeId(), CmsResourceTypeBinary.getStaticTypeId());   
+        chtypeNewFile(this, cms, "/chtype.txt", CmsResourceTypePlain.getStaticTypeId(), CmsResourceTypeBinary.getStaticTypeId());   
     }  
     
 }

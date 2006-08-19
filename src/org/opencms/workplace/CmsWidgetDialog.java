@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2006/07/20 12:09:49 $
- * Version: $Revision: 1.60.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.60.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsThrowable;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
@@ -60,12 +61,14 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Base class for dialogs that use the OpenCms widgets without XML content.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.1 $ 
+ * @version $Revision: 1.60.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,6 +97,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** Prefix for "hidden" parameters, required since these must be unescaped later. */
     public static final String HIDDEN_PARAM_PREFIX = "hidden.";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWidgetDialog.class);
 
     /** The errors thrown by commit actions. */
     protected List m_commitErrors;
@@ -1451,6 +1457,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         try {
             validateParamaters();
         } catch (Exception e) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().container(Messages.ERR_WORKPLACE_DIALOG_PARAMS_1, getCurrentToolPath()), e);
+            }
             // close if parameters not available
             setAction(ACTION_CANCEL);
             try {

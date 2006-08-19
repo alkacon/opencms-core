@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2006/03/30 09:30:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.4.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,7 +100,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         /** The locales of the xml content. */
         private List m_locales;
-        
+
         /**
          * Creates a new CmsXmlContentTextExtractor.<p>
          * 
@@ -138,13 +138,13 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             }
         }
     }
-    
+
     /** Constant indicating that all elements are compared.<p> */
     public static final String COMPARE_ALL_ELEMENTS = "allelements";
-    
+
     /** Constant indicating that the attributes are compared.<p> */
     public static final String COMPARE_ATTRIBUTES = "attributes";
-    
+
     /** Constant indicating that the properties are compared.<p> */
     public static final String COMPARE_PROPERTIES = "properties";
 
@@ -183,7 +183,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
     /** Parameter value for the version of the second file. */
     private String m_paramVersion2;
-    
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -258,7 +258,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         lists.add(attributeDiff);
         I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(propertyDiff.getResourceType());
 
-        if (resourceType instanceof CmsResourceTypeXmlContent || resourceType instanceof CmsResourceTypeXmlPage) {
+        if ((resourceType instanceof CmsResourceTypeXmlContent) || (resourceType instanceof CmsResourceTypeXmlPage)) {
 
             // display attributes, properties and compared elements
             CmsElementComparisonList contentDiff = new CmsElementComparisonList(getJsp());
@@ -349,7 +349,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 // extract the content
                 originalSource = textExtractor.extractText(content1).getContent();
                 copySource = textExtractor.extractText(content2).getContent();
-            } else if (resourceType instanceof CmsResourceTypePlain || resourceType instanceof CmsResourceTypeJsp) {
+            } else if ((resourceType instanceof CmsResourceTypePlain) || (resourceType instanceof CmsResourceTypeJsp)) {
                 originalSource = new String(content1);
                 copySource = new String(content2);
             }
@@ -616,7 +616,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
-        super.initWorkplaceRequestValues(settings, request);     
+        super.initWorkplaceRequestValues(settings, request);
         try {
             CmsFile file1 = CmsResourceComparisonDialog.readFile(
                 getCms(),
@@ -668,18 +668,18 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         StringBuffer result = new StringBuffer();
         if (xmlDoc instanceof CmsXmlPage) {
-        List locales = xmlDoc.getLocales();
-        Iterator i = locales.iterator();
-        boolean firstIter = true;
-        while (i.hasNext()) {
-            if (!firstIter) {
-                result.append("\n\n-----");
-            }
-            Locale locale = (Locale)i.next();
-            result.append("\n\n[").append(locale.toString()).append(']');
-            List elements = xmlDoc.getValues(locale);
-            Iterator j = elements.iterator();
-            while (j.hasNext()) {
+            List locales = xmlDoc.getLocales();
+            Iterator i = locales.iterator();
+            boolean firstIter = true;
+            while (i.hasNext()) {
+                if (!firstIter) {
+                    result.append("\n\n-----");
+                }
+                Locale locale = (Locale)i.next();
+                result.append("\n\n[").append(locale.toString()).append(']');
+                List elements = xmlDoc.getValues(locale);
+                Iterator j = elements.iterator();
+                while (j.hasNext()) {
                     I_CmsXmlContentValue value = (I_CmsXmlContentValue)j.next();
                     result.append("\n\n[");
                     // output value of name attribute
@@ -696,12 +696,12 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                         LOG.error(e.getMessage(), e);
                     }
                 }
-            firstIter = false;
-        }
+                firstIter = false;
+            }
         } else if (xmlDoc instanceof CmsXmlContent) {
             CmsXmlContentTextExtractor visitor = new CmsXmlContentTextExtractor(result);
             ((CmsXmlContent)xmlDoc).visitAllValuesWith(visitor);
-            
+
         }
         return result.toString();
     }

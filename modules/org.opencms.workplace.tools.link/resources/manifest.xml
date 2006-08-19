@@ -3,21 +3,19 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<opencms_version>6.5.0</opencms_version>
+		<createdate>Wed, 12 Jul 2006 15:20:56 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>5</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.link</name>
 		<nicename><![CDATA[OpenCms 6 Link checking tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
-		<description><![CDATA[
-<p>This module contains the OpenCms administration tools for validating links in xml documents and pointer links.</p>
-<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
-]]></description>
-		<version>1.2.0</version>
+		<description><![CDATA[<p>This module contains the OpenCms administration tools for validating links in xml documents and pointer links.</p>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.2.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -40,29 +38,22 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
+			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -71,6 +62,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.tools.link</destination>
 			<type>folder</type>
+			<uuidstructure>da39a628-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
@@ -82,6 +74,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.tools.link/lib</destination>
 			<type>folder</type>
+			<uuidstructure>da3c172a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
@@ -94,6 +87,7 @@
 			<source>system/modules/org.opencms.workplace.tools.link/lib/org.opencms.workplace.tools.link.jar</source>
 			<destination>system/modules/org.opencms.workplace.tools.link/lib/org.opencms.workplace.tools.link.jar</destination>
 			<type>plain</type>
+			<uuidstructure>da3c172b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ae288570-3b29-11da-8883-df763b25cc68</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -102,10 +96,11 @@
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
-		</file>		
+		</file>
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -139,6 +134,7 @@
 		<file>
 			<destination>system/workplace/admin</destination>
 			<type>folder</type>
+			<uuidstructure>825fb7db-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -159,6 +155,7 @@
 		<file>
 			<destination>system/workplace/admin/linkvalidation</destination>
 			<type>folder</type>
+			<uuidstructure>da3e882e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -201,9 +198,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/linkvalidation/validateinternallinks.jsp</source>
-			<destination>system/workplace/admin/linkvalidation/validateinternallinks.jsp</destination>
+			<source>system/workplace/admin/linkvalidation/validaterelations.jsp</source>
+			<destination>system/workplace/admin/linkvalidation/validaterelations.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>da434327-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>db56d9fb-d9aa-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -245,6 +243,7 @@
 		<file>
 			<destination>system/workplace/admin/linkvalidation/external</destination>
 			<type>folder</type>
+			<uuidstructure>da45b431-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -286,6 +285,7 @@
 			<source>system/workplace/admin/linkvalidation/external/validateexternallinks.jsp</source>
 			<destination>system/workplace/admin/linkvalidation/external/validateexternallinks.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>da4a6f29-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>09ef3bed-dca8-11d9-bce5-09c4e73e09e8</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -328,6 +328,7 @@
 			<source>system/workplace/admin/linkvalidation/external/viewresults.jsp</source>
 			<destination>system/workplace/admin/linkvalidation/external/viewresults.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>da4f2a22-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>5c6a40e3-dcec-11d9-b0e3-09c4e73e09e8</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -369,6 +370,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -380,6 +382,7 @@
 		<file>
 			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>
+			<uuidstructure>c3a8d33c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -391,6 +394,7 @@
 		<file>
 			<destination>system/workplace/resources/tools/linkvalidation</destination>
 			<type>folder</type>
+			<uuidstructure>daec7b9e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -402,6 +406,7 @@
 		<file>
 			<destination>system/workplace/resources/tools/linkvalidation/icons</destination>
 			<type>folder</type>
+			<uuidstructure>daf15da0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -413,6 +418,7 @@
 		<file>
 			<destination>system/workplace/resources/tools/linkvalidation/icons/big</destination>
 			<type>folder</type>
+			<uuidstructure>daf3a792-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -425,83 +431,120 @@
 			<source>system/workplace/resources/tools/linkvalidation/icons/big/link.png</source>
 			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link.png</destination>
 			<type>image</type>
+			<uuidstructure>daf61893-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d2c85764-d9ab-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/linkvalidation/icons/big/link_extern.png</source>
 			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link_extern.png</destination>
 			<type>image</type>
+			<uuidstructure>dafad386-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>dc64d237-d9ab-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/linkvalidation/icons/big/link_extern_results.png</source>
 			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link_extern_results.png</destination>
 			<type>image</type>
+			<uuidstructure>db01ff79-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>f0f9d56d-d9ab-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/linkvalidation/icons/big/link_extern_validate.png</source>
 			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link_extern_validate.png</destination>
 			<type>image</type>
+			<uuidstructure>db04707c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>e76bb27a-d9ab-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/linkvalidation/icons/big/link_intern.png</source>
 			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link_intern.png</destination>
 			<type>image</type>
+			<uuidstructure>db092b6f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fa0e82a0-d9ab-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/linkvalidation/icons/big/link_intern_validate.png</source>
 			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link_intern_validate.png</destination>
 			<type>image</type>
+			<uuidstructure>db105762-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ffff81a3-d9ab-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/tools/linkvalidation/icons/small</destination>
 			<type>folder</type>
+			<uuidstructure>db151256-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -514,13 +557,19 @@
 			<source>system/workplace/resources/tools/linkvalidation/icons/small/link.png</source>
 			<destination>system/workplace/resources/tools/linkvalidation/icons/small/link.png</destination>
 			<type>image</type>
+			<uuidstructure>db178357-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0addf256-d9ac-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>

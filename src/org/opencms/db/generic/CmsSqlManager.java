@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2006/08/19 13:40:39 $
+ * Version: $Revision: 1.65.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.65.4.1 $
  * 
  * @since 6.0.0 
  */
@@ -135,7 +135,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
     protected static String replaceProjectPattern(int projectId, String query) {
 
         // make the statement project dependent
-        String replacePattern = (projectId == CmsProject.ONLINE_PROJECT_ID || projectId < 0) ? "_ONLINE_" : "_OFFLINE_";
+        String replacePattern = ((projectId == CmsProject.ONLINE_PROJECT_ID) || (projectId < 0)) ? "_ONLINE_"
+        : "_OFFLINE_";
         query = CmsStringUtil.substitute(query, QUERY_PROJECT_SEARCH_PATTERN, replacePattern);
 
         return query;
@@ -162,7 +163,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
         try {
             // first, close the connection and (eventually) implicitly all assigned statements and result sets
-            if (con != null && !con.isClosed()) {
+            if ((con != null) && !con.isClosed()) {
                 con.close();
             }
         } catch (SQLException e) {
@@ -245,6 +246,28 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             LOG.error(Messages.get().getBundle().key(Messages.LOG_NULL_DB_CONTEXT_0));
         }
         return getConnection(projectId);
+    }
+
+    /**
+     * Returns a JDBC connection from the connection pool specified by the given CmsProject id.<p>
+     * 
+     * Use this method to get a connection for reading/writing data either in online or offline projects
+     * such as files, folders.<p>
+     * 
+     * @param dbc the current database context
+     * @param reservedParam the reserved JDBC pool id
+     * 
+     * @return a JDBC connection
+     * @throws SQLException if a database access error occurs
+     */
+    public Connection getConnection(CmsDbContext dbc, Object reservedParam) throws SQLException {
+
+        if (reservedParam == null) {
+            // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+            return getConnection(dbc);
+        }
+        // get a JDBC connection from the reserved JDBC pools
+        return getConnection(dbc, ((Integer)reservedParam).intValue());
     }
 
     /**
@@ -369,7 +392,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             // id 0 is special, please see below
             StringBuffer buffer = new StringBuffer(128);
             buffer.append(queryKey);
-            if (projectId == CmsProject.ONLINE_PROJECT_ID || projectId < 0) {
+            if ((projectId == CmsProject.ONLINE_PROJECT_ID) || (projectId < 0)) {
                 buffer.append("_ONLINE");
             } else {
                 buffer.append("_OFFLINE");
@@ -553,7 +576,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
             while ((startIndex = currentValue.indexOf("${", lastIndex)) != -1) {
                 endIndex = currentValue.indexOf('}', startIndex);
-                if (endIndex != -1 && !currentValue.startsWith(QUERY_PROJECT_SEARCH_PATTERN, startIndex - 1)) {
+                if ((endIndex != -1) && !currentValue.startsWith(QUERY_PROJECT_SEARCH_PATTERN, startIndex - 1)) {
 
                     String replaceKey = currentValue.substring(startIndex + 2, endIndex);
                     String searchPattern = currentValue.substring(startIndex, endIndex + 1);

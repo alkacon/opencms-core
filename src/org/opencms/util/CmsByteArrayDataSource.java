@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsByteArrayDataSource.java,v $
- * Date   : $Date: 2006/05/16 14:02:49 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.util;
 
 import java.io.ByteArrayInputStream;
@@ -38,13 +38,12 @@ import java.io.OutputStream;
 
 import javax.activation.DataSource;
 
-
 /**
  * A DataSource backed by a byte array. The byte array may be passed in directly, or may be initialized from an InputStream or a String.
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.3.0 
  */
@@ -52,10 +51,10 @@ public class CmsByteArrayDataSource implements DataSource {
 
     /** The MIME content type of the data. */
     private String m_contentType;
-    
+
     /** The data. */
     private byte[] m_data;
-    
+
     /** The name of the data. */
     private String m_name;
 

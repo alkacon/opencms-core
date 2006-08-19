@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.11.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,16 +103,19 @@ public final class CmsXmlContentFactory {
      * When unmarshalling, the encoding is read directly from the XML header of the byte array. 
      * The given encoding is used only when marshalling the XML again later.<p>
      * 
+     * @param cms the cms context
      * @param xmlData the XML data in a byte array
      * @param encoding the encoding to use when marshalling the XML content later
      * @param resolver the XML entitiy resolver to use
+     * 
      * @return a XML content instance unmarshalled from the byte array
+     * 
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlContent unmarshal(byte[] xmlData, String encoding, EntityResolver resolver)
+    public static CmsXmlContent unmarshal(CmsObject cms, byte[] xmlData, String encoding, EntityResolver resolver)
     throws CmsXmlException {
 
-        return unmarshal(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding, resolver);
+        return unmarshal(cms, CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding, resolver);
     }
 
     /**
@@ -121,7 +124,9 @@ public final class CmsXmlContentFactory {
      * 
      * @param cms the current cms object
      * @param file the file with the XML data to unmarshal
+     * 
      * @return a XML page instance unmarshalled from the provided file
+     * 
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContent unmarshal(CmsObject cms, CmsFile file) throws CmsXmlException {
@@ -141,7 +146,9 @@ public final class CmsXmlContentFactory {
      * @param file the file with the XML data to unmarshal
      * @param keepEncoding if true, the encoding spefified in the XML header is used, 
      *    otherwise the encoding from the VFS file property is used
+     *    
      * @return a XML content instance unmarshalled from the provided file
+     * 
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContent unmarshal(CmsObject cms, CmsFile file, boolean keepEncoding) throws CmsXmlException {
@@ -169,13 +176,13 @@ public final class CmsXmlContentFactory {
             // content is initialized
             if (keepEncoding) {
                 // use the encoding from the content
-                content = unmarshal(contentBytes, encoding, new CmsXmlEntityResolver(cms));
+                content = unmarshal(cms, contentBytes, encoding, new CmsXmlEntityResolver(cms));
             } else {
                 // use the encoding from the file property
                 // this usually only triggered by a save operation                
                 try {
                     String contentStr = new String(contentBytes, encoding);
-                    content = unmarshal(contentStr, encoding, new CmsXmlEntityResolver(cms));
+                    content = unmarshal(cms, contentStr, encoding, new CmsXmlEntityResolver(cms));
                 } catch (UnsupportedEncodingException e) {
                     // this will not happen since the encodig has already been validated
                     throw new CmsXmlException(Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ENC_1, filename));
@@ -183,7 +190,7 @@ public final class CmsXmlContentFactory {
             }
         } else {
             // content is empty
-            content = new CmsXmlContent(DocumentHelper.createDocument(), encoding, new CmsXmlEntityResolver(cms));
+            content = new CmsXmlContent(cms, DocumentHelper.createDocument(), encoding, new CmsXmlEntityResolver(cms));
         }
 
         // set the file
@@ -237,14 +244,16 @@ public final class CmsXmlContentFactory {
      * 
      * The given encoding is used when marshalling the XML again later.<p>
      * 
+     * @param cms the cms context, if <code>null</code> no link validation is performed
      * @param document the XML document to generate the XML content from
      * @param encoding the encoding to use when marshalling the XML content later
      * @param resolver the XML entitiy resolver to use
+     * 
      * @return a XML content instance unmarshalled from the String
      */
-    public static CmsXmlContent unmarshal(Document document, String encoding, EntityResolver resolver) {
+    public static CmsXmlContent unmarshal(CmsObject cms, Document document, String encoding, EntityResolver resolver) {
 
-        return new CmsXmlContent(document, encoding, resolver);
+        return new CmsXmlContent(cms, document, encoding, resolver);
     }
 
     /**
@@ -253,19 +262,41 @@ public final class CmsXmlContentFactory {
      * 
      * The given encoding is used when marshalling the XML again later.<p>
      * 
+     * @param cms the cms context, if <code>null</code> no link validation is performed
      * @param xmlData the XML data in a String
      * @param encoding the encoding to use when marshalling the XML content later
      * @param resolver the XML entitiy resolver to use
+     * 
      * @return a XML content instance unmarshalled from the String
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    public static CmsXmlContent unmarshal(CmsObject cms, String xmlData, String encoding, EntityResolver resolver)
+    throws CmsXmlException {
+
+        // create the XML content object from the provided String
+        return unmarshal(cms, CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding, resolver);
+    }
+
+    /**
+     * Factory method to unmarshal (generate) a XML content instance from a String
+     * that contains XML data.<p>
+     * 
+     * The given encoding is used when marshalling the XML again later.<p>
+     * 
+     * Since no {@link CmsObject} is available, no link validation is performed!<p>
+     * 
+     * @param xmlData the XML data in a String
+     * @param encoding the encoding to use when marshalling the XML content later
+     * @param resolver the XML entitiy resolver to use
+     * 
+     * @return a XML content instance unmarshalled from the String
+     * 
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContent unmarshal(String xmlData, String encoding, EntityResolver resolver)
     throws CmsXmlException {
 
-        // create the XML content object from the provided String
-        CmsXmlContent content = unmarshal(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding, resolver);
-        // return the result with the user context set
-        return content;
-
+        return unmarshal(null, xmlData, encoding, resolver);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromHttp.java,v $
- * Date   : $Date: 2006/03/28 13:54:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.12.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,7 +151,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
             errors.add(Messages.get().container(Messages.ERR_ACTION_MODULE_UPLOAD_1, getParamImportfile()));
         }
 
-        if (errors.isEmpty()) {
+        if ((module != null) && errors.isEmpty()) {
 
             // refresh the list
             Map objects = (Map)getSettings().getListObject();

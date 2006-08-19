@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.58.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,11 +49,14 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.58.8.1 $
  * 
  * @since 6.0.0 
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
+
+    /** TODO: Remove "Object reservedParam" from all methods, refactor to use special instance of dbc instead. */
+    int todo_v7 = 0;
 
     /** The type ID to identify user driver implementations. */
     int DRIVER_TYPE_ID = 2;
@@ -82,6 +85,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
 
     /**
      * Creates a new group.<p>
+     * 
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
      * 
      * @param dbc the current database context
      * @param groupId the id of the new group
@@ -140,6 +145,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Adds a user to a group.<p>
      *
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
+     *
      * @param dbc the current database context
      * @param userid the id of the user that is to be added to the group
      * @param groupid the id of the group
@@ -165,35 +172,45 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Deletes a group.<p>
      * 
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
+     * 
      * Only groups that contain no subgroups can be deleted.<p>
      * 
      * @param dbc the current database context
      * @param name the name of the group that is to be deleted
+     * @param reservedParam additional params to be used by driver implementation
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteGroup(CmsDbContext dbc, String name) throws CmsDataAccessException;
+    void deleteGroup(CmsDbContext dbc, String name, Object reservedParam) throws CmsDataAccessException;
 
     /**
      * Deletes a user.<p>
      * 
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
+     * 
      * @param dbc the current database context
      * @param userName the name of the user to delete
+     * @param reservedParam additional params to be used by driver implementation
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteUser(CmsDbContext dbc, String userName) throws CmsDataAccessException;
+    void deleteUser(CmsDbContext dbc, String userName, Object reservedParam) throws CmsDataAccessException;
 
     /**
      * Removes a user from a group.<p>
      * 
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
+     * 
      * @param dbc the current database context
      * @param userId the id of the user that is to be removed from the group
      * @param groupId the id of the group
+     * @param reservedParam additional params to be used by driver implementation
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId) throws CmsDataAccessException;
+    void deleteUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId, Object reservedParam)
+    throws CmsDataAccessException;
 
     /**
      * Destroys this driver.<p>
@@ -204,6 +221,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
 
     /**
      * Tests if a group with the specified name exists.<p>
+     * 
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
      * 
      * @param dbc the current database context
      * @param groupname the user name to be checked
@@ -216,6 +235,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
 
     /**
      * Tests if a user with the specified name exists.<p>
+     * 
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
      * 
      * @param dbc the current database context
      * @param username the user name to be checked
@@ -237,6 +258,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
 
     /**
      * Creates a new user by import.<p>
+     * 
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
      * 
      * @param dbc the current database context
      * @param id the id of the user
@@ -545,52 +568,69 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * The group with the given id will be completely overriden
      * by the given data.<p>
      * 
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
+     * 
      * @param dbc the current database context
      * @param group the group to update
+     * @param reservedParam additional params to be used by driver implementation
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException;
+    void writeGroup(CmsDbContext dbc, CmsGroup group, Object reservedParam) throws CmsDataAccessException;
 
     /**
      * Sets a new password for a user.<p>
+     * 
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
      * 
      * @param dbc the current database context
      * @param userName the user to set the password for
      * @param type the type of the user
      * @param oldPassword the current password
      * @param newPassword the password to set
+     * @param reservedParam additional params to be used by driver implementation
      *
      * @throws CmsDataAccessException if something goes wrong
      * @throws CmsPasswordEncryptionException if the (new) password could not be encrypted
      */
-    void writePassword(CmsDbContext dbc, String userName, int type, String oldPassword, String newPassword)
-    throws CmsDataAccessException, CmsPasswordEncryptionException;
+    void writePassword(
+        CmsDbContext dbc,
+        String userName,
+        int type,
+        String oldPassword,
+        String newPassword,
+        Object reservedParam) throws CmsDataAccessException, CmsPasswordEncryptionException;
 
     /**
      * Updates the user information. <p>
      * 
-     * The user id has to be a valid OpenCms user id.<br>
+     * The user id has to be a valid OpenCms user id.<p>
      * 
      * The user with the given id will be completely overriden
      * by the given data.<p>
      *
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
+     *
      * @param dbc the current database context
      * @param user the user to update
+     * @param reservedParam additional params to be used by driver implementation
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException;
+    void writeUser(CmsDbContext dbc, CmsUser user, Object reservedParam) throws CmsDataAccessException;
 
     /**
      * Changes the user type of the given user.<p>
      * 
+     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
+     * 
      * @param dbc the current database context
      * @param userId the id of the user to change
      * @param userType the new type of the user
+     * @param reservedParam additional params to be used by driver implementation
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeUserType(CmsDbContext dbc, CmsUUID userId, int userType) throws CmsDataAccessException;
-
+    void writeUserType(CmsDbContext dbc, CmsUUID userId, int userType, Object reservedParam)
+    throws CmsDataAccessException;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2006/03/27 15:13:37 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.55.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.55.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,7 +189,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void addSearchIndex(CmsSearchIndex searchIndex) {
 
-        if (searchIndex.getSources() == null || searchIndex.getPath() == null) {
+        if ((searchIndex.getSources() == null) || (searchIndex.getPath() == null)) {
             if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
                 try {
                     searchIndex.initialize();
@@ -269,7 +269,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
                 break;
             default:
-        // no operation
+                // no operation
         }
     }
 
@@ -501,7 +501,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
      */
-    public final String launch(CmsObject cms, Map parameters) throws Exception {
+    public String launch(CmsObject cms, Map parameters) throws Exception {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
 

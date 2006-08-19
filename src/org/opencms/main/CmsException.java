@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.36.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Iterator;
 import java.util.Locale;
 
 /**
@@ -47,7 +48,7 @@ import java.util.Locale;
  * @author Michael Moossen 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.36.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,7 +120,16 @@ public class CmsException extends Exception implements I_CmsThrowable {
     public static String getStackTraceAsString(Throwable e) {
 
         StringWriter stringWriter = new StringWriter();
-        e.printStackTrace(new PrintWriter(stringWriter));
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        e.printStackTrace(printWriter);
+        if (e instanceof CmsMultiException) {
+            CmsMultiException me = (CmsMultiException)e;
+            Iterator it = me.getExceptions().iterator();
+            while (it.hasNext()) {
+                Throwable t = (Throwable)it.next();
+                t.printStackTrace(printWriter);
+            }
+        }
         return stringWriter.toString();
     }
 

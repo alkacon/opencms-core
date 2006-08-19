@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2005/06/29 14:22:49 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/08/19 13:40:58 $
+ * Version: $Revision: 1.23.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.23.8.1 $
  */
 public abstract class OpenCmsTestResourceFilter {
 
@@ -77,19 +77,25 @@ public abstract class OpenCmsTestResourceFilter {
     /** Definition of a equal filter. */
     public static final OpenCmsTestResourceFilter FILTER_EQUAL = new OpenCmsTestResourceConfigurableFilter();
 
-    /** Definition of a filter used to validate the existing and the new sibling after a copy opreation. */
+    /** Definition of a filter used to validate the existing and the new sibling after a copy operation. */
     public static final OpenCmsTestResourceFilter FILTER_EXISTING_AND_NEW_SIBLING = getFilterExistingAndNewSibling();
 
     /** Definition of a filter used to validate an existing sibling after a copy operation. */
     public static final OpenCmsTestResourceFilter FILTER_EXISTING_SIBLING = getFilterExistingSibling();
 
-    /** Definition of a filter used for the move/reanme method. */
+    /** Definition of a filter used for the import/export when creating a new file. */
+    public static final OpenCmsTestResourceFilter FILTER_IMPORTEXPORT = getFilterImportExport();
+
+    /** Definition of a filter used for the import/export when overwriting an existing file. */
+    public static final OpenCmsTestResourceFilter FILTER_IMPORTEXPORT_OVERWRITE = getFilterImportExportOverwrite();
+
+    /** Definition of a filter used to validate an existing sibling after a copy operation. */
+    public static final OpenCmsTestResourceFilter FILTER_IMPORTEXPORT_SIBLING = getFilterImportExportSibling();
+
+    /** Definition of a filter used for the move/rename method, will also check the structure id and sibling count. */
     public static final OpenCmsTestResourceFilter FILTER_MOVE_DESTINATION = getFilterMoveDestination();
 
-    /** Definition of a filter used for the move/reanme method. */
-    public static final OpenCmsTestResourceFilter FILTER_MOVE_SOURCE = getFilterMoveSource();
-
-    /** Definition of a filter used for the publsihResource method. */
+    /** Definition of a filter used for the publishResource method. */
     public static final OpenCmsTestResourceFilter FILTER_PUBLISHRESOURCE = getFilterPublishResource();
 
     /** Definition of a filter used for the replaceResource method. */
@@ -99,10 +105,16 @@ public abstract class OpenCmsTestResourceFilter {
     public static final OpenCmsTestResourceFilter FILTER_TOUCH = getFilterTouch();
 
     /** Definition of a filter used for the undoChanges method. */
-    public static final OpenCmsTestResourceFilter FILTER_UNDOCHANGES = getFilterUndoChanges();
+    public static final OpenCmsTestResourceFilter FILTER_UNDOCHANGES_ALL = getFilterUndoChangesAll();
+
+    /** Definition of a filter used for the undoChanges method. */
+    public static final OpenCmsTestResourceFilter FILTER_UNDOCHANGES_CONTENT = getFilterUndoChangesContent();
 
     /** Definition of a filter used for the writeProperty method. */
     public static final OpenCmsTestResourceFilter FILTER_WRITEPROPERTY = getFilterWriteProperty();
+
+    /** Definition of a filter used for the writeProperty method, for an individual property in the other sibling. */
+    public static final OpenCmsTestResourceFilter FILTER_SIBLING_PROPERTY = getFilterSiblingProperty();
 
     /** Flag to enable/disable access (ACE) tests. */
     protected boolean m_ace;
@@ -377,6 +389,48 @@ public abstract class OpenCmsTestResourceFilter {
     }
 
     /**
+     * Creates a new filter used for the "import/export" of a new file.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceConfigurableFilter getFilterImportExport() {
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableDateLastModifiedTest();
+        filter.disableDateCreatedTest();
+        return filter;
+    }
+
+    /**
+     * Creates a new filter used for the "import/export" when overwriting an existing file.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceFilter getFilterImportExportOverwrite() {
+
+        OpenCmsTestResourceConfigurableFilter filter = getFilterImportExport();
+
+        filter.disableStructureIdTest();
+        filter.disableResourceIdTest();
+        return filter;
+    }
+
+    /**
+     * Creates a new filter used for the "import/export" of sibling of an existing file.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceConfigurableFilter getFilterImportExportSibling() {
+
+        OpenCmsTestResourceConfigurableFilter filter = getFilterExistingSibling();
+
+        filter.disableDateLastModifiedTest();
+
+        return filter;
+    }
+
+    /**
      * Creates a new filter used for the "move/rename" method.<p>
      * 
      * @return the created filter
@@ -387,27 +441,11 @@ public abstract class OpenCmsTestResourceFilter {
 
         filter.disableProjectLastModifiedTest();
         filter.disableStateTest();
-        filter.disableStructureIdTest();
         filter.disableLockTest();
         filter.disableNameTest();
-        filter.disableSiblingCountTest();
-        return filter;
-    }
-
-    /**
-     * Creates a new filter used for the "move/rename" method.<p>
-     * 
-     * @return the created filter
-     */
-    private static OpenCmsTestResourceConfigurableFilter getFilterMoveSource() {
-
-        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
-
-        filter.disableProjectLastModifiedTest();
-        filter.disableLockTest();
-        filter.disableStateTest();
-        filter.disablePropertiesTest();
-        filter.disableSiblingCountTest();
+        filter.disableContentsTest();
+        filter.disableDateLastModifiedTest();
+        filter.disableLengthTest();
         return filter;
     }
 
@@ -466,12 +504,28 @@ public abstract class OpenCmsTestResourceFilter {
      * 
      * @return the created filter
      */
-    private static OpenCmsTestResourceFilter getFilterUndoChanges() {
+    private static OpenCmsTestResourceFilter getFilterUndoChangesAll() {
 
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
         filter.disableProjectLastModifiedTest();
         filter.disableLockTest();
+        return filter;
+    }
+
+    /**
+     * Creates a new filter used for the "undoChanges" method without move operation.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceFilter getFilterUndoChangesContent() {
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableProjectLastModifiedTest();
+        filter.disableLockTest();
+        filter.disableNameTest();
+        filter.disableStateTest();
         return filter;
     }
 
@@ -489,6 +543,21 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableDateLastModifiedTest();
         filter.disableUserLastModifiedTest();
         filter.disablePropertiesTest();
+        return filter;
+    }
+
+    /**
+     * Creates a new filter used for the "write property" method, with individual property on the other sibling.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceFilter getFilterSiblingProperty() {
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableProjectLastModifiedTest();
+        filter.disableDateLastModifiedTest();
+        filter.disableUserLastModifiedTest();
         return filter;
     }
 

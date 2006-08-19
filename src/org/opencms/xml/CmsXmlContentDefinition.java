@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2006/07/11 11:00:27 $
- * Version: $Revision: 1.36.4.2 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.36.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.2 $ 
+ * @version $Revision: 1.36.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1131,6 +1131,19 @@ public class CmsXmlContentDefinition implements Cloneable {
         CmsXmlNestedContentDefinition nestedDefinition = (CmsXmlNestedContentDefinition)type;
         path = CmsXmlUtils.removeFirstXpathElement(elementPath);
         return nestedDefinition.getNestedContentDefinition().getSchemaType(path);
+    }
+
+    /**
+     * Returns the internal set of schema type names.<p>
+     * 
+     * @return the internal set of schema type names
+     */
+    public Set getSchemaTypes() {
+
+        // TODO: What is this needed for?
+        int todo_v7 = 0;
+
+        return m_types.keySet();
     }
 
     /**

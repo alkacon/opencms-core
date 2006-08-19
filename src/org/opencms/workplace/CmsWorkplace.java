@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/07/26 14:59:07 $
- * Version: $Revision: 1.156.4.5 $
+ * Date   : $Date: 2006/08/19 13:40:38 $
+ * Version: $Revision: 1.156.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,9 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsBroadcast;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -89,7 +91,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.5 $ 
+ * @version $Revision: 1.156.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -1157,25 +1159,30 @@ public abstract class CmsWorkplace {
      */
     public void checkLock(String resource) throws CmsException {
 
-        checkLock(resource, org.opencms.lock.CmsLock.COMMON);
+        checkLock(resource, CmsLockType.EXCLUSIVE);
     }
 
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
      * 
      * @param resource the resource name which is checked
-     * @param mode flag indicating the mode (temporary or common) of a lock
+     * @param type indicates the mode {@link CmsLockType#EXCLUSIVE} or {@link CmsLockType#TEMPORARY}
+     * 
      * @throws CmsException if reading or locking the resource fails
      */
-    public void checkLock(String resource, int mode) throws CmsException {
+    public void checkLock(String resource, CmsLockType type) throws CmsException {
 
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
         CmsLock lock = getCms().getLock(res);
         if (OpenCms.getWorkplaceManager().autoLockResources()) {
             // autolock is enabled, check the lock state of the resource
-            if (lock.isNullLock()) {
-                // resource is not locked, lock it automatically
-                getCms().lockResource(resource, mode);
+            if (lock.isUnlocked() || lock.isWorkflow()) {
+                // resource is not locked or locked in a workflow only, lock it automatically
+                if (type == CmsLockType.TEMPORARY) {                    
+                    getCms().lockResourceTemporary(resource);
+                } else {
+                    getCms().lockResource(resource);
+                }
             } else if (!lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
                 throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
             }
@@ -2068,6 +2075,40 @@ public abstract class CmsWorkplace {
 
             // set cms context accordingly
             initWorkplaceCmsContext(m_settings, m_cms);
+
+            // timewarp reset logic
+            initTimeWarp(m_settings.getUserSettings(), m_session);
+        }
+    }
+
+    /**
+     * Sets the users time warp if configured and if the current timewarp setting is different or
+     * clears the current time warp setting if the user has no configured timewarp.<p>
+     * 
+     * Timwarping is controlled by the session attribute
+     * {@link CmsContextInfo#ATTRIBUTE_REQUEST_TIME} with a value of type <code>Long</code>.<p>
+     * 
+     * @param settings the user settings which are configured via the preferences dialog
+     * 
+     * @param session the session of the user
+     */
+    protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
+
+        long timeWarpConf = settings.getTimeWarp();
+        Long timeWarpSetLong = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
+        long timeWarpSet = (timeWarpSetLong != null) ? timeWarpSetLong.longValue() : CmsContextInfo.CURRENT_TIME;
+
+        if (timeWarpConf == CmsContextInfo.CURRENT_TIME) {
+            // delete:
+            if (timeWarpSetLong != null) {
+                // we may come from direct_edit.jsp: don't remove attribute, this is
+                session.removeAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
+            }
+        } else {
+            // this is dominant: if configured we will use it
+            if (timeWarpSet != timeWarpConf) {
+                session.setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, new Long(timeWarpConf));
+            }
         }
     }
 

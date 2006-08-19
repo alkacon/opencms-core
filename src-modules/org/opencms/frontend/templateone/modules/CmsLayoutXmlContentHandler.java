@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/CmsLayoutXmlContentHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:41:00 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Locale;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.7
  */
@@ -119,13 +119,9 @@ public class CmsLayoutXmlContentHandler extends CmsDefaultXmlContentHandler {
 
         super.removeEmptyMappings(cms, content);
 
-        String rootPath = null;
-        List siblings = null;
-
         // get root path of the file
-        if (rootPath == null) {
-            rootPath = content.getFile().getRootPath();
-        }
+        String rootPath = content.getFile().getRootPath();
+        List siblings = null;
 
         try {
             // try / catch to ensure site root is always restored
@@ -133,9 +129,7 @@ public class CmsLayoutXmlContentHandler extends CmsDefaultXmlContentHandler {
             cms.getRequestContext().setSiteRoot("/");
 
             // read all siblings of the file
-            if (siblings == null) {
-                siblings = cms.readSiblings(rootPath, CmsResourceFilter.IGNORE_EXPIRATION);
-            }
+            siblings = cms.readSiblings(rootPath, CmsResourceFilter.IGNORE_EXPIRATION);
 
             for (int i = 0; i < siblings.size(); i++) {
 
@@ -263,7 +257,7 @@ public class CmsLayoutXmlContentHandler extends CmsDefaultXmlContentHandler {
                     String folder = content.getStringValue(cms, layoutConfigPath + ELEMENT_VFSFOLDER, locale);
                     if (CmsStringUtil.isNotEmpty(folder)) {
                         // folder is set, eventually remove site root from path
-                        if (folder.length() > 1 && folder.startsWith(siteRoot)) {
+                        if ((folder.length() > 1) && folder.startsWith(siteRoot)) {
                             folder = folder.substring(siteRoot.length());
                         }
                     } else {

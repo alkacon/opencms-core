@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2006/08/19 13:40:36 $
+ * Version: $Revision: 1.43.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.43.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -322,13 +322,7 @@ public class CmsImport {
                 I_CmsImport imp = (I_CmsImport)i.next();
                 if (imp.getVersion() == m_importVersion) {
                     // this is the correct import version, so call it for the import process
-                    imp.importResources(
-                        m_cms,
-                        m_importPath,
-                        m_report,
-                        m_importResource,
-                        m_importZip,
-                        m_docXml);
+                    imp.importResources(m_cms, m_importPath, m_report, m_importResource, m_importZip, m_docXml);
                     run = true;
                     break;
                 }

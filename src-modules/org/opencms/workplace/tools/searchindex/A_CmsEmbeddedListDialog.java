@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsEmbeddedListDialog.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:54 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.opencms.workplace.list.CmsListOrderEnum;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  * 
  * @since 6.0.0
  */
@@ -106,7 +106,6 @@ public abstract class A_CmsEmbeddedListDialog extends A_CmsListDialog {
         CmsListOrderEnum sortOrder,
         String searchableColId) {
 
-        // TODO: Auto-generated constructor stub
         super(jsp, listId, listName, sortedColId, sortOrder, searchableColId);
 
     }

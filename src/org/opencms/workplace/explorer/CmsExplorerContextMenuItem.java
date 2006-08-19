@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuItem.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package org.opencms.workplace.explorer;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -46,7 +46,7 @@ public class CmsExplorerContextMenuItem implements Comparable {
 
     /** The name for an entry type. */
     public static final String TYPE_ENTRY = "entry";
-    
+
     /** The name for a separator type. */
     public static final String TYPE_SEPARATOR = "separator";
 
@@ -66,13 +66,7 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @param target the frame target of the entry (e.g. "_top")
      * @param order the order of the item
      */
-    public CmsExplorerContextMenuItem(
-        String type,
-        String key,
-        String uri,
-        String rules,
-        String target,
-        Integer order) {
+    public CmsExplorerContextMenuItem(String type, String key, String uri, String rules, String target, Integer order) {
 
         m_type = type;
         m_key = key;

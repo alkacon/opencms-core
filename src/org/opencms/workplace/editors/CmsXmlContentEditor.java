@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/06/14 13:37:46 $
- * Version: $Revision: 1.68.4.3 $
+ * Date   : $Date: 2006/08/19 13:40:50 $
+ * Version: $Revision: 1.68.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68.4.3 $ 
+ * @version $Revision: 1.68.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,12 +115,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** Indicates that the content should be checked before executing the direct edit action. */
     public static final String EDITOR_ACTION_CHECK = "check";
-    
+
     /** Indicates that the correction of the XML content structure should be confirmed. */
     public static final String EDITOR_ACTION_CONFIRMCORRECTION = "confirmcorrect";
-
-    /** Indicates that the correction of the XML content structure was confirmed by the user. */
-    public static final String EDITOR_CORRECTIONCONFIRMED = "correctconfirmed";
 
     /** Indicates an optional element should be created. */
     public static final String EDITOR_ACTION_ELEMENT_ADD = "addelement";
@@ -136,6 +133,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** Indicates a new file should be created. */
     public static final String EDITOR_ACTION_NEW = I_CmsEditorActionHandler.DIRECT_EDIT_OPTION_NEW;
+
+    /** Indicates that the correction of the XML content structure was confirmed by the user. */
+    public static final String EDITOR_CORRECTIONCONFIRMED = "correctconfirmed";
 
     /** Parameter name for the request parameter "elementindex". */
     public static final String PARAM_ELEMENTINDEX = "elementindex";
@@ -155,9 +155,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /** The element locale. */
     private Locale m_elementLocale;
 
-    /** The error handler for the xml content. */
-    private CmsXmlContentErrorHandler m_errorHandler;
-
     /** File object used to read and write contents. */
     private CmsFile m_file;
 
@@ -175,6 +172,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** Parameter to indicate if a new XML content resource should be created. */
     private String m_paramNewLink;
+
+    /** The error handler for the xml content. */
+    private CmsXmlContentErrorHandler m_validationHandler;
 
     /** Visitor implementation that stored the widgets for the content.  */
     private CmsXmlContentWidgetVisitor m_widgetCollector;
@@ -203,13 +203,13 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
-        }  
-        
+        }
+
         // save eventually changed content of the editor
         Locale oldLocale = CmsLocaleManager.getLocale(getParamOldelementlanguage());
         try {
             setEditorValues(oldLocale);
-            if (!m_content.validate(getCms(), oldLocale).hasErrors()) {
+            if (!m_content.validate(getCms()).hasErrors(oldLocale)) {
                 // no errors found in content, save to temporary file              
                 writeContent();
             } else {
@@ -223,7 +223,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             if (LOG.isInfoEnabled()) {
                 LOG.info(e.getLocalizedMessage(), e);
             }
-        }      
+        }
     }
 
     /**
@@ -246,6 +246,41 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e.getLocalizedMessage(), e);
                 }
+            }
+        }
+    }
+
+    /**
+     * Performs the delete locale action.<p>
+     * 
+     * @throws JspException if something goes wrong
+     */
+    public void actionDeleteElementLocale() throws JspException {
+
+        try {
+            Locale loc = getElementLocale();
+            m_content.removeLocale(loc);
+            //write the modified xml content
+            writeContent();
+            List locales = m_content.getLocales();
+            if (locales.size() > 0) {
+                // set first locale as new display locale
+                Locale newLoc = (Locale)locales.get(0);
+                setParamElementlanguage(newLoc.toString());
+                m_elementLocale = newLoc;
+            } else {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, getParamResource()));
+                }
+            }
+
+        } catch (CmsXmlException e) {
+            // an error occured while trying to delete the locale, stop action
+            showErrorPage(e);
+        } catch (CmsException e) {
+            // should usually never happen
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage(), e);
             }
         }
     }
@@ -306,40 +341,34 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             showErrorPage(e);
             return;
         }
+        // get the necessary parameters to move the element
+        int index = 0;
+        try {
+            index = Integer.parseInt(getParamElementIndex());
+        } catch (Exception e) {
+            // ignore, should not happen
+        }
 
-        // validate the content values
-        if (!getErrorHandler().hasErrors()) {
-            // get the necessary parameters to move the element
-            int index = 0;
-            try {
-                index = Integer.parseInt(getParamElementIndex());
-            } catch (Exception e) {
-                // ignore, should not happen
-            }
+        // get the value to move
+        I_CmsXmlContentValue value = m_content.getValue(getParamElementName(), getElementLocale(), index);
 
-            // get the value to move
-            I_CmsXmlContentValue value = m_content.getValue(getParamElementName(), getElementLocale(), index);
-
-            if (getAction() == ACTION_ELEMENT_MOVE_DOWN) {
-                // move down the value
-                value.moveDown();
-            } else {
-                // move up the value
-                value.moveUp();
-            }
-
-            if (getErrorHandler().hasWarnings(getElementLocale())) {
-                // there were warnings for the edited content, reset error handler to avoid display issues
-                resetErrorHandler();
-            }
-
-            try {
-                // write the modified content to the temporary file
-                writeContent();
-            } catch (CmsException e) {
-                // an error occured while trying to save
-                showErrorPage(e);
-            }
+        if (getAction() == ACTION_ELEMENT_MOVE_DOWN) {
+            // move down the value
+            value.moveDown();
+        } else {
+            // move up the value
+            value.moveUp();
+        }
+        if (getValidationHandler().hasWarnings(getElementLocale())) {
+            // there were warnings for the edited content, reset validation handler to avoid display issues
+            resetErrorHandler();
+        }
+        try {
+            // write the modified content to the temporary file
+            writeContent();
+        } catch (CmsException e) {
+            // an error occured while trying to save
+            showErrorPage(e);
         }
     }
 
@@ -362,7 +391,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
             // one resource serves as a "template" for the new resource
             CmsFile templateFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-            CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCms(), templateFile);
+
+            CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCloneCms(), templateFile);
             Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
 
             // now create a new XML content based on the templates content definition            
@@ -381,7 +411,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             CmsFile newFile = getCms().readFile(newFileName, CmsResourceFilter.ALL);
             newFile.setContents(newContent.marshal());
             // write the file with the updated content
-            getCms().writeFile(newFile);
+            getCloneCms().writeFile(newFile);
 
             // wipe out parameters for the editor to ensure proper operation
             setParamNewLink(null);
@@ -479,7 +509,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         try {
             setEditorValues(locale);
             // check if content has errors
-            if (!getErrorHandler().hasErrors()) {
+            if (!hasValidationErrors()) {
                 // no errors found, write content and copy temp file contents
                 writeContent();
                 commitTempFile();
@@ -510,41 +540,39 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             return;
         }
 
-        // validate the content values
-        if (!getErrorHandler().hasErrors()) {
-            // get the necessary parameters to add/remove the element
-            int index = 0;
-            try {
-                index = Integer.parseInt(getParamElementIndex());
-            } catch (Exception e) {
-                // ignore, should not happen
-            }
-
-            if (getAction() == ACTION_ELEMENT_REMOVE) {
-                // remove the value
-                m_content.removeValue(getParamElementName(), getElementLocale(), index);
-            } else {
-                // add the new value after the clicked element
-                if (m_content.hasValue(getParamElementName(), getElementLocale())) {
-                    // when other values are present, increase index to use right position
-                    index += 1;
-                }
-                m_content.addValue(getCms(), getParamElementName(), getElementLocale(), index);
-            }
-
-            if (getErrorHandler().hasWarnings(getElementLocale())) {
-                // there were warnings for the edited content, reset error handler to avoid display issues
-                resetErrorHandler();
-            }
-
-            try {
-                // write the modified content to the temporary file
-                writeContent();
-            } catch (CmsException e) {
-                // an error occured while trying to save
-                showErrorPage(e);
-            }
+        // get the necessary parameters to add/remove the element
+        int index = 0;
+        try {
+            index = Integer.parseInt(getParamElementIndex());
+        } catch (Exception e) {
+            // ignore, should not happen
         }
+
+        if (getAction() == ACTION_ELEMENT_REMOVE) {
+            // remove the value
+            m_content.removeValue(getParamElementName(), getElementLocale(), index);
+        } else {
+            // add the new value after the clicked element
+            if (m_content.hasValue(getParamElementName(), getElementLocale())) {
+                // when other values are present, increase index to use right position
+                index += 1;
+            }
+            m_content.addValue(getCms(), getParamElementName(), getElementLocale(), index);
+        }
+
+        if (getValidationHandler().hasWarnings(getElementLocale())) {
+            // there were warnings for the edited content, reset validation handler to avoid display issues
+            resetErrorHandler();
+        }
+
+        try {
+            // write the modified content to the temporary file
+            writeContent();
+        } catch (CmsException e) {
+            // an error occured while trying to save
+            showErrorPage(e);
+        }
+
     }
 
     /**
@@ -777,7 +805,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     public boolean hasValidationErrors() {
 
-        return getErrorHandler().hasErrors();
+        return getValidationHandler().hasErrors();
     }
 
     /**
@@ -793,7 +821,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         try {
             // read the original file because temporary file is not created when opening button frame
             CmsFile file = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(getCms(), file);
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(getCloneCms(), file);
             return content.getContentDefinition().getContentHandler().getPreview(
                 getCms(),
                 m_content,
@@ -863,7 +891,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public boolean showElementLanguageSelector() {
 
         List locales = OpenCms.getLocaleManager().getAvailableLocales(getCms(), getParamResource());
-        if (locales == null || locales.size() < 2) {
+        if ((locales == null) || (locales.size() < 2)) {
             // for less than two available locales, do not create language selector
             return false;
         }
@@ -929,10 +957,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             setParamAction(EDITOR_ACTION_NEW);
         } else {
             // initialize a content object from the temporary file
-            if (getParamTempfile() != null && !"null".equals(getParamTempfile())) {
+            if ((getParamTempfile() != null) && !"null".equals(getParamTempfile())) {
                 try {
                     m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
-                    m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
+                    m_content = CmsXmlContentFactory.unmarshal(getCloneCms(), m_file);
                 } catch (CmsException e) {
                     // error during initialization, show error page
                     try {
@@ -967,6 +995,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 }
             }
             setAction(ACTION_EXIT);
+        } else if (EDITOR_DELETELOCALE.equals(getParamAction())) {
+            setAction(ACTION_DELETELOCALE);
         } else if (EDITOR_SHOW.equals(getParamAction())) {
             setAction(ACTION_SHOW);
         } else if (EDITOR_SHOW_ERRORMESSAGE.equals(getParamAction())) {
@@ -984,7 +1014,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
-            if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
+            if ((getAction() != ACTION_CANCEL) && (getAction() != ACTION_SHOW_ERRORMESSAGE)) {
                 // no error ocurred, redisplay the input form
                 setAction(ACTION_SHOW);
             }
@@ -998,7 +1028,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
-            if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
+            if ((getAction() != ACTION_CANCEL) && (getAction() != ACTION_SHOW_ERRORMESSAGE)) {
                 // no error ocurred, redisplay the input form
                 setAction(ACTION_SHOW);
             }
@@ -1012,7 +1042,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
-            if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
+            if ((getAction() != ACTION_CANCEL) && (getAction() != ACTION_SHOW_ERRORMESSAGE)) {
                 // no error ocurred, redisplay the input form
                 setAction(ACTION_SHOW);
             }
@@ -1026,7 +1056,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
-            if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
+            if ((getAction() != ACTION_CANCEL) && (getAction() != ACTION_SHOW_ERRORMESSAGE)) {
                 // no error ocurred, redisplay the input form
                 setAction(ACTION_SHOW);
             }
@@ -1058,7 +1088,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // lock resource if autolock is enabled in configuration
                 if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
                     // set a temporary lock in direct edit mode
-                    checkLock(getParamResource(), CmsLock.TEMPORARY);
+                    checkLock(getParamResource(), CmsLockType.TEMPORARY);
                 } else {
                     // set common lock
                     checkLock(getParamResource());
@@ -1067,7 +1097,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 setParamTempfile(createTempFile());
                 // initialize a content object from the created temporary file
                 m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
-                m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
+                m_content = CmsXmlContentFactory.unmarshal(getCloneCms(), m_file);
 
                 // check the XML content against the given XSD
                 try {
@@ -1081,7 +1111,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         // show correction confirmation dialog
                         setAction(ACTION_CONFIRMCORRECTION);
                     }
-                }    
+                }
 
             } catch (CmsException e) {
                 // error during initialization
@@ -1100,7 +1130,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
         }
     }
-    
+
     /**
      * Returns the html for the element operation buttons add, move, remove.<p>
      * 
@@ -1213,25 +1243,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws CmsException if the correction fails
      */
     private void correctXmlStructure() throws CmsException {
-        
+
         m_content.setAutoCorrectionEnabled(true);
         m_content.correctXmlStructure(getCms());
         // write the corrected temporary file
         writeContent();
-    }
-
-    /**
-     * Returns the error handler for error handling of the edited xml content.<p>
-     * 
-     * @return the error handler
-     */
-    private CmsXmlContentErrorHandler getErrorHandler() {
-
-        if (m_errorHandler == null) {
-            // errors were not yet checked, do this now and store result in member
-            m_errorHandler = m_content.validate(getCms());
-        }
-        return m_errorHandler;
     }
 
     /**
@@ -1278,6 +1294,20 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
         }
         return valueNames;
+    }
+
+    /**
+     * Returns the error handler for error handling of the edited xml content.<p>
+     * 
+     * @return the error handler
+     */
+    private CmsXmlContentErrorHandler getValidationHandler() {
+
+        if (m_validationHandler == null) {
+            // errors were not yet checked, do this now and store result in member
+            m_validationHandler = m_content.validate(getCms());
+        }
+        return m_validationHandler;
     }
 
     /**
@@ -1329,7 +1359,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             result.append("\">\n");
 
             // show error header once if there were validation errors
-            if (!nested && showErrors && getErrorHandler().hasErrors(getElementLocale())) {
+            if (!nested && showErrors && (getValidationHandler().hasErrors(getElementLocale()))) {
                 result.append("<tr><td colspan=\"4\">&nbsp;</td></tr>\n");
                 result.append("<tr><td colspan=\"2\">&nbsp;</td>");
                 result.append("<td class=\"xmlTdErrorHeader\">");
@@ -1385,6 +1415,33 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         widget = contentDefinition.getContentHandler().getWidget(value);
                     }
 
+                    // show errors and/or warnings               
+                    String key = value.getPath();
+                    if (showErrors
+                        && getValidationHandler().hasErrors(getElementLocale())
+                        && getValidationHandler().getErrors(getElementLocale()).containsKey(key)) {
+                        // show error message
+                        result.append("<tr><td></td><td><img src=\"");
+                        result.append(getEditorResourceUri());
+                        result.append("error.png");
+                        result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError\">");
+                        result.append(resolveMacros((String)getValidationHandler().getErrors(getElementLocale()).get(
+                            key)));
+                        result.append("</td><td></td></tr>\n");
+                    }
+                    // warnings can be additional to errors
+                    if (showErrors
+                        && getValidationHandler().hasWarnings(getElementLocale())
+                        && getValidationHandler().getWarnings(getElementLocale()).containsKey(key)) {
+                        // show warning message
+                        result.append("<tr><td></td><td><img src=\"");
+                        result.append(getEditorResourceUri());
+                        result.append("warning.png");
+                        result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdWarning\">");
+                        result.append(resolveMacros((String)getValidationHandler().getWarnings(getElementLocale()).get(
+                            key)));
+                        result.append("</td><td></td></tr>\n");
+                    }
                     // create label and help bubble cells
                     result.append("<tr>");
                     result.append("<td class=\"xmlLabel");
@@ -1398,7 +1455,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         result.append(" [").append(value.getIndex() + 1).append("]");
                     }
                     result.append(": </td>");
-                    if (showHelpBubble && type.isSimpleType() && value.getIndex() == 0) {
+                    if (showHelpBubble && (widget != null) && (value.getIndex() == 0)) {
                         // show help bubble only on first element of each content definition 
                         result.append(widget.getHelpBubble(getCms(), this, (I_CmsWidgetParameter)value));
                     } else {
@@ -1408,7 +1465,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
                     // append individual widget html cell if element is enabled
                     if (!disabledElement) {
-                        if (!type.isSimpleType()) {
+                        if (widget == null) {
                             // recurse into nested type sequence
                             String newPath = CmsXmlUtils.createXpathElement(value.getName(), value.getIndex() + 1);
                             result.append("<td class=\"maxwidth\">");
@@ -1435,31 +1492,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     // close row
                     result.append("</tr>\n");
 
-                    // show errors and/or warnings               
-                    String key = value.getPath();
-                    if (showErrors
-                        && getErrorHandler().hasErrors(getElementLocale())
-                        && getErrorHandler().getErrors(getElementLocale()).containsKey(key)) {
-                        // show error message
-                        result.append("<tr><td></td><td><img src=\"");
-                        result.append(getEditorResourceUri());
-                        result.append("error.png");
-                        result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError\">");
-                        result.append(resolveMacros((String)getErrorHandler().getErrors(getElementLocale()).get(key)));
-                        result.append("</td><td></td></tr>\n");
-                    }
-                    // warnings can be additional to errors
-                    if (showErrors
-                        && getErrorHandler().hasWarnings(getElementLocale())
-                        && getErrorHandler().getWarnings(getElementLocale()).containsKey(key)) {
-                        // show warning message
-                        result.append("<tr><td></td><td><img src=\"");
-                        result.append(getEditorResourceUri());
-                        result.append("warning.png");
-                        result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdWarning\">");
-                        result.append(resolveMacros((String)getErrorHandler().getWarnings(getElementLocale()).get(key)));
-                        result.append("</td><td></td></tr>\n");
-                    }
                 }
             }
             // close table
@@ -1475,7 +1507,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     private void resetErrorHandler() {
 
-        m_errorHandler = null;
+        m_validationHandler = null;
     }
 
     /**
@@ -1502,7 +1534,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
         }
         // the file content might have been modified during the write operation    
-        m_file = getCms().writeFile(m_file);
-        m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
+        m_file = getCloneCms().writeFile(m_file);
+        m_content = CmsXmlContentFactory.unmarshal(getCloneCms(), m_file);
     }
 }

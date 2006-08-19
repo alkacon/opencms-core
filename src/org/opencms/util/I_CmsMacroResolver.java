@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/I_CmsMacroResolver.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.7.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,20 +40,29 @@ package org.opencms.util;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.8.1 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsMacroResolver {
 
-    /** Delimiter char <code>'$'</code> for a macro. */
+    /** Delimiter char <code>'$'</code> for a macro - old style. */
     char MACRO_DELIMITER = '$';
 
-    /** End char <code>'}'</code> for a macro. */
+    /** Delimiter char <code>'%'</code> for a macro - new style. */
+    char MACRO_DELIMITER_NEW = '%';
+
+    /** End char <code>'}'</code> for a macro - old style. */
     char MACRO_END = '}';
 
-    /** Start char <code>'{'</code> for a macro.  */
+    /** End char <code>')'</code> for a macro - new style. */
+    char MACRO_END_NEW = ')';
+
+    /** Start char <code>'{'</code> for a macro - old style.  */
     char MACRO_START = '{';
+
+    /** Start char <code>'('</code> for a macro - new style.  */
+    char MACRO_START_NEW = '(';
 
     /**
      * Resolves a single macro to the macro value, returns <code>null</code> if the macro could not be resolved.<p> 

@@ -2,7 +2,7 @@
 
 	org.opencms.main.*,
 	org.opencms.workplace.*,
-    org.opencms.validation.*
+    org.opencms.relations.*
 
 "%><%	
 
@@ -48,7 +48,7 @@ function init() {
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <% 
-  CmsPointerLinkValidationResult result = OpenCms.getLinkManager().getPointerLinkValidationResult();
+  CmsExternalLinksValidationResult result = OpenCms.getLinkManager().getPointerLinkValidationResult();
   if (result != null) {
     out.println(result.toHtml(wp.getCms().getRequestContext().getLocale()));
     out.println(wp.dialogContentEnd());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/04/18 16:14:04 $
- * Version: $Revision: 1.39.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:45 $
+ * Version: $Revision: 1.39.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.4.1 $ 
+ * @version $Revision: 1.39.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -314,14 +314,14 @@ public final class CmsStringUtil {
         Map retValue = new HashMap();
         retValue.put("text", text);
         retValue.put("value", "'" + defValue + "'");
-        if (text != null && text.toLowerCase().indexOf(attribute.toLowerCase()) >= 0) {
+        if ((text != null) && (text.toLowerCase().indexOf(attribute.toLowerCase()) >= 0)) {
             // this doesnot work for things like "att=method()" without quotations.
             String quotation = "\'";
             int pos1 = text.toLowerCase().indexOf(attribute.toLowerCase());
             // looking for the opening quotation mark
             int pos2 = text.indexOf(quotation, pos1);
             int test = text.indexOf("\"", pos1);
-            if (test > -1 && (pos2 == -1 || test < pos2)) {
+            if ((test > -1) && ((pos2 == -1) || (test < pos2))) {
                 quotation = "\"";
                 pos2 = test;
             }
@@ -711,7 +711,7 @@ public final class CmsStringUtil {
         int n = source.indexOf(delimiter);
         while (n != -1) {
             // zero - length items are not seen as tokens at start or end
-            if ((i < n) || (i > 0) && (i < l)) {
+            if ((i < n) || ((i > 0) && (i < l))) {
                 result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
             }
             i = n + 1;
@@ -765,7 +765,7 @@ public final class CmsStringUtil {
         int n = source.indexOf(delimiter);
         while (n != -1) {
             // zero - length items are not seen as tokens at start or end:  ",," is one empty token but not three
-            if ((i < n) || (i > 0) && (i < l)) {
+            if ((i < n) || ((i > 0) && (i < l))) {
                 result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
             }
             i = n + dl;
@@ -980,7 +980,7 @@ public final class CmsStringUtil {
         int newend;
         while (true) {
             newend = source.indexOf(" ", end);
-            if (newend > length && end > 0) {
+            if ((newend > length) && (end > 0)) {
                 return source.substring(0, length - 3) + "...";
             } else if (newend == -1) {
                 if (length < source.length()) {

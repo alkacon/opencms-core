@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsMultiDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.2.0 
  */
@@ -85,7 +85,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /** The list of resource names for the multi operation. */
     private List m_resourceList;
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMultiDialog.class);
 
@@ -258,7 +258,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
         m_paramResourcelist = paramResourcelist;
     }
-    
+
     /**
      * Checks if the permissions of the current user on the single resource to use in the dialog are sufficient.<p>
      * 
@@ -280,7 +280,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
             return super.checkResourcePermissions(required, neededForFolder);
         }
     }
-    
+
     /**
      * Checks if the resource operation is an operation on at least one folder.<p>
      * 

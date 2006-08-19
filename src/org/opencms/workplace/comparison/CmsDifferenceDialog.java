@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsDifferenceDialog.java,v $
- * Date   : $Date: 2006/03/30 07:50:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/08/19 13:40:46 $
+ * Version: $Revision: 1.4.4.1 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -39,7 +39,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,7 +47,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
 
     /** The content of the second file to compare. */
     private String m_copySource;
-    
+
     /** The content of the first file to compare. */
     private String m_originalSource;
 

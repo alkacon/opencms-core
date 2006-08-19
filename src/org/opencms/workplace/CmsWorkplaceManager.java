@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2006/04/12 09:54:13 $
- * Version: $Revision: 1.76.4.1 $
+ * Date   : $Date: 2006/08/19 13:40:37 $
+ * Version: $Revision: 1.76.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.1 $ 
+ * @version $Revision: 1.76.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,9 +199,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The configured workplace views. */
     private List m_views;
 
-    /** The workflow settings. */
-    private boolean m_workflowMessage;
-
     /** The XML content auto correction flag. */
     private boolean m_xmlContentAutoCorrect;
 
@@ -233,7 +230,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_defaultAccess = new CmsExplorerTypeAccess();
         m_galleries = new HashMap();
         m_messages = new HashMap();
-        m_workflowMessage = false;
         m_multiContextMenu = new CmsExplorerContextMenu();
         m_multiContextMenu.setMultiMenu(true);
 
@@ -867,22 +863,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns if messages should be includes in workflow mails.<p>
-     *
-     * @return true if messages should be includes, otherwise false
-     */
-    public boolean isEnableWorkflowMessages() {
-
-        return m_workflowMessage;
-    }
-
-    /**
      * Returns if XML content is automatically corrected when opened with the editor.<p>
      * 
      * @return true if XML content is automatically corrected when opened with the editor, otherwise false
      */
     public boolean isXmlContentAutoCorrect() {
-        
+
         return m_xmlContentAutoCorrect;
     }
 
@@ -1131,21 +1117,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Sets if workflow message emails contain the message text.<p>
-     *
-     * @param workflowMessage true if messages should be includes, otherwise false
-     */
-    public void setWorkflowMessage(String workflowMessage) {
-
-        m_workflowMessage = Boolean.valueOf(workflowMessage).booleanValue();
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                m_workflowMessage ? Messages.INIT_WORKFLOW_MESSAGES_SHOW_MESSAGE_0
-                : Messages.INIT_WORKFLOW_MESSAGES_HIDE_MESSAGE_0));
-        }
-    }
-
-    /**
      * Sets the auto correction of XML contents when they are opened with the editor.<p>
      * 
      * @param xmlContentAutoCorrect if "true", the content will be corrected without notification, otherwise a confirmation is needed
@@ -1262,7 +1233,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             // get the subfolders of the "views" folder
             viewFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_VIEWS);
         } catch (CmsException e) {
-            if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING && LOG.isErrorEnabled()) {
+            if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1,
                     CmsWorkplace.VFS_PATH_VIEWS), e);

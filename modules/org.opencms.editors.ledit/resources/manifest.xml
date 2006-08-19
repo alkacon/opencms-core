@@ -3,22 +3,20 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<opencms_version>6.5.0</opencms_version>
+		<createdate>Wed, 12 Jul 2006 15:15:28 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>5</export_version>
 	</info>
 	<module>
 		<name>org.opencms.editors.ledit</name>
 		<nicename><![CDATA[OpenCms 6 LEdit editor]]></nicename>
 		<group>OpenCms Editors</group>
 		<class/>
-		<description><![CDATA[
-<p>This module adds the AY-Software LEdit Editor to the OpenCms Workplace.</p>
+		<description><![CDATA[<p>This module adds the AY-Software LEdit Editor to the OpenCms Workplace.</p>
 <p>Install this module if you want to use this ActiveX editor in OpenCms.</p>
-<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
-]]></description>
-		<version>1.2.0</version>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.2.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -40,9 +38,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -51,6 +50,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -64,6 +64,10 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
 				</property>
 			</properties>
 			<accesscontrol>
@@ -80,6 +84,7 @@
 		<file>
 			<destination>system/workplace/editors</destination>
 			<type>folder</type>
+			<uuidstructure>896ef88a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -96,6 +101,7 @@
 		<file>
 			<destination>system/workplace/editors/ledit</destination>
 			<type>folder</type>
+			<uuidstructure>31208128-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -113,6 +119,7 @@
 			<source>system/workplace/editors/ledit/edit.js</source>
 			<destination>system/workplace/editors/ledit/edit.js</destination>
 			<type>plain</type>
+			<uuidstructure>3122f22a-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>9bdfc642-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -126,6 +133,7 @@
 			<source>system/workplace/editors/ledit/editor.jsp</source>
 			<destination>system/workplace/editors/ledit/editor.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>3127ad1c-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>5f9bcced-f052-11d8-ba65-db38cc8f19d7</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -148,6 +156,7 @@
 			<source>system/workplace/editors/ledit/editor_configuration.xml</source>
 			<destination>system/workplace/editors/ledit/editor_configuration.xml</destination>
 			<type>plain</type>
+			<uuidstructure>312c6810-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>5fa542d1-f052-11d8-ba65-db38cc8f19d7</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -165,6 +174,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -176,6 +186,7 @@
 		<file>
 			<destination>system/workplace/resources/buttons</destination>
 			<type>folder</type>
+			<uuidstructure>82c3d154-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -188,6 +199,7 @@
 			<source>system/workplace/resources/buttons/goto.png</source>
 			<destination>system/workplace/resources/buttons/goto.png</destination>
 			<type>image</type>
+			<uuidstructure>31cc2a85-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c4997eae-dd86-11d9-9663-016dc05e1977</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -201,6 +213,7 @@
 			<source>system/workplace/resources/buttons/print.png</source>
 			<destination>system/workplace/resources/buttons/print.png</destination>
 			<type>image</type>
+			<uuidstructure>31d10c87-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c4bfca82-dd86-11d9-9663-016dc05e1977</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -214,41 +227,8 @@
 			<source>system/workplace/resources/buttons/replace.png</source>
 			<destination>system/workplace/resources/buttons/replace.png</destination>
 			<type>image</type>
+			<uuidstructure>31d5c779-11b8-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c4c8f24e-dd86-11d9-9663-016dc05e1977</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/editors</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/editors/ledit</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/editors/ledit/edit.js</destination>
-			<type>plain</type>
-			<uuidresource>9bdfc642-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

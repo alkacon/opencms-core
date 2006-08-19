@@ -3,22 +3,20 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<opencms_version>6.5.0</opencms_version>
+		<createdate>Wed, 12 Jul 2006 15:20:31 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>5</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.database</name>
 		<nicename><![CDATA[OpenCms 6 Database management tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
-		<description><![CDATA[
-<p>This module contains the OpenCms database maintainance tools.</p>
+		<description><![CDATA[<p>This module contains the OpenCms database maintainance tools.</p>
 <p>Install this module if you want to import/export data, it also contains a static export tool.</p>
-<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
-]]></description>
-		<version>1.2.0</version>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.2.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -41,29 +39,22 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
+			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -72,6 +63,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.tools.database</destination>
 			<type>folder</type>
+			<uuidstructure>e116d961-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
@@ -83,6 +75,7 @@
 		<file>
 			<destination>system/modules/org.opencms.workplace.tools.database/lib</destination>
 			<type>folder</type>
+			<uuidstructure>e116d963-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
@@ -95,6 +88,7 @@
 			<source>system/modules/org.opencms.workplace.tools.database/lib/org.opencms.workplace.tools.database.jar</source>
 			<destination>system/modules/org.opencms.workplace.tools.database/lib/org.opencms.workplace.tools.database.jar</destination>
 			<type>plain</type>
+			<uuidstructure>e1194a64-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>7323cbbb-3b27-11da-8883-df763b25cc68</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -103,10 +97,11 @@
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
-		</file>		
+		</file>
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -140,6 +135,7 @@
 		<file>
 			<destination>system/workplace/admin</destination>
 			<type>folder</type>
+			<uuidstructure>825fb7db-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -160,6 +156,7 @@
 		<file>
 			<destination>system/workplace/admin/database</destination>
 			<type>folder</type>
+			<uuidstructure>e11e0557-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -201,6 +198,7 @@
 			<source>system/workplace/admin/database/export.jsp</source>
 			<destination>system/workplace/admin/database/export.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>e120765f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>1b715245-d81e-11d9-b639-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -247,6 +245,7 @@
 			<source>system/workplace/admin/database/htmlimport.jsp</source>
 			<destination>system/workplace/admin/database/htmlimport.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>e1253159-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c5389f45-d72e-11d9-b767-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -293,6 +292,7 @@
 			<source>system/workplace/admin/database/importhttp.jsp</source>
 			<destination>system/workplace/admin/database/importhttp.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>e129ec53-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>cbad1dad-d761-11d9-90a6-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -339,6 +339,7 @@
 			<source>system/workplace/admin/database/importserver.jsp</source>
 			<destination>system/workplace/admin/database/importserver.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>e12ea74d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>95b800de-d75b-11d9-be76-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -385,6 +386,7 @@
 			<source>system/workplace/admin/database/staticexport.jsp</source>
 			<destination>system/workplace/admin/database/staticexport.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>e1338957-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ca1f2426-d980-11d9-98f6-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -426,6 +428,7 @@
 		<file>
 			<destination>system/workplace/admin/database/reports</destination>
 			<type>folder</type>
+			<uuidstructure>e13a8e41-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -443,6 +446,7 @@
 			<source>system/workplace/admin/database/reports/export.jsp</source>
 			<destination>system/workplace/admin/database/reports/export.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>e13cff43-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>8c489d4f-d82c-11d9-8b9b-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -465,6 +469,7 @@
 			<source>system/workplace/admin/database/reports/import.jsp</source>
 			<destination>system/workplace/admin/database/reports/import.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>e141ba37-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>74972b17-d75b-11d9-be76-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -486,6 +491,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -497,6 +503,7 @@
 		<file>
 			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>
+			<uuidstructure>c3a8d33c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -508,6 +515,7 @@
 		<file>
 			<destination>system/workplace/resources/tools/database</destination>
 			<type>folder</type>
+			<uuidstructure>e1e17cae-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -519,6 +527,7 @@
 		<file>
 			<destination>system/workplace/resources/tools/database/icons</destination>
 			<type>folder</type>
+			<uuidstructure>e1e3edb0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -530,6 +539,7 @@
 		<file>
 			<destination>system/workplace/resources/tools/database/icons/big</destination>
 			<type>folder</type>
+			<uuidstructure>e1e637a2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -542,122 +552,177 @@
 			<source>system/workplace/resources/tools/database/icons/big/data_export.png</source>
 			<destination>system/workplace/resources/tools/database/icons/big/data_export.png</destination>
 			<type>image</type>
+			<uuidstructure>e1eb19a3-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fabe3f34-d739-11d9-b767-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/database/icons/big/data_import_http.png</source>
 			<destination>system/workplace/resources/tools/database/icons/big/data_import_http.png</destination>
 			<type>image</type>
+			<uuidstructure>e1efd496-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fac14c77-d739-11d9-b767-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/database/icons/big/data_import_http_disabled.png</source>
 			<destination>system/workplace/resources/tools/database/icons/big/data_import_http_disabled.png</destination>
 			<type>image</type>
+			<uuidstructure>e1f70089-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>e95f9065-e626-11d9-9a19-632613cc8395</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/database/icons/big/data_import_server.png</source>
 			<destination>system/workplace/resources/tools/database/icons/big/data_import_server.png</destination>
 			<type>image</type>
+			<uuidstructure>e1fbbb7c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fac459ba-d739-11d9-b767-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/database/icons/big/data_import_server_disabled.png</source>
 			<destination>system/workplace/resources/tools/database/icons/big/data_import_server_disabled.png</destination>
 			<type>image</type>
+			<uuidstructure>e200766f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>e961da58-e626-11d9-9a19-632613cc8395</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/database/icons/big/database_manage.png</source>
 			<destination>system/workplace/resources/tools/database/icons/big/database_manage.png</destination>
 			<type>image</type>
+			<uuidstructure>e2055872-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fabcb891-d739-11d9-b767-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/database/icons/big/htmlimport.png</source>
 			<destination>system/workplace/resources/tools/database/icons/big/htmlimport.png</destination>
 			<type>image</type>
+			<uuidstructure>e20ece55-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c56813fc-d72e-11d9-b767-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/database/icons/big/htmlimport_disabled.png</source>
 			<destination>system/workplace/resources/tools/database/icons/big/htmlimport_disabled.png</destination>
 			<type>image</type>
+			<uuidstructure>e2113f58-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>e94c7d92-e626-11d9-9a19-632613cc8395</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/database/icons/big/staticexport.png</source>
 			<destination>system/workplace/resources/tools/database/icons/big/staticexport.png</destination>
 			<type>image</type>
+			<uuidstructure>e213894b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0e43d70b-d668-11d9-ba7b-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/tools/database/icons/small</destination>
 			<type>folder</type>
+			<uuidstructure>e215fa4f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -670,26 +735,38 @@
 			<source>system/workplace/resources/tools/database/icons/small/database_manage.png</source>
 			<destination>system/workplace/resources/tools/database/icons/small/database_manage.png</destination>
 			<type>image</type>
+			<uuidstructure>e215fa50-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>034aa99d-d73a-11d9-b767-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/database/icons/small/staticexport.png</source>
 			<destination>system/workplace/resources/tools/database/icons/small/staticexport.png</destination>
 			<type>image</type>
+			<uuidstructure>e2186b53-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0e49f192-d668-11d9-ba7b-0d179596440c</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>

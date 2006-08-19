@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResourceHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/08/19 13:40:39 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,20 +32,22 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
-import org.opencms.main.OpenCms;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Resource init handler that loads backup versions of resources.<p>
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.3.4.1 $
  * 
  * @since 6.0.1 
  */
@@ -59,6 +61,21 @@ public class CmsBackupResourceHandler implements I_CmsResourceInit {
 
     /** Request parameter name for the version id. */
     public static final String PARAM_VERSIONID = "versionid";
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsBackupResourceHandler.class);
+
+    /**
+     * Returns the backup resource if the given request is displaying a history backup version.<p> 
+     * 
+     * @param req the request to check
+     * 
+     * @return the backup resource if the given request is displaying a history backup version
+     */
+    public static CmsBackupResource getBackupResouce(ServletRequest req) {
+
+        return (CmsBackupResource)req.getAttribute(ATTRIBUTE_NAME);
+    }
 
     /**
      * Returns <code>true</code> if the given request is displaying a history backup version.<p> 
@@ -86,7 +103,7 @@ public class CmsBackupResourceHandler implements I_CmsResourceInit {
             String versionId = req.getParameter(PARAM_VERSIONID);
 
             // only do something if the resource was not found and there was a "versionid" parameter included
-            if (resource == null && versionId != null) {
+            if ((resource == null) && (versionId != null)) {
 
                 String uri = cms.getRequestContext().getUri();
                 // check if the resource starts with the BACKUP_HANDLER
@@ -95,19 +112,20 @@ public class CmsBackupResourceHandler implements I_CmsResourceInit {
                     // this can be done by trying to read the backup handler resource
                     if (cms.existsResource(BACKUP_HANDLER)) {
                         try {
-                            // extract the "real" resourcename
-                            uri = uri.substring(BACKUP_HANDLER.length(), uri.length());
-                            int id = new Integer(versionId).intValue();
                             // we now must switch to the root site to read the backup resource
                             cms.getRequestContext().saveSiteRoot();
                             cms.getRequestContext().setSiteRoot("/");
+
+                            // extract the "real" resourcename
+                            uri = uri.substring(BACKUP_HANDLER.length(), uri.length());
+                            int id = new Integer(versionId).intValue();
                             resource = cms.readBackupFile(uri, id);
+
                             // store a request attribute to indicate that this is in fact a backup version
-                            req.setAttribute(ATTRIBUTE_NAME, Boolean.TRUE);
+                            req.setAttribute(ATTRIBUTE_NAME, resource);
                         } catch (CmsException e) {
-                            if (OpenCms.getLog(this).isErrorEnabled()) {
-                                OpenCms.getLog(this).error(
-                                    Messages.get().container(Messages.ERR_BACKUPRESOURCE_2, uri, versionId));
+                            if (LOG.isErrorEnabled()) {
+                                LOG.error(Messages.get().container(Messages.ERR_BACKUPRESOURCE_2, uri, versionId));
                             }
                             throw new CmsResourceInitException(Messages.get().container(
                                 Messages.ERR_SHOWVERSION_2,
@@ -117,7 +135,7 @@ public class CmsBackupResourceHandler implements I_CmsResourceInit {
                             // restore the siteroot and modify the uri to the one of the correct resource
                             cms.getRequestContext().restoreSiteRoot();
                             if (resource != null) {
-                                // resource may be null in case of a
+                                // resource may be null in case of an error
                                 cms.getRequestContext().setUri(cms.getSitePath(resource));
                             }
                         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/19 13:40:58 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.1.3
  * 
@@ -153,7 +153,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2 $
+     * @version $Revision: 1.2.4.1 $
      * 
      * @since 6.1.6
      * 
@@ -252,7 +252,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2 $
+     * @version $Revision: 1.2.4.1 $
      * 
      * @since 6.1.6
      * 
@@ -281,7 +281,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
          * 
          * @see CmsMacroResolver
          */
-        private CmsResourceSelectWidgetOptionComparator(CmsObject cms, String comparatorMacro)
+        CmsResourceSelectWidgetOptionComparator(CmsObject cms, String comparatorMacro)
         throws CmsException {
 
             if (CmsStringUtil.isEmpty(comparatorMacro)) {
@@ -570,7 +570,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 }
             }
 
-            if (selectOptions == Collections.EMPTY_LIST) {
+            if ((selectOptions == null) || (selectOptions == Collections.EMPTY_LIST)) {
                 selectOptions = new ArrayList();
             }
 

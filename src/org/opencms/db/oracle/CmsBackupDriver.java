@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2006/08/19 13:40:59 $
+ * Version: $Revision: 1.56.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Michael Emmerich   
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.56.8.1 $
  * 
  * @since 6.0.0 
  */
@@ -123,7 +123,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         } catch (Exception e) {
             throw new CmsDbException(Messages.get().container(
                 Messages.ERR_DELETE_BACKUP_VERSIONS_1,
-                currentResource.getRootPath()), e);
+                currentResource == null ? "null" : currentResource.getRootPath()), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt1, null);
             m_sqlManager.closeAll(dbc, conn, stmt2, null);
@@ -165,7 +165,6 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                     res.getInt("PROJECT_ID"),
                     res.getString("PROJECT_NAME"),
                     res.getString("PROJECT_DESCRIPTION"),
-                    res.getInt("TASK_ID"),
                     new CmsUUID(res.getString("USER_ID")),
                     new CmsUUID(res.getString("GROUP_ID")),
                     new CmsUUID(res.getString("MANAGERGROUP_ID")),
@@ -200,7 +199,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         int tagId,
         int versionId) throws CmsDataAccessException {
 
-        PreparedStatement stmt = null, stmt2 = null;
+        PreparedStatement stmt = null;
         PreparedStatement commit = null;
         PreparedStatement rollback = null;
         Connection conn = null;
@@ -296,13 +295,6 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             if (commit != null) {
                 try {
                     commit.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }
-            }
-            if (stmt2 != null) {
-                try {
-                    stmt2.close();
                 } catch (SQLException exc) {
                     // ignore
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpSearchResultView.java,v $
- * Date   : $Date: 2006/03/27 14:53:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/08/19 13:40:55 $
+ * Version: $Revision: 1.6.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.4.1 $
  * 
  * @since 6.0.0
  */
@@ -157,7 +157,7 @@ public class CmsHelpSearchResultView {
         // get the action to perform from the request
         String action = request.getParameter("action");
 
-        if (action != null && searchResult == null) {
+        if ((action != null) && (searchResult == null)) {
             result.append("<p class=\"formerror\">\n");
             if (search.getLastException() != null) {
 
@@ -169,12 +169,12 @@ public class CmsHelpSearchResultView {
                 result.append("\n");
             }
             result.append("</p>\n");
-        } else if (action != null && searchResult.size() <= 0) {
+        } else if ((action != null) && (searchResult.size() <= 0)) {
             result.append("<p class=\"formerror\">\n");
             result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_NOMATCH_1, search.getQuery()));
             result.append("\n");
             result.append("</p>\n");
-        } else if (action != null && searchResult.size() > 0) {
+        } else if ((action != null) && (searchResult.size() > 0)) {
             result.append("<p>\n");
             result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_RESULT_START_0));
             result.append("\n");
@@ -211,7 +211,7 @@ public class CmsHelpSearchResultView {
             result.append("</p>\n");
 
             // search page links below results
-            if (search.getPreviousUrl() != null || search.getNextUrl() != null) {
+            if ((search.getPreviousUrl() != null) || (search.getNextUrl() != null)) {
                 result.append("<p>");
                 if (search.getPreviousUrl() != null) {
 

@@ -4,7 +4,6 @@
 <opencms>
 	<importexport>
 		<importexporthandlers>
-	        <importexporthandler class="com.opencms.legacy.CmsCosImportExportHandler"/>
     	    <importexporthandler class="org.opencms.importexport.CmsVfsImportExportHandler"/>
         	<importexporthandler class="org.opencms.module.CmsModuleImportExportHandler"/>
         </importexporthandlers>        
@@ -13,10 +12,10 @@
         	<convert>true</convert>
         	<oldwebappurl>http://localhost:8080/opencms/opencms/</oldwebappurl>
 			<importversions>
-				<importversion class="com.opencms.legacy.CmsImportVersion1"/>
 				<importversion class="org.opencms.importexport.CmsImportVersion2"/>
 				<importversion class="org.opencms.importexport.CmsImportVersion3"/>
 				<importversion class="org.opencms.importexport.CmsImportVersion4"/>	
+				<importversion class="org.opencms.importexport.CmsImportVersion5"/>
 			</importversions>          	   	
 			<immutables>
 				<resource uri="/system/"/>
