@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2006/08/21 14:16:56 $
- * Version: $Revision: 1.37.4.2 $
+ * Date   : $Date: 2006/08/21 15:59:20 $
+ * Version: $Revision: 1.37.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.37.4.2 $ 
+ * @version $Revision: 1.37.4.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -197,7 +197,7 @@ public final class CmsLockManager {
 
         while (i.hasNext()) {
             lock = (CmsLock)i.next();
-            if (lock.getProjectId() == project.getId()) {
+            if (lock.isInProject(project)) {
                 count++;
             }
         }
@@ -355,7 +355,7 @@ public final class CmsLockManager {
         boolean acceptLock = lock.isNullLock();
 
         if (!acceptLock) {
-            if (lock.getType() == CmsLockType.WORKFLOW) {
+            if (lock.isWorkflow()) {
                 // check for workflow locks
 
                 if (driverManager.getSecurityManager().hasRole(dbc, user, CmsRole.VFS_MANAGER)) {
@@ -414,7 +414,7 @@ public final class CmsLockManager {
         CmsLock lock;
         while (i.hasNext()) {
             lock = (CmsLock)i.next();
-            if (lock.getType() == CmsLockType.WORKFLOW) {
+            if (lock.isWorkflow()) {
                 m_workflowLocks.put(lock.getResourceName(), lock);
             } else {
                 m_exclusiveLocks.put(lock.getResourceName(), lock);
@@ -483,7 +483,7 @@ public final class CmsLockManager {
         }
 
         if (!forceUnlock
-            && (!lock.getUserId().equals(dbc.currentUser().getId()) || (lock.getProjectId() != dbc.currentProject().getId()))) {
+            && (!lock.getUserId().equals(dbc.currentUser().getId()) || (! lock.isInProject(dbc.currentProject())))) {
             // the resource is locked by another user
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_RESOURCE_UNLOCK_1,
@@ -498,7 +498,7 @@ public final class CmsLockManager {
         }
 
         // remove the lock and clean-up stuff
-        if (lock.getType() == CmsLockType.EXCLUSIVE) {
+        if (lock.isExclusive()) {
             if (resource.isFolder()) {
                 // in case of a folder, remove any exclusive locks on sub-resources that probably have
                 // been upgraded from an inherited lock when the user edited a resource                
@@ -786,7 +786,7 @@ public final class CmsLockManager {
     throws CmsException {
 
         // reading siblings using the DriverManager methods while the lock state is checked would
-        // inevitably result in an infinite loop...        
+        // result in an infinite loop...        
 
         List siblings = driverManager.getVfsDriver().readSiblings(dbc, dbc.currentProject(), resource, true);
         siblings.remove(resource);

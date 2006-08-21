@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.28.8.1 $
+ * Date   : $Date: 2006/08/21 15:59:20 $
+ * Version: $Revision: 1.28.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.lock;
 
 import org.opencms.db.CmsDbUtil;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -48,7 +50,7 @@ import org.opencms.util.CmsUUID;
  * @author Thomas Weckert  
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.8.1 $ 
+ * @version $Revision: 1.28.8.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -194,6 +196,20 @@ public class CmsLock implements Cloneable {
     }
 
     /**
+     * Returns <code>true</code> if this is an exclusive (or temporary exclusive) lock,
+     * and the given user is the owner of this lock.<p>
+     * 
+     * @param user the user to compare to the owner of this lock
+     * 
+     * @return <code>true</code> if this is an exclusive (or temporary exclusive) lock, 
+     *      and the given user is the owner of this lock
+     */
+    public boolean isExclusiveOwnedBy(CmsUser user) {
+
+        return isExclusive() && isOwnedBy(user);
+    }
+
+    /**
      * Returns <code>true</code> if this is an inherited lock, which may either be directly or shared inherited.<p>
      * 
      * @return <code>true</code> if this is an inherited lock, which may either be directly or shared inherited
@@ -214,6 +230,18 @@ public class CmsLock implements Cloneable {
     }
 
     /**
+     * Returns <code>true</code> if the given project is the project of this lock.<p>
+     * 
+     * @param project the project to compare to the project of this lock
+     * 
+     * @return <code>true</code> if the given project is the project of this lock
+     */
+    public boolean isInProject(CmsProject project) {
+
+        return m_projectId == project.getId();
+    }
+
+    /**
      * Proves if this CmsLock is the Null CmsLock.<p>
      * 
      * @return true if and only if this CmsLock is the Null CmsLock
@@ -221,6 +249,33 @@ public class CmsLock implements Cloneable {
     public boolean isNullLock() {
 
         return this.equals(CmsLock.NULL_LOCK);
+    }
+
+    /**
+     * Returns <code>true</code> if the given user is the owner of this lock.<p>
+     * 
+     * @param user the user to compare to the owner of this lock
+     * 
+     * @return <code>true</code> if the given user is the owner of this lock
+     */
+    public boolean isOwnedBy(CmsUser user) {
+
+        return m_userId.equals(user.getId());
+    }
+
+    /**
+     * Returns <code>true</code> if the given user is the owner of this lock,
+     * and this lock belongs to the given project.<p>
+     * 
+     * @param user the user to compare to the owner of this lock
+     * @param project the project to compare to the project of this lock
+     * 
+     * @return <code>true</code> if the given user is the owner of this lock,
+     *      and this lock belongs to the given project
+     */
+    public boolean isOwnedInProjectBy(CmsUser user, CmsProject project) {
+
+        return isOwnedBy(user) && isInProject(project);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Attic/CmsXmlContentRepairThread.java,v $
- * Date   : $Date: 2006/04/13 08:38:41 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/08/21 15:59:20 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  */
 public class CmsXmlContentRepairThread extends A_CmsReportThread {
@@ -207,7 +207,7 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
                         getCms().lockResource(getCms().getSitePath(res));
                         isLocked = true;
                         canWrite = true;
-                    } else if (lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+                    } else if (lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
                         // file is locked by current user
                         canWrite = true;
                     }

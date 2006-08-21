@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workflow/Attic/TestWorkflowResources.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/21 15:59:21 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.0.0
  */
@@ -173,7 +173,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
         
         // lock manager must now return a workflow lock for the resource
         // user id of the lock must be set to the current user
-        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.getRequestContext().currentUser().getId());
+        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.getRequestContext().currentUser());
         
         // the project of the lock must contain the value of the workflow project
         CmsLock lock = cms.getLock("/index.html");
@@ -190,13 +190,13 @@ public class TestWorkflowResources extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
    
         // siblings lock is of type workflow since index is only locked in workflow but not exclusive
-        assertLock(cms, "/index_sibling.html", CmsLockType.WORKFLOW, cms.readUser("test1").getId());
+        assertLock(cms, "/index_sibling.html", CmsLockType.WORKFLOW, cms.readUser("test1"));
         
         // now lock index.html exclusive
         cms.lockResource("/index.html");
         
         // siblings lock is of type shared exclusive since index is additionally locked exclusive
-        assertLock(cms, "/index_sibling.html", CmsLockType.SHARED_EXCLUSIVE, cms.getRequestContext().currentUser().getId());
+        assertLock(cms, "/index_sibling.html", CmsLockType.SHARED_EXCLUSIVE, cms.getRequestContext().currentUser());
         
         cms.unlockResource("/index.html");
     }
@@ -211,7 +211,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         
         // resource should be locked in workflow
-        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1").getId());
+        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1"));
  
         // test1 is the owner but not expected to be in the agent group
         cms.loginUser("test1", "test1");
@@ -219,7 +219,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
         
         // as long as the workflow is not initialized, the user can lock the resource
         cms.lockResource("/index.html");
-        assertLock(cms, "/index.html", CmsLockType.EXCLUSIVE, cms.getRequestContext().currentUser().getId());
+        assertLock(cms, "/index.html", CmsLockType.EXCLUSIVE, cms.getRequestContext().currentUser());
         cms.unlockResource("/index.html");
     }
     
@@ -246,7 +246,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         
         // resource should be locked in workflow
-        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1").getId());
+        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1"));
  
         // test1 is the owner but not expected to be in the agent group
         cms.loginUser("test1", "test1");
@@ -272,7 +272,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         
         // resource should be locked in workflow
-        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1").getId());
+        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1"));
         
         // after the resource is locked explicitly, it should have an exclusive lock
         // test2 is expected to be in the agent group
@@ -284,7 +284,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
         
         // after the resource is unlocked, it should be locked in workflow again
         cms.unlockResource("/index.html");
-        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1").getId());
+        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1"));
     }
     
     /**
@@ -297,15 +297,15 @@ public class TestWorkflowResources extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         
         // resource should be locked in workflow
-        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1").getId());
+        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1"));
         
         // admin should be able to lock the resource anyway
         cms.lockResource("/index.html");
-        assertLock(cms, "/index.html", CmsLockType.EXCLUSIVE, cms.getRequestContext().currentUser().getId());
+        assertLock(cms, "/index.html", CmsLockType.EXCLUSIVE, cms.getRequestContext().currentUser());
         
         // after the resource is unlocked, it should be locked in workflow again
         cms.unlockResource("/index.html");
-        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1").getId());
+        assertLock(cms, "/index.html", CmsLockType.WORKFLOW, cms.readUser("test1"));
     }    
 
     /**

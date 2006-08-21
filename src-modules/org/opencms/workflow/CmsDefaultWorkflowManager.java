@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workflow/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/21 15:59:21 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.0.0
  */
@@ -140,9 +140,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
 
         CmsLock lock = cms.getLock(resource, false);
 
-        if (lock.isNullLock()
-            || (lock.isExclusive() && lock.getUserId().equals(
-                cms.getRequestContext().currentUser().getId()))) {
+        if (lock.isNullLock() || (lock.isExclusiveOwnedBy(cms.getRequestContext().currentUser()))) {
 
             // ensure that only administrators, workflow project managers and agents are allowed to add a resource
             boolean accept = cms.hasRole(CmsRole.ADMINISTRATOR);
@@ -176,9 +174,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                     for (Iterator i = relations.values().iterator(); i.hasNext();) {
                         CmsResource r = (CmsResource)i.next();
                         CmsLock rLock = cms.getLock(r.getRootPath());
-                        if (rLock.isNullLock()
-                            || (rLock.isExclusive() && rLock.getUserId().equals(
-                                cms.getRequestContext().currentUser().getId()))) {
+                        if (rLock.isNullLock() || (rLock.isExclusiveOwnedBy(cms.getRequestContext().currentUser()))) {
                             // if the resource was locked before, unlock it
                             if (!rLock.isNullLock()) {
                                 cms.unlockResource(cms.getSitePath(r));

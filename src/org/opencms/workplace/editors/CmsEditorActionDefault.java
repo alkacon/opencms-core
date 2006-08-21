@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.19.4.1 $
+ * Date   : $Date: 2006/08/21 15:59:20 $
+ * Version: $Revision: 1.19.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
@@ -44,7 +43,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
@@ -65,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19.4.1 $ 
+ * @version $Revision: 1.19.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,12 +153,12 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         try {
 
             CmsResource resource = cmsObject.readResource(filename, CmsResourceFilter.ALL);
-            int currentProject = cmsObject.getRequestContext().currentProject().getId();
-            CmsUUID userId = cmsObject.getRequestContext().currentUser().getId();
             CmsLock lock = cmsObject.getLock(filename);
-            boolean locked = !(lock.isNullLock() || (lock.getUserId().equals(userId) && (lock.getProjectId() == currentProject)));
+            boolean locked = !(lock.isNullLock() || lock.isOwnedInProjectBy(
+                cmsObject.getRequestContext().currentUser(),
+                cmsObject.getRequestContext().currentProject()));
 
-            if (currentProject == CmsProject.ONLINE_PROJECT_ID) {
+            if (cmsObject.getRequestContext().currentProject().isOnlineProject()) {
                 // don't render direct edit button in online project
                 return null;
             } else if (!OpenCms.getResourceManager().getResourceType(resource.getTypeId()).isDirectEditable()) {
@@ -224,5 +222,4 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
 
         return jsp.getCmsObject().hasPublishPermissions(resourceName);
     }
-
 }

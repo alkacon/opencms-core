@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/08/21 14:16:56 $
- * Version: $Revision: 1.90.4.4 $
+ * Date   : $Date: 2006/08/21 15:59:20 $
+ * Version: $Revision: 1.90.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.4 $
+ * @version $Revision: 1.90.4.5 $
  * 
  * @since 6.0.0
  */
@@ -1876,7 +1876,7 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             CmsLock lock = cms.getLock(res);
 
-            if (lock.isNullLock() || !lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
+            if (lock.isNullLock() || !lock.isOwnedBy(cms.getRequestContext().currentUser())) {
                 fail("[Lock "
                     + resourceName
                     + " requires must be locked to user "
@@ -1914,7 +1914,7 @@ public class OpenCmsTestCase extends TestCase {
                 }
             } else if (lock.isNullLock()
                 || (lock.getType() != lockType)
-                || !lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
+                || !lock.isOwnedBy(cms.getRequestContext().currentUser())) {
                 fail("[Lock "
                     + resourceName
                     + " requires a lock of type "
@@ -1938,7 +1938,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param cms the current user's Cms object
      * @param resourceName the name of the resource to validate
      * @param lockType the type of the lock
-     * @param principalId the id of the user
+     * @param user the user to check the lock with
      * 
      * @see CmsLockType#EXCLUSIVE
      * @see CmsLockType#INHERITED
@@ -1947,7 +1947,7 @@ public class OpenCmsTestCase extends TestCase {
      * @see CmsLockType#UNLOCKED
      * @see CmsLockType#WORKFLOW
      */
-    public void assertLock(CmsObject cms, String resourceName, CmsLockType lockType, CmsUUID principalId) {
+    public void assertLock(CmsObject cms, String resourceName, CmsLockType lockType, CmsUser user) {
 
         try {
             // get the actual resource from the VFS
@@ -1960,14 +1960,16 @@ public class OpenCmsTestCase extends TestCase {
                 }
             } else if (lock.isNullLock()
                 || (lock.getType() != lockType)
-                || !lock.getUserId().equals(principalId)) {
+                || !lock.isOwnedBy(user)) {
                 fail("[Lock "
                     + resourceName
                     + " requires a lock of type "
                     + lockType
-                    + " for principal "
-                    + principalId
-                    + " but has a lock of type "
+                    + " for user "
+                    + user.getId()
+                    + " ("
+                    + user.getName()
+                    + ") but has a lock of type "
                     + lock.getType()
                     + " for user "
                     + lock.getUserId()

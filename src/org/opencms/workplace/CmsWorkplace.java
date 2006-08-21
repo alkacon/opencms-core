@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.156.4.6 $
+ * Date   : $Date: 2006/08/21 15:59:21 $
+ * Version: $Revision: 1.156.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.6 $ 
+ * @version $Revision: 1.156.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1183,12 +1183,12 @@ public abstract class CmsWorkplace {
                 } else {
                     getCms().lockResource(resource);
                 }
-            } else if (!lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+            } else if (!lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
                 throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
             }
         } else {
             if (lock.isNullLock()
-                || (!lock.isNullLock() && !lock.getUserId().equals(getCms().getRequestContext().currentUser().getId()))) {
+                || (!lock.isNullLock() && !lock.isOwnedBy(getCms().getRequestContext().currentUser()))) {
                 throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
             }
         }

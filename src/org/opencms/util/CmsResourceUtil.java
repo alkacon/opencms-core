@@ -197,7 +197,7 @@ public final class CmsResourceUtil {
         CmsLock lock = getLock();
         String iconPath = null;
         if (!lock.isUnlocked() && (m_request != null) && isInsideProject()) {
-            if (getLock().getUserId().equals(m_request.currentUser().getId())
+            if (getLock().isOwnedBy(m_request.currentUser())
                 && (getLockedInProjectId() == getReferenceProject().getId())) {
                 if (lock.isShared()) {
                     iconPath = "shared";

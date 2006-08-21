@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/08/21 14:16:56 $
- * Version: $Revision: 1.570.2.10 $
+ * Date   : $Date: 2006/08/21 15:59:20 $
+ * Version: $Revision: 1.570.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -786,9 +786,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_CHANGE_LOCK_UNLOCKED_RESOURCE_1,
                 dbc.getRequestContext().getSitePath(resource)));
-        } else if (currentLock.getUserId().equals(dbc.currentUser().getId())
-            && (currentLock.getProjectId() == dbc.currentProject().getId())
-            && (currentLock.isExclusive())) {
+        } else if (currentLock.isExclusiveOwnedBy(dbc.currentUser()) && currentLock.isInProject(dbc.currentProject())) {
             // the current lock requires no change
             return;
         }
@@ -2249,8 +2247,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (lock.isNullLock()) {
                     // lock the resource
                     lockResource(dbc, currentFile, dbc.currentProject(), CmsLockType.EXCLUSIVE);
-                } else if (!lock.getUserId().equals(dbc.currentUser().getId())
-                    || (lock.getProjectId() != dbc.currentProject().getId())) {
+                } else if (!lock.isOwnedBy(dbc.currentUser()) || !lock.isInProject(dbc.currentProject())) {
                     changeLock(dbc, currentFile);
                 }
 
@@ -2308,8 +2305,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (lock.isNullLock()) {
                     // lock the resource
                     lockResource(dbc, currentFolder, dbc.currentProject(), CmsLockType.EXCLUSIVE);
-                } else if (!lock.getUserId().equals(dbc.currentUser().getId())
-                    || (lock.getProjectId() != dbc.currentProject().getId())) {
+                } else if (!lock.isOwnedBy(dbc.currentUser()) || !lock.isInProject(dbc.currentProject())) {
                     changeLock(dbc, currentFolder);
                 }
 
@@ -2334,8 +2330,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (lock.isNullLock()) {
                     // lock the resource
                     lockResource(dbc, currentFile, dbc.currentProject(), CmsLockType.EXCLUSIVE);
-                } else if (!lock.getUserId().equals(dbc.currentUser().getId())
-                    || (lock.getProjectId() != dbc.currentProject().getId())) {
+                } else if (!lock.isOwnedBy(dbc.currentUser()) || !lock.isInProject(dbc.currentProject())) {
                     changeLock(dbc, currentFile);
                 }
 
@@ -2478,8 +2473,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             for (int i = 0; i < size; i++) {
                 CmsResource currentResource = (CmsResource)resources.get(i);
                 currentLock = getLock(dbc, currentResource);
-                if (!currentLock.equals(CmsLock.getNullLock())
-                    && !currentLock.getUserId().equals(dbc.currentUser().getId())) {
+                if (!currentLock.equals(CmsLock.getNullLock()) && !currentLock.isOwnedBy(dbc.currentUser())) {
                     // the resource is locked by a user different from the current user
                     CmsRequestContext context = dbc.getRequestContext();
                     me.addException(new CmsLockException(org.opencms.lock.Messages.get().container(
@@ -4709,7 +4703,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             if (currentResource.getState() != CmsResource.STATE_UNCHANGED) {
                 if ((currentLock.isNullLock() && (currentResource.getProjectLastModified() == projectId))
-                    || (currentLock.getUserId().equals(dbc.currentUser().getId()) && (currentLock.getProjectId() == projectId))) {
+                    || (currentLock.isOwnedBy(dbc.currentUser()) && (currentLock.getProjectId() == projectId))) {
                     // add only resources that are 
                     // - inside the project,
                     // - changed in the project,
