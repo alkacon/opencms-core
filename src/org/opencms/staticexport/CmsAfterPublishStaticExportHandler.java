@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.19.4.1 $
+ * Date   : $Date: 2006/08/21 14:16:56 $
+ * Version: $Revision: 1.19.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.1 $ 
+ * @version $Revision: 1.19.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -566,7 +566,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     }
 
     /**
-     * Creates a list of <code>{@link CmsPulishedResource}</code> objects containing all related resources of the VFS tree.<p>
+     * Creates a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects containing all related resources of the VFS tree.<p>
      * 
      * If the static export has been triggered by the OpenCms workplace, publishedResources is null and all resources in the VFS tree are returned.<p>
      * If really an after publish static export is triggered, then only the related resources are returned.<p>

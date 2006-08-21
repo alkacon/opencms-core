@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.570.2.9 $
+ * Date   : $Date: 2006/08/21 14:16:56 $
+ * Version: $Revision: 1.570.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1444,7 +1444,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsSecurityManager#updateRelationsForResource(CmsRequestContext, CmsResource)
+     * @see CmsSecurityManager#updateRelationsForResource(CmsRequestContext, CmsResource, List)
      */
     public void createRelation(CmsDbContext dbc, CmsRelation relation) throws CmsException {
 
@@ -3926,7 +3926,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see CmsObject#lockResource(String)
      * @see CmsObject#lockResourceTemporary(String)
-     * @see CmsObject#lockResourceInWorkflow(String)
+     * @see CmsObject#lockResourceInWorkflow(String, CmsProject)
      * 
      * @see org.opencms.file.types.I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, CmsProject, CmsLockType)
      */

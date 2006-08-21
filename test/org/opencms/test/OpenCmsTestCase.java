@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/08/19 13:40:58 $
- * Version: $Revision: 1.90.4.3 $
+ * Date   : $Date: 2006/08/21 14:16:56 $
+ * Version: $Revision: 1.90.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.3 $
+ * @version $Revision: 1.90.4.4 $
  * 
  * @since 6.0.0
  */
@@ -1894,11 +1894,12 @@ public class OpenCmsTestCase extends TestCase {
      * @param cms the current user's Cms object
      * @param resourceName the name of the resource to validate
      * @param lockType the type of the lock
-     * @see CmsLock#TYPE_EXCLUSIVE
-     * @see CmsLock#TYPE_INHERITED
-     * @see CmsLock#TYPE_SHARED_EXCLUSIVE
-     * @see CmsLock#TYPE_SHARED_INHERITED
-     * @see CmsLock#TYPE_UNLOCKED
+     * 
+     * @see CmsLockType#EXCLUSIVE
+     * @see CmsLockType#INHERITED
+     * @see CmsLockType#SHARED_EXCLUSIVE
+     * @see CmsLockType#SHARED_INHERITED
+     * @see CmsLockType#UNLOCKED
      */
     public void assertLock(CmsObject cms, String resourceName, CmsLockType lockType) {
 
@@ -1937,13 +1938,14 @@ public class OpenCmsTestCase extends TestCase {
      * @param cms the current user's Cms object
      * @param resourceName the name of the resource to validate
      * @param lockType the type of the lock
-     * @see CmsLock#TYPE_EXCLUSIVE
-     * @see CmsLock#TYPE_INHERITED
-     * @see CmsLock#TYPE_SHARED_EXCLUSIVE
-     * @see CmsLock#TYPE_SHARED_INHERITED
-     * @see CmsLock#TYPE_UNLOCKED
-     * @see CmsLock#TYPE_WORKFLOW
      * @param principalId the id of the user
+     * 
+     * @see CmsLockType#EXCLUSIVE
+     * @see CmsLockType#INHERITED
+     * @see CmsLockType#SHARED_EXCLUSIVE
+     * @see CmsLockType#SHARED_INHERITED
+     * @see CmsLockType#UNLOCKED
+     * @see CmsLockType#WORKFLOW
      */
     public void assertLock(CmsObject cms, String resourceName, CmsLockType lockType, CmsUUID principalId) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.37.4.1 $
+ * Date   : $Date: 2006/08/21 14:16:56 $
+ * Version: $Revision: 1.37.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.37.4.1 $ 
+ * @version $Revision: 1.37.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -107,7 +107,6 @@ public final class CmsLockManager {
      * @param resource the resource
      * @param user the user who locked the resource
      * @param projectId the ID of the project where the resource is locked
-     * @param mode flag indicating the mode (temporary or common) of a lock
      * @param type the lock type
      * 
      * @throws CmsLockException if the resource is locked

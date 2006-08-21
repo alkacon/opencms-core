@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.29.4.1 $
+ * Date   : $Date: 2006/08/21 14:16:56 $
+ * Version: $Revision: 1.29.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29.4.1 $ 
+ * @version $Revision: 1.29.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -423,7 +423,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsSecurityManager#moveToLostAndFound(org.opencms.file.CmsRequestContext, String, boolean)
+     * @see CmsSecurityManager#moveToLostAndFound(org.opencms.file.CmsRequestContext, CmsResource, boolean)
      * @see CmsObject#importResource(String, CmsResource, byte[], List)
      * @see CmsSecurityManager#importResource(org.opencms.file.CmsRequestContext, String, CmsResource, byte[], List, boolean)
      */
@@ -512,7 +512,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#lockResource(String)
-     * @see CmsSecurityManager#lockResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsSecurityManager#lockResource(org.opencms.file.CmsRequestContext, CmsResource, CmsProject, CmsLockType)
      */
     void lockResource(
         CmsObject cms,
@@ -711,7 +711,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      *
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsResource#UNDO_MOVE
      * @see CmsResource#UNDO_CONTENT
      * @see CmsResource#UNDO_CONTENT_RECURSIVE
      * @see CmsResource#UNDO_MOVE_CONTENT

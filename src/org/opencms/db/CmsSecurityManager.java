@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.97.4.2 $
+ * Date   : $Date: 2006/08/21 14:16:56 $
+ * Version: $Revision: 1.97.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2719,7 +2719,7 @@ public final class CmsSecurityManager {
      * 
      * @see CmsObject#lockResource(String)
      * @see CmsObject#lockResourceTemporary(String)
-     * @see CmsObject#lockResourceInWorkflow(String)
+     * @see CmsObject#lockResourceInWorkflow(String, CmsProject)
      * 
      * @see org.opencms.file.types.I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, CmsProject, CmsLockType)
      */

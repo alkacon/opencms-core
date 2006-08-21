@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.16.4.2 $
+ * Date   : $Date: 2006/08/21 14:16:56 $
+ * Version: $Revision: 1.16.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.2 $ 
+ * @version $Revision: 1.16.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -337,7 +337,7 @@ public interface I_CmsXmlDocument {
      * 
      * @return an error handler instance that provides information about the errors or warnings that have been found
      * 
-     * @see #validate(CmsObject, Locale)
+     * @see #validate(CmsObject)
      */
     CmsXmlContentErrorHandler validate(CmsObject cms);
 }

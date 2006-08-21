@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/08/19 13:40:39 $
- * Version: $Revision: 1.146.4.3 $
+ * Date   : $Date: 2006/08/21 14:16:55 $
+ * Version: $Revision: 1.146.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.3 $
+ * @version $Revision: 1.146.4.4 $
  * 
  * @since 6.0.0 
  */
@@ -1822,7 +1822,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#lockResourceInWorkflow(String)
+     * @see CmsObject#lockResourceInWorkflow(String, CmsProject)
      */
     public void lockResource(String resourcename) throws CmsException {
 
@@ -1858,7 +1858,7 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#lockResource(String)
-     * @see CmsObject#lockResourceInWorkflow(String)
+     * @see CmsObject#lockResourceInWorkflow(String, CmsProject)
      */
     public void lockResourceTemporary(String resourcename) throws CmsException {
 
@@ -3499,7 +3499,6 @@ public final class CmsObject {
     /**
      * Validates the relations for the given resources.<p>
      * 
-     * @param cms the current user's Cms object
      * @param resources the resources to validate during publishing 
      *              or <code>null</code> for all in current project
      * @param report a report to write the messages to

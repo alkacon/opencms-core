@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.76.4.1 $
+ * Date   : $Date: 2006/08/21 14:16:56 $
+ * Version: $Revision: 1.76.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76.4.1 $
+ * @version $Revision: 1.76.4.2 $
  * 
  * @since 6.0.0 
  */
@@ -555,7 +555,7 @@ public interface I_CmsProjectDriver {
      * @param dbc the current database context
      * 
      * @param locks the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt;</code> that 
-     *      currently exist in OpenCms ({@link org.opencms.CmsLockManager}) 
+     *      currently exist in OpenCms ({@link org.opencms.lock.CmsLockManager}) 
      * 
      * @throws CmsDataAccessException if something goes wrong
      */

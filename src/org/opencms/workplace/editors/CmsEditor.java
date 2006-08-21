@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.34.4.2 $
+ * Date   : $Date: 2006/08/21 14:16:56 $
+ * Version: $Revision: 1.34.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34.4.2 $ 
+ * @version $Revision: 1.34.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -384,7 +384,7 @@ public abstract class CmsEditor extends CmsEditorBase {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#checkLock(java.lang.String, int)
+     * @see org.opencms.workplace.CmsWorkplace#checkLock(String, CmsLockType)
      */
     public void checkLock(String resource, CmsLockType type) throws CmsException {
 
