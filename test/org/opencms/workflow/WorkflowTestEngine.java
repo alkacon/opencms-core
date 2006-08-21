@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workflow/Attic/WorkflowTestEngine.java,v $
- * Date   : $Date: 2006/08/19 13:40:58 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/21 17:04:18 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.workflow;
 
 import org.opencms.file.CmsProject;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.workflow.generic.CmsDefaultWorkflowAction;
+import org.opencms.workflow.generic.Messages;
 
 import java.security.Principal;
 import java.util.Arrays;

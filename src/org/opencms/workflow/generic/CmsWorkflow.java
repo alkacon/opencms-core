@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workflow/Attic/CmsWorkflow.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsWorkflow.java,v $
+ * Date   : $Date: 2006/08/21 17:04:18 $
  * Version: $Revision: 1.1.2.1 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH
@@ -23,7 +23,7 @@
  * File created on 06. November 2003, 16:02
  */
 
-package org.opencms.workflow;
+package org.opencms.workflow.generic;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -37,6 +37,10 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workflow.I_CmsWorkflowAction;
+import org.opencms.workflow.I_CmsWorkflowManager;
+import org.opencms.workflow.I_CmsWorkflowTransition;
+import org.opencms.workflow.I_CmsWorkflowType;
 import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;

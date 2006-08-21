@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workflow/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2006/08/21 15:59:21 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
+ * Date   : $Date: 2006/08/21 17:04:18 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workflow;
+package org.opencms.workflow.generic;
 
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
@@ -51,6 +51,13 @@ import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
+import org.opencms.workflow.CmsWorkflowException;
+import org.opencms.workflow.I_CmsWorkflowAction;
+import org.opencms.workflow.I_CmsWorkflowEngine;
+import org.opencms.workflow.I_CmsWorkflowManager;
+import org.opencms.workflow.I_CmsWorkflowState;
+import org.opencms.workflow.I_CmsWorkflowTransition;
+import org.opencms.workflow.I_CmsWorkflowType;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -68,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 7.0.0
  */
@@ -663,7 +670,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      * @param wfProject the workflow project
      * @throws CmsException if aborting the project fails
      */
-    protected void abortWorkflowProject(CmsProject wfProject) throws CmsException {
+    public void abortWorkflowProject(CmsProject wfProject) throws CmsException {
 
         // TODO: Supply functionality by other means
         // In this case, extend deleteProject by special logic
@@ -684,7 +691,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      * @throws CmsException if the resource cannot be added 
      * 
      */
-    protected void addResourceToWorkflowProject(CmsProject wfProject, CmsResource resource) throws CmsException {
+    public void addResourceToWorkflowProject(CmsProject wfProject, CmsResource resource) throws CmsException {
 
         CmsProject offlineProject = m_cms.getRequestContext().currentProject();
         try {
@@ -707,7 +714,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      * @return a new empty workflow project
      * @throws CmsException if the project creation fails
      */
-    protected CmsProject createWorkflowProject(CmsUser user, String name, String description) throws CmsException {
+    public CmsProject createWorkflowProject(CmsUser user, String name, String description) throws CmsException {
 
         CmsProject wfProject = m_cms.createProject(
             name,
@@ -766,7 +773,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      * @param wfProject the workflow project
      * @throws CmsException if publishing the resources in the project fails
      */
-    protected void publishWorkflowProject(CmsProject wfProject) throws CmsException {
+    public void publishWorkflowProject(CmsProject wfProject) throws CmsException {
 
         CmsProject offlineProject = m_cms.getRequestContext().currentProject();
         try {
@@ -797,7 +804,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      * @param wfProject the workflow project
      * @throws CmsException if undoing the changes of resources in the project fails
      */
-    protected void undoWorkflowProject(CmsProject wfProject) throws CmsException {
+    public void undoWorkflowProject(CmsProject wfProject) throws CmsException {
 
         CmsProject offlineProject = m_cms.getRequestContext().currentProject();
         try {

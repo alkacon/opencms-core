@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.3.0</opencms_version>
+		<createdate>Mon, 21 Aug 2006 13:05:53 GMT</createdate>
+		<project>Offline</project>
+		<export_version>5</export_version>
+	</info>
+	<module>
+		<name>org.opencms.workplace.workflow</name>
+		<nicename><![CDATA[OpenCms 7 Generic Workflow]]></nicename>
+		<group>OpenCms Workflow</group>
+		<class/>
+		<description><![CDATA[This module contains the OpenCms Workflow files.
+
+It includes classes and dialogs used by the generic workflow implementation.
+
+(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
+		<version>1.0.10</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="org.opencms.workplace.administration" version="1.0.0"/>
+		</dependencies>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.workplace.workflow/classes/" destination="WEB-INF/classes/"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.workflow/lib/" destination="WEB-INF/lib/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/modules/org.opencms.workplace.workflow/"/>
+			<resource uri="/system/workplace/workflow/"/>
+			<resource uri="/system/workplace/views/workflow/"/>
+			<resource uri="/system/workplace/resources/tools/workflow/"/>
+			<resource uri="/system/workplace/commons/workflow_abort.jsp"/>
+			<resource uri="/system/workplace/commons/workflow_init.jsp"/>
+			<resource uri="/system/workplace/commons/workflow_signal.jsp"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>e1e4202e-2b9f-11db-a07f-15ed7a6c85e9</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Aug 2006 14:19:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.workflow</destination>
+			<type>folder</type>
+			<uuidstructure>f7569fdb-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 10:36:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jul 2006 10:36:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.workflow/classes</destination>
+			<type>folder</type>
+			<uuidstructure>f76593fd-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 10:36:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jul 2006 10:36:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.workflow/classes/org</destination>
+			<type>folder</type>
+			<uuidstructure>f76f09df-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 10:36:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jul 2006 10:36:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.workflow/classes/org/opencms</destination>
+			<type>folder</type>
+			<uuidstructure>f77a7b91-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 10:36:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jul 2006 10:36:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.workflow/classes/org/opencms/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>2fb75646-3115-11db-b933-15ed7a6c85e9</uuidstructure>
+			<datelastmodified>Mon, 21 Aug 2006 13:01:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 13:01:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.workflow/classes/org/opencms/workplace/workflow</destination>
+			<type>folder</type>
+			<uuidstructure>f78725c3-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 10:36:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jul 2006 10:36:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.workflow/classes/org/opencms/workplace/workflow/workplace.properties</source>
+			<destination>system/modules/org.opencms.workplace.workflow/classes/org/opencms/workplace/workflow/workplace.properties</destination>
+			<type>plain</type>
+			<uuidstructure>f7c16fb0-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
+			<uuidresource>8c4358d2-1193-11db-95a0-3456e31f840a</uuidresource>
+			<datelastmodified>Mon, 21 Aug 2006 13:01:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jul 2006 10:45:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.workflow/lib</destination>
+			<type>folder</type>
+			<uuidstructure>f7c8e9c3-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 10:36:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jul 2006 10:36:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.workflow/lib/org.opencms.workplace.workflow.jar</source>
+			<destination>system/modules/org.opencms.workplace.workflow/lib/org.opencms.workplace.workflow.jar</destination>
+			<type>plain</type>
+			<uuidstructure>5b04824c-1e3a-11db-8f9a-bf0f6fbae1f8</uuidstructure>
+			<uuidresource>5b04824d-1e3a-11db-8f9a-bf0f6fbae1f8</uuidresource>
+			<datelastmodified>Mon, 21 Aug 2006 13:02:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 28 Jul 2006 13:09:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>30</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools</destination>
+			<type>folder</type>
+			<uuidstructure>c3a8d33c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/workflow</destination>
+			<type>folder</type>
+			<uuidstructure>bd25322b-3114-11db-b933-15ed7a6c85e9</uuidstructure>
+			<datelastmodified>Mon, 21 Aug 2006 12:58:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 12:58:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/workflow/buttons</destination>
+			<type>folder</type>
+			<uuidstructure>bd3362fd-3114-11db-b933-15ed7a6c85e9</uuidstructure>
+			<datelastmodified>Mon, 21 Aug 2006 12:58:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 12:58:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workflow/buttons/workflow.png</source>
+			<destination>system/workplace/resources/tools/workflow/buttons/workflow.png</destination>
+			<type>image</type>
+			<uuidstructure>bd3f49df-3114-11db-b933-15ed7a6c85e9</uuidstructure>
+			<uuidresource>bd3f49e0-3114-11db-b933-15ed7a6c85e9</uuidresource>
+			<datelastmodified>Mon, 21 Aug 2006 12:59:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 12:58:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/workflow/icons</destination>
+			<type>folder</type>
+			<uuidstructure>bd5e6ab2-3114-11db-b933-15ed7a6c85e9</uuidstructure>
+			<datelastmodified>Mon, 21 Aug 2006 12:58:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 12:58:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/workflow/icons/big</destination>
+			<type>folder</type>
+			<uuidstructure>bd60b4a4-3114-11db-b933-15ed7a6c85e9</uuidstructure>
+			<datelastmodified>Mon, 21 Aug 2006 12:58:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 12:58:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workflow/icons/big/workflow.png</source>
+			<destination>system/workplace/resources/tools/workflow/icons/big/workflow.png</destination>
+			<type>image</type>
+			<uuidstructure>bd86da5e-3114-11db-b933-15ed7a6c85e9</uuidstructure>
+			<uuidresource>bd86da5f-3114-11db-b933-15ed7a6c85e9</uuidresource>
+			<datelastmodified>Mon, 21 Aug 2006 12:59:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 12:58:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/workflow/icons/small</destination>
+			<type>folder</type>
+			<uuidstructure>bd97a34e-3114-11db-b933-15ed7a6c85e9</uuidstructure>
+			<datelastmodified>Mon, 21 Aug 2006 12:58:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 12:58:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workflow/icons/small/workflow.png</source>
+			<destination>system/workplace/resources/tools/workflow/icons/small/workflow.png</destination>
+			<type>image</type>
+			<uuidstructure>bd99ed40-3114-11db-b933-15ed7a6c85e9</uuidstructure>
+			<uuidresource>bd99ed41-3114-11db-b933-15ed7a6c85e9</uuidresource>
+			<datelastmodified>Mon, 21 Aug 2006 12:59:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 12:58:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/views</destination>
+			<type>folder</type>
+			<uuidstructure>8405a06e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/views/workflow</destination>
+			<type>folder</type>
+			<uuidstructure>e57d5c77-310f-11db-b933-15ed7a6c85e9</uuidstructure>
+			<datelastmodified>Mon, 21 Aug 2006 12:24:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 12:23:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[50]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[admin-fs.jsp]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKFLOW_VIEW_ROOT_NAME_0}]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/views/workflow/admin-fs.jsp</source>
+			<destination>system/workplace/views/workflow/admin-fs.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>e5a1111d-310f-11db-b933-15ed7a6c85e9</uuidstructure>
+			<uuidresource>e5a1111e-310f-11db-b933-15ed7a6c85e9</uuidresource>
+			<datelastmodified>Mon, 21 Aug 2006 12:24:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 12:23:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[workflow Frameset]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/workflow</destination>
+			<type>folder</type>
+			<uuidstructure>aa129fdc-310b-11db-b933-15ed7a6c85e9</uuidstructure>
+			<datelastmodified>Mon, 21 Aug 2006 11:53:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 11:53:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Workflow View]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/workflow/list.jsp</source>
+			<destination>system/workplace/workflow/list.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>aac7bf18-310b-11db-b933-15ed7a6c85e9</uuidstructure>
+			<uuidresource>aac7bf19-310b-11db-b933-15ed7a6c85e9</uuidresource>
+			<datelastmodified>Mon, 21 Aug 2006 12:57:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Aug 2006 11:53:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.workflow.CmsWorkflowToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WORKFLOW_LIST_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKFLOW_LIST_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKFLOW_LIST_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Workflow List]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/commons</destination>
+			<type>folder</type>
+			<uuidstructure>8272cacb-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/workflow_abort.jsp</source>
+			<destination>system/workplace/commons/workflow_abort.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f7dd3516-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
+			<uuidresource>3c35b785-0db0-11db-80a8-2986e31f840a</uuidresource>
+			<datelastmodified>Tue, 11 Jul 2006 15:18:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 07 Jul 2006 12:00:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Abort workflow]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/commons/workflow_init.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f7e8f4ea-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
+			<uuidresource>3c35b785-0db0-11db-80a8-2986e31f840a</uuidresource>
+			<datelastmodified>Tue, 11 Jul 2006 15:18:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 07 Jul 2006 12:00:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Init workflow]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/commons/workflow_signal.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f7f63b5d-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
+			<uuidresource>3c35b785-0db0-11db-80a8-2986e31f840a</uuidresource>
+			<datelastmodified>Tue, 11 Jul 2006 15:18:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 07 Jul 2006 12:00:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Init workflow]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

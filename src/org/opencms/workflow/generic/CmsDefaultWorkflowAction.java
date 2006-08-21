@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workflow/Attic/CmsDefaultWorkflowAction.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowAction.java,v $
+ * Date   : $Date: 2006/08/21 17:04:18 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workflow;
+package org.opencms.workflow.generic;
+
+import org.opencms.workflow.I_CmsWorkflowAction;
 
 import java.util.HashMap;
 import java.util.Locale;

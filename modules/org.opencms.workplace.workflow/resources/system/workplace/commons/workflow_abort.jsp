@@ -7,7 +7,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsDialog.ACTION_CANCEL:
+case CmsWorkflow.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
@@ -15,8 +15,8 @@ case CmsDialog.ACTION_CANCEL:
 break;
 
 
-case CmsDialog.ACTION_CONFIRMED:
-case CmsDialog.ACTION_WAIT:
+case CmsWorkflow.ACTION_CONFIRMED:
+case CmsWorkflow.ACTION_WAIT:
 //////////////////// ACTION: main init workflow action
 
 	wp.performAction();
@@ -27,10 +27,9 @@ case CmsWorkflow.ACTION_INIT:
 //////////////////// ACTION: show init dialog
 
 	wp.checkNotInWorkflow();
-	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
+	wp.setParamAction(CmsWorkflow.DIALOG_CONFIRMED);
 
 %><%= wp.htmlStart("help.explorer.contextmenu.init_workflow") %>
-<%@page import="org.opencms.workplace.CmsDialog"%>
 <script type="text/javascript">
 <!--
 function toggleDetail(id) {
@@ -107,7 +106,7 @@ case CmsWorkflow.ACTION_SIGNAL:
 //////////////////// ACTION: show signal dialog
 
 	wp.checkInWorkflow();
-	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
+	wp.setParamAction(CmsWorkflow.DIALOG_CONFIRMED);
 
 %><%= wp.htmlStart("help.explorer.contextmenu.init_workflow") %>
 <script type="text/javascript">
@@ -183,7 +182,7 @@ case CmsWorkflow.ACTION_ABORT:
 //////////////////// ACTION: show abort dialog
 
 	wp.checkInWorkflow();
-	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
+	wp.setParamAction(CmsWorkflow.DIALOG_CONFIRMED);
 
 %><%= wp.htmlStart("help.explorer.contextmenu.init_workflow") %>
 <%= wp.bodyStart("dialog") %>

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workflow/Attic/Messages.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/Messages.java,v $
+ * Date   : $Date: 2006/08/21 17:04:18 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workflow;
+package org.opencms.workflow.generic;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
@@ -47,114 +47,123 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ABORT_NOT_ALLOWED_2 = "ERR_ABORT_NOT_ALLOWED_2";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_PUBLISH_NOT_ALLOWED_2 = "ERR_PUBLISH_NOT_ALLOWED_2";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNDO_NOT_ALLOWED_2 = "ERR_UNDO_NOT_ALLOWED_2";
-    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_NOT_ALLOWED_2 = "ERR_ADD_NOT_ALLOWED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADDING_LOCKED_RESOURCE_2 = "ERR_ADDING_LOCKED_RESOURCE_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_AGENT_NOT_FOUND_2 = "ERR_AGENT_NOT_FOUND_2";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_INIT_NOT_ALLOWED_2 = "ERR_INIT_NOT_ALLOWED_2";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_AGENT_PRINCIPAL_1 = "ERR_NO_AGENT_PRINCIPAL_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NOT_IMPLEMENTED_1 = "ERR_NOT_IMPLEMENTED_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NOT_IN_WORKFLOW_PROJECT_1 = "ERR_NOT_IN_WORKFLOW_PROJECT_1";
-        
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ALREADY_IN_WORKFLOW_PROJECT_1 = "ERR_ALREADY_IN_WORKFLOW_PROJECT_1";
-    
+
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_SIGNAL_NOT_ALLOWED_2 = "ERR_SIGNAL_NOT_ALLOWED_2";  
-    
+    public static final String ERR_INIT_NOT_ALLOWED_2 = "ERR_INIT_NOT_ALLOWED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_AGENT_PRINCIPAL_1 = "ERR_NO_AGENT_PRINCIPAL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NON_WORKFLOW_PROJECT_1 = "ERR_NON_WORKFLOW_PROJECT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NOT_IMPLEMENTED_1 = "ERR_NOT_IMPLEMENTED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NOT_IN_WORKFLOW_PROJECT_1 = "ERR_NOT_IN_WORKFLOW_PROJECT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISH_NOT_ALLOWED_2 = "ERR_PUBLISH_NOT_ALLOWED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SIGNAL_NOT_ALLOWED_2 = "ERR_SIGNAL_NOT_ALLOWED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNDO_NOT_ALLOWED_2 = "ERR_UNDO_NOT_ALLOWED_2";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WORKFLOW_ABORT_0 = "ERR_WORKFLOW_ABORT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WORKFLOW_ENGINE_1 = "ERR_WORKFLOW_ENGINE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WORKFLOW_INIT_0 = "ERR_WORKFLOW_INIT_0";
-        
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WORKFLOW_NOT_INITIALIZED_0 = "ERR_WORKFLOW_NOT_INITIALIZED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WORKFLOW_SIGNAL_0 = "ERR_WORKFLOW_SIGNAL_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WORKFLOW_UNKNOWN_0 = "ERR_WORKFLOW_UNKNOWN_0";
-    
+
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_INIT_WORKFLOW_MULTI_2="GUI_INIT_WORKFLOW_MULTI_2";
-    
+    public static final String GUI_INIT_WORKFLOW_MULTI_2 = "GUI_INIT_WORKFLOW_MULTI_2";
+
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_INIT_WORKFLOW_RESOURCE_1="GUI_INIT_WORKFLOW_RESOURCE_1";
-    
+    public static final String GUI_INIT_WORKFLOW_RESOURCE_1 = "GUI_INIT_WORKFLOW_RESOURCE_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_ABORT_1 = "GUI_WORKFLOW_ABORT_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_DESCRIPTION_0 = "GUI_WORKFLOW_DESCRIPTION_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_FORWARD_TASK_1 = "GUI_WORKFLOW_FORWARD_TASK_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_MAILTEXT_0 = "GUI_WORKFLOW_MAILTEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_NEW_TASK_0 = "GUI_WORKFLOW_NEW_TASK_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_SEND_MAIL_0 = "GUI_WORKFLOW_SEND_MAIL_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_TRANSITION_0 = "GUI_WORKFLOW_TRANSITION_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_TYPE_0 = "GUI_WORKFLOW_TYPE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_UNDO_0 = "GUI_WORKFLOW_UNDO_0";
-    
+
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKFLOW_ENGINE_INVALID_1="INIT_WORKFLOW_ENGINE_INVALID_1";
-    
+    public static final String GUI_WORKFLOW_VIEW_ROOT_HELP_0 = "GUI_WORKFLOW_VIEW_ROOT_HELP_0";
+
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKFLOW_ENGINE_SUCCESS_1="INIT_WORKFLOW_ENGINE_SUCCESS_1";
-        
+    public static final String GUI_WORKFLOW_VIEW_ROOT_NAME_0 = "GUI_WORKFLOW_VIEW_ROOT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_WORKFLOW_ENGINE_INVALID_1 = "INIT_WORKFLOW_ENGINE_INVALID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_WORKFLOW_ENGINE_SUCCESS_1 = "INIT_WORKFLOW_ENGINE_SUCCESS_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_WORKFLOW_ENGINE_FAILURE_1 = "LOG_INIT_WORKFLOW_ENGINE_FAILURE_1";
-    
+
     /** Message constant for key in the resource bundle. */
-    public static final String NEW_TASK_TITLE_0="NEW_TASK_TITLE_0";
-    
+    public static final String NEW_TASK_TITLE_0 = "NEW_TASK_TITLE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String TASK_INFO_2 = "TASK_INFO_2";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String TASK_TITLE_SINGLE_3 = "TASK_TITLE_SINGLE_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String TASK_TITLE_MULTI_3 = "TASK_TITLE_MULTI_3";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String TASK_TITLE_SINGLE_3 = "TASK_TITLE_SINGLE_3";
+
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workflow.messages";
+    private static final String BUNDLE_NAME = "org.opencms.workflow.generic.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
