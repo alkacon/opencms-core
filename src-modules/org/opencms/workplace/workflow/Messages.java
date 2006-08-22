@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/workflow/Attic/Messages.java,v $
- * Date   : $Date: 2006/08/21 17:04:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/22 08:18:54 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,21 +39,39 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKFLOW_LIST_ACTION_ICON_HELP_0 = "GUI_WORKFLOW_LIST_ACTION_ICON_HELP_0";
+    public static final String GUI_WORKFLOW_DETAIL_HIDE_RESOURCES_HELP_0 = "GUI_WORKFLOW_DETAIL_HIDE_RESOURCES_HELP_0";
     
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKFLOW_DETAIL_HIDE_RESOURCES_NAME_0 = "GUI_WORKFLOW_DETAIL_HIDE_RESOURCES_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKFLOW_DETAIL_SHOW_RESOURCES_HELP_0 = "GUI_WORKFLOW_DETAIL_SHOW_RESOURCES_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKFLOW_DETAIL_SHOW_RESOURCES_NAME_0 = "GUI_WORKFLOW_DETAIL_SHOW_RESOURCES_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKFLOW_LABEL_RESOURCES_0 = "GUI_WORKFLOW_LABEL_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKFLOW_LIST_ACTION_ICON_HELP_0 = "GUI_WORKFLOW_LIST_ACTION_ICON_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_LIST_ACTION_ICON_NAME_0 = "GUI_WORKFLOW_LIST_ACTION_ICON_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKFLOW_LIST_COLS_DATE_0 = "GUI_WORKFLOW_LIST_COLS_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_LIST_COLS_ICON_0 = "GUI_WORKFLOW_LIST_COLS_ICON_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_LIST_COLS_NAME_0 = "GUI_WORKFLOW_LIST_COLS_NAME_0";
 
