@@ -1,4 +1,7 @@
-<%@ page import="org.opencms.workflow.*" %><%	
+<%@ page import="
+org.opencms.workplace.CmsDialog,
+org.opencms.workflow.generic.*
+" %><%	
 
 	// initialize the workplace class
 	CmsWorkflow wp = new CmsWorkflow(pageContext, request, response);
@@ -7,7 +10,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsWorkflow.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
@@ -15,8 +18,8 @@ case CmsWorkflow.ACTION_CANCEL:
 break;
 
 
-case CmsWorkflow.ACTION_CONFIRMED:
-case CmsWorkflow.ACTION_WAIT:
+case CmsDialog.ACTION_CONFIRMED:
+case CmsDialog.ACTION_WAIT:
 //////////////////// ACTION: main init workflow action
 
 	wp.performAction();
@@ -27,9 +30,9 @@ case CmsWorkflow.ACTION_INIT:
 //////////////////// ACTION: show init dialog
 
 	wp.checkNotInWorkflow();
-	wp.setParamAction(CmsWorkflow.DIALOG_CONFIRMED);
+	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
 
-%><%= wp.htmlStart("help.explorer.contextmenu.init_workflow") %>
+ %><%= wp.htmlStart("help.explorer.contextmenu.init_workflow") %>
 <script type="text/javascript">
 <!--
 function toggleDetail(id) {
@@ -47,17 +50,17 @@ function toggleDetail(id) {
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
-if (wp.isMultiOperation()) { %>
+if (wp.isMultiOperation()) { // include %>
 	<%@ include file="includes/multiresourcelist.txt" %><%
-} else { %>
+} else { // include %>
 	<%@ include file="includes/resourceinfo.txt" %><%
 } %>
 
 <%= wp.dialogSpacer() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <%= wp.dialogSpacer() %>
 <table border="0" width="100%">
@@ -74,7 +77,7 @@ if (wp.isMultiOperation()) { %>
 </tr>
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_WORKFLOW_DESCRIPTION_0) %></td>
-	<td class="maxwidth"><input name="<%= wp.PARAM_DESCRIPTION %>" type="text" value="" class="maxwidth"></td>
+	<td class="maxwidth"><input name="<%= CmsWorkflow.PARAM_DESCRIPTION %>" type="text" value="" class="maxwidth"></td>
 </tr>
 </table>
 
@@ -106,9 +109,9 @@ case CmsWorkflow.ACTION_SIGNAL:
 //////////////////// ACTION: show signal dialog
 
 	wp.checkInWorkflow();
-	wp.setParamAction(CmsWorkflow.DIALOG_CONFIRMED);
+	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
 
-%><%= wp.htmlStart("help.explorer.contextmenu.init_workflow") %>
+ %><%= wp.htmlStart("help.explorer.contextmenu.init_workflow") %>
 <script type="text/javascript">
 <!--
 function toggleDetail(id) {
@@ -126,17 +129,17 @@ function toggleDetail(id) {
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
-if (wp.isMultiOperation()) { %>
+if (wp.isMultiOperation()) { // include %>
 	<%@ include file="includes/multiresourcelist.txt" %><%
-} else { %>
+} else { // include %>
 	<%@ include file="includes/resourceinfo.txt" %><%
 } %>
 
 <%= wp.dialogSpacer() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <%= wp.dialogSpacer() %>
 <table border="0" width="100%">
@@ -182,24 +185,24 @@ case CmsWorkflow.ACTION_ABORT:
 //////////////////// ACTION: show abort dialog
 
 	wp.checkInWorkflow();
-	wp.setParamAction(CmsWorkflow.DIALOG_CONFIRMED);
+	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
 
-%><%= wp.htmlStart("help.explorer.contextmenu.init_workflow") %>
+ %><%= wp.htmlStart("help.explorer.contextmenu.init_workflow") %>
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
-if (wp.isMultiOperation()) { %>
+if (wp.isMultiOperation()) { // include %>
 	<%@ include file="includes/multiresourcelist.txt" %><%
-} else { %>
+} else { // include %>
 	<%@ include file="includes/resourceinfo.txt" %><%
 } %>
 
 <%= wp.dialogSpacer() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <%= wp.dialogSpacer() %>
 
@@ -213,7 +216,7 @@ if (wp.isMultiOperation()) { %>
 
 <table border="0" width="100%">
 <tr><td>
-<input type="checkbox" name="<%= wp.PARAM_UNDO %>" value="true"> <%= wp.key(Messages.GUI_WORKFLOW_UNDO_0) %>
+<input type="checkbox" name="<%= CmsWorkflow.PARAM_UNDO %>" value="true"> <%= wp.key(Messages.GUI_WORKFLOW_UNDO_0) %>
 </td></tr>
 </table>
 
