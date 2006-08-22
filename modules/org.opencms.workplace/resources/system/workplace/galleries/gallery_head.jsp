@@ -8,7 +8,7 @@
 	// get gallery instance
 	A_CmsGallery wp = A_CmsGallery.createInstance(cms);
 	
-%><%= wp.htmlStart(null) %>
+ %><%= wp.htmlStart(null) %>
 
 <script type="text/javascript">
 <!--

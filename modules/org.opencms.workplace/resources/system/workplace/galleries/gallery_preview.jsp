@@ -5,10 +5,10 @@
 	
 	// get gallery instance
 	A_CmsGallery wp = A_CmsGallery.createInstance(cms);
-%>
-<%= wp.htmlStart(null) %>
-	<link rel="stylesheet" type="text/css" href="<%=wp.getCssPath()%>">
-	
+
+ %><%= wp.htmlStart(null) %>
+
+<link rel="stylesheet" type="text/css" href="<%=wp.getCssPath()%>">
 <script language="javascript">
 <!--
 	function reload() {

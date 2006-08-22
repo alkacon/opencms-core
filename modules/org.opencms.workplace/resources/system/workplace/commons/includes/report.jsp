@@ -22,8 +22,9 @@ switch (wp.getAction()) {
 
 //////////////////// ACTION: get report update
     case CmsDialog.ACTION_REPORT_UPDATE:
-%>
-    <%= wp.htmlStart(false) %>
+ %>
+
+<%= wp.htmlStart(false) %>
 
 <script language='JavaScript'>
 <!--
@@ -132,9 +133,9 @@ default:
 
 wp.setParamAction(CmsDialog.REPORT_END);
 
-%>
+ %>
 
-     <%= wp.htmlStart() %>
+<%= wp.htmlStart() %>
 
 <script type="text/javascript" language="JavaScript">
 <!--

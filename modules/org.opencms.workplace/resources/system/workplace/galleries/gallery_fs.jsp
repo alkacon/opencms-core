@@ -8,7 +8,7 @@
 	
 	String params = "?" + wp.paramsAsRequest();
 	
-%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+ %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
 	<title><%= wp.getKeyTitle() %></title>

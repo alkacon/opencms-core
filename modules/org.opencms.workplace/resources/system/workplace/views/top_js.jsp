@@ -3,8 +3,10 @@
 	org.opencms.workplace.explorer.*,
 	org.opencms.jsp.*"
 %><%
+
 	CmsExplorerInit wp = new CmsExplorerInit(new CmsJspActionElement(pageContext, request, response));
-%>function vars_resources() { 
+ 
+ %>function vars_resources() { 
 
 this.stati = new Array(
      

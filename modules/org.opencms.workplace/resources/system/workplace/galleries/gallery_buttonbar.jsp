@@ -8,9 +8,11 @@
 	
 	// get gallery instance
 	A_CmsGallery wp = A_CmsGallery.createInstance(cms);
-%>
-<%= wp.htmlStart(null) %>
-	<%@ include file="gallery.js" %>
+
+ %><%= wp.htmlStart(null) %>
+ 
+<%@ include file="gallery.js" %>
+
 </head>
 <body class="buttons-head" unselectable="on">
 <form class="nomargin" name="form" action="gallery_buttonbar.jsp" onSubmit="return editProperty('<%=wp.getParamResourcePath()%>');" method="post">

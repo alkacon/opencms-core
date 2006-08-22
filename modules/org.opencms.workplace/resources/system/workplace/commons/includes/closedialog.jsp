@@ -5,7 +5,7 @@
 	
 	boolean link = (wp.getParamCloseLink() != null);
 
-%><%= wp.htmlStart() %>
+ %><%= wp.htmlStart() %>
 <script type="text/javascript">
 <!--
 <%
