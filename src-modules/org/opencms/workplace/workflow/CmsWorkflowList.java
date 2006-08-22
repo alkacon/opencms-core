@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/workflow/Attic/CmsWorkflowList.java,v $
- * Date   : $Date: 2006/08/21 17:04:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/22 08:18:54 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,15 @@ import org.opencms.main.OpenCms;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDateMacroFormatter;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.0 
  */
@@ -66,10 +70,13 @@ public class CmsWorkflowList extends A_CmsListDialog {
     public static final String LIST_ACTION_ICON = "ai";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_ICON = "cl";
+    public static final String LIST_COLUMN_ICON = "ci";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_NAME = "cn";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_DATE = "cdc";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_OWNER = "co";
@@ -180,7 +187,8 @@ public class CmsWorkflowList extends A_CmsListDialog {
         while (itWorkflows.hasNext()) {
             CmsProject workflow = (CmsProject)itWorkflows.next();
             CmsListItem item = getList().newItem("" + workflow.getId());
-            item.set(LIST_COLUMN_NAME, workflow.getName());
+            item.set(LIST_COLUMN_NAME, OpenCms.getWorkflowManager().getTaskDescription(workflow));
+            item.set(LIST_COLUMN_DATE, new Date(OpenCms.getWorkflowManager().getTaskStartTime(workflow)));
             item.set(LIST_COLUMN_USER_CREATED, OpenCms.getWorkflowManager().getTaskOwner(workflow).getName());
             item.set(LIST_COLUMN_OWNER, OpenCms.getWorkflowManager().getTaskAgent(workflow).getName());
             item.set(LIST_COLUMN_STATE, OpenCms.getWorkflowManager().getTaskState(workflow, getLocale()));
@@ -200,6 +208,7 @@ public class CmsWorkflowList extends A_CmsListDialog {
         iconCol.setName(Messages.get().container(Messages.GUI_WORKFLOW_LIST_COLS_ICON_0));
         iconCol.setWidth("30");
         iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        metadata.addColumn(iconCol);
 
         // icon action
         CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
@@ -212,35 +221,43 @@ public class CmsWorkflowList extends A_CmsListDialog {
         // add column for name
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
         nameCol.setName(Messages.get().container(Messages.GUI_WORKFLOW_LIST_COLS_NAME_0));
-        nameCol.setWidth("20%");
+        nameCol.setWidth("25%");
         nameCol.setSorteable(true);
         metadata.addColumn(nameCol);
+
+        // add column for date created
+        CmsListColumnDefinition dateCol = new CmsListColumnDefinition(LIST_COLUMN_DATE);
+        dateCol.setName(Messages.get().container(Messages.GUI_WORKFLOW_LIST_COLS_DATE_0));
+        dateCol.setWidth("15%");
+        dateCol.setSorteable(true);
+        dateCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
+        metadata.addColumn(dateCol);
 
         // add column for user created
         CmsListColumnDefinition userCreatedCol = new CmsListColumnDefinition(LIST_COLUMN_USER_CREATED);
         userCreatedCol.setName(Messages.get().container(Messages.GUI_WORKFLOW_LIST_COLS_USER_CREATED_0));
-        userCreatedCol.setWidth("20%");
+        userCreatedCol.setWidth("15%");
         userCreatedCol.setSorteable(true);
         metadata.addColumn(userCreatedCol);
 
         // add column for user owner
         CmsListColumnDefinition ownerCol = new CmsListColumnDefinition(LIST_COLUMN_OWNER);
         ownerCol.setName(Messages.get().container(Messages.GUI_WORKFLOW_LIST_COLS_OWNER_0));
-        ownerCol.setWidth("20%");
+        ownerCol.setWidth("15%");
         ownerCol.setSorteable(true);
         metadata.addColumn(ownerCol);
 
         // add column for state
         CmsListColumnDefinition stateCol = new CmsListColumnDefinition(LIST_COLUMN_STATE);
         stateCol.setName(Messages.get().container(Messages.GUI_WORKFLOW_LIST_COLS_STATE_0));
-        stateCol.setWidth("20%");
+        stateCol.setWidth("15%");
         stateCol.setSorteable(true);
         metadata.addColumn(stateCol);
 
         // add column for type
         CmsListColumnDefinition typeCol = new CmsListColumnDefinition(LIST_COLUMN_TYPE);
         typeCol.setName(Messages.get().container(Messages.GUI_WORKFLOW_LIST_COLS_TYPE_0));
-        typeCol.setWidth("20%");
+        typeCol.setWidth("15%");
         typeCol.setSorteable(true);
         metadata.addColumn(typeCol);
     }
@@ -250,7 +267,21 @@ public class CmsWorkflowList extends A_CmsListDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // no ias
+        // create list item detail
+        CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_DETAIL_RESOURCES);
+        resourcesDetails.setAtColumn(LIST_COLUMN_NAME);
+        resourcesDetails.setVisible(false);
+        resourcesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_WORKFLOW_LABEL_RESOURCES_0)));
+        resourcesDetails.setShowActionName(Messages.get().container(Messages.GUI_WORKFLOW_DETAIL_SHOW_RESOURCES_NAME_0));
+        resourcesDetails.setShowActionHelpText(Messages.get().container(
+            Messages.GUI_WORKFLOW_DETAIL_SHOW_RESOURCES_HELP_0));
+        resourcesDetails.setHideActionName(Messages.get().container(Messages.GUI_WORKFLOW_DETAIL_HIDE_RESOURCES_NAME_0));
+        resourcesDetails.setHideActionHelpText(Messages.get().container(
+            Messages.GUI_WORKFLOW_DETAIL_HIDE_RESOURCES_HELP_0));
+
+        // add resources info item detail to meta data
+        metadata.addItemDetails(resourcesDetails);
     }
 
     /**
