@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2006/08/21 17:04:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/22 11:09:54 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.0.0
  */
@@ -229,7 +229,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     public CmsProject createTask(CmsObject cms, String description) throws CmsException {
 
         StringBuffer buf = new StringBuffer();
-        buf.append(Messages.get().container(Messages.NEW_TASK_TITLE_0).key());
+        buf.append(Messages.get().container(Messages.GUI_NEW_TASK_TITLE_0).key());
 
         return createWorkflowProject(cms.getRequestContext().currentUser(), buf.toString(), "Description:"
             + description);
@@ -466,13 +466,13 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
             List resources = getAssignedResources(wfProject);
             if (resources.size() > 1) {
                 wfProject.setName(Messages.get().container(
-                    Messages.TASK_TITLE_MULTI_3,
+                    Messages.GUI_TASK_TITLE_MULTI_3,
                     type.getName(CmsLocaleManager.getDefaultLocale()),
                     "",
                     Integer.toString(resources.size())).key());
             } else {
                 wfProject.setName(Messages.get().container(
-                    Messages.TASK_TITLE_SINGLE_3,
+                    Messages.GUI_TASK_TITLE_SINGLE_3,
                     type.getName(CmsLocaleManager.getDefaultLocale()),
                     "",
                     resources.get(0)).key());

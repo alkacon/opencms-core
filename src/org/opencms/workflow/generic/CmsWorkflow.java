@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsWorkflow.java,v $
- * Date   : $Date: 2006/08/21 17:04:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/22 11:09:54 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH
  * All Rights Reserved.
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.0.0
  */
@@ -195,7 +195,7 @@ public class CmsWorkflow extends CmsMultiDialog {
         try {
             CmsProject wfProject = wfManager.getTask(cms, filename);
             taskInfo.append(messages.key(
-                Messages.TASK_INFO_2,
+                Messages.GUI_TASK_INFO_2,
                 wfManager.getTaskDescription(wfProject),
                 wfManager.getTaskState(wfProject, messages.getLocale())));
         } catch (CmsException e) {
