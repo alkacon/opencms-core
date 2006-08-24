@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.47.4.3 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.47.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.47.4.3 $ 
+ * @version $Revision: 1.47.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,7 +150,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public static final String POSTGRESQL_PROVIDER = "postgresql";
 
     /** Required files per database server setup. */
-    public static final String[] REQUIRED_DB_SETUP_FILES = {
+    static final String[] REQUIRED_DB_SETUP_FILES = {
         "step_4_database_setup.jsp",
         "database.properties",
         "create_db.sql",

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlParser.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.2.0
  */
@@ -64,7 +64,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     // important: don't change the order of these tags in the source, subclasses may expect the tags
     // at the exact indices give here
     // if you want to add tags, add them at the end
-    protected static final String[] TAG_ARRAY = new String[] {
+    static final String[] TAG_ARRAY = new String[] {
         "H1",
         "H2",
         "H3",

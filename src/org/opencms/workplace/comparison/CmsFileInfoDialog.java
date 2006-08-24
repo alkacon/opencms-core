@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Attic/CmsFileInfoDialog.java,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,7 +59,7 @@ public class CmsFileInfoDialog extends CmsWidgetDialog {
     public static final String KEY_PREFIX = "fileinfo";
 
     /** Defines which pages are valid for this dialog. */
-    public static final String[] PAGES = {"page1"};
+    static final String[] PAGES = {"page1"};
 
     /** The user object that is edited on this dialog. */
     private String m_path;

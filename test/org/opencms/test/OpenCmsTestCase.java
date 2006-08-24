@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.90.4.6 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.90.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,6 +68,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Vector;
 
 import junit.framework.TestCase;
@@ -90,7 +91,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.6 $
+ * @version $Revision: 1.90.4.7 $
  * 
  * @since 6.0.0
  */
@@ -305,8 +306,9 @@ public class OpenCmsTestCase extends TestCase {
 
         int writtenFiles = 0;
 
-        int width = (int)(maxWidth * Math.random()) + 1;
-        int depth = maxDepth - (int)(2 * Math.random());
+        Random rnd = new Random();
+        int width = rnd.nextInt(maxWidth) + 1;
+        int depth = maxDepth - rnd.nextInt(2);
         for (int i = 0; i < width; i++) {
             // generate folder
             String vfsName = vfsFolder + generateName(fileNameLength) + i;
@@ -314,7 +316,7 @@ public class OpenCmsTestCase extends TestCase {
             cms.createResource(vfsName, CmsResourceTypeFolder.getStaticTypeId(), new byte[0], props);
             cms.unlockResource(vfsName);
 
-            int numberOfFiles = (int)(maxNumberOfFiles * Math.random()) + 1;
+            int numberOfFiles = rnd.nextInt(maxNumberOfFiles) + 1;
             // generate binary files
             int numberOfBinaryFiles = (int)(numberOfFiles * fileTypeDistribution);
             writtenFiles += generateResources(
@@ -356,9 +358,10 @@ public class OpenCmsTestCase extends TestCase {
     public static String generateName(int maxLen) {
 
         String name = "";
-        int len = (int)(maxLen * Math.random()) + 1;
+        Random rnd = new Random();
+        int len = rnd.nextInt(maxLen) + 1;
         for (int j = 0; j < len; j++) {
-            name += (char)(25 * Math.random() + 97);
+            name += (char)(rnd.nextInt(26) + 97);
         }
         return name;
     }
@@ -384,7 +387,8 @@ public class OpenCmsTestCase extends TestCase {
         if (maxProps > propList.size()) {
             maxProps = propList.size();
         }
-        int propN = (int)(Math.random() * maxProps) + 1;
+        Random rnd = new Random();
+        int propN = rnd.nextInt(maxProps) + 1;
         for (int j = 0; j < propN; j++) {
             CmsPropertyDefinition propDef = (CmsPropertyDefinition)propList.get((int)(Math.random() * propList.size()));
             propList.remove(propDef);

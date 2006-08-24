@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2006/08/24 06:43:29 $
- * Version: $Revision: 1.36.4.4 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.36.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,40 +68,11 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.4 $ 
+ * @version $Revision: 1.36.4.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsXmlContentDefinition implements Cloneable {
-
-    /**
-     * Simple data structure to describe a type seqnence in an XML schema.<p>
-     */
-    public final class CmsXmlComplexTypeSequence {
-
-        /** Indicates if this type sequence has a language attribute. */
-        protected boolean m_hasLanguageAttribute;
-
-        /** The name of the complex type seqnence. */
-        protected String m_name;
-
-        /** The type sequence elements. */
-        protected List m_sequence;
-
-        /**
-         * Creates a new complex type sequence data structure.<p>
-         * 
-         * @param name the name of the sequence
-         * @param sequence the type sequence element list
-         * @param hasLanguageAttribute indicates if a "language" attribute is present
-         */
-        protected CmsXmlComplexTypeSequence(String name, List sequence, boolean hasLanguageAttribute) {
-
-            m_name = name;
-            m_sequence = sequence;
-            m_hasLanguageAttribute = hasLanguageAttribute;
-        }
-    }
 
     /** Constant for the XML schema attribute "mapto". */
     public static final String XSD_ATTRIBUTE_DEFAULT = "default";
@@ -505,7 +476,6 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * @param element the element to validate
      * @param includes the XML schema includes
-     * @param definition the content definition the complex type seqnence belongs to 
      * 
      * @return a data structure containing the validated complex type seqnence data 
      * 
@@ -513,8 +483,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     protected static CmsXmlComplexTypeSequence validateComplexTypeSequence(
         Element element,
-        Set includes,
-        CmsXmlContentDefinition definition) throws CmsXmlException {
+        Set includes) throws CmsXmlException {
 
         validateAttributesExists(element, new String[] {XSD_ATTRIBUTE_NAME}, new String[0]);
 
@@ -597,7 +566,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         }
 
         // return a data structure with the collected values
-        return definition.new CmsXmlComplexTypeSequence(name, sequence, hasLanguageAttribute);
+        return new CmsXmlComplexTypeSequence(name, sequence, hasLanguageAttribute);
     }
 
     /**
@@ -711,7 +680,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         Iterator ct = complexTypes.iterator();
         while (ct.hasNext()) {
             Element e = (Element)ct.next();
-            CmsXmlComplexTypeSequence sequence = validateComplexTypeSequence(e, nestedDefinitions, result);
+            CmsXmlComplexTypeSequence sequence = validateComplexTypeSequence(e, nestedDefinitions);
             complexTypeData.add(sequence);
         }
 

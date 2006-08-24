@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.27.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.27.4.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -91,7 +91,7 @@ public class CmsScheduleManager implements Job {
     private static final Log LOG = CmsLog.getLog(CmsScheduleManager.class);
 
     /** The Admin context used for creation of users for the individual jobs. */
-    private static CmsObject m_adminCms;
+    private CmsObject m_adminCms;
 
     /** The list of job entries from the configuration. */
     private List m_configuredJobs;

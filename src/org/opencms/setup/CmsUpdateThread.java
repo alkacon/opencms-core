@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.4.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,14 +45,14 @@ import java.io.PrintStream;
  *
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsUpdateThread extends Thread {
 
-    /** Gets the System.err stream so it can be restored. */
-    public static PrintStream m_tempErr;
+    /** Saves the System.err stream so it can be restored. */
+    public PrintStream m_tempErr;
 
     /** Logging thread. */
     private CmsSetupLoggingThread m_loggingThread;
@@ -63,7 +63,7 @@ public class CmsUpdateThread extends Thread {
     /** The cms shell to import the workplace with. */
     private CmsShell m_shell;
 
-    /** Gets the System.out stream so it can be restored. */
+    /** Saves the System.out stream so it can be restored. */
     private PrintStream m_tempOut;
 
     /** The additional shell commands, i.e. the setup bean. */

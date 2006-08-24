@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.18.4.1 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.18.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18.4.1 $ 
+ * @version $Revision: 1.18.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,7 +136,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static final String KEY_VALIDATION_VALUE = "validation.value";
 
     /** Identified for "magic" parameter commands. */
-    public static final String[] VALUE_NAME_ARRAY = {"uri", "filename", "folder", "default.encoding"};
+    static final String[] VALUE_NAME_ARRAY = {"uri", "filename", "folder", "default.encoding"};
 
     /** The "magic" commands wrapped in a List. */
     public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAME_ARRAY));

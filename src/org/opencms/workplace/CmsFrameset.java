@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.86.4.3 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.86.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,17 +72,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.86.4.3 $ 
+ * @version $Revision: 1.86.4.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsFrameset extends CmsWorkplace {
 
     /** The names of the supported frames. */
-    public static final String[] FRAMES = {"top", "head", "body", "foot"};
+    static final String[] FRAMES = {"top", "head", "body", "foot"};
 
     /** The names of the supported frames in a list. */
-    public static final List FRAMES_LIST = Arrays.asList(FRAMES);
+    public static final List FRAMES_LIST = Collections.unmodifiableList(Arrays.asList(FRAMES));
 
     /** Path to the JSP workplace frame loader file. */
     public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp";

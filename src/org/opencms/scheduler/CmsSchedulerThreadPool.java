@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThreadPool.java,v $
- * Date   : $Date: 2006/08/19 13:41:00 $
- * Version: $Revision: 1.12.4.1 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.12.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.quartz.spi.ThreadPool;
  * @author James House
  * @author Juergen Donnerstag
  *
- * @version $Revision: 1.12.4.1 $ 
+ * @version $Revision: 1.12.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -231,7 +231,13 @@ public class CmsSchedulerThreadPool implements ThreadPool {
             return false;
         }
 
-        if ((m_currentThreadCount == 0) || (m_nextRunnable != null)) {
+        boolean hasNextRunnable;
+        synchronized (m_nextRunnableLock) {
+            // must synchronize here to avoid potential double checked locking
+            hasNextRunnable = (m_nextRunnable != null);
+        }
+
+        if (hasNextRunnable || (m_currentThreadCount == 0)) {
             // try to grow the thread pool since other runnables are already waiting
             growThreadPool();
         }

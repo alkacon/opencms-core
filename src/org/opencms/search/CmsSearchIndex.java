@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.60.4.2 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.60.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,14 +74,14 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.2 $ 
+ * @version $Revision: 1.60.4.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Constant for a field list that contains the "meta" field as well as the "content" field. */
-    public static final String[] DOC_META_FIELDS = new String[] {
+    static final String[] DOC_META_FIELDS = new String[] {
         I_CmsDocumentFactory.DOC_META,
         I_CmsDocumentFactory.DOC_CONTENT};
 

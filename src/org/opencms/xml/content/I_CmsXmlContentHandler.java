@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.24.4.1 $
+ * Date   : $Date: 2006/08/24 12:47:42 $
+ * Version: $Revision: 1.24.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,17 +55,14 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.1 $ 
+ * @version $Revision: 1.24.4.2 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsXmlContentHandler {
 
-    /** Array of all allowed attribute mapping names. */
-    String[] ATTRIBUTE_ARRAY = {"datereleased", "dateexpired"};
-
     /** List of all allowed attribute mapping names, for fast lookup. */
-    List ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(ATTRIBUTE_ARRAY));
+    List ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(new String[] {"datereleased", "dateexpired"}));
 
     /** Prefix for attribute mappings. */
     String MAPTO_ATTRIBUTE = "attribute:";
