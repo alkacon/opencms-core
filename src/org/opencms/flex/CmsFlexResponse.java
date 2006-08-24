@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.42.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.42.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.42.4.1 $ 
+ * @version $Revision: 1.42.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * output stream at the same time.
      * It should be fully transparent to the standard ServletOutputStream.<p>
      */
-    private class CmsServletOutputStream extends ServletOutputStream {
+    private static class CmsServletOutputStream extends ServletOutputStream {
 
         /** The optional output stream to write to. */
         private ServletOutputStream m_servletStream;
@@ -314,10 +314,11 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     public static void processHeaders(Map headers, HttpServletResponse res) {
 
         if (headers != null) {
-            Iterator i = headers.keySet().iterator();
+            Iterator i = headers.entrySet().iterator();
             while (i.hasNext()) {
-                String key = (String)i.next();
-                List l = (List)headers.get(key);
+                Map.Entry entry = (Map.Entry)i.next();
+                String key =(String)entry.getKey();
+                List l = (List)entry.getValue();
                 for (int j = 0; j < l.size(); j++) {
                     if ((j == 0) && (((String)l.get(0)).startsWith(SET_HEADER))) {
                         String s = (String)l.get(0);
@@ -1038,7 +1039,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (!hasIncludeList()) {
             // no include list, so no includes and we just use the bytes as they are in one block
             m_cachedEntry.add(result);
-            result = null;
         } else {
             // process the include list
             int max = result.length;
@@ -1081,7 +1081,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 m_cachedEntry.add(piece);
                 piece = null;
             }
-            result = null;
             if (i >= m_includeList.size()) {
                 // clear the include list if all include calls are handled
                 m_includeList = null;

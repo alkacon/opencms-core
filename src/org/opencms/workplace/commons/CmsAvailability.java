@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2006/08/19 13:40:49 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -385,9 +385,10 @@ public class CmsAvailability extends CmsMultiDialog {
                     result.append("\" id=\"button\"/></td></tr></table>");
                 }
                 result.append(dialogWhiteBoxStart());
-                i = responsibles.keySet().iterator();
-                for (int j = 0; i.hasNext(); j++) {
-                    I_CmsPrincipal principal = (I_CmsPrincipal)i.next();
+                Iterator it = responsibles.entrySet().iterator();
+                for (int j = 0; it.hasNext(); j++) {
+                    Map.Entry entry = (Map.Entry)it.next();
+                    I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
                     String image = "user.png";
                     String localizedType = getLocalizedType(CmsAccessControlEntry.ACCESS_FLAGS_USER);
                     if (principal instanceof CmsGroup) {
@@ -407,7 +408,7 @@ public class CmsAvailability extends CmsMultiDialog {
                     result.append("</span><div class=\"hide\" id=\"inheritinfo");
                     result.append(j);
                     result.append("\"><div class=\"dialogpermissioninherit\">");
-                    String resourceName = ((String)responsibles.get(principal));
+                    String resourceName = (String)entry.getValue();
                     if (CmsStringUtil.isNotEmpty(resourceName)) {
                         result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
                     }

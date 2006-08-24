@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.40.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.40.4.1 $
  * 
  * @since 6.0.0
  */
@@ -370,14 +370,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                     while (it.hasNext()) {
                         String key = (String)it.next();
                         // create <param name="">value</param> subnodes
-                        Object valueObject = prop.get(key);
-                        String value = new String();
-                        if (valueObject instanceof String) {
-                            value = (String)valueObject;
-                        } else if (valueObject instanceof Integer) {
-                            value = ((Integer)valueObject).toString();
-                        }
-                        resourceType.addElement(N_PARAM).addAttribute(A_NAME, key).addText(value);
+                        Object val = prop.get(key);                        
+                        resourceType.addElement(N_PARAM).addAttribute(A_NAME, key).addText(String.valueOf(val));
                     }
                 }
             }
@@ -544,10 +538,11 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             loaderNode.addAttribute(A_CLASS, loader.getClass().getName());
             Map loaderConfiguration = loader.getConfiguration();
             if (loaderConfiguration != null) {
-                Iterator it = loaderConfiguration.keySet().iterator();
+                Iterator it = loaderConfiguration.entrySet().iterator();
                 while (it.hasNext()) {
-                    String name = (String)it.next();
-                    String value = loaderConfiguration.get(name).toString();
+                    Map.Entry entry = (Map.Entry)it.next();
+                    String name = (String)entry.getKey();
+                    String value = (String)entry.getValue();
                     Element paramNode = loaderNode.addElement(N_PARAM);
                     paramNode.addAttribute(A_NAME, name);
                     paramNode.addText(value);
@@ -583,7 +578,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // file translation rules
         Element fileTransElement = translationsElement.addElement(N_FILETRANSLATIONS).addAttribute(
             A_ENABLED,
-            new Boolean(m_fileTranslationEnabled).toString());
+            String.valueOf(m_fileTranslationEnabled));
         it = m_fileTranslations.iterator();
         while (it.hasNext()) {
             fileTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
@@ -592,7 +587,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // folder translation rules
         Element folderTransElement = translationsElement.addElement(N_FOLDERTRANSLATIONS).addAttribute(
             A_ENABLED,
-            new Boolean(m_folderTranslationEnabled).toString());
+            String.valueOf(m_folderTranslationEnabled));
         it = m_folderTranslations.iterator();
         while (it.hasNext()) {
             folderTransElement.addElement(N_TRANSLATION).setText(it.next().toString());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleDependency.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ package org.opencms.module;
  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,7 +62,7 @@ public class CmsModuleDependency implements Comparable {
     public CmsModuleDependency() {
 
         super();
-        m_name = new String();
+        m_name = "";
         m_version = new CmsModuleVersion("0");
 
         // pre - calculate the hash code

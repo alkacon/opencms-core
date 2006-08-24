@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.36.4.4 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.36.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.4 $
+ * @version $Revision: 1.36.4.5 $
  * 
  * @since 6.0.0
  */
@@ -1052,10 +1052,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             Map jobParameters = jobInfo.getConfiguration();
             if ((jobParameters != null) && (jobParameters.size() > 0)) {
                 Element parameterElement = jobElement.addElement(N_PARAMETERS);
-                Iterator it = jobParameters.keySet().iterator();
+                Iterator it = jobParameters.entrySet().iterator();
                 while (it.hasNext()) {
-                    String name = (String)it.next();
-                    String value = jobParameters.get(name).toString();
+                    Map.Entry entry = (Map.Entry)it.next();
+                    String name = (String)entry.getKey();
+                    String value = (String)entry.getValue();
                     Element paramNode = parameterElement.addElement(N_PARAM);
                     paramNode.addAttribute(A_NAME, name);
                     paramNode.addText(value);
@@ -1071,7 +1072,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // version history
         systemElement.addElement(N_VERSIONHISTORY).addAttribute(
             A_ENABLED,
-            new Boolean(m_versionHistoryEnabled).toString()).addAttribute(
+            String.valueOf(m_versionHistoryEnabled)).addAttribute(
             A_COUNT,
             new Integer(m_versionHistoryMaxCount).toString());
 
@@ -1101,10 +1102,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         passwordhandlerElement.addElement(N_DIGESTTYPE).addText(m_passwordHandler.getDigestType());
         Map handlerParameters = m_passwordHandler.getConfiguration();
         if (handlerParameters != null) {
-            Iterator it = handlerParameters.keySet().iterator();
+            Iterator it = handlerParameters.entrySet().iterator();
             while (it.hasNext()) {
-                String name = (String)it.next();
-                String value = handlerParameters.get(name).toString();
+                Map.Entry entry = (Map.Entry)it.next();
+                String name = (String)entry.getKey();
+                String value = (String)entry.getValue();
                 Element paramNode = passwordhandlerElement.addElement(N_PARAM);
                 paramNode.addAttribute(A_NAME, name);
                 paramNode.addText(value);
@@ -1245,17 +1247,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // create <flexcache> node
         Element flexcacheElement = systemElement.addElement(N_FLEXCACHE);
         flexcacheElement.addElement(N_CACHE_ENABLED).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.isCacheEnabled()).toString());
+            String.valueOf(m_cmsFlexCacheConfiguration.isCacheEnabled()));
         flexcacheElement.addElement(N_CACHE_OFFLINE).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.isCacheOffline()).toString());
+            String.valueOf(m_cmsFlexCacheConfiguration.isCacheOffline()));
         flexcacheElement.addElement(N_MAXCACHEBYTES).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.getMaxCacheBytes()).toString());
+            String.valueOf(m_cmsFlexCacheConfiguration.getMaxCacheBytes()));
         flexcacheElement.addElement(N_AVGCACHEBYTES).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.getAvgCacheBytes()).toString());
+            String.valueOf(m_cmsFlexCacheConfiguration.getAvgCacheBytes()));
         flexcacheElement.addElement(N_MAXENTRYBYTES).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.getMaxEntryBytes()).toString());
+            String.valueOf(m_cmsFlexCacheConfiguration.getMaxEntryBytes()));
         flexcacheElement.addElement(N_MAXKEYS).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.getMaxKeys()).toString());
+            String.valueOf(m_cmsFlexCacheConfiguration.getMaxKeys()));
 
         // create <http-authentication> node
         Element httpAuthenticationElement = systemElement.addElement(N_HTTP_AUTHENTICATION);
@@ -1287,7 +1289,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
                 notificationElement.addElement(N_NOTIFICATION_TIME).setText(m_notificationTime.toString());
             }
             if (m_notificationProject != null) {
-                notificationElement.addElement(N_NOTIFICATION_PROJECT).setText(m_notificationProject.toString());
+                notificationElement.addElement(N_NOTIFICATION_PROJECT).setText(m_notificationProject);
             }
         }
 
@@ -1720,8 +1722,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_LOGINMESSAGE_3,
-                new Boolean(message.isEnabled()),
-                new Boolean(message.isLoginForbidden()),
+                Boolean.valueOf(message.isEnabled()),
+                Boolean.valueOf(message.isLoginForbidden()),
                 message.getMessage()));
         }
     }
@@ -1873,7 +1875,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_HISTORY_SETTINGS_2,
-                new Boolean(m_versionHistoryEnabled),
+                Boolean.valueOf(m_versionHistoryEnabled),
                 new Integer(m_versionHistoryMaxCount)));
         }
     }

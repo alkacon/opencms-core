@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2006/08/19 13:40:40 $
- * Version: $Revision: 1.35.4.5 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.35.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.5 $ 
+ * @version $Revision: 1.35.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -445,13 +445,7 @@ public class CmsHtmlList {
      * 
      * @return html code
      */
-    public synchronized String listHtml() {
-
-        if (isPrintable()) {
-            m_visibleItems = new ArrayList(getContent());
-        } else {
-            m_visibleItems = new ArrayList(getCurrentPageItems());
-        }
+    public String listHtml() {
 
         StringBuffer html = new StringBuffer(5120);
         html.append(htmlBegin());
@@ -474,17 +468,26 @@ public class CmsHtmlList {
         }
         html.append("<table width='100%' cellpadding='1' cellspacing='0' class='list'>\n");
         html.append(m_metadata.htmlHeader(this));
-        if (m_visibleItems.isEmpty()) {
-            html.append(m_metadata.htmlEmptyTable());
-        } else {
-            Iterator itItems = m_visibleItems.iterator();
-            boolean odd = true;
-            while (itItems.hasNext()) {
-                CmsListItem item = (CmsListItem)itItems.next();
-                html.append(m_metadata.htmlItem(item, odd, isPrintable()));
-                odd = !odd;
+
+        synchronized (m_visibleItems) {
+            if (isPrintable()) {
+                m_visibleItems = new ArrayList(getContent());
+            } else {
+                m_visibleItems = new ArrayList(getCurrentPageItems());
+            }
+            if (m_visibleItems.isEmpty()) {
+                html.append(m_metadata.htmlEmptyTable());
+            } else {
+                Iterator itItems = m_visibleItems.iterator();
+                boolean odd = true;
+                while (itItems.hasNext()) {
+                    CmsListItem item = (CmsListItem)itItems.next();
+                    html.append(m_metadata.htmlItem(item, odd, isPrintable()));
+                    odd = !odd;
+                }
             }
         }
+
         html.append("</table>\n");
         if (!isPrintable()) {
             html.append(htmlPagingBar());
@@ -716,8 +719,10 @@ public class CmsHtmlList {
         if (!m_metadata.isSelfManaged()) {
             m_filteredItems = null;
         }
-        if (m_visibleItems != null) {
-            m_visibleItems.clear();
+        synchronized (m_visibleItems) {
+            if (m_visibleItems != null) {
+                m_visibleItems.clear();
+            }
         }
         setSearchFilter(listState.getFilter());
         setSortedColumn(listState.getColumn());
@@ -763,7 +768,7 @@ public class CmsHtmlList {
      * 
      * @param metadata the list metadata
      */
-    /*package*/void setMetadata(CmsListMetadata metadata) {
+    void setMetadata(CmsListMetadata metadata) {
 
         m_metadata = metadata;
     }

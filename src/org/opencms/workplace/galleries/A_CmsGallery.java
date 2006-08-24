@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.24.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.24.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.24.4.2 $ 
+ * @version $Revision: 1.24.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1016,7 +1016,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public String getPreviewBodyStyle() {
 
-        return new String(" class=\"dialog\" style=\"background-color: ThreeDFace;\" unselectable=\"on\"");
+        return " class=\"dialog\" style=\"background-color: ThreeDFace;\" unselectable=\"on\"";
     }
 
     /**
@@ -1026,7 +1026,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public String getPreviewDivStyle() {
 
-        return new String("style=\"text-align: center; width: 100%; margin-top: 5px\"");
+        return "style=\"text-align: center; width: 100%; margin-top: 5px\"";
     }
 
     /**
@@ -1495,10 +1495,11 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         options.clear();
 
         // bring the values in the new order according to the sorted options
-        Iterator it = valuesByOption.keySet().iterator();
+        Iterator it = valuesByOption.entrySet().iterator();
         while (it.hasNext()) {
-            String option = (String)it.next();
-            String value = (String)valuesByOption.get(option);
+            Map.Entry entry = (Map.Entry)it.next();
+            String option = (String)entry.getKey();
+            String value = (String)entry.getValue();
 
             if (value.equals(getParamGalleryPath())) {
                 selectedIndex = options.size();

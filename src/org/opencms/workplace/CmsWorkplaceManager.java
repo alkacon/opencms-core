@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.76.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.76.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.2 $ 
+ * @version $Revision: 1.76.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1228,7 +1228,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      */
     private List initWorkplaceViews(CmsObject cms) {
 
-        List viewFolders = new ArrayList();
+        List viewFolders;
         try {
             // get the subfolders of the "views" folder
             viewFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_VIEWS);

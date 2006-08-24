@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.6.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.6.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.1 $ 
+ * @version $Revision: 1.6.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -266,11 +266,12 @@ public class CmsUpdateBean extends CmsSetupBean {
             m_modulesToUpdate = new ArrayList();
             Map installedModules = getInstalledModules();
             Map availableModules = getAvailableModules();
-            Iterator itMods = availableModules.keySet().iterator();
+            Iterator itMods = availableModules.entrySet().iterator();
             while (itMods.hasNext()) {
-                String name = (String)itMods.next();
+                Map.Entry entry = (Map.Entry)itMods.next();
+                String name = (String)entry.getKey();
                 CmsModuleVersion instVer = (CmsModuleVersion)installedModules.get(name);
-                CmsModuleVersion availVer = ((CmsModule)availableModules.get(name)).getVersion();
+                CmsModuleVersion availVer = ((CmsModule)entry.getValue()).getVersion();
                 boolean uptodate = ((instVer != null) && (instVer.compareTo(availVer) >= 0));
                 if (uptodate) {
                     m_uptodateModules.add(name);
@@ -373,6 +374,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                     script += (char)readChar;
                     readChar = fis.read();
                 }
+                fis.close();
                 // substitute macros
                 script = CmsStringUtil.substitute(script, C_ADMIN_USER, getAdminUser());
                 script = CmsStringUtil.substitute(script, C_ADMIN_PWD, getAdminPwd());

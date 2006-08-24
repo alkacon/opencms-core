@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.24.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.24.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24.4.1 $ 
+ * @version $Revision: 1.24.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -1460,9 +1460,10 @@ public class CmsChacc extends CmsDialog {
         result.append(dialogToggleStart(key(Messages.GUI_AVAILABILITY_RESPONSIBLES_0), "responsibles", show));
 
         result.append(dialogWhiteBoxStart());
-        i = responsibles.keySet().iterator();
+        i = responsibles.entrySet().iterator();
         while (i.hasNext()) {
-            I_CmsPrincipal principal = (I_CmsPrincipal)i.next();
+            Map.Entry entry = (Map.Entry)i.next();
+            I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
             String image = "user.png";
             if (principal instanceof CmsGroup) {
                 image = "group.png";
@@ -1476,7 +1477,7 @@ public class CmsChacc extends CmsDialog {
             result.append("</span>");
             if ("long".equals(getSettings().getPermissionDetailView())) {
                 result.append("<div class=\"dialogpermissioninherit\">");
-                String resourceName = ((String)responsibles.get(principal));
+                String resourceName = (String)entry.getValue();
                 if (!resourceSitePath.equals(resourceName)) {
                     result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
                 }

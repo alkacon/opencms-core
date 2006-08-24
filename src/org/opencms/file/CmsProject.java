@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2006/08/19 13:40:39 $
- * Version: $Revision: 1.19.8.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.19.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.19.8.1 $
+ * @version $Revision: 1.19.8.2 $
  * 
  * @since 6.0.0 
  */
@@ -218,9 +218,7 @@ public class CmsProject implements Cloneable, Comparable {
     }
 
     /**
-     * Returns a clone of this Objects instance.<p>
-     * 
-     * @return a clone of this instance
+     * @see java.lang.Object#clone()
      */
     public Object clone() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyChange.java,v $
- * Date   : $Date: 2006/03/31 13:59:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.14.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -432,8 +432,7 @@ public class CmsPropertyChange extends CmsDialog {
         // lock the selected resource
         checkLock(getParamResource());
         // change the property values    
-        List changedResources = new ArrayList();
-        changedResources = getCms().changeResourcesInFolderWithProperty(
+        List changedResources = getCms().changeResourcesInFolderWithProperty(
             getParamResource(),
             getParamPropertyName(),
             getParamOldValue(),

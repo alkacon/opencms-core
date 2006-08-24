@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.20.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:29 $
+ * Version: $Revision: 1.20.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.20.4.1 $
+ * @version $Revision: 1.20.4.2 $
  * 
  * @since 6.0.0
  */
@@ -98,11 +98,6 @@ public class CmsLruCache extends java.lang.Object {
         m_maxCacheCosts = theMaxCacheCosts;
         m_avgCacheCosts = theAvgCacheCosts;
         m_maxObjectCosts = theMaxObjectCosts;
-
-        m_objectCosts = 0;
-        m_objectCount = 0;
-        m_listHead = null;
-        m_listTail = null;
     }
 
     /**
@@ -150,7 +145,7 @@ public class CmsLruCache extends java.lang.Object {
     /**
      * Removes all cached objects in this cache.<p>
      */
-    public void clear() {
+    public synchronized void clear() {
 
         // remove all objects from the linked list from the tail to the head:
         I_CmsLruCacheObject currentObject = m_listTail;
@@ -164,7 +159,6 @@ public class CmsLruCache extends java.lang.Object {
         m_objectCount = 0;
         m_listHead = null;
         m_listTail = null;
-
     }
 
     /**
@@ -411,7 +405,6 @@ public class CmsLruCache extends java.lang.Object {
             currentObject = currentObject.getNextLruObject();
             removeTail();
         }
-
     }
 
     /**

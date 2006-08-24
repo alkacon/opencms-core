@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestCmsModuleVersion.java,v $
- * Date   : $Date: 2005/06/26 11:23:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.8.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.8.1 $
  */
 public class TestCmsModuleVersion extends TestCase {
     
@@ -144,7 +144,7 @@ public class TestCmsModuleVersion extends TestCase {
         
         boolean gotError = false;
         try { 
-            v1 = new CmsModuleVersion("2..45.6");
+            new CmsModuleVersion("2..45.6");
         } catch (CmsIllegalArgumentException e) {
             gotError = true;
         }
@@ -154,7 +154,7 @@ public class TestCmsModuleVersion extends TestCase {
         
         gotError = false;
         try { 
-            v1 = new CmsModuleVersion(".2.45.6");
+            new CmsModuleVersion(".2.45.6");
         } catch (CmsIllegalArgumentException e) {
             gotError = true;
         }
@@ -164,7 +164,7 @@ public class TestCmsModuleVersion extends TestCase {
 
         gotError = false;
         try { 
-            v1 = new CmsModuleVersion("2.45.6.");
+            new CmsModuleVersion("2.45.6.");
         } catch (CmsIllegalArgumentException e) {
             gotError = true;
         }
@@ -174,7 +174,7 @@ public class TestCmsModuleVersion extends TestCase {
 
         gotError = false;
         try { 
-            v1 = new CmsModuleVersion("wurst");
+            new CmsModuleVersion("wurst");
         } catch (CmsIllegalArgumentException e) {
             gotError = true;
         }
@@ -184,7 +184,7 @@ public class TestCmsModuleVersion extends TestCase {
 
         gotError = false;
         try { 
-            v1 = new CmsModuleVersion("2222.45.6");
+            new CmsModuleVersion("2222.45.6");
         } catch (CmsIllegalArgumentException e) {
             gotError = true;
         }
@@ -194,7 +194,7 @@ public class TestCmsModuleVersion extends TestCase {
         
         gotError = false;
         try { 
-            v1 = new CmsModuleVersion("1.2.3.4.5");
+            new CmsModuleVersion("1.2.3.4.5");
         } catch (CmsIllegalArgumentException e) {
             gotError = true;
         }

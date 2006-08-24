@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2006/08/19 13:40:39 $
- * Version: $Revision: 1.34.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.34.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.4.2 $
+ * @version $Revision: 1.34.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -113,7 +113,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * An empty string to decide that a property value should be deleted when this
      * property object is written to the database.<p>
      */
-    public static final String DELETE_VALUE = new String("");
+    public static final String DELETE_VALUE = "";
 
     /**
      * Value of the "mapping-type" database attribute to indicate that a property value is mapped

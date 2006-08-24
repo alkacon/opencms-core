@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.68.4.4 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.68.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68.4.4 $ 
+ * @version $Revision: 1.68.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -680,7 +680,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public String getXmlEditorForm() {
 
         // set "editor mode" attribute (required for link replacement in the root site) 
-        getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
+        getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, Boolean.TRUE);
 
         // add customized message bundle eventually specified in XSD of XML content
         addMessages(m_content.getContentDefinition().getContentHandler().getMessages(getLocale()));

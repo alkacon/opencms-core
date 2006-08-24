@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlWidget.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:29 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,6 @@ import org.opencms.workplace.galleries.A_CmsGallery;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +50,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.0.1 
  */
@@ -190,26 +188,15 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
 
         // build the gallery button row
         Map galleryMap = OpenCms.getWorkplaceManager().getGalleries();
-        List galleries = new ArrayList(galleryMap.size());
-        Map typeMap = new HashMap(galleryMap.size());
-
-        Iterator i = galleryMap.keySet().iterator();
-        while (i.hasNext()) {
-            String key = (String)i.next();
-            A_CmsGallery currGallery = (A_CmsGallery)galleryMap.get(key);
-            galleries.add(currGallery);
-            // put the type name to the type Map
-            typeMap.put(currGallery, key);
-        }
-
+        List galleries = new ArrayList(galleryMap.values());
         // sort the found galleries by their order
         Collections.sort(galleries);
 
-        StringBuffer galleryResult = new StringBuffer(8);
+        StringBuffer galleryResult = new StringBuffer(256);
         boolean showGallery = false;
         for (int k = 0; k < galleries.size(); k++) {
             A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
-            String galleryType = (String)typeMap.get(currGallery);
+            String galleryType = currGallery.getResourceType().getTypeName();
             if (getHtmlWidgetOption().showGalleryDialog(galleryType)) {
                 // gallery is shown, build button
                 galleryResult.append(widgetDialog.button("javascript:setActiveEditor('"

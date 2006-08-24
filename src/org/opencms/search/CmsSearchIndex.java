@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.60.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.60.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.1 $ 
+ * @version $Revision: 1.60.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -356,10 +356,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             result.put(PRIORITY, new Integer(m_priority));
         }
         if (!m_createExcerpt) {
-            result.put(EXCERPT, new Boolean(m_createExcerpt));
+            result.put(EXCERPT, Boolean.valueOf(m_createExcerpt));
         }
         if (m_dontCheckPermissions) {
-            result.put(PERMISSIONS, new Boolean(!m_dontCheckPermissions));
+            result.put(PERMISSIONS, Boolean.valueOf(!m_dontCheckPermissions));
         }
         return result;
     }

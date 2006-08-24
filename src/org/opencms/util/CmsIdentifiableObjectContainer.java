@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.9.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.9.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9.4.1 $ 
+ * @version $Revision: 1.9.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,11 +59,11 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      * 
      * @author Michael Moossen  
      * 
-     * @version $Revision: 1.9.4.1 $
+     * @version $Revision: 1.9.4.2 $
      * 
      * @since 6.0.0
      */
-    private class CmsIdObjectElement {
+    private static class CmsIdObjectElement {
 
         /** Identifiable object. */
         private final Object m_object;

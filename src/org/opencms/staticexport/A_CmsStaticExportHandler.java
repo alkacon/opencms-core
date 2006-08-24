@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2006/07/21 09:56:44 $
- * Version: $Revision: 1.3.4.4 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.3.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3.4.4 $ 
+ * @version $Revision: 1.3.4.5 $ 
  * 
  * @since 6.1.7 
  * 
@@ -74,7 +74,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
     /**
      * Implements the file filter used to remove variants with parameters of a base file.<p>
      */
-    private class PrefixFileFilter implements FileFilter {
+    private static class PrefixFileFilter implements FileFilter {
 
         /** The extension. */
         private String m_baseExtension;

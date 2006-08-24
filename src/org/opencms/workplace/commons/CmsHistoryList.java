@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.5.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.5.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.2 $ 
+ * @version $Revision: 1.5.4.3 $ 
  * 
  * @since 6.0.2 
  */
@@ -435,7 +435,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             // do not show icon for offline version
             public boolean isVisible() {
 
-                return !"-1".equals(getItem().getId().toString());
+                return !"-1".equals(getItem().getId());
             }
         };
         restoreAction.setName(Messages.get().container(Messages.GUI_HISTORY_RESTORE_VERSION_0));
@@ -474,7 +474,7 @@ public class CmsHistoryList extends A_CmsListDialog {
 
                 StringBuffer jsCode = new StringBuffer(512);
                 jsCode.append("window.open('");
-                String versionId = getItem().getId().toString();
+                String versionId = getItem().getId();
                 if ("-1".equals(versionId)) {
                     // offline version
                     jsCode.append(jsp.link(jsp.getRequestContext().removeSiteRoot(

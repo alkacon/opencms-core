@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2006/08/19 13:40:58 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -139,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  * 
  * @since 6.1.3
  * 
@@ -153,7 +154,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.1 $
+     * @version $Revision: 1.2.4.2 $
      * 
      * @since 6.1.6
      * 
@@ -252,12 +253,15 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.1 $
+     * @version $Revision: 1.2.4.2 $
      * 
      * @since 6.1.6
      * 
      */
-    private final class CmsResourceSelectWidgetOptionComparator implements Comparator {
+    private static final class CmsResourceSelectWidgetOptionComparator implements Comparator, Serializable {
+
+        /** Serival UID required for safe serialization. */
+        private static final long serialVersionUID = -4078389792834878256L;
 
         /** The {@link CmsMacroResolver} compatible macro to resolve for comparison. * */
         private String m_comparatorMacro;

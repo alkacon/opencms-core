@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityTitleResourceComparator.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.15.6.1 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.15.6.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.Serializable;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -52,11 +53,14 @@ import java.util.Map;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15.6.1 $
+ * @version $Revision: 1.15.6.2 $
  * 
  * @since 6.0.0 
  */
-public class CmsPriorityTitleResourceComparator implements Comparator {
+public class CmsPriorityTitleResourceComparator implements Serializable, Comparator {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -6815638350803584422L;
 
     /** The current OpenCms user context. */
     private CmsObject m_cms;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2006/08/21 15:59:20 $
- * Version: $Revision: 1.15.2.2 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.15.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,6 +62,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
@@ -78,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.15.2.2 $ 
+ * @version $Revision: 1.15.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -322,11 +323,12 @@ public class CmsElementRename extends CmsReport {
             if (ALL.equals(getParamTemplate())) {
                 selectedIndex = 1;
             }
-            Iterator i = templates.keySet().iterator();
+            Iterator i = templates.entrySet().iterator();
             int counter = 2;
             while (i.hasNext()) {
-                String key = (String)i.next();
-                String path = (String)templates.get(key);
+                Map.Entry entry = (Map.Entry)i.next();
+                String key = (String)entry.getKey();
+                String path = (String)entry.getValue();
                 if (path.equals(getParamTemplate())) {
                     selectedIndex = counter;
                 }

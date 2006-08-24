@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsWorkflow.java,v $
- * Date   : $Date: 2006/08/22 11:09:54 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/08/24 06:43:29 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH
  * All Rights Reserved.
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.0.0
  */
@@ -698,12 +698,8 @@ public class CmsWorkflow extends CmsMultiDialog {
         I_CmsWorkflowManager wfManager = OpenCms.getWorkflowManager();
         CmsProject wfProject;
 
-        // store original name to use for lock action 
-        String originalResourceName = resourceName;
-        CmsResource res = getCms().readResource(resourceName, CmsResourceFilter.ALL);
-        if (res.isFolder() && !resourceName.endsWith("/")) {
-            resourceName += "/";
-        }
+        // read the resource to make sure it exists
+        getCms().readResource(resourceName, CmsResourceFilter.ALL);
 
         // perform action depending on dialog uri
         switch (dialogAction) {
@@ -712,7 +708,7 @@ public class CmsWorkflow extends CmsMultiDialog {
                 try {
                     I_CmsWorkflowType wfType = wfManager.getWorkflowType(getParamTasktype());
                     wfProject = wfManager.createTask(getCms(), getParamDescription());
-                    wfManager.addResource(getCms(), wfProject, originalResourceName);
+                    wfManager.addResource(getCms(), wfProject, resourceName);
                     I_CmsWorkflowAction wfAction = wfManager.init(
                         getCms(),
                         wfProject,
@@ -738,7 +734,7 @@ public class CmsWorkflow extends CmsMultiDialog {
                 }
                 break;
             case TYPE_SIGNAL:
-                wfProject = wfManager.getTask(getCms(), originalResourceName);
+                wfProject = wfManager.getTask(getCms(), resourceName);
                 I_CmsWorkflowAction wfAction = wfManager.signal(
                     getCms(),
                     wfProject,
@@ -757,7 +753,7 @@ public class CmsWorkflow extends CmsMultiDialog {
                 }
                 break;
             case TYPE_ABORT:
-                wfProject = wfManager.getTask(getCms(), originalResourceName);
+                wfProject = wfManager.getTask(getCms(), resourceName);
                 if (Boolean.valueOf(getParamUndo()).booleanValue()) {
                     wfManager.undoTask(
                         getCms(),

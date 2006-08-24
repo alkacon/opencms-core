@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.36.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.36.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.1 $ 
+ * @version $Revision: 1.36.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,7 +82,7 @@ public class CmsResourceManager {
     /**
      * Contains the resource manager data that can be initialized during runtime by a module.<p>
      */
-    final class CmsResourceManagerConfiguration {
+    static final class CmsResourceManagerConfiguration {
 
         /** Array with all configured resource types. */
         protected I_CmsResourceType[] m_resourceTypes;
@@ -221,11 +221,12 @@ public class CmsResourceManager {
         }
         // initalize the Map with all available mimetypes
         m_mimeTypes = new HashMap(mimeTypes.size());
-        Iterator i = mimeTypes.keySet().iterator();
+        Iterator i = mimeTypes.entrySet().iterator();
         while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry)i.next();
             // ensure all mime type entries are lower case
-            String key = (String)i.next();
-            String value = (String)mimeTypes.get(key);
+            String key = (String)entry.getKey();
+            String value = (String)entry.getValue();
             value = value.toLowerCase(Locale.ENGLISH);
             m_mimeTypes.put(key, value);
         }
@@ -344,7 +345,7 @@ public class CmsResourceManager {
      * @param loader the loader to add
      * @throws CmsConfigurationException in case the resource manager configuration is already initialized
      */
-    public synchronized void addLoader(I_CmsResourceLoader loader) throws CmsConfigurationException {
+    public void addLoader(I_CmsResourceLoader loader) throws CmsConfigurationException {
 
         // check if new loaders can still be added
         if (m_frozen) {
@@ -380,7 +381,7 @@ public class CmsResourceManager {
      * @param resourceType the resource type to add
      * @throws CmsConfigurationException in case the resource manager configuration is already initialized
      */
-    public synchronized void addResourceType(I_CmsResourceType resourceType) throws CmsConfigurationException {
+    public void addResourceType(I_CmsResourceType resourceType) throws CmsConfigurationException {
 
         // check if new resource types can still be added
         if (m_frozen) {

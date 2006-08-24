@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparison.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -201,7 +201,6 @@ public class CmsResourceComparison {
      */
     public static List compareProperties(CmsObject cms, CmsFile file1, CmsFile file2) throws CmsException {
 
-        List comparedProperties = new ArrayList();
         List properties1;
         if (file1 instanceof CmsBackupResource) {
             properties1 = cms.readBackupPropertyObjects((CmsBackupResource)file1);
@@ -214,7 +213,7 @@ public class CmsResourceComparison {
         } else {
             properties2 = cms.readPropertyObjects(file2, false);
         }
-        comparedProperties = new ArrayList();
+        List comparedProperties = new ArrayList();
         List removedProperties = new ArrayList(properties1);
         removedProperties.removeAll(properties2);
         List addedProperties = new ArrayList(properties2);

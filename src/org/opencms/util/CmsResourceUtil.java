@@ -380,7 +380,7 @@ public final class CmsResourceUtil {
         if ((m_resource.getState() == CmsResource.STATE_UNCHANGED) || !isInsideProject()) {
             return null;
         } else {
-            return new Boolean(getLockedInProjectId() == getReferenceProject().getId());
+            return Boolean.valueOf(getLockedInProjectId() == getReferenceProject().getId());
         }
     }
 

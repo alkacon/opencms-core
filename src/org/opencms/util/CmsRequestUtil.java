@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.18.4.3 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.18.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.18.4.3 $ 
+ * @version $Revision: 1.18.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,10 +207,11 @@ public final class CmsRequestUtil {
         }
         // ensure all values are of type String[]
         Map newParams = createParameterMap(params);
-        Iterator i = newParams.keySet().iterator();
+        Iterator i = newParams.entrySet().iterator();
         while (i.hasNext()) {
-            String key = (String)i.next();
-            Object value = newParams.get(key);
+            Map.Entry entry = (Map.Entry)i.next();
+            String key = (String)entry.getKey();
+            Object value = entry.getValue();
             String[] values = (String[])value;
             for (int j = 0; j < values.length; j++) {
                 String strValue = values[j];
@@ -247,10 +248,11 @@ public final class CmsRequestUtil {
             return null;
         }
         HashMap result = new HashMap();
-        Iterator i = params.keySet().iterator();
+        Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            String key = i.next().toString();
-            Object values = params.get(key);
+            Map.Entry entry = (Map.Entry)i.next();
+            String key = (String)entry.getKey();
+            Object values = entry.getValue();
             if (values instanceof String[]) {
                 result.put(key, values);
             } else {
@@ -330,10 +332,11 @@ public final class CmsRequestUtil {
 
         StringBuffer result = new StringBuffer(512);
         Map params = req.getParameterMap();
-        Iterator i = params.keySet().iterator();
+        Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            String param = (String)i.next();
-            String[] values = (String[])params.get(param);
+            Map.Entry entry = (Map.Entry)i.next();
+            String param = (String)entry.getKey();
+            String[] values = (String[])entry.getValue();
             for (int j = 0; j < values.length; j++) {
                 result.append(param);
                 result.append("=");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2006/08/21 15:59:20 $
- * Version: $Revision: 1.28.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.28.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28.4.2 $ 
+ * @version $Revision: 1.28.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -794,7 +794,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             if ((getCms().getRequestContext().currentProject().getId() == CmsProject.ONLINE_PROJECT_ID)
                 || !getCms().isInsideCurrentProject(getParamResource())) {
                 // we are in the online project or resource does not belong to project, no editing allowed
-                m_isEditable = new Boolean(false);
+                m_isEditable = Boolean.FALSE;
 
             } else {
                 // we are in an offline project
@@ -802,7 +802,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 // check permissions
                 if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
                     getSettings().setErrorMessage(null);
-                    m_isEditable = new Boolean(false);
+                    m_isEditable = Boolean.FALSE;
                     return m_isEditable.booleanValue();
                 }
 
@@ -842,16 +842,16 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                         if (lock.isInProject(getCms().getRequestContext().currentProject())
                             || Boolean.valueOf(getParamUsetempfileproject()).booleanValue()) {
                             // resource is locked in the current project or the tempfileproject is used
-                            m_isEditable = new Boolean(true);
+                            m_isEditable = Boolean.TRUE;
                             return m_isEditable.booleanValue();
                         }
                     }
                 } else if (OpenCms.getWorkplaceManager().autoLockResources()) {
-                    m_isEditable = new Boolean(true);
+                    m_isEditable = Boolean.TRUE;
                     return m_isEditable.booleanValue();
                 }
                 // lock is null or belongs to other user and/or project, properties are not editable
-                m_isEditable = new Boolean(false);
+                m_isEditable = Boolean.FALSE;
             }
         }
         return m_isEditable.booleanValue();

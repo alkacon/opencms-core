@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPoint.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.OpenCms;
  *  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.8.1 $
  * 
  * @since 6.0.0
  */
@@ -58,9 +58,9 @@ public class CmsExportPoint {
      */
     public CmsExportPoint() {
 
-        m_uri = new String();
-        m_configuredDestination = new String();
-        m_destinationPath = new String();
+        m_uri = "";
+        m_configuredDestination = "";
+        m_destinationPath = "";
     }
 
     /**
@@ -155,6 +155,9 @@ public class CmsExportPoint {
     /**
      * Dummy method to expose the destination path as bean property.<p>
      * 
+     * This is required by the {@link org.apache.commons.beanutils.BeanUtils} package in order to
+     * enable using this Object with the digester.<p>
+     * 
      * The method does not actually change the value of the destination path.
      * Use the <code>{@link #setConfiguredDestination(String)}</code> method instead.
      * 
@@ -162,9 +165,8 @@ public class CmsExportPoint {
      */
     public void setDestinationPath(String value) {
 
-        if (value == m_destinationPath) {
-            // required to avoid "unused parameter" warning
-            m_destinationPath = value;
+        if (value == null) {
+            // check required to avoid "unused parameter" warning
         }
     }
 

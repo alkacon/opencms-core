@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2006/07/31 13:40:19 $
- * Version: $Revision: 1.29.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.29.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29.4.1 $
+ * @version $Revision: 1.29.4.2 $
  * 
  * @since 6.0.0 
  */
@@ -140,8 +140,9 @@ public final class CmsRequestContext {
      * However, if a resource from the <code>/system/</code> folder is requested,
      * this will be the empty String.<p>
      * 
-     * @param siteRoot the site root to use
+     * @param siteRoot the site root of the current site
      * @param resourcename the resource name to get the adjusted site root for
+     * 
      * @return the adjusted site root for the resoure
      */
     public static String getAdjustedSiteRoot(String siteRoot, String resourcename) {

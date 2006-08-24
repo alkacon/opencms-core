@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.24.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.24.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.staticexport.CmsLinkManager;
 
@@ -54,30 +53,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Provides File utility functions.<p>
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.2 $ 
+ * @version $Revision: 1.24.4.3 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsFileUtil {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFileUtil.class);
 
     /**
      * Hides the public constructor.<p> 
@@ -286,56 +278,6 @@ public final class CmsFileUtil {
         result.append(online ? CmsFlexCache.REPOSITORY_ONLINE : CmsFlexCache.REPOSITORY_OFFLINE);
         result.append(vfspath);
         return result.toString();
-    }
-
-    /**
-     * Returns the absolute path name for the given relative 
-     * path name if it was found by the context Classloader of the 
-     * current Thread.<p>
-     * 
-     * The argument has to denote a resource within the Classloaders 
-     * scope. A <code>{@link java.net.URLClassLoader}</code> implementation for example would 
-     * try to match a given path name to some resource under it's URL 
-     * entries.<p>
-     * 
-     * As the result is internally obtained as an URL it is reduced to 
-     * a file path by the call to <code>{@link java.net.URL#getFile()}</code>. Therefore 
-     * the returned String will start with a '/' (no problem for java.io).<p>
-     * 
-     * @param fileName the filename to return the path from the Classloader for
-     * 
-     * @return the absolute path name for the given relative 
-     *   path name if it was found by the context Classloader of the 
-     *   current Thread or an empty String if it was not found
-     * 
-     * @see Thread#getContextClassLoader()
-     */
-    public static String getResourcePathFromClassloader(String fileName) {
-
-        boolean isFolder = CmsResource.isFolder(fileName);
-        String result = "";
-        URL inputUrl = Thread.currentThread().getContextClassLoader().getResource(fileName);
-        if (inputUrl != null) {
-            // decode name here to avoid url encodings in path name
-            result = normalizePath(inputUrl);
-            if (isFolder && !CmsResource.isFolder(result)) {
-                result = result + '/';
-            }
-        } else {
-            if (LOG.isErrorEnabled()) {
-                try {
-                    URLClassLoader cl = (URLClassLoader)Thread.currentThread().getContextClassLoader();
-                    URL[] paths = cl.getURLs();
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_MISSING_CLASSLOADER_RESOURCE_2,
-                        fileName,
-                        Arrays.asList(paths)));
-                } catch (Throwable t) {
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_MISSING_CLASSLOADER_RESOURCE_1, fileName));
-                }
-            }
-        }
-        return result;
     }
 
     /**

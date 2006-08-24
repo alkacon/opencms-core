@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityDateResourceComparator.java,v $
- * Date   : $Date: 2005/07/07 16:25:27 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.12.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -50,14 +51,17 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.12.8.1 $
  * 
  * @since 6.0.0 
  */
-public class CmsPriorityDateResourceComparator implements Comparator {
+public class CmsPriorityDateResourceComparator implements Serializable, Comparator {
 
     /** The name of the date property to read. */
     public static final String PROPERTY_DATE = "collector.date";
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 5316136357328564518L;
 
     /** The date sort order. */
     private boolean m_asc;

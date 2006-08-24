@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.45.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.45.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.45.4.1 $
+ * @version $Revision: 1.45.4.2 $
  * 
  * @since 6.0.0
  */
@@ -304,22 +304,17 @@ public final class CmsDbPool {
     /**
      * Returns a list of available database pool names.<p>
      * 
-     * @param configuration the configuration
+     * @param configuration the configuration to read the pool names from
+     * 
      * @return a list of database pool names
      */
-    public static List getDbPoolNames(Map configuration) {
+    public static List getDbPoolNames(ExtendedProperties configuration) {
 
+        int todo = 0;
         // TODO: name should be refactored to getDbPoolUrls
-        ExtendedProperties config;
-        if (configuration instanceof ExtendedProperties) {
-            config = (ExtendedProperties)configuration;
-        } else {
-            config = new ExtendedProperties();
-            config.putAll(configuration);
-        }
 
         List dbPoolNames = new ArrayList();
-        String[] driverPoolNames = config.getStringArray(CmsDriverManager.CONFIGURATION_DB + ".pools");
+        String[] driverPoolNames = configuration.getStringArray(CmsDriverManager.CONFIGURATION_DB + ".pools");
 
         for (int i = 0; i < driverPoolNames.length; i++) {
             dbPoolNames.add(getDbPoolName(configuration, driverPoolNames[i]));

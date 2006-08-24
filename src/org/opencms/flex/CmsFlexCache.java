@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.52.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.52.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.52.4.1 $ 
+ * @version $Revision: 1.52.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -112,7 +112,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * 
      * @author Alexander Kandzior 
      */
-    public class CmsFlexCacheVariation extends Object {
+    public static class CmsFlexCacheVariation extends Object {
 
         /** The key belonging to the resource. */
         public CmsFlexCacheKey m_key;
@@ -279,8 +279,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().getBundle().key(
                 Messages.INIT_FLEXCACHE_CREATED_2,
-                new Boolean(m_enabled),
-                new Boolean(m_cacheOffline)));
+                Boolean.valueOf(m_enabled),
+                Boolean.valueOf(m_cacheOffline)));
         }
     }
 
@@ -732,7 +732,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_FLEXCACHE_CLEAR_HALF_2,
                 suffix,
-                new Boolean(entriesOnly)));
+                Boolean.valueOf(entriesOnly)));
         }
     }
 

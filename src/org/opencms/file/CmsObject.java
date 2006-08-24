@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/08/21 14:16:55 $
- * Version: $Revision: 1.146.4.4 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.146.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.4 $
+ * @version $Revision: 1.146.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -1069,16 +1069,6 @@ public final class CmsObject {
     public List getChilds(String groupname) throws CmsException {
 
         return (m_securityManager.getChilds(m_context, groupname));
-    }
-
-    /**
-     * Returns the configuration read fromr the <code>opencms.properties</code> file.<p>
-     * 
-     * @return the configuration read fromr the <code>opencms.properties</code> file
-     */
-    public Map getConfigurations() {
-
-        return m_securityManager.getConfigurations();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.8.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.8.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8.4.1 $ 
+ * @version $Revision: 1.8.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,7 +70,7 @@ public class CmsTemplateContentListItem {
     public static final String DISPLAYAREA_RIGHT = "right";
 
     /** The possible display areas for the template. */
-    public static final String[] DISPLAYAREAS = {DISPLAYAREA_CENTER, DISPLAYAREA_LEFT, DISPLAYAREA_RIGHT};
+    static final String[] DISPLAYAREAS = {DISPLAYAREA_CENTER, DISPLAYAREA_LEFT, DISPLAYAREA_RIGHT};
 
     /** The name of the list variation: long. */
     public static final String LISTVARIATION_LONG = "long";
@@ -79,7 +79,7 @@ public class CmsTemplateContentListItem {
     public static final String LISTVARIATION_SHORT = "short";
 
     /** The possible list variations for a content type. */
-    public static final String[] LISTVARIATIONS = {"", '.' + LISTVARIATION_LONG, '.' + LISTVARIATION_SHORT};
+    static final String[] LISTVARIATIONS = {"", '.' + LISTVARIATION_LONG, '.' + LISTVARIATION_SHORT};
 
     /** Macro used in property definition names to resolve the list index. */
     public static final String MACRO_LISTINDEX = "index";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2006/05/11 10:53:23 $
- * Version: $Revision: 1.27.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.27.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Thomas Weckert 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.27.4.2 $ 
+ * @version $Revision: 1.27.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1433,7 +1433,7 @@ public class CmsForm {
 
         if (isConfirmationMailEnabled()) {
             // confirmation mail is enabled, make simple field check to avoid errors
-            I_CmsField confirmField = new CmsTextField();
+            I_CmsField confirmField;
             try {
                 // try to get the confirmation email field
                 confirmField = (I_CmsField)getFields().get(getConfirmationMailField());

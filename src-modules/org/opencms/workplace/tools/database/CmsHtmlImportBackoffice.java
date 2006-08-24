@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Attic/CmsHtmlImportBackoffice.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.7.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.workplace.explorer.CmsNewResourceXmlPage;
 
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -45,7 +46,7 @@ import java.util.TreeMap;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,10 +116,11 @@ public final class CmsHtmlImportBackoffice {
             output.append("<select name=\"template\" width=\"80\" size=\"1\">");
 
             // loop through all templates and build the entries
-            Iterator i = templates.keySet().iterator();
+            Iterator i = templates.entrySet().iterator();
             while (i.hasNext()) {
-                String title = (String)i.next();
-                String path = (String)templates.get(title);
+                Map.Entry entry = (Map.Entry)i.next();
+                String title = (String)entry.getKey();
+                String path = (String)entry.getValue();
                 output.append("<option ");
                 if (selectedTemplate.equals(path)) {
                     output.append("selected ");

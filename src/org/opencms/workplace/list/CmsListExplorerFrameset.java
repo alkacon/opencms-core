@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2006/08/19 13:40:40 $
- * Version: $Revision: 1.4.4.3 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.4.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.3 $ 
+ * @version $Revision: 1.4.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -203,7 +203,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             "openPage('" + listLevelLink + "');"));
         html.append("\n");
         // uplevel button only if needed
-        if (getParentPath() != toolPath) {
+        if (! toolPath.equals(getParentPath())) {
             html.append(A_CmsHtmlIconButton.defaultButtonHtml(
                 getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
@@ -244,11 +244,12 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         StringBuffer result = new StringBuffer(512);
         Map params = new HashMap(getJsp().getRequest().getParameterMap());
         params.remove(CmsListExplorerFrameset.PARAM_PAGE);
-        Iterator it = params.keySet().iterator();
+        Iterator it = params.entrySet().iterator();
         while (it.hasNext()) {
-            String param = (String)it.next();
+            Map.Entry entry = (Map.Entry)it.next();
+            String param = (String)entry.getKey();
             if ((excludes == null) || (!excludes.contains(param))) {
-                String[] value = (String[])params.get(param);
+                String[] value = (String[])entry.getValue();
                 for (int i = 0; i < value.length; i++) {
                     result.append("<input type=\"hidden\" name=\"");
                     result.append(param);

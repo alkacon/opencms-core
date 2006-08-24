@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.36.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.36.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.1 $
+ * @version $Revision: 1.36.4.2 $
  * 
  * @since 6.0.0
  */
@@ -882,7 +882,7 @@ public class CmsUserSettings {
         if (useUploadApplet() != OpenCms.getWorkplaceManager().getDefaultUserSettings().useUploadApplet()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_UPLOADAPPLET, new Boolean(useUploadApplet()));
+                + CmsWorkplaceConfiguration.N_UPLOADAPPLET, Boolean.valueOf(useUploadApplet()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
@@ -982,7 +982,7 @@ public class CmsUserSettings {
         if (getDialogPublishSiblings() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogPublishSiblings()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_DIRECTPUBLISH, new Boolean(getDialogPublishSiblings()));
+                + CmsWorkplaceConfiguration.N_DIRECTPUBLISH, Boolean.valueOf(getDialogPublishSiblings()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
@@ -992,7 +992,7 @@ public class CmsUserSettings {
         if (getDialogShowLock() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowLock()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_SHOWLOCK, new Boolean(getDialogShowLock()));
+                + CmsWorkplaceConfiguration.N_SHOWLOCK, Boolean.valueOf(getDialogShowLock()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
@@ -1002,7 +1002,7 @@ public class CmsUserSettings {
         if (getDialogPermissionsInheritOnFolder() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogPermissionsInheritOnFolder()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER, new Boolean(
+                + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER, Boolean.valueOf(
                 getDialogPermissionsInheritOnFolder()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
@@ -1013,7 +1013,7 @@ public class CmsUserSettings {
         if (getDialogExpandInheritedPermissions() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogExpandInheritedPermissions()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSINHERITED, new Boolean(
+                + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSINHERITED, Boolean.valueOf(
                 getDialogExpandInheritedPermissions()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
@@ -1024,7 +1024,7 @@ public class CmsUserSettings {
         if (getDialogExpandUserPermissions() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogExpandUserPermissions()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSUSER, new Boolean(getDialogExpandUserPermissions()));
+                + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSUSER, Boolean.valueOf(getDialogExpandUserPermissions()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
@@ -1081,7 +1081,7 @@ public class CmsUserSettings {
         if (getRestrictExplorerView() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getRestrictExplorerView()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW, new Boolean(getRestrictExplorerView()));
+                + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW, Boolean.valueOf(getRestrictExplorerView()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.100.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.100.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100.4.1 $ 
+ * @version $Revision: 1.100.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -332,7 +332,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WEBAPP_PATH_1, m_jspWebAppRepository));
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_JSP_REPOSITORY_ERR_PAGE_COMMOTED_1,
-                new Boolean(m_errorPagesAreNotCommited)));
+                Boolean.valueOf(m_errorPagesAreNotCommited)));
             if (maxAge != null) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_CLIENT_CACHE_MAX_AGE_1, maxAge));
             }
@@ -1092,7 +1092,6 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     fs.write(contents);
                     fs.close();
                 }
-                contents = null;
 
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_UPDATED_JSP_2, jspTargetName, jspVfsName));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.22.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.22.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.1 $ 
+ * @version $Revision: 1.22.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -606,7 +606,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 }
             }
         }
-        getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
+        getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, Boolean.TRUE);
 
         String elementData;
         if (m_page.hasValue(getParamElementname(), getElementLocale())) {
@@ -668,7 +668,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // content might have been modified during write operation
         m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
         if (m_page.hasValue(body, locale)) {
-            getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
+            getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, Boolean.TRUE);
             content = m_page.getStringValue(getCms(), body, locale);
             if (content == null) {
                 content = "";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/08/19 13:40:39 $
- * Version: $Revision: 1.241.4.4 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.241.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.4 $
+ * @version $Revision: 1.241.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -423,7 +423,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      */
     public void destroy() throws Throwable {
 
-        finalize();
+        m_sqlManager = null;
+        m_driverManager = null;
+        
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
@@ -1735,9 +1737,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
         String orderClause = " ORDER BY CMS_T_STRUCTURE.STRUCTURE_ID";
-        String whereClause = new String();
+        String whereClause;
 
         // TODO: dangerous - move this somehow into query.properties
+        int todo = 0;
+        
         if ("new".equalsIgnoreCase(filter)) {
             whereClause = " AND (CMS_T_STRUCTURE.STRUCTURE_STATE="
                 + CmsResource.STATE_NEW
@@ -2109,8 +2113,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      */
     protected void finalize() throws Throwable {
 
-        m_sqlManager = null;
-        m_driverManager = null;
+        destroy();
         super.finalize();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.17.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.17.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.2 $ 
+ * @version $Revision: 1.17.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,7 +185,7 @@ public class CmsHtmlGallery extends A_CmsGallery {
      */
     public String getPreviewBodyStyle() {
 
-        return new String(" class=\"dialog\" unselectable=\"on\"");
+        return " class=\"dialog\" unselectable=\"on\"";
     }
 
     /**
@@ -193,7 +193,7 @@ public class CmsHtmlGallery extends A_CmsGallery {
      */
     public String getPreviewDivStyle() {
 
-        return new String("style=\"width: 100%; margin-top: 5px\"");
+        return "style=\"width: 100%; margin-top: 5px\"";
     }
 
     /**

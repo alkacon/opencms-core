@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.37.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.37.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37.4.1 $ 
+ * @version $Revision: 1.37.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -236,14 +236,15 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
             HashMap parameters = new HashMap();
             parameters.putAll(m_parameters);
 
-            Iterator it = map.keySet().iterator();
+            Iterator it = map.entrySet().iterator();
             while (it.hasNext()) {
-                String key = (String)it.next();
+                Map.Entry entry = (Map.Entry)it.next();                
+                String key = (String)entry.getKey();
                 // Check if the parameter name (key) exists
                 if (parameters.containsKey(key)) {
 
                     String[] oldValues = (String[])parameters.get(key);
-                    String[] newValues = (String[])map.get(key);
+                    String[] newValues = (String[])entry.getValue();
 
                     String[] mergeValues = new String[oldValues.length + newValues.length];
                     System.arraycopy(newValues, 0, mergeValues, 0, newValues.length);
@@ -252,7 +253,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                     parameters.put(key, mergeValues);
                 } else {
                     // No: Add new value array
-                    parameters.put(key, map.get(key));
+                    parameters.put(key, entry.getValue());
                 }
             }
             m_parameters = Collections.unmodifiableMap(parameters);

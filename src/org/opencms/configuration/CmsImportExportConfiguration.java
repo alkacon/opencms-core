@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.25.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.25.4.1 $
  * 
  * @since 6.0.0
  */
@@ -496,10 +496,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         // <overwrite> node
         importElement.addElement(N_OVERWRITE).setText(
-            (new Boolean(m_importExportManager.overwriteCollidingResources())).toString());
+            String.valueOf(m_importExportManager.overwriteCollidingResources()));
 
         // <convert> node
-        importElement.addElement(N_CONVERT).setText((new Boolean(m_importExportManager.convertToXmlPage())).toString());
+        importElement.addElement(N_CONVERT).setText(String.valueOf(m_importExportManager.convertToXmlPage()));
 
         // <oldwebappurl> node
         if (m_importExportManager.getOldWebAppUrl() != null) {

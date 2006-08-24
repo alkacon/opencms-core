@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2006/08/19 13:40:40 $
- * Version: $Revision: 1.4.4.3 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.4.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4.4.3 $ 
+ * @version $Revision: 1.4.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -559,7 +559,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     protected void setColumnVisibility(int colFlag, int prefs) {
 
         Integer key = new Integer(colFlag);
-        Boolean value = new Boolean((prefs & colFlag) > 0);
+        Boolean value = Boolean.valueOf((prefs & colFlag) > 0);
         m_colVisibilities.put(key, value);
     }
 

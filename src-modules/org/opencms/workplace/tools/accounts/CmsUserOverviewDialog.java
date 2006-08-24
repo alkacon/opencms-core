@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserOverviewDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.12.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,8 +139,9 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
      */
     public void setLastlogin(String lastlogin) {
 
-        // never used
-        lastlogin.length();
+        if (lastlogin == null) {
+            // never used
+        }
     }
 
     /**

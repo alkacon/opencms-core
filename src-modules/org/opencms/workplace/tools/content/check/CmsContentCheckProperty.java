@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckProperty.java,v $
- * Date   : $Date: 2006/03/29 16:04:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.4.1 $ 
  * 
  * @since 6.1.2
  */
@@ -415,7 +415,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_PROPERTY_ISEMPTYCHECK_1,
-                            new Boolean(propObject.isEmpty())));
+                            Boolean.valueOf(propObject.isEmpty())));
                     }
 
                     // test if the property is empty
@@ -433,7 +433,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_PROPERTY_ISFILENAME_1,
-                            new Boolean(propObject.isFilename())));
+                            Boolean.valueOf(propObject.isFilename())));
                     }
 
                     // test if the property does not start with the filename
@@ -480,7 +480,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
                         if (propObject.getValue().size() > 0) {
                             for (int j = 0; j < propObject.getValue().size(); j++) {
 
-                                String regex = new String((String)propObject.getValue().get(j));
+                                String regex = (String)propObject.getValue().get(j);
 
                                 boolean matchResult = true;
                                 if (regex.charAt(0) == '!') {

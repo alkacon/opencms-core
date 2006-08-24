@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.218.4.8 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.218.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -134,7 +134,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.8 $ 
+ * @version $Revision: 1.218.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -1128,7 +1128,7 @@ public final class OpenCmsCore {
         getSystemInfo().init(webInfPath, servletMapping, webApplicationContext, defaultWebApplication);
 
         // Collect the configurations 
-        ExtendedProperties configuration = null;
+        ExtendedProperties configuration;
         try {
             configuration = CmsPropertyUtils.loadProperties(getSystemInfo().getConfigurationFileRfsPath());
         } catch (Exception e) {

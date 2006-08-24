@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.17.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.17.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.17.4.1 $ 
+ * @version $Revision: 1.17.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,7 +143,7 @@ public class CmsRfsFileViewer implements Cloneable {
          * 
          * @see java.lang.Object#finalize()
          */
-        public void finalize() throws Throwable {
+        protected void finalize() throws Throwable {
 
             super.finalize();
             // switch to info!
@@ -284,9 +284,6 @@ public class CmsRfsFileViewer implements Cloneable {
                 reader = new LineNumberReader(streamPeeker, 1);
                 while (reader.readLine() != null) {
                     CmsRfsFileLineIndexInfo.this.addLineBreakPosition(streamPeeker.position());
-                    synchronized (CmsRfsFileLineIndexInfo.this) {
-                        CmsRfsFileLineIndexInfo.this.notify();
-                    }
                 }
 
             } catch (IOException e) {
@@ -322,11 +319,11 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.17.4.1 $
+     * @version $Revision: 1.17.4.2 $
      * 
      * @since 6.0.0
      */
-    private class InputStreamCounter extends InputStreamReader {
+    private static class InputStreamCounter extends InputStreamReader {
 
         /** the delegating object. */
         private InputStreamReader m_delegate;
@@ -698,6 +695,7 @@ public class CmsRfsFileViewer implements Cloneable {
                         read = lineReader.readLine();
                     }
                 }
+                lineReader.close();
                 return CmsEncoder.escapeXml(result.toString());
             } catch (IOException ioex) {
                 CmsRfsException ex = new CmsRfsException(Messages.get().container(

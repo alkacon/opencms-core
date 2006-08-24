@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/08/21 15:59:20 $
- * Version: $Revision: 1.570.2.11 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.570.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -126,7 +126,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @author Alexander Kandzior 
      */
-    private class CacheId extends Object {
+    private static class CacheId extends Object {
 
         /**
          * Name of the object.
@@ -242,7 +242,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 return m_uuid.hashCode();
             }
         }
-
     }
 
     /** Cache key for all properties. */
@@ -353,9 +352,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Temporary concurrent lock list for the "create resource" method. */
     private List m_concurrentCreateResourceLocks;
 
-    /** The configuration of the property-file. */
-    private Map m_configuration;
-
     /** The list of initialized JDBC pools. */
     private List m_connectionPools;
 
@@ -379,6 +375,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** Cache for properties. */
     private Map m_propertyCache;
+
+    /** The the configuration read from the <code>opencms.properties</code> file. */
+    private ExtendedProperties m_propertyConfiguration;
 
     /** Cache for resources. */
     private Map m_resourceCache;
@@ -440,15 +439,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsLockManager lockManager,
         I_CmsDbContextFactory runtimeInfoFactory) throws CmsInitException {
 
-        Map configuration = configurationManager.getConfiguration();
-
-        ExtendedProperties config;
-        if (configuration instanceof ExtendedProperties) {
-            config = (ExtendedProperties)configuration;
-        } else {
-            config = new ExtendedProperties();
-            config.putAll(configuration);
-        }
+        // read the opencms.properties from the configuration
+        ExtendedProperties config = (ExtendedProperties)configurationManager.getConfiguration();
 
         // initialize static hashtables
         CmsDbUtil.init();
@@ -956,9 +948,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         switch (event.getType()) {
 
             case I_CmsEventListener.EVENT_UPDATE_EXPORTS:
-                report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
                 dbc = (CmsDbContext)event.getData().get(I_CmsEventListener.KEY_DBCONTEXT);
-                updateExportPoints(dbc, report);
+                updateExportPoints(dbc);
                 break;
 
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
@@ -1109,14 +1100,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
 
-        // determine desitnation folder and resource name        
+        // determine desitnation folder        
         String destinationFoldername = CmsResource.getParentFolder(destination);
-        String destinationResourceName = destination.substring(destinationFoldername.length());
-
-        if (CmsResource.isFolder(destinationResourceName)) {
-            // must cut of trailing '/' on destination folders
-            destinationResourceName = destinationResourceName.substring(0, destinationResourceName.length() - 1);
-        }
 
         // read the destination folder (will also check read permissions)
         CmsFolder destinationFolder = m_securityManager.readFolder(
@@ -2672,13 +2657,83 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Destroys this driver manager.<p>
-     * 
-     * @throws Throwable if something goes wrong
+     * Destroys this driver manager and releases all allocated resources.<p>
      */
-    public void destroy() throws Throwable {
+    public void destroy() {
 
-        finalize();
+        try {
+            if (m_projectDriver != null) {
+                try {
+                    m_projectDriver.destroy();
+                } catch (Throwable t) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_PROJECT_DRIVER_0), t);
+                }
+                m_projectDriver = null;
+            }
+            if (m_userDriver != null) {
+                try {
+                    m_userDriver.destroy();
+                } catch (Throwable t) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_USER_DRIVER_0), t);
+                }
+                m_userDriver = null;
+            }
+            if (m_vfsDriver != null) {
+                try {
+                    m_vfsDriver.destroy();
+                } catch (Throwable t) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_VFS_DRIVER_0), t);
+                }
+                m_vfsDriver = null;
+            }
+            if (m_backupDriver != null) {
+                try {
+                    m_backupDriver.destroy();
+                } catch (Throwable t) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_BACKUP_DRIVER_0), t);
+                }
+                m_backupDriver = null;
+            }
+
+            if (m_connectionPools != null) {
+                for (int i = 0; i < m_connectionPools.size(); i++) {
+                    PoolingDriver driver = (PoolingDriver)m_connectionPools.get(i);
+                    String[] pools = driver.getPoolNames();
+                    for (int j = 0; j < pools.length; j++) {
+                        try {
+                            driver.closePool(pools[j]);
+                            if (CmsLog.INIT.isDebugEnabled()) {
+                                CmsLog.INIT.debug(Messages.get().getBundle().key(
+                                    Messages.INIT_CLOSE_CONN_POOL_1,
+                                    pools[j]));
+                            }
+                        } catch (Throwable t) {
+                            LOG.error(Messages.get().getBundle().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, pools[j]), t);
+                        }
+                    }
+                }
+                m_connectionPools = null;
+            }
+
+            if (m_userCache != null) {
+                // check only user cache for null, usually if this is not null all others should also be not null
+                clearcache(false);
+            }
+
+            m_userCache = null;
+            m_groupCache = null;
+            m_userGroupsCache = null;
+            m_projectCache = null;
+            m_propertyCache = null;
+            m_resourceCache = null;
+            m_resourceListCache = null;
+            m_accessControlListCache = null;
+
+            m_lockManager = null;
+            m_htmlLinkValidator = null;
+        } catch (Throwable t) {
+            // ignore
+        }
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_DRIVER_MANAGER_DESTROY_1,
@@ -3111,18 +3166,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Method to access the configurations of the properties-file.<p>
-     *
-     * All users are granted.
-     *
-     * @return the Configurations of the properties-file
-     */
-    public Map getConfigurations() {
-
-        return m_configuration;
-    }
-
-    /**
      * Returns the list of groups to which the user directly belongs to.<p>
      *
      * @param dbc the current database context
@@ -3326,6 +3369,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public I_CmsProjectDriver getProjectDriver() {
 
         return m_projectDriver;
+    }
+
+    /**
+     * Returns the configuration read from the <code>opencms.properties</code> file.<p>
+     *
+     * @return the configuration read from the <code>opencms.properties</code> file
+     */
+    public ExtendedProperties getPropertyConfiguration() {
+
+        return m_propertyConfiguration;
     }
 
     /**
@@ -3622,7 +3675,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void init(
         CmsConfigurationManager configurationManager,
-        Map configuration,
+        ExtendedProperties configuration,
         I_CmsVfsDriver vfsDriver,
         I_CmsUserDriver userDriver,
         I_CmsProjectDriver projectDriver,
@@ -3639,15 +3692,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_projectDriver = projectDriver;
         m_backupDriver = backupDriver;
 
-        m_configuration = configuration;
-
-        ExtendedProperties config;
-        if (configuration instanceof ExtendedProperties) {
-            config = (ExtendedProperties)configuration;
-        } else {
-            config = new ExtendedProperties();
-            config.putAll(configuration);
-        }
+        // store the configuration
+        m_propertyConfiguration = configuration;
 
         CmsSystemConfiguration systemConfiguation = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);
         CmsCacheSettings settings = systemConfiguation.getCacheSettings();
@@ -6052,7 +6098,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // clear the cache
         clearResourceCache();
-        content = null;
 
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
             "resource",
@@ -6518,9 +6563,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * All files and folders "inside" an export point are written.<p>
      * 
      * @param dbc the current database context
-     * @param report an I_CmsReport instance to print output message, or null to write messages to the log file
      */
-    public void updateExportPoints(CmsDbContext dbc, I_CmsReport report) {
+    public void updateExportPoints(CmsDbContext dbc) {
 
         try {
             // read the export points and return immediately if there are no export points at all         
@@ -6536,15 +6580,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // create the driver to write the export points
             CmsExportPointDriver exportPointDriver = new CmsExportPointDriver(exportPoints);
-
-            // the report may be null if the export point update was started by an event on a remote server
-            if (report == null) {
-                if (dbc.getRequestContext() != null) {
-                    report = new CmsLogReport(dbc.getRequestContext().getLocale(), getClass());
-                } else {
-                    report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
-                }
-            }
 
             // the export point hash table contains RFS export paths keyed by their internal VFS paths
             Iterator i = exportPointDriver.getExportPointPaths().iterator();
@@ -6829,32 +6864,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         }
                     }
 
-                    // print some report messages
+                    // print report message
                     if (currentPublishedResource.getState() == CmsResource.STATE_DELETED) {
-
                         report.print(
                             Messages.get().container(Messages.RPT_EXPORT_POINTS_DELETE_0),
                             I_CmsReport.FORMAT_NOTE);
-                        report.print(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_ARGUMENT_1,
-                            currentPublishedResource.getRootPath()));
-                        report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-                        report.println(
-                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                            I_CmsReport.FORMAT_OK);
                     } else {
-
                         report.print(
                             Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_0),
                             I_CmsReport.FORMAT_NOTE);
-                        report.print(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_ARGUMENT_1,
-                            currentPublishedResource.getRootPath()));
-                        report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-                        report.println(
-                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                            I_CmsReport.FORMAT_OK);
                     }
+                    report.print(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        currentPublishedResource.getRootPath()));
+                    report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                        I_CmsReport.FORMAT_OK);
                 }
             }
         } catch (CmsException e) {
@@ -7198,71 +7224,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resource.getRootPath()));
     }
 
-    /**
-     * Releases any allocated resources during garbage collection.<p>
-     * 
+    /** 
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
 
-        try {
-            clearcache(false);
-
-            try {
-                m_projectDriver.destroy();
-            } catch (Throwable t) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_PROJECT_DRIVER_0), t);
-            }
-            try {
-                m_userDriver.destroy();
-            } catch (Throwable t) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_USER_DRIVER_0), t);
-            }
-            try {
-                m_vfsDriver.destroy();
-            } catch (Throwable t) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_VFS_DRIVER_0), t);
-            }
-            try {
-                m_backupDriver.destroy();
-            } catch (Throwable t) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_BACKUP_DRIVER_0), t);
-            }
-
-            for (int i = 0; i < m_connectionPools.size(); i++) {
-                PoolingDriver driver = (PoolingDriver)m_connectionPools.get(i);
-                String[] pools = driver.getPoolNames();
-                for (int j = 0; j < pools.length; j++) {
-                    try {
-                        driver.closePool(pools[j]);
-                        if (CmsLog.INIT.isDebugEnabled()) {
-                            CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_CLOSE_CONN_POOL_1, pools[j]));
-                        }
-                    } catch (Throwable t) {
-                        LOG.error(Messages.get().getBundle().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, pools[j]), t);
-                    }
-                }
-            }
-
-            m_userCache = null;
-            m_groupCache = null;
-            m_userGroupsCache = null;
-            m_projectCache = null;
-            m_propertyCache = null;
-            m_resourceCache = null;
-            m_resourceListCache = null;
-            m_accessControlListCache = null;
-
-            m_projectDriver = null;
-            m_userDriver = null;
-            m_vfsDriver = null;
-            m_backupDriver = null;
-
-            m_lockManager = null;
-            m_htmlLinkValidator = null;
-        } catch (Throwable t) {
-            // ignore
-        }
+        destroy();
         super.finalize();
     }
 

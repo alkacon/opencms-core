@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.31.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.31.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -345,7 +345,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
         // check if head navigation has to be created manually from config file
         boolean manualHeadConfig = isHeadNavManual();
 
-        List navElements = new ArrayList();
+        List navElements;
         if (manualHeadConfig) {
             // manual configuration, get List of nav items from config file
             navElements = getHeadNavItemsFromConfig(0, "0");
@@ -507,7 +507,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
             // check if head navigation has to be created manually from config file
             boolean manualHeadConfig = isHeadNavManual();
 
-            List navElements = new ArrayList();
+            List navElements;
             if (manualHeadConfig) {
                 // manual configuration, get List of nav items from config file
                 navElements = getHeadNavItemsFromConfig(0, "0");
@@ -538,7 +538,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                     count++;
                     String subfolder = foldernav.getResourceName();
 
-                    List subNav = new ArrayList();
+                    List subNav;
                     String menuIndexes = null;
                     if (manualHeadConfig) {
                         menuIndexes = String.valueOf(i);
@@ -773,7 +773,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                 getCmsObject());
         }
         Locale locale = getRequestContext().getLocale();
-        List navEntries = new ArrayList();
+        List navEntries;
         if (menuLevel == 0) {
             // create a list with the first level items from the configuration file as CmsJspNavElements
             navEntries = m_headNavConfiguration.getValues("link", locale);
@@ -985,10 +985,11 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
             result.insert(0, openTag);
 
             // add the sub menus recursively from temporary Map
-            Iterator i = subNav.keySet().iterator();
+            Iterator i = subNav.entrySet().iterator();
             while (i.hasNext()) {
-                String resName = (String)i.next();
-                List navEntries = (List)subNav.get(resName);
+                Map.Entry entry = (Map.Entry)i.next();
+                String resName = (String)entry.getKey();
+                List navEntries = (List)entry.getValue();
                 String newIndex = menuIndexes;
                 if (manualConfig) {
                     // get the xpath information to build the submenus from the XML configuration

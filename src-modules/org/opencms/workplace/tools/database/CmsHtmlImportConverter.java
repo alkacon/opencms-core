@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImportConverter.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.9.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.9.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.tidy.Tidy;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9.4.1 $ 
+ * @version $Revision: 1.9.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -310,7 +310,7 @@ public class CmsHtmlImportConverter {
             "p,table,tr,td,body,head,script,pre,title,style,h1,h2,h3,h4,h5,h6,ul,ol,li",
             ",");
         while (T.hasMoreTokens()) {
-            m_enterTags.add(new String(T.nextToken()));
+            m_enterTags.add(T.nextToken());
         }
     }
 

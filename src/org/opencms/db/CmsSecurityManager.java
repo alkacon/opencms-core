@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/08/21 14:16:56 $
- * Version: $Revision: 1.97.4.3 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.97.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1586,8 +1586,28 @@ public final class CmsSecurityManager {
      * @throws Throwable if something goes wrong
      */
     public synchronized void destroy() throws Throwable {
+        
+        try {
+            if (m_driverManager != null) {
+                try {
+                    writeLocks();
+                } catch (Throwable t) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(org.opencms.lock.Messages.get().getBundle().key(
+                            org.opencms.lock.Messages.ERR_WRITE_LOCKS_FINAL_0), t);
+                    }
+                }
+                m_driverManager.destroy();
+            }
+        } catch (Throwable t) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_DRIVER_MANAGER_CLOSE_0), t);
+            }
+        }
 
-        finalize();
+        m_driverManager = null;
+        m_dbContextFactory = null;
+
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_SECURITY_MANAGER_SHUTDOWN_1,
@@ -1878,16 +1898,6 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
-    }
-
-    /**
-     * Gets the configurations of the OpenCms properties file.<p>
-     *
-     * @return the configurations of the properties file
-     */
-    public Map getConfigurations() {
-
-        return m_driverManager.getConfigurations();
     }
 
     /**
@@ -5100,29 +5110,8 @@ public final class CmsSecurityManager {
      */
     protected void finalize() throws Throwable {
 
-        try {
-            if (m_driverManager != null) {
-                try {
-                    writeLocks();
-                } catch (Throwable t) {
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(org.opencms.lock.Messages.get().getBundle().key(
-                            org.opencms.lock.Messages.ERR_WRITE_LOCKS_FINAL_0), t);
-                    }
-                }
-                m_driverManager.destroy();
-            }
-        } catch (Throwable t) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_DRIVER_MANAGER_CLOSE_0), t);
-            }
-        }
-
-        m_driverManager = null;
-        m_dbContextFactory = null;
-
+        destroy();
         super.finalize();
-
     }
 
     /**
@@ -5244,18 +5233,17 @@ public final class CmsSecurityManager {
             result = PERM_ALLOWED_INTEGER;
         } else {
             result = PERM_DENIED_INTEGER;
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_NO_PERMISSION_RESOURCE_USER_4,
+                    new Object[] {
+                        dbc.getRequestContext().removeSiteRoot(resource.getRootPath()),
+                        dbc.currentUser().getName(),
+                        requiredPermissions.getPermissionString(),
+                        permissions.getPermissionString()}));
+            }
         }
         m_permissionCache.put(cacheKey, result);
-
-        if ((result != PERM_ALLOWED_INTEGER) && LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_NO_PERMISSION_RESOURCE_USER_4,
-                new Object[] {
-                    dbc.getRequestContext().removeSiteRoot(resource.getRootPath()),
-                    dbc.currentUser().getName(),
-                    requiredPermissions.getPermissionString(),
-                    permissions.getPermissionString()}));
-        }
 
         return result.intValue();
     }

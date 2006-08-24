@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2006/08/19 13:40:39 $
- * Version: $Revision: 1.258.4.4 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.258.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.4 $
+ * @version $Revision: 1.258.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -868,7 +868,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      */
     public void destroy() throws Throwable {
 
-        finalize();
+        m_sqlManager = null;
+        m_driverManager = null;
+
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
@@ -1492,16 +1494,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        String propertyKey = null;
-        String propertyValue = null;
         int mappingType = -1;
         Map propertyMap = new HashMap();
-        CmsProperty property = null;
 
-        String resourceName = resource.getRootPath();
-        if ((resource.isFolder()) && (!resourceName.endsWith("/"))) {
-            resourceName += "/";
-        }
+        String propertyKey;
+        String propertyValue;
+        CmsProperty property;
 
         try {
             conn = m_sqlManager.getConnection(dbc, project.getId());
@@ -2617,12 +2615,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      */
     protected void finalize() throws Throwable {
 
-        try {
-            m_sqlManager = null;
-            m_driverManager = null;
-        } catch (Throwable t) {
-            // ignore
-        }
+        destroy();
         super.finalize();
     }
 

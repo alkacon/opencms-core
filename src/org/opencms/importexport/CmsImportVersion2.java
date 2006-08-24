@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.113.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.113.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.113.4.1 $ 
+ * @version $Revision: 1.113.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -966,9 +966,11 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
                 // if set, add bodyparams as properties
                 if (bodyparams != null) {
-                    for (Iterator p = bodyparams.keySet().iterator(); p.hasNext();) {
-                        String key = (String)p.next();
-                        newProperty = new CmsProperty(key, (String)bodyparams.get(key), null);
+                    for (Iterator p = bodyparams.entrySet().iterator(); p.hasNext();) {
+                        Map.Entry entry = (Map.Entry)p.next();
+                        String key = (String)entry.getKey();
+                        String value = (String)entry.getValue();
+                        newProperty = new CmsProperty(key, value, null);
                         newProperty.setAutoCreatePropertyDefinition(true);
                         properties.remove(newProperty);
                         properties.add(newProperty);

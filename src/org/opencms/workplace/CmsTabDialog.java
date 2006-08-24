@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.21.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -412,16 +412,16 @@ public abstract class CmsTabDialog extends CmsDialog {
         StringBuffer result = new StringBuffer(512);
         String activeTab = (String)getTabParameterOrder().get(getActiveTab() - 1);
         Map params = paramValues();
-        Iterator i = params.keySet().iterator();
+        Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            String param = (String)i.next();
+            Map.Entry entry = (Map.Entry)i.next();
+            String param = (String)entry.getKey();
             if (!param.startsWith(activeTab)) {
                 // add only parameters which are not displayed in currently active tab
-                Object value = params.get(param);
                 result.append("<input type=\"hidden\" name=\"");
                 result.append(param);
                 result.append("\" value=\"");
-                result.append(CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding()));
+                result.append(CmsEncoder.encode(entry.getValue().toString(), getCms().getRequestContext().getEncoding()));
                 result.append("\">\n");
             }
         }

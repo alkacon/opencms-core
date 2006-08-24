@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.12.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.12.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.12.4.1 $ 
+ * @version $Revision: 1.12.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -785,7 +785,7 @@ public class CmsHtmlImport {
                     if (CmsResourceTypePlain.getStaticTypeId() == type) {
                         Hashtable properties = new Hashtable();
                         // the subresource is a file, so start the parsing process
-                        String content = new String();
+                        String content = "";
                         try {
                             content = parseHtmlFile(subresources[i], properties);
                         } catch (CmsException e) {
@@ -1034,12 +1034,13 @@ public class CmsHtmlImport {
                     }
                 }
                 // create all properties and put them in an ArrayList
-                Iterator it = properties.keySet().iterator();
+                Iterator it = properties.entrySet().iterator();
                 List propertyList = new ArrayList();
                 while (it.hasNext()) {
                     // get property and value
-                    String propertyKey = (String)it.next();
-                    String propertyVal = (String)properties.get(propertyKey);
+                    Map.Entry entry = (Map.Entry)it.next();
+                    String propertyKey = (String)entry.getKey();
+                    String propertyVal = (String)entry.getValue();
                     // create new Property Object
                     CmsProperty property = new CmsProperty(propertyKey, propertyVal, propertyVal);
                     // create implicitly if Property doesn't exist already

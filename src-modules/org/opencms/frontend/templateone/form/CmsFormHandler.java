@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2006/05/11 14:20:43 $
- * Version: $Revision: 1.24.4.3 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.24.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.24.4.3 $ 
+ * @version $Revision: 1.24.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -599,7 +599,7 @@ public class CmsFormHandler extends CmsJspActionElement {
             }
         }
         
-        m_isValidatedCorrect = new Boolean(allOk);
+        m_isValidatedCorrect = Boolean.valueOf(allOk);
         return allOk;
     }
 

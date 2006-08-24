@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSetNextRule.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.8.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.8.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.xml.sax.Attributes;
  * @author Craig McClanahan 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.8.4.1 $
+ * @version $Revision: 1.8.4.2 $
  * 
  * @since 6.0.0
  */
@@ -96,42 +96,36 @@ public class CmsSetNextRule extends Rule {
     /**
      * The body text collected from this element.
      */
-    protected String m_bodyText = null;
+    protected String m_bodyText;
 
     /**
      * The method name to call on the parent object.
      */
-    protected String m_methodName = null;
+    protected String m_methodName;
 
     /**
      * The number of parameters to collect from <code>MethodParam</code> rules.
      * If this value is zero, a single parameter will be collected from the
      * body of this element.
      */
-    protected int m_paramCount = 0;
+    protected int m_paramCount;
 
     /**
      * The parameter types of the parameters to be collected.
      */
-    protected Class[] m_paramTypes = null;
+    protected Class[] m_paramTypes;
 
     /**
      * Should <code>MethodUtils.invokeExactMethod</code> be used for reflection.
      */
-    protected boolean m_useExactMatch = false;
-
-    /**
-     * The names of the classes of the parameters to be collected.
-     * This attribute allows creation of the classes to be postponed until the digester is set.
-     */
-    private String[] m_paramClassNames = null;
+    protected boolean m_useExactMatch;
 
     /** 
      * location of the target object for the call, relative to the
      * top of the digester object stack. The default value of zero
      * means the target object is the one on top of the stack.
      */
-    private int m_targetOffset = 0;
+    private int m_targetOffset;
 
     /**
      * Construct a "call method" rule with the specified method name.<p>
@@ -403,19 +397,6 @@ public class CmsSetNextRule extends Rule {
         aDigester.setLogger(CmsLog.getLog(aDigester.getClass()));
         // call superclass
         super.setDigester(aDigester);
-        // if necessary, load parameter classes
-        if (m_paramClassNames != null) {
-            m_paramTypes = new Class[m_paramClassNames.length];
-            for (int i = 0; i < m_paramClassNames.length; i++) {
-                try {
-                    m_paramTypes[i] = aDigester.getClassLoader().loadClass(m_paramClassNames[i]);
-                } catch (ClassNotFoundException e) {
-                    // use the digester log
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_LOAD_CLASS_1, m_paramClassNames[i]), e);
-                    m_paramTypes[i] = null; // Will cause NPE later
-                }
-            }
-        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2006/04/28 08:49:28 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -92,16 +92,16 @@ public class CmsImageLoader extends CmsDumpLoader {
     protected static final Log LOG = CmsLog.getLog(CmsImageLoader.class);
 
     /** The (optional) image downscale parameters for image write operations. */
-    protected static String m_downScaleParams;
+    static String m_downScaleParams;
 
     /** Indicates if image scaling is active. */
-    protected static boolean m_enabled;
+    static boolean m_enabled;
 
     /** The maximum image size (width * height) to apply image blurring when downscaling (setting this to high may cause "out of memory" errors). */
-    protected static int m_maxBlurSize = CmsImageScaler.SCALE_DEFAULT_MAX_BLUR_SIZE;
+    static int m_maxBlurSize = CmsImageScaler.SCALE_DEFAULT_MAX_BLUR_SIZE;
 
     /** The disk cache to use for saving scaled image versions. */
-    protected static CmsVfsNameBasedDiskCache m_vfsDiskCache;
+    static CmsVfsNameBasedDiskCache m_vfsDiskCache;
 
     /** The name of the configured image cache repository. */
     protected String m_imageRepositoryFolder;
@@ -256,7 +256,7 @@ public class CmsImageLoader extends CmsDumpLoader {
                 m_vfsDiskCache.getRepositoryPath()));
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_IMAGE_SCALING_ENABLED_1,
-                new Boolean(m_enabled)));
+                Boolean.valueOf(m_enabled)));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestProperties.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.12.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,54 +31,54 @@
 
 package org.opencms.test;
 
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Arrays;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.logging.Log;
 
 /**
  * Reads and manages the test.properties file.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.12.8.1 $
  * 
  * @since 6.0.0
  */
 public final class OpenCmsTestProperties {
 
+    /** The log object for this class. */
+    public static final Log LOG = CmsLog.getLog(OpenCmsTestProperties.class);
+
+    /** The configuration from <code>opencms.properties</code>. */
     private static ExtendedProperties m_configuration;
 
-    /**
-     * the singleton instance.
-     */
+    /** The singleton instance. */
     private static OpenCmsTestProperties m_testSingleton;
 
-    /**
-     * the path to the test.properties file.
-     */
+    /** The path to the test.properties file. */
     private String m_basePath;
 
-    /**
-     * the database to use. 
-     */
+    /** The database to use. */
     private String m_dbProduct;
 
-    /**
-     * the path to the data test folder.
-     */
+    /** The path to the data test folder. */
     private String m_testDataPath;
 
-    /**
-     * the path to the webapp test folder.
-     */
+    /** The path to the webapp test folder. */
     private String m_testWebappPath;
 
     /**
-     * private default constructor.
+     * Private default constructor.
      */
     private OpenCmsTestProperties() {
 
@@ -94,6 +94,54 @@ public final class OpenCmsTestProperties {
             throw new RuntimeException("You have to initialize the test properties.");
         }
         return m_testSingleton;
+    }
+
+    /**
+     * Returns the absolute path name for the given relative 
+     * path name if it was found by the context Classloader of the 
+     * current Thread.<p>
+     * 
+     * The argument has to denote a resource within the Classloaders 
+     * scope. A <code>{@link java.net.URLClassLoader}</code> implementation for example would 
+     * try to match a given path name to some resource under it's URL 
+     * entries.<p>
+     * 
+     * As the result is internally obtained as an URL it is reduced to 
+     * a file path by the call to <code>{@link java.net.URL#getFile()}</code>. Therefore 
+     * the returned String will start with a '/' (no problem for java.io).<p>
+     * 
+     * @param fileName the filename to return the path from the Classloader for
+     * 
+     * @return the absolute path name for the given relative 
+     *   path name if it was found by the context Classloader of the 
+     *   current Thread or an empty String if it was not found
+     * 
+     * @see Thread#getContextClassLoader()
+     */
+    public static String getResourcePathFromClassloader(String fileName) {
+
+        boolean isFolder = CmsResource.isFolder(fileName);
+        String result = "";
+        URL inputUrl = Thread.currentThread().getContextClassLoader().getResource(fileName);
+        if (inputUrl != null) {
+            // decode name here to avoid url encodings in path name
+            result = CmsFileUtil.normalizePath(inputUrl);
+            if (isFolder && !CmsResource.isFolder(result)) {
+                result = result + '/';
+            }
+        } else {
+            try {
+                URLClassLoader cl = (URLClassLoader)Thread.currentThread().getContextClassLoader();
+                URL[] paths = cl.getURLs();
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_MISSING_CLASSLOADER_RESOURCE_2,
+                    fileName,
+                    Arrays.asList(paths)));
+            } catch (Throwable t) {
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_MISSING_CLASSLOADER_RESOURCE_1, fileName));
+            }
+        }
+        return result;
     }
 
     /**
@@ -116,7 +164,7 @@ public final class OpenCmsTestProperties {
         }
 
         try {
-            testPropPath = CmsFileUtil.getResourcePathFromClassloader("test.properties");
+            testPropPath = OpenCmsTestProperties.getResourcePathFromClassloader("test.properties");
             if (testPropPath == null) {
                 throw new RuntimeException(
                     "Test property file ('test.properties') could not be found by context Classloader.");
@@ -180,5 +228,4 @@ public final class OpenCmsTestProperties {
 
         return m_testWebappPath;
     }
-
 }

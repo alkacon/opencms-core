@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchDialog.java,v $
- * Date   : $Date: 2006/04/19 09:05:00 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -206,7 +206,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
             for (int i = 0; i < names.length; i++) {
                 retVal.add(new CmsSelectWidgetOption(
                     names[i],
-                    names[i].equals(CmsSearchParameters.SORT_DEFAULT),
+                    i != 0,
                     key(A_CmsWidget.LABEL_PREFIX + names[i].toLowerCase())));
             }
         } catch (Exception e) {

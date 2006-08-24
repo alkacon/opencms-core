@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/07/26 14:59:07 $
- * Version: $Revision: 1.22.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.22.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.1 $ 
+ * @version $Revision: 1.22.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -365,12 +365,13 @@ public class CmsNewResourceUpload extends CmsNewResource {
         String webapp = scheme + "://" + host + ":" + port + OpenCms.getSystemInfo().getContextPath();
 
         // get all file extensions
-        String fileExtensions = new String("");
+        String fileExtensions = "";
         Map extensions = OpenCms.getResourceManager().getExtensionMapping();
-        Iterator keys = extensions.keySet().iterator();
+        Iterator keys = extensions.entrySet().iterator();
         while (keys.hasNext()) {
-            String key = (String)keys.next();
-            String value = (String)extensions.get(key);
+            Map.Entry entry = (Map.Entry)keys.next();
+            String key = (String)entry.getKey();
+            String value = (String)entry.getValue();
             fileExtensions += key + "=" + value + ",";
         }
         fileExtensions = fileExtensions.substring(0, fileExtensions.length() - 1);
@@ -522,7 +523,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public String getParamTargetFrame() {
 
         if (CmsStringUtil.isEmpty(m_paramTargetFrame)) {
-            return new String("explorer_files");
+            return "explorer_files";
         }
 
         return m_paramTargetFrame;

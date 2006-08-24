@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/08/21 15:59:20 $
- * Version: $Revision: 1.90.4.5 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.90.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.5 $
+ * @version $Revision: 1.90.4.6 $
  * 
  * @since 6.0.0
  */
@@ -230,6 +230,46 @@ public class OpenCmsTestCase extends TestCase {
      * Generates a sub tree of folders with files.<p>
      * 
      * @param cms the cms context
+     * @param vfsFolder name of the folder
+     * @param numberOfFiles the number of files to generate
+     * @param fileTypeDistribution a percentage: x% binary files and (1-x)% text files
+     * 
+     * @return the number of files generated
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public static int generateContent(CmsObject cms, String vfsFolder, int numberOfFiles, double fileTypeDistribution)
+    throws Exception {
+
+        int maxProps = 10;
+        double propertyDistribution = 0.0;
+        int writtenFiles = 0;
+
+        int numberOfBinaryFiles = (int)(numberOfFiles * fileTypeDistribution);
+
+        // generate binary files
+        writtenFiles += generateResources(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            vfsFolder,
+            numberOfBinaryFiles,
+            CmsResourceTypeBinary.getStaticTypeId(),
+            maxProps,
+            propertyDistribution);
+
+        // generate text files
+        writtenFiles += generateResources(cms, "org/opencms/search/extractors/test1.html", vfsFolder, numberOfFiles
+            - numberOfBinaryFiles, CmsResourceTypePlain.getStaticTypeId(), maxProps, propertyDistribution);
+
+        System.out.println("" + writtenFiles + " files written in Folder " + vfsFolder);
+
+        return writtenFiles;
+    }
+
+    /**
+     * Generates a sub tree of folders with files.<p>
+     * 
+     * @param cms the cms context
      * @param vfsFolder where to create the subtree
      * @param maxWidth an upper bound for the number of subfolder a folder should have
      * @param maxDepth an upper bound for depth of the genearted subtree
@@ -303,46 +343,6 @@ public class OpenCmsTestCase extends TestCase {
 
             System.out.println("" + writtenFiles + " files written in Folder " + vfsName);
         }
-        return writtenFiles;
-    }
-
-    /**
-     * Generates a sub tree of folders with files.<p>
-     * 
-     * @param cms the cms context
-     * @param vfsFolder name of the folder
-     * @param numberOfFiles the number of files to generate
-     * @param fileTypeDistribution a percentage: x% binary files and (1-x)% text files
-     * 
-     * @return the number of files generated
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public static int generateContent(CmsObject cms, String vfsFolder, int numberOfFiles, double fileTypeDistribution)
-    throws Exception {
-
-        int maxProps = 10;
-        double propertyDistribution = 0.0;
-        int writtenFiles = 0;
-
-        int numberOfBinaryFiles = (int)(numberOfFiles * fileTypeDistribution);
-
-        // generate binary files
-        writtenFiles += generateResources(
-            cms,
-            "org/opencms/search/pdf-test-112.pdf",
-            vfsFolder,
-            numberOfBinaryFiles,
-            CmsResourceTypeBinary.getStaticTypeId(),
-            maxProps,
-            propertyDistribution);
-
-        // generate text files
-        writtenFiles += generateResources(cms, "org/opencms/search/extractors/test1.html", vfsFolder, numberOfFiles
-            - numberOfBinaryFiles, CmsResourceTypePlain.getStaticTypeId(), maxProps, propertyDistribution);
-
-        System.out.println("" + writtenFiles + " files written in Folder " + vfsFolder);
-
         return writtenFiles;
     }
 
@@ -469,7 +469,7 @@ public class OpenCmsTestCase extends TestCase {
             // ignore
         }
         if (group == null) {
-            group = cms.createGroup(groupName, groupName, 0, null);
+            cms.createGroup(groupName, groupName, 0, null);
         }
         for (int i = 0; i < n; i++) {
             String name = generateName(10) + i;
@@ -1459,14 +1459,14 @@ public class OpenCmsTestCase extends TestCase {
             fail("Exceptions not equal (not both null)");
         }
         if ((e1 != null) && (e2 != null)) {
-        if (!(e1.getClass().equals(e2.getClass()))) {
-            fail("Exception " + e1.toString() + " does not equal " + e2.toString());
-        }
+            if (!(e1.getClass().equals(e2.getClass()))) {
+                fail("Exception " + e1.toString() + " does not equal " + e2.toString());
+            }
 
-        if (!(e1.getMessageContainer().getKey().equals(e2.getMessageContainer().getKey()))) {
-            fail("Exception " + e1.toString() + " does not equal " + e2.toString());
+            if (!(e1.getMessageContainer().getKey().equals(e2.getMessageContainer().getKey()))) {
+                fail("Exception " + e1.toString() + " does not equal " + e2.toString());
+            }
         }
-    }
     }
 
     /**
@@ -1486,16 +1486,16 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         if ((d1 != null) && (d2 != null)) {
-        InternalNodeComparator comparator = new InternalNodeComparator();
-        if (comparator.compare((Node)d1, (Node)d2) != 0) {
-            fail("Comparison of documents failed: "
-                + "name = "
-                + d1.getName()
-                + ", "
-                + "path = "
-                + comparator.m_node1.getUniquePath());
+            InternalNodeComparator comparator = new InternalNodeComparator();
+            if (comparator.compare((Node)d1, (Node)d2) != 0) {
+                fail("Comparison of documents failed: "
+                    + "name = "
+                    + d1.getName()
+                    + ", "
+                    + "path = "
+                    + comparator.m_node1.getUniquePath());
+            }
         }
-    }
     }
 
     /**
@@ -1745,13 +1745,13 @@ public class OpenCmsTestCase extends TestCase {
 
         // get the stored resource
         OpenCmsTestResourceStorageEntry storedResource = null;
-        
+
         try {
             storedResource = m_currentResourceStrorage.get(resourceName);
         } catch (Exception e) {
             fail(e.getMessage());
         }
-                
+
         CmsResource res = null;
         try {
             // get the actual resource from the vfs
@@ -1958,9 +1958,7 @@ public class OpenCmsTestCase extends TestCase {
                 if (!lock.isNullLock()) {
                     fail("[Lock " + resourceName + " must be unlocked]");
                 }
-            } else if (lock.isNullLock()
-                || (lock.getType() != lockType)
-                || !lock.isOwnedBy(user)) {
+            } else if (lock.isNullLock() || (lock.getType() != lockType) || !lock.isOwnedBy(user)) {
                 fail("[Lock "
                     + resourceName
                     + " requires a lock of type "
@@ -1979,7 +1977,7 @@ public class OpenCmsTestCase extends TestCase {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
         }
     }
-    
+
     /**
      * Validates the project status of a resource,
      * i.e. if a resource has a "red flag" or not.<p>
@@ -3159,5 +3157,4 @@ public class OpenCmsTestCase extends TestCase {
                 + "-----");
         }
     }
-
 }

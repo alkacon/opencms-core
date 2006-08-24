@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.12.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,13 +113,13 @@ public class CmsExplorerTypeAccess {
             String key = (String)i.next();
             if (!PRINCIPAL_DEFAULT.equals(key)) {
                 String value = (String)m_accessControl.get(key);
-                CmsUUID principalId = new CmsUUID();
                 // get the principal name from the principal String
                 String principal = key.substring(key.indexOf('.') + 1, key.length());
 
                 // create an OpenCms user context with "Guest" permissions
                 CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
 
+                CmsUUID principalId;
                 if (key.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
                     // read the group
                     principal = OpenCms.getImportExportManager().translateGroup(principal);

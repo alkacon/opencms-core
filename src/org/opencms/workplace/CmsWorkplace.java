@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/08/21 15:59:21 $
- * Version: $Revision: 1.156.4.7 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.156.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.7 $ 
+ * @version $Revision: 1.156.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -605,14 +605,13 @@ public abstract class CmsWorkplace {
 
         StringBuffer result = new StringBuffer(512);
         Map params = allParamValues();
-        Iterator i = params.keySet().iterator();
+        Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            String param = (String)i.next();
-            Object value = params.get(param);
+            Map.Entry entry = (Map.Entry)i.next();
             result.append("<input type=\"hidden\" name=\"");
-            result.append(param);
+            result.append(entry.getKey());
             result.append("\" value=\"");
-            String encoded = CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding());
+            String encoded = CmsEncoder.encode(entry.getValue().toString(), getCms().getRequestContext().getEncoding());
             result.append(encoded);
             result.append("\">\n");
         }
@@ -1805,15 +1804,17 @@ public abstract class CmsWorkplace {
 
         StringBuffer result = new StringBuffer(512);
         Map params = paramValues();
-        Iterator i = params.keySet().iterator();
+        Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            String param = (String)i.next();
+            Map.Entry entry = (Map.Entry)i.next();
+            String param = (String)entry.getKey();
             if ((excludes == null) || (!excludes.contains(param))) {
-                Object value = params.get(param);
                 result.append("<input type=\"hidden\" name=\"");
                 result.append(param);
                 result.append("\" value=\"");
-                String encoded = CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding());
+                String encoded = CmsEncoder.encode(
+                    entry.getValue().toString(),
+                    getCms().getRequestContext().getEncoding());
                 result.append(encoded);
                 result.append("\">\n");
             }
@@ -1844,13 +1845,12 @@ public abstract class CmsWorkplace {
 
         StringBuffer result = new StringBuffer(512);
         Map params = paramValues();
-        Iterator i = params.keySet().iterator();
+        Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            String param = (String)i.next();
-            Object value = params.get(param);
-            result.append(param);
+            Map.Entry entry = (Map.Entry)i.next();
+            result.append(entry.getKey());
             result.append("=");
-            result.append(CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding()));
+            result.append(CmsEncoder.encode(entry.getValue().toString(), getCms().getRequestContext().getEncoding()));
             if (i.hasNext()) {
                 result.append("&");
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.55.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.55.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.55.4.1 $ 
+ * @version $Revision: 1.55.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -1220,7 +1220,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 // wait for indexing threads to finish
                 while (wait && threadManager.isRunning()) {
                     try {
-                        Thread.sleep(1000);
+                        wait(1000);
                     } catch (InterruptedException e) {
                         // just continue with the loop after interruption
                     }
@@ -1364,7 +1364,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     // wait for indexing threads to finish
                     while (wait && threadManager.isRunning()) {
                         try {
-                            Thread.sleep(1000);
+                            wait(1000);
                         } catch (InterruptedException e) {
                             // just continue with the loop after interruption
                         }

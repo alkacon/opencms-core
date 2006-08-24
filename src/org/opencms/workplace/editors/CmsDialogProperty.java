@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogProperty.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.9.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.9.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.workplace.explorer.CmsNewResourceXmlPage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9.4.1 $ 
+ * @version $Revision: 1.9.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -187,11 +188,12 @@ public class CmsDialogProperty extends CmsPropertyCustom {
         } else {
             boolean found = false;
             // templates found, create option and value lists
-            Iterator i = templates.keySet().iterator();
+            Iterator i = templates.entrySet().iterator();
             int counter = 0;
             while (i.hasNext()) {
-                String key = (String)i.next();
-                String path = (String)templates.get(key);
+                Map.Entry entry = (Map.Entry)i.next();
+                String key = (String)entry.getKey();
+                String path = (String)entry.getValue();
                 if (currentTemplate.equals(path)) {
                     // mark the currently selected template
                     selectedValue = counter;

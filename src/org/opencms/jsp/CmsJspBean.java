@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.16.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -309,7 +309,7 @@ public class CmsJspBean {
             if (u != null) {
                 uri = getController().getThrowableResourceUri();
             } else {
-                u = t;
+                uri = getRequestContext().getUri();
             }
             throw new CmsRuntimeException(Messages.get().container(
                 Messages.ERR_RUNTIME_1,

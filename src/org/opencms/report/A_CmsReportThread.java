@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.22.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior  
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,7 +54,7 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
 
     /** Indicates if the thread was already checked by the grim reaper. */
     private boolean m_doomed;
-
+    
     /** The id of this report. */
     private CmsUUID m_id;
 
@@ -138,7 +138,7 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
      * 
      * @return the time this report has been running
      */
-    public long getRuntime() {
+    public synchronized long getRuntime() {
 
         if (m_doomed) {
             return m_starttime;

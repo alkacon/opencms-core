@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementChangeLocaleDialog.java,v $
- * Date   : $Date: 2006/07/21 09:29:15 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.3.4.1 $ 
+ * @version $Revision: 1.3.4.2 $ 
  * 
  * @since 6.0.1 
  */
@@ -189,10 +189,11 @@ public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
         }
         if (templates != null) {
             // templates found, create option and value lists
-            Iterator i = templates.keySet().iterator();
+            Iterator i = templates.entrySet().iterator();
             while (i.hasNext()) {
-                String key = (String)i.next();
-                String path = (String)templates.get(key);
+                Map.Entry entry = (Map.Entry)i.next();
+                String key = (String)entry.getKey();
+                String path = (String)entry.getValue();
                 result.add(new CmsSelectWidgetOption(path, false, key));
             }
         }

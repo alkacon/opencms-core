@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.48.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.48.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48.4.1 $ 
+ * @version $Revision: 1.48.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -252,10 +252,10 @@ public class CmsShell {
                         int count = 0;
                         if (result instanceof Map) {
                             Map m = (Map)result;
-                            Iterator j = m.keySet().iterator();
+                            Iterator j = m.entrySet().iterator();
                             while (j.hasNext()) {
-                                Object key = j.next();
-                                System.out.println(count++ + ": " + key + "= " + m.get(key));
+                                Map.Entry entry = (Map.Entry)j.next();
+                                System.out.println(count++ + ": " + entry.getKey() + "= " + entry.getValue());
                             }
                         } else {
                             Iterator j = c.iterator();

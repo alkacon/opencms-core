@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.36.4.3 $
+ * Date   : $Date: 2006/08/24 06:43:29 $
+ * Version: $Revision: 1.36.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.3 $ 
+ * @version $Revision: 1.36.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,7 +77,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * Simple data structure to describe a type seqnence in an XML schema.<p>
      */
-    private final class CmsXmlComplexTypeSequence {
+    public final class CmsXmlComplexTypeSequence {
 
         /** Indicates if this type sequence has a language attribute. */
         protected boolean m_hasLanguageAttribute;

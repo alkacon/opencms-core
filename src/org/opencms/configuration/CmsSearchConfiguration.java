@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.17.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.17.4.1 $
  * 
  * @since 6.0.0
  */
@@ -352,10 +352,11 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
             // iterate additional params
             Map indexConfiguration = searchIndex.getConfiguration();
             if (indexConfiguration != null) {
-                Iterator it = indexConfiguration.keySet().iterator();
+                Iterator it = indexConfiguration.entrySet().iterator();
                 while (it.hasNext()) {
-                    String name = (String)it.next();
-                    String value = indexConfiguration.get(name).toString();
+                    Map.Entry entry = (Map.Entry)it.next();
+                    String name = (String)entry.getKey();
+                    String value = (String)entry.getValue();
                     Element paramNode = indexElement.addElement(N_PARAM);
                     paramNode.addAttribute(A_NAME, name);
                     paramNode.addText(value);
@@ -379,13 +380,15 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
                 N_CLASS,
                 searchIndexSource.getIndexerClassName());
             Map params = searchIndexSource.getParams();
-            Iterator paramIterator = params.keySet().iterator();
+            Iterator paramIterator = params.entrySet().iterator();
             while (paramIterator.hasNext()) {
-                String paramKey = (String)paramIterator.next();
+                Map.Entry entry = (Map.Entry)paramIterator.next();
+                String name = (String)entry.getKey();
+                String value = (String)entry.getValue();
                 // add <param name=""> element(s)                
                 indexerElement.addElement(I_CmsXmlConfiguration.N_PARAM).addAttribute(
                     I_CmsXmlConfiguration.A_NAME,
-                    paramKey).addText((String)params.get(paramKey));
+                    name).addText(value);
             }
             // add <resources> element
             Element resourcesElement = indexsourceElement.addElement(N_RESOURCES);

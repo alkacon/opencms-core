@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/08/24 06:43:29 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.7
  */
@@ -154,10 +154,11 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
             List galleries = new ArrayList(galleryMap.size());
             Map typeMap = new HashMap(galleryMap.size());
 
-            Iterator i = galleryMap.keySet().iterator();
+            Iterator i = galleryMap.entrySet().iterator();
             while (i.hasNext()) {
-                String key = (String)i.next();
-                A_CmsGallery currGallery = (A_CmsGallery)galleryMap.get(key);
+                Map.Entry entry = (Map.Entry)i.next();
+                String key = (String)entry.getKey();
+                A_CmsGallery currGallery = (A_CmsGallery)entry.getValue();
                 galleries.add(currGallery);
                 // put the type name to the type Map
                 typeMap.put(currGallery, key);

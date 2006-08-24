@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.26.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.26.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26.4.2 $ 
+ * @version $Revision: 1.26.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -371,13 +371,13 @@ public class CmsFlexCacheKey {
                     }
                 } else {
                     // match all request params
-                    Iterator i = keyParams.keySet().iterator();
+                    Iterator i = keyParams.entrySet().iterator();
                     while (i.hasNext()) {
-                        Object o = i.next();
-                        str.append(o);
+                        Map.Entry entry = (Map.Entry)i.next();
+                        str.append(entry.getKey());
                         str.append("=");
                         // TODO: handle multiple occurances of the same parameter value
-                        String[] values = (String[])keyParams.get(o);
+                        String[] values = (String[])entry.getValue();
                         str.append(values[0]);
                         if (i.hasNext()) {
                             str.append(",");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.15.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.8.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -407,7 +407,7 @@ public class CmsJspNavElement implements Comparable {
             // use "lazy initialiting"
             Object o1 = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
             Object o2 = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS);
-            m_hasNav = new Boolean(((o1 != null) || (o2 != null)) && (m_resource.indexOf('~') < 0));
+            m_hasNav = Boolean.valueOf(((o1 != null) || (o2 != null)) && (m_resource.indexOf('~') < 0));
         }
         return m_hasNav.booleanValue();
     }

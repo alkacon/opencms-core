@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:29 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -167,7 +167,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
     public static List splitAsList(String source, String[] delimiters, boolean trim, boolean includeDelimiters) {
 
         List result = new ArrayList();
-        String delimiter = new String();
+        String delimiter = "";
         int i = 0;
         int l = source.length();
         int n = -1;
@@ -271,7 +271,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_HTML_DECORATOR_PROCESS_WORD_2,
                         word,
-                        new Boolean(mustDecode(word, wordList, i))));
+                        Boolean.valueOf(mustDecode(word, wordList, i))));
                 }
 
                 // test if the word must be decoded

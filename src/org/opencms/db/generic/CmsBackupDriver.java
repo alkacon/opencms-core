@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2006/08/19 13:40:39 $
- * Version: $Revision: 1.141.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.141.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.141.4.2 $
+ * @version $Revision: 1.141.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -359,7 +359,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      */
     public void destroy() throws Throwable {
 
-        finalize();
+        m_sqlManager = null;
+        m_driverManager = null;
+        
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
@@ -436,7 +438,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             } else {
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
                     Messages.ERR_BACKUP_FILE_NOT_FOUND_1,
-                    resourcePath.toString()));
+                    resourcePath));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1172,12 +1174,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      */
     protected void finalize() throws Throwable {
 
-        try {
-            m_sqlManager = null;
-            m_driverManager = null;
-        } catch (Throwable t) {
-            // ignore
-        }
+        destroy();
         super.finalize();
     }
 
@@ -1271,7 +1268,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setString(6, backupId.toString());
 
             stmt.executeUpdate();
-            fileContent = null;
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -1363,7 +1359,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         String backupId = null;
         String resourceId = null;
         Map structureVersionsId = new HashMap();
-        Set structIdSet = new HashSet();
 
         // first get all resource ids of the entries which has more version as need.
         try {
@@ -1385,7 +1380,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             while (res.next()) {
                 structureVersionsId.put(res.getString(1), new Integer(res.getInt(2)));
             }
-            structIdSet = structureVersionsId.keySet();
+            Set structIdSet = structureVersionsId.keySet();
             if (structIdSet.size() > 0) {
                 Iterator structIdIter = structIdSet.iterator();
 
@@ -1487,7 +1482,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         String backupId = null;
         Map structureVersionsId = new HashMap();
-        Set structIdSet = new HashSet();
 
         // first get all resource ids of the entries which has more version as need
         try {
@@ -1511,7 +1505,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             while (res.next()) {
                 structureVersionsId.put(res.getString(1), new Integer(res.getInt(2)));
             }
-            structIdSet = structureVersionsId.keySet();
+            Set structIdSet = structureVersionsId.keySet();
             if (structIdSet.size() > 0) {
                 Iterator structIdIter = structIdSet.iterator();
 

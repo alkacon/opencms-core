@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.121.4.4 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.121.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.4 $ 
+ * @version $Revision: 1.121.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,9 +123,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsStaticExportManager.class);
 
-    /** Matcher for  selecting those resources which should be part of the staic export. */
-    private static CmsExportFolderMatcher m_exportFolderMatcher;
-
     /** HTTP header Accept-Charset. */
     private String m_acceptCharsetHeader;
 
@@ -149,6 +146,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** OpenCms default locale header. */
     private String m_defaultAcceptLanguageHeader;
+
+    /** Matcher for  selecting those resources which should be part of the staic export. */
+    private CmsExportFolderMatcher m_exportFolderMatcher;
 
     /** List of export resources which should be part of the static export. */
     private List m_exportFolders;
@@ -1315,7 +1315,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATIC_EXPORT_ENABLED_0));
                 CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_EXPORT_DEFAULT_1,
-                    new Boolean(getExportPropertyDefault())));
+                    Boolean.valueOf(getExportPropertyDefault())));
                 itRfsRules = m_rfsRules.iterator();
                 while (itRfsRules.hasNext()) {
                     CmsStaticExportRfsRule rfsRule = (CmsStaticExportRfsRule)itRfsRules.next();
@@ -1418,7 +1418,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 } catch (Exception e) {
                     // no export required (probably security issues, e.g. no access for export user)
                 }
-                m_cacheExportLinks.put(getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName), new Boolean(result));
+                m_cacheExportLinks.put(
+                    getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName),
+                    Boolean.valueOf(result));
             } else {
                 result = exportResource.booleanValue();
             }
@@ -1744,7 +1746,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         String.valueOf(count),
                         String.valueOf(HANDLER_FINISH_TIME)));
                 }
-                Thread.sleep(1000);
+                wait(1000);
             } catch (InterruptedException e) {
                 // if interrupted we ignore the handler, this will produce some log messages but should be ok 
                 count = HANDLER_FINISH_TIME;
@@ -1816,13 +1818,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // name of export resource could not be resolved by reading the resource directly,
             // now try to find a match with the "exportname" folders            
             Map exportnameFolders = getExportnames();
-            Iterator i = exportnameFolders.keySet().iterator();
+            Iterator i = exportnameFolders.entrySet().iterator();
             while (i.hasNext()) {
-                String exportName = (String)i.next();
+                Map.Entry entry = (Map.Entry)i.next();
+                String exportName = (String)entry.getKey();
                 if (rfsName.startsWith(exportName)) {
                     // prefix match
                     match = true;
-                    vfsName = exportnameFolders.get(exportName) + rfsName.substring(exportName.length());
+                    vfsName = "" + entry.getValue() + rfsName.substring(exportName.length());
                     try {
                         resource = cms.readResource(vfsName);
                         if (resource.isFolder()) {

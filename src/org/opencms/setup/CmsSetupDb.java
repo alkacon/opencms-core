@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.25.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.25.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25.4.2 $ 
+ * @version $Revision: 1.25.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -528,11 +528,12 @@ public class CmsSetupDb extends Object {
      */
     private String replaceTokens(String sql, Map replacers) {
 
-        Iterator keys = replacers.keySet().iterator();
+        Iterator keys = replacers.entrySet().iterator();
         while (keys.hasNext()) {
-
-            String key = (String)keys.next();
-            String value = (String)replacers.get(key);
+            Map.Entry entry = (Map.Entry)keys.next();
+            
+            String key = (String)entry.getKey();
+            String value = (String)entry.getValue();
 
             sql = CmsStringUtil.substitute(sql, key, value);
         }

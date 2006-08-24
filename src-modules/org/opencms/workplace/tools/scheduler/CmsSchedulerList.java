@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2006/06/09 15:16:14 $
- * Version: $Revision: 1.27.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.27.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.27.4.1 $ 
+ * @version $Revision: 1.27.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -333,7 +333,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         Iterator i = OpenCms.getScheduleManager().getJobs().iterator();
         while (i.hasNext()) {
             CmsScheduledJobInfo job = (CmsScheduledJobInfo)i.next();
-            CmsListItem item = getList().newItem(job.getId().toString());
+            CmsListItem item = getList().newItem(job.getId());
             // set the contents of the columns
             item.set(LIST_COLUMN_NAME, job.getJobName());
             item.set(LIST_COLUMN_CLASS, job.getClassName());

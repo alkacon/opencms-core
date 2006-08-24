@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:39 $
- * Version: $Revision: 1.65.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.65.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -57,11 +56,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65.4.1 $
+ * @version $Revision: 1.65.4.2 $
  * 
  * @since 6.0.0 
  */
-public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
+public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /** A pattern being replaced in SQL queries to generate SQL queries to access online/offline tables. */
     protected static final String QUERY_PROJECT_SEARCH_PATTERN = "_${PROJECT}_";

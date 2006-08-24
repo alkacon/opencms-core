@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2006/04/24 11:21:22 $
- * Version: $Revision: 1.25.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:23 $
+ * Version: $Revision: 1.25.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.25.4.2 $ 
+ * @version $Revision: 1.25.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -416,10 +416,11 @@ public class CmsJspActionElement extends CmsJspBean {
             try {
                 HashMap modParameterMap = new HashMap(parameterMap.size());
                 // ensure parameters are always of type String[] not just String
-                Iterator i = parameterMap.keySet().iterator();
+                Iterator i = parameterMap.entrySet().iterator();
                 while (i.hasNext()) {
-                    String key = (String)i.next();
-                    Object value = parameterMap.get(key);
+                    Map.Entry entry = (Map.Entry)i.next();
+                    String key = (String)entry.getKey();
+                    Object value = entry.getValue();
                     if (value instanceof String[]) {
                         modParameterMap.put(key, value);
                     } else {

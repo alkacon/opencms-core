@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.47.4.2 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.47.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,11 +110,11 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.47.4.2 $ 
+ * @version $Revision: 1.47.4.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommands {
+public class CmsSetupBean implements I_CmsShellCommands {
 
     /** Folder constant name.<p> */
     public static final String FOLDER_BACKUP = "backup" + File.separatorChar;
@@ -354,12 +354,13 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
             try {
                 Map modules = CmsModuleManager.getAllModulesFromPath(getModuleFolder());
-                Iterator itMods = modules.keySet().iterator();
+                Iterator itMods = modules.entrySet().iterator();
                 while (itMods.hasNext()) {
-                    CmsModule module = (CmsModule)itMods.next();
+                    Map.Entry entry = (Map.Entry)itMods.next();
+                    CmsModule module = (CmsModule)entry.getKey();
                     // put the module information into a map keyed by the module packages names
                     m_availableModules.put(module.getName(), module);
-                    m_moduleFilenames.put(module.getName(), modules.get(module));
+                    m_moduleFilenames.put(module.getName(), entry.getValue());
                 }
             } catch (CmsConfigurationException e) {
                 throw new CmsRuntimeException(e.getMessageContainer());

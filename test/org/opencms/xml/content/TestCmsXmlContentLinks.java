@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentLinks.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/24 06:43:24 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
@@ -841,9 +841,6 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         CmsLink expectedHtmlLink = getExpected(cms, true);
         CmsLink htmlLink = getHtmlLink(cms, xmlcontent, "Html", "link0");
         assertLink(expectedHtmlLink, htmlLink, true);
-
-        // store the current content, this is important since the original content had no ids
-        content = xmlcontent.toString();
     }
 
     /**

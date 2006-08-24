@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.30.4.1 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.30.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30.4.1 $ 
+ * @version $Revision: 1.30.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -152,7 +152,6 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
             m_elements.add(bytes);
             m_byteSize += CmsMemoryMonitor.getMemorySize(bytes);
         }
-        bytes = null;
     }
 
     /** 
@@ -392,7 +391,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * 
      * @param dateExpires the time to expire this cache entry
      */
-    public synchronized void setDateExpires(long dateExpires) {
+    public void setDateExpires(long dateExpires) {
 
         m_dateExpires = dateExpires;
         if (LOG.isDebugEnabled()) {

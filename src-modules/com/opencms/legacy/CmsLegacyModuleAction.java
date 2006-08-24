@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2005/06/27 23:27:46 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/08/24 06:43:25 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.A_CmsModuleAction;
 import org.opencms.module.CmsModule;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -55,6 +56,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Provided backward compatiblity for legacy (5.0) module "publishClass" 
@@ -121,7 +124,14 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
      */
     public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
         
-        Map config = adminCms.getConfigurations();
+        ExtendedProperties config;
+        try {
+            config = CmsPropertyUtils.loadProperties(OpenCms.getSystemInfo().getConfigurationFileRfsPath());
+        } catch (Exception e) {
+            OpenCms.getLog(this).info(". Legacy initialization: error reading property configuration", e);
+            return;
+        }
+        
         String dbName = config.get(CmsDbPool.KEY_DATABASE_NAME).toString().toLowerCase();
         String poolUrl = config.get("db.cos.pool").toString();
         
