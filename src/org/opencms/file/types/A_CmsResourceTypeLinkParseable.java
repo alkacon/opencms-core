@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeLinkParseable.java,v $
- * Date   : $Date: 2006/08/25 12:22:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/25 15:20:02 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,21 +38,18 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.CmsLog;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.security.CmsSecurityException;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Base implementation for resource types implementing the {@link I_CmsLinkParseable} interface.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.0 
  */
@@ -118,42 +115,6 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
         super.deleteResource(cms, securityManager, resource, siblingMode);
         securityManager.deleteRelationsForResource(cms.getRequestContext(), resource, CmsRelationFilter.TARGETS);
     }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#importResource(org.opencms.file.CmsObject, CmsSecurityManager, java.lang.String, org.opencms.file.CmsResource, byte[], List)
-     */
-    public CmsResource importResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        String resourcename,
-        CmsResource resource,
-        byte[] content,
-        List properties) throws CmsException {
-
-        CmsResource importedResource = super.importResource(
-            cms,
-            securityManager,
-            resourcename,
-            resource,
-            content,
-            properties);
-        try {
-            // this may fail if the xsd is not jet imported
-            createRelations(cms, securityManager, importedResource.getRootPath());
-        } catch (Exception e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_RELATION_CREATION_FAILED_1,
-                    importedResource.getRootPath()));
-            }
-            // ignore, the import handler has to take care of this
-            // see org.opencms.importexport.CmsImportVersion4/5#rewriteParseables
-        }
-        return importedResource;
-    }
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsResourceType.class);
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#isDirectEditable()
