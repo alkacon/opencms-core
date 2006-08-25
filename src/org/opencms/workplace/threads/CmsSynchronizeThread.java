@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsSynchronizeThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/08/25 11:03:52 $
+ * Version: $Revision: 1.10.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.synchronize.CmsSynchronizeSettings;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,6 +98,7 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
         try {
             new CmsSynchronize(getCms(), m_settings, getReport());
         } catch (CmsException e) {
+            m_error = e;
             report.println(e);
         }
         report.println(Messages.get().container(Messages.RPT_SYNCHRONIZE_END_0), I_CmsReport.FORMAT_HEADLINE);

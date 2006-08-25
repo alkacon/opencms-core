@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.16.4.1 $
+ * Date   : $Date: 2006/08/25 11:03:52 $
+ * Version: $Revision: 1.16.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,11 +58,11 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.1 $
+ * @version $Revision: 1.16.4.2 $
  * 
  * @since 6.0.0
  */
-public class CmsThreadStore extends Thread {
+public final class CmsThreadStore extends Thread {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsThreadStore.class);

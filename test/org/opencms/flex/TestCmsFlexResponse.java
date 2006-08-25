@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexResponse.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/08/25 11:03:52 $
+ * Version: $Revision: 1.1.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Jason Trump
  *  
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.1.8.1 $
  * 
  * @since 6.0.1
  */
@@ -202,7 +202,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     }
 
     /** Method for setContentType(String) from the HttpServletResponse class. */
-    public static Method SET_CONTENT_TYPE = null;
+    static Method SET_CONTENT_TYPE = null;
     
     /** Flex controller to be used by the tests. */
     private CmsFlexController m_controller;
@@ -365,7 +365,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
         m_resMock = new RecordingMock();
         m_response = createMockResponse(m_resMock);
 
-        m_controller = new CmsFlexController(cms, null, CmsFlexDummyLoader.m_flexCache, m_request, m_response, false, true);
+        m_controller = new CmsFlexController(cms, null, CmsFlexDummyLoader.getFlexCache(), m_request, m_response, false, true);
         CmsFlexController.setController(m_request, m_controller);
     }
 

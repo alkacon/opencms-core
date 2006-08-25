@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/08/24 12:47:42 $
- * Version: $Revision: 1.90.4.7 $
+ * Date   : $Date: 2006/08/25 11:03:52 $
+ * Version: $Revision: 1.90.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,6 +63,7 @@ import org.opencms.util.CmsUUID;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -91,14 +92,14 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.7 $
+ * @version $Revision: 1.90.4.8 $
  * 
  * @since 6.0.0
  */
 public class OpenCmsTestCase extends TestCase {
 
     /** Class to bundle the connection information. */
-    protected class ConnectionData {
+    protected static class ConnectionData {
 
         /** The name of the database. */
         public String m_dbName;
@@ -122,7 +123,10 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Extension of <code>NodeComparator</code> to store unequal nodes.<p>
      */
-    class InternalNodeComparator extends NodeComparator {
+    static class InternalNodeComparator extends NodeComparator implements Serializable {
+
+        /** UID required for safe serialization. */
+        private static final long serialVersionUID = 2742216550970181832L;
 
         /** Unequal node1. */
         public Node m_node1 = null;
@@ -2911,10 +2915,11 @@ public class OpenCmsTestCase extends TestCase {
         HashMap destinationMap = target.getPermissionMap();
         HashMap sourceMap = source.getPermissionMap();
 
-        Iterator i = sourceMap.keySet().iterator();
+        Iterator i = sourceMap.entrySet().iterator();
         while (i.hasNext()) {
-            CmsUUID key = (CmsUUID)i.next();
-            CmsPermissionSet value = (CmsPermissionSet)sourceMap.get(key);
+            Map.Entry entry = (Map.Entry)i.next();
+            CmsUUID key = (CmsUUID)entry.getKey();
+            CmsPermissionSet value = (CmsPermissionSet)entry.getValue();
             if (destinationMap.containsKey(key)) {
                 CmsPermissionSet destValue = (CmsPermissionSet)destinationMap.get(key);
                 if (!destValue.equals(value)) {

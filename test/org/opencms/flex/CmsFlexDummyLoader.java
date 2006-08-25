@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/CmsFlexDummyLoader.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/08/25 11:03:52 $
+ * Version: $Revision: 1.1.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Jason Trump
  *  
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.1.8.1 $
  * 
  * @since 6.0.1
  */
@@ -68,10 +68,20 @@ public class CmsFlexDummyLoader implements I_CmsResourceLoader, I_CmsFlexCacheEn
     public static final String LOADER_INFO = "Dummy Loader, which provides test classes access to the CmsFlexCache instance";
 
     /** Provides access to the Flex cache. */
-    static CmsFlexCache m_flexCache;
+    private static CmsFlexCache m_flexCache;
 
     /** Holds the loder configuration. */
     private HashMap m_config = new HashMap();
+
+    /**
+     * Allows static access to the internal {@link CmsFlexCache}.<p>
+     * 
+     * @return the {@link CmsFlexCache} used by this OpenCms instance
+     */
+    public static CmsFlexCache getFlexCache() {
+
+        return m_flexCache;
+    }
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)

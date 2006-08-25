@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentMappingVisitor.java,v $
- * Date   : $Date: 2006/03/27 14:52:36 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/08/25 11:03:52 $
+ * Version: $Revision: 1.11.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,9 +65,6 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
     /** The "main" content definition, used for all mappings. */
     CmsXmlContentDefinition m_definition;
 
-    /** The error handler instance that stores the errors and warnings found. */
-    CmsXmlContentErrorHandler m_errorHandler;
-
     /**
      * Creates a new error handler node visitor.<p> 
      * 
@@ -83,16 +80,6 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
     }
 
     /**
-     * Returns the error handler instance that stores the errors and warnings found.<p>
-     * 
-     * @return the error handler instance that stores the errors and warnings found
-     */
-    public CmsXmlContentErrorHandler getErrorHandler() {
-
-        return m_errorHandler;
-    }
-
-    /**
      * @see org.opencms.xml.content.I_CmsXmlContentValueVisitor#visit(org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public void visit(I_CmsXmlContentValue value) {
@@ -100,10 +87,9 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_XMLCONTENT_VISIT_1, value.getPath()));
         }
-
         try {
             m_definition.getContentHandler().resolveMapping(m_cms, m_content, value);
-        } catch (CmsException e) {
+        } catch (CmsException e) {    
             LOG.error(Messages.get().getBundle().key(Messages.LOG_XMLCONTENT_RESOLVE_MAPPING_1, value.getPath()), e);
         }
     }
