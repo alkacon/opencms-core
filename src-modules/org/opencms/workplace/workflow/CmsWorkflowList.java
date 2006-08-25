@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/workflow/Attic/CmsWorkflowList.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/08/25 11:01:42 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.0 
  */
@@ -73,13 +73,16 @@ public class CmsWorkflowList extends A_CmsListDialog {
     public static final String LIST_ACTION_ICON = "ai";
 
     /** list column id constant. */
+    public static final String LIST_COLUMN_DATE = "cdc";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_HIDDEN = "ch";
+
+    /** list column id constant. */
     public static final String LIST_COLUMN_ICON = "ci";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_NAME = "cn";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_DATE = "cdc";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_OWNER = "co";
@@ -89,9 +92,6 @@ public class CmsWorkflowList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_TYPE = "ct";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_HIDDEN = "ch";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_USER_CREATED = "cd";
@@ -303,7 +303,7 @@ public class CmsWorkflowList extends A_CmsListDialog {
 
         // add column for hidden info
         CmsListColumnDefinition hiddenCol = new CmsListColumnDefinition(LIST_COLUMN_HIDDEN);
-        hiddenCol.setVisible(false);        
+        hiddenCol.setVisible(false);
         metadata.addColumn(hiddenCol);
     }
 
