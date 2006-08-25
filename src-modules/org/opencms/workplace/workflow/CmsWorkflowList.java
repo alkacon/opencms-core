@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/workflow/Attic/CmsWorkflowList.java,v $
- * Date   : $Date: 2006/08/25 11:01:42 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/08/25 14:00:41 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,11 +59,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Workflow list.<p>
+ * Workflow list, displays as very simple overview of all workflow tasks.<p>
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.0 
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/workflow/Attic/CmsWorkflowToolHandler.java,v $
- * Date   : $Date: 2006/08/25 11:01:42 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/08/25 14:00:41 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,11 +37,11 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
 
 /**
  * Workflow view handler that hides the tool if the current user
- * has not the needed privileges.<p>
+ * has not the required privileges.<p>
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
