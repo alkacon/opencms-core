@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
- * Version: $Revision: 1.76.4.4 $
+ * Date   : $Date: 2006/08/25 13:51:20 $
+ * Version: $Revision: 1.76.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.4 $ 
+ * @version $Revision: 1.76.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,9 +144,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The flag if switching tabs in the advanced property dialog is enabled. */
     private boolean m_enableAdvancedPropertyTabs;
-
-    /** The enable relation deletion flag. */
-    private boolean m_enableRelationDeletion = true;
 
     /** The configured encoding of the workplace. */
     private String m_encoding;
@@ -866,16 +863,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns if the deletion of relation targets is enabled.<p>
-     *
-     * @return <code>true</code> if the deletion of relation targets is enabled, otherwise <code>false</code>
-     */
-    public boolean isEnableRelationDeletion() {
-
-        return m_enableRelationDeletion;
-    }
-
-    /**
      * Returns if XML content is automatically corrected when opened with the editor.<p>
      * 
      * @return <code>true</code> if XML content is automatically corrected when opened with the editor, otherwise <code>false</code>
@@ -1042,21 +1029,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 m_enableAdvancedPropertyTabs ? Messages.INIT_ADV_PROP_DIALOG_SHOW_TABS_0
                 : Messages.INIT_ADV_PROP_DIALOG_HIDE_TABS_0));
-        }
-    }
-
-    /**
-     * Sets if the deletion of relation targets is enabled.<p>
-     *
-     * @param enableRelationDeletion <code>true</code> if relation deletion should be enabled, otherwise <code>false</code>
-     */
-    public void setEnableRelationDeletion(String enableRelationDeletion) {
-
-        m_enableRelationDeletion = Boolean.valueOf(enableRelationDeletion).booleanValue();
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                m_enableRelationDeletion ? Messages.INIT_RELATION_DELETION_ENABLED_0
-                : Messages.INIT_RELATION_DELETION_DISABLED_0));
         }
     }
 

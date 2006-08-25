@@ -22,7 +22,6 @@
 	defaultpropertiesonstructure,
 	enableadvancedpropertytabs,
 	maxfileuploadsize?, 
-	enablerelationdeletion?,
 	labeledfolders?,
 	rfsfileviewsettings?,
 	explorertypes+,
@@ -162,14 +161,6 @@
 # or leaving this node empty.
 -->
 <!ELEMENT maxfileuploadsize (#PCDATA)>
-
-<!--
-# If this is set to <code>false</code> only VFSMANAGERs 
-# will be able to delete resources that would break the
-# relation integrity.<p>
-# Default value is <code>true</code>
--->
-<!ELEMENT enablerelationdeletion (#PCDATA)>
 
 <!--
 # List of labeled folders. If a resource has a sibling in one of these folders,
@@ -361,7 +352,8 @@
 									reporttype,
 									uploadapplet,
 									publishbuttonappearance?,
-									show-fileuploadbutton?)>
+									show-fileuploadbutton?,
+									allowbrokenrelations?)>
 <!--
 # The buttonstyle controls the appearence of the buttons on the workplace.
 # Possible values are [image|textimage|text].
@@ -395,6 +387,14 @@
 -->	
 <!ELEMENT show-fileuploadbutton (#PCDATA)>
 	
+<!--
+# If this is set to <code>false</code> only CmsRole#VFS_MANAGERs 
+# will be able to delete resources that would break the
+# relation integrity.<p>
+# Default value is <code>true</code>
+-->
+<!ELEMENT allowbrokenrelations (#PCDATA)>
+
 <!--
 # The workplace startupsettings are used to define locale, project and view used directly
 # after the login.

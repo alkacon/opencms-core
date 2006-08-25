@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
- * Version: $Revision: 1.40.4.5 $
+ * Date   : $Date: 2006/08/25 13:51:20 $
+ * Version: $Revision: 1.40.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.5 $
+ * @version $Revision: 1.40.4.6 $
  * 
  * @since 6.0.0
  */
@@ -190,8 +190,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The subname of the rfsfilesettings/enabled node. */
     public static final String N_ENABLED = "enabled";
 
-    /** The name of the "enable relation deletion" node. */
-    public static final String N_ENABLERELATIONDELETION = "enablerelationdeletion";
+    /** The name of the "allow broken relations" node. */
+    public static final String N_ALLOWBROKENRELATIONS = "allowbrokenrelations";
 
     /** The name of the "user management enabled" node. */
     public static final String N_ENABLEUSERMGMT = "enableusermanagement";
@@ -747,9 +747,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add max file upload size rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_MAXUPLOADSIZE, "setFileMaxUploadSize", 0);
 
-        // add enable relation deletion rule
-        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_ENABLERELATIONDELETION, "setEnableRelationDeletion", 0);
-
         // add labeled folders rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, "addLabeledFolder", 1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
@@ -780,6 +777,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // creation of the default user settings              
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES, CmsDefaultUserSettings.class);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES, "setDefaultUserSettings");
+
+        // TODO: most of these settings are not user dependent, so they should not be stored in the CmsDefaultUserSettings class
+        int todo = 0;
 
         // add workplace preferences generaloptions rules 
         digester.addCallMethod("*/"
@@ -832,6 +832,18 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_WORKPLACEGENERALOPTIONS
             + "/"
             + N_SHOWFILEUPLOADBUTTON, "setShowFileUploadButton", 0);
+        // add allow broken relations rule
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACEGENERALOPTIONS
+            + "/"
+            + N_ALLOWBROKENRELATIONS, "setAllowBrokenRelations", 0);
+
         // add workplace preferences startupsettings rules 
         digester.addCallMethod("*/"
             + N_WORKPLACE
@@ -1258,7 +1270,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         workplaceElement.addElement(N_ENABLEADVANCEDPROPERTYTABS).setText(
             String.valueOf(m_workplaceManager.isEnableAdvancedPropertyTabs()));
         workplaceElement.addElement(N_MAXUPLOADSIZE).setText(String.valueOf(m_workplaceManager.getFileMaxUploadSize()));
-        workplaceElement.addElement(N_ENABLERELATIONDELETION).setText(String.valueOf(m_workplaceManager.isEnableRelationDeletion()));
 
         // add <labeledfolders> resource list
         Element labeledElement = workplaceElement.addElement(N_LABELEDFOLDERS);
@@ -1361,6 +1372,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <show-fileuploadbutton> node
         workplaceGeneraloptions.addElement(N_SHOWFILEUPLOADBUTTON).setText(
             m_workplaceManager.getDefaultUserSettings().getShowFileUploadButtonString());
+        // add the <allowbrokenrelations> node
+        workplaceGeneraloptions.addElement(N_ALLOWBROKENRELATIONS).setText(
+            String.valueOf(m_workplaceManager.getDefaultUserSettings().isAllowBrokenRelations()));
+
         // add the <workplace-startupsettings> node
         Element workplaceStartupsettings = workplacePreferences.addElement(N_WORKPLACESTARTUPSETTINGS);
         // add the <locale> node

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.17.4.2 $
+ * Date   : $Date: 2006/08/25 13:51:20 $
+ * Version: $Revision: 1.17.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.configuration;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.CmsLog;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,7 +47,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.2 $
+ * @version $Revision: 1.17.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -57,7 +58,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      * Must be private because of Findbugs rule "MS".
      */
     private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
-    
+
     /** Array list for fast lookup of "button styles". */
     public static final List BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
 
@@ -93,6 +94,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Value for publishing siblings in publish dialog settings. */
     private static final String PUBLISHMODE_SIBLINGS = "allsiblings";
+
+    /** The enable relation deletion flag. */
+    private boolean m_allowBrokenRelations = true;
 
     /**
      * Gets the default copy mode when copying a file of the user.<p>
@@ -401,6 +405,31 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getWorkplaceButtonStyleString() {
 
         return BUTTON_STYLES[getWorkplaceButtonStyle()];
+    }
+
+    /**
+     * Returns if the deletion of relation targets is enabled.<p>
+     *
+     * @return <code>true</code> if the deletion of relation targets is enabled, otherwise <code>false</code>
+     */
+    public boolean isAllowBrokenRelations() {
+
+        return m_allowBrokenRelations;
+    }
+
+    /**
+     * Sets if the deletion of relation targets is enabled.<p>
+     *
+     * @param allowBrokenRelations <code>true</code> if relation deletion should be enabled, otherwise <code>false</code>
+     */
+    public void setAllowBrokenRelations(String allowBrokenRelations) {
+
+        m_allowBrokenRelations = Boolean.valueOf(allowBrokenRelations).booleanValue();
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                m_allowBrokenRelations ? Messages.INIT_RELATION_DELETION_ENABLED_0
+                : Messages.INIT_RELATION_DELETION_DISABLED_0));
+        }
     }
 
     /**

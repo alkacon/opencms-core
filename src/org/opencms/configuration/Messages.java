@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.14.4.3 $
+ * Date   : $Date: 2006/08/25 13:51:20 $
+ * Version: $Revision: 1.14.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.4.3 $
+ * @version $Revision: 1.14.4.4 $
  * 
  * @since 6.0.0
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_RELATION_DELETION_DISABLED_0 = "INIT_RELATION_DELETION_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_RELATION_DELETION_ENABLED_0 = "INIT_RELATION_DELETION_ENABLED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CONFIG_WITH_UNKNOWN_CLASS_1 = "ERR_CONFIG_WITH_UNKNOWN_CLASS_1";
