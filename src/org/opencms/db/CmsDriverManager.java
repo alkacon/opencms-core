@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/08/25 08:13:11 $
- * Version: $Revision: 1.570.2.13 $
+ * Date   : $Date: 2006/08/25 12:22:55 $
+ * Version: $Revision: 1.570.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -6668,6 +6668,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         deleteRelationsForResource(dbc, resource, CmsRelationFilter.TARGETS);
         // build the links again only if needed
         if (links != null) {
+            Set writtenRelations = new HashSet();
             // create new relation information
             Iterator itLinks = links.iterator();
             while (itLinks.hasNext()) {
@@ -6688,8 +6689,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             CmsResource.DATE_EXPIRED_DEFAULT,
                             link.getType());
                     }
-                    createRelation(dbc, relation);
-                    newRelations.add(relation);
+                    // do not write twice the same relation
+                    if (!writtenRelations.contains(relation.getTargetPath())) {
+                        createRelation(dbc, relation);
+                        writtenRelations.add(relation.getTargetPath());
+                        newRelations.add(relation);
+                    }
                 }
             }
         }

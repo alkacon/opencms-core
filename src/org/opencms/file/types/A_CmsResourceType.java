@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
- * Version: $Revision: 1.42.4.2 $
+ * Date   : $Date: 2006/08/25 12:22:55 $
+ * Version: $Revision: 1.42.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.2 $ 
+ * @version $Revision: 1.42.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -939,7 +939,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * Updates the relation information by removing the relations for the given resource, and then 
      * parsing the links of a fresh read version of the resource with the given resource name.<p>
      * 
-     * This code is here instead of being in the {@link A_CmsLinkParseableResourceType} class 
+     * This code is here instead of being in the {@link A_CmsResourceTypeLinkParseable} class 
      * because after some operations the type may be change from non link parseable to link parseable.<p>
      *   
      * It should always called after an operation that may change the type of a resource.<p>

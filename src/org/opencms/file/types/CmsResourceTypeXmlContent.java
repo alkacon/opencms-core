@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
- * Version: $Revision: 1.22.8.2 $
+ * Date   : $Date: 2006/08/25 12:22:55 $
+ * Version: $Revision: 1.22.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,6 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -66,11 +65,11 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.8.2 $ 
+ * @version $Revision: 1.22.8.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsResourceTypeXmlContent extends A_CmsLinkParseableResourceType {
+public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
     /** Configuration key for the (optional) schema. */
     public static final String CONFIGURATION_SCHEMA = "schema";
@@ -179,7 +178,7 @@ public class CmsResourceTypeXmlContent extends A_CmsLinkParseableResourceType {
             cms.getRequestContext().setRequestTime(requestTime);
         }
 
-        Map links = new HashMap();
+        List links = new ArrayList();
         List locales = xmlContent.getLocales();
 
         // iterate over all languages
@@ -204,21 +203,19 @@ public class CmsResourceTypeXmlContent extends A_CmsLinkParseableResourceType {
                         // external links are ommitted
                         if (link.isInternal()) {
                             link.checkConsistency(cms);
-                            if (links.get(link.getTarget()) == null) {
-                                links.put(link.getTarget(), link);
-                            }
+                            links.add(link);
                         }
                     }
                 } else if (value instanceof CmsXmlVfsFileReferenceValue) {
                     CmsXmlVfsFileReferenceValue refValue = (CmsXmlVfsFileReferenceValue)value;
                     CmsLink link = refValue.getLink(cms);
-                    if (link != null && !links.containsKey(link.getTarget())) {
-                        links.put(link.getTarget(), link);
+                    if (link != null) {
+                        links.add(link);
                     }
                 }
             }
         }
-        return new ArrayList(links.values());
+        return links;
     }
 
     /**

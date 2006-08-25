@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.121.4.5 $
+ * Date   : $Date: 2006/08/25 12:22:55 $
+ * Version: $Revision: 1.121.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.5 $ 
+ * @version $Revision: 1.121.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -1962,14 +1962,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
             } else {
                 // export uri not in cache, must look up the file in the VFS
-                boolean match = false;
-
                 vfsName = getVfsNameInternal(cms, rfsName);
                 if (vfsName != null) {
-                    match = cms.existsResource(vfsName);
+                    try {
+                        resource = cms.readResource(vfsName);
+                    } catch (Exception e) {
+                        // ignore, still not found
+                    }
                 }
-
-                if (!match) {
+                if (resource == null) {
                     // it could be a translated resourcename with parameters, so make a lookup
                     // in the published resources table
                     try {

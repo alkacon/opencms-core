@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.21.4.1 $
+ * Date   : $Date: 2006/08/25 12:22:55 $
+ * Version: $Revision: 1.21.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.extensions.TestSetup;
@@ -54,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.4.1 $
+ * @version $Revision: 1.21.4.2 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -487,17 +488,11 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.unlockResource("/folder2/folder1/");
         cms.publishResource("/folder2/folder1/");
 
-        assertState(cms, "/folder2/folder1/", CmsResource.STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/index.html", CmsResource.STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder11/", CmsResource.STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder11/index.html", CmsResource.STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder11/subsubfolder111/", CmsResource.STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder11/subsubfolder111/jsp.jsp", CmsResource.STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder12/", CmsResource.STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder12/index.html", CmsResource.STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder12/subsubfolder121/", CmsResource.STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder12/subsubfolder121/index.html", CmsResource.STATE_UNCHANGED);
-
+        Iterator itResources = cms.readResources("/folder2/folder1/", CmsResourceFilter.ALL, true).iterator();
+        while (itResources.hasNext()) {
+            CmsResource res = (CmsResource)itResources.next();
+            assertEquals(res.getState(), CmsResource.STATE_UNCHANGED);
+        }
     }
 
     /**
@@ -523,9 +518,9 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         // create siblings
         cms.copyResource("/folder1/subfolder12/subsubfolder121", "/test/subtest", CmsResource.COPY_AS_SIBLING);
-        cms.unlockResource("/test");
 
         // publish
+        cms.unlockResource("/test");
         cms.publishResource("/test");
 
         // lock sibling 
@@ -546,6 +541,5 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         // publish
         cms.publishResource("/test");
-
     }
 }

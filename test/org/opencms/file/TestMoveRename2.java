@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename2.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/25 12:22:55 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestMoveRename2 extends OpenCmsTestCase {
 
@@ -381,8 +381,8 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         echo("Testing to rename a folder to the same name with a different case");
 
         // Creating paths
-        String source = "/xmlcontent";
-        String destination = "/XMLcontent";
+        String source = "/folder1/subfolder11/subsubfolder111";
+        String destination = "/folder1/subfolder11/SubSubFolder111";
 
         storeResources(cms, source);
 

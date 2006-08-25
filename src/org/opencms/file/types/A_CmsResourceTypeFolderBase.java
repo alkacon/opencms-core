@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
- * Version: $Revision: 1.16.4.2 $
+ * Date   : $Date: 2006/08/25 12:22:55 $
+ * Version: $Revision: 1.16.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.2 $ 
+ * @version $Revision: 1.16.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,15 +133,13 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         for (int i = 0; i < resources.size(); i++) {
             CmsResource childResource = (CmsResource)resources.get(i);
             String childDestination = destination.concat(childResource.getName());
-            if (childResource.isFolder()) {
-                // handle child resources
-                getResourceType(childResource.getTypeId()).copyResource(
-                    cms,
-                    securityManager,
-                    childResource,
-                    childDestination,
-                    siblingMode);
-            }
+            // handle child resources
+            getResourceType(childResource.getTypeId()).copyResource(
+                cms,
+                securityManager,
+                childResource,
+                childDestination,
+                siblingMode);
         }
     }
 
@@ -400,23 +398,18 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
                 I_CmsResourceType type = getResourceType(childResource.getTypeId());
-                if (childResource.isFolder()) {
+                if (childResource.isFolder() || childResource.getState() != CmsResource.STATE_NEW) {
                     // recurse into this method for subfolders
                     type.undoChanges(cms, securityManager, childResource, mode);
                 } else {
-                    if (childResource.getState() != CmsResource.STATE_NEW) {
-                        // handle child resources
-                        type.undoChanges(cms, securityManager, childResource, mode);
-                    } else {
-                        if (mode > CmsResource.UNDO_CONTENT_RECURSIVE) { // undo move?
-                            String newPath = cms.getRequestContext().removeSiteRoot(
-                                securityManager.readResource(
-                                    cms.getRequestContext(),
-                                    resource.getStructureId(),
-                                    CmsResourceFilter.ALL).getRootPath()
-                                    + childResource.getName());
-                            type.moveResource(cms, securityManager, childResource, newPath);
-                        }
+                    if (mode > CmsResource.UNDO_CONTENT_RECURSIVE) { // undo move?
+                        String newPath = cms.getRequestContext().removeSiteRoot(
+                            securityManager.readResource(
+                                cms.getRequestContext(),
+                                resource.getStructureId(),
+                                CmsResourceFilter.ALL).getRootPath()
+                                + childResource.getName());
+                        type.moveResource(cms, securityManager, childResource, newPath);
                     }
                 }
             }

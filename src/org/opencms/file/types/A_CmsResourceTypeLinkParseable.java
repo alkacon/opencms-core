@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/A_CmsLinkParseableResourceType.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeLinkParseable.java,v $
+ * Date   : $Date: 2006/08/25 12:22:55 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -56,12 +56,12 @@ import org.apache.commons.logging.Log;
  * 
  * @since 6.5.0 
  */
-public abstract class A_CmsLinkParseableResourceType extends A_CmsResourceType implements I_CmsLinkParseable {
+public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType implements I_CmsLinkParseable {
 
     /**
      * Default constructor.<p>
      */
-    public A_CmsLinkParseableResourceType() {
+    public A_CmsResourceTypeLinkParseable() {
 
         super();
     }
