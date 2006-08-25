@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2006/08/19 13:40:49 $
- * Version: $Revision: 1.30.4.2 $
+ * Date   : $Date: 2006/08/25 08:13:10 $
+ * Version: $Revision: 1.30.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.30.4.2 $ 
+ * @version $Revision: 1.30.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -246,7 +246,7 @@ public class CmsSecure extends CmsDialog {
      */
     public String getResourceUrl() {
 
-        return CmsResource.getOnlineLink(getCms(), getParamResource());
+        return OpenCms.getLinkManager().getOnlineLink(getCms(), getParamResource());
     }
 
     /**

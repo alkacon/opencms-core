@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.3.0</opencms_version>
-		<createdate>Mon, 21 Aug 2006 13:05:53 GMT</createdate>
+		<opencms_version>6.5.0</opencms_version>
+		<createdate>Wed, 23 Aug 2006 10:43:01 GMT</createdate>
 		<project>Offline</project>
 		<export_version>5</export_version>
 	</info>
@@ -18,7 +18,7 @@
 It includes classes and dialogs used by the generic workflow implementation.
 
 (c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>1.0.10</version>
+		<version>1.0.12</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -47,7 +47,7 @@ It includes classes and dialogs used by the generic workflow implementation.
 			<destination>system</destination>
 			<type>folder</type>
 			<uuidstructure>e1e4202e-2b9f-11db-a07f-15ed7a6c85e9</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 14 Aug 2006 14:19:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -271,17 +271,36 @@ It includes classes and dialogs used by the generic workflow implementation.
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/workflow/buttons/workflow.png</source>
-			<destination>system/workplace/resources/tools/workflow/buttons/workflow.png</destination>
+			<source>system/workplace/resources/tools/workflow/buttons/my_workflow.png</source>
+			<destination>system/workplace/resources/tools/workflow/buttons/my_workflow.png</destination>
 			<type>image</type>
-			<uuidstructure>bd3f49df-3114-11db-b933-15ed7a6c85e9</uuidstructure>
-			<uuidresource>bd3f49e0-3114-11db-b933-15ed7a6c85e9</uuidresource>
-			<datelastmodified>Mon, 21 Aug 2006 12:59:55 GMT</datelastmodified>
+			<uuidstructure>ffc583e7-3292-11db-878c-15ed7a6c85e9</uuidstructure>
+			<uuidresource>ffc583e8-3292-11db-878c-15ed7a6c85e9</uuidresource>
+			<datelastmodified>Wed, 23 Aug 2006 10:35:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 21 Aug 2006 12:58:28 GMT</datecreated>
+			<datecreated>Wed, 23 Aug 2006 10:34:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workflow/buttons/other_workflow.png</source>
+			<destination>system/workplace/resources/tools/workflow/buttons/other_workflow.png</destination>
+			<type>image</type>
+			<uuidstructure>13c91c90-3293-11db-878c-15ed7a6c85e9</uuidstructure>
+			<uuidresource>13c91c91-3293-11db-878c-15ed7a6c85e9</uuidresource>
+			<datelastmodified>Wed, 23 Aug 2006 10:35:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 23 Aug 2006 10:35:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -410,7 +429,7 @@ It includes classes and dialogs used by the generic workflow implementation.
 			<type>jsp</type>
 			<uuidstructure>e5a1111d-310f-11db-b933-15ed7a6c85e9</uuidstructure>
 			<uuidresource>e5a1111e-310f-11db-b933-15ed7a6c85e9</uuidresource>
-			<datelastmodified>Mon, 21 Aug 2006 12:24:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 21 Aug 2006 13:55:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 21 Aug 2006 12:23:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -450,7 +469,7 @@ It includes classes and dialogs used by the generic workflow implementation.
 			<type>jsp</type>
 			<uuidstructure>aac7bf18-310b-11db-b933-15ed7a6c85e9</uuidstructure>
 			<uuidresource>aac7bf19-310b-11db-b933-15ed7a6c85e9</uuidresource>
-			<datelastmodified>Mon, 21 Aug 2006 12:57:41 GMT</datelastmodified>
+			<datelastmodified>Mon, 21 Aug 2006 13:48:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 21 Aug 2006 11:53:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -475,6 +494,10 @@ It includes classes and dialogs used by the generic workflow implementation.
 				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_WORKFLOW_LIST_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workflow/icons/big/workflow.png:tools/workflow/icons/small/workflow.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>

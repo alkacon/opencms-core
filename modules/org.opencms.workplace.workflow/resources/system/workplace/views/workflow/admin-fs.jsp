@@ -1,14 +1,13 @@
 <%@ page import="
-        org.opencms.workplace.*,
-        org.opencms.workplace.administration.*,
-        org.opencms.workplace.tools.*,
+    org.opencms.workplace.administration.*,
+    org.opencms.workplace.tools.*,
 	org.opencms.jsp.*"
 %>
 <%
     CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
     CmsAdminFrameset wp = new CmsAdminFrameset(jsp);
     // reset root
-    wp.setParamRoot("demos");
+    wp.setParamRoot("workflow");
     wp.setParamBase("/");
     wp.getToolManager().initParams(wp);
     // rewrite params

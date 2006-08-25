@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.146.4.5 $
+ * Date   : $Date: 2006/08/25 08:13:10 $
+ * Version: $Revision: 1.146.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationFilter;
-import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -85,7 +84,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.5 $
+ * @version $Revision: 1.146.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -468,7 +467,7 @@ public final class CmsObject {
      */
     public void copyResourceToProject(String resourcename, CmsProject project) throws CmsException {
 
-        // TODO: This should alwasy be done automatically, never by the user - remove this method
+        // TODO: This should always be done automatically, never by the user - remove this method
         int todo_v7;
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
@@ -1364,8 +1363,8 @@ public final class CmsObject {
      * @param resourceName the name of the resource to retrieve the relations for
      * @param filter the filter to match the relation 
      * 
-     * @return a List containing
-     *      all {@link org.opencms.relations.CmsRelation} objects for the given resource mathing the given filter
+     * @return a List containing all {@link org.opencms.relations.CmsRelation} 
+     *          objects for the given resource mathing the given filter
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -1373,24 +1372,8 @@ public final class CmsObject {
      */
     public List getRelationsForResource(String resourceName, CmsRelationFilter filter) throws CmsException {
 
-        CmsResource resource = readResource(resourceName);
-        List relations = m_securityManager.getRelationsForResource(m_context, resource, filter);
-        if (relations.isEmpty()) {
-            // it may be necessary to recreate the relation information for this resource
-
-            // TODO: This should not be done in the CmsObject, but in the deeper levels (CmsDriverManager)
-            int todo_v7;
-
-            I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
-            if (resourceType instanceof I_CmsLinkParseable) {
-                I_CmsLinkParseable linkValidatable = (I_CmsLinkParseable)resourceType;
-                relations = m_securityManager.updateRelationsForResource(
-                    m_context,
-                    resource,
-                    linkValidatable.parseLinks(this, CmsFile.upgrade(resource, this)));
-            }
-        }
-        return relations;
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        return m_securityManager.getRelationsForResource(m_context, resource, filter);
     }
 
     /**
@@ -1832,6 +1815,7 @@ public final class CmsObject {
     public void lockResourceInWorkflow(String resourcename, CmsProject wfProject) throws CmsException {
 
         // TODO: Workflow should use special type instead of project
+        // This should also be a method of the workflow manager
         int todo_v7 = 0;
 
         lockResource(resourcename, wfProject, CmsLockType.WORKFLOW);
@@ -3498,9 +3482,6 @@ public final class CmsObject {
      * @throws Exception if something goes wrong
      */
     public Map validateRelations(List resources, I_CmsReport report) throws Exception {
-
-        // TODO: The return values should not be Strings, but custom objects
-        int todo_v7;
 
         return m_securityManager.validateRelations(this, resources, report);
     }

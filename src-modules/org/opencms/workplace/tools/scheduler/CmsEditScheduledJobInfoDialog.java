@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.26.4.1 $
+ * Date   : $Date: 2006/08/25 08:13:10 $
+ * Version: $Revision: 1.26.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.notification.CmsContentNotificationJob;
 import org.opencms.relations.CmsExternalLinksValidator;
+import org.opencms.relations.CmsInternalRelationsValidationJob;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.jobs.CmsCreateImageSizeJob;
 import org.opencms.scheduler.jobs.CmsImageCacheCleanupJob;
@@ -70,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.26.4.1 $ 
+ * @version $Revision: 1.26.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -274,6 +275,11 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     protected List getComboClasses() {
 
         List result = new ArrayList();
+        result.add(new CmsSelectWidgetOption(
+            CmsInternalRelationsValidationJob.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_INTERNALVALIDATION_0)));
         result.add(new CmsSelectWidgetOption(
             CmsPublishJob.class.getName(),
             false,

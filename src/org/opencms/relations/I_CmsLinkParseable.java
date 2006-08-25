@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/I_CmsLinkParseable.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/08/25 08:13:11 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.3.0 
  */
@@ -63,6 +63,8 @@ public interface I_CmsLinkParseable {
      * 
      * Implementations of this method should return the list of links including internal 
      * (OpenCms VFS) and external links (http, https, mailto, ftp, etc.).<p>
+     * 
+     * The implementation have to take care not to return the same link twice.<p>
      * 
      * @param cms the current user's context
      * @param file the file to be parsed

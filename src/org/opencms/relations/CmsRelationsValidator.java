@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Attic/CmsRelationsValidator.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/08/25 08:13:11 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.3.0 
  */
@@ -109,7 +109,7 @@ public class CmsRelationsValidator {
         report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
         if (resources == null) {
             resources = new ArrayList();
-            CmsResourceFilter filter = CmsResourceFilter.ALL.addExcludeState(CmsResource.STATE_DELETED);
+            CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
             Iterator itTypes = OpenCms.getResourceManager().getResourceTypes().iterator();
             while (itTypes.hasNext()) {
                 I_CmsResourceType type = (I_CmsResourceType)itTypes.next();

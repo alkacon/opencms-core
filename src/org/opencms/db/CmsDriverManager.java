@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.570.2.12 $
+ * Date   : $Date: 2006/08/25 08:13:11 $
+ * Version: $Revision: 1.570.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -6653,7 +6653,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the db context
      * @param resource the resource to update the relations for
-     * @param relations the relations to update
+     * @param links the links to consider for updating
      * 
      * @return the list of new relations
      * 
@@ -6661,17 +6661,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see CmsSecurityManager#updateRelationsForResource(CmsRequestContext, CmsResource, List)
      */
-    public List updateRelationsForResource(CmsDbContext dbc, CmsResource resource, List relations) throws CmsException {
+    public List updateRelationsForResource(CmsDbContext dbc, CmsResource resource, List links) throws CmsException {
 
         List newRelations = new ArrayList();
         // clean the relation information for this resource
         deleteRelationsForResource(dbc, resource, CmsRelationFilter.TARGETS);
-        // build the links again
-        if (resource.getLength() > 0) {
-            // create new relation information based on the content
-            Iterator itRelations = relations.iterator();
-            while (itRelations.hasNext()) {
-                CmsLink link = (CmsLink)itRelations.next();
+        // build the links again only if needed
+        if (links != null) {
+            // create new relation information
+            Iterator itLinks = links.iterator();
+            while (itLinks.hasNext()) {
+                CmsLink link = (CmsLink)itLinks.next();
                 if (link.isInternal()) { // only update internal links
                     CmsRelation relation;
                     try {

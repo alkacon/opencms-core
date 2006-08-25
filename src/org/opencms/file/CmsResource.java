@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2006/08/19 13:40:39 $
- * Version: $Revision: 1.45.4.2 $
+ * Date   : $Date: 2006/08/25 08:13:10 $
+ * Version: $Revision: 1.45.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,12 @@
 
 package org.opencms.file;
 
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.CmsLog;
-import org.opencms.main.CmsPermalinkResourceHandler;
-import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
 import java.util.Comparator;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Base class for all OpenCms VFS resources like <code>{@link CmsFile}</code> or <code>{@link CmsFolder}</code>.<p>
@@ -53,7 +45,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.2 $
+ * @version $Revision: 1.45.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -247,9 +239,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The vfs path of the system folder. */
     public static final String VFS_FOLDER_SYSTEM = "/system";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsResource.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 257325098790850498L;
@@ -478,46 +467,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the online link for the given resource.<p>
-     * 
-     * Like
-     * <code>http://site.enterprise.com:8080/index.html</code>.<p>
-     * 
-     * @param cms the cms context
-     * @param resourceName the resource to generate the online link for
-     * 
-     * @return the online link
-     */
-    public static String getOnlineLink(CmsObject cms, String resourceName) {
-
-        // TODO: Remove this method from CmsResource 
-        int todo_v7 = 0;
-
-        String onlineLink = "";
-        try {
-            CmsSite currentSite = CmsSiteManager.getCurrentSite(cms);
-            CmsProject currentProject = cms.getRequestContext().currentProject();
-            try {
-                cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
-                onlineLink = OpenCms.getLinkManager().substituteLink(cms, resourceName, currentSite.getSiteRoot());
-            } finally {
-                cms.getRequestContext().setCurrentProject(currentProject);
-            }
-            String serverPrefix = currentSite.getServerPrefix(cms, resourceName);
-            if (!onlineLink.startsWith(serverPrefix)) {
-                onlineLink = serverPrefix + onlineLink;
-            }
-        } catch (CmsException e) {
-            // should never happen
-            onlineLink = e.getLocalizedMessage();
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e);
-            }
-        }
-        return onlineLink;
-    }
-
-    /**
      * Returns the absolute parent folder name of a resource.<p>
      * 
      * The parent resource of a file is the folder of the file.
@@ -598,47 +547,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             result = (level < 0) ? "/" : resource;
         }
         return result;
-    }
-
-    /**
-     * Returns the perma link for the given resource.<p>
-     * 
-     * Like
-     * <code>http://site.enterprise.com:8080/permalink/4b65369f-1266-11db-8360-bf0f6fbae1f8.html</code>.<p>
-     * 
-     * @param cms the cms context
-     * @param resourceName the resource to generate the perma link for
-     * 
-     * @return the perma link
-     */
-    public static String getPermalink(CmsObject cms, String resourceName) {
-
-        // TODO: Remove this method from CmsResource 
-        int todo_v7 = 0;
-
-        String permalink = "";
-        try {
-            permalink = OpenCms.getLinkManager().substituteLink(cms, CmsPermalinkResourceHandler.PERMALINK_HANDLER);
-            String id = cms.readResource(resourceName, CmsResourceFilter.ALL).getStructureId().toString();
-            permalink += id;
-            String ext = getExtension(resourceName);
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ext)) {
-                permalink += "." + getExtension(resourceName);
-            }
-            String serverPrefix = CmsSiteManager.getCurrentSite(cms).getServerPrefix(
-                cms,
-                CmsPermalinkResourceHandler.PERMALINK_HANDLER);
-            if (!permalink.startsWith(serverPrefix)) {
-                permalink = serverPrefix + permalink;
-            }
-        } catch (CmsException e) {
-            // if not enough permissions
-            permalink = Messages.get().container(Messages.ERR_PERMALINK_1, resourceName).key();
-            if (LOG.isErrorEnabled()) {
-                LOG.error(permalink, e);
-            }
-        }
-        return permalink;
     }
 
     /**

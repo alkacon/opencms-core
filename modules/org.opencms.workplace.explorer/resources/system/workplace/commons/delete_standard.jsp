@@ -1,4 +1,7 @@
-<%@ page import="org.opencms.workplace.commons.*" %><%	
+<%@ page import="
+		org.opencms.workplace.CmsDialog,
+		org.opencms.workplace.commons.CmsDelete
+" %><%	
 
 	// initialize the workplace class
 	CmsDelete wp = new CmsDelete(pageContext, request, response);
@@ -7,7 +10,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsDelete.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
@@ -16,7 +19,7 @@ break;
 
 
 case CmsDelete.ACTION_DELETE:
-case CmsDelete.ACTION_WAIT:
+case CmsDialog.ACTION_WAIT:
 
 //////////////////// ACTION: main delete action (with optional confirm / wait screen)
 
@@ -25,7 +28,7 @@ case CmsDelete.ACTION_WAIT:
 break;
 
 
-case CmsDelete.ACTION_DEFAULT:
+case CmsDialog.ACTION_DEFAULT:
 default:
 
 //////////////////// ACTION: show delete dialog (default)
@@ -37,20 +40,22 @@ default:
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
-if (wp.isMultiOperation()) { %>
-	<%@ include file="includes/multiresourcelist.txt" %><%
-} else { %>
-	<%@ include file="includes/resourceinfo.txt" %><%
+if (wp.isMultiOperation()) { 
+    // include resource list
+    %><%@ include file="includes/multiresourcelist.txt" %><%
+} else { 
+    // include resource information
+	%><%@ include file="includes/resourceinfo.txt" %><%
 } %>
 
 <%= wp.dialogSpacer() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
+<%= wp.buildRelations() %>
 <%= wp.buildDeleteSiblings() %>
-
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>
 

@@ -22,6 +22,7 @@
 	defaultpropertiesonstructure,
 	enableadvancedpropertytabs,
 	maxfileuploadsize?, 
+	enablerelationdeletion?,
 	labeledfolders?,
 	rfsfileviewsettings?,
 	explorertypes+,
@@ -161,6 +162,14 @@
 # or leaving this node empty.
 -->
 <!ELEMENT maxfileuploadsize (#PCDATA)>
+
+<!--
+# If this is set to <code>false</code> only VFSMANAGERs 
+# will be able to delete resources that would break the
+# relation integrity.<p>
+# Default value is <code>true</code>
+-->
+<!ELEMENT enablerelationdeletion (#PCDATA)>
 
 <!--
 # List of labeled folders. If a resource has a sibling in one of these folders,

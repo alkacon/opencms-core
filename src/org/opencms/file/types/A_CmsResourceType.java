@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.42.4.1 $
+ * Date   : $Date: 2006/08/25 08:13:10 $
+ * Version: $Revision: 1.42.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
@@ -66,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.1 $ 
+ * @version $Revision: 1.42.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -246,6 +248,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     throws CmsException {
 
         securityManager.chtype(cms.getRequestContext(), resource, type);
+        // type may have changed from non link parseable to link parseable
+        updateRelations(cms, securityManager, resource, resource.getRootPath());
     }
 
     /**
@@ -623,6 +627,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         List properties) throws CmsException {
 
         securityManager.replaceResource(cms.getRequestContext(), resource, type, content, properties);
+        // type may have changed from non link parseable to link parseable
+        updateRelations(cms, securityManager, resource, resource.getRootPath());
     }
 
     /**
@@ -632,6 +638,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     throws CmsException {
 
         securityManager.restoreResource(cms.getRequestContext(), resource, tag);
+        // type may have changed from non link parseable to link parseable
+        updateRelations(cms, securityManager, resource, resource.getRootPath());
     }
 
     /**
@@ -719,6 +727,29 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     throws CmsException {
 
         securityManager.undoChanges(cms.getRequestContext(), resource, mode);
+        // type may have changed from non link parseable to link parseable        
+        CmsResource undoneResource1 = null;
+        try {
+            // first try to locate the resource by path
+            undoneResource1 = createRelations(cms, securityManager, resource.getRootPath());
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ignore, undone move operation
+        }
+        // now, in case a move operation has been undone, locate the resource by id
+        CmsResource undoneResource2 = securityManager.readResource(
+            cms.getRequestContext(),
+            resource.getStructureId(),
+            CmsResourceFilter.ALL);
+        I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
+        if (resourceType instanceof I_CmsLinkParseable) {
+            I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
+            if (undoneResource1 == null || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
+                securityManager.updateRelationsForResource(
+                    cms.getRequestContext(),
+                    undoneResource2,
+                    linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms)));
+            }
+        }
     }
 
     /**
@@ -902,5 +933,61 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         // return the result
         return result;
+    }
+
+    /**
+     * Updates the relation information by removing the relations for the given resource, and then 
+     * parsing the links of a fresh read version of the resource with the given resource name.<p>
+     * 
+     * This code is here instead of being in the {@link A_CmsLinkParseableResourceType} class 
+     * because after some operations the type may be change from non link parseable to link parseable.<p>
+     *   
+     * It should always called after an operation that may change the type of a resource.<p>
+     * 
+     * @param cms the cms context
+     * @param securityManager the security manager
+     * @param oldResource the original resource to delete the relation information for
+     * @param newResourceName the name of the new resource to create the relations for 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void updateRelations(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource oldResource,
+        String newResourceName) throws CmsException {
+
+        // delete the links for the original resource
+        securityManager.deleteRelationsForResource(cms.getRequestContext(), oldResource, CmsRelationFilter.TARGETS);
+        // create the relations for the new resource, only if type is link parseable!!
+        createRelations(cms, securityManager, newResourceName);
+    }
+
+    /**
+     * Creates the relation information for the resource with the given resource name.<p>
+     * 
+     * @param cms the cms context
+     * @param securityManager the secutiry manager
+     * @param resourceName the resource name of the resource to update the relations for
+     * 
+     * @return the fresh read resource 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsResource createRelations(CmsObject cms, CmsSecurityManager securityManager, String resourceName)
+    throws CmsException {
+
+        CmsResource resource = securityManager.readResource(
+            cms.getRequestContext(),
+            resourceName,
+            CmsResourceFilter.ALL);
+        I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
+        if (resourceType instanceof I_CmsLinkParseable) {
+            I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
+            securityManager.updateRelationsForResource(cms.getRequestContext(), resource, linkParseable.parseLinks(
+                cms,
+                CmsFile.upgrade(resource, cms)));
+        }
+        return resource;
     }
 }

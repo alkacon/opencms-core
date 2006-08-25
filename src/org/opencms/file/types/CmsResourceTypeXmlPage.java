@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.25.4.1 $
+ * Date   : $Date: 2006/08/25 08:13:10 $
+ * Version: $Revision: 1.25.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,15 +35,12 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
-import org.opencms.relations.CmsRelationFilter;
-import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsHtmlConverter;
@@ -54,9 +51,11 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -65,11 +64,11 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25.4.1 $ 
+ * @version $Revision: 1.25.4.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsLinkParseable {
+public class CmsResourceTypeXmlPage extends A_CmsLinkParseableResourceType {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlPage.class);
@@ -114,18 +113,6 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsLi
     public static String getStaticTypeName() {
 
         return RESOURCE_TYPE_NAME;
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#deleteResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int)
-     */
-    public void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int siblingMode)
-    throws CmsException {
-
-        // delete the resource
-        super.deleteResource(cms, securityManager, resource, siblingMode);
-        // delete the links for this resource
-        securityManager.deleteRelationsForResource(cms.getRequestContext(), resource, CmsRelationFilter.TARGETS);
     }
 
     /**
@@ -176,19 +163,11 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsLi
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#isDirectEditable()
-     */
-    public boolean isDirectEditable() {
-
-        return true;
-    }
-
-    /**
      * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
     public List parseLinks(CmsObject cms, CmsFile file) {
 
-        List links = new ArrayList();
+        Map links = new HashMap();
         try {
             CmsXmlPage xmlPage = CmsXmlPageFactory.unmarshal(cms, file);
             List locales = xmlPage.getLocales();
@@ -211,7 +190,9 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsLi
                         CmsLink link = (CmsLink)k.next();
                         if (link.isInternal()) {
                             link.checkConsistency(cms);
-                            links.add(link);
+                            if (!links.containsKey(link.getTarget())) {
+                                links.put(link.getTarget(), link);
+                            }
                         }
                     }
                 }
@@ -223,7 +204,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsLi
 
             return Collections.EMPTY_LIST;
         }
-        return links;
+        return new ArrayList(links.values());
     }
 
     /**
@@ -255,11 +236,6 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsLi
         }
 
         // xml is valid if no exception occured
-        CmsFile file = super.writeFile(cms, securityManager, resource);
-
-        // update the relation after writting!!
-        securityManager.updateRelationsForResource(cms.getRequestContext(), resource, parseLinks(cms, resource));
-
-        return file;
+        return super.writeFile(cms, securityManager, resource);
     }
 }

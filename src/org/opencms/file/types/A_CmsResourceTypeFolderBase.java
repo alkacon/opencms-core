@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.16.4.1 $
+ * Date   : $Date: 2006/08/25 08:13:10 $
+ * Version: $Revision: 1.16.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.1 $ 
+ * @version $Revision: 1.16.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,16 +85,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         // now walk through all sub-resources in the folder
         for (int i = 0; i < resources.size(); i++) {
             CmsResource childResource = (CmsResource)resources.get(i);
-            if (childResource.isFolder()) {
-                // recurse into this method for subfolders
-                changeLastModifiedProjectId(cms, securityManager, childResource);
-            } else {
-                // handle child resources
-                getResourceType(childResource.getTypeId()).changeLastModifiedProjectId(
-                    cms,
-                    securityManager,
-                    childResource);
-            }
+            // handle child resources
+            getResourceType(childResource.getTypeId()).changeLastModifiedProjectId(cms, securityManager, childResource);
         }
     }
 
@@ -142,9 +134,6 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             CmsResource childResource = (CmsResource)resources.get(i);
             String childDestination = destination.concat(childResource.getName());
             if (childResource.isFolder()) {
-                // recurse into this method for subfolders
-                copyResource(cms, securityManager, childResource, childDestination, siblingMode);
-            } else {
                 // handle child resources
                 getResourceType(childResource.getTypeId()).copyResource(
                     cms,
@@ -230,7 +219,10 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                 }
                 try {
                     // touch, collecting the errors
-                    writeFile(cms, securityManager, CmsFile.upgrade(childResource, cms));
+                    getResourceType(childResource.getTypeId()).writeFile(
+                        cms,
+                        securityManager,
+                        CmsFile.upgrade(childResource, cms));
                 } catch (CmsException e) {
                     me.addException(e);
                 }
@@ -300,18 +292,13 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
-                if (childResource.isFolder()) {
-                    // recurse into this method for subfolders
-                    setDateExpired(cms, securityManager, childResource, dateLastModified, recursive);
-                } else {
-                    // handle child resources
-                    getResourceType(childResource.getTypeId()).setDateExpired(
-                        cms,
-                        securityManager,
-                        childResource,
-                        dateLastModified,
-                        recursive);
-                }
+                // handle child resources
+                getResourceType(childResource.getTypeId()).setDateExpired(
+                    cms,
+                    securityManager,
+                    childResource,
+                    dateLastModified,
+                    recursive);
             }
         }
     }
@@ -341,18 +328,13 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
-                if (childResource.isFolder()) {
-                    // recurse into this method for subfolders
-                    setDateLastModified(cms, securityManager, childResource, dateLastModified, recursive);
-                } else {
-                    // handle child resources
-                    getResourceType(childResource.getTypeId()).setDateLastModified(
-                        cms,
-                        securityManager,
-                        childResource,
-                        dateLastModified,
-                        recursive);
-                }
+                // handle child resources
+                getResourceType(childResource.getTypeId()).setDateLastModified(
+                    cms,
+                    securityManager,
+                    childResource,
+                    dateLastModified,
+                    recursive);
             }
         }
     }
@@ -382,18 +364,13 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
-                if (childResource.isFolder()) {
-                    // recurse into this method for subfolders
-                    setDateReleased(cms, securityManager, childResource, dateLastModified, recursive);
-                } else {
-                    // handle child resources
-                    getResourceType(childResource.getTypeId()).setDateReleased(
-                        cms,
-                        securityManager,
-                        childResource,
-                        dateLastModified,
-                        recursive);
-                }
+                // handle child resources
+                getResourceType(childResource.getTypeId()).setDateReleased(
+                    cms,
+                    securityManager,
+                    childResource,
+                    dateLastModified,
+                    recursive);
             }
         }
     }
@@ -422,11 +399,11 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
+                I_CmsResourceType type = getResourceType(childResource.getTypeId());
                 if (childResource.isFolder()) {
                     // recurse into this method for subfolders
-                    undoChanges(cms, securityManager, childResource, mode);
+                    type.undoChanges(cms, securityManager, childResource, mode);
                 } else {
-                    I_CmsResourceType type = getResourceType(childResource.getTypeId());
                     if (childResource.getState() != CmsResource.STATE_NEW) {
                         // handle child resources
                         type.undoChanges(cms, securityManager, childResource, mode);

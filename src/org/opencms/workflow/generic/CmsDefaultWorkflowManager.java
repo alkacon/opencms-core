@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2006/08/22 11:09:54 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/08/25 08:13:11 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.0.0
  */
@@ -810,10 +810,12 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         try {
             m_cms.getRequestContext().setCurrentProject(wfProject);
 
+            m_cms.unlockProject(wfProject.getId()); // remove workflow locks
             for (Iterator i = getAssignedResources(wfProject).iterator(); i.hasNext();) {
                 String resourceName = (String)i.next();
                 CmsResource resource = m_cms.readResource(resourceName);
                 if (resource.getState() != CmsResource.STATE_UNCHANGED) {
+                    m_cms.lockResource(resourceName);
                     m_cms.undoChanges(resourceName, CmsResource.UNDO_CONTENT);
                 }
             }
@@ -821,6 +823,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
             m_cms.unlockProject(wfProject.getId());
             m_cms.deleteProject(wfProject.getId());
         } finally {
+            // TODO: if something went wrong the workflow locks should be restored
             m_cms.getRequestContext().setCurrentProject(offlineProject);
         }
     }

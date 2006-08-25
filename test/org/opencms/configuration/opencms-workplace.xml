@@ -24,6 +24,7 @@
 		<defaultpropertiesonstructure>false</defaultpropertiesonstructure>
 		<enableadvancedpropertytabs>false</enableadvancedpropertytabs>
 		<maxfileuploadsize>1234567</maxfileuploadsize>
+		<enablerelationdeletion>false</enablerelationdeletion>
 		<labeledfolders />
 		<rfsfileviewsettings>
 			<enabled>true</enabled>

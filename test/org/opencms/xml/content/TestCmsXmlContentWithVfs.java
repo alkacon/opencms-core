@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.43.4.2 $
+ * Date   : $Date: 2006/08/25 08:13:10 $
+ * Version: $Revision: 1.43.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.TestLinkParseableResourceTypes;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
@@ -75,7 +76,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.2 $
+ * @version $Revision: 1.43.4.3 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -98,24 +99,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     public TestCmsXmlContentWithVfs(String arg0) {
 
         super(arg0);
-    }
-
-    /**
-     * Asserts the equality of the two given relations.<p>
-     * 
-     * @param expected the expected relation
-     * @param actual the actual result
-     */
-    public static void assertRelation(CmsRelation expected, CmsRelation actual) {
-
-        assertEquals(expected.getSourceId(), actual.getSourceId());
-        assertEquals(expected.getSourcePath(), actual.getSourcePath());
-        assertEquals(expected.getTargetId(), actual.getTargetId());
-        assertEquals(expected.getTargetPath(), actual.getTargetPath());
-        assertEquals(expected.getDateBegin(), actual.getDateBegin());
-        assertEquals(expected.getDateEnd(), actual.getDateEnd());
-        assertEquals(expected.getType(), actual.getType());
-
     }
 
     /**
@@ -350,7 +333,9 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsResource res2 = cms.readResource(filename2);
         List links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS);
         assertEquals(links.size(), 1);
-        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(0));
+        TestLinkParseableResourceTypes.assertRelation(
+            new CmsRelation(file, res2, CmsRelationType.HYPERLINK),
+            (CmsRelation)links.get(0));
 
         file.setContents(xmlcontent.toString().getBytes());
         cms.lockResource(filename);
@@ -358,17 +343,25 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS);
         assertEquals(links.size(), 2);
-        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(0));
-        assertRelation(new CmsRelation(file, file, CmsRelationType.REFERENCE), (CmsRelation)links.get(1));
-        
+        TestLinkParseableResourceTypes.assertRelation(
+            new CmsRelation(file, res2, CmsRelationType.HYPERLINK),
+            (CmsRelation)links.get(0));
+        TestLinkParseableResourceTypes.assertRelation(
+            new CmsRelation(file, file, CmsRelationType.REFERENCE),
+            (CmsRelation)links.get(1));
+
         links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterType(CmsRelationType.REFERENCE));
         assertEquals(links.size(), 1);
-        assertRelation(new CmsRelation(file, file, CmsRelationType.REFERENCE), (CmsRelation)links.get(0));
+        TestLinkParseableResourceTypes.assertRelation(
+            new CmsRelation(file, file, CmsRelationType.REFERENCE),
+            (CmsRelation)links.get(0));
 
         links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterType(CmsRelationType.HYPERLINK));
         assertEquals(links.size(), 1);
-        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(0));
-        
+        TestLinkParseableResourceTypes.assertRelation(
+            new CmsRelation(file, res2, CmsRelationType.HYPERLINK),
+            (CmsRelation)links.get(0));
+
         file = cms.readFile(filename);
         content = new String(file.getContents());
         xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);

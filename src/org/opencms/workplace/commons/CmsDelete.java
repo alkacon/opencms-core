@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.17.4.1 $
+ * Date   : $Date: 2006/08/25 08:13:10 $
+ * Version: $Revision: 1.17.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
@@ -38,15 +39,20 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.workplace.CmsDialogSelector;
 import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsDialogHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,9 +70,10 @@ import org.apache.commons.logging.Log;
  * </ul>
  * <p>
  *
- * @author  Andreas Zahner 
+ * @author Andreas Zahner 
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.1 $ 
+ * @version $Revision: 1.17.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,8 +85,8 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /** The dialog type. */
     public static final String DIALOG_TYPE = "delete";
 
-    /** Request parameter name for the deletevfslinks parameter. */
-    public static final String PARAM_DELETEVFSLINKS = "deletevfslinks";
+    /** Request parameter name for the deletesiblings parameter. */
+    public static final String PARAM_DELETE_SIBLINGS = "deletesiblings";
 
     /** The delete dialog URI. */
     public static final String URI_DELETE_DIALOG = PATH_DIALOGS + "delete_standard.jsp";
@@ -87,7 +94,11 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDelete.class);
 
-    private String m_deleteVfsLinks;
+    /** The internal computed broken relations map. */
+    private Map m_brokenRelations;
+
+    /** The delete siblings parameter value. */
+    private String m_deleteSiblings;
 
     /**
      * Default constructor needed for dialog handler implementation.<p>
@@ -161,8 +172,11 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
      */
     public String buildDeleteSiblings() {
 
+        if (!isCanDelete()) {
+            return "";
+        }
         StringBuffer result = new StringBuffer(512);
-        if (isMultiOperation() || (hasVfsLinks() && hasCorrectLockstate())) {
+        if (isMultiOperation() || (hasSiblings() && hasCorrectLockstate())) {
             // show only for multi resource operation or if resource has siblings and correct lock state
             int defaultMode = getSettings().getUserSettings().getDialogDeleteFileMode();
             if (!isMultiOperation()) {
@@ -170,7 +184,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
                 result.append("<p>");
             }
             result.append("<input type=\"radio\" name=\"");
-            result.append(PARAM_DELETEVFSLINKS);
+            result.append(PARAM_DELETE_SIBLINGS);
             result.append("\" value=\"false\"");
             if (defaultMode == CmsResource.DELETE_PRESERVE_SIBLINGS) {
                 result.append(" checked=\"checked\"");
@@ -179,7 +193,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
             result.append(key(Messages.GUI_DELETE_PRESERVE_SIBLINGS_0));
             result.append("<br>");
             result.append("<input type=\"radio\" name=\"");
-            result.append(PARAM_DELETEVFSLINKS);
+            result.append(PARAM_DELETE_SIBLINGS);
             result.append("\" value=\"true\"");
             if (defaultMode == CmsResource.DELETE_REMOVE_SIBLINGS) {
                 result.append(" checked=\"checked\"");
@@ -194,6 +208,187 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
             result.append(key(Messages.GUI_DELETE_CONFIRMATION_0));
         }
         return result.toString();
+    }
+
+    /**
+     * Returns html code for the 'delete despite relations' option.<p>
+     * 
+     * @return html code for the 'delete despite relations' option
+     */
+    public String buildRelations() {
+
+        Map brokenRelations = getBrokenRelations();
+        if (brokenRelations.isEmpty()) {
+            return "";
+        }
+
+        // check how many row we will need to display to decide using a div or not
+        int rows = 0;
+        Iterator itBrokenRelations = brokenRelations.entrySet().iterator();
+        while (itBrokenRelations.hasNext()) {
+            Map.Entry entry = (Map.Entry)itBrokenRelations.next();
+            rows += 2; // resName + indentation
+            rows += ((List)entry.getValue()).size();
+            if (rows > 10) {
+                break;
+            }
+        }
+
+        // check if deleting a single file to adapt the messages
+        boolean singleRes = (getResourceList().size() == 1);
+        if (singleRes) {
+            try {
+                singleRes = !getCms().readResource((String)getResourceList().get(0)).isFolder();
+            } catch (CmsException e) {
+                // should never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e);
+                }
+            }
+        }
+
+        // write header
+        StringBuffer result = new StringBuffer(512);
+        result.append(dialogBlockStart(key(Messages.GUI_DELETE_RELATIONS_TITLE_0)));
+        if (singleRes) {
+            result.append(key(Messages.GUI_DELETE_RELATIONS_INTRO_SINGLE_0));
+        } else {
+            result.append(key(Messages.GUI_DELETE_RELATIONS_INTRO_MULTI_0));
+        }
+        result.append("<br>&nbsp;<br>\n");
+        // if the output to long, wrap it in a div
+        if (rows > 10) {
+            result.append("<div style='width: 100%; height:150px; overflow: auto;'>\n");
+        }
+        // for every resource that will break a relation 
+        itBrokenRelations = brokenRelations.entrySet().iterator();
+        while (itBrokenRelations.hasNext()) {
+            Map.Entry entry = (Map.Entry)itBrokenRelations.next();
+            String resName = (String)entry.getKey();
+            if (!singleRes) {
+                result.append("\t").append(resName).append("\n");
+            }
+            result.append("\t<ul>\n");
+            // display all relations
+            Iterator itRelations = ((List)entry.getValue()).iterator();
+            while (itRelations.hasNext()) {
+                String relation = (String)itRelations.next();
+                result.append("\t\t<li>").append(relation).append("</li>\n");
+            }
+            result.append("</ul>");
+        }
+        // close the div if needed
+        if (rows > 10) {
+            result.append("</div>\n");
+        }
+        result.append("<br>\n");
+
+        // write footer
+        if (!isCanDelete()) {
+            result.append(key(Messages.GUI_DELETE_RELATIONS_NOT_ALLOWED_0));
+        } else {
+            if (singleRes) {
+                result.append(key(Messages.GUI_DELETE_RELATIONS_CONCLUSION_SINGLE_0));
+            } else {
+                result.append(key(Messages.GUI_DELETE_RELATIONS_CONCLUSION_MULTI_0));
+            }
+        }
+        result.append(dialogBlockEnd());
+        result.append("&nbsp;<br>\n");
+        return result.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsDialog#dialogButtonsOkCancel()
+     */
+    public String dialogButtonsOkCancel() {
+
+        if (isCanDelete()) {
+            return super.dialogButtonsOkCancel();
+        } else {
+            // do not allow to delete resources that would break relations 
+            return super.dialogButtonsClose();
+        }
+    }
+
+    /**
+     * Returns <code>true</code> if the current user is allowed 
+     * to delete the selected resources.<p>
+     * 
+     * @return <code>true</code> if the current user is allowed 
+     *          to delete the selected resources
+     */
+    private boolean isCanDelete() {
+
+        return OpenCms.getWorkplaceManager().isEnableRelationDeletion()
+            || getCms().hasRole(CmsRole.VFS_MANAGER)
+            || getBrokenRelations().isEmpty();
+    }
+
+    /**
+     * Returns a map of where each entry has as key a name of a resource to be deleted,
+     * and value a list of relations (as resource names) that would be broken.<p> 
+     * 
+     * @return a map of broken relations
+     */
+    public Map getBrokenRelations() {
+
+        // TODO: include siblings if param deletesiblings is set
+        // the problem is that this is executed BEFORE the user can select to delete the siblings
+        int todo = 0;
+
+        if (m_brokenRelations == null) {
+            // expand the folders to single resources
+            CmsObject cms = getCms();
+            List resourceList = getResourceList();
+            Iterator itResources = new ArrayList(resourceList).iterator();
+            while (itResources.hasNext()) {
+                String resName = (String)itResources.next();
+                try {
+                    CmsResource resource = cms.readResource(resName);
+                    if (resource.isFolder()) {
+                        Iterator itChilds = cms.readResources(resName, CmsResourceFilter.ALL, true).iterator();
+                        while (itChilds.hasNext()) {
+                            CmsResource child = (CmsResource)itChilds.next();
+                            resourceList.add(cms.getSitePath(child));
+                        }
+                    }
+                } catch (CmsException e) {
+                    // should never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e);
+                    }
+                }
+            }
+            // check every resource
+            m_brokenRelations = new HashMap();
+            itResources = resourceList.iterator();
+            while (itResources.hasNext()) {
+                String resName = (String)itResources.next();
+                try {
+                    Iterator it = cms.getRelationsForResource(resName, CmsRelationFilter.SOURCES).iterator();
+                    while (it.hasNext()) {
+                        CmsRelation relation = (CmsRelation)it.next();
+                        String resourceName = cms.getRequestContext().removeSiteRoot(relation.getSourcePath());
+                        // add only if the source is not to be deleted too
+                        if (!resourceList.contains(resourceName)) {
+                            List broken = (List)m_brokenRelations.get(resName);
+                            if (broken == null) {
+                                broken = new ArrayList();
+                                m_brokenRelations.put(resName, broken);
+                            }
+                            broken.add(resourceName);
+                        }
+                    }
+                } catch (CmsException e) {
+                    // should never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e);
+                    }
+                }
+            }
+        }
+        return m_brokenRelations;
     }
 
     /**
@@ -213,13 +408,13 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Returns the value of the boolean option to delete VFS links.<p>
+     * Returns the value of the boolean option to delete siblings.<p>
      * 
-     * @return the value of the boolean option to delete VFS links as a lower case string
+     * @return the value of the boolean option to delete siblings as a lower case string
      */
-    public String getParamDeleteVfsLinks() {
+    public String getParamDeleteSiblings() {
 
-        return m_deleteVfsLinks;
+        return m_deleteSiblings;
     }
 
     /**
@@ -247,11 +442,11 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Checks if VFS links are pointing to this resource.
+     * Checks if this resource has siblings.<p>
      * 
-     * @return true if one or more VFS links are pointing to this resource
+     * @return true if this resource has siblings
      */
-    public boolean hasVfsLinks() {
+    public boolean hasSiblings() {
 
         try {
             return getCms().readSiblings(getParamResource(), CmsResourceFilter.ALL).size() > 1;
@@ -263,13 +458,13 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Sets the value of the boolean option to delete VFS links.<p>
+     * Sets the value of the boolean option to delete siblings.<p>
      * 
-     * @param value the value of the boolean option to delete VFS links
+     * @param value the value of the boolean option to delete siblings
      */
-    public void setParamDeleteVfsLinks(String value) {
+    public void setParamDeleteSiblings(String value) {
 
-        m_deleteVfsLinks = value;
+        m_deleteSiblings = value;
     }
 
     /**
@@ -321,7 +516,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         }
 
         // determine the correct delete option
-        deleteOption = Boolean.valueOf(getParamDeleteVfsLinks()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
+        deleteOption = Boolean.valueOf(getParamDeleteSiblings()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
         : CmsResource.DELETE_PRESERVE_SIBLINGS;
 
         Iterator i = getResourceList().iterator();

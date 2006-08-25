@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.60.4.3 $
+ * Date   : $Date: 2006/08/25 08:13:10 $
+ * Version: $Revision: 1.60.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,13 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsExternalLinksValidationResult;
 import org.opencms.site.CmsSite;
@@ -57,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.3 $ 
+ * @version $Revision: 1.60.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -329,6 +333,81 @@ public class CmsLinkManager {
 
         // uri without path (typically local link)
         return suffix;
+    }
+
+    /**
+     * Returns the online link for the given resource.<p>
+     * 
+     * Like
+     * <code>http://site.enterprise.com:8080/index.html</code>.<p>
+     * 
+     * @param cms the cms context
+     * @param resourceName the resource to generate the online link for
+     * 
+     * @return the online link
+     */
+    public String getOnlineLink(CmsObject cms, String resourceName) {
+
+        String onlineLink = "";
+        try {
+            CmsSite currentSite = CmsSiteManager.getCurrentSite(cms);
+            CmsProject currentProject = cms.getRequestContext().currentProject();
+            try {
+                cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                onlineLink = OpenCms.getLinkManager().substituteLink(cms, resourceName, currentSite.getSiteRoot());
+            } finally {
+                cms.getRequestContext().setCurrentProject(currentProject);
+            }
+            String serverPrefix = currentSite.getServerPrefix(cms, resourceName);
+            if (!onlineLink.startsWith(serverPrefix)) {
+                onlineLink = serverPrefix + onlineLink;
+            }
+        } catch (CmsException e) {
+            // should never happen
+            onlineLink = e.getLocalizedMessage();
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e);
+            }
+        }
+        return onlineLink;
+    }
+
+    /**
+     * Returns the perma link for the given resource.<p>
+     * 
+     * Like
+     * <code>http://site.enterprise.com:8080/permalink/4b65369f-1266-11db-8360-bf0f6fbae1f8.html</code>.<p>
+     * 
+     * @param cms the cms context
+     * @param resourceName the resource to generate the perma link for
+     * 
+     * @return the perma link
+     */
+    public String getPermalink(CmsObject cms, String resourceName) {
+
+        String permalink = "";
+        try {
+            permalink = OpenCms.getLinkManager().substituteLink(cms, CmsPermalinkResourceHandler.PERMALINK_HANDLER);
+            String id = cms.readResource(resourceName, CmsResourceFilter.ALL).getStructureId().toString();
+            permalink += id;
+            String ext = CmsResource.getExtension(resourceName);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ext)) {
+                permalink += "." + CmsResource.getExtension(resourceName);
+            }
+            String serverPrefix = CmsSiteManager.getCurrentSite(cms).getServerPrefix(
+                cms,
+                CmsPermalinkResourceHandler.PERMALINK_HANDLER);
+            if (!permalink.startsWith(serverPrefix)) {
+                permalink = serverPrefix + permalink;
+            }
+        } catch (CmsException e) {
+            // if something wrong
+            permalink = e.getLocalizedMessage();
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e);
+            }
+        }
+        return permalink;
     }
 
     /**

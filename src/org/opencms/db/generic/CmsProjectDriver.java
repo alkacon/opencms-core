@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.241.4.5 $
+ * Date   : $Date: 2006/08/25 08:13:10 $
+ * Version: $Revision: 1.241.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.5 $
+ * @version $Revision: 1.241.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -2184,6 +2184,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             return;
         }
 
+        // remove the links of the moved resource
+        CmsRelationFilter filter = CmsRelationFilter.TARGETS;
+        filter = filter.filterStructureId(onlineResource.getStructureId());
+        filter = filter.filterPath(onlineResource.getRootPath());
+        m_driverManager.getVfsDriver().deleteRelations(dbc, onlineProject.getId(), filter);
+        
         // move the online resource
         m_driverManager.getVfsDriver().moveResource(
             dbc,
