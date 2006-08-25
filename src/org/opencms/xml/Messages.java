@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/Messages.java,v $
- * Date   : $Date: 2006/04/10 11:20:03 $
- * Version: $Revision: 1.12.4.1 $
+ * Date   : $Date: 2006/08/25 13:16:57 $
+ * Version: $Revision: 1.12.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.12.4.1 $ 
+ * @version $Revision: 1.12.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -191,13 +191,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PARSE_SAX_EXC_0 = "LOG_PARSE_SAX_EXC_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_PARSING_XML_RESOURCE_ERROR_0 = "LOG_PARSING_XML_RESOURCE_ERROR_0";
+    public static final String LOG_PARSING_XML_RESOURCE_ERROR_1 = "LOG_PARSING_XML_RESOURCE_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_PARSING_XML_RESOURCE_FATAL_ERROR_0 = "LOG_PARSING_XML_RESOURCE_FATAL_ERROR_0";
+    public static final String LOG_PARSING_XML_RESOURCE_FATAL_ERROR_1 = "LOG_PARSING_XML_RESOURCE_FATAL_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_PARSING_XML_RESOURCE_WARNING_0 = "LOG_PARSING_XML_RESOURCE_WARNING_0";
+    public static final String LOG_PARSING_XML_RESOURCE_WARNING_1 = "LOG_PARSING_XML_RESOURCE_WARNING_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PRETTY_PRINT_SCHEMA_BYTES_ERROR_0 = "LOG_PRETTY_PRINT_SCHEMA_BYTES_ERROR_0";

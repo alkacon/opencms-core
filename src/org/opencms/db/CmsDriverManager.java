@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/08/25 12:22:55 $
- * Version: $Revision: 1.570.2.14 $
+ * Date   : $Date: 2006/08/25 13:16:56 $
+ * Version: $Revision: 1.570.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3298,23 +3298,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsLock getLock(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        return m_lockManager.getLock(this, dbc, resource, true);
+        return m_lockManager.getLock(this, dbc, resource);
     }
 
     /**
-     * Returns the lock state of a resource.<p>
+     * Returns the workflow lock state of a resource.<p>
      * 
      * @param dbc the current database context
      * @param resource the resource to return the lock state for
-     * @param preferExclusive indicates if exclusive locks are preferred
      * 
      * @return the lock state of the resource
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsLock getLock(CmsDbContext dbc, CmsResource resource, boolean preferExclusive) throws CmsException {
+    public CmsLock getLockForWorkflow(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        return m_lockManager.getLock(this, dbc, resource, preferExclusive);
+        return m_lockManager.getLockForWorkflow(this, dbc, resource);
     }
 
     /**
@@ -3943,7 +3942,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsUser lockedBy(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        return readUser(dbc, m_lockManager.getLock(this, dbc, resource, true).getUserId());
+        return readUser(dbc, m_lockManager.getLock(this, dbc, resource).getUserId());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.218.4.9 $
+ * Date   : $Date: 2006/08/25 13:16:57 $
+ * Version: $Revision: 1.218.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -134,7 +134,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.9 $ 
+ * @version $Revision: 1.218.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -1020,6 +1020,9 @@ public final class OpenCmsCore {
         // get the login manager
         m_loginManager = systemConfiguration.getLoginManager();
 
+        // get the workflow manager, this is needed before the security manager is initialized because of the locks
+        m_workflowManager = systemConfiguration.getWorkflowManager();
+        
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(
             m_configurationManager,
@@ -1030,9 +1033,6 @@ public final class OpenCmsCore {
 
         // initialize the link manager
         m_linkManager = new CmsLinkManager();
-
-        // get the workflow manager
-        m_workflowManager = systemConfiguration.getWorkflowManager();
 
         // store the runtime properties
         m_runtimeProperties.putAll(systemConfiguration.getRuntimeProperties());

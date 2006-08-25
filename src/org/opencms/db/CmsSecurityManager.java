@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.97.4.4 $
+ * Date   : $Date: 2006/08/25 13:16:57 $
+ * Version: $Revision: 1.97.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1586,7 +1586,7 @@ public final class CmsSecurityManager {
      * @throws Throwable if something goes wrong
      */
     public synchronized void destroy() throws Throwable {
-        
+
         try {
             if (m_driverManager != null) {
                 try {
@@ -2020,21 +2020,20 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns the lock state of a resource.<p>
+     * Returns the workflow lock state of a resource.<p>
      * 
      * @param context the current request context
-     * @param resource the resource to return the lock state for
-     * @param preferExclusive if exclusive locks should be preferred
+     * @param resource the resource to return the workflow lock state for
+     * 
      * @return the lock state of the resource
      * @throws CmsException if something goes wrong
      */
-    public CmsLock getLock(CmsRequestContext context, CmsResource resource, boolean preferExclusive)
-    throws CmsException {
+    public CmsLock getLockForWorkflow(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsLock result = null;
         try {
-            result = m_driverManager.getLock(dbc, resource, preferExclusive);
+            result = m_driverManager.getLockForWorkflow(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_LOCK_1, context.getSitePath(resource)), e);
         } finally {

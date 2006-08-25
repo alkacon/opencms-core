@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2006/08/25 08:13:11 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/08/25 13:16:57 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.0.0
  */
@@ -145,7 +145,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public void addResource(CmsObject cms, CmsProject wfProject, CmsResource resource) throws CmsException {
 
-        CmsLock lock = cms.getLock(resource, false);
+        CmsLock lock = cms.getLockForWorkflow(resource);
 
         if (lock.isNullLock() || (lock.isExclusiveOwnedBy(cms.getRequestContext().currentUser()))) {
 
@@ -275,7 +275,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     public CmsProject getTask(CmsObject cms, String resourcename) throws CmsException {
 
         CmsResource resource = cms.readResource(resourcename, CmsResourceFilter.ALL);
-        CmsLock lock = cms.getLock(resource, false);
+        CmsLock lock = cms.getLockForWorkflow(resource);
         if (lock.isWorkflow()) {
             return cms.readProject(lock.getProjectId());
         } else {
@@ -537,7 +537,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         boolean isLockable = false;
 
         try {
-            CmsLock lock = cms.getLock(resource, false);
+            CmsLock lock = cms.getLockForWorkflow(resource);
             if (!lock.isNullLock()) {
                 CmsProject project = cms.readProject(lock.getProjectId());
 

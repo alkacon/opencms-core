@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.30.4.1 $
+ * Date   : $Date: 2006/08/25 13:16:56 $
+ * Version: $Revision: 1.30.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30.4.1 $
+ * @version $Revision: 1.30.4.2 $
  * 
  * @since 6.0.0
  */
@@ -496,7 +496,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         m_digester.setValidating(true);
         m_digester.setEntityResolver(new CmsXmlEntityResolver(null));
         m_digester.setRuleNamespaceURI(null);
-        m_digester.setErrorHandler(new CmsXmlErrorHandler());
+        m_digester.setErrorHandler(new CmsXmlErrorHandler(fileUrl.getFile()));
 
         // add this class to the Digester
         m_digester.push(configuration);

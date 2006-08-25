@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsWorkflow.java,v $
- * Date   : $Date: 2006/08/24 06:43:29 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/08/25 13:16:57 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH
  * All Rights Reserved.
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.0.0
  */
@@ -262,7 +262,7 @@ public class CmsWorkflow extends CmsMultiDialog {
         
         try {
             CmsResource resource = cms.readResource(filename);
-            CmsLock lock = cms.getLock(resource, false);
+            CmsLock lock = cms.getLockForWorkflow(resource);
             if (lock.isWorkflow()) {
                 CmsProject wfProject = cms.readProject(lock.getProjectId());
                 for (Iterator i = wfManager.getTransitions(wfProject).iterator(); i.hasNext();) {
@@ -301,7 +301,7 @@ public class CmsWorkflow extends CmsMultiDialog {
         CmsLock lock = null;
         try {
             CmsResource resource = cms.readResource(filename);
-            lock = cms.getLock(resource, false);
+            lock = cms.getLockForWorkflow(resource);
         } catch (CmsException exc) {
             // noop
         }

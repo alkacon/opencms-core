@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
- * Version: $Revision: 1.146.4.6 $
+ * Date   : $Date: 2006/08/25 13:16:57 $
+ * Version: $Revision: 1.146.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.6 $
+ * @version $Revision: 1.146.4.7 $
  * 
  * @since 6.0.0 
  */
@@ -1179,21 +1179,17 @@ public final class CmsObject {
     }
 
     /**
-     * Returns the lock state for a specified resource.<p>
+     * Returns the workflow lock state for a specified resource.<p>
      * 
-     * @param resource the resource to return the lock state for
-     * @param preferExclusive if exclusive locks are preferred
+     * @param resource the resource to return the workflow lock state for
      * 
-     * @return the lock state for the specified resource
+     * @return the workflow lock state for the specified resource
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsLock getLock(CmsResource resource, boolean preferExclusive) throws CmsException {
+    public CmsLock getLockForWorkflow(CmsResource resource) throws CmsException {
 
-        // TODO: This methods should be removed or refactored!
-        int todo_v7;
-
-        return m_securityManager.getLock(m_context, resource, preferExclusive);
+        return m_securityManager.getLockForWorkflow(m_context, resource);
     }
 
     /**
