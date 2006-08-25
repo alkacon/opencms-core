@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2006/08/25 13:16:57 $
- * Version: $Revision: 1.48.4.2 $
+ * Date   : $Date: 2006/08/25 15:26:31 $
+ * Version: $Revision: 1.48.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.48.4.2 $ 
+ * @version $Revision: 1.48.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,7 +73,7 @@ public class CmsSystemInfo {
     private static final String DEFAULT_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
     /** Static version number to use if version.properties can not be read. */
-    private static final String DEFAULT_VERSION_NUMBER = "6.5 development";
+    private static final String DEFAULT_VERSION_NUMBER = "6.5.1 development";
 
     /** The abolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
