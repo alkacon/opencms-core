@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsModuleReplaceThread.java,v $
- * Date   : $Date: 2006/08/24 06:43:28 $
- * Version: $Revision: 1.8.4.2 $
+ * Date   : $Date: 2006/08/28 13:27:21 $
+ * Version: $Revision: 1.8.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.8.4.2 $ 
+ * @version $Revision: 1.8.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,6 +134,14 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
         // phase 1: delete the existing module  
         m_phase = 1;
         m_deleteThread.start();
+        try {
+            m_deleteThread.join();
+        } catch (InterruptedException e) {
+            // should never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e);
+            }
+        }
         // get remaining report contents
         m_reportContent = m_deleteThread.getReportUpdate();
         if (LOG.isDebugEnabled()) {
@@ -142,6 +150,14 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
         // phase 2: import the new module 
         m_phase = 2;
         m_importThread.start();
+        try {
+            m_importThread.join();
+        } catch (InterruptedException e) {
+            // should never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e);
+            }
+        }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_FINISHED_0));
         }
