@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.24.4.3 $
+ * Date   : $Date: 2006/08/28 14:41:54 $
+ * Version: $Revision: 1.24.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.3 $ 
+ * @version $Revision: 1.24.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -581,7 +581,7 @@ public final class CmsFileUtil {
             for (int j = (result.size() - 1); j >= 0; j--) {
                 // check if this resource name is indirectly contained because a parent folder name is contained
                 String check = (String)result.get(j);
-                if (resourcename.startsWith(check)) {
+                if (check.endsWith("/") && resourcename.startsWith(check)) {
                     valid = false;
                     break;
                 }
@@ -626,8 +626,8 @@ public final class CmsFileUtil {
             boolean valid = true;
             for (int j = (result.size() - 1); j >= 0; j--) {
                 // check if this resource is indirectly contained because a parent folder is contained
-                String check = ((CmsResource)result.get(j)).getRootPath();
-                if (resource.getRootPath().startsWith(check)) {
+                CmsResource check = (CmsResource)result.get(j);
+                if (check.isFolder() && resource.getRootPath().startsWith(check.getRootPath())) {
                     valid = false;
                     break;
                 }
