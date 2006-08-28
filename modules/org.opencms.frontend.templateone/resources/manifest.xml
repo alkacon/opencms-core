@@ -50,7 +50,7 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="microsite" key="fileicon.microsite" icon="microsite.gif" reference="folder">
-				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=microsite" order="50" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=microsite" order="50"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -70,7 +70,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/galleries</destination>

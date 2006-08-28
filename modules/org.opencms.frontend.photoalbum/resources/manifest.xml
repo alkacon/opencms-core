@@ -43,7 +43,7 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="photoalbum" key="fileicon.photoalbum" icon="photoalbum.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=photoalbum" order="61" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=photoalbum" order="61"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -63,7 +63,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules</destination>

@@ -122,7 +122,7 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="news" key="fileicon.news" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=news" order="50" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=news" order="50"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -130,7 +130,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="faq" key="fileicon.faq" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=faq" order="51" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=faq" order="51"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -138,7 +138,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="event" key="fileicon.event" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=event" order="52" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=event" order="52"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -146,7 +146,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="job" key="fileicon.job" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=job" order="53" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=job" order="53"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -154,7 +154,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="linklist" key="fileicon.linklist" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=linklist" order="54" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=linklist" order="54"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -182,7 +182,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules</destination>
@@ -3017,6 +3026,45 @@
 				<property>
 					<name>layout.1.type</name>
 					<value><![CDATA[event]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/templateone/right/events_news</source>
+			<destination>system/shared/templateone/right/events_news</destination>
+			<type>plain</type>
+			<uuidstructure>543f284d-368f-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<uuidresource>caf21b1b-a5dd-11d9-b9ed-916a98ed6cbb</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[templateonedialog.layout.right.events_news]]></value>
+				</property>
+				<property>
+					<name>layout.2.type</name>
+					<value><![CDATA[event]]></value>
+				</property>
+				<property>
+					<name>layout.1.count</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[List news and events on right side]]></value>
+				</property>
+				<property>
+					<name>layout.2.count</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>layout.1.type</name>
+					<value><![CDATA[news]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

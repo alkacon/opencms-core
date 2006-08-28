@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.5.0</opencms_version>
+		<createdate>Mon, 28 Aug 2006 12:50:52 GMT</createdate>
+		<project>Offline</project>
+		<export_version>5</export_version>
+	</info>
+	<module>
+		<name>org.opencms.workplace.handler</name>
+		<nicename><![CDATA[OpenCms 6 Workplace handler]]></nicename>
+		<group>OpenCms Workplace</group>
+		<class/>
+		<description><![CDATA[<p>This module contains the OpenCms Workplace handler files.</p>
+<p>It includes the 404 and 500 error handlers that are showed in case of an error of a frontend application.</p>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.0.0</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/handler/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>e57c54b5-3691-11db-881c-b76e0b982ad3</uuidstructure>
+			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 28 Aug 2006 12:36:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/handler</destination>
+			<type>folder</type>
+			<uuidstructure>82a54b3f-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/handler/template/handlertemplate]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/handle404.html</source>
+			<destination>system/handler/handle404.html</destination>
+			<type>jsp</type>
+			<uuidstructure>82aff8a2-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<uuidresource>2ec39dda-a50d-11d9-b4c9-b7aef4fd014d</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[404 error handler page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/handler/handle500.html</destination>
+			<type>jsp</type>
+			<uuidstructure>82bf3ae6-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<uuidresource>2ec39dda-a50d-11d9-b4c9-b7aef4fd014d</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[500 error handler page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/handler/contents</destination>
+			<type>folder</type>
+			<uuidstructure>82c6dc09-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/contents/content404.html</source>
+			<destination>system/handler/contents/content404.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>82c9e94a-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<uuidresource>1cad206f-de78-11d9-bedb-8bc68da6ac40</uuidresource>
+			<datelastmodified>Mon, 28 Aug 2006 12:37:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/contents/content500.html</source>
+			<destination>system/handler/contents/content500.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>82d497ac-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<uuidresource>f189c010-df04-11d9-96f6-8bc68da6ac40</uuidresource>
+			<datelastmodified>Mon, 28 Aug 2006 12:37:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/contents/contentunknown.html</source>
+			<destination>system/handler/contents/contentunknown.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>82dc38ce-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<uuidresource>cebf7284-deff-11d9-8a41-8bc68da6ac40</uuidresource>
+			<datelastmodified>Mon, 28 Aug 2006 12:37:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/handler/template</destination>
+			<type>folder</type>
+			<uuidstructure>82e25351-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Feb 2006 15:31:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/template/handlertemplate</source>
+			<destination>system/handler/template/handlertemplate</destination>
+			<type>jsp</type>
+			<uuidstructure>82e86dd2-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<uuidresource>0d30d7bb-98b8-11da-972c-9152ffc73fe6</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Feb 2006 15:32:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;element]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[foot*|Foot,head*|Head]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/handler/template/style.css]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Template for error handlers]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/template/style.css</source>
+			<destination>system/handler/template/style.css</destination>
+			<type>plain</type>
+			<uuidstructure>82f1bca8-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<uuidresource>242b4cce-98b9-11da-972c-9152ffc73fe6</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Feb 2006 15:39:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[CSS for error handler template]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/template/warning.png</source>
+			<destination>system/handler/template/warning.png</destination>
+			<type>image</type>
+			<uuidstructure>82fdf1ab-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<uuidresource>074b26e8-98bc-11da-972c-9152ffc73fe6</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Feb 2006 16:00:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
