@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2006/08/25 08:13:11 $
- * Version: $Revision: 1.35.4.7 $
+ * Date   : $Date: 2006/08/28 13:52:13 $
+ * Version: $Revision: 1.35.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.7 $ 
+ * @version $Revision: 1.35.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -443,6 +443,13 @@ public class CmsHtmlList {
      */
     public String listHtml() {
 
+        // this block has to be executed before calling htmlBegin()
+        if (isPrintable()) {
+            m_visibleItems = new ArrayList(getContent());
+        } else {
+            m_visibleItems = new ArrayList(getCurrentPageItems());
+        }
+
         StringBuffer html = new StringBuffer(5120);
         html.append(htmlBegin());
         if (!isPrintable()) {
@@ -464,12 +471,6 @@ public class CmsHtmlList {
         }
         html.append("<table width='100%' cellpadding='1' cellspacing='0' class='list'>\n");
         html.append(m_metadata.htmlHeader(this));
-
-        if (isPrintable()) {
-            m_visibleItems = new ArrayList(getContent());
-        } else {
-            m_visibleItems = new ArrayList(getCurrentPageItems());
-        }
         if (m_visibleItems.isEmpty()) {
             html.append(m_metadata.htmlEmptyTable());
         } else {
