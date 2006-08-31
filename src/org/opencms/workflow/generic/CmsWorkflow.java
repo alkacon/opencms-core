@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsWorkflow.java,v $
- * Date   : $Date: 2006/08/25 13:16:57 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/08/31 08:59:05 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH
  * All Rights Reserved.
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 7.0.0
  */
@@ -153,7 +153,7 @@ public class CmsWorkflow extends CmsMultiDialog {
      */
     public CmsWorkflow() {
 
-        super(null);
+        this(null);
     }
 
     /**
