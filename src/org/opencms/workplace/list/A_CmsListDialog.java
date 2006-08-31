@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2006/08/19 13:40:40 $
- * Version: $Revision: 1.35.4.4 $
+ * Date   : $Date: 2006/08/31 09:01:15 $
+ * Version: $Revision: 1.35.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.35.4.4 $ 
+ * @version $Revision: 1.35.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -305,7 +305,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
         if (isForwarded()) {
             return;
         }
-        refreshList();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
@@ -349,6 +348,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 getListId(),
                 new Integer(getAction())));
         }
+        refreshList();
     }
 
     /**
