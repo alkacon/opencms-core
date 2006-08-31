@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2006/08/25 13:16:57 $
- * Version: $Revision: 1.37.4.4 $
+ * Date   : $Date: 2006/08/31 09:04:26 $
+ * Version: $Revision: 1.37.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
@@ -62,7 +63,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.37.4.4 $ 
+ * @version $Revision: 1.37.4.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -83,16 +84,21 @@ public final class CmsLockManager {
     /** The reference to the (optional) workflow manager. */
     private I_CmsWorkflowManager m_workflowManager;
 
+    /** The flag to indicate if the lcoks should be written to the db. */
+    private boolean m_isDirty = false;
+    
     /**
      * Default constructor, creates a new lock manager.<p>
      */
     public CmsLockManager() {
 
         m_exclusiveLocks = Collections.synchronizedMap(new HashMap());
-        m_workflowManager = OpenCms.getWorkflowManager();
-        m_isWorkflowEnabled = (m_workflowManager != null);
-        if (m_isWorkflowEnabled) {
+        try {
+            m_workflowManager = OpenCms.getWorkflowManager();
+            m_isWorkflowEnabled = true;
             m_workflowLocks = Collections.synchronizedMap(new HashMap());
+        } catch (CmsRuntimeException e) {
+            m_isWorkflowEnabled = false;
         }
     }
 
@@ -144,12 +150,12 @@ public final class CmsLockManager {
                 // create a new exclusive lock unless the resource has already a shared lock due to a
                 // exclusive locked sibling
                 CmsLock newLock = new CmsLock(resourceName, user.getId(), projectId, type);
-                m_exclusiveLocks.put(resourceName, newLock);
+                lockResource(driverManager, resourceName, newLock);
             }
         } else if (m_isWorkflowEnabled && (type == CmsLockType.WORKFLOW)) {
             // create a new lock if the resource should be locked in a workflow
             CmsLock newLock = new CmsLock(resourceName, user.getId(), projectId, type);
-            m_workflowLocks.put(resourceName, newLock);
+            lockResource(driverManager, resourceName, newLock);
         } else {
             throw new CmsLockException(Messages.get().container(Messages.ERR_INVALID_LOCK_TYPE_1, type.toString()));
         }
@@ -158,12 +164,11 @@ public final class CmsLockManager {
         if (CmsResource.isFolder(resourceName)) {
             Iterator i = m_exclusiveLocks.keySet().iterator();
             String lockedPath = null;
-
             while (i.hasNext()) {
                 lockedPath = (String)i.next();
-
                 if (lockedPath.startsWith(resourceName) && !lockedPath.equals(resourceName)) {
                     i.remove();
+                    unlockResource(driverManager, lockedPath, false);
                 }
             }
         }
@@ -404,13 +409,11 @@ public final class CmsLockManager {
                     // VFS managers may lock resources in a workflow anyway
                     return true;
                 }
-
-                I_CmsWorkflowManager wfm = OpenCms.getWorkflowManager();
-                if (wfm != null) {
+                if (m_workflowManager != null) {
                     // in case of a workflow lock, check if the user requesting a lock is
                     // either the agent or in the provided agent group
                     CmsProject project = driverManager.readProject(dbc, lock.getProjectId());
-                    I_CmsPrincipal agent = OpenCms.getWorkflowManager().getTaskAgent(project);
+                    I_CmsPrincipal agent = m_workflowManager.getTaskAgent(project);
                     if (agent.isGroup()) {
                         acceptLock = driverManager.userInGroup(dbc, user.getName(), agent.getName());
                     } else {
@@ -418,7 +421,7 @@ public final class CmsLockManager {
                     }
                     if (!acceptLock) {
                         // alternatively, a member of the managers group may also lock the resource
-                        I_CmsPrincipal manager = OpenCms.getWorkflowManager().getTaskManager(project);
+                        I_CmsPrincipal manager = m_workflowManager.getTaskManager(project);
                         if (manager.isGroup()) {
                             acceptLock = driverManager.userInGroup(dbc, user.getName(), manager.getName());
                         } else {
@@ -490,8 +493,7 @@ public final class CmsLockManager {
                 Messages.ERR_REMOVING_UNDELETED_RESOURCE_1,
                 dbc.getRequestContext().removeSiteRoot(resourceName)));
         }
-
-        m_exclusiveLocks.remove(resourceName);
+        unlockResource(driverManager, resourceName, false);
     }
 
     /**
@@ -548,37 +550,32 @@ public final class CmsLockManager {
                 // been upgraded from an inherited lock when the user edited a resource                
                 Iterator i = m_exclusiveLocks.keySet().iterator();
                 String lockedPath = null;
-
                 while (i.hasNext()) {
                     lockedPath = (String)i.next();
                     if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
                         // remove the exclusive locked sub-resource
                         i.remove();
+                        unlockResource(driverManager, lockedPath, false);
                     }
                 }
             }
-
-            return (CmsLock)m_exclusiveLocks.remove(resourcename);
+            return unlockResource(driverManager, resourcename, false);
         }
 
         if (lock.getType() == CmsLockType.SHARED_EXCLUSIVE) {
             // when a resource with a shared lock gets unlocked, fetch all siblings of the resource 
             // to the same content record to identify the exclusive locked sibling
             List siblings = internalReadSiblings(driverManager, dbc, resource);
-
             for (int i = 0; i < siblings.size(); i++) {
                 sibling = (CmsResource)siblings.get(i);
-
                 if (m_exclusiveLocks.containsKey(sibling.getRootPath())) {
                     // remove the exclusive locked sibling
-                    m_exclusiveLocks.remove(sibling.getRootPath());
+                    unlockResource(driverManager, sibling.getRootPath(), false);
                     break;
                 }
             }
-
             return lock;
         }
-
         return lock;
     }
 
@@ -597,10 +594,10 @@ public final class CmsLockManager {
         i = m_exclusiveLocks.keySet().iterator();
         while (i.hasNext()) {
             currentLock = (CmsLock)m_exclusiveLocks.get(i.next());
-
             if (currentLock.getProjectId() == projectId) {
                 // iterators are fail-fast!
                 i.remove();
+                unlockResource(null, currentLock.getResourceName(), false);
             }
         }
 
@@ -608,18 +605,17 @@ public final class CmsLockManager {
             i = m_workflowLocks.keySet().iterator();
             while (i.hasNext()) {
                 currentLock = (CmsLock)m_workflowLocks.get(i.next());
-
                 if (currentLock.getProjectId() == projectId) {
                     // iterators are fail-fast!
                     if (!keepWorkflowLocks) {
                         i.remove();
+                        unlockResource(null, currentLock.getResourceName(), true);
                     }
                 }
-
                 if (forceUnlock) {
                     currentLock = (CmsLock)m_exclusiveLocks.get(currentLock.getResourceName());
                     if (currentLock != null) {
-                        m_exclusiveLocks.remove(currentLock.getResourceName());
+                        unlockResource(null, currentLock.getResourceName(), false);
                     }
                 }
             }
@@ -638,10 +634,10 @@ public final class CmsLockManager {
 
         while (i.hasNext()) {
             currentLock = (CmsLock)m_exclusiveLocks.get(i.next());
-
             if ((currentLock.getType() == CmsLockType.TEMPORARY) && currentLock.getUserId().equals(user.getId())) {
                 // iterators are fail-fast!
                 i.remove();
+                unlockResource(null, currentLock.getResourceName(), false);
             }
         }
     }
@@ -692,11 +688,15 @@ public final class CmsLockManager {
      */
     public void writeLocks(CmsDriverManager driverManager, CmsDbContext dbc) throws CmsException {
 
-        List locks = new ArrayList(m_exclusiveLocks.values());
-        if (m_isWorkflowEnabled) {
-            locks.addAll(m_workflowLocks.values());
+        if (m_isDirty) {
+            // write the locks only if really needed
+            List locks = new ArrayList(m_exclusiveLocks.values());
+            if (m_isWorkflowEnabled) {
+                locks.addAll(m_workflowLocks.values());
+            }
+            driverManager.getProjectDriver().writeLocks(dbc, locks);
+            m_isDirty = false;
         }
-        driverManager.getProjectDriver().writeLocks(dbc, locks);
     }
 
     /**
@@ -840,5 +840,58 @@ public final class CmsLockManager {
         siblings.remove(resource);
 
         return driverManager.updateContextDates(dbc, siblings);
+    }
+
+    /**
+     * Sets the given lock to the resource.<p>
+     * @param driverManager the driver manager
+     * @param resourceName the name of the resource to lock
+     * @param lock the lock to set
+     */
+    private void lockResource(CmsDriverManager driverManager, String resourceName, CmsLock lock) {
+
+        if (!m_isDirty) {
+            // read the locks again fresh from DB before changing the state
+            try {
+                readLocks(driverManager, new CmsDbContext());
+            } catch (CmsException e) {
+                // should never happen
+                e.printStackTrace();
+            }
+        }
+        m_isDirty = true;
+        if (lock.getType() == CmsLockType.WORKFLOW) {
+            m_workflowLocks.put(resourceName, lock);
+        } else {
+            m_exclusiveLocks.put(resourceName, lock);
+        }
+    }
+
+    /**
+     * Unlocks the the resource with the given name.<p>
+     * @param driverManager the driver manager
+     * @param resourceName the name of the resource to unlock
+     * @param inWf <code>true</code> if a workflow lock should be removed, 
+     *              if not a exclusive lock will be removed
+     * 
+     * @return the removed lock object
+     */
+    private CmsLock unlockResource(CmsDriverManager driverManager, String resourceName, boolean inWf) {
+
+        if (!m_isDirty && driverManager != null) {
+            // read the locks again fresh from DB before changing the state
+            try {
+                readLocks(driverManager, new CmsDbContext());
+            } catch (CmsException e) {
+                // should never happen
+                e.printStackTrace();
+            }
+        }
+        m_isDirty = true;
+        if (inWf) {
+            return (CmsLock)m_workflowLocks.remove(resourceName);
+        } else {
+            return (CmsLock)m_exclusiveLocks.remove(resourceName);
+        }
     }
 }
