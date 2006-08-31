@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2006/08/25 12:22:55 $
- * Version: $Revision: 1.21.4.2 $
+ * Date   : $Date: 2006/08/31 08:51:13 $
+ * Version: $Revision: 1.21.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.4.2 $
+ * @version $Revision: 1.21.4.3 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -92,6 +92,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
         suite.addTest(new TestPublishIssues("testDirectPublishWithSiblings"));
         suite.addTest(new TestPublishIssues("testPublishScenarioD"));
         suite.addTest(new TestPublishIssues("testPublishScenarioE"));
+        suite.addTest(new TestPublishIssues("testPublishScenarioF"));
+        suite.addTest(new TestPublishIssues("testPublishScenarioG"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -188,8 +190,6 @@ public class TestPublishIssues extends OpenCmsTestCase {
             OpenCms.getDefaultUsers().getGroupUsers(),
             OpenCms.getDefaultUsers().getGroupUsers());
 
-        // TODO: above create statement fails "sometimes" - check table contraints (?)
-
         // check if the projects have different ids
         int id1 = project.getId();
         int id2 = newProject.getId();
@@ -226,25 +226,9 @@ public class TestPublishIssues extends OpenCmsTestCase {
         final String description = "";
 
         // usually creating the project 20x is enough to replicate the issue
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
-        cms.createProject(name, description, group, group);
+        for (int i = 0; i < 20; i++) {
+            cms.createProject(name, description, group, group);
+        }
     }
 
     /**
@@ -462,8 +446,10 @@ public class TestPublishIssues extends OpenCmsTestCase {
      * Tests publish scenario "D".<p>
      * 
      * This scenario is described as follows:
+     * 
      * Direct publishing of folders containing subfolders skips all (sibling)
      * resources in subfolders. 
+     * 
      * e.g. direct publish of /folder2/folder1/ 
      * publishes /folder2/folder1/ and /folder2/folder1/index.html/, 
      * but not /folder2/folder1/subfolder11/index.html.<p>
@@ -475,10 +461,6 @@ public class TestPublishIssues extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing publish scenario D");
 
-        // change to the offline project 
-        CmsProject project = cms.readProject("Offline");
-        cms.getRequestContext().setCurrentProject(project);
-
         cms.lockResource("/folder1/");
         // copy the whole folder creating siblings of all resources
         cms.copyResource("/folder1/", "/folder2/folder1", CmsResource.COPY_AS_SIBLING);
@@ -488,6 +470,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.unlockResource("/folder2/folder1/");
         cms.publishResource("/folder2/folder1/");
 
+        // check the state of all resources
         Iterator itResources = cms.readResources("/folder2/folder1/", CmsResourceFilter.ALL, true).iterator();
         while (itResources.hasNext()) {
             CmsResource res = (CmsResource)itResources.next();
@@ -499,8 +482,9 @@ public class TestPublishIssues extends OpenCmsTestCase {
      * Tests publish scenario "E".<p>
      * 
      * This scenario is described as follows:
-     * Deletion of folders containing shared locked siblings after copying 
-     * a folder creating siblings into a new folder and publication. <p>
+     * 
+     * Deletion of folders containing shared locked siblings, 
+     * after copying a folder creating siblings into a new folder and publishing. <p>
      * 
      * @throws Throwable if something goes wrong
      */
@@ -541,5 +525,88 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         // publish
         cms.publishResource("/test");
+    }
+
+    /**
+     * Tests publish scenario "F".<p>
+     * 
+     * This scenario is described as follows:
+     * 
+     * We have 2 siblings: sibA.txt and sibB.txt
+     * We set a shared property and we publish
+     * just one sibling let's say sibA.txt.
+     * 
+     * After publishing both siblings should be unchanged
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishScenarioF() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publish scenario F");
+
+        String sibA = "sibA.txt";
+        String sibB = "sibB.txt";
+        
+        cms.createResource(sibA, CmsResourceTypePlain.getStaticTypeId());
+        cms.createSibling(sibA, sibB, null);
+
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();
+
+        CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, "shared");
+        cms.lockResource(sibA);
+        cms.writePropertyObject(sibA, prop);
+        
+        assertState(cms, sibA, CmsResource.STATE_CHANGED);
+        assertState(cms, sibB, CmsResource.STATE_CHANGED);
+        
+        cms.unlockResource(sibA);
+        cms.publishResource(sibA, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        
+        assertState(cms, sibA, CmsResource.STATE_UNCHANGED);
+        assertState(cms, sibB, CmsResource.STATE_UNCHANGED);
+    }
+
+    /**
+     * Tests publish scenario "G".<p>
+     * 
+     * This scenario is described as follows:
+     * 
+     * We have 2 siblings: sib1.txt and sib2.txt
+     * We do a content modification and we publish
+     * just one sibling let's say sib1.txt.
+     * 
+     * After publishing both siblings should be unchanged
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishScenarioG() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publish scenario G");
+
+        String sib1 = "sib1.txt";
+        String sib2 = "sib2.txt";
+        
+        cms.createResource(sib1, CmsResourceTypePlain.getStaticTypeId());
+        cms.createSibling(sib1, sib2, null);
+
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();
+
+        CmsFile file = cms.readFile(sib1);
+        file.setContents("abc".getBytes());
+        cms.lockResource(sib1);
+        cms.writeFile(file);
+        
+        assertState(cms, sib1, CmsResource.STATE_CHANGED);
+        assertState(cms, sib2, CmsResource.STATE_CHANGED);
+        
+        cms.unlockResource(sib1);
+        cms.publishResource(sib1, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        
+        assertState(cms, sib1, CmsResource.STATE_UNCHANGED);
+        assertState(cms, sib2, CmsResource.STATE_UNCHANGED);
     }
 }
