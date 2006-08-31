@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromHttp.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.12.4.1 $
+ * Date   : $Date: 2006/08/31 09:02:38 $
+ * Version: $Revision: 1.12.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,10 @@
 package org.opencms.workplace.tools.modules;
 
 import org.opencms.configuration.CmsConfigurationException;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -49,9 +48,7 @@ import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12.4.1 $ 
+ * @version $Revision: 1.12.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,11 +112,14 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
                 + CmsSystemInfo.FOLDER_MODULES);
         } catch (CmsException e) {
             // error copying the file to the OpenCms server
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(getLocale()), e);
+            }
             setException(e);
             return;
         }
         /// copied
-        List errors = new ArrayList();
+        CmsConfigurationException exception = null;
         CmsModule module = null;
         try {
             String importpath = OpenCms.getSystemInfo().getPackagesRfsPath();
@@ -141,17 +141,16 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
                     dep.append(dependency.getVersion());
                     dep.append(")");
                 }
-                errors.add(Messages.get().container(
+                exception = new CmsConfigurationException(Messages.get().container(
                     Messages.ERR_ACTION_MODULE_DEPENDENCY_2,
                     getParamImportfile(),
                     new String(dep)));
             }
-
         } catch (CmsConfigurationException e) {
-            errors.add(Messages.get().container(Messages.ERR_ACTION_MODULE_UPLOAD_1, getParamImportfile()));
+            exception = e;
         }
 
-        if ((module != null) && errors.isEmpty()) {
+        if ((module != null) && exception == null) {
 
             // refresh the list
             Map objects = (Map)getSettings().getListObject();
@@ -172,20 +171,12 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
             }
         } else {
             // log it 
-            Iterator it = errors.iterator();
-            CmsMessageContainer msg;
-            while (it.hasNext()) {
-                // only one
-                msg = (CmsMessageContainer)it.next();
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(msg.key(getLocale()));
-                }
-                // then throw to avoid blank page telling nothing due to missing forward
-                throw new CmsIllegalStateException(msg);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(exception.getLocalizedMessage(getLocale()), exception);
             }
-
+            // then throw to avoid blank page telling nothing due to missing forward
+            throw new CmsRuntimeException(exception.getMessageContainer(), exception);
         }
-
     }
 
     /**
