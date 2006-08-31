@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.44.4.1 $
+ * Date   : $Date: 2006/08/31 09:01:48 $
+ * Version: $Revision: 1.44.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.44.4.1 $ 
+ * @version $Revision: 1.44.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -292,8 +292,14 @@ public class CmsToolManager {
 
         CmsToolUserData userData = getUserData(wp);
         String root = ROOTKEY_DEFAULT;
-        if ((userData != null) && (m_roots.getObject(userData.getRootKey()) != null)) {
-            root = userData.getRootKey();
+        if (userData != null) {
+            if (m_roots.getObject(userData.getRootKey()) != null) {
+                root = userData.getRootKey();
+            } else {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_NOT_CONFIGURED_ROOT_1, userData.getRootKey()));
+                }
+            }
         }
         return (CmsToolRootHandler)m_roots.getObject(root);
     }
