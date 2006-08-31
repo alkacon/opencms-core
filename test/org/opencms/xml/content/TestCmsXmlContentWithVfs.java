@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2006/08/25 12:56:55 $
- * Version: $Revision: 1.43.4.4 $
+ * Date   : $Date: 2006/08/31 08:51:27 $
+ * Version: $Revision: 1.43.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.4 $
+ * @version $Revision: 1.43.4.5 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -343,7 +343,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS);
         assertEquals(links.size(), 2);
-        // running ocee-cache the list is reversed so it will fail here
+        int todo; // running oracle the list is reversed so it will fail here
         TestLinkParseableResourceTypes.assertRelation(
             new CmsRelation(file, res2, CmsRelationType.HYPERLINK),
             (CmsRelation)links.get(0));
