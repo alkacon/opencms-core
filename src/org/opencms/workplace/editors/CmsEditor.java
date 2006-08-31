@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/08/21 14:16:56 $
- * Version: $Revision: 1.34.4.3 $
+ * Date   : $Date: 2006/08/31 09:00:04 $
+ * Version: $Revision: 1.34.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34.4.3 $ 
+ * @version $Revision: 1.34.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -980,7 +980,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
         // reading of file contents failed, show error dialog
         setAction(ACTION_SHOW_ERRORMESSAGE);
-        setParamTitle(key("title.edit") + ": " + CmsResource.getName(getParamResource()));
+        setParamTitle(key(Messages.GUI_TITLE_EDIT_1, new Object[] {CmsResource.getName(getParamResource())}));
         if (exception != null) {
             getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, exception);
             if (CmsLog.getLog(editor).isWarnEnabled()) {
