@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.14.4.1 $
+ * Date   : $Date: 2006/08/31 08:58:44 $
+ * Version: $Revision: 1.14.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14.4.1 $ 
+ * @version $Revision: 1.14.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -236,6 +236,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_LAST_MODIFIED_2 = "LOG_SET_LAST_MODIFIED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_STATIC_EXPORT_DISABLED_0 = "LOG_STATIC_EXPORT_DISABLED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_STATIC_EXPORT_ERROR_0 = "LOG_STATIC_EXPORT_ERROR_0";

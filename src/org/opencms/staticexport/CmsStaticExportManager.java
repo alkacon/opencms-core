@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/08/25 12:22:55 $
- * Version: $Revision: 1.121.4.6 $
+ * Date   : $Date: 2006/08/31 08:58:44 $
+ * Version: $Revision: 1.121.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.6 $ 
+ * @version $Revision: 1.121.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -357,9 +357,19 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public void cmsEvent(CmsEvent event) {
 
+        if (!isStaticExportEnabled()) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORT_DISABLED_0));
+            }
+            return;
+        }
+        I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
+        if (report == null) {
+            report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
+        }
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_UPDATE_EXPORTS:
-                scrubExportFolders(null);
+                scrubExportFolders(report);
                 clearCaches(event);
                 break;
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
@@ -367,10 +377,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
-                }
-                I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
-                if (report == null) {
-                    report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
                 }
                 synchronized (m_lockCmsEvent) {
                     getHandler().performEventPublishProject(publishHistoryId, report);
