@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
- * Version: $Revision: 1.241.4.6 $
+ * Date   : $Date: 2006/08/31 09:03:12 $
+ * Version: $Revision: 1.241.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,13 +85,12 @@ import org.apache.commons.logging.Log;
 
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
- *
  * 
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.6 $
+ * @version $Revision: 1.241.4.7 $
  * 
  * @since 6.0.0 
  */
@@ -788,9 +787,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_DEL_FILE_3,
-                        offlineResource.getRootPath(),
                         String.valueOf(m),
-                        String.valueOf(n)));
+                        String.valueOf(n),
+                        offlineResource.getRootPath()));
                 }
 
             } else if (offlineResource.getState() == CmsResource.STATE_CHANGED) {
@@ -901,10 +900,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 // update the online/offline structure and resource records of the file
                 m_driverManager.getVfsDriver().publishResource(dbc, onlineProject, newFile, offlineFile, false);
 
-                // add the content ID to the content IDs that got already published
-                // publishedContentIds.add(offlineFileHeader.getContentId());
                 publishedResourceIds.add(offlineFile.getResourceId());
-
             } else {
                 // create the sibling online
                 m_driverManager.getVfsDriver().createSibling(dbc, onlineProject, offlineResource);
@@ -917,7 +913,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                 newFile = new CmsFile(offlineResource);
                 newFile.setContents(offlineContent.getContents());
-
             }
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
@@ -1969,7 +1964,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             count = 0;
             while (i.hasNext()) {
                 lock = (CmsLock)i.next();
-                if (lock.isPersistant()) {
+                if (lock.isPersistent()) {
                     // only persist locks that should be written to the DB
                     stmt.setString(1, lock.getResourceName());
                     stmt.setString(2, lock.getUserId().toString());
@@ -2351,6 +2346,17 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             throw e;
         }
 
+        updateRelations(dbc, onlineProject, offlineResource);
+    }
+
+    /**
+     * @param dbc
+     * @param onlineProject
+     * @param offlineResource
+     * @throws CmsDataAccessException
+     */
+    private void updateRelations(CmsDbContext dbc, CmsProject onlineProject, CmsResource offlineResource) throws CmsDataAccessException {
+
         m_driverManager.getVfsDriver().deleteRelations(
             dbc,
             onlineProject.getId(),
@@ -2360,7 +2366,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             dbc.currentProject().getId(),
             CmsRelationFilter.TARGETS.filterResource(offlineResource)).iterator();
         while (itRelations.hasNext()) {
-            m_driverManager.getVfsDriver().createRelation(dbc, onlineProject.getId(), (CmsRelation)itRelations.next());
+            m_driverManager.getVfsDriver().createRelation(
+                dbc,
+                onlineProject.getId(),
+                (CmsRelation)itRelations.next());
         }
     }
 
@@ -2617,20 +2626,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 publishHistoryId,
                 new CmsPublishedResource(offlineResource, backupTagId));
 
-            m_driverManager.getVfsDriver().deleteRelations(
-                dbc,
-                onlineProject.getId(),
-                CmsRelationFilter.TARGETS.filterResource(offlineResource));
-            Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
-                dbc,
-                dbc.currentProject().getId(),
-                CmsRelationFilter.TARGETS.filterResource(offlineResource)).iterator();
-            while (itRelations.hasNext()) {
-                m_driverManager.getVfsDriver().createRelation(
-                    dbc,
-                    onlineProject.getId(),
-                    (CmsRelation)itRelations.next());
-            }
+            updateRelations(dbc, onlineProject, offlineResource);
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
