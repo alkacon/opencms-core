@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2006/08/21 15:59:20 $
- * Version: $Revision: 1.28.8.2 $
+ * Date   : $Date: 2006/08/31 08:55:12 $
+ * Version: $Revision: 1.28.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.opencms.util.CmsUUID;
  * @author Thomas Weckert  
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.8.2 $ 
+ * @version $Revision: 1.28.8.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -279,11 +279,11 @@ public class CmsLock implements Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if this is a persistant lock that should be saved when the systems shuts down.<p>
+     * Returns <code>true</code> if this is a persistent lock that should be saved when the systems shuts down.<p>
      * 
-     * @return <code>true</code> if this is a persistant lock that should be saved when the systems shuts down
+     * @return <code>true</code> if this is a persistent lock that should be saved when the systems shuts down
      */
-    public boolean isPersistant() {
+    public boolean isPersistent() {
 
         return (m_type == CmsLockType.EXCLUSIVE) || (m_type == CmsLockType.WORKFLOW);
     }
