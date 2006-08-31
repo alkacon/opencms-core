@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.32.4.6 $
+ * Date   : $Date: 2006/08/31 09:00:41 $
+ * Version: $Revision: 1.32.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.6 $ 
+ * @version $Revision: 1.32.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -261,7 +261,11 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showDateExpired = (preferences & CmsUserSettings.FILELIST_DATE_EXPIRED) > 0;
         boolean showState = (preferences & CmsUserSettings.FILELIST_WORKFLOW_STATE) > 0;
 
-        m_wfManager = OpenCms.getWorkflowManager();
+        try {
+            m_wfManager = OpenCms.getWorkflowManager();
+        } catch (CmsRuntimeException e) {
+            m_wfManager = null;
+        }
 
         boolean fullPath = showVfsLinks || galleryView || listView;
         for (int i = startat; i < stopat; i++) {
@@ -330,7 +334,6 @@ public class CmsExplorer extends CmsWorkplace {
             lock = getCms().getLock(resource);
         } catch (CmsException e) {
             lock = CmsLock.getNullLock();
-
             LOG.error(e);
         }
 
@@ -549,28 +552,24 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(",");
 
         // position 19: name of project where the resource is locked in
-        boolean projectLockRead = false;
         int lockedInProject = CmsDbUtil.UNKNOWN_ID;
         if (lock.isNullLock() && (resource.getState() != CmsResource.STATE_UNCHANGED)) {
             // resource is unlocked and modified
             lockedInProject = resource.getProjectLastModified();
-        } else {
-            if (resource.getState() != CmsResource.STATE_UNCHANGED) {
-                // resource is locked and modified
-                lockedInProject = projectId;
-            } else {
-                // resource is locked and unchanged
-                lockedInProject = lock.getProjectId();
-                projectLockRead = true;
-            }
+        } else if (resource.getState() != CmsResource.STATE_UNCHANGED) {
+            // resource is locked and modified
+            lockedInProject = projectId;
+        } else if (!lock.isNullLock()) {
+            // resource is locked and unchanged
+            lockedInProject = lock.getProjectId();
         }
+
         String lockedInProjectName;
         CmsProject lockProject = null;
         try {
             if (lockedInProject == CmsDbUtil.UNKNOWN_ID) {
                 // the resource is unlocked and unchanged
                 lockedInProjectName = "";
-                projectLockRead = false;
             } else {
                 lockProject = getCms().readProject(lockedInProject);
                 lockedInProjectName = lockProject.getName();
@@ -581,7 +580,6 @@ public class CmsExplorer extends CmsWorkplace {
                 LOG.info(exc);
             }
             lockedInProjectName = "";
-            projectLockRead = false;
         }
         content.append("\"");
         content.append(lockedInProjectName);
@@ -599,17 +597,23 @@ public class CmsExplorer extends CmsWorkplace {
 
         if (m_wfManager != null) {
             try {
-                if (!lock.isNullLock()) {
-                    CmsProject project = projectLockRead ? lockProject : getCms().readProject(lock.getProjectId());
+                lock = getCms().getLockForWorkflow(resource);
+            } catch (CmsException e) {
+                lock = CmsLock.getNullLock();
+                LOG.error(e);
+            }
+            if (!lock.isNullLock()) {
+                try {
+                    CmsProject project = getCms().readProject(lock.getProjectId());
                     isWorkflowProject = (project.getType() == CmsProject.PROJECT_TYPE_WORKFLOW);
                     if (isWorkflowProject) {
                         wfProject = m_wfManager.getTask(getCms(), getCms().getSitePath(resource));
                         taskState = m_wfManager.getTaskState(wfProject, getLocale());
                     }
-                }
-            } catch (CmsException exc) {
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(exc);
+                } catch (CmsException exc) {
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(exc);
+                    }
                 }
             }
             if (isWorkflowProject) {
@@ -640,7 +644,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("\",\"");
 
         // position 23: workflow project info, used as text for tool tip
-        if (isWorkflowProject) {
+        if (isWorkflowProject && wfProject != null) {
             String wfInfo = "";
             try {
                 wfInfo = Messages.get().container(
@@ -651,7 +655,7 @@ public class CmsExplorer extends CmsWorkplace {
                         taskState,
                         getMessages().getDateTime(m_wfManager.getTaskStartTime(wfProject)),
                         m_wfManager.getTaskOwner(wfProject).getName()}).key();
-            } catch (CmsException exc) {
+            } catch (Throwable exc) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(exc);
                 }
