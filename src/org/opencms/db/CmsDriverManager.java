@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/08/25 13:16:56 $
- * Version: $Revision: 1.570.2.15 $
+ * Date   : $Date: 2006/08/31 08:53:15 $
+ * Version: $Revision: 1.570.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -8120,22 +8120,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
     private void updateState(CmsDbContext dbc, CmsResource resource, boolean resourceState)
     throws CmsDataAccessException {
 
+        resource.setUserLastModified(dbc.currentUser().getId());
         if (resourceState) {
             // update the whole resource state
-            resource.setUserLastModified(dbc.currentUser().getId());
             m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_STATE);
         } else {
-            // update date and user last modified
-            resource.setUserLastModified(dbc.currentUser().getId());
-            resource.setDateLastModified(System.currentTimeMillis());
-            m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
-            // update project last modified
-            resource.setProjectLastModified(dbc.currentProject().getId());
-            m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT);
             // update the structure state
-            resource.setState(resource.getState() == CmsResource.STATE_NEW ? CmsResource.STATE_NEW
-            : CmsResource.STATE_CHANGED);
-            m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE_STATE);
+            m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE_STATE);
         }
     }
 }

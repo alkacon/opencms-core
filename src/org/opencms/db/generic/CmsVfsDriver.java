@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.258.4.5 $
+ * Date   : $Date: 2006/08/31 08:54:03 $
+ * Version: $Revision: 1.258.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.5 $
+ * @version $Revision: 1.258.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -381,6 +381,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setLong(6, relation.getDateEnd());
             stmt.setInt(7, relation.getType().getMode());
 
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_CREATE_RELATION_2,
+                    String.valueOf(projectId),
+                    relation));
+            }
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -2468,31 +2474,47 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         int projectId = project.getId();
 
         if (changed == CmsDriverManager.UPDATE_RESOURCE_STATE) {
-            resourceState = org.opencms.file.CmsResource.STATE_CHANGED;
+            resourceState = CmsResource.STATE_CHANGED;
         } else if (changed == CmsDriverManager.UPDATE_STRUCTURE_STATE) {
-            structureState = org.opencms.file.CmsResource.STATE_CHANGED;
+            structureState = (resourceState == CmsResource.STATE_UNCHANGED ? CmsResource.STATE_CHANGED : resourceState);
         } else if (changed == CmsDriverManager.NOTHING_CHANGED) {
             projectId = resource.getProjectLastModified();
         } else {
-            resourceState = org.opencms.file.CmsResource.STATE_CHANGED;
-            structureState = org.opencms.file.CmsResource.STATE_CHANGED;
+            resourceState = CmsResource.STATE_CHANGED;
+            structureState = CmsResource.STATE_CHANGED;
         }
 
         try {
             conn = m_sqlManager.getConnection(dbc, project.getId());
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
-            stmt.setInt(1, resource.getTypeId());
-            stmt.setInt(2, resource.getFlags());
-            stmt.setLong(3, resourceDateModified);
-            stmt.setString(4, resource.getUserLastModified().toString());
-            stmt.setInt(5, resourceState);
-            stmt.setInt(6, resource.getLength());
-            stmt.setInt(7, projectId);
-            stmt.setInt(8, internalCountSiblings(dbc, project.getId(), resource.getResourceId()));
-            stmt.setString(9, resource.getResourceId().toString());
-            stmt.executeUpdate();
 
-            m_sqlManager.closeAll(dbc, null, stmt, null);
+            if (changed != CmsDriverManager.UPDATE_STRUCTURE_STATE) {
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
+                stmt.setInt(1, resource.getTypeId());
+                stmt.setInt(2, resource.getFlags());
+                stmt.setLong(3, resourceDateModified);
+                stmt.setString(4, resource.getUserLastModified().toString());
+                stmt.setInt(5, resourceState);
+                stmt.setInt(6, resource.getLength());
+                stmt.setInt(7, projectId);
+                stmt.setInt(8, internalCountSiblings(dbc, project.getId(), resource.getResourceId()));
+                stmt.setString(9, resource.getResourceId().toString());
+                stmt.executeUpdate();
+
+                m_sqlManager.closeAll(dbc, null, stmt, null);
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES_WITHOUT_STATE");
+                stmt.setInt(1, resource.getTypeId());
+                stmt.setInt(2, resource.getFlags());
+                stmt.setLong(3, resourceDateModified);
+                stmt.setString(4, resource.getUserLastModified().toString());
+                stmt.setInt(5, resource.getLength());
+                stmt.setInt(6, projectId);
+                stmt.setInt(7, internalCountSiblings(dbc, project.getId(), resource.getResourceId()));
+                stmt.setString(8, resource.getResourceId().toString());
+                stmt.executeUpdate();
+
+                m_sqlManager.closeAll(dbc, null, stmt, null);
+            }
 
             // read the parent id
             String parentId = internalReadParentId(dbc, project.getId(), resourcePath);
