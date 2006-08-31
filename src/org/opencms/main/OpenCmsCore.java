@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/08/25 13:16:57 $
- * Version: $Revision: 1.218.4.10 $
+ * Date   : $Date: 2006/08/31 08:56:44 $
+ * Version: $Revision: 1.218.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -134,7 +134,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.10 $ 
+ * @version $Revision: 1.218.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -690,6 +690,9 @@ public final class OpenCmsCore {
      */
     protected I_CmsWorkflowManager getWorkflowManager() {
 
+        if (m_workflowManager == null) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_NO_WORKFLOW_CLASS_0));
+        }
         return m_workflowManager;
     }
 
@@ -1022,7 +1025,7 @@ public final class OpenCmsCore {
 
         // get the workflow manager, this is needed before the security manager is initialized because of the locks
         m_workflowManager = systemConfiguration.getWorkflowManager();
-        
+
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(
             m_configurationManager,
@@ -1464,21 +1467,22 @@ public final class OpenCmsCore {
                         e.getMessage()), e);
                 }
                 try {
-                    if (m_securityManager != null) {
-                        m_securityManager.destroy();
-                    }
-                } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_SECURITY_SHUTDOWN_1,
-                        e.getMessage()), e);
-                }
-                try {
+                    // has to be stopped before the security manager, since this thread uses it
                     if (m_threadStore != null) {
                         m_threadStore.shutDown();
                     }
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(
                         Messages.LOG_ERROR_THREAD_SHUTDOWN_1,
+                        e.getMessage()), e);
+                }
+                try {
+                    if (m_securityManager != null) {
+                        m_securityManager.destroy();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_SECURITY_SHUTDOWN_1,
                         e.getMessage()), e);
                 }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.58.4.3 $
+ * Date   : $Date: 2006/08/31 08:56:45 $
+ * Version: $Revision: 1.58.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58.4.3 $ 
+ * @version $Revision: 1.58.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -468,8 +468,7 @@ public final class OpenCms {
      * @return the workflow manage
      */
     public static I_CmsWorkflowManager getWorkflowManager() {
-
-        // todo exception if wfm null
+        
         return OpenCmsCore.getInstance().getWorkflowManager();
     }
 

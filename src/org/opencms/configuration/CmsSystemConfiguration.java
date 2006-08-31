@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.36.4.5 $
+ * Date   : $Date: 2006/08/31 08:56:53 $
+ * Version: $Revision: 1.36.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsEventManager;
 import org.opencms.main.CmsHttpAuthenticationSettings;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsRequestHandler;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
@@ -78,7 +79,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.5 $
+ * @version $Revision: 1.36.4.6 $
  * 
  * @since 6.0.0
  */
@@ -993,7 +994,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             m_siteManager = OpenCms.getSiteManager();
             m_loginManager = OpenCms.getLoginManager();
             m_loginMessage = OpenCms.getLoginManager().getLoginMessage();
-            m_workflowManager = OpenCms.getWorkflowManager();
+            try {
+                m_workflowManager = OpenCms.getWorkflowManager();
+            } catch (CmsRuntimeException e) {
+                // ignore
+            }
         }
 
         // i18n nodes
