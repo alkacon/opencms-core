@@ -1,4 +1,8 @@
-<%@ page import="org.opencms.workplace.commons.*" %><%	
+<%@ page import="
+	org.opencms.workplace.CmsDialog,
+	org.opencms.workplace.commons.CmsPublishProject,
+	org.opencms.workplace.commons.Messages
+" %><%	
 
 	// initialize the workplace class
 	CmsPublishProject wp = new CmsPublishProject(pageContext, request, response);
@@ -7,7 +11,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsPublishProject.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
@@ -16,10 +20,10 @@ break;
 
 
 //////////////////// ACTION: other actions handled outside of this JSP
-case CmsPublishProject.ACTION_CONFIRMED:
-case CmsPublishProject.ACTION_REPORT_BEGIN:
-case CmsPublishProject.ACTION_REPORT_UPDATE:
-case CmsPublishProject.ACTION_REPORT_END:
+case CmsDialog.ACTION_CONFIRMED:
+case CmsDialog.ACTION_REPORT_BEGIN:
+case CmsDialog.ACTION_REPORT_UPDATE:
+case CmsDialog.ACTION_REPORT_END:
 
 	wp.actionReport();
 
@@ -38,9 +42,9 @@ case CmsPublishProject.ACTION_UNLOCK_CONFIRMATION:
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <%= wp.key(Messages.GUI_PUBLISH_UNLOCK_CONFIRMATION_0) %>
 
@@ -56,10 +60,10 @@ case CmsPublishProject.ACTION_UNLOCK_CONFIRMATION:
 
 break;
 //////////////////// ACTION: show start dialog
-case CmsPublishProject.ACTION_DEFAULT:
+case CmsDialog.ACTION_DEFAULT:
 default:
 
-	wp.setParamAction(CmsPublishProject.DIALOG_CONFIRMED);
+	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
 
 %><%= wp.htmlStart() %>
 
@@ -67,18 +71,17 @@ default:
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
-if (wp.isMultiOperation()) { %>
+if (wp.isMultiOperation()) { // include %>
 	<%@ include file="includes/multiresourcelist.txt" %><%
 } else { %>
 	<%= wp.key(Messages.GUI_PUBLISH_CONFIRMATION_3, new Object[] {wp.getParamResource(), wp.getParamModifieddate(), wp.getParamModifieduser()}) %><%
 } %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <%= wp.buildCheckSiblings() %>
-
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>
 

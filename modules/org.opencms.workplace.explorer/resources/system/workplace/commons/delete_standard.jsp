@@ -17,15 +17,22 @@ case CmsDialog.ACTION_CANCEL:
 
 break;
 
+////////////////////ACTION: other actions handled outside of this JSP
+case CmsDialog.ACTION_CONFIRMED:
+case CmsDialog.ACTION_REPORT_BEGIN:
+case CmsDialog.ACTION_REPORT_UPDATE:
+case CmsDialog.ACTION_REPORT_END:
 
+	wp.actionReport();
+	break;
+	
 case CmsDelete.ACTION_DELETE:
 case CmsDialog.ACTION_WAIT:
 
 //////////////////// ACTION: main delete action (with optional confirm / wait screen)
 
 	wp.actionDelete();
-
-break;
+	break;
 
 
 case CmsDialog.ACTION_DEFAULT:
@@ -33,7 +40,7 @@ default:
 
 //////////////////// ACTION: show delete dialog (default)
 
-	wp.setParamAction("delete");
+	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
 
 %><%= wp.htmlStart("help.explorer.contextmenu.delete") %>
 <%= wp.bodyStart("dialog") %>
@@ -54,7 +61,6 @@ if (wp.isMultiOperation()) {
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
-<%= wp.buildRelations() %>
 <%= wp.buildDeleteSiblings() %>
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>
