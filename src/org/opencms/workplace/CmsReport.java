@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2006/09/01 10:27:55 $
+ * Version: $Revision: 1.26.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.workplace;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
@@ -50,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.26.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,7 +136,7 @@ public class CmsReport extends CmsMultiDialog {
         }
         return wp;
     }
-
+    
     /**
      * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>
      * 
@@ -157,7 +159,7 @@ public class CmsReport extends CmsMultiDialog {
             cancelAttrs,
             detailsAttrs + "onclick=\"switchOutputFormat();\""});
     }
-
+    
     /**
      * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>
      * 
@@ -373,6 +375,26 @@ public class CmsReport extends CmsMultiDialog {
     }
 
     /**
+     * Returns an optional conclusion text to be displayed below the report output.<p>
+     * 
+     * @return an optional conclusion text
+     */
+    public String reportConclusionText() {
+
+        return "";
+    }
+
+    /**
+     * Returns an optional introduction text to be displayed above the report output.<p>
+     * 
+     * @return an optional introduction text
+     */
+    public String reportIntroductionText() {
+        
+        return "";
+    }
+
+    /**
      * Sets  if the workplace must be refreshed.<p>
      * 
      * @param value <code>"true"</code> (String) if the workplace must be refreshed.
@@ -454,10 +476,8 @@ public class CmsReport extends CmsMultiDialog {
      * 
      * @see org.opencms.workplace.CmsMultiDialog#performDialogOperation()
      */
-    protected boolean performDialogOperation() {
+    protected boolean performDialogOperation() throws CmsException {
 
-        // do nothing, has to be implemented
-        return true;
+        throw new CmsException(new CmsMessageContainer(null, ""));
     }
-
 }

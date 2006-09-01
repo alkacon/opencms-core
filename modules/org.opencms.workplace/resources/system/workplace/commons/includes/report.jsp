@@ -1,7 +1,10 @@
 <%@ page import="
-	org.opencms.workplace.*, 
+	org.opencms.workplace.CmsReport,
+	org.opencms.workplace.CmsDialog,
+	org.opencms.workplace.CmsWorkplace,
 	org.opencms.workplace.tools.CmsToolDialog, 
-	org.opencms.report.I_CmsReport
+	org.opencms.report.I_CmsReport,
+	org.opencms.report.Messages
 "%><%	
     // get workplace class from request attribute
     CmsReport wp = CmsReport.initCmsReport(pageContext, request, response);
@@ -357,8 +360,8 @@ function updateReport() {
     		pageBody = 
     			pageStartSimple + 
     			"<span class='head'>" + lastHeadline + "</span><br>\n" +
-    			"<%= wp.key("report.error") %>" + lastError + "\n" +
-    			"<%= wp.key("report.error.details") %>" + 
+    			"<%= wp.key(Messages.RPT_ERROR_0) %> " + lastError + "<br>\n" +
+    			"<%= wp.key(Messages.RPT_ERROR_DETAILS_0) %>" + 
     			pageEndSimple;
     	} else {
 	    	pageBody = 
@@ -525,6 +528,7 @@ function submitActionRefresh(para1, para2, para3) {
 
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 <%= wp.paramsAsHidden() %>
+<%= wp.reportIntroductionText() %>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%" height="400">
 <tr>
@@ -532,6 +536,7 @@ function submitActionRefresh(para1, para2, para3) {
 </tr>
 </table>
 
+<%= wp.reportConclusionText() %>
     <%= wp.dialogContentEnd() %>
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
