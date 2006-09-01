@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/08/25 15:26:31 $
- * Version: $Revision: 1.717.2.33 $
+ * Date   : $Date: 2006/09/01 10:52:01 $
+ * Version: $Revision: 1.717.2.34 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,12 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 6.5.2 - September 1st, 2006
+- Improved delete dialog
+* Writing an individual property does not change the shared resource state 
+* Improved lock manager to avoid concurrent modifications
+* Fixed a number of issues introduced by fixing the issues reported by the "Findbugs" tool in 6.5.1
 
 OpenCms 6.5.1 - August 25, 2006
 ! Deleting a resource that is referenced (linked) in other resources now displays a confirmation dialog
