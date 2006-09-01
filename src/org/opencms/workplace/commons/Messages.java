@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
- * Version: $Revision: 1.15.4.2 $
+ * Date   : $Date: 2006/09/01 10:29:39 $
+ * Version: $Revision: 1.15.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.2 $ 
+ * @version $Revision: 1.15.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -305,16 +305,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DELETE_PRESERVE_SIBLINGS_0 = "GUI_DELETE_PRESERVE_SIBLINGS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DELETE_RELATIONS_CONCLUSION_MULTI_0 = "GUI_DELETE_RELATIONS_CONCLUSION_MULTI_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DELETE_RELATIONS_CONCLUSION_SINGLE_0 = "GUI_DELETE_RELATIONS_CONCLUSION_SINGLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DELETE_RELATIONS_INTRO_MULTI_0 = "GUI_DELETE_RELATIONS_INTRO_MULTI_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DELETE_RELATIONS_INTRO_SINGLE_0 = "GUI_DELETE_RELATIONS_INTRO_SINGLE_0";
+    public static final String GUI_DELETE_RELATIONS_0 = "GUI_DELETE_RELATIONS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_RELATIONS_NOT_ALLOWED_0 = "GUI_DELETE_RELATIONS_NOT_ALLOWED_0";

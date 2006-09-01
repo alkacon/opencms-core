@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/09/01 10:29:39 $
+ * Version: $Revision: 1.9.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +69,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_TRHEAD_NAME_0 = "GUI_PUBLISH_TRHEAD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RELATION_DELETION_VALIDATOR_THREAD_NAME_1 = "GUI_RELATION_DELETION_VALIDATOR_THREAD_NAME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_REPLACE_MODULE_THREAD_NAME_1 = "GUI_REPLACE_MODULE_THREAD_NAME_1";
@@ -123,6 +126,45 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_PUBLISH_RESOURCE_SWITCH_PROJECT_1 = "RPT_PUBLISH_RESOURCE_SWITCH_PROJECT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_BEGIN_0 = "RPT_RELATIONS_DELETION_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_BREAK_0 = "RPT_RELATIONS_DELETION_BREAK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_VALIDATION_1 = "RPT_RELATIONS_DELETION_VALIDATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_VALIDATION_BEGIN_0 = "RPT_RELATIONS_DELETION_VALIDATION_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_VALIDATION_END_0 = "RPT_RELATIONS_DELETION_VALIDATION_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_END_0 = "RPT_RELATIONS_DELETION_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_EXPANDFOLDER_1 = "RPT_RELATIONS_DELETION_EXPANDFOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_EXPANDFOLDER_BEGIN_0 = "RPT_RELATIONS_DELETION_EXPANDFOLDER_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_EXPANDFOLDER_END_0 = "RPT_RELATIONS_DELETION_EXPANDFOLDER_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_EXPANDSIBLING_1 = "RPT_RELATIONS_DELETION_EXPANDSIBLING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_EXPANDSIBLINGS_BEGIN_0 = "RPT_RELATIONS_DELETION_EXPANDSIBLINGS_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_EXPANDSIBLINGS_END_0 = "RPT_RELATIONS_DELETION_EXPANDSIBLINGS_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_REFERENCING_1 = "RPT_RELATIONS_DELETION_REFERENCING_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SYNCHRONIZE_BEGIN_0 = "RPT_SYNCHRONIZE_BEGIN_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/08/25 13:51:20 $
- * Version: $Revision: 1.17.4.3 $
+ * Date   : $Date: 2006/09/01 10:29:39 $
+ * Version: $Revision: 1.17.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.commons;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
@@ -39,20 +38,19 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsRelation;
-import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialogSelector;
-import org.opencms.workplace.CmsMultiDialog;
+import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsDialogHandler;
+import org.opencms.workplace.threads.CmsRelationsDeletionValidatorThread;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -73,14 +71,23 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.3 $ 
+ * @version $Revision: 1.17.4.4 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
+public class CmsDelete extends CmsReport implements I_CmsDialogHandler {
 
     /** Value for the action: delete the resource. */
     public static final int ACTION_DELETE = 100;
+
+    /** Value for the action: delete confirmed. */
+    public static final int ACTION_DELETE_CONFIRMED = 110;
+
+    /** Request parameter value for the action: show delete confirmation. */
+    public static final String DIALOG_DELETE_CONFIRMATION = "deleteconfirmation";
+
+    /** Request parameter value for the action: delete confirmed. */
+    public static final String DIALOG_DELETE_CONFIRMED = "deleteconfirmed";
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "delete";
@@ -94,18 +101,18 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDelete.class);
 
-    /** The internal computed broken relations map. */
-    private Map m_brokenRelations;
-
     /** The delete siblings parameter value. */
     private String m_deleteSiblings;
+
+    /** A flag to indicate if the deletion of the given resources will break relations. */
+    private Boolean m_willBreakRelations;
 
     /**
      * Default constructor needed for dialog handler implementation.<p>
      */
     public CmsDelete() {
 
-        super(null);
+        this(null);
     }
 
     /**
@@ -166,15 +173,43 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
+     * Performs the check-links report, will be called by the JSP page.<p>
+     * 
+     * @throws JspException if problems including sub-elements occur
+     */
+    public void actionReport() throws JspException {
+
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
+        switch (getAction()) {
+            case ACTION_REPORT_END:
+                actionDelete();
+                break;
+            case ACTION_REPORT_UPDATE:
+                setParamAction(REPORT_UPDATE);
+                getJsp().include(FILE_REPORT_OUTPUT);
+
+                break;
+            case ACTION_CONFIRMED:
+            default:
+                setParamAction(REPORT_UPDATE);
+                try {
+                    startValidationThread();
+                    getJsp().include(FILE_REPORT_OUTPUT);
+                } catch (Throwable e) {
+                    // error while unlocking resources, show error screen
+                    includeErrorpage(this, e);
+                }
+        }
+    }
+
+    /**
      * Returns the html for the "delete siblings" options when deleting a a resource with siblings.<p>
      * 
      * @return the html for the "delete siblings" options
      */
     public String buildDeleteSiblings() {
 
-        if (!isCanDelete()) {
-            return "";
-        }
         StringBuffer result = new StringBuffer(512);
         if (isMultiOperation() || (hasSiblings() && hasCorrectLockstate())) {
             // show only for multi resource operation or if resource has siblings and correct lock state
@@ -211,184 +246,34 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Returns html code for the 'delete despite relations' option.<p>
+     * Disable the ok button if not enough permissions.<p>
      * 
-     * @return html code for the 'delete despite relations' option
+     * @see org.opencms.workplace.CmsReport#dialogButtonsOkCancelDetails(java.lang.String, java.lang.String, java.lang.String)
      */
-    public String buildRelations() {
+    public String dialogButtonsOkCancelDetails(String okAttrs, String cancelAttrs, String detailsAttrs) {
 
-        Map brokenRelations = getBrokenRelations();
-        if (brokenRelations.isEmpty()) {
-            return "";
-        }
-
-        // check how many row we will need to display to decide using a div or not
-        int rows = 0;
-        Iterator itBrokenRelations = brokenRelations.entrySet().iterator();
-        while (itBrokenRelations.hasNext()) {
-            Map.Entry entry = (Map.Entry)itBrokenRelations.next();
-            rows += 2; // resName + indentation
-            rows += ((List)entry.getValue()).size();
-            if (rows > 10) {
-                break;
-            }
-        }
-
-        // check if deleting a single file to adapt the messages
-        boolean singleRes = (getResourceList().size() == 1);
-        if (singleRes) {
-            try {
-                singleRes = !getCms().readResource((String)getResourceList().get(0)).isFolder();
-            } catch (CmsException e) {
-                // should never happen
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e);
-                }
-            }
-        }
-
-        // write header
-        StringBuffer result = new StringBuffer(512);
-        result.append(dialogBlockStart(key(Messages.GUI_DELETE_RELATIONS_TITLE_0)));
-        if (singleRes) {
-            result.append(key(Messages.GUI_DELETE_RELATIONS_INTRO_SINGLE_0));
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(detailsAttrs)) {
+            detailsAttrs = "";
         } else {
-            result.append(key(Messages.GUI_DELETE_RELATIONS_INTRO_MULTI_0));
+            detailsAttrs += " ";
         }
-        result.append("<br>&nbsp;<br>\n");
-        // if the output to long, wrap it in a div
-        if (rows > 10) {
-            result.append("<div style='width: 100%; height:150px; overflow: auto;'>\n");
-        }
-        // for every resource that will break a relation 
-        itBrokenRelations = brokenRelations.entrySet().iterator();
-        while (itBrokenRelations.hasNext()) {
-            Map.Entry entry = (Map.Entry)itBrokenRelations.next();
-            String resName = (String)entry.getKey();
-            if (!singleRes) {
-                result.append("\t").append(resName).append("\n");
-            }
-            result.append("\t<ul>\n");
-            // display all relations
-            Iterator itRelations = ((List)entry.getValue()).iterator();
-            while (itRelations.hasNext()) {
-                String relation = (String)itRelations.next();
-                result.append("\t\t<li>").append(relation).append("</li>\n");
-            }
-            result.append("</ul>");
-        }
-        // close the div if needed
-        if (rows > 10) {
-            result.append("</div>\n");
-        }
-        result.append("<br>\n");
-
-        // write footer
-        if (!isCanDelete()) {
-            result.append(key(Messages.GUI_DELETE_RELATIONS_NOT_ALLOWED_0));
+        StringBuffer html = new StringBuffer();
+        if (!getWillBreakRelations()) {
+            html.append(dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {
+                okAttrs,
+                "",
+                detailsAttrs + "onclick=\"switchOutputFormat();\""}));
         } else {
-            if (singleRes) {
-                result.append(key(Messages.GUI_DELETE_RELATIONS_CONCLUSION_SINGLE_0));
+            if (isCanDelete()) {
+                html.append(dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {
+                    okAttrs,
+                    "",
+                    detailsAttrs + "onclick=\"switchOutputFormat();\""}));
             } else {
-                result.append(key(Messages.GUI_DELETE_RELATIONS_CONCLUSION_MULTI_0));
+                html.append(dialogButtonsCloseDetails("", detailsAttrs + "onclick=\"switchOutputFormat();\""));
             }
         }
-        result.append(dialogBlockEnd());
-        result.append("&nbsp;<br>\n");
-        return result.toString();
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsDialog#dialogButtonsOkCancel()
-     */
-    public String dialogButtonsOkCancel() {
-
-        if (isCanDelete()) {
-            return super.dialogButtonsOkCancel();
-        } else {
-            // do not allow to delete resources that would break relations 
-            return super.dialogButtonsClose();
-        }
-    }
-
-    /**
-     * Returns <code>true</code> if the current user is allowed 
-     * to delete the selected resources.<p>
-     * 
-     * @return <code>true</code> if the current user is allowed 
-     *          to delete the selected resources
-     */
-    private boolean isCanDelete() {
-
-        return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
-            || getCms().hasRole(CmsRole.VFS_MANAGER)
-            || getBrokenRelations().isEmpty();
-    }
-
-    /**
-     * Returns a map of where each entry has as key a name of a resource to be deleted,
-     * and value a list of relations (as resource names) that would be broken.<p> 
-     * 
-     * @return a map of broken relations
-     */
-    public Map getBrokenRelations() {
-
-        // TODO: include siblings if param deletesiblings is set
-        // the problem is that this is executed BEFORE the user can select to delete the siblings
-        int todo = 0;
-
-        if (m_brokenRelations == null) {
-            // expand the folders to single resources
-            CmsObject cms = getCms();
-            List resourceList = getResourceList();
-            Iterator itResources = new ArrayList(resourceList).iterator();
-            while (itResources.hasNext()) {
-                String resName = (String)itResources.next();
-                try {
-                    CmsResource resource = cms.readResource(resName);
-                    if (resource.isFolder()) {
-                        Iterator itChilds = cms.readResources(resName, CmsResourceFilter.ALL, true).iterator();
-                        while (itChilds.hasNext()) {
-                            CmsResource child = (CmsResource)itChilds.next();
-                            resourceList.add(cms.getSitePath(child));
-                        }
-                    }
-                } catch (CmsException e) {
-                    // should never happen
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
-                    }
-                }
-            }
-            // check every resource
-            m_brokenRelations = new HashMap();
-            itResources = resourceList.iterator();
-            while (itResources.hasNext()) {
-                String resName = (String)itResources.next();
-                try {
-                    Iterator it = cms.getRelationsForResource(resName, CmsRelationFilter.SOURCES).iterator();
-                    while (it.hasNext()) {
-                        CmsRelation relation = (CmsRelation)it.next();
-                        String resourceName = cms.getRequestContext().removeSiteRoot(relation.getSourcePath());
-                        // add only if the source is not to be deleted too
-                        if (!resourceList.contains(resourceName)) {
-                            List broken = (List)m_brokenRelations.get(resName);
-                            if (broken == null) {
-                                broken = new ArrayList();
-                                m_brokenRelations.put(resName, broken);
-                            }
-                            broken.add(resourceName);
-                        }
-                    }
-                } catch (CmsException e) {
-                    // should never happen
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
-                    }
-                }
-            }
-        }
-        return m_brokenRelations;
+        return html.toString();
     }
 
     /**
@@ -458,6 +343,21 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
+     * @see org.opencms.workplace.CmsReport#reportConclusionText()
+     */
+    public String reportConclusionText() {
+
+        if (getWillBreakRelations()) {
+            if (isCanDelete()) {
+                return "<br>" + key(Messages.GUI_DELETE_RELATIONS_0);
+            } else {
+                return "<br>" + key(Messages.GUI_DELETE_RELATIONS_NOT_ALLOWED_0);
+            }
+        }
+        return super.reportConclusionText();
+    }
+
+    /**
      * Sets the value of the boolean option to delete siblings.<p>
      * 
      * @param value the value of the boolean option to delete siblings
@@ -474,6 +374,8 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
 
         // check the required permissions to delete the resource       
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
@@ -481,15 +383,21 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
             setParamAction(DIALOG_CANCEL);
         }
 
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
-        if (DIALOG_TYPE.equals(getParamAction())) {
-            setAction(ACTION_DELETE);
+        if (DIALOG_CONFIRMED.equals(getParamAction())) {
+            setAction(ACTION_CONFIRMED);
+        } else if (DIALOG_DELETE_CONFIRMED.equals(getParamAction())) {
+            setAction(ACTION_DELETE_CONFIRMED);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
             setAction(ACTION_WAIT);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
+        } else if (REPORT_UPDATE.equals(getParamAction())) {
+            setAction(ACTION_REPORT_UPDATE);
+        } else if (REPORT_BEGIN.equals(getParamAction())) {
+            setAction(ACTION_REPORT_BEGIN);
+        } else if (REPORT_END.equals(getParamAction())) {
+            setAction(ACTION_REPORT_END);
         } else {
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
@@ -554,6 +462,60 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         checkLock(resource);
         // delete the resource
         getCms().deleteResource(resource, deleteOption);
+    }
+
+    /**
+     * Returns flag to indicate if the deletion of the given resources will break relations.<p>
+     *
+     * @return flag to indicate if the deletion of the given resources will break relations,
+     *    if <code>null</code> the thread is not ready yet.
+     */
+    private boolean getWillBreakRelations() {
+
+        if (m_willBreakRelations == null) {
+            Thread thread = OpenCms.getThreadStore().retrieveThread(new CmsUUID(getParamThread()));
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                // should never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e);
+                }
+            }
+            m_willBreakRelations = Boolean.valueOf(((CmsRelationsDeletionValidatorThread)thread).getWillBreakRelations());
+        }
+        return m_willBreakRelations.booleanValue();
+    }
+
+    /**
+     * Returns <code>true</code> if the current user is allowed 
+     * to delete the selected resources.<p>
+     * 
+     * @return <code>true</code> if the current user is allowed 
+     *          to delete the selected resources
+     */
+    private boolean isCanDelete() {
+
+        return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
+            || getCms().hasRole(CmsRole.VFS_MANAGER);
+    }
+
+    /**
+     * Starts the validation thread for the selected resources.<p>
+     */
+    private void startValidationThread() {
+
+        CmsRelationsDeletionValidatorThread thread = new CmsRelationsDeletionValidatorThread(
+            getCms(),
+            getResourceList(),
+            Boolean.valueOf(getParamDeleteSiblings()).booleanValue());
+
+        setParamAction(REPORT_BEGIN);
+        setParamThread(thread.getUUID().toString());
+        setParamThreadHasNext(CmsStringUtil.FALSE);
+
+        // start the publish thread
+        thread.start();
     }
 
 }
