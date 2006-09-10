@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2006/08/31 08:54:03 $
- * Version: $Revision: 1.258.4.6 $
+ * Date   : $Date: 2006/09/10 20:51:53 $
+ * Version: $Revision: 1.258.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.6 $
+ * @version $Revision: 1.258.4.7 $
  * 
  * @since 6.0.0 
  */
@@ -2474,14 +2474,18 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         int projectId = project.getId();
 
         if (changed == CmsDriverManager.UPDATE_RESOURCE_STATE) {
-            resourceState = CmsResource.STATE_CHANGED;
+            resourceState = internalReadResourceState(dbc, project, resource);
+            resourceState = (resourceState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW :CmsResource.STATE_CHANGED);
         } else if (changed == CmsDriverManager.UPDATE_STRUCTURE_STATE) {
-            structureState = (resourceState == CmsResource.STATE_UNCHANGED ? CmsResource.STATE_CHANGED : resourceState);
+            structureState = internalReadStructureState(dbc, project, resource);
+            structureState = (structureState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW :CmsResource.STATE_CHANGED);
         } else if (changed == CmsDriverManager.NOTHING_CHANGED) {
             projectId = resource.getProjectLastModified();
         } else {
-            resourceState = CmsResource.STATE_CHANGED;
-            structureState = CmsResource.STATE_CHANGED;
+            resourceState = internalReadResourceState(dbc, project, resource);
+            resourceState = (resourceState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW :CmsResource.STATE_CHANGED);
+            structureState = internalReadStructureState(dbc, project, resource);
+            structureState = (structureState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW :CmsResource.STATE_CHANGED);
         }
 
         try {
@@ -2797,6 +2801,80 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             dateBegin,
             dateEnd,
             CmsRelationType.valueOf(type));
+    }
+
+    /**
+     * Returns the structure state of the given resource.<p>
+     * 
+     * @param dbc the dbc context
+     * @param project the project
+     * @param resource the resource to read the structure state for
+     * 
+     * @return the structure state of the given resource
+     * 
+     * @throws CmsDbSqlException if somehting goes wrong
+     */
+    protected int internalReadStructureState(CmsDbContext dbc, CmsProject project, CmsResource resource)
+    throws CmsDbSqlException {
+
+        int state = CmsResource.STATE_KEEP;
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc, project.getId());
+            stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_READ_STRUCTURE_STATE");
+            stmt.setString(1, resource.getStructureId().toString());
+            res = stmt.executeQuery();
+            if (res.next()) {
+                state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_STATE"));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return state;
+    }
+
+    /**
+     * Returns the resource state of the given resource.<p>
+     * 
+     * @param dbc the dbc context
+     * @param project the project
+     * @param resource the resource to read the resource state for
+     * 
+     * @return the resource state of the given resource
+     * 
+     * @throws CmsDbSqlException if somehting goes wrong
+     */
+    protected int internalReadResourceState(CmsDbContext dbc, CmsProject project, CmsResource resource)
+    throws CmsDbSqlException {
+
+        int state = CmsResource.STATE_KEEP;
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc, project.getId());
+            stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_READ_RESOURCE_STATE");
+            stmt.setString(1, resource.getResourceId().toString());
+            res = stmt.executeQuery();
+            if (res.next()) {
+                state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return state;
     }
 
     /**
