@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesCollector.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/09/10 21:10:27 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.1.0 
  */
@@ -124,9 +124,14 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
         
         // remove not visible files
         Iterator itRes = resources.iterator();
+        // dont's show resources that  are in a different site root
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        // this is not sufficient (startsWith) if one siteRoot is prefix of another as siteRoot ends without slash!
+        siteRoot += "/";
         while (itRes.hasNext()) {
+            
             CmsResource resource = (CmsResource)itRes.next();
-            if (!resource.getRootPath().startsWith(cms.getRequestContext().getSiteRoot())
+            if (!resource.getRootPath().startsWith(siteRoot)
                 && !resource.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
                 itRes.remove();
             }
