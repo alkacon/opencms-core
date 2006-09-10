@@ -1,6 +1,7 @@
 <%@ page import="
 	org.opencms.workplace.CmsReport,
 	org.opencms.workplace.CmsDialog,
+	org.opencms.workplace.CmsMultiDialog, 
 	org.opencms.workplace.CmsWorkplace,
 	org.opencms.workplace.tools.CmsToolDialog, 
 	org.opencms.report.I_CmsReport,
@@ -17,6 +18,10 @@
     } else {
     	borderStyle = "1px solid ThreeDShadow";
     	borderSimpleStyle = borderStyle;
+    }
+    String resourceParam = CmsDialog.PARAM_RESOURCE;
+    if(wp.isMultiOperation()) {
+      resourceParam = CmsMultiDialog.PARAM_RESOURCELIST;
     }
 
 
@@ -98,7 +103,7 @@ function init() {
 }
 
 function reload(actionParam) {
-	var resName = "<%= wp.getParamResource() %>";
+	var resName = "<%= wp.getResourceList().get(0) %>";
 	if (resName != "") {
 		resName = "&resource=" + encodeURIComponent(resName);
 	}
@@ -549,7 +554,7 @@ function submitActionRefresh(para1, para2, para3) {
   <tr><td>
     <iframe src="<%= wp.getDialogRealUri() %>?<%= CmsToolDialog.PARAM_STYLE%>=<%=wp.getParamStyle()%>&<%= CmsDialog.PARAM_ACTION %>=<%= CmsDialog.REPORT_UPDATE %>&<%= 
      CmsDialog.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= CmsReport.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= CmsDialog.PARAM_THREAD_HASNEXT %>=<%= 
-     wp.getParamThreadHasNext() %>&resource=<%= wp.getParamResource() %>" name="updateWin" style="width:20px; height:20px; margin: 0px;" marginwidth="0" 
+     wp.getParamThreadHasNext() %>&<%= resourceParam %>=<%= wp.getResourceListAsParam() %>" name="updateWin" style="width:20px; height:20px; margin: 0px;" marginwidth="0" 
      marginheight="0" frameborder="0" framespacing="0" scrolling="no" class='hide'></iframe>
   </td></tr>
 </table>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsMultiDialog.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/09/10 21:08:43 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -77,6 +77,9 @@ public abstract class CmsMultiDialog extends CmsDialog {
     /** Request parameter name for the resource list. */
     public static final String PARAM_RESOURCELIST = "resourcelist";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMultiDialog.class);
+
     /** Collects all eventually thrown exceptions during a multi operation. */
     private CmsMultiException m_multiOperationException;
 
@@ -85,9 +88,6 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /** The list of resource names for the multi operation. */
     private List m_resourceList;
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsMultiDialog.class);
 
     /**
      * Public constructor.<p>
@@ -215,6 +215,24 @@ public abstract class CmsMultiDialog extends CmsDialog {
             }
         }
         return m_resourceList;
+    }
+
+    /**
+     * Returns the value of the resourcelist parameter in form of a String separated 
+     * with {@link #DELIMITER_RESOURCES}, or the value of the  resource parameter if the 
+     * first parameter is not provided (no multiple choice has been done.<p>
+     * 
+     * This may be used for jsps as value for the parameter for resources {@link #PARAM_RESOURCELIST}.<p>
+     *  
+     * @return the value of the resourcelist parameter or null, if the parameter is not provided
+     */
+    public String getResourceListAsParam() {
+
+        String result = getParamResourcelist();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            result = getParamResource();
+        }
+        return result;
     }
 
     /**
