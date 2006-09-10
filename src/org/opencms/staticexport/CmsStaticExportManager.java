@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/08/31 08:58:44 $
- * Version: $Revision: 1.121.4.7 $
+ * Date   : $Date: 2006/09/10 21:05:47 $
+ * Version: $Revision: 1.121.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.7 $ 
+ * @version $Revision: 1.121.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -363,7 +363,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             }
             return;
         }
-        I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
+        I_CmsReport report = null;
+        Map data = event.getData();
+        if (data != null) {
+            report = (I_CmsReport)data.get(I_CmsEventListener.KEY_REPORT);
+        }
         if (report == null) {
             report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
         }
@@ -374,7 +378,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 break;
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
                 // event data contains a list of the published resources
-                CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
+                CmsUUID publishHistoryId = new CmsUUID((String)data.get(I_CmsEventListener.KEY_PUBLISHID));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
                 }
