@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2006/08/31 08:51:13 $
- * Version: $Revision: 1.21.4.3 $
+ * Date   : $Date: 2006/09/10 21:14:06 $
+ * Version: $Revision: 1.21.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.4.3 $
+ * @version $Revision: 1.21.4.4 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -94,6 +94,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         suite.addTest(new TestPublishIssues("testPublishScenarioE"));
         suite.addTest(new TestPublishIssues("testPublishScenarioF"));
         suite.addTest(new TestPublishIssues("testPublishScenarioG"));
+        suite.addTest(new TestPublishIssues("testPublishScenarioH"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -608,5 +609,59 @@ public class TestPublishIssues extends OpenCmsTestCase {
         
         assertState(cms, sib1, CmsResource.STATE_UNCHANGED);
         assertState(cms, sib2, CmsResource.STATE_UNCHANGED);
+    }
+
+    /**
+     * Tests publish scenario "H".<p>
+     * 
+     * This scenario is described as follows:
+     * 
+     * We have 2 unchanged siblings: sibX.txt and sibY.txt
+     * Now we set a different individual property on each sibling 
+     * and we publish just one sibling let's say sibX.txt.
+     * 
+     * After publishing only sibX.txt should be unchanged
+     * and sibY.txt should still be changed
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishScenarioH() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publish scenario H");
+
+        String sibX = "sibX.txt";
+        String sibY = "sibY.txt";
+        
+        cms.createResource(sibX, CmsResourceTypePlain.getStaticTypeId());
+        cms.createSibling(sibX, sibY, null);
+
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();
+
+        CmsProperty propX = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "individual X", null);
+        cms.lockResource(sibX);
+        cms.writePropertyObject(sibX, propX);
+        
+        assertState(cms, sibX, CmsResource.STATE_CHANGED);
+        assertState(cms, sibY, CmsResource.STATE_UNCHANGED);
+        
+        CmsProperty propY = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "individual Y", null);
+        cms.lockResource(sibY);
+        cms.writePropertyObject(sibY, propY);
+        
+        assertState(cms, sibX, CmsResource.STATE_CHANGED);
+        assertState(cms, sibY, CmsResource.STATE_CHANGED);
+        
+        cms.unlockResource(sibX);
+        cms.publishResource(sibX, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        
+        assertState(cms, sibX, CmsResource.STATE_UNCHANGED);
+        assertState(cms, sibY, CmsResource.STATE_CHANGED);
+
+        cms.publishResource(sibY, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+
+        assertState(cms, sibX, CmsResource.STATE_UNCHANGED);
+        assertState(cms, sibY, CmsResource.STATE_UNCHANGED);
     }
 }
