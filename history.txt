@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/01 10:52:01 $
- * Version: $Revision: 1.717.2.34 $
+ * Date   : $Date: 2006/09/10 21:19:11 $
+ * Version: $Revision: 1.717.2.35 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,11 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 6.5.3 - September ?, 2006
+* Static Export no longer creates a new session for each resource
+* Improved site managing preventing problems displaying resources in siblings and project view
+* Creating a resource that would override an existing one now displays the 'right' error message
 
 OpenCms 6.5.2 - September 1st, 2006
 - Improved delete dialog
