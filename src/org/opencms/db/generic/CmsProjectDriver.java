@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/08/31 09:03:12 $
- * Version: $Revision: 1.241.4.7 $
+ * Date   : $Date: 2006/09/10 20:52:56 $
+ * Version: $Revision: 1.241.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.7 $
+ * @version $Revision: 1.241.4.8 $
  * 
  * @since 6.0.0 
  */
@@ -424,7 +424,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         m_sqlManager = null;
         m_driverManager = null;
-        
+
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
@@ -1126,9 +1126,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_PUBLISHING_FOLDER_3,
-                    offlineFolder.getRootPath(),
                     String.valueOf(m),
-                    String.valueOf(n)));
+                    String.valueOf(n),
+                    offlineFolder.getRootPath()));
             }
         } finally {
             // notify the app. that the published folder and it's properties have been modified offline
@@ -1402,19 +1402,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             count = 0;
             String resourcePath;
             String userId;
-            int projectId;         
+            int projectId;
             int lockType;
-                
+
             while (rs.next()) {
                 resourcePath = rs.getString(m_sqlManager.readQuery("C_RESOURCE_LOCKS_RESOURCE_PATH"));
                 userId = rs.getString(m_sqlManager.readQuery("C_RESOURCE_LOCKS_USER_ID"));
-                projectId = rs.getInt(m_sqlManager.readQuery("C_RESOURCE_LOCKS_PROJECT_ID"));               
+                projectId = rs.getInt(m_sqlManager.readQuery("C_RESOURCE_LOCKS_PROJECT_ID"));
                 lockType = rs.getInt(m_sqlManager.readQuery("C_RESOURCE_LOCKS_LOCK_TYPE"));
-                lock = new CmsLock(
-                    resourcePath,
-                    new CmsUUID(userId),
-                    projectId,
-                    CmsLockType.getType(lockType));
+                lock = new CmsLock(resourcePath, new CmsUUID(userId), projectId, CmsLockType.getType(lockType));
                 locks.add(lock);
                 count++;
             }
@@ -1736,7 +1732,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         // TODO: dangerous - move this somehow into query.properties
         int todo = 0;
-        
+
         if ("new".equalsIgnoreCase(filter)) {
             whereClause = " AND (CMS_T_STRUCTURE.STRUCTURE_STATE="
                 + CmsResource.STATE_NEW
@@ -2184,7 +2180,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         filter = filter.filterStructureId(onlineResource.getStructureId());
         filter = filter.filterPath(onlineResource.getRootPath());
         m_driverManager.getVfsDriver().deleteRelations(dbc, onlineProject.getId(), filter);
-        
+
         // move the online resource
         m_driverManager.getVfsDriver().moveResource(
             dbc,
@@ -2355,7 +2351,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      * @param offlineResource
      * @throws CmsDataAccessException
      */
-    private void updateRelations(CmsDbContext dbc, CmsProject onlineProject, CmsResource offlineResource) throws CmsDataAccessException {
+    private void updateRelations(CmsDbContext dbc, CmsProject onlineProject, CmsResource offlineResource)
+    throws CmsDataAccessException {
 
         m_driverManager.getVfsDriver().deleteRelations(
             dbc,
@@ -2366,10 +2363,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             dbc.currentProject().getId(),
             CmsRelationFilter.TARGETS.filterResource(offlineResource)).iterator();
         while (itRelations.hasNext()) {
-            m_driverManager.getVfsDriver().createRelation(
-                dbc,
-                onlineProject.getId(),
-                (CmsRelation)itRelations.next());
+            m_driverManager.getVfsDriver().createRelation(dbc, onlineProject.getId(), (CmsRelation)itRelations.next());
         }
     }
 
