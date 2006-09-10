@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2006/08/31 09:01:15 $
- * Version: $Revision: 1.35.4.5 $
+ * Date   : $Date: 2006/09/10 21:09:52 $
+ * Version: $Revision: 1.35.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.35.4.5 $ 
+ * @version $Revision: 1.35.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -782,6 +782,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         result.append(">\n");
         result.append(allParamsAsHidden());
         result.append("\n");
+        getList().setWp(this);
         result.append(getList().listHtml());
         result.append("\n</form>\n");
         return result.toString();
