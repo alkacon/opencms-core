@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/08/21 14:16:56 $
- * Version: $Revision: 1.19.4.2 $
+ * Date   : $Date: 2006/09/10 21:06:33 $
+ * Version: $Revision: 1.19.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.2 $ 
+ * @version $Revision: 1.19.4.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -77,8 +77,17 @@ import org.apache.commons.logging.Log;
  */
 public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler implements I_CmsStaticExportHandler {
 
+    /** Header field set-cookie constant. */
+    private static final String HEADER_FIELD_SET_COOKIE = "Set-Cookie";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAfterPublishStaticExportHandler.class);
+    
+    /** Request method get constant. */
+    private static final String REQUEST_METHOD_GET = "Get";
+    
+    /** Request property cookie constant. */
+    private static final String REQUEST_PROPERTY_COOKIE = "Cookie";
 
     /**
      * Does the actual static export.<p>
@@ -306,12 +315,9 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
 
         while (i.hasNext()) {
             CmsPublishedResource pupRes = (CmsPublishedResource)i.next();
-
             vfsName = pupRes.getRootPath();
-
             // only process this resource, if it is within the tree of allowed folders for static export
             if (manager.getExportFolderMatcher().match(vfsName)) {
-
                 // only export VFS files, other data is handled elsewhere 
                 if (pupRes.isVfsResource()) {
                     // get the export data object, if null is returned, this resource cannot be exported
@@ -444,6 +450,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         // now loop through all of them and request them from the server
         Iterator i = publishedTemplateResources.iterator();
 
+        String cookies = null;
         while (i.hasNext()) {
             String rfsName = (String)i.next();
             String vfsName = manager.getVfsNameInternal(cms, rfsName);
@@ -451,7 +458,6 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                 String rfsBaseName = rfsName.substring(0, rfsName.lastIndexOf('_'));
                 vfsName = manager.getVfsNameInternal(cms, rfsBaseName);
             }
-
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_SUCCESSION_2,
                 new Integer(count++),
@@ -467,14 +473,13 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_SENDING_REQUEST_2, rfsName, exportUrlStr));
             }
-
             try {
                 // setup the connection and request the resource
                 URL exportUrl = new URL(exportUrlStr);
                 HttpURLConnection.setFollowRedirects(false);
                 HttpURLConnection urlcon = (HttpURLConnection)exportUrl.openConnection();
                 // set request type to GET
-                urlcon.setRequestMethod("GET");
+                urlcon.setRequestMethod(REQUEST_METHOD_GET);
                 // add special export header
                 urlcon.setRequestProperty(CmsRequestUtil.HEADER_OPENCMS_EXPORT, CmsStringUtil.TRUE);
                 // add additional headers if available
@@ -519,10 +524,22 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         exportFile.getName(),
                         new Long((dateLastModified / 1000) * 1000)));
                 }
+                if (cookies != null) {
+                    // set the cookies, included the session id to keep the same session
+                    urlcon.setRequestProperty(REQUEST_PROPERTY_COOKIE, cookies);
+                }
 
                 // now perform the request
                 urlcon.connect();
                 int status = urlcon.getResponseCode();
+
+                if (cookies == null) {
+                    //Now retrieve the cookies. The jsessionid is here
+                    cookies = urlcon.getHeaderField(HEADER_FIELD_SET_COOKIE);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_STATICEXPORT_COOKIES_1, cookies));
+                    }
+                }
                 urlcon.disconnect();
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().getBundle().key(
