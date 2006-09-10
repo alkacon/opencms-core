@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/09/10 20:56:15 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.3.0
  */
@@ -146,6 +146,27 @@ public final class CmsRelationType implements Serializable {
     }
 
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CmsRelationType other = (CmsRelationType)obj;
+        if (m_mode != other.m_mode) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Returns the internal representation of this type.<p>
      *
      * @return the internal representation of this type
@@ -163,6 +184,17 @@ public final class CmsRelationType implements Serializable {
     public String getType() {
 
         return m_type;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + m_mode;
+        return result;
     }
 
     /**
