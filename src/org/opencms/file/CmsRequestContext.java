@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.29.4.2 $
+ * Date   : $Date: 2006/09/10 20:53:52 $
+ * Version: $Revision: 1.29.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29.4.2 $
+ * @version $Revision: 1.29.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -188,6 +188,10 @@ public final class CmsRequestContext {
             && ((resourcename.length() == 0) || (resourcename.charAt(0) != '/'))) {
             // add slash between site root and resource if required
             result.append('/');
+        } else if (((siteRoot.length() > 0) && (siteRoot.charAt(siteRoot.length() - 1) == '/'))
+            && ((resourcename.length() > 0) && (resourcename.charAt(0) == '/'))) {
+            // remove additional slash between site root and resource if required
+            resourcename = resourcename.substring(1);
         }
         result.append(resourcename);
         return m_directoryTranslator.translateResource(result.toString());
@@ -388,7 +392,9 @@ public final class CmsRequestContext {
     public String removeSiteRoot(String resourcename) {
 
         String siteRoot = getAdjustedSiteRoot(m_siteRoot, resourcename);
-        if ((siteRoot == m_siteRoot) && resourcename.startsWith(siteRoot)) {
+        // for startsWith if one siteRoot is prefix of another as siteRoot ends without slash!
+        String siteRootSlashed = siteRoot + "/";
+        if ((siteRoot == m_siteRoot) && resourcename.startsWith(siteRootSlashed)) {
             resourcename = resourcename.substring(siteRoot.length());
         }
         return resourcename;
@@ -401,7 +407,7 @@ public final class CmsRequestContext {
      */
     public void restoreSiteRoot() throws RuntimeException {
 
-        if (m_savedSiteRoot == null) {
+         if (m_savedSiteRoot == null) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EMPTY_SITEROOT_0));
         }
         m_siteRoot = m_savedSiteRoot;
