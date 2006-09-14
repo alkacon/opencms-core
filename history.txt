@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/10 21:19:11 $
- * Version: $Revision: 1.717.2.35 $
+ * Date   : $Date: 2006/09/14 11:37:15 $
+ * Version: $Revision: 1.717.2.36 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,10 +19,17 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.5.3 - September ?, 2006
+OpenCms 6.5.3 - September xxxx, 2006
+* Fixed issue in <cms:img> tag with static export of scaled images not really working
 * Static Export no longer creates a new session for each resource
 * Improved site managing preventing problems displaying resources in siblings and project view
 * Creating a resource that would override an existing one now displays the 'right' error message
+- Locks now store the complete project instead of only the project id
+- Updated simapi.jar to version 0.9.4
+- Updated commons-httpclient.jar to version 3.0.1
+- Updated the list of supported MIME-types
+! MIME-types are now configured in opencms-vfs.xml instead of internal properties file
+! Added new WOFKFLOW_MANAGER role definition
 
 OpenCms 6.5.2 - September 1st, 2006
 - Improved delete dialog
