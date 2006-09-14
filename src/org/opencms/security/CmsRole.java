@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.11.4.1 $
+ * Date   : $Date: 2006/09/14 11:24:51 $
+ * Version: $Revision: 1.11.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.List;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.1 $ 
+ * @version $Revision: 1.11.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,6 +138,11 @@ public final class CmsRole {
 
     /** The "WORKPLACE_USER" role. */
     public static final CmsRole WORKPLACE_USER = new CmsRole("WORKPLACE_USER", new CmsRole[] {CmsRole.ADMINISTRATOR});
+
+    /** The "WORKFLOW_MANAGER" role. */
+    public static final CmsRole WORKFLOW_MANAGER = new CmsRole(
+        "WORKFLOW_MANAGER",
+        new CmsRole[] {CmsRole.ADMINISTRATOR});
 
     /** 
      * The "SYSTEM_USER" role.<p>
@@ -245,6 +250,7 @@ public final class CmsRole {
         PROPERTY_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
         ROOT_FOLDER_ACCESS.m_groupName = defaultUsers.getGroupAdministrators();
         WORKPLACE_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
+        WORKFLOW_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
         SYSTEM_USER.m_groupName = defaultUsers.getGroupUsers();
 
         // create a lookup list for the system roles
@@ -265,6 +271,7 @@ public final class CmsRole {
             PROPERTY_MANAGER,
             ROOT_FOLDER_ACCESS,
             WORKPLACE_MANAGER,
+            WORKFLOW_MANAGER,
             SYSTEM_USER}));
 
         // now initilaize all system roles

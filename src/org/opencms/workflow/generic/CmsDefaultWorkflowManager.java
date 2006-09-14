@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2006/08/25 13:16:57 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/09/14 11:24:50 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 7.0.0
  */
@@ -125,7 +125,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     public void abortTask(CmsObject cms, CmsProject wfProject, String message) throws CmsException {
 
         // ensure that only administrators and workflow project managers are allowed to abort a task
-        boolean accept = cms.hasRole(CmsRole.ADMINISTRATOR);
+        boolean accept = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
         I_CmsPrincipal manager = getTaskManager(wfProject);
         accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
         accept |= wfProject.getOwnerId().equals(cms.getRequestContext().currentUser().getId());
@@ -149,8 +149,8 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
 
         if (lock.isNullLock() || (lock.isExclusiveOwnedBy(cms.getRequestContext().currentUser()))) {
 
-            // ensure that only administrators, workflow project managers and agents are allowed to add a resource
-            boolean accept = cms.hasRole(CmsRole.ADMINISTRATOR);
+            // ensure that only workflow managers, workflow project managers and agents are allowed to add a resource
+            boolean accept = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
             I_CmsPrincipal agent = getTaskAgent(wfProject);
             accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), agent.getName());
             I_CmsPrincipal manager = getTaskManager(wfProject);
@@ -452,8 +452,8 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
 
         I_CmsWorkflowAction action = null;
 
-        // ensure that only administrators, workflow project managers and agents are allowed to init a workflow
-        boolean accept = cms.hasRole(CmsRole.ADMINISTRATOR);
+        // ensure that only workflow managers, workflow project managers and agents are allowed to init a workflow
+        boolean accept = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
         I_CmsPrincipal agent = getAgent(type);
         accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), agent.getName());
         I_CmsPrincipal manager = getManager(type);
@@ -542,7 +542,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                 CmsProject project = cms.readProject(lock.getProjectId());
 
                 if (project.getType() == CmsProject.PROJECT_TYPE_WORKFLOW) {
-                    isLockable = cms.hasRole(CmsRole.ADMINISTRATOR);
+                    isLockable = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
                     if (!isLockable && !managersOnly) {
                         I_CmsPrincipal agents = getTaskAgent(project);
                         isLockable = cms.userInGroup(cms.getRequestContext().currentUser().getName(), agents.getName());
@@ -567,8 +567,8 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public void publishTask(CmsObject cms, CmsProject wfProject, String message) throws CmsException {
 
-        // ensure that only administrators and workflow project managers are allowed to publish a task
-        boolean accept = cms.hasRole(CmsRole.ADMINISTRATOR);
+        // ensure that only workflow managers and workflow project managers are allowed to publish a task
+        boolean accept = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
         I_CmsPrincipal manager = getTaskManager(wfProject);
         accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
 
@@ -599,8 +599,8 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         I_CmsWorkflowTransition transition,
         String message) throws CmsException {
 
-        // ensure that only administrators, workflow project managers and agents are allowed to send a signal
-        boolean accept = cms.hasRole(CmsRole.ADMINISTRATOR);
+        // ensure that only workflow managers, workflow project managers and agents are allowed to send a signal
+        boolean accept = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
         I_CmsPrincipal agent = getTaskAgent(wfProject);
         accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), agent.getName());
         I_CmsPrincipal manager = getTaskManager(wfProject);
@@ -611,7 +611,8 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
             // ensure that all workflow resources are unlocked
             
             // TODO: Supply functionality by other means
-            // Why is this done here anyway?
+            // why are all locks always removed here?
+            //     ==> probably this implementation is never really used anyway (only for simple tests w/o forward)
             int todo_v7 = 0;
             OpenCms.getLockManager().removeResourcesInProject(wfProject.getId(), true, true);
             
@@ -630,10 +631,8 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
             case 1: // CmsDefaultWorkflowAction.FINISH
                 abortWorkflowProject(wfProject);
                 break;
-            case 2: // CmsDefaultWorkflo
-                break;
             default:
-        // no action required
+                // no action required
         }
 
         return action;
@@ -644,8 +643,8 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public void undoTask(CmsObject cms, CmsProject wfProject, String message) throws CmsException {
 
-        // ensure that only administrators and workflow project managers are allowed to undo a task
-        boolean accept = cms.hasRole(CmsRole.ADMINISTRATOR);
+        // ensure that only workflow managers and workflow project managers are allowed to undo a task
+        boolean accept = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
         I_CmsPrincipal manager = getTaskManager(wfProject);
         accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
 
