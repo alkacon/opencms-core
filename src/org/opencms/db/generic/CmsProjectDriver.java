@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/09/10 20:52:56 $
- * Version: $Revision: 1.241.4.8 $
+ * Date   : $Date: 2006/09/14 11:35:45 $
+ * Version: $Revision: 1.241.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.8 $
+ * @version $Revision: 1.241.4.9 $
  * 
  * @since 6.0.0 
  */
@@ -1410,9 +1410,18 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 userId = rs.getString(m_sqlManager.readQuery("C_RESOURCE_LOCKS_USER_ID"));
                 projectId = rs.getInt(m_sqlManager.readQuery("C_RESOURCE_LOCKS_PROJECT_ID"));
                 lockType = rs.getInt(m_sqlManager.readQuery("C_RESOURCE_LOCKS_LOCK_TYPE"));
-                lock = new CmsLock(resourcePath, new CmsUUID(userId), projectId, CmsLockType.getType(lockType));
-                locks.add(lock);
-                count++;
+                CmsProject project;
+                try {
+                    project = readProject(dbc, projectId);
+                } catch (CmsDataAccessException dae) {
+                    // the project does not longer exist, ignore this lock (should usually not happen)
+                    project = null;
+                }
+                if (project != null) {
+                    lock = new CmsLock(resourcePath, new CmsUUID(userId), project, CmsLockType.getType(lockType));
+                    locks.add(lock);
+                    count++;
+                }
             }
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_READ_LOCKS_1, new Integer(count)));
@@ -2345,28 +2354,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         updateRelations(dbc, onlineProject, offlineResource);
     }
 
-    /**
-     * @param dbc
-     * @param onlineProject
-     * @param offlineResource
-     * @throws CmsDataAccessException
-     */
-    private void updateRelations(CmsDbContext dbc, CmsProject onlineProject, CmsResource offlineResource)
-    throws CmsDataAccessException {
-
-        m_driverManager.getVfsDriver().deleteRelations(
-            dbc,
-            onlineProject.getId(),
-            CmsRelationFilter.TARGETS.filterResource(offlineResource));
-        Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
-            dbc,
-            dbc.currentProject().getId(),
-            CmsRelationFilter.TARGETS.filterResource(offlineResource)).iterator();
-        while (itRelations.hasNext()) {
-            m_driverManager.getVfsDriver().createRelation(dbc, onlineProject.getId(), (CmsRelation)itRelations.next());
-        }
-    }
-
     private void publishDeletedFile(
         CmsDbContext dbc,
         CmsProject onlineProject,
@@ -2629,6 +2616,28 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
 
             throw e;
+        }
+    }
+
+    /**
+     * @param dbc
+     * @param onlineProject
+     * @param offlineResource
+     * @throws CmsDataAccessException
+     */
+    private void updateRelations(CmsDbContext dbc, CmsProject onlineProject, CmsResource offlineResource)
+    throws CmsDataAccessException {
+
+        m_driverManager.getVfsDriver().deleteRelations(
+            dbc,
+            onlineProject.getId(),
+            CmsRelationFilter.TARGETS.filterResource(offlineResource));
+        Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
+            dbc,
+            dbc.currentProject().getId(),
+            CmsRelationFilter.TARGETS.filterResource(offlineResource)).iterator();
+        while (itRelations.hasNext()) {
+            m_driverManager.getVfsDriver().createRelation(dbc, onlineProject.getId(), (CmsRelation)itRelations.next());
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/08/31 08:53:15 $
- * Version: $Revision: 1.570.2.16 $
+ * Date   : $Date: 2006/09/14 11:35:22 $
+ * Version: $Revision: 1.570.2.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3965,8 +3965,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see CmsObject#lockResource(String)
      * @see CmsObject#lockResourceTemporary(String)
-     * @see CmsObject#lockResourceInWorkflow(String, CmsProject)
      * 
+     * @see CmsObject#lockResourceInWorkflow(String, CmsProject)
      * @see org.opencms.file.types.I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, CmsProject, CmsLockType)
      */
     public void lockResource(CmsDbContext dbc, CmsResource resource, CmsProject project, CmsLockType type)
@@ -3976,7 +3976,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearResourceCache();
 
         // add the resource to the lock dispatcher
-        m_lockManager.addResource(this, dbc, resource, dbc.currentUser(), project.getId(), type);
+        m_lockManager.addResource(this, dbc, resource, dbc.currentUser(), project, type);
 
         if ((resource.getState() != CmsResource.STATE_UNCHANGED) && (resource.getState() != CmsResource.STATE_KEEP)) {
             // update the project flag of a modified resource as "last modified inside the current project"

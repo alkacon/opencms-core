@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/08/25 13:16:57 $
- * Version: $Revision: 1.97.4.5 $
+ * Date   : $Date: 2006/09/14 11:35:22 $
+ * Version: $Revision: 1.97.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -5194,7 +5194,7 @@ public final class CmsSecurityManager {
                     return PERM_NOTLOCKED;
                 }
             } else if (checkLock) {
-                if (!CmsLockManager.isLockedByUser(lock, dbc.currentUser())) {
+                if (!lock.isOwnedBy(dbc.currentUser())) {
                     return PERM_NOTLOCKED;
                 }
             }
