@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2006/09/10 20:53:52 $
- * Version: $Revision: 1.29.4.3 $
+ * Date   : $Date: 2006/09/14 11:36:47 $
+ * Version: $Revision: 1.29.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29.4.3 $
+ * @version $Revision: 1.29.4.4 $
  * 
  * @since 6.0.0 
  */
@@ -190,6 +190,10 @@ public final class CmsRequestContext {
             result.append('/');
         } else if (((siteRoot.length() > 0) && (siteRoot.charAt(siteRoot.length() - 1) == '/'))
             && ((resourcename.length() > 0) && (resourcename.charAt(0) == '/'))) {
+            
+            int todo_v7;
+            // TODO: Check this additional logic
+        
             // remove additional slash between site root and resource if required
             resourcename = resourcename.substring(1);
         }

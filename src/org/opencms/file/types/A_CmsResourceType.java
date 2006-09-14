@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/09/10 20:54:30 $
- * Version: $Revision: 1.42.4.4 $
+ * Date   : $Date: 2006/09/14 11:36:47 $
+ * Version: $Revision: 1.42.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.4 $ 
+ * @version $Revision: 1.42.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -300,8 +300,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         String resourcename,
         byte[] content,
         List properties) throws CmsException {
+                
         // check if the resource already exists by name
         if (cms.existsResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION)) {
+            
+            int todo_v7;
+            // TODO: This should really be done in the securityManager#createResource() method!
+            
             throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
                 org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
                 resourcename));

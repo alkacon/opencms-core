@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromHttp.java,v $
- * Date   : $Date: 2006/08/31 09:02:38 $
- * Version: $Revision: 1.12.4.2 $
+ * Date   : $Date: 2006/09/14 11:36:47 $
+ * Version: $Revision: 1.12.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12.4.2 $ 
+ * @version $Revision: 1.12.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,7 +150,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
             exception = e;
         }
 
-        if ((module != null) && exception == null) {
+        if ((module != null) && (exception == null)) {
 
             // refresh the list
             Map objects = (Map)getSettings().getListObject();
@@ -170,12 +170,14 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
                 getToolManager().jspForwardPage(this, CmsModulesUploadFromServer.IMPORT_ACTION_REPORT, param);
             }
         } else {
-            // log it 
-            if (LOG.isErrorEnabled()) {
-                LOG.error(exception.getLocalizedMessage(getLocale()), exception);
+            if (exception != null) {
+                // log it 
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(exception.getLocalizedMessage(getLocale()), exception);
+                }
+                // then throw to avoid blank page telling nothing due to missing forward
+                throw new CmsRuntimeException(exception.getMessageContainer(), exception);
             }
-            // then throw to avoid blank page telling nothing due to missing forward
-            throw new CmsRuntimeException(exception.getMessageContainer(), exception);
         }
     }
 
