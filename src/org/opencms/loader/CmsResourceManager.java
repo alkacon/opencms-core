@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.36.4.2 $
+ * Date   : $Date: 2006/09/14 11:34:50 $
+ * Version: $Revision: 1.36.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.2 $ 
+ * @version $Revision: 1.36.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,6 +167,9 @@ public class CmsResourceManager {
     /** The current resource manager configuration. */
     private CmsResourceManagerConfiguration m_configuration;
 
+    /** The list of all configured MIME types. */
+    private List m_configuredMimeTypes;
+
     /** Filename translator, used only for the creation of new files. */
     private CmsResourceTranslator m_fileTranslator;
 
@@ -205,36 +208,7 @@ public class CmsResourceManager {
         m_loaders = new I_CmsResourceLoader[16];
         m_loaderList = new ArrayList();
         m_includeExtensions = new ArrayList();
-
-        Properties mimeTypes = new Properties();
-        try {
-            // first try: read mime types from default package
-            mimeTypes.load(getClass().getClassLoader().getResourceAsStream("mimetypes.properties"));
-        } catch (Throwable t) {
-            try {
-                // second try: read mime types from loader package
-                mimeTypes.load(getClass().getClassLoader().getResourceAsStream(
-                    "org/opencms/loader/mimetypes.properties"));
-            } catch (Throwable t2) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_MIMETYPES_FAILED_0), t);
-            }
-        }
-        // initalize the Map with all available mimetypes
-        m_mimeTypes = new HashMap(mimeTypes.size());
-        Iterator i = mimeTypes.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            // ensure all mime type entries are lower case
-            String key = (String)entry.getKey();
-            String value = (String)entry.getValue();
-            value = value.toLowerCase(Locale.ENGLISH);
-            m_mimeTypes.put(key, value);
-        }
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_NUM_MIMETYPES_1,
-                new Integer(m_mimeTypes.size())));
-        }
+        m_configuredMimeTypes = new ArrayList();
     }
 
     /**
@@ -371,6 +345,28 @@ public class CmsResourceManager {
                 loader.getClass().getName(),
                 new Integer(pos)));
         }
+    }
+
+    /**
+     * Adds a new MIME type from the XML configuration to the internal list of MIME types.<p> 
+     * 
+     * @param extension the MIME type extension
+     * @param type the MIME type description
+     * 
+     * @return the created content collector instance
+     * 
+     * @throws CmsConfigurationException in case the resource manager configuration is already initialized
+     */
+    public CmsMimeType addMimeType(String extension, String type) throws CmsConfigurationException {
+
+        // check if new resource types can still be added
+        if (m_frozen) {
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
+        }
+
+        CmsMimeType mimeType = new CmsMimeType(extension, type);
+        m_configuredMimeTypes.add(mimeType);
+        return mimeType;
     }
 
     /**
@@ -549,25 +545,35 @@ public class CmsResourceManager {
      */
     public String getMimeType(String filename, String encoding, String defaultMimeType) {
 
-        String mimetype = null;
+        String mimeType = null;
         int lastDot = filename.lastIndexOf('.');
         // check the mime type for the file extension 
         if ((lastDot > 0) && (lastDot < (filename.length() - 1))) {
-            mimetype = (String)m_mimeTypes.get(filename.substring(lastDot + 1).toLowerCase());
+            mimeType = (String)m_mimeTypes.get(filename.substring(lastDot).toLowerCase(Locale.ENGLISH));
         }
-        if (mimetype == null) {
-            mimetype = defaultMimeType;
-            if (mimetype == null) {
+        if (mimeType == null) {
+            mimeType = defaultMimeType;
+            if (mimeType == null) {
                 // no default mime type was provided
                 return null;
             }
         }
-        StringBuffer result = new StringBuffer(mimetype);
-        if ((encoding != null) && mimetype.startsWith("text") && (mimetype.indexOf("charset") == -1)) {
+        StringBuffer result = new StringBuffer(mimeType);
+        if ((encoding != null) && mimeType.startsWith("text") && (mimeType.indexOf("charset") == -1)) {
             result.append("; charset=");
             result.append(encoding);
         }
         return result.toString();
+    }
+
+    /**
+     * Returns an unmodifiable List of the configured {@link CmsMimeType} objects.<p>
+     * 
+     * @return an unmodifiable List of the configured {@link CmsMimeType} objects
+     */
+    public List getMimeTypes() {
+
+        return m_configuredMimeTypes;
     }
 
     /**
@@ -667,9 +673,13 @@ public class CmsResourceManager {
 
         m_resourceTypesFromXml = Collections.unmodifiableList(m_resourceTypesFromXml);
         m_loaderList = Collections.unmodifiableList(m_loaderList);
+        Collections.sort(m_configuredMimeTypes);
+        m_configuredMimeTypes = Collections.unmodifiableList(m_configuredMimeTypes);
 
-        // initalize the resource types
+        // initialize the resource types
         initResourceTypes();
+        // initialize the MIME types
+        initMimeTypes();
     }
 
     /**
@@ -786,9 +796,67 @@ public class CmsResourceManager {
         m_collectorNameMappings = null;
         m_includeExtensions = null;
         m_mimeTypes = null;
+        m_configuredMimeTypes = null;
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+        }
+    }
+
+    /**
+     * Initialize the MIME types.<p>
+     * 
+     * MIME types are configured in the OpenCms <code>opencms-vfs.xml</code> configuration file.<p>
+     * 
+     * For legacy reasons, the MIME types are also read from a file <code>"mimetypes.properties"</code>
+     * that must be located in the default <code>"classes"</code> folder of the web application.<p>
+     */
+    private void initMimeTypes() {
+
+        // legacy MIME type initialization: try to read properties file
+        Properties mimeTypes = new Properties();
+        try {
+            // first try: read MIME types from default package
+            mimeTypes.load(getClass().getClassLoader().getResourceAsStream("mimetypes.properties"));
+        } catch (Throwable t) {
+            try {
+                // second try: read MIME types from loader package (legacy reasons, there are no types by default)
+                mimeTypes.load(getClass().getClassLoader().getResourceAsStream(
+                    "org/opencms/loader/mimetypes.properties"));
+            } catch (Throwable t2) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_READ_MIMETYPES_FAILED_0), t);
+                }
+            }
+        }
+
+        // initalize the Map with all available MIME types
+        List combinedMimeTypes = new ArrayList(mimeTypes.size() + m_configuredMimeTypes.size());
+        // first add all MIME types from the configuration
+        combinedMimeTypes.addAll(m_configuredMimeTypes);
+        // now add the MIME types from the properties        
+        Iterator i = mimeTypes.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry)i.next();
+            CmsMimeType mimeType = new CmsMimeType((String)entry.getKey(), (String)entry.getValue(), false);
+            if (!combinedMimeTypes.contains(mimeType)) {
+                // make sure no MIME types from the XML configuration are overwritten
+                combinedMimeTypes.add(mimeType);
+            }
+        }
+
+        // create a lookup Map for the MIME types
+        m_mimeTypes = new HashMap(mimeTypes.size());
+        Iterator j = combinedMimeTypes.iterator();
+        while (j.hasNext()) {
+            CmsMimeType mimeType = (CmsMimeType)j.next();
+            m_mimeTypes.put(mimeType.getExtension(), mimeType.getType());
+        }
+
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_NUM_MIMETYPES_1,
+                new Integer(m_mimeTypes.size())));
         }
     }
 
