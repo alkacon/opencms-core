@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2006/08/31 08:55:12 $
- * Version: $Revision: 1.28.8.3 $
+ * Date   : $Date: 2006/09/14 11:23:47 $
+ * Version: $Revision: 1.28.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.lock;
 
-import org.opencms.db.CmsDbUtil;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.util.CmsUUID;
@@ -50,12 +49,44 @@ import org.opencms.util.CmsUUID;
  * @author Thomas Weckert  
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.8.3 $ 
+ * @version $Revision: 1.28.8.4 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.file.CmsObject#getLock(org.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager
+ * 
+ * 
+ * 
+ * 
+ * Workflow lock logic:
+ * 
+ * A lock has a user and a project setting.
+ * 
+ * If the lock project is a workflow project, the lock is a workflow lock.
+ * 
+ * If the user of the lock is NULL, then the resource is locked in the workflow, but no user has write accesss to it.
+ * 
+ * If the user of the lock is not null, then the resource is locked in the workflow by the given user.
+ * 
+ * 
+ * If a resource is added in a worflow project, then the project is stored with the lock for a NULL user.
+ * If this resource is locked again in another project (for editing), then the user for the lock is set.
+ * 
+ * Problem: Resource does NOT belong to the current project ==> lock may appear closed
+ * Solution: Display logic is changed in this case anyway, handle display of locks accordingly (?)
+ * 
+ * A resource with a workflow lock that has a NULL user is always displayed unlocked, but with a workflow icon.
+ * 
+ * A resource with a workflow lock that has a user other then null is displayed locked for all other users with a workflow icon.
+ * The project of the user stored in the workflow lock is ignored, so it will appear unlockedf in all projects.
+ * This is correct, as the resource is part of the workflow project anyway (not of the project the user is in).
+ * 
+ * If a resource that is part of a workflow is unlocked by a user, the user id in the lock is set to NULL again.
+ * The lock itself remains in the lock table with the changed user set to NULL. 
+ * 
+ * 
+ * 
  */
 public class CmsLock implements Cloneable {
 
@@ -63,14 +94,14 @@ public class CmsLock implements Cloneable {
     private static final CmsLock NULL_LOCK = new CmsLock(
         "",
         CmsUUID.getNullUUID(),
-        CmsDbUtil.UNKNOWN_ID,
+        new CmsProject(),
         CmsLockType.UNLOCKED);
 
     /** Flag to indicate if the lock is a temporary lock. */
     private int m_mode;
 
-    /** The ID of the project where the resource is locked. */
-    private int m_projectId;
+    /** The project where the resource is locked. */
+    private CmsProject m_project;
 
     /** The name of the locked resource. */
     private String m_resourceName;
@@ -86,14 +117,14 @@ public class CmsLock implements Cloneable {
      * 
      * @param resourceName the full resource name including the site root
      * @param userId the ID of the user who locked the resource
-     * @param projectId the ID of the project where the resource is locked
+     * @param project the project where the resource is locked
      * @param type flag indicating how the resource is locked
      */
-    public CmsLock(String resourceName, CmsUUID userId, int projectId, CmsLockType type) {
+    public CmsLock(String resourceName, CmsUUID userId, CmsProject project, CmsLockType type) {
 
         m_resourceName = resourceName;
         m_userId = userId;
-        m_projectId = projectId;
+        m_project = project;
         m_type = type;
     }
 
@@ -122,7 +153,7 @@ public class CmsLock implements Cloneable {
             CmsLock other = (CmsLock)obj;
             return other.m_resourceName.equals(m_resourceName)
                 && other.m_userId.equals(m_userId)
-                && (other.m_projectId == m_projectId);
+                && other.m_project.equals(m_project);
         }
         return false;
     }
@@ -138,13 +169,23 @@ public class CmsLock implements Cloneable {
     }
 
     /**
+     * Returns the project where the resource is currently locked.<p>
+     * 
+     * @return the project where the resource is currently locked
+     */
+    public CmsProject getProject() {
+
+        return m_project;
+    }
+
+    /**
      * Returns the ID of the project where the resource is currently locked.<p>
      * 
      * @return the ID of the project
      */
     public int getProjectId() {
 
-        return m_projectId;
+        return m_project.getId();
     }
 
     /**
@@ -238,7 +279,7 @@ public class CmsLock implements Cloneable {
      */
     public boolean isInProject(CmsProject project) {
 
-        return m_projectId == project.getId();
+        return m_project.equals(project);
     }
 
     /**
