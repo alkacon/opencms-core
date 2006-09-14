@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.31.4.1 $
+ * Date   : $Date: 2006/09/14 11:22:46 $
+ * Version: $Revision: 1.31.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31.4.1 $ 
+ * @version $Revision: 1.31.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,7 +90,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
     private List m_collectorResult;
 
     /** Reference to the last loaded content element. */
-    private I_CmsXmlDocument m_content;
+    private transient I_CmsXmlDocument m_content;
 
     /** The bean to store information required to make the result list browsable. */
     private CmsContentInfoBean m_contentInfoBean;
@@ -175,8 +175,38 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
         boolean editable)
     throws JspException {
 
+        this(container, context, collectorName, collectorParam, null, null, locale, editable);
+    }
+
+    /**
+     * Constructor used when using <code>contentload</code> from scriptlet code.<p> 
+     * 
+     * @param container the parent content container (could be a preloader)
+     * @param context the JSP page context
+     * @param collectorName the collector name to use
+     * @param collectorParam the collector param to use
+     * @param pageIndex the display page index (may contain macros)
+     * @param pageSize the display page size (may contain macros)
+     * @param locale the locale to use 
+     * @param editable indicates if "direct edit" support is wanted
+     * 
+     * @throws JspException in case something goes wrong
+     */
+    public CmsJspTagContentLoad(
+        I_CmsXmlContentContainer container,
+        PageContext context,
+        String collectorName,
+        String collectorParam,
+        String pageIndex,
+        String pageSize,
+        Locale locale,
+        boolean editable)
+    throws JspException {
+
         setCollector(collectorName);
         setParam(collectorParam);
+        setPageIndex(pageIndex);
+        setPageSize(pageSize);
         m_locale = locale;
         m_contentLocale = locale;
         m_editable = editable;
@@ -536,19 +566,28 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
      */
     public void release() {
 
-        m_resourceName = null;
-        m_collector = null;
-        m_collectorResult = null;
-        m_param = null;
         m_cms = null;
+        m_collector = null;
+        m_collectorName = null;
+        m_collectorParam = null;
+        m_collectorResult = null;
+        m_content = null;
+        m_contentInfoBean = null;
+        m_contentLocale = null;
         m_controller = null;
-        m_editable = false;
-        m_directEditPermissions = null;
         m_directEditCreateLink = null;
         m_directEditFollowOptions = null;
-        m_property = null;
+        m_directEditPermissions = null;
+        m_editable = false;
+        m_isFirstLoop = false;
         m_locale = null;
-        m_contentLocale = null;
+        m_pageIndex = null;
+        m_pageNavLength = null;
+        m_pageSize = null;
+        m_param = null;
+        m_preload = false;
+        m_property = null;
+        m_resourceName = null;
         super.release();
     }
 

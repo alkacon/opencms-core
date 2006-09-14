@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageScaler.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2006/09/14 11:22:55 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2.4.3 $
+ * @version $Revision: 1.2.4.4 $
  * 
  * @since 6.2.0
  */
@@ -871,9 +871,10 @@ public class CmsImageScaler {
     public void setColor(String value) {
 
         if (COLOR_TRANSPARENT.indexOf(value) == 0) {
-            m_color = Simapi.COLOR_TRANSPARENT;
+            setColor(Simapi.COLOR_TRANSPARENT);
+        } else {
+            setColor(CmsStringUtil.getColorValue(value, Color.WHITE, SCALE_PARAM_COLOR));
         }
-        m_color = CmsStringUtil.getColorValue(value, Color.WHITE, SCALE_PARAM_COLOR);
     }
 
     /**
