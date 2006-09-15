@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2006/03/29 08:50:11 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2006/09/15 15:30:37 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -318,6 +318,8 @@ public class CmsPreferences extends CmsTabDialog {
         CmsUserSettings userSettings = new CmsUserSettings(getCms(), getSettings().getUser());
         // first set the old preferred editors
         m_userSettings.setEditorSettings(userSettings.getEditorSettings());
+        // then set the old synchronization settings
+        m_userSettings.setSynchronizeSettings(userSettings.getSynchronizeSettings());
         Enumeration en = request.getParameterNames();
         while (en.hasMoreElements()) {
             // search all request parameters for the presence of the preferred editor parameters
