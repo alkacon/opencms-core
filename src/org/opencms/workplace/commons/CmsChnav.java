@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.23.4.2 $
+ * Date   : $Date: 2006/09/15 14:27:10 $
+ * Version: $Revision: 1.23.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23.4.2 $ 
+ * @version $Revision: 1.23.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -174,7 +174,12 @@ public class CmsChnav extends CmsDialog {
                 nextPos = ((CmsJspNavElement)navList.get(i + 1)).getNavPosition();
             }
             // calculate new position of current nav element
-            float newPos = (navPos + nextPos) / 2;
+            float newPos;
+            if ((nextPos - navPos) > 1) {
+                newPos = navPos + 1;
+            } else {
+                newPos = (navPos + nextPos) / 2;
+            }
 
             // check new maxValue of positions and increase it
             if (navPos > maxValue) {
