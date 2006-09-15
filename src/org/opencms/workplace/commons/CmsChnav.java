@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/09/15 14:19:57 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,7 +81,7 @@ public class CmsChnav extends CmsDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "chnav";
-    
+
     /** Request parameter name for the navigation position. */
     public static final String PARAM_NAVPOS = "navpos";
 
@@ -90,7 +90,7 @@ public class CmsChnav extends CmsDialog {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsChnav.class);
-    
+
     private String m_paramNavpos;
 
     private String m_paramNavtext;
@@ -175,7 +175,12 @@ public class CmsChnav extends CmsDialog {
                 nextPos = ((CmsJspNavElement)navList.get(i + 1)).getNavPosition();
             }
             // calculate new position of current nav element
-            float newPos = (navPos + nextPos) / 2;
+            float newPos;
+            if ((nextPos - navPos) > 1) {
+                newPos = navPos + 1;
+            } else {
+                newPos = (navPos + nextPos) / 2;
+            }
 
             // check new maxValue of positions and increase it
             if (navPos > maxValue) {
@@ -184,7 +189,9 @@ public class CmsChnav extends CmsDialog {
 
             // if the element is the current file, mark it in selectbox
             if (curNav.getNavText().equals(navText) && curNav.getNavPosition() == navPos) {
-                options.add(CmsEncoder.escapeHtml(messages.key(Messages.GUI_CHNAV_POS_CURRENT_1, new Object[] {ne.getFileName()})));
+                options.add(CmsEncoder.escapeHtml(messages.key(
+                    Messages.GUI_CHNAV_POS_CURRENT_1,
+                    new Object[] {ne.getFileName()})));
                 values.add("-1");
             } else {
                 options.add(CmsEncoder.escapeHtml(navText + " [" + ne.getFileName() + "]"));
@@ -420,13 +427,13 @@ public class CmsChnav extends CmsDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         // check the required permissions to change navigation of the resource       
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+        if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
         }
-        
+
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
