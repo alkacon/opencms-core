@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/18 12:39:16 $
- * Version: $Revision: 1.717.2.37 $
+ * Date   : $Date: 2006/09/18 13:32:32 $
+ * Version: $Revision: 1.717.2.38 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ OpenCms 6.5.3 - September xxxx, 2006
 ! MIME-types are now configured in opencms-vfs.xml instead of internal properties file
 ! Added new WOFKFLOW_MANAGER role definition
 - Refactored HTML generating methods for CmsCalendarWidget from CmsWorkplace into the widget class itself
+- Modified calculation of inserted nav positions
 
 OpenCms 6.5.2 - September 1st, 2006
 - Improved delete dialog
