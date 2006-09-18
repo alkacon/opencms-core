@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.22.4.2 $
+ * Date   : $Date: 2006/09/18 15:26:14 $
+ * Version: $Revision: 1.22.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.2 $ 
+ * @version $Revision: 1.22.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -191,8 +191,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
                         getCms().writeFile(modFile);
                     }
                 }
+            } catch (RuntimeException e) {
+                // assume file was not present
             } catch (Exception e) {
-                // file was not present
+                // assume file was not present
             }
         }
         super.actionCloseDialog();
@@ -647,6 +649,24 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public boolean unzipUpload() {
 
         return Boolean.valueOf(getParamUnzipFile()).booleanValue();
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
+     */
+    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
+
+        String siteRoot = jsp.getRequestContext().getSiteRoot();
+        // In case of the upload applet the site stored in the user preferences must NOT be made the current 
+        // site even if we have a new session! Since the upload applet will create a new session for the upload itself, 
+        // we must make sure to use the site of the request, NOT the site stored in the user preferences.
+        // The default logic will erase the request site in case of a new session.
+        // With this workaround the site from the request is made the current site as required.
+        super.initWorkplaceMembers(jsp);
+        if (!siteRoot.equals(getSettings().getSite())) {
+            getSettings().setSite(siteRoot);
+            jsp.getRequestContext().setSiteRoot(siteRoot);
+        }
     }
 
     /**

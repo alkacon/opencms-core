@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/18 13:34:03 $
- * Version: $Revision: 1.717.2.39 $
+ * Date   : $Date: 2006/09/18 15:26:25 $
+ * Version: $Revision: 1.717.2.40 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ OpenCms 6.5.3 - September xxxx, 2006
 ! Added new WOFKFLOW_MANAGER role definition
 - Refactored HTML generating methods for CmsCalendarWidget from CmsWorkplace into the widget class itself
 - Modified calculation of inserted nav positions
+* Fixed issue with upload applet always using the site root set in the user preferences
 
 OpenCms 6.5.2 - September 1st, 2006
 - Improved delete dialog
