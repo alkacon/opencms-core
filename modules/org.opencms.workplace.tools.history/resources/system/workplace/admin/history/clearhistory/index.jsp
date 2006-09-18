@@ -1,7 +1,8 @@
 <%@ page import="
 	org.opencms.workplace.tools.history.CmsAdminHistoryClear,
-    org.opencms.workplace.CmsDialog
-"%><%	
+    org.opencms.workplace.CmsDialog,
+    org.opencms.widgets.CmsCalendarWidget
+"%><%
 	// initialize the workplace class
 	CmsAdminHistoryClear wp = new CmsAdminHistoryClear(pageContext, request, response);
 
@@ -24,15 +25,14 @@ switch (wp.getAction()) {
     default:
 //////////////////// ACTION: show history settings dialog (default)
 	wp.setParamAction(CmsAdminHistoryClear.DIALOG_SAVE_EDIT);
-
-%>
+ %>
 
 <%= wp.htmlStart("administration/index.html") %>
 <%= wp.bodyStart(null) %>
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<%= wp.calendarIncludes() %>
+<%= CmsCalendarWidget.calendarIncludes(wp.getLocale()) %>
 <script type="text/javascript">
 <!--
 function disallowDate(date) {
@@ -87,7 +87,7 @@ function validateForm() {
 
 %><%
 	if (wp.isHistoryEnabled()) {
-		out.print(wp.calendarInit("date", "triggercalendar", "tR", false, false, true, "disallowDate"));
+		out.print(CmsCalendarWidget.calendarInit(wp.getMessages(), "date", "triggercalendar", "tR", false, false, true, "disallowDate", false));
 	}
 %>
 

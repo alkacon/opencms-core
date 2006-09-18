@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCalendarWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/09/18 12:39:16 $
+ * Version: $Revision: 1.13.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,13 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.text.ParseException;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -45,7 +48,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,26 +77,136 @@ public class CmsCalendarWidget extends A_CmsWidget {
     }
 
     /**
+     * Creates the HTML JavaScript and stylesheet includes required by the calendar for the head of the page.<p>
+     * 
+     * The default <code>"opencms"</code> style is used.<p>
+     * 
+     * @param locale the locale to use for the calendar
+     * 
+     * @return the necessary HTML code for the js and stylesheet includes
+     * 
+     * @see #calendarIncludes(Locale, String)
+     */
+    public static String calendarIncludes(Locale locale) {
+        
+        return calendarIncludes(locale, "opencms");
+    }
+    
+    /**
+     * Creates the HTML JavaScript and stylesheet includes required by the calendar for the head of the page.<p>
+     * 
+     * @param locale the locale to use for the calendar
+     * @param style the name of the used calendar style, e.g. "system", "blue"
+     * 
+     * @return the necessary HTML code for the js and stylesheet includes
+     */
+    public static String calendarIncludes(Locale locale, String style) {
+
+        StringBuffer result = new StringBuffer(512);
+        String calendarPath = CmsWorkplace.getSkinUri() + "components/js_calendar/";
+        if (CmsStringUtil.isEmpty(style)) {
+            style = "system";
+        }
+        result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+        result.append(calendarPath);
+        result.append("calendar-");
+        result.append(style);
+        result.append(".css\">\n");
+        result.append("<script type=\"text/javascript\" src=\"");
+        result.append(calendarPath);
+        result.append("calendar.js\"></script>\n");
+        result.append("<script type=\"text/javascript\" src=\"");
+        result.append(calendarPath);
+        result.append("lang/calendar-");
+        result.append(locale.getLanguage());
+        result.append(".js\"></script>\n");
+        result.append("<script type=\"text/javascript\" src=\"");
+        result.append(calendarPath);
+        result.append("calendar-setup.js\"></script>\n");
+        return result.toString();
+    }
+
+    /**
+     * Generates the HTML to initialize the JavaScript calendar element on the end of a page.<p>
+     * 
+     * This method must be called at the end of a HTML page, e.g. before the closing &lt;body&gt; tag.<p>
+     * 
+     * @param messages the messages to use (for date and time formats)
+     * @param inputFieldId the ID of the input field where the date is pasted to
+     * @param triggerButtonId the ID of the button which triggers the calendar
+     * @param align initial position of the calendar popup element
+     * @param singleClick if true, a single click selects a date and closes the calendar, otherwise calendar is closed by doubleclick
+     * @param weekNumbers show the week numbers in the calendar or not
+     * @param mondayFirst show monday as first day of week
+     * @param dateStatusFunc name of the function which determines if/how a date should be disabled
+     * @param showTime true if the time selector should be shown, otherwise false
+     * @return the HTML code to initialize a calendar poup element
+     */
+    public static String calendarInit(
+        CmsMessages messages,
+        String inputFieldId,
+        String triggerButtonId,
+        String align,
+        boolean singleClick,
+        boolean weekNumbers,
+        boolean mondayFirst,
+        String dateStatusFunc,
+        boolean showTime) {
+
+        StringBuffer result = new StringBuffer(512);
+        if (CmsStringUtil.isEmpty(align)) {
+            align = "Bc";
+        }
+        result.append("<script type=\"text/javascript\">\n");
+        result.append("<!--\n");
+        result.append("\tCalendar.setup({\n");
+        result.append("\t\tinputField     :    \"");
+        result.append(inputFieldId);
+        result.append("\",\n");
+        result.append("\t\tifFormat       :    \"");
+        result.append(messages.key(org.opencms.workplace.Messages.GUI_CALENDAR_DATE_FORMAT_0));
+        if (showTime) {
+            result.append(" ");
+            result.append(messages.key(org.opencms.workplace.Messages.GUI_CALENDAR_TIME_FORMAT_0));
+        }
+        result.append("\",\n");
+        result.append("\t\tbutton         :    \"");
+        result.append(triggerButtonId);
+        result.append("\",\n");
+        result.append("\t\talign          :    \"");
+        result.append(align);
+        result.append("\",\n");
+        result.append("\t\tsingleClick    :    ");
+        result.append(singleClick);
+        result.append(",\n");
+        result.append("\t\tweekNumbers    :    ");
+        result.append(weekNumbers);
+        result.append(",\n");
+        result.append("\t\tmondayFirst    :    ");
+        result.append(mondayFirst);
+        result.append(",\n");
+        result.append("\t\tshowsTime      :    " + showTime);
+        if (showTime
+            && (messages.key(org.opencms.workplace.Messages.GUI_CALENDAR_TIMEFORMAT_0).toLowerCase().indexOf("p") != -1)) {
+            result.append(",\n\t\ttimeFormat     :    \"12\"");
+        }
+        if (CmsStringUtil.isNotEmpty(dateStatusFunc)) {
+            result.append(",\n\t\tdateStatusFunc :    ");
+            result.append(dateStatusFunc);
+        }
+        result.append("\n\t});\n");
+
+        result.append("//-->\n");
+        result.append("</script>\n");
+        return result.toString();
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
-        return widgetDialog.calendarIncludes();
-    }
-
-    public String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
-
-        String result = param.getStringValue(cms);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result) && !"0".equals(result)) {
-            try {
-                result = widgetDialog.getCalendarLocalizedTime(Long.parseLong(result));
-            } catch (NumberFormatException e) {
-                result = "";
-            }
-        } else {
-            result = "";
-        }
-        return result;
+        return calendarIncludes(widgetDialog.getLocale());
     }
 
     /**
@@ -131,11 +244,38 @@ public class CmsCalendarWidget extends A_CmsWidget {
         result.append("</tr></table>");
         result.append("</td></tr></table>");
 
-        result.append(widgetDialog.calendarInit(id, id + ".calendar", "cR", false, false, true, null, true));
+        result.append(calendarInit(
+            widgetDialog.getMessages(),
+            id,
+            id + ".calendar",
+            "cR",
+            false,
+            false,
+            true,
+            null,
+            true));
 
         result.append("</td>");
 
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#getWidgetStringValue(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    public String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+
+        String result = param.getStringValue(cms);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result) && !"0".equals(result)) {
+            try {
+                result = widgetDialog.getCalendarLocalizedTime(Long.parseLong(result));
+            } catch (NumberFormatException e) {
+                result = "";
+            }
+        } else {
+            result = "";
+        }
+        return result;
     }
 
     /**

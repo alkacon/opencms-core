@@ -1,4 +1,8 @@
-<%@ page import="org.opencms.workplace.commons.*" %><%	
+<%@ page import="
+    org.opencms.workplace.commons.*,
+    org.opencms.workplace.CmsDialog,
+    org.opencms.widgets.CmsCalendarWidget
+"%><%
 
 	// initialize the workplace class
 	CmsTouch wp = new CmsTouch(pageContext, request, response);
@@ -7,7 +11,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsTouch.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
@@ -16,7 +20,7 @@ break;
 
 
 case CmsTouch.ACTION_TOUCH:	
-case CmsTouch.ACTION_WAIT:
+case CmsDialog.ACTION_WAIT:
 
 //////////////////// ACTION: main touching action (with optional wait screen)
 
@@ -24,15 +28,15 @@ case CmsTouch.ACTION_WAIT:
 
 break;
 
-case CmsTouch.ACTION_DEFAULT:
+case CmsDialog.ACTION_DEFAULT:
 default:
 
 //////////////////// ACTION: show touch dialog (default)
 
 	wp.setParamAction("touch");
 	
-%><%= wp.htmlStart() %>
-<%= wp.calendarIncludes() %>
+ %><%= wp.htmlStart() %>
+<%= CmsCalendarWidget.calendarIncludes(wp.getLocale()) %>
 <%= wp.bodyStart("dialog") %>
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
@@ -78,7 +82,7 @@ if (wp.isMultiOperation()) { %>
      * @param showTime true if the time selector should be shown, otherwise false
      */
 
-%><%= wp.calendarInit(wp.PARAM_NEWTIMESTAMP, "triggercalendar", "cR", false, false, true, null, true) %>
+%><%= CmsCalendarWidget.calendarInit(wp.getMessages(), CmsTouch.PARAM_NEWTIMESTAMP, "triggercalendar", "cR", false, false, true, null, true) %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
 <%

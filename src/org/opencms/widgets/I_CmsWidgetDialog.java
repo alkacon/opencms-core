@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/09/18 12:39:16 $
+ * Version: $Revision: 1.10.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,43 +109,6 @@ public interface I_CmsWidgetDialog {
      * @return a button bar starter tab
      */
     String buttonBarStartTab(int leftPixel, int rightPixel);
-
-    // TODO: Remove all calendar methods from this interface, make them static
-    // TODO: Alternative: Put all this in one class (CmsWorkplaceCalendar) and return such an Object
-
-    /**
-     * Displays a javascript calendar element with the standard "opencms" style.<p>
-     * 
-     * Creates the HTML javascript and stylesheet includes for the head of the page.<p>
-     * 
-     * @return the necessary HTML code for the js and stylesheet includes
-     */
-    String calendarIncludes();
-
-    /**
-     * Initializes a javascript calendar element to be shown on a page.<p>
-     * 
-     * This method must be called at the end of a HTML page, e.g. before the closing &lt;body&gt; tag.<p>
-     * 
-     * @param inputFieldId the ID of the input field where the date is pasted to
-     * @param triggerButtonId the ID of the button which triggers the calendar
-     * @param align initial position of the calendar popup element
-     * @param singleClick if true, a single click selects a date and closes the calendar, otherwise calendar is closed by doubleclick
-     * @param weekNumbers show the week numbers in the calendar or not
-     * @param mondayFirst show monday as first day of week
-     * @param dateStatusFunc name of the function which determines if/how a date should be disabled
-     * @param showTime true if the time selector should be shown, otherwise false
-     * @return the HTML code to initialize a calendar poup element
-     */
-    String calendarInit(
-        String inputFieldId,
-        String triggerButtonId,
-        String align,
-        boolean singleClick,
-        boolean weekNumbers,
-        boolean mondayFirst,
-        String dateStatusFunc,
-        boolean showTime);
 
     /**
      * Builds an invisible horiziontal spacer with the specified width.<p>

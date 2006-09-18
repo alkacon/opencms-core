@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.17.4.2 $
+ * Date   : $Date: 2006/09/18 12:39:16 $
+ * Version: $Revision: 1.17.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.2 $ 
+ * @version $Revision: 1.17.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -192,6 +193,53 @@ public class CmsAdminHistoryClear extends CmsReport {
         return buildSelectNumbers("versions", attributes, 0, OpenCms.getSystemInfo().getVersionHistoryMaxCount());
     }
 
+    /**    
+     * Creates the HTML JavaScript and stylesheet includes required by the calendar for the head of the page.<p>
+     * 
+     * @return the necessary HTML code for the js and stylesheet includes
+     * 
+     * @deprecated use {@link CmsCalendarWidget#calendarIncludes(java.util.Locale)}, this is just here so that old JSP still work
+     */
+    public String calendarIncludes() {
+
+        return CmsCalendarWidget.calendarIncludes(getLocale());
+    }
+
+    /**
+     * Generates the HTML to initialize the JavaScript calendar element on the end of a page.<p>
+     * 
+     * @param inputFieldId the ID of the input field where the date is pasted to
+     * @param triggerButtonId the ID of the button which triggers the calendar
+     * @param align initial position of the calendar popup element
+     * @param singleClick if true, a single click selects a date and closes the calendar, otherwise calendar is closed by doubleclick
+     * @param weekNumbers show the week numbers in the calendar or not
+     * @param mondayFirst show monday as first day of week
+     * @param dateStatusFunc name of the function which determines if/how a date should be disabled
+     * @return the HTML code to initialize a calendar poup element
+     * 
+     * @deprecated use {@link CmsCalendarWidget#calendarInit(org.opencms.i18n.CmsMessages, String, String, String, boolean, boolean, boolean, String, boolean)}, this is just here so that old JSP still work
+     */
+    public String calendarInit(
+        String inputFieldId,
+        String triggerButtonId,
+        String align,
+        boolean singleClick,
+        boolean weekNumbers,
+        boolean mondayFirst,
+        String dateStatusFunc) {
+
+        return CmsCalendarWidget.calendarInit(
+            getMessages(),
+            inputFieldId,
+            triggerButtonId,
+            align,
+            singleClick,
+            weekNumbers,
+            mondayFirst,
+            dateStatusFunc,
+            false);
+    }
+
     /**
      * Returns true if the version history is enabled, otherwise false.<p>
      * 
@@ -291,7 +339,7 @@ public class CmsAdminHistoryClear extends CmsReport {
             // no int value submitted, check date fields
             try {
                 timeStamp = getCalendarDate(paramDate, false);
-                    } catch (ParseException ex) {
+            } catch (ParseException ex) {
                 // no date values submitted, throw exception
 
                 throw new CmsIllegalArgumentException(

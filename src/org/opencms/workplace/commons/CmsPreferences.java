@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2006/09/15 15:28:49 $
- * Version: $Revision: 1.31.4.2 $
+ * Date   : $Date: 2006/09/18 12:39:16 $
+ * Version: $Revision: 1.31.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.workplace.CmsTabDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -89,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.2 $
+ * @version $Revision: 1.31.4.3 $
  * 
  * @since 6.0.0
  */
@@ -251,8 +252,10 @@ public class CmsPreferences extends CmsTabDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPreferences.class);
 
+    /** The old password. */
     private String m_paramNewPassword;
 
+    /** The new password. */
     private String m_paramOldPassword;
 
     /** User settings object used to store the dialog field values. */
@@ -840,6 +843,55 @@ public class CmsPreferences extends CmsTabDialog {
         result.append("</table>\n");
 
         return result.toString();
+    }
+
+    /**
+     * Creates the HTML JavaScript and stylesheet includes required by the calendar for the head of the page.<p>
+     * 
+     * @return the necessary HTML code for the js and stylesheet includes
+     * 
+     * @deprecated use {@link CmsCalendarWidget#calendarIncludes(java.util.Locale)}, this is just here so that old JSP still work
+     */
+    public String calendarIncludes() {
+
+        return CmsCalendarWidget.calendarIncludes(getLocale());
+    }
+
+    /**
+     * Generates the HTML to initialize the JavaScript calendar element on the end of a page.<p>
+     * 
+     * @param inputFieldId the ID of the input field where the date is pasted to
+     * @param triggerButtonId the ID of the button which triggers the calendar
+     * @param align initial position of the calendar popup element
+     * @param singleClick if true, a single click selects a date and closes the calendar, otherwise calendar is closed by doubleclick
+     * @param weekNumbers show the week numbers in the calendar or not
+     * @param mondayFirst show monday as first day of week
+     * @param dateStatusFunc name of the function which determines if/how a date should be disabled
+     * @param showTime true if the time selector should be shown, otherwise false
+     * @return the HTML code to initialize a calendar poup element
+     * 
+     * @deprecated use {@link CmsCalendarWidget#calendarInit(org.opencms.i18n.CmsMessages, String, String, String, boolean, boolean, boolean, String, boolean)}, this is just here so that old JSP still work
+     */
+    public String calendarInit(
+        String inputFieldId,
+        String triggerButtonId,
+        String align,
+        boolean singleClick,
+        boolean weekNumbers,
+        boolean mondayFirst,
+        String dateStatusFunc,
+        boolean showTime) {
+
+        return CmsCalendarWidget.calendarInit(
+            getMessages(),
+            inputFieldId,
+            triggerButtonId,
+            align,
+            singleClick,
+            weekNumbers,
+            mondayFirst,
+            dateStatusFunc,
+            showTime);
     }
 
     /**

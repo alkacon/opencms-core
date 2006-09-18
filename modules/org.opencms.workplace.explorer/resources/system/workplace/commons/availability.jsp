@@ -1,4 +1,8 @@
-<%@ page import="org.opencms.workplace.commons.*,org.opencms.workplace.CmsDialog,org.opencms.file.CmsPropertyDefinition" %><%	
+<%@ page import="
+    org.opencms.workplace.commons.*,
+    org.opencms.workplace.CmsDialog,
+    org.opencms.widgets.CmsCalendarWidget    
+"%><%	
 
 	// initialize the workplace class
 	CmsAvailability wp = new CmsAvailability(pageContext, request, response);
@@ -120,7 +124,7 @@ function toggleInheritInfo() {
 
 //-->
 </script>
-<%= wp.calendarIncludes() %>
+<%= CmsCalendarWidget.calendarIncludes(wp.getLocale()) %>
 <%= wp.bodyStart("dialog") %>
 <%= wp.dialogStart() %>
 
@@ -208,8 +212,8 @@ if (wp.isMultiOperation()) { %>
      */
 
 %>
-<%= wp.calendarInit(wp.PARAM_RELEASEDATE, "triggernewreleasedate", "cR", false, false, true, null, true) %>
-<%= wp.calendarInit(wp.PARAM_EXPIREDATE, "triggernewexpiredate", "cR", false, false, true, null, true) %>
+<%= CmsCalendarWidget.calendarInit(wp.getMessages(), wp.PARAM_RELEASEDATE, "triggernewreleasedate", "cR", false, false, true, null, true) %>
+<%= CmsCalendarWidget.calendarInit(wp.getMessages(), wp.PARAM_EXPIREDATE, "triggernewexpiredate", "cR", false, false, true, null, true) %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
 <%

@@ -1,8 +1,9 @@
-		<%@ page import="org.opencms.workplace.CmsWorkplace,
+<%@ page import="
+    org.opencms.workplace.CmsWorkplace,
+    org.opencms.workplace.CmsDialog,
 	org.opencms.workplace.commons.*,
-	org.opencms.main.OpenCms,
-	org.opencms.db.CmsUserSettings"%><%	
-
+    org.opencms.widgets.CmsCalendarWidget
+"%><%
 	// initialize the workplace class
 	CmsPreferences wp = new CmsPreferences(pageContext, request, response);
 	
@@ -10,7 +11,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsPreferences.ACTION_CANCEL:		
+case CmsDialog.ACTION_CANCEL:		
 //////////////////// ACTION: cancel button pressed, leave dialog
 
 	if (!"true".equals(wp.getParamSetPressed())) {
@@ -35,8 +36,8 @@ case CmsPreferences.ACTION_RELOAD:
 <%
 	
 break;
-case CmsPreferences.ACTION_OK:
-case CmsPreferences.ACTION_SET:		
+case CmsDialog.ACTION_OK:
+case CmsDialog.ACTION_SET:		
 //////////////////// ACTION: save the preferences
 
 	wp.actionSave();
@@ -50,16 +51,16 @@ case CmsPreferences.ACTION_CHPWD:
 		break;
 	}
 
-case CmsPreferences.ACTION_DEFAULT:
+case CmsDialog.ACTION_DEFAULT:
 case CmsPreferences.ACTION_SWITCHTAB:
 default:
 
 //////////////////// ACTION: show tab dialog (default)
 
-	wp.setParamAction(wp.DIALOG_OK);
+	wp.setParamAction(CmsDialog.DIALOG_OK);
 
-%><%= wp.htmlStart() %>
-<%= wp.calendarIncludes() %>
+ %><%= wp.htmlStart() %>
+<%= CmsCalendarWidget.calendarIncludes(wp.getLocale()) %>
 <%= wp.bodyStart("dialog", "onunload=\"top.closeTreeWin();\"") %>
 <%= wp.dialogStart() %>
 
@@ -99,7 +100,7 @@ case 1:
 				<td style="white-space: nowrap;padding:4px;"><%= wp.key(Messages.GUI_PREF_BUTTON_STYLE_0) %></td><td style="padding:4px;"><%= wp.buildSelectWorkplaceButtonStyle("name=\"" + wp.PARAM_WORKPLACE_BUTTONSTYLE + "\" style=\"width: 200px;\"") %></td>
 				<td style="padding:4px;">&nbsp;</td>
 				<td style="white-space: nowrap;width:100px;padding:4px;"><%= wp.key(Messages.GUI_LABEL_TIMEWARP_0) %></td><td style="padding:4px;"> <input type="text" id="<%= wp.PARAM_WORKPLACE_TIMEWARP %>"  name="<%= wp.PARAM_WORKPLACE_TIMEWARP %>"  style="float:left;" value="<%= wp.getParamTabWpTimewarp()%>"/></td><td style="vertical-align:top;"><a id="timewarp.widgettrigger"style="float:left;" href="#" class="button" title="<%=org.opencms.workplace.Messages.get().getBundle().key(org.opencms.workplace.Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>"><span unselectable="on" class="norm" onmouseover="className='over'" onmouseout="className='norm'" onmousedown="className='push'" onmouseup="className='over'"><img class="button" src="<%= CmsWorkplace.getSkinUri()%>buttons/calendar.png" alt="Datum wählen"></span></a><%= wp.button("javascript:document.getElementById('" + wp.PARAM_WORKPLACE_TIMEWARP + "').value='-'", "", "deletecontent.png", "reset", 0) %></td><%--
-				--%><%= wp.calendarInit(wp.PARAM_WORKPLACE_TIMEWARP, "timewarp.widgettrigger", "cR", false, false, true, "", true) %>				
+				--%><%= CmsCalendarWidget.calendarInit(wp.getMessages(), wp.PARAM_WORKPLACE_TIMEWARP, "timewarp.widgettrigger", "cR", false, false, true, "", true) %>				
 			</tr>
 			<tr>
 				<td style="white-space: nowrap;padding:4px;"><%= wp.key(Messages.GUI_PREF_REPORT_TYPE_0) %></td><td style="padding:4px;"><%= wp.buildSelectReportType("name=\"" + wp.PARAM_WORKPLACE_REPORTTYPE + "\" style=\"width: 200px;\"") %></td>

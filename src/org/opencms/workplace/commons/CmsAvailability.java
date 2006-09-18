@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/09/18 12:39:16 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -77,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,22 +150,6 @@ public class CmsAvailability extends CmsMultiDialog {
     public CmsAvailability(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * Returns a localized String for "Group", if the flag of a group ACE, and the localization for "User" otherwise.<p>
-     * 
-     * @param flags the flags of the ACE
-     * 
-     * @return localization for "Group", if the flag belongs to a group ACE
-     */
-    protected String getLocalizedType(int flags) {
-
-        if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_USER) > 0) {
-            return key(Messages.GUI_LABEL_USER_0);
-        } else {
-            return key(Messages.GUI_LABEL_GROUP_0);
-        }
     }
 
     /**
@@ -423,6 +408,55 @@ public class CmsAvailability extends CmsMultiDialog {
     }
 
     /**
+     * Creates the HTML JavaScript and stylesheet includes required by the calendar for the head of the page.<p>
+     * 
+     * @return the necessary HTML code for the js and stylesheet includes
+     * 
+     * @deprecated use {@link CmsCalendarWidget#calendarIncludes(java.util.Locale)}, this is just here so that old JSP still work
+     */
+    public String calendarIncludes() {
+
+        return CmsCalendarWidget.calendarIncludes(getLocale());
+    }
+
+    /**
+     * Generates the HTML to initialize the JavaScript calendar element on the end of a page.<p>
+     * 
+     * @param inputFieldId the ID of the input field where the date is pasted to
+     * @param triggerButtonId the ID of the button which triggers the calendar
+     * @param align initial position of the calendar popup element
+     * @param singleClick if true, a single click selects a date and closes the calendar, otherwise calendar is closed by doubleclick
+     * @param weekNumbers show the week numbers in the calendar or not
+     * @param mondayFirst show monday as first day of week
+     * @param dateStatusFunc name of the function which determines if/how a date should be disabled
+     * @param showTime true if the time selector should be shown, otherwise false
+     * @return the HTML code to initialize a calendar poup element
+     * 
+     * @deprecated use {@link CmsCalendarWidget#calendarInit(org.opencms.i18n.CmsMessages, String, String, String, boolean, boolean, boolean, String, boolean)}, this is just here so that old JSP still work
+     */
+    public String calendarInit(
+        String inputFieldId,
+        String triggerButtonId,
+        String align,
+        boolean singleClick,
+        boolean weekNumbers,
+        boolean mondayFirst,
+        String dateStatusFunc,
+        boolean showTime) {
+
+        return CmsCalendarWidget.calendarInit(
+            getMessages(),
+            inputFieldId,
+            triggerButtonId,
+            align,
+            singleClick,
+            weekNumbers,
+            mondayFirst,
+            dateStatusFunc,
+            showTime);
+    }
+
+    /**
      * Returns the current date and time as String formatted in localized pattern.<p>
      * 
      * @return the current date and time as String formatted in localized pattern
@@ -671,6 +705,22 @@ public class CmsAvailability extends CmsMultiDialog {
     public void setParamResetrelease(String paramResetrelease) {
 
         m_paramResetrelease = paramResetrelease;
+    }
+
+    /**
+     * Returns a localized String for "Group", if the flag of a group ACE, and the localization for "User" otherwise.<p>
+     * 
+     * @param flags the flags of the ACE
+     * 
+     * @return localization for "Group", if the flag belongs to a group ACE
+     */
+    protected String getLocalizedType(int flags) {
+
+        if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_USER) > 0) {
+            return key(Messages.GUI_LABEL_USER_0);
+        } else {
+            return key(Messages.GUI_LABEL_GROUP_0);
+        }
     }
 
     /**
