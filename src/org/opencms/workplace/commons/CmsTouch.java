@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsTouch.java,v $
- * Date   : $Date: 2006/09/18 12:39:16 $
- * Version: $Revision: 1.17.4.2 $
+ * Date   : $Date: 2006/09/18 13:01:37 $
+ * Version: $Revision: 1.17.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.2 $ 
+ * @version $Revision: 1.17.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +80,7 @@ public class CmsTouch extends CmsMultiDialog {
 
     /** Request parameter name for the recursive flag. */
     public static final String PARAM_RECURSIVE = "recursive";
-    
+
     /** Timestamp parameter. */
     private String m_paramNewtimestamp;
 
@@ -209,7 +209,7 @@ public class CmsTouch extends CmsMultiDialog {
     public String getCurrentDateTime() {
 
         // get the current date & time 
-        return getCalendarLocalizedTime(System.currentTimeMillis());
+        return CmsCalendarWidget.getCalendarLocalizedTime(getLocale(), getMessages(), System.currentTimeMillis());
     }
 
     /**
@@ -318,7 +318,7 @@ public class CmsTouch extends CmsMultiDialog {
         boolean correctDate = false;
         try {
             if (CmsStringUtil.isNotEmpty(getParamNewtimestamp())) {
-                timeStamp = getCalendarDate(getParamNewtimestamp(), true);
+                timeStamp = CmsCalendarWidget.getCalendarDate(getMessages(), getParamNewtimestamp(), true);
                 correctDate = true;
             }
         } catch (ParseException e) {

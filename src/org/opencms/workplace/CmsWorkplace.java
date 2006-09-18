@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/09/18 12:39:16 $
- * Version: $Revision: 1.156.4.9 $
+ * Date   : $Date: 2006/09/18 13:01:37 $
+ * Version: $Revision: 1.156.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,18 +63,13 @@ import org.opencms.workplace.help.CmsHelpTemplateBean;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -91,7 +86,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.9 $ 
+ * @version $Revision: 1.156.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -335,30 +330,6 @@ public abstract class CmsWorkplace {
             result.append("\n");
         }
         return result.toString();
-    }
-
-    /**
-     * Parses the JS calendar date format to the java patterns of SimpleDateFormat.<p>
-     * 
-     * @param dateFormat the dateformat String of the JS calendar
-     * @return the parsed SimpleDateFormat pattern String
-     */
-    public static String getCalendarJavaDateFormat(String dateFormat) {
-
-        dateFormat = CmsStringUtil.substitute(dateFormat, "%", ""); // remove all "%"
-        dateFormat = CmsStringUtil.substitute(dateFormat, "m", "${month}");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "H", "${hour}");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "Y", "${4anno}");
-        dateFormat = dateFormat.toLowerCase();
-        dateFormat = CmsStringUtil.substitute(dateFormat, "${month}", "M");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "${hour}", "H");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "y", "yy");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "${4anno}", "yyyy");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "m", "mm"); // minutes with two digits
-        dateFormat = dateFormat.replace('e', 'd'); // day of month
-        dateFormat = dateFormat.replace('i', 'h'); // 12 hour format
-        dateFormat = dateFormat.replace('p', 'a'); // pm/am String
-        return dateFormat;
     }
 
     /**
@@ -1025,7 +996,7 @@ public abstract class CmsWorkplace {
             // autolock is enabled, check the lock state of the resource
             if (lock.isUnlocked() || lock.isWorkflow()) {
                 // resource is not locked or locked in a workflow only, lock it automatically
-                if (type == CmsLockType.TEMPORARY) {                    
+                if (type == CmsLockType.TEMPORARY) {
                     getCms().lockResourceTemporary(resource);
                 } else {
                     getCms().lockResource(resource);
@@ -1150,50 +1121,6 @@ public abstract class CmsWorkplace {
         }
         // no message pending, return null
         return null;
-    }
-
-    /**
-     * Creates the time in milliseconds from the given parameter.<p>
-     * 
-     * @param dateString the String representation of the date
-     * @param useTime true if the time should be parsed, too, otherwise false
-     * @return the time in milliseconds
-     * @throws ParseException if something goes wrong
-     */
-    public long getCalendarDate(String dateString, boolean useTime) throws ParseException {
-
-        long dateLong = 0;
-
-        // substitute some chars because calendar syntax != DateFormat syntax
-        String dateFormat = key(Messages.GUI_CALENDAR_DATE_FORMAT_0);
-        if (useTime) {
-            dateFormat += " " + key(Messages.GUI_CALENDAR_TIME_FORMAT_0);
-        }
-        dateFormat = getCalendarJavaDateFormat(dateFormat);
-
-        SimpleDateFormat df = new SimpleDateFormat(dateFormat);
-        dateLong = df.parse(dateString).getTime();
-        return dateLong;
-    }
-
-    /**
-     * Returns the given timestamp as String formatted in a localized pattern.<p>
-     * 
-     * @param timestamp the time to format
-     * @return the given timestamp as String formatted in a localized pattern
-     */
-    public String getCalendarLocalizedTime(long timestamp) {
-
-        // get the current date & time 
-        Locale locale = getLocale();
-        TimeZone zone = TimeZone.getDefault();
-        GregorianCalendar cal = new GregorianCalendar(zone, locale);
-        cal.setTimeInMillis(timestamp);
-        // format it nicely according to the localized pattern
-        DateFormat df = new SimpleDateFormat(getCalendarJavaDateFormat(key(Messages.GUI_CALENDAR_DATE_FORMAT_0)
-            + " "
-            + key(Messages.GUI_CALENDAR_TIME_FORMAT_0)));
-        return df.format(cal.getTime());
     }
 
     /**

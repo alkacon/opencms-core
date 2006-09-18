@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2006/09/18 12:39:16 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2006/09/18 13:01:37 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.4.3 $ 
+ * @version $Revision: 1.2.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -464,7 +464,7 @@ public class CmsAvailability extends CmsMultiDialog {
     public String getCurrentDateTime() {
 
         // get the current date & time 
-        return getCalendarLocalizedTime(System.currentTimeMillis());
+        return CmsCalendarWidget.getCalendarLocalizedTime(getLocale(), getMessages(), System.currentTimeMillis());
     }
 
     /**
@@ -483,10 +483,13 @@ public class CmsAvailability extends CmsMultiDialog {
                 if (res.getDateExpired() == CmsResource.DATE_EXPIRED_DEFAULT) {
                     return CmsTouch.DEFAULT_DATE_STRING;
                 } else {
-                    return getCalendarLocalizedTime(res.getDateExpired());
+                    return CmsCalendarWidget.getCalendarLocalizedTime(getLocale(), getMessages(), res.getDateExpired());
                 }
             } catch (CmsException e) {
-                return getCalendarLocalizedTime(System.currentTimeMillis());
+                return CmsCalendarWidget.getCalendarLocalizedTime(
+                    getLocale(),
+                    getMessages(),
+                    System.currentTimeMillis());
             }
         }
     }
@@ -507,10 +510,13 @@ public class CmsAvailability extends CmsMultiDialog {
                 if (res.getDateReleased() == CmsResource.DATE_RELEASED_DEFAULT) {
                     return CmsTouch.DEFAULT_DATE_STRING;
                 } else {
-                    return getCalendarLocalizedTime(res.getDateReleased());
+                    return CmsCalendarWidget.getCalendarLocalizedTime(getLocale(), getMessages(), res.getDateReleased());
                 }
             } catch (CmsException e) {
-                return getCalendarLocalizedTime(System.currentTimeMillis());
+                return CmsCalendarWidget.getCalendarLocalizedTime(
+                    getLocale(),
+                    getMessages(),
+                    System.currentTimeMillis());
             }
         }
     }
@@ -780,7 +786,7 @@ public class CmsAvailability extends CmsMultiDialog {
             try {
                 if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamReleasedate()))
                     && (!getParamReleasedate().startsWith(CmsTouch.DEFAULT_DATE_STRING))) {
-                    releaseDate = getCalendarDate(getParamReleasedate(), true);
+                    releaseDate = CmsCalendarWidget.getCalendarDate(getMessages(), getParamReleasedate(), true);
                 } else {
                     leaveReleaseDate = true;
                 }
@@ -799,7 +805,7 @@ public class CmsAvailability extends CmsMultiDialog {
             try {
                 if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamExpiredate()))
                     && (!getParamExpiredate().startsWith(CmsTouch.DEFAULT_DATE_STRING))) {
-                    expireDate = getCalendarDate(getParamExpiredate(), true);
+                    expireDate = CmsCalendarWidget.getCalendarDate(getMessages(), getParamExpiredate(), true);
                 } else {
                     leaveExpireDate = true;
                 }

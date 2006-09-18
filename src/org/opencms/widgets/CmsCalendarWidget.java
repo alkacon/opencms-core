@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCalendarWidget.java,v $
- * Date   : $Date: 2006/09/18 12:39:16 $
- * Version: $Revision: 1.13.4.1 $
+ * Date   : $Date: 2006/09/18 13:01:37 $
+ * Version: $Revision: 1.13.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,13 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 
@@ -48,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.4.1 $ 
+ * @version $Revision: 1.13.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,10 +92,10 @@ public class CmsCalendarWidget extends A_CmsWidget {
      * @see #calendarIncludes(Locale, String)
      */
     public static String calendarIncludes(Locale locale) {
-        
+
         return calendarIncludes(locale, "opencms");
     }
-    
+
     /**
      * Creates the HTML JavaScript and stylesheet includes required by the calendar for the head of the page.<p>
      * 
@@ -202,6 +206,80 @@ public class CmsCalendarWidget extends A_CmsWidget {
     }
 
     /**
+     * Creates the time in milliseconds from the given parameter.<p>
+     * 
+     * @param messages the messages that contain the time format definitions
+     * @param dateString the String representation of the date
+     * @param useTime true if the time should be parsed, too, otherwise false
+     * 
+     * @return the time in milliseconds
+     * 
+     * @throws ParseException if something goes wrong
+     */
+    public static long getCalendarDate(CmsMessages messages, String dateString, boolean useTime) throws ParseException {
+
+        long dateLong = 0;
+
+        // substitute some chars because calendar syntax != DateFormat syntax
+        String dateFormat = messages.key(org.opencms.workplace.Messages.GUI_CALENDAR_DATE_FORMAT_0);
+        if (useTime) {
+            dateFormat += " " + messages.key(org.opencms.workplace.Messages.GUI_CALENDAR_TIME_FORMAT_0);
+        }
+        dateFormat = CmsCalendarWidget.getCalendarJavaDateFormat(dateFormat);
+
+        SimpleDateFormat df = new SimpleDateFormat(dateFormat);
+        dateLong = df.parse(dateString).getTime();
+        return dateLong;
+    }
+
+    /**
+     * Parses the JavaScript calendar date format to the java patterns of SimpleDateFormat.<p>
+     * 
+     * @param dateFormat the dateformat String of the JS calendar
+     * @return the parsed SimpleDateFormat pattern String
+     */
+    public static String getCalendarJavaDateFormat(String dateFormat) {
+
+        dateFormat = CmsStringUtil.substitute(dateFormat, "%", ""); // remove all "%"
+        dateFormat = CmsStringUtil.substitute(dateFormat, "m", "${month}");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "H", "${hour}");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "Y", "${4anno}");
+        dateFormat = dateFormat.toLowerCase();
+        dateFormat = CmsStringUtil.substitute(dateFormat, "${month}", "M");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "${hour}", "H");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "y", "yy");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "${4anno}", "yyyy");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "m", "mm"); // minutes with two digits
+        dateFormat = dateFormat.replace('e', 'd'); // day of month
+        dateFormat = dateFormat.replace('i', 'h'); // 12 hour format
+        dateFormat = dateFormat.replace('p', 'a'); // pm/am String
+        return dateFormat;
+    }
+
+    /**
+     * Returns the given timestamp as String formatted in a localized pattern.<p>
+     * 
+     * @param locale the locale for the time format
+     * @param messages the messages that contain the time format definitions
+     * @param timestamp the time to format
+     * 
+     * @return the given timestamp as String formatted in a localized pattern
+     */
+    public static String getCalendarLocalizedTime(Locale locale, CmsMessages messages, long timestamp) {
+
+        // get the current date & time 
+        TimeZone zone = TimeZone.getDefault();
+        GregorianCalendar cal = new GregorianCalendar(zone, locale);
+        cal.setTimeInMillis(timestamp);
+        // format it nicely according to the localized pattern
+        DateFormat df = new SimpleDateFormat(
+            CmsCalendarWidget.getCalendarJavaDateFormat(messages.key(org.opencms.workplace.Messages.GUI_CALENDAR_DATE_FORMAT_0)
+                + " "
+                + messages.key(org.opencms.workplace.Messages.GUI_CALENDAR_TIME_FORMAT_0)));
+        return df.format(cal.getTime());
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
@@ -268,7 +346,10 @@ public class CmsCalendarWidget extends A_CmsWidget {
         String result = param.getStringValue(cms);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result) && !"0".equals(result)) {
             try {
-                result = widgetDialog.getCalendarLocalizedTime(Long.parseLong(result));
+                result = getCalendarLocalizedTime(
+                    widgetDialog.getLocale(),
+                    widgetDialog.getMessages(),
+                    Long.parseLong(result));
             } catch (NumberFormatException e) {
                 result = "";
             }
@@ -306,7 +387,7 @@ public class CmsCalendarWidget extends A_CmsWidget {
             String dateTimeValue = values[0].trim();
             if (CmsStringUtil.isNotEmpty(dateTimeValue)) {
                 try {
-                    dateTime = widgetDialog.getCalendarDate(dateTimeValue, true);
+                    dateTime = getCalendarDate(widgetDialog.getMessages(), dateTimeValue, true);
                 } catch (ParseException e) {
                     // TODO: Better exception handling
                     if (LOG.isWarnEnabled()) {

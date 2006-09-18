@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2006/09/18 12:39:16 $
- * Version: $Revision: 1.10.4.1 $
+ * Date   : $Date: 2006/09/18 13:01:37 $
+ * Version: $Revision: 1.10.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.widgets;
 
 import org.opencms.i18n.CmsMessages;
 
-import java.text.ParseException;
 import java.util.Locale;
 import java.util.Set;
 
@@ -43,7 +42,7 @@ import java.util.Set;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10.4.1 $ 
+ * @version $Revision: 1.10.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,24 +127,6 @@ public interface I_CmsWidgetDialog {
      * @see org.opencms.db.CmsUserSettings#getEditorButtonStyle()
      */
     int getButtonStyle();
-
-    /**
-     * Creates the time in milliseconds from the given parameter.<p>
-     * 
-     * @param dateString the String representation of the date
-     * @param useTime true if the time should be parsed, too, otherwise false
-     * @return the time in milliseconds
-     * @throws ParseException if something goes wrong
-     */
-    long getCalendarDate(String dateString, boolean useTime) throws ParseException;
-
-    /**
-     * Returns the given timestamp as String formatted in a localized pattern.<p>
-     * 
-     * @param timestamp the time to format
-     * @return the given timestamp as String formatted in a localized pattern
-     */
-    String getCalendarLocalizedTime(long timestamp);
 
     /**
      * Returns a set of help messages ids that are already included on the widget dialog.<p>

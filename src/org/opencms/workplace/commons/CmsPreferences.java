@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2006/09/18 12:39:16 $
- * Version: $Revision: 1.31.4.3 $
+ * Date   : $Date: 2006/09/18 13:01:37 $
+ * Version: $Revision: 1.31.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.3 $
+ * @version $Revision: 1.31.4.4 $
  * 
  * @since 6.0.0
  */
@@ -1239,7 +1239,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * If no timewarp has been chosen, a value "-" will be returned.<p>
      * 
-     * @return the "user timewpar" setting in form of a formatted date string
+     * @return the "user timewarp" setting in form of a formatted date string
      */
     public String getParamTabWpTimewarp() {
 
@@ -1247,7 +1247,10 @@ public class CmsPreferences extends CmsTabDialog {
         if (m_userSettings.getTimeWarp() == CmsContextInfo.CURRENT_TIME) {
             result = "-";
         } else {
-            result = getCalendarLocalizedTime(m_userSettings.getTimeWarp());
+            result = CmsCalendarWidget.getCalendarLocalizedTime(
+                getLocale(),
+                getMessages(),
+                m_userSettings.getTimeWarp());
         }
         return result;
     }
@@ -1696,7 +1699,7 @@ public class CmsPreferences extends CmsTabDialog {
      * To delete a timewarp setting for the current user, provide <code>"-"</code> as value.<p>
      * 
      * @param value a String representation of an date in the formate as required by
-     *      {@link CmsWorkplace#getCalendarDate(String, boolean)}
+     *      {@link CmsCalendarWidget#getCalendarDate(org.opencms.i18n.CmsMessages, String, boolean)}
      */
     public void setParamTabWpTimeWarp(String value) {
 
@@ -1704,7 +1707,7 @@ public class CmsPreferences extends CmsTabDialog {
         // check for "delete value"
         if (CmsStringUtil.isNotEmpty(value) && !"-".equals(value)) {
             try {
-                datetimestamp = getCalendarDate(value, true);
+                datetimestamp = CmsCalendarWidget.getCalendarDate(getMessages(), value, true);
             } catch (Exception e) {
                 // reset timewarp setting in case of exception
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2006/09/18 12:39:16 $
- * Version: $Revision: 1.17.4.3 $
+ * Date   : $Date: 2006/09/18 13:01:37 $
+ * Version: $Revision: 1.17.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.3 $ 
+ * @version $Revision: 1.17.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -338,7 +338,7 @@ public class CmsAdminHistoryClear extends CmsReport {
         } catch (NumberFormatException e) {
             // no int value submitted, check date fields
             try {
-                timeStamp = getCalendarDate(paramDate, false);
+                timeStamp = CmsCalendarWidget.getCalendarDate(getMessages(), paramDate, false);
             } catch (ParseException ex) {
                 // no date values submitted, throw exception
 
