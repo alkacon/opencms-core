@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/18 13:29:56 $
- * Version: $Revision: 1.748 $
+ * Date   : $Date: 2006/09/19 14:29:35 $
+ * Version: $Revision: 1.749 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.2.3 - 
+! Extended <cms:parse>/<cms:decorate> by attribute "noAutoCloseTags" for tag names that must not be auto-closed 
 - Modified calculation of inserted nav positions
 - Legacy element cache is cleared on clear cache event
 
