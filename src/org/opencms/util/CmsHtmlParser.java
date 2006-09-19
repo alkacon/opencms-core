@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlParser.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/09/19 14:29:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,21 @@
 
 package org.opencms.util;
 
+import org.opencms.jsp.parse.DivTag;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.htmlparser.Parser;
+import org.htmlparser.PrototypicalNodeFactory;
 import org.htmlparser.Remark;
 import org.htmlparser.Tag;
 import org.htmlparser.Text;
 import org.htmlparser.lexer.Lexer;
 import org.htmlparser.lexer.Page;
+import org.htmlparser.tags.Div;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
@@ -54,11 +60,14 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.2.0
  */
 public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
+
+    /** List of upper case tag name strings of tags that should not be auto-corrected if closing divs are missing. */
+    private List m_noAutoCloseTags;
 
     /** The array of supported tag names. */
     // important: don't change the order of these tags in the source, subclasses may expect the tags
@@ -117,32 +126,34 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
 
         m_result = new StringBuffer(1024);
         m_echo = echo;
+        m_noAutoCloseTags = new ArrayList(32);
     }
 
-    /**
-     * Extracts the text from the given html content, assuming the given html encoding.
-     * <p>
-     * 
-     * @param html the content to extract the plain text from
-     * @param encoding the encoding to use
-     * @param visitor the html converting node visitor to use
-     * 
-     * @return the text extracted from the given html content
-     * 
-     * @throws ParserException if something goes wrong
-     */
-    protected static String process(String html, String encoding, CmsHtmlParser visitor) throws ParserException {
 
-        // initialize a parser with the given charset
-        Parser parser = new Parser();
-        Lexer lexer = new Lexer();
-        Page page = new Page(html, encoding);
-        lexer.setPage(page);
-        parser.setLexer(lexer);
-        // process the page using the given visitor
-        parser.visitAllNodesWith(visitor);
-        // return the result
-        return visitor.getResult();
+    /**
+     * Degrades Composite tags that do have children in the DOM tree 
+     * to simple single tags. This allows to avoid auto correction of unclosed HTML tags.<p>
+     * 
+     * @return A node factory that will not autocorrect open tags specified via <code>{@link #setNoAutoCloseTags(List)}</code>
+     */
+    private PrototypicalNodeFactory configureNoAutoCorrectionTags() {
+
+        PrototypicalNodeFactory factory = new PrototypicalNodeFactory();
+
+        String tagName;
+        Iterator it = m_noAutoCloseTags.iterator();
+        Div div = new Div();
+        List divNames = Arrays.asList(div.getIds());
+        while (it.hasNext()) {
+            tagName = ((String)it.next());
+            // div
+            if (divNames.contains(tagName)) {
+                factory.unregisterTag(new Div());
+                factory.registerTag(new DivTag());
+            }
+            // TODO: add more tags for flat parsing / non correction of missing closing tags here
+        }
+        return factory;
     }
 
     /**
@@ -182,8 +193,27 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#process(java.lang.String, java.lang.String)
      */
     public String process(String html, String encoding) throws ParserException {
+        m_result = new StringBuffer();
+        Parser parser = new Parser();
+        Lexer lexer = new Lexer();
 
-        return process(html, encoding, this);
+        // initialize the page with the given charset
+        Page page = new Page(html, encoding);
+        lexer.setPage(page);
+        parser.setLexer(lexer);
+
+        if (m_noAutoCloseTags != null && m_noAutoCloseTags.size() > 0) {
+            // Degrade Composite tags that do have children in the DOM tree 
+            // to simple single tags: This allows to finish this tag with openend HTML tags without the effect 
+            // that htmlparser will generate the closing tags. 
+            PrototypicalNodeFactory factory = configureNoAutoCorrectionTags();
+            lexer.setNodeFactory(factory);
+        }
+
+        // process the page using the given visitor
+        parser.visitAllNodesWith(this);
+        // return the result
+        return getResult();
     }
 
     /**
@@ -275,5 +305,34 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Returns a list of upper case tag names for which parsing / visiting will not correct missing closing tags.<p>
+     * 
+     * 
+     * @return a List of upper case tag names for which parsing / visiting will not correct missing closing tags
+     */
+    public List getNoAutoCloseTags() {
+
+        return m_noAutoCloseTags;
+    }
+
+    /**
+     * Sets a list of upper case tag names for which parsing / visiting should not correct missing closing tags.<p> 
+     * 
+     * @param noAutoCloseTagList a list of upper case tag names for which parsing / visiting 
+     *      should not correct missing closing tags to set.
+     */
+    public void setNoAutoCloseTags(List noAutoCloseTagList) {
+
+        // ensuring upper case
+        m_noAutoCloseTags.clear();
+        if (noAutoCloseTagList != null) {
+            Iterator it = noAutoCloseTagList.iterator();
+            while (it.hasNext()) {
+                m_noAutoCloseTags.add(((String)it.next()).toUpperCase());
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagDecorate.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/09/19 14:29:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import org.opencms.jsp.decorator.CmsHtmlDecorator;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletRequest;
@@ -51,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -69,6 +71,9 @@ public class CmsJspTagDecorate extends BodyTagSupport {
     /** The decoration locale. */
     private String m_locale;
 
+    /** List of upper case tag name strings of tags that should not be auto-corrected if closing divs are missing. */
+    private List m_noAutoCloseTags;
+
     /**
      * Internal action method.<p>
      * 
@@ -82,7 +87,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
      * 
      * @see org.opencms.staticexport.CmsLinkManager#substituteLink(org.opencms.file.CmsObject, String)
      */
-    public static String decorateTagAction(String content, String configFile, String locale, ServletRequest req) {
+    public String decorateTagAction(String content, String configFile, String locale, ServletRequest req) {
 
         try {
             Locale loc = null;
@@ -95,7 +100,9 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
             String encoding = controller.getCmsObject().getRequestContext().getEncoding();
             CmsDecoratorConfiguration config = new CmsDecoratorConfiguration(controller.getCmsObject(), configFile, loc);
-            return CmsHtmlDecorator.doDecoration(content, config, encoding);
+            CmsHtmlDecorator decorator = new CmsHtmlDecorator(config);
+            decorator.setNoAutoCloseTags(m_noAutoCloseTags);
+            return decorator.doDecoration(content, encoding);
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "decoration"), e);
@@ -152,14 +159,36 @@ public class CmsJspTagDecorate extends BodyTagSupport {
     }
 
     /**
+     * Getter for the attribute "noAutoCloseTags" of the &lt;cms:parse&gt; tag.<p>
+     *  
+     * Returns a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     * tag will not correct missing closing tags. <p>
+     * 
+     * 
+     * @return a String that consists of the comma-separated upper case tag names for which this 
+     *      tag will not correct missing closing tags. 
+     */
+    public String getNoAutoCloseTags() {
+
+        StringBuffer result = new StringBuffer();
+        if (m_noAutoCloseTags != null & m_noAutoCloseTags.size() > 0) {
+            Iterator it = m_noAutoCloseTags.iterator();
+            while (it.hasNext()) {
+                result.append(it.next()).append(',');
+            }
+        }
+        return result.toString();
+    }
+
+    /**
      * Sets the file name.<p>
      * 
      * @param file the file name
      */
     public void setFile(String file) {
 
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(file)) {
-            m_file = file;
+        if (file != null) {
+            m_file = file.toLowerCase();
         }
     }
 
@@ -173,4 +202,18 @@ public class CmsJspTagDecorate extends BodyTagSupport {
         m_locale = locale;
     }
 
+    /**
+     * Setter for the attribute "noAutoCloseTags" of the &lt;cms:parse&gt; tag.<p>
+     *  
+     * Awaits a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     * tag should not correct missing closing tags.<p>
+     * 
+     * @param noAutoCloseTagList a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     *      tag should not correct missing closing tags.
+     */
+    public void setNoAutoCloseTags(String noAutoCloseTagList) {
+
+        m_noAutoCloseTags = CmsStringUtil.splitAsList(noAutoCloseTagList, ',');
+
+    }
 }

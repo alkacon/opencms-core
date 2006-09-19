@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/09/19 14:29:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -119,38 +119,6 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         m_result = new StringBuffer(512);
         m_echo = true;
 
-    }
-
-    /**
-     * Processes a HTML string and adds text decorations according to the decoration configuration.<p>
-     * 
-     * @param html a string holding the HTML code that should be added with text decorations
-     * @param config the decoration configuration
-     * @param encoding the encoding to be used
-     * @return a HTML string with the decorations added.
-     * @throws Exception if something goes wrong
-     */
-    public static String doDecoration(String html, CmsDecoratorConfiguration config, String encoding) throws Exception {
-
-        CmsHtmlDecorator processor = new CmsHtmlDecorator(config);
-        // create the converter instance
-        return process(html, encoding, processor);
-    }
-
-    /**
-     * Processes a HTML string and adds text decorations according to the decoration configuration.<p>
-     * 
-     * @param html a string holding the HTML code that should be added with text decorations
-     * @param processor an already configured 
-     * @param encoding the encoding to be used
-     * @return a HTML string with the decorations added.
-     * @throws Exception if something goes wrong
-     */
-    public static String doDecoration(String html, CmsHtmlDecorator processor, String encoding) throws Exception {
-
-        processor.m_result = new StringBuffer(512);
-        // create the converter instance
-        return process(html, encoding, processor);
     }
 
     /**
@@ -222,24 +190,6 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
             result.add(trim ? source.substring(i).trim() : source.substring(i));
         }
         return result;
-    }
-
-    /**
-     * Resets the first occurance flags of all decoration objects.<p>
-     * 
-     * This is nescessary if decoration objects should be used for processing more than once.     *
-     */
-    public void resetDecorationDefinitions() {
-
-        m_config.resetMarkedDecorations();
-    }
-
-    /**
-     * @see org.htmlparser.visitors.NodeVisitor#visitStringNode(org.htmlparser.Text)
-     */
-    public void visitStringNode(Text text) {
-
-        appendText(text.toPlainTextString(), DELIMITERS, true);
     }
 
     /**
@@ -377,6 +327,19 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         }
     }
 
+    /**
+     * Processes a HTML string and adds text decorations according to the decoration configuration.<p>
+     * 
+     * @param html a string holding the HTML code that should be added with text decorations
+     * @param encoding the encoding to be used
+     * @return a HTML string with the decorations added.
+     * @throws Exception if something goes wrong
+     */
+    public String doDecoration(String html, String encoding) throws Exception {
+
+        return process(html, encoding);
+    }
+
     /** 
      * Checks if a word contains a given delimiter.<p>
      * 
@@ -425,6 +388,24 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
             }
         }
         return decode;
+    }
+
+    /**
+     * Resets the first occurance flags of all decoration objects.<p>
+     * 
+     * This is nescessary if decoration objects should be used for processing more than once.     *
+     */
+    public void resetDecorationDefinitions() {
+
+        m_config.resetMarkedDecorations();
+    }
+
+    /**
+     * @see org.htmlparser.visitors.NodeVisitor#visitStringNode(org.htmlparser.Text)
+     */
+    public void visitStringNode(Text text) {
+
+        appendText(text.toPlainTextString(), DELIMITERS, true);
     }
 
 }

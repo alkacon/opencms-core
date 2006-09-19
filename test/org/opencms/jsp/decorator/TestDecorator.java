@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/decorator/TestDecorator.java,v $
- * Date   : $Date: 2006/03/27 14:53:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/09/19 14:29:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.1.3
  */
@@ -198,7 +198,7 @@ public class TestDecorator extends OpenCmsTestCase {
         
         // excecute the tests
         System.out.println("Testing decoration");
-        String result = CmsHtmlDecorator.doDecoration(inputText1, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        String result = processor.doDecoration(inputText1, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText1);
         System.out.println(result);
         assertEquals(resultText1, result);
@@ -207,98 +207,98 @@ public class TestDecorator extends OpenCmsTestCase {
         processor.resetDecorationDefinitions();
         
         System.out.println("Testing decoration in HTML");
-        result = CmsHtmlDecorator.doDecoration(inputText2, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText2, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText2);
         System.out.println(result);
         assertEquals(resultText2, result);
         System.out.println("");
         
         System.out.println("Testing decoration with nbsp");
-        result = CmsHtmlDecorator.doDecoration(inputText3, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText3, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText3);
         System.out.println(result);
         assertEquals(resultText3, result);
         System.out.println("");
         
         System.out.println("Testing decoration with Umlaute");
-        result = CmsHtmlDecorator.doDecoration(inputText4, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText4, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText4);
         System.out.println(result);
         assertEquals(resultText4, result);
         System.out.println("");
         
         System.out.println("Testing decoration with composed words");
-        result = CmsHtmlDecorator.doDecoration(inputText5, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText5, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText5);
         System.out.println(result);
         assertEquals(resultText5, result);
         System.out.println("");
         
         System.out.println("Testing decoration with additional delimiters");
-        result = CmsHtmlDecorator.doDecoration(inputText6, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText6, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText6);
         System.out.println(result);
         assertEquals(resultText6, result);
-        result = CmsHtmlDecorator.doDecoration(inputText6a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText6a, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText6a);
         System.out.println(result);
         assertEquals(resultText6a, result);
-        result = CmsHtmlDecorator.doDecoration(inputText6b, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText6b, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText6b);
         System.out.println(result);
         assertEquals(resultText6b, result);
         System.out.println("");
         
         System.out.println("Testing decoration after closing tags");
-        result = CmsHtmlDecorator.doDecoration(inputText7, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText7, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText7);
         System.out.println(result);
         assertEquals(resultText7, result);
-        result = CmsHtmlDecorator.doDecoration(inputText7a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText7a, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText7a);
         System.out.println(result);
         assertEquals(resultText7a, result);
         System.out.println("");
         
         System.out.println("Testing decoration with decoration keys including delimiters (Dr.)");
-        result = CmsHtmlDecorator.doDecoration(inputText8, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText8, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText8);
         System.out.println(result);
         assertEquals(resultText8, result);
-        result = CmsHtmlDecorator.doDecoration(inputText8a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText8a, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText8a);
         System.out.println(result);
         assertEquals(resultText8a, result);
         System.out.println("");
         
         System.out.println("Testing decoration with decoration keys including multiple delimiters (z.B.)");
-        result = CmsHtmlDecorator.doDecoration(inputText9, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText9, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText9);
         System.out.println(result);
         assertEquals(resultText9, result);
-        result = CmsHtmlDecorator.doDecoration(inputText9a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText9a, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText9a);
         System.out.println(result);
         assertEquals(resultText9a, result);
         System.out.println("");
         
         System.out.println("Testing decoration with blank in it");
-        result = CmsHtmlDecorator.doDecoration(inputText10, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText10, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText10);
         System.out.println(result);
         assertEquals(resultText10, result);
-        result = CmsHtmlDecorator.doDecoration(inputText10a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText10a, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText10a);
         System.out.println(result);
         assertEquals(resultText10a, result);
         System.out.println("");
         
         System.out.println("Testing decoration inside of quatations");
-        result = CmsHtmlDecorator.doDecoration(inputText11, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText11, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText11);
         System.out.println(result);
         assertEquals(resultText11, result);
-        result = CmsHtmlDecorator.doDecoration(inputText11a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        result = processor.doDecoration(inputText11a, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputText11a);
         System.out.println(result);
         assertEquals(resultText11a, result);
@@ -329,16 +329,17 @@ public class TestDecorator extends OpenCmsTestCase {
        
         // create a decorator  configuration
         CmsDecoratorConfiguration configuration = new CmsDecoratorConfiguration(getCmsObject(), configFile);
+        CmsHtmlDecorator decorator = new CmsHtmlDecorator(configuration);
         
         System.out.println("Testing english decoration in english bundle");
-        String result = CmsHtmlDecorator.doDecoration(inputTextEn1, configuration, CmsEncoder.ENCODING_ISO_8859_1);
+        String result = decorator.doDecoration(inputTextEn1, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputTextEn1);
         System.out.println(result);
         assertEquals(resultTextEn1, result);
         System.out.println("");
         
         System.out.println("Testing german decoration in english bundle");
-        result = CmsHtmlDecorator.doDecoration(inputTextDe1, configuration, CmsEncoder.ENCODING_ISO_8859_1);
+        result = decorator.doDecoration(inputTextDe1, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputTextDe1);
         System.out.println(result);
         assertEquals(resultTextEn2, result);
@@ -346,16 +347,17 @@ public class TestDecorator extends OpenCmsTestCase {
         
         // create a german decorator configuration
         configuration = new CmsDecoratorConfiguration(getCmsObject(), configFile, new Locale("de"));
+        decorator = new CmsHtmlDecorator(configuration);
 
         System.out.println("Testing german decoration in german bundle");
-        result = CmsHtmlDecorator.doDecoration(inputTextDe1, configuration, CmsEncoder.ENCODING_ISO_8859_1);
+        result = decorator.doDecoration(inputTextDe1, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputTextDe1);
         System.out.println(result);
         assertEquals(resultTextDe1, result);
         System.out.println("");
         
         System.out.println("Testing neutral decoration in german bundle");
-        result = CmsHtmlDecorator.doDecoration(inputTextEn1, configuration, CmsEncoder.ENCODING_ISO_8859_1);
+        result = decorator.doDecoration(inputTextEn1, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputTextEn1);
         System.out.println(result);
         assertEquals(resultTextDe2, result);
@@ -363,16 +365,17 @@ public class TestDecorator extends OpenCmsTestCase {
         
         // create a language independend decorator configuration
         configuration = new CmsDecoratorConfiguration(getCmsObject(), configFile, null);
+        decorator = new CmsHtmlDecorator(configuration);
         
         System.out.println("Testing english decoration in neutral bundle");
-        result = CmsHtmlDecorator.doDecoration(inputTextEn1, configuration, CmsEncoder.ENCODING_ISO_8859_1);
+        result = decorator.doDecoration(inputTextEn1, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputTextEn1);
         System.out.println(result);
         assertEquals(resultTextEn1, result);
         System.out.println("");
         
         System.out.println("Testing german decoration in neutral bundle");
-        result = CmsHtmlDecorator.doDecoration(inputTextDe1, configuration, CmsEncoder.ENCODING_ISO_8859_1);
+        result = decorator.doDecoration(inputTextDe1, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(inputTextDe1);
         System.out.println(result);
         assertEquals(resultTextDe1, result);
