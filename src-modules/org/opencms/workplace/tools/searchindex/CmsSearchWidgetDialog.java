@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2006/03/28 19:15:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/09/20 08:23:56 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.tools.searchindex;
 
-import org.opencms.file.CmsRequestContext;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.search.CmsSearch;
@@ -67,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.3.4.1 $
  * 
  * @since 6.0.0
  */
@@ -421,16 +420,8 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
                 m_searchParams.setSearchRoots(searchRoots);
             }
             m_search.setParameters(m_searchParams);
-
-            // set to root site to allow searching every index in the administration view 
-            // regardless of the site selection. This behaviour is not wanted online!
-            CmsRequestContext context = getJsp().getRequestContext();
-            String siteRoot = context.getSiteRoot();
-            context.setSiteRoot("");
             result.append("<div style=\"padding:12px;\">\n").append(resultView.displaySearchResult(m_search)).append(
                 "\n</div>\n");
-            context.setSiteRoot(siteRoot);
-
         } else {
             // Just don't perform search
         }
