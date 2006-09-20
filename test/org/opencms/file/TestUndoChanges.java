@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.20.4.2 $
+ * Date   : $Date: 2006/09/20 14:38:00 $
+ * Version: $Revision: 1.20.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.20.4.2 $
+ * @version $Revision: 1.20.4.3 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
 
@@ -168,7 +168,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         TestProperty.writeProperty(tc, cms, resource1, property1);
 
         // change the property on all subresources
-        List subresources = tc.getSubtree(cms, resource1);
+        List subresources = cms.readResources(resource1, CmsResourceFilter.ALL);
         Iterator i = subresources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
@@ -227,7 +227,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         TestProperty.writeProperty(tc, cms, resource1, property1);
 
         // change the property on all subresources
-        List subresources = tc.getSubtree(cms, resource1);
+        List subresources = cms.readResources(resource1, CmsResourceFilter.ALL);
         Iterator i = subresources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
@@ -491,7 +491,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         setMapping(source + newFile, destination + newFile);
         // test recursivly
-        Iterator subresources = getSubtree(cms, source).iterator();
+        Iterator subresources = cms.readResources(source, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
             CmsResource res = (CmsResource)subresources.next();
             String resName = cms.getSitePath(res);
@@ -550,7 +550,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, destination, cms.getRequestContext().currentProject());
         // test recursivly
-        Iterator subresources = getSubtree(cms, destination).iterator();
+        Iterator subresources = cms.readResources(destination, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
             CmsResource res = (CmsResource)subresources.next();
             String resName = cms.getSitePath(res);
@@ -577,7 +577,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
         // test recursivly
-        subresources = getSubtree(cms, source).iterator();
+        subresources = cms.readResources(source, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
             CmsResource res = (CmsResource)subresources.next();
             String resName = cms.getSitePath(res);
@@ -708,7 +708,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
         // test recursivly
-        Iterator subresources = getSubtree(cms, source).iterator();
+        Iterator subresources = cms.readResources(source, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
             CmsResource res = (CmsResource)subresources.next();
             String resName = cms.getSitePath(res);
@@ -755,7 +755,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
         // test recursivly
-        Iterator subresources = getSubtree(cms, source).iterator();
+        Iterator subresources = cms.readResources(source, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
             CmsResource res = (CmsResource)subresources.next();
             String resName = cms.getSitePath(res);

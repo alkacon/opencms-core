@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2006/09/20 10:57:15 $
- * Version: $Revision: 1.83.4.2 $
+ * Date   : $Date: 2006/09/20 14:38:00 $
+ * Version: $Revision: 1.83.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83.4.2 $ 
+ * @version $Revision: 1.83.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -794,10 +794,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         try {
             Random random = new Random();
             // create a resource filter to get the resources with
-            CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-            filter = filter.addRequireLastModifiedAfter(0);
-            filter = filter.addRequireLastModifiedBefore(System.currentTimeMillis());
-            List testResources = m_cms.readResources("/", filter);
+            List testResources = m_cms.readResources("/", CmsResourceFilter.ALL);
             int resourceCount = testResources.size();
             System.out.println("#Resources:\t" + resourceCount);
             long start, time;

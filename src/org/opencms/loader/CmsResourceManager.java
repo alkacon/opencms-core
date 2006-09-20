@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2006/09/14 11:34:50 $
- * Version: $Revision: 1.36.4.3 $
+ * Date   : $Date: 2006/09/20 14:38:00 $
+ * Version: $Revision: 1.36.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.3 $ 
+ * @version $Revision: 1.36.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -825,7 +825,10 @@ public class CmsResourceManager {
                     "org/opencms/loader/mimetypes.properties"));
             } catch (Throwable t2) {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(Messages.LOG_READ_MIMETYPES_FAILED_0), t);
+                    LOG.info(Messages.get().getBundle().key(
+                        Messages.LOG_READ_MIMETYPES_FAILED_2,
+                        "mimetypes.properties",
+                        "org/opencms/loader/mimetypes.properties"));
                 }
             }
         }

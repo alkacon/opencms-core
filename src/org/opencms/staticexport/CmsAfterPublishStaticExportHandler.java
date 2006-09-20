@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/09/20 10:57:15 $
- * Version: $Revision: 1.19.4.4 $
+ * Date   : $Date: 2006/09/20 14:38:00 $
+ * Version: $Revision: 1.19.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.4 $ 
+ * @version $Revision: 1.19.4.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -83,10 +83,10 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAfterPublishStaticExportHandler.class);
-    
+
     /** Request method get constant. */
     private static final String REQUEST_METHOD_GET = "Get";
-    
+
     /** Request property cookie constant. */
     private static final String REQUEST_PROPERTY_COOKIE = "Cookie";
 
@@ -169,13 +169,13 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     }
 
     /**
-     * Gets all resources within the folder tree.<p>
-     * Since the long min and max value do not work with the sql timestamp function in the driver, we must calculate 
-     * some different, but usable start and endtime values first.<p>
+     * Returns all resources within the current OpenCms site that are not marked as internal.<p>
+     * 
+     * The result list contains objects of type {@link CmsPublishedResource}.<p>
      * 
      * @param cms the cms context
      * 
-     * @return all resources within the folder tree
+     * @return all resources within the current OpenCms site that are not marked as internal
      * 
      * @throws CmsException if something goes wrong
      */
@@ -184,30 +184,13 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_GET_ALL_RESOURCES_0));
         }
-
-        List resources = new ArrayList();
-        //starttime to 01.01.1970
-        long starttime = 0;
-        // endtime to now plus one week
-        long endtime = System.currentTimeMillis() + 604800000;
-
-        // create a resource filter to get the resources with
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-        filter = filter.addRequireLastModifiedAfter(starttime);
-        filter = filter.addRequireLastModifiedBefore(endtime);
-
-        List vfsResources = cms.readResources("/", filter);
-
+        // read all from the root path, exclude resources flagged as internal        
+        List vfsResources = cms.readResources("/", CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
         // loop through the list and create the list of CmsPublishedResources
+        List resources = new ArrayList(vfsResources.size());
         Iterator i = vfsResources.iterator();
         while (i.hasNext()) {
-            CmsResource vfsResource = (CmsResource)i.next();
-            if ((vfsResource.getFlags() & CmsResource.FLAG_INTERNAL) == CmsResource.FLAG_INTERNAL) {
-                // skip internal files
-                continue;
-            }
-            CmsPublishedResource resource = new CmsPublishedResource(vfsResource);
-
+            CmsPublishedResource resource = new CmsPublishedResource((CmsResource)i.next());
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROCESSING_1, resource.getRootPath()));
             }

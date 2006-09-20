@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/09/20 10:54:59 $
- * Version: $Revision: 1.570.2.18 $
+ * Date   : $Date: 2006/09/20 14:37:59 $
+ * Version: $Revision: 1.570.2.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4774,9 +4774,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resource.getRootPath()}, dbc.currentProject());
 
         List resourceList = (List)m_resourceListCache.get(cacheKey);
-
         if (resourceList == null) {
-
             // read the result form the database
             resourceList = m_vfsDriver.readChildResources(dbc, dbc.currentProject(), resource, getFolders, getFiles);
 
@@ -4784,7 +4782,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // apply the permission filter
                 resourceList = filterPermissions(dbc, resourceList, filter);
             }
-
             // cache the sub resources
             m_resourceListCache.put(cacheKey, resourceList);
         }
@@ -5186,13 +5183,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // filter the permissions
         List result = filterPermissions(dbc, resources, CmsResourceFilter.ALL);
-
-        // set the full resource names
-        updateContextDates(dbc, result);
         // sort the result
         Collections.sort(result);
-
-        return result;
+        // set the full resource names
+        return updateContextDates(dbc, result);
     }
 
     /**
@@ -5457,13 +5451,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsResource readResource(CmsDbContext dbc, CmsUUID structureID, CmsResourceFilter filter)
     throws CmsDataAccessException {
 
+        // please note: the filter will be applied in the security manager later
         CmsResource resource = m_vfsDriver.readResource(
             dbc,
             dbc.currentProject().getId(),
             structureID,
             filter.includeDeleted());
 
-        // context dates need to be updated even if filter was applied
+        // context dates need to be updated
         updateContextDates(dbc, resource);
 
         // return the resource
@@ -5488,13 +5483,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsResource readResource(CmsDbContext dbc, String resourcePath, CmsResourceFilter filter)
     throws CmsDataAccessException {
 
+        // please note: the filter will be applied in the security manager later
         CmsResource resource = m_vfsDriver.readResource(
             dbc,
             dbc.currentProject().getId(),
             resourcePath,
             filter.includeDeleted());
 
-        // context dates need to be updated even if filter was applied
+        // context dates need to be updated 
         updateContextDates(dbc, resource);
 
         // return the resource
@@ -5527,9 +5523,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             parent.getRootPath()}, dbc.currentProject());
 
         List resourceList = (List)m_resourceListCache.get(cacheKey);
-
         if (resourceList == null) {
-
             // read the result from the database
             resourceList = m_vfsDriver.readResourceTree(
                 dbc,
@@ -5552,10 +5546,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // apply permission filter
             resourceList = filterPermissions(dbc, resourceList, filter);
-            // cache the sub resources
+            // store the result in the resourceList cache
             m_resourceListCache.put(cacheKey, resourceList);
         }
-
         // we must always apply the result filter and update the context dates
         return updateContextDates(dbc, resourceList, filter);
     }
@@ -5577,26 +5570,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List readResourcesWithProperty(CmsDbContext dbc, String path, String propertyDefinition) throws CmsException {
 
         String cacheKey = getCacheKey(new String[] {path, propertyDefinition}, dbc.currentProject());
-        List extractedResources = (List)m_resourceListCache.get(cacheKey);
-        if (extractedResources == null) {
-
+        List resourceList = (List)m_resourceListCache.get(cacheKey);
+        if (resourceList == null) {
             // first read the property definition
             CmsPropertyDefinition propDef = readPropertyDefinition(dbc, propertyDefinition);
-
             // now read the list of resources that have a value set for the property definition
-            extractedResources = m_vfsDriver.readResourcesWithProperty(
+            resourceList = m_vfsDriver.readResourcesWithProperty(
                 dbc,
                 dbc.currentProject().getId(),
                 propDef.getId(),
                 path);
-            
             // apply permission filter
-            extractedResources = filterPermissions(dbc, extractedResources, CmsResourceFilter.ALL);
-
-            m_resourceListCache.put(cacheKey, extractedResources);
+            resourceList = filterPermissions(dbc, resourceList, CmsResourceFilter.ALL);
+            // store the result in the resourceList cache
+            m_resourceListCache.put(cacheKey, resourceList);
         }
-
-        return extractedResources;
+        return resourceList;
     }
 
     /**
@@ -5619,26 +5608,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         String cacheKey = getCacheKey(new String[] {path, propertyDefinition, value}, dbc.currentProject());
-        List extractedResources = (List)m_resourceListCache.get(cacheKey);
-        if (extractedResources == null) {
+        List resourceList = (List)m_resourceListCache.get(cacheKey);
+        if (resourceList == null) {
             // first read the property definition
             CmsPropertyDefinition propDef = readPropertyDefinition(dbc, propertyDefinition);
-
             // now read the list of resources that have a value set for the property definition
-            extractedResources = m_vfsDriver.readResourcesWithProperty(
+            resourceList = m_vfsDriver.readResourcesWithProperty(
                 dbc,
                 dbc.currentProject().getId(),
                 propDef.getId(),
                 path,
                 value);
-            
             // apply permission filter
-            extractedResources = filterPermissions(dbc, extractedResources, CmsResourceFilter.ALL);
-
-            m_resourceListCache.put(cacheKey, extractedResources);
+            resourceList = filterPermissions(dbc, resourceList, CmsResourceFilter.ALL);
+            // store the result in the resourceList cache
+            m_resourceListCache.put(cacheKey, resourceList);
         }
-
-        return extractedResources;
+        return resourceList;
     }
 
     /**
@@ -5718,8 +5704,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // important: there is no permission check done on the returned list of siblings
         // this is because of possible issues with the "publish all siblings" option,
         // moreover the user has read permission for the content through
-        // the selected sibling anyway
-
+        // the selected sibling anyway        
         return updateContextDates(dbc, siblings, filter);
     }
 
@@ -6465,24 +6450,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
             "resource",
             resource)));
-    }
-
-    /**
-     * Updates the context dates with each resource in a list of CmsResources.<p>
-     * 
-     * @param dbc the current database context
-     * @param resourceList a list of CmsResources
-     * 
-     * @return the original list of CmsResources with the full resource name set 
-     */
-    public List updateContextDates(CmsDbContext dbc, List resourceList) {
-
-        for (int i = 0; i < resourceList.size(); i++) {
-            CmsResource res = (CmsResource)resourceList.get(i);
-            updateContextDates(dbc, res);
-        }
-
-        return resourceList;
     }
 
     /**
@@ -7373,6 +7340,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private List filterPermissions(CmsDbContext dbc, List resourceList, CmsResourceFilter filter) throws CmsException {
 
+        if (filter.requireTimerange()) {
+            // never check time range here - this must be done later in #updateContextDates(...)
+            filter = filter.addExcludeTimerange();
+        }
         ArrayList result = new ArrayList(resourceList.size());
         for (int i = 0; i < resourceList.size(); i++) {
             // check the permission of all resources
@@ -8023,40 +7994,55 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Updates the date information in the database context.<p>
+     * Updates the current users context dates with each {@link CmsResource} object in the given list.<p>
      * 
-     * @param dbc the context to update
-     * @param resource the resource to get the date information from
+     * The given input list is returned unmodified.<p>
+     * 
+     * Please see {@link #updateContextDates(CmsDbContext, CmsResource)} for an explanation of what this method does.<p>
+     * 
+     * @param dbc the current database context
+     * @param resourceList a list of {@link CmsResource} objects
+     * 
+     * @return the original list of CmsResources with the full resource name set 
      */
-    private void updateContextDates(CmsDbContext dbc, CmsResource resource) {
+    private List updateContextDates(CmsDbContext dbc, List resourceList) {
 
         CmsFlexRequestContextInfo info = dbc.getFlexRequestContextInfo();
-
         if (info != null) {
-            info.updateFromResource(resource);
+            for (int i = 0; i < resourceList.size(); i++) {
+                CmsResource resource = (CmsResource)resourceList.get(i);
+                info.updateFromResource(resource);
+            }
         }
+        return resourceList;
     }
 
     /**
-     * Updates the context dates with each resource in a list of CmsResources,
-     * also applies the selected resource filter to all resources in the list.<p>
-     *
+     * Returns a List of {@link CmsResource} objects generated when applying the given filter to the given list,
+     * also updates the current users context dates with each {@link CmsResource} object in the given list,
+     * also applies the selected resource filter to all resources in the list and returns the remaining resources.<p>
+     * 
+     * Please see {@link #updateContextDates(CmsDbContext, CmsResource)} for an explanation of what this method does.<p>
+     * 
      * @param dbc the current database context
-     * @param resourceList a list of CmsResources
+     * @param resourceList a list of {@link CmsResource} objects
      * @param filter the resource filter to use
      * 
-     * @return fltered list of CmsResources with the full resource name set 
+     * @return a List of {@link CmsResource} objects generated when applying the given filter to the given list
      */
     private List updateContextDates(CmsDbContext dbc, List resourceList, CmsResourceFilter filter) {
 
         if (CmsResourceFilter.ALL == filter) {
+            // if there is no filter required, then use the simpler method that does not apply the filter
             if (resourceList instanceof ArrayList) {
+                // performance implementation for ArrayLists
                 return (List)((ArrayList)(updateContextDates(dbc, resourceList))).clone();
             } else {
                 return new ArrayList(updateContextDates(dbc, resourceList));
             }
         }
 
+        CmsFlexRequestContextInfo info = dbc.getFlexRequestContextInfo();
         ArrayList result = new ArrayList(resourceList.size());
         for (int i = 0; i < resourceList.size(); i++) {
             CmsResource resource = (CmsResource)resourceList.get(i);
@@ -8065,9 +8051,36 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             // must also include "invalid" resources for the update of context dates
             // since a resource may be invalid because of release / expiration date
-            updateContextDates(dbc, resource);
+            if (info != null) {
+                info.updateFromResource(resource);
+            }
         }
         return result;
+    }
+
+    /**
+     * Updates the current users context dates with the given resource.<p>
+     * 
+     * This checks the date information of the resource based on
+     * {@link CmsResource#getDateLastModified()} as well as 
+     * {@link CmsResource#getDateReleased()} and {@link CmsResource#getDateExpired()}.
+     * The current users requerst context is updated with the the "latest" dates found.<p>
+     * 
+     * This is required in order to ensure proper setting of <code>"last-modified"</code> http headers
+     * and also for expiration of cached elements in the Flex cache.
+     * Consider the following use case: Page A is generated from resources x, y and z. 
+     * If either x, y or z has an expiration / release date set, then page A must expire at a certain point 
+     * in time. This is ensured by the context date check here.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to get the date information from
+     */
+    private void updateContextDates(CmsDbContext dbc, CmsResource resource) {
+
+        CmsFlexRequestContextInfo info = dbc.getFlexRequestContextInfo();
+        if (info != null) {
+            info.updateFromResource(resource);
+        }
     }
 
     /**

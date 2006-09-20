@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportExportRule.java,v $
- * Date   : $Date: 2006/09/20 10:57:15 $
- * Version: $Revision: 1.1.8.1 $
+ * Date   : $Date: 2006/09/20 14:38:00 $
+ * Version: $Revision: 1.1.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * Help class for storing of export-rules.<p>
  * 
  * @author Michael Moossen
- * @version $Revision: 1.1.8.1 $
+ * @version $Revision: 1.1.8.2 $
  * @since 6.0.0
  */
 public class CmsStaticExportExportRule {
@@ -140,10 +140,10 @@ public class CmsStaticExportExportRule {
     }
 
     /**
-     * Returns a set of <code>{@link CmsPublishedResource}</code> containing all resources specified by the
+     * Returns a set of <code>{@link CmsPublishedResource}</code> objects containing all resources specified by the
      * <code>&lt;export-resources&gt;</code> node of this rule.<p>  
      * 
-     * @param cms the cms context
+     * @param cms the current OpenCms context
      * 
      * @return a set of matching resources
      * 
@@ -151,34 +151,18 @@ public class CmsStaticExportExportRule {
      */
     public Set getExportResources(CmsObject cms) throws CmsException {
 
-        Set resources = new HashSet();
-        // now get all resources matching the export resource patterns. 
-        // since the long min and max value
-        // do not work with the sql timestamp function in the driver, we must calculate 
-        // some different, but usable start and endtime values first
-
-        //starttime to 01.01.1970
-        long starttime = 0;
-        // endtime to now plus one week
-        long endtime = System.currentTimeMillis() + 604800000;
-
+        Set resources = new HashSet(128);
         Iterator itExpRes = m_exportResources.iterator();
         while (itExpRes.hasNext()) {
             String exportRes = (String)itExpRes.next();
-
-            // create a resource filter to get the resources with
-            CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-            filter = filter.addRequireLastModifiedAfter(starttime);
-            filter = filter.addRequireLastModifiedBefore(endtime);
-            List vfsResources = cms.readResources(exportRes, filter);
+            // read all from the configured node path, exclude resources flagged as internal        
+            List vfsResources = cms.readResources(
+                exportRes,
+                CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
             // loop through the list and create the list of CmsPublishedResources
             Iterator itRes = vfsResources.iterator();
             while (itRes.hasNext()) {
                 CmsResource vfsResource = (CmsResource)itRes.next();
-                if ((vfsResource.getFlags() & CmsResource.FLAG_INTERNAL) == CmsResource.FLAG_INTERNAL) {
-                    // skip internal files
-                    continue;
-                }
                 CmsPublishedResource resource = new CmsPublishedResource(vfsResource);
                 resources.add(resource);
             }

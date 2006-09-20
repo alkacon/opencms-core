@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2006/07/20 12:09:49 $
- * Version: $Revision: 1.14.4.1 $
+ * Date   : $Date: 2006/09/20 14:38:00 $
+ * Version: $Revision: 1.14.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14.4.1 $ 
+ * @version $Revision: 1.14.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -202,7 +202,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_NAME_REAL_FS_1 = "LOG_NAME_REAL_FS_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_READ_MIMETYPES_FAILED_0 = "LOG_READ_MIMETYPES_FAILED_0";
+    public static final String LOG_READ_MIMETYPES_FAILED_2 = "LOG_READ_MIMETYPES_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_UNSUPPORTED_ENC_1 = "LOG_UNSUPPORTED_ENC_1";

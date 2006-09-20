@@ -143,7 +143,7 @@ case CmsDialog.ACTION_DEFAULT:
 default:
 //////////////////// ACTION: show editor frame (default)
 
-%><html>
+ %><html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
 <title>Input form</title>

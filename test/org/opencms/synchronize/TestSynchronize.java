@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/09/20 14:38:00 $
+ * Version: $Revision: 1.20.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.synchronize;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
@@ -57,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  *  
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.20.8.1 $
  * 
  * @since 6.0.0
  */
@@ -199,7 +200,7 @@ public class TestSynchronize extends OpenCmsTestCase {
             new CmsSynchronize(cms, syncSettings, new CmsShellReport(cms.getRequestContext().getLocale()));
 
             // modify resources in the RFS
-            List tree = getSubtree(cms, source);
+            List tree = cms.readResources(source, CmsResourceFilter.ALL);
             for (int i = 0, n = tree.size(); i < n; i++) {
                 CmsResource resource = (CmsResource)tree.get(i);
 
@@ -286,7 +287,7 @@ public class TestSynchronize extends OpenCmsTestCase {
             // modify resources in the RFS
             while (it.hasNext()) {
                 String source = (String)it.next();
-                List subTree = getSubtree(cms, source);
+                List subTree = cms.readResources(source, CmsResourceFilter.ALL);
                 tree.addAll(subTree);
                 for (int i = 0, n = subTree.size(); i < n; i++) {
                     CmsResource resource = (CmsResource)subTree.get(i);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsNotificationCandidates.java,v $
- * Date   : $Date: 2006/09/20 10:57:15 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/09/20 14:38:00 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,14 +68,14 @@ import org.apache.commons.logging.Log;
  */
 public class CmsNotificationCandidates {
 
-    /** The resources which come into question for notifications of responsible users. */
-    private List m_resources;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNotificationCandidates.class);
 
     /** the CmsObject. */
     private CmsObject m_cms;
+
+    /** The resources which come into question for notifications of responsible users. */
+    private List m_resources;
 
     /**
      * Collects all resources that will expire in short time, or will become valid, or are not modified since a long time.<p>
@@ -134,9 +134,7 @@ public class CmsNotificationCandidates {
         GregorianCalendar oneYearAgo = (GregorianCalendar)now.clone();
         oneYearAgo.add(Calendar.DAY_OF_YEAR, -OpenCms.getSystemInfo().getNotificationTime());
         // create a resource filter to get the resources with
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-        filter = filter.addRequireLastModifiedAfter(0);
-        filter = filter.addRequireLastModifiedBefore(oneYearAgo.getTimeInMillis());
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireLastModifiedBefore(oneYearAgo.getTimeInMillis());
         resources = m_cms.readResources(folder, filter).iterator();
         while (resources.hasNext()) {
             resource = (CmsResource)resources.next();
@@ -168,6 +166,37 @@ public class CmsNotificationCandidates {
                 resource,
                 CmsExtendedNotificationCause.RESOURCE_RELEASE,
                 new Date(resource.getDateReleased())));
+        }
+    }
+
+    /**
+     * Sends all notifications to the responsible users.<p>
+     * 
+     * @return a string listing all responsibles that a notification was sent to
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String notifyResponsibles() throws CmsException {
+
+        Iterator notifications = filterConfirmedResources(getContentNotifications()).iterator();
+        if (notifications.hasNext()) {
+            StringBuffer result = new StringBuffer(Messages.get().getBundle().key(Messages.LOG_NOTIFICATIONS_SENT_TO_0));
+            result.append(' ');
+            while (notifications.hasNext()) {
+                CmsContentNotification contentNotification = (CmsContentNotification)notifications.next();
+                result.append(contentNotification.getResponsible().getName());
+                if (notifications.hasNext()) {
+                    result.append(", ");
+                }
+                try {
+                    contentNotification.send();
+                } catch (MessagingException e) {
+                    LOG.error(e);
+                }
+            }
+            return result.toString();
+        } else {
+            return Messages.get().getBundle().key(Messages.LOG_NO_NOTIFICATIONS_SENT_0);
         }
     }
 
@@ -221,37 +250,6 @@ public class CmsNotificationCandidates {
             }
         }
         return result.values();
-    }
-
-    /**
-     * Sends all notifications to the responsible users.<p>
-     * 
-     * @return a string listing all responsibles that a notification was sent to
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public String notifyResponsibles() throws CmsException {
-
-        Iterator notifications = filterConfirmedResources(getContentNotifications()).iterator();
-        if (notifications.hasNext()) {
-            StringBuffer result = new StringBuffer(Messages.get().getBundle().key(Messages.LOG_NOTIFICATIONS_SENT_TO_0));
-            result.append(' ');
-            while (notifications.hasNext()) {
-                CmsContentNotification contentNotification = (CmsContentNotification)notifications.next();
-                result.append(contentNotification.getResponsible().getName());
-                if (notifications.hasNext()) {
-                    result.append(", ");
-                }
-                try {
-                    contentNotification.send();
-                } catch (MessagingException e) {
-                    LOG.error(e);
-                }
-            }
-            return result.toString();
-        } else {
-            return Messages.get().getBundle().key(Messages.LOG_NO_NOTIFICATIONS_SENT_0);
-        }
     }
 
     /**

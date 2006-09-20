@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupDb.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.11.8.1 $
+ * Date   : $Date: 2006/09/20 14:37:59 $
+ * Version: $Revision: 1.11.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import junit.framework.TestSuite;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11.8.1 $
+ * @version $Revision: 1.11.8.2 $
  * 
  * @since 6.0.0
  */
@@ -87,7 +87,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
 
         // use create method form superclass
         CmsSetupDb setupDb = getSetupDb(m_setupConnection);
-        setupDb.createDatabase(m_dbProduct, getReplacer(m_defaultConnection), true);
+        setupDb.createDatabase(getDbProduct(), getReplacer(m_defaultConnection), true);
 
         // check for errors 
         checkErrors(setupDb);
@@ -108,7 +108,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
 
         // use create method form superclass
         CmsSetupDb setupDb = getSetupDb(m_defaultConnection);
-        setupDb.createTables(m_dbProduct, getReplacer(m_defaultConnection), true);
+        setupDb.createTables(getDbProduct(), getReplacer(m_defaultConnection), true);
 
         // check for errors 
         checkErrors(setupDb);
@@ -129,7 +129,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
 
         // use drop method form superclass
         CmsSetupDb setupDb = getSetupDb(m_setupConnection);
-        setupDb.dropDatabase(m_dbProduct, getReplacer(m_defaultConnection), true);
+        setupDb.dropDatabase(getDbProduct(), getReplacer(m_defaultConnection), true);
 
         // check for errors 
         checkErrors(setupDb);
@@ -150,7 +150,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
 
         // use drop method form superclass
         CmsSetupDb setupDb = getSetupDb(m_defaultConnection);
-        setupDb.dropTables(m_dbProduct, getReplacer(m_defaultConnection), true);
+        setupDb.dropTables(getDbProduct(), getReplacer(m_defaultConnection), true);
 
         // check for errors 
         checkErrors(setupDb);
