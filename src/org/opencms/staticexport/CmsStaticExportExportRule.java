@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportExportRule.java,v $
- * Date   : $Date: 2005/07/08 17:42:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/09/20 10:57:15 $
+ * Version: $Revision: 1.1.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.staticexport;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ import java.util.regex.Pattern;
  * Help class for storing of export-rules.<p>
  * 
  * @author Michael Moossen
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.1.8.1 $
  * @since 6.0.0
  */
 public class CmsStaticExportExportRule {
@@ -165,7 +166,11 @@ public class CmsStaticExportExportRule {
         while (itExpRes.hasNext()) {
             String exportRes = (String)itExpRes.next();
 
-            List vfsResources = cms.getResourcesInTimeRange(exportRes, starttime, endtime);
+            // create a resource filter to get the resources with
+            CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
+            filter = filter.addRequireLastModifiedAfter(starttime);
+            filter = filter.addRequireLastModifiedBefore(endtime);
+            List vfsResources = cms.readResources(exportRes, filter);
             // loop through the list and create the list of CmsPublishedResources
             Iterator itRes = vfsResources.iterator();
             while (itRes.hasNext()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/09/14 11:35:22 $
- * Version: $Revision: 1.97.4.6 $
+ * Date   : $Date: 2006/09/20 10:54:59 $
+ * Version: $Revision: 1.97.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2179,43 +2179,6 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return dependencies;
-    }
-
-    /**
-     * Returns a list with all sub resources of the given parent folder (and all of it's subfolders) 
-     * that have been modified in the given time range.<p>
-     * 
-     * The result list is descending sorted (newest resource first).<p>
-     *
-     * @param context the current request context
-     * @param folder the folder to get the subresources from
-     * @param starttime the begin of the time range
-     * @param endtime the end of the time range
-     * 
-     * @return a list with all <code>{@link CmsResource}</code> objects 
-     *               that have been modified in the given time range.
-     *
-     * @throws CmsException if operation was not succesful
-     */
-    public List getResourcesInTimeRange(CmsRequestContext context, String folder, long starttime, long endtime)
-    throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
-        try {
-            result = m_driverManager.getResourcesInTimeRange(dbc, folder, starttime, endtime);
-        } catch (Exception e) {
-            // todo: possibly the folder arg is a root path, then use         
-            //       context.removeSiteRoot(folder) before output. 
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_GET_RESOURCES_IN_TIME_RANGE_3,
-                folder,
-                new Date(starttime),
-                new Date(endtime)), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
     }
 
     /**

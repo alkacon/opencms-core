@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/09/14 11:35:22 $
- * Version: $Revision: 1.570.2.17 $
+ * Date   : $Date: 2006/09/20 10:54:59 $
+ * Version: $Revision: 1.570.2.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3459,40 +3459,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns a list with all sub resources of the given parent folder (and all of it's subfolders) 
-     * that have been modified in the given time range.<p>
-     * 
-     * The result list is descending sorted (newest resource first).<p>
-     *
-     * @param dbc the current database context
-     * @param folder the folder to get the subresources from
-     * @param starttime the begin of the time range
-     * @param endtime the end of the time range
-     * 
-     * @return a list with all <code>{@link CmsResource}</code> objects 
-     *               that have been modified in the given time range.
-     *
-     * @throws CmsException if operation was not succesful
-     */
-    public List getResourcesInTimeRange(CmsDbContext dbc, String folder, long starttime, long endtime)
-    throws CmsException {
-
-        return m_vfsDriver.readResourceTree(
-            dbc,
-            dbc.currentProject().getId(),
-            folder,
-            CmsDriverManager.READ_IGNORE_TYPE,
-            CmsDriverManager.READ_IGNORE_STATE,
-            starttime,
-            endtime,
-            CmsDriverManager.READ_IGNORE_TIME,
-            CmsDriverManager.READ_IGNORE_TIME,
-            CmsDriverManager.READ_IGNORE_TIME,
-            CmsDriverManager.READ_IGNORE_TIME,
-            CmsDriverManager.READMODE_INCLUDE_TREE);
-    }
-
-    /**
      * Returns the security manager this driver manager belongs to.<p>
      * 
      * @return the security manager this driver manager belongs to
@@ -4807,37 +4773,24 @@ public final class CmsDriverManager implements I_CmsEventListener {
             filter.getCacheId(),
             resource.getRootPath()}, dbc.currentProject());
 
-        List subResources = (List)m_resourceListCache.get(cacheKey);
+        List resourceList = (List)m_resourceListCache.get(cacheKey);
 
-        if ((subResources != null) && (subResources.size() > 0)) {
-            // the parent folder is not deleted, and the sub resources were cached, no further operations required
-            // we must however still apply the result filter and update the context dates
-            return updateContextDates(dbc, subResources, filter);
-        }
+        if (resourceList == null) {
 
-        // read the result form the database
-        subResources = m_vfsDriver.readChildResources(dbc, dbc.currentProject(), resource, getFolders, getFiles);
+            // read the result form the database
+            resourceList = m_vfsDriver.readChildResources(dbc, dbc.currentProject(), resource, getFolders, getFiles);
 
-        if (checkPermissions) {
-            for (int i = 0; i < subResources.size(); i++) {
-                CmsResource currentResource = (CmsResource)subResources.get(i);
-                int perms = m_securityManager.hasPermissions(
-                    dbc,
-                    currentResource,
-                    CmsPermissionSet.ACCESS_READ,
-                    true,
-                    filter);
-                if (CmsSecurityManager.PERM_DENIED == perms) {
-                    subResources.remove(i--);
-                }
+            if (checkPermissions) {
+                // apply the permission filter
+                resourceList = filterPermissions(dbc, resourceList, filter);
             }
+
+            // cache the sub resources
+            m_resourceListCache.put(cacheKey, resourceList);
         }
 
-        // cache the sub resources
-        m_resourceListCache.put(cacheKey, subResources);
-
-        // apply the result filter and update the context dates
-        return updateContextDates(dbc, subResources, filter);
+        // we must always apply the result filter and update the context dates
+        return updateContextDates(dbc, resourceList, filter);
     }
 
     /**
@@ -5231,23 +5184,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsDriverManager.READMODE_UNMATCHSTATE);
         }
 
-        List result = new ArrayList(resources.size());
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource currentResource = (CmsResource)resources.get(i);
-            if (CmsSecurityManager.PERM_ALLOWED == m_securityManager.hasPermissions(
-                dbc,
-                currentResource,
-                CmsPermissionSet.ACCESS_READ,
-                true,
-                CmsResourceFilter.ALL)) {
-
-                result.add(currentResource);
-            }
-        }
-
-        // free memory
-        resources.clear();
-        resources = null;
+        // filter the permissions
+        List result = filterPermissions(dbc, resources, CmsResourceFilter.ALL);
 
         // set the full resource names
         updateContextDates(dbc, result);
@@ -5588,53 +5526,38 @@ public final class CmsDriverManager implements I_CmsEventListener {
             readTree ? "+" : "-",
             parent.getRootPath()}, dbc.currentProject());
 
-        List subResources = (List)m_resourceListCache.get(cacheKey);
+        List resourceList = (List)m_resourceListCache.get(cacheKey);
 
-        if ((subResources != null) && (subResources.size() > 0)) {
-            // the parent folder is not deleted, and the sub resources were cached, no further operations required
-            // we must however still apply the result filter and update the context dates
-            return updateContextDates(dbc, subResources, filter);
-        }
+        if (resourceList == null) {
 
-        // read the result form the database
-        subResources = m_vfsDriver.readResourceTree(
-            dbc,
-            dbc.currentProject().getId(),
-            (readTree ? parent.getRootPath() : parent.getStructureId().toString()),
-            filter.getType(),
-            filter.getState(),
-            filter.getModifiedAfter(),
-            filter.getModifiedBefore(),
-            filter.getReleaseAfter(),
-            filter.getReleaseBefore(),
-            filter.getExpireAfter(),
-            filter.getExpireBefore(),
-            (readTree ? CmsDriverManager.READMODE_INCLUDE_TREE : CmsDriverManager.READMODE_EXCLUDE_TREE)
-                | (filter.excludeType() ? CmsDriverManager.READMODE_EXCLUDE_TYPE : 0)
-                | (filter.excludeState() ? CmsDriverManager.READMODE_EXCLUDE_STATE : 0)
-                | ((filter.getOnlyFolders() != null) ? (filter.getOnlyFolders().booleanValue() ? CmsDriverManager.READMODE_ONLY_FOLDERS
-                : CmsDriverManager.READMODE_ONLY_FILES)
-                : 0));
-
-        for (int i = 0; i < subResources.size(); i++) {
-            CmsResource currentResource = (CmsResource)subResources.get(i);
-            int perms = m_securityManager.hasPermissions(
+            // read the result from the database
+            resourceList = m_vfsDriver.readResourceTree(
                 dbc,
-                currentResource,
-                CmsPermissionSet.ACCESS_READ,
-                true,
-                filter);
+                dbc.currentProject().getId(),
+                (readTree ? parent.getRootPath() : parent.getStructureId().toString()),
+                filter.getType(),
+                filter.getState(),
+                filter.getModifiedAfter(),
+                filter.getModifiedBefore(),
+                filter.getReleaseAfter(),
+                filter.getReleaseBefore(),
+                filter.getExpireAfter(),
+                filter.getExpireBefore(),
+                (readTree ? CmsDriverManager.READMODE_INCLUDE_TREE : CmsDriverManager.READMODE_EXCLUDE_TREE)
+                    | (filter.excludeType() ? CmsDriverManager.READMODE_EXCLUDE_TYPE : 0)
+                    | (filter.excludeState() ? CmsDriverManager.READMODE_EXCLUDE_STATE : 0)
+                    | ((filter.getOnlyFolders() != null) ? (filter.getOnlyFolders().booleanValue() ? CmsDriverManager.READMODE_ONLY_FOLDERS
+                    : CmsDriverManager.READMODE_ONLY_FILES)
+                    : 0));
 
-            if (perms != CmsSecurityManager.PERM_ALLOWED) {
-                subResources.remove(i--);
-            }
+            // apply permission filter
+            resourceList = filterPermissions(dbc, resourceList, filter);
+            // cache the sub resources
+            m_resourceListCache.put(cacheKey, resourceList);
         }
 
-        // cache the sub resources
-        m_resourceListCache.put(cacheKey, subResources);
-
-        // apply the result filter and update the context dates
-        return updateContextDates(dbc, subResources, filter);
+        // we must always apply the result filter and update the context dates
+        return updateContextDates(dbc, resourceList, filter);
     }
 
     /**
@@ -5666,6 +5589,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc.currentProject().getId(),
                 propDef.getId(),
                 path);
+            
+            // apply permission filter
+            extractedResources = filterPermissions(dbc, extractedResources, CmsResourceFilter.ALL);
 
             m_resourceListCache.put(cacheKey, extractedResources);
         }
@@ -5705,6 +5631,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 propDef.getId(),
                 path,
                 value);
+            
+            // apply permission filter
+            extractedResources = filterPermissions(dbc, extractedResources, CmsResourceFilter.ALL);
 
             m_resourceListCache.put(cacheKey, extractedResources);
         }
@@ -7428,6 +7357,39 @@ public final class CmsDriverManager implements I_CmsEventListener {
         } else {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USER_1, name));
         }
+    }
+
+    /**
+     * Filters the given list of resources, removes all resources where the current user
+     * does not have READ permissions, plus the filter is applied.<p>
+     * 
+     * @param dbc the current database context
+     * @param resourceList a list of CmsResources
+     * @param filter the resource filter to use
+     * 
+     * @return the filtered list of resources
+     * 
+     * @throws CmsException in case errors testing the permissions
+     */
+    private List filterPermissions(CmsDbContext dbc, List resourceList, CmsResourceFilter filter) throws CmsException {
+
+        ArrayList result = new ArrayList(resourceList.size());
+        for (int i = 0; i < resourceList.size(); i++) {
+            // check the permission of all resources
+            CmsResource currentResource = (CmsResource)resourceList.get(i);
+            int perms = m_securityManager.hasPermissions(
+                dbc,
+                currentResource,
+                CmsPermissionSet.ACCESS_READ,
+                true,
+                filter);
+            if (perms == CmsSecurityManager.PERM_ALLOWED) {
+                // only return resources where permission was granted
+                result.add(currentResource);
+            }
+        }
+        // return the result
+        return result;
     }
 
     /**

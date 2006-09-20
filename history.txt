@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/20 09:38:36 $
- * Version: $Revision: 1.717.2.43 $
+ * Date   : $Date: 2006/09/20 10:55:57 $
+ * Version: $Revision: 1.717.2.44 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.5.3 - September xxxx, 2006
+* Fixed issue with readResourcesWithProperty and getResourceInTimeRange not applying user permissions
 ! Extended <cms:parse>/<cms:decorate> by attribute "noAutoCloseTags" for tag names that must not be auto-closed 
 * Workplace search tool generated invalid result links if current site is not root
 ! Temporary files are now invisible for members of the groups Users and Projectmanagers

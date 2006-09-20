@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/09/10 21:06:33 $
- * Version: $Revision: 1.19.4.3 $
+ * Date   : $Date: 2006/09/20 10:57:15 $
+ * Version: $Revision: 1.19.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.3 $ 
+ * @version $Revision: 1.19.4.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -189,7 +190,13 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         long starttime = 0;
         // endtime to now plus one week
         long endtime = System.currentTimeMillis() + 604800000;
-        List vfsResources = cms.getResourcesInTimeRange("/", starttime, endtime);
+
+        // create a resource filter to get the resources with
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
+        filter = filter.addRequireLastModifiedAfter(starttime);
+        filter = filter.addRequireLastModifiedBefore(endtime);
+
+        List vfsResources = cms.readResources("/", filter);
 
         // loop through the list and create the list of CmsPublishedResources
         Iterator i = vfsResources.iterator();

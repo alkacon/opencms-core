@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/08/25 11:03:52 $
- * Version: $Revision: 1.90.4.8 $
+ * Date   : $Date: 2006/09/20 10:57:31 $
+ * Version: $Revision: 1.90.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.8 $
+ * @version $Revision: 1.90.4.9 $
  * 
  * @since 6.0.0
  */
@@ -2636,10 +2636,12 @@ public class OpenCmsTestCase extends TestCase {
      */
     public List getSubtree(CmsObject cms, String resourceName) throws CmsException {
 
-        return cms.getResourcesInTimeRange(
-            resourceName,
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT);
+        // create a resource filter to get the resources with
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
+        filter = filter.addRequireLastModifiedAfter(CmsResource.DATE_RELEASED_DEFAULT);
+        filter = filter.addRequireLastModifiedBefore(CmsResource.DATE_EXPIRED_DEFAULT);
+
+        return cms.readResources(resourceName, filter);
     }
 
     /**

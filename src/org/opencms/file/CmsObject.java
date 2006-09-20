@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/08/25 13:16:57 $
- * Version: $Revision: 1.146.4.7 $
+ * Date   : $Date: 2006/09/20 10:54:59 $
+ * Version: $Revision: 1.146.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.7 $
+ * @version $Revision: 1.146.4.8 $
  * 
  * @since 6.0.0 
  */
@@ -1435,7 +1435,7 @@ public final class CmsObject {
     }
 
     /**
-     * Returns a list with all sub resources of the given parent folder (and all of it's subfolders) 
+     * Returns a list with all subresources of the given parent folder (and all of it's subfolders) 
      * that have been modified in the given time range.<p>
      * 
      * The result list is descending sorted (newest resource first).<p>
@@ -1447,11 +1447,20 @@ public final class CmsObject {
      * @return a list with all <code>{@link CmsResource}</code> objects 
      *               that have been modified in the given time range.
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link #readResources(String, CmsResourceFilter)} and create a filter 
+     *      based on {@link CmsResourceFilter#IGNORE_EXPIRATION}
+     *      using {@link CmsResourceFilter#addRequireLastModifiedAfter(long)} and
+     *      {@link CmsResourceFilter#addRequireLastModifiedBefore(long)} instead
      */
     public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
 
-        return m_securityManager.getResourcesInTimeRange(m_context, addSiteRoot(folder), starttime, endtime);
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
+        filter = filter.addRequireLastModifiedAfter(starttime);
+        filter = filter.addRequireLastModifiedBefore(endtime);
+
+        return readResources(folder, filter);
     }
 
     /**
