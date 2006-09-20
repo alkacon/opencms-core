@@ -321,5 +321,80 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>      
-        
+    
+    <tag>
+        <name>img</name>
+        <tag-class>org.opencms.jsp.CmsJspTagImage</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag allows using the OpenCms native image scaling mechanism.
+            It generates the HTML required to include the selected image, adding the
+            required image scaling parameters.
+        </description>
+        <!-- These attributes are used to control the image scaling process: -->
+        <attribute>
+            <name>src</name>
+        </attribute>        
+        <attribute>
+            <name>width</name>
+        </attribute>        
+        <attribute>
+            <name>height</name>
+        </attribute>        
+        <attribute>
+            <name>scaleType</name>
+        </attribute>   
+        <attribute>
+            <name>scalePosition</name>
+        </attribute>     
+        <attribute>
+            <name>scaleFilter</name>
+        </attribute>
+        <attribute>
+            <name>scaleQuality</name>
+        </attribute>
+        <attribute>
+            <name>scaleColor</name>
+        </attribute>
+        <attribute>
+            <name>scaleRendermode</name>
+        </attribute>        
+        <attribute>
+            <name>partialTag</name>
+        </attribute>     
+        <!-- The following attributes are only convenience attributes for easier HTML generation: -->
+        <attribute>
+            <name>alt</name>
+        </attribute>
+        <attribute>
+            <name>align</name>
+        </attribute>
+        <attribute>
+            <name>border</name>
+        </attribute>                            
+        <attribute>
+            <name>hspace</name>
+        </attribute>  
+        <attribute>
+            <name>vspace</name>
+        </attribute>  
+        <attribute>
+            <name>id</name>
+        </attribute>  
+        <attribute>
+            <name>longdesc</name>
+        </attribute>  
+        <attribute>
+            <name>name</name>
+        </attribute>  
+        <attribute>
+            <name>style</name>
+        </attribute>  
+        <attribute>
+            <name>title</name>
+        </attribute>                                    
+        <attribute>
+            <name>usemap</name>
+        </attribute>                         
+    </tag>          
 </taglib>
