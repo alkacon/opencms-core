@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/I_CmsHtmlNodeVisitor.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/09/20 08:49:40 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.util;
 
+import java.util.List;
+
 import org.htmlparser.Remark;
 import org.htmlparser.Tag;
 import org.htmlparser.Text;
@@ -46,7 +48,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.1.3
  * 
@@ -72,7 +74,7 @@ public interface I_CmsHtmlNodeVisitor {
      * @return the text extraction result
      */
     String getResult();
-
+    
     /**
      * Extracts the text from the given html content, assuming the given html encoding.
      * <p>
@@ -96,6 +98,16 @@ public interface I_CmsHtmlNodeVisitor {
      * @param configuration the configuration of this visitor to set.
      */
     void setConfiguration(String configuration);
+
+    /**
+     * Sets a list of upper case tag names for which parsing / visitng should not correct missing closing tags.<p> 
+     * 
+     * This has to be used before <code>{@link #process(String, String)}</code> is invoked to take an effect.<p>
+     * 
+     * @param noAutoCloseTags a list of upper case tag names for which parsing / visiting 
+     *      should not correct missing closing tags to set.
+     */
+    void setNoAutoCloseTags(List noAutoCloseTags);
 
     /**
      * Visitor method (callback) invoked when a closing Tag is encountered.
@@ -127,7 +139,7 @@ public interface I_CmsHtmlNodeVisitor {
      * @see org.htmlparser.visitors.NodeVisitor#visitStringNode(org.htmlparser.Text)
      */
     void visitStringNode(Text text);
-
+    
     /**
      * Visitor method (callback) invoked when a starting Tag (HTML comment) is encountered.
      * <p>
