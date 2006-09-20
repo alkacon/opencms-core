@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2006/07/21 09:56:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/09/20 09:28:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.1.7 
  * 
@@ -230,24 +230,20 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                     purgeFile(rfsExportFileName, vfsName);
                     scrubedFiles.add(rfsName);
 
-                    if (!res.isFolder()) {
-                        List fileList = getRelatedFilesToPurge(rfsExportFileName, vfsName);
-                        Iterator iter = fileList.iterator();
-                        while (iter.hasNext()) {
-                            File file = (File)iter.next();
-                            purgeFile(file.getAbsolutePath(), vfsName);
-                            rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix(vfsName)
-                                + "/"
-                                + file.getAbsolutePath().substring(
-                                    OpenCms.getStaticExportManager().getExportPath(vfsName).length()));
-                            rfsName = CmsStringUtil.substitute(
-                                rfsName,
-                                new String(new char[] {File.separatorChar}),
-                                "/");
-                            scrubedFiles.add(rfsName);
-                        }
+                    List fileList = getRelatedFilesToPurge(rfsExportFileName, vfsName);
+                    Iterator iter = fileList.iterator();
+                    while (iter.hasNext()) {
+                        File file = (File)iter.next();
+                        purgeFile(file.getAbsolutePath(), vfsName);
+                        rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix(vfsName)
+                            + "/"
+                            + file.getAbsolutePath().substring(
+                                OpenCms.getStaticExportManager().getExportPath(vfsName).length()));
+                        rfsName = CmsStringUtil.substitute(rfsName, new String(new char[] {File.separatorChar}), "/");
+                        scrubedFiles.add(rfsName);
                     }
                 }
+
             }
         }
     }

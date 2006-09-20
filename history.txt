@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/20 08:21:52 $
- * Version: $Revision: 1.750 $
+ * Date   : $Date: 2006/09/20 09:28:45 $
+ * Version: $Revision: 1.751 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -24,6 +24,7 @@ OpenCms 6.2.3 -
 ! Extended <cms:parse>/<cms:decorate> by attribute "noAutoCloseTags" for tag names that must not be auto-closed 
 - Modified calculation of inserted nav positions
 - Legacy element cache is cleared on clear cache event
+- Modified handling of scrub export folder for static export on demand
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
