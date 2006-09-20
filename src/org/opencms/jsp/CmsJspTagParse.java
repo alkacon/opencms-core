@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParse.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/09/20 08:48:14 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,8 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -58,7 +60,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.1.3
  */
@@ -70,84 +72,23 @@ public class CmsJspTagParse extends BodyTagSupport {
      */
     public static final String ATT_VISITOR_CLASS = "parserClass";
 
-    /** Tag name constant for log output. */
-    public static final String TAG_NAME = "parse";
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagParse.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -6541745426202242240L;
 
+    /** Tag name constant for log output. */
+    public static final String TAG_NAME = "parse";
+
     /** The visitor / parser classname to use. */
     private String m_configuredParserClassname;
 
+    /** List of upper case tag name strings of tags that should not be auto-corrected if closing divs are missing. */
+    private List m_noAutoCloseTags;
+
     /** The attribute value of the param attribute. */
     private String m_param = "";
-
-    /**
-     * Internal action method.
-     * <p>
-     * 
-     * Parses (and potentially transforms) a HTMl content block.
-     * <p>
-     * 
-     * @param content the content to be parsed / transformed.
-     * 
-     * @param context needed for getting the encoding / the locale.
-     * 
-     * @param parser the visitor / parser to use.
-     * 
-     * @return the transformed content.
-     * 
-     */
-    public static String parseTagAction(String content, PageContext context, A_CmsConfiguredHtmlParser parser) {
-
-        String result = null;
-        CmsRequestContext cmsContext = CmsFlexController.getCmsObject(context.getRequest()).getRequestContext();
-        if (parser == null) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle(cmsContext.getLocale()).key(
-                    Messages.GUI_ERR_TAG_ATTRIBUTE_MISSING_2,
-                    new Object[] {TAG_NAME, ATT_VISITOR_CLASS}));
-            }
-            result = content;
-        } else {
-
-            String encoding = cmsContext.getEncoding();
-            try {
-                result = parser.doParse(content, encoding);
-
-            } catch (ParserException pex) {
-
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle(cmsContext.getLocale()).key(
-                        Messages.ERR_PROCESS_TAG_1,
-                        new Object[] {TAG_NAME}), pex);
-                }
-                StringWriter stackTrace = new StringWriter();
-                PrintWriter writer = new PrintWriter(new StringWriter());
-                StringBuffer msg = new StringBuffer("<!--\n").append(pex.getLocalizedMessage()).append("\n");
-                pex.printStackTrace(writer);
-                msg.append(stackTrace.toString()).append("\n-->");
-                result = msg.toString();
-            } catch (CmsException cmex) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle(cmsContext.getLocale()).key(
-                        Messages.ERR_PROCESS_TAG_1,
-                        new Object[] {TAG_NAME}), cmex);
-                }
-                StringWriter stackTrace = new StringWriter();
-                PrintWriter writer = new PrintWriter(new StringWriter());
-                StringBuffer msg = new StringBuffer("<!--\n").append(cmex.getLocalizedMessage()).append("\n");
-                cmex.printStackTrace(writer);
-                msg.append(stackTrace.toString()).append("\n-->");
-                result = msg.toString();
-            }
-
-        }
-        return result;
-    }
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
@@ -221,6 +162,28 @@ public class CmsJspTagParse extends BodyTagSupport {
     }
 
     /**
+     * Getter for the attribute "noAutoCloseTags" of the &lt;cms:parse&gt; tag.<p>
+     *  
+     * Returns a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     * tag will not correct missing closing tags. <p>
+     * 
+     * 
+     * @return a String that consists of the comma-separated upper case tag names for which this 
+     *      tag will not correct missing closing tags. 
+     */
+    public String getNoAutoCloseTags() {
+
+        StringBuffer result = new StringBuffer();
+        if (m_noAutoCloseTags != null & m_noAutoCloseTags.size() > 0) {
+            Iterator it = m_noAutoCloseTags.iterator();
+            while (it.hasNext()) {
+                result.append(it.next()).append(',');
+            }
+        }
+        return result.toString();
+    }
+
+    /**
      * Returns the param.
      * <p>
      * 
@@ -244,6 +207,71 @@ public class CmsJspTagParse extends BodyTagSupport {
     }
 
     /**
+     * Internal action method.
+     * <p>
+     * 
+     * Parses (and potentially transforms) a HTMl content block.
+     * <p>
+     * 
+     * @param content the content to be parsed / transformed.
+     * 
+     * @param context needed for getting the encoding / the locale.
+     * 
+     * @param parser the visitor / parser to use.
+     * 
+     * @return the transformed content.
+     * 
+     */
+    public String parseTagAction(String content, PageContext context, A_CmsConfiguredHtmlParser parser) {
+
+        String result = null;
+        CmsRequestContext cmsContext = CmsFlexController.getCmsObject(context.getRequest()).getRequestContext();
+
+        if (parser == null) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle(cmsContext.getLocale()).key(
+                    Messages.GUI_ERR_TAG_ATTRIBUTE_MISSING_2,
+                    new Object[] {TAG_NAME, ATT_VISITOR_CLASS}));
+            }
+            result = content;
+        } else {
+
+            String encoding = cmsContext.getEncoding();
+            try {
+                result = parser.doParse(content, encoding, this.m_noAutoCloseTags);
+
+            } catch (ParserException pex) {
+
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle(cmsContext.getLocale()).key(
+                        Messages.ERR_PROCESS_TAG_1,
+                        new Object[] {TAG_NAME}), pex);
+                }
+                StringWriter stackTrace = new StringWriter();
+                PrintWriter writer = new PrintWriter(new StringWriter());
+                StringBuffer msg = new StringBuffer("<!--\n").append(pex.getLocalizedMessage()).append("\n");
+                pex.printStackTrace(writer);
+                msg.append(stackTrace.toString()).append("\n-->");
+                result = msg.toString();
+            } catch (CmsException cmex) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle(cmsContext.getLocale()).key(
+                        Messages.ERR_PROCESS_TAG_1,
+                        new Object[] {TAG_NAME}), cmex);
+                }
+                StringWriter stackTrace = new StringWriter();
+                PrintWriter writer = new PrintWriter(new StringWriter());
+                StringBuffer msg = new StringBuffer("<!--\n").append(cmex.getLocalizedMessage()).append("\n");
+                cmex.printStackTrace(writer);
+                msg.append(stackTrace.toString()).append("\n-->");
+                result = msg.toString();
+            }
+
+        }
+        return result;
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
     public void release() {
@@ -251,6 +279,21 @@ public class CmsJspTagParse extends BodyTagSupport {
         m_configuredParserClassname = null;
         m_param = null;
         super.release();
+    }
+
+    /**
+     * Setter for the attribute "noAutoCloseTags" of the &lt;cms:parse&gt; tag.<p>
+     *  
+     * Awaits a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     * tag should not correct missing closing tags.<p>
+     * 
+     * @param noAutoCloseTagList a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     *      tag should not correct missing closing tags.
+     */
+    public void setNoAutoCloseTags(String noAutoCloseTagList) {
+    
+        m_noAutoCloseTags = CmsStringUtil.splitAsList(noAutoCloseTagList, ',');
+        
     }
 
     /**
@@ -276,5 +319,4 @@ public class CmsJspTagParse extends BodyTagSupport {
 
         m_configuredParserClassname = parserClass;
     }
-
 }
