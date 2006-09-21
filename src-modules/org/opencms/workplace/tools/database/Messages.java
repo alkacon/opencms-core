@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/09/21 10:51:55 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,7 +127,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_HTMLIMPORT_DOWNGALLERY_1 = "GUI_HTMLIMPORT_DOWNGALLERY_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLIMPORT_DOWNGALLERY_2 = "GUI_HTMLIMPORT_DOWNGALLERY_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_IMGGALLERY_1 = "GUI_HTMLIMPORT_IMGGALLERY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLIMPORT_IMGGALLERY_2 = "GUI_HTMLIMPORT_IMGGALLERY_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_INPUTDIR_1 = "GUI_HTMLIMPORT_INPUTDIR_1";
@@ -137,6 +143,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_LINKGALLERY_1 = "GUI_HTMLIMPORT_LINKGALLERY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLIMPORT_LINKGALLERY_2 = "GUI_HTMLIMPORT_LINKGALLERY_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_TEMPLATE_1 = "GUI_HTMLIMPORT_TEMPLATE_1";

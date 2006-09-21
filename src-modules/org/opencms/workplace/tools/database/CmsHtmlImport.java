@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.database;
 
 import org.opencms.db.CmsDbIoException;
+import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -85,8 +86,9 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * @author Armen Markarian 
+ * @author Peter Bonrad
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,6 +175,18 @@ public class CmsHtmlImport {
     /** the template use for all pages. */
     private String m_template;
 
+    /** leave images at the original location. */
+    private String m_leaveImages;
+
+    /** the leave images mode flag. */
+    private boolean m_leaveImagesMode;
+
+    /** leave downloads at the original location. */
+    private String m_leaveDownloads;
+
+    /** the leave downloads mode flag. */
+    private boolean m_leaveDownloadsMode;
+    
     /**
      * Creates new HtmlImport Object with http request parameters.<p>
      * 
@@ -194,7 +208,10 @@ public class CmsHtmlImport {
             request.getParameter("encoding"),
             request.getParameter("startPattern"),
             request.getParameter("endPattern"),
-            request.getParameter("overwrite"));
+            request.getParameter("overwrite"),
+            request.getParameter("leaveimages"),
+            request.getParameter("leavedownloads"),
+            request);
     }
 
     /**
@@ -213,6 +230,8 @@ public class CmsHtmlImport {
      * @param startPattern the start pattern definition for content extracting
      * @param endPattern the end pattern definition for content extracting 
      * @param overwrite the overwrite mode
+     * @param leaveImages flag if images are left in original location
+     * @param leaveDownloads flag if downloads are left in original location
      */
     public CmsHtmlImport(
         CmsJspActionElement cms,
@@ -227,13 +246,17 @@ public class CmsHtmlImport {
         String encoding,
         String startPattern,
         String endPattern,
-        String overwrite) {
+        String overwrite,
+        String leaveImages,
+        String leaveDownloads,
+        HttpServletRequest request
+        ) {
 
         if (inputDir == null) {
             inputDir = "";
         }
         if (destinationDir == null) {
-            destinationDir = "/";
+            destinationDir = "";
         }
         if (imageGallery == null) {
             imageGallery = "";
@@ -260,7 +283,17 @@ public class CmsHtmlImport {
             endPattern = "";
         }
         if (overwrite == null) {
+            overwrite = "";
+        }
+        String action = request.getParameter("action");
+        if (action == null) {
             overwrite = "checked";
+        }        
+        if (leaveImages == null) {
+            leaveImages = "";
+        }
+        if (leaveDownloads == null) {
+            leaveDownloads = "";
         }
 
         // store all member variables
@@ -279,20 +312,22 @@ public class CmsHtmlImport {
         }
 
         m_destinationDir = destinationDir.trim();
-        if (!m_destinationDir.endsWith("/")) {
+        if ((!m_destinationDir.equals("")) && (!m_destinationDir.endsWith("/"))) {
             m_destinationDir += "/";
         }
 
         m_imageGallery = imageGallery.trim();
-        if (!m_imageGallery.endsWith("/")) {
+        if ((!m_imageGallery.equals("")) && (!m_imageGallery.endsWith("/"))) {
             m_imageGallery += "/";
         }
+        
         m_linkGallery = linkGallery.trim();
-        if (!m_linkGallery.endsWith("/")) {
+        if ((!m_linkGallery.equals("")) && (!m_linkGallery.endsWith("/"))) {
             m_linkGallery += "/";
         }
+        
         m_downloadGallery = downloadGallery.trim();
-        if (!m_downloadGallery.endsWith("/")) {
+        if ((!m_downloadGallery.equals("")) && (!m_downloadGallery.endsWith("/"))) {
             m_downloadGallery += "/";
         }
 
@@ -313,6 +348,20 @@ public class CmsHtmlImport {
             m_overwriteMode = false;
         }
 
+        m_leaveImages = leaveImages.trim();
+        if (m_leaveImages.equals("checked")) {
+            m_leaveImagesMode = true;
+        } else {
+            m_leaveImagesMode = false;
+        }
+        
+        m_leaveDownloads = leaveDownloads.trim();
+        if (m_leaveDownloads.equals("checked")) {
+            m_leaveDownloadsMode = true;
+        } else {
+            m_leaveDownloadsMode = false;
+        }
+        
         // create all other required member objects
         m_fileIndex = new HashMap();
         m_externalLinks = new HashSet();
@@ -355,30 +404,53 @@ public class CmsHtmlImport {
         }
 
         // check the image gallery
-        try {
-            m_cmsObject.readFolder(m_imageGallery);
-        } catch (CmsException e) {
-            // an excpetion is thrown if the folder does not exist
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.GUI_HTMLIMPORT_DESTDIR_1,
-                m_imageGallery), e);
+        // only if flag for leaving images at original location is off
+        if (!m_leaveImagesMode) {
+            try {
+                CmsFolder folder = m_cmsObject.readFolder(m_imageGallery);
+                // check if folder is a image gallery
+                String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
+                if (!name.equals("imagegallery")) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.GUI_HTMLIMPORT_IMGGALLERY_2,
+                        m_imageGallery));
+                }
+            } catch (CmsException e) {
+                // an excpetion is thrown if the folder does not exist
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.GUI_HTMLIMPORT_IMGGALLERY_1,
+                    m_imageGallery), e);
+            }
         }
 
         // check the link gallery
         try {
-            m_cmsObject.readFolder(m_linkGallery);
+            CmsFolder folder = m_cmsObject.readFolder(m_linkGallery);
+            // check if folder is a link gallery
+            String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
+            if (!name.equals("linkgallery")) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.GUI_HTMLIMPORT_LINKGALLERY_2,
+                    m_linkGallery));
+            }
         } catch (CmsException e) {
             // an excpetion is thrown if the folder does not exist
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.GUI_HTMLIMPORT_LINKGALLERY_1,
                 m_linkGallery), e);
-
         }
 
         // check the download gallery
-        if (!isExternal(m_downloadGallery)) {
+        if ((!isExternal(m_downloadGallery)) && (!m_leaveDownloadsMode)) {
             try {
-                m_cmsObject.readFolder(m_downloadGallery);
+                CmsFolder folder = m_cmsObject.readFolder(m_downloadGallery);
+                // check if folder is a download gallery
+                String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
+                if (!name.equals("downloadgallery")) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.GUI_HTMLIMPORT_DOWNGALLERY_2,
+                        m_downloadGallery));
+                }
             } catch (CmsException e) {
                 // an excpetion is thrown if the folder does not exist
                 throw new CmsIllegalArgumentException(Messages.get().container(
@@ -456,7 +528,8 @@ public class CmsHtmlImport {
      */
     public String getDestinationDir() {
 
-        return m_destinationDir.substring(0, m_destinationDir.length() - 1);
+        return m_destinationDir;
+//        return m_destinationDir.substring(0, m_destinationDir.length() - 1);
     }
 
     /**
@@ -569,6 +642,26 @@ public class CmsHtmlImport {
         return m_template;
     }
 
+    /**
+     * Returns the leaveImages.<p>
+     *
+     * @return the leaveImages
+     */
+    public String getLeaveImages() {
+    
+        return m_leaveImages;
+    }
+        
+    /**
+     * Returns the leaveDownloads.<p>
+     *
+     * @return the leaveDownloads
+     */
+    public String getLeaveDownloads() {
+    
+        return m_leaveDownloads;
+    }
+    
     /**
      * Returns the output of the HtmlImportThread.<p>
      * 
@@ -1272,18 +1365,21 @@ public class CmsHtmlImport {
                 relativeName = relativeName.substring(0, dot) + name;
             }
 
-            // depending on the filetype, the resource must be moved into a speical folder in 
+            // depending on the filetype, the resource must be moved into a special folder in 
             // OpenCms:
-            // images -> move into image gallery
-            // binary -> move into download gallery
+            // images -> move into image gallery, if flag to leave at original location is off
+            // binary -> move into download gallery, if flag to leaave at original location is off
             // plain -> move into destination folder
-            // other -> move into download gallery
-            if (CmsResourceTypeImage.getStaticTypeId() == filetype) {
+            // other -> move into download gallery, if flag to leaave at original location is off
+            if ((CmsResourceTypeImage.getStaticTypeId() == filetype) && (!m_leaveImagesMode)) {
+
                 // move to image gallery
                 // as the image gallery is "flat", we must use the file name and not the complete
                 // relative name
                 vfsName = m_imageGallery + name;
-            } else if (CmsResourceTypePlain.getStaticTypeId() == filetype) {
+            } else if ((CmsResourceTypePlain.getStaticTypeId() == filetype) 
+                    || (m_leaveImagesMode) 
+                    || (m_leaveDownloadsMode)) {
                 // move to destination folder
                 //vfsName=m_destinationDir+relativeName;
 
