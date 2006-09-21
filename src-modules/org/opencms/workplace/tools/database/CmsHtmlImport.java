@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2006/09/21 08:34:13 $
- * Version: $Revision: 1.12.4.3 $
+ * Date   : $Date: 2006/09/21 10:01:50 $
+ * Version: $Revision: 1.12.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.12.4.3 $ 
+ * @version $Revision: 1.12.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -176,13 +176,13 @@ public class CmsHtmlImport {
     /** the template use for all pages. */
     private String m_template;
 
-    /** leave images at the original location */
+    /** leave images at the original location. */
     private String m_leaveImages;
 
     /** the leave images mode flag. */
     private boolean m_leaveImagesMode;
 
-    /** leave downloads at the original location */
+    /** leave downloads at the original location. */
     private String m_leaveDownloads;
 
     /** the leave downloads mode flag. */
@@ -314,22 +314,22 @@ public class CmsHtmlImport {
         }
 
         m_destinationDir = destinationDir.trim();
-        if ( (!m_destinationDir.equals("")) && (!m_destinationDir.endsWith("/")) ) {
+        if ((!m_destinationDir.equals("")) && (!m_destinationDir.endsWith("/"))) {
             m_destinationDir += "/";
         }
 
         m_imageGallery = imageGallery.trim();
-        if ( (!m_imageGallery.equals("")) && (!m_imageGallery.endsWith("/")) ) {
+        if ((!m_imageGallery.equals("")) && (!m_imageGallery.endsWith("/"))) {
             m_imageGallery += "/";
         }
         
         m_linkGallery = linkGallery.trim();
-        if ( (!m_linkGallery.equals("")) && (!m_linkGallery.endsWith("/")) ) {
+        if ((!m_linkGallery.equals("")) && (!m_linkGallery.endsWith("/"))) {
             m_linkGallery += "/";
         }
         
         m_downloadGallery = downloadGallery.trim();
-        if ( (!m_downloadGallery.equals("")) && (!m_downloadGallery.endsWith("/")) ) {
+        if ((!m_downloadGallery.equals("")) && (!m_downloadGallery.endsWith("/"))) {
             m_downloadGallery += "/";
         }
 
@@ -407,7 +407,7 @@ public class CmsHtmlImport {
 
         // check the image gallery
         // only if flag for leaving images at original location is off
-        if (m_leaveImagesMode == false) {
+        if (!m_leaveImagesMode) {
             try {
                 CmsFolder folder = m_cmsObject.readFolder(m_imageGallery);
                 // check if folder is a image gallery
@@ -443,7 +443,7 @@ public class CmsHtmlImport {
         }
 
         // check the download gallery
-        if ( (!isExternal(m_downloadGallery)) && (m_leaveDownloadsMode == false) ) {
+        if ((!isExternal(m_downloadGallery)) && (!m_leaveDownloadsMode)) {
             try {
                 CmsFolder folder = m_cmsObject.readFolder(m_downloadGallery);
                 // check if folder is a download gallery
@@ -1370,14 +1370,14 @@ public class CmsHtmlImport {
             // binary -> move into download gallery, if flag to leaave at original location is off
             // plain -> move into destination folder
             // other -> move into download gallery, if flag to leaave at original location is off
-            if ( (CmsResourceTypeImage.getStaticTypeId() == filetype) && (m_leaveImagesMode == false) ) {
+            if ((CmsResourceTypeImage.getStaticTypeId() == filetype) && (!m_leaveImagesMode)) {
                 // move to image gallery
                 // as the image gallery is "flat", we must use the file name and not the complete
                 // relative name
                 vfsName = m_imageGallery + name;
-            } else if ( (CmsResourceTypePlain.getStaticTypeId() == filetype) || 
-                        (m_leaveImagesMode == true) || 
-                        (m_leaveDownloadsMode == true) ) {
+            } else if ((CmsResourceTypePlain.getStaticTypeId() == filetype)
+                    || (m_leaveImagesMode)
+                    || (m_leaveDownloadsMode)) {
                 // move to destination folder
                 //vfsName=m_destinationDir+relativeName;
 
