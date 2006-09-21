@@ -85,21 +85,29 @@ default:
 		<td><%=wp.button("javascript:top.openTreeWin('html_import1', false, 'main', 'destinationDir', document);", null, "folder", org.opencms.workplace.tools.database.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
 	</tr>
 	<tr>
+		<td><%= wp.key("htmlimport.input.leaveimages") %>:</td>
+		<td colspan="2" ><input name="leaveimages" type="checkbox" <%= imp.getLeaveImages() %> value="checked" ></td>
+	</tr>
+	<tr>
 		<td><%= wp.key("htmlimport.input.imagegallery") %>: </td>
 		<td><input name="imageGallery" type="text" size="80" maxlength="256"  value="<%= imp.getImageGallery() %>"></td>
 		<td><%=wp.button("javascript:top.openTreeWin('copy', false, 'main', 'imageGallery', document);", null, "folder", org.opencms.workplace.tools.database.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
 
 	</tr>
 	<tr>
-		<td><%= wp.key("htmlimport.input.linkgallery") %>:</td>
-		<td><input name="linkGallery" type="text" size="80" maxlength="256" value="<%= imp.getLinkGallery() %>"></td>
-		<td><%=wp.button("javascript:top.openTreeWin('copy', false, 'main', 'linkGallery', document);", null, "folder", org.opencms.workplace.tools.database.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
-
+		<td><%= wp.key("htmlimport.input.leavedownloads") %>:</td>
+		<td colspan="2" ><input name="leavedownloads" type="checkbox" <%= imp.getLeaveDownloads() %> value="checked" ></td>
 	</tr>
 	<tr>
 		<td><%= wp.key("htmlimport.input.downloadgallery") %>:</td>
 		<td><input name="downloadGallery" type="text" size="80" maxlength="256" value="<%= imp.getDownloadGallery() %>"></td>
 		<td><%=wp.button("javascript:top.openTreeWin('copy', false, 'main', 'downloadGallery', document);", null, "folder", org.opencms.workplace.tools.database.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
+	</tr>
+	<tr>
+		<td><%= wp.key("htmlimport.input.linkgallery") %>:</td>
+		<td><input name="linkGallery" type="text" size="80" maxlength="256" value="<%= imp.getLinkGallery() %>"></td>
+		<td><%=wp.button("javascript:top.openTreeWin('copy', false, 'main', 'linkGallery', document);", null, "folder", org.opencms.workplace.tools.database.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
+
 	</tr>
 	<tr>
 		<td><%= wp.key("htmlimport.input.template") %>:</td>
@@ -126,8 +134,8 @@ default:
 		<td colspan="2" ><input name="endPattern" type="text" size="80" maxlength="80" value="<%= imp.getEndPattern() %>"></td>
 	</tr>
 	<tr>
-		<td><%= wp.key("htmlimport.input.overwrite") %>: <input name="overwrite" type="checkbox" <%= imp.getOverwrite() %> value="checked" ></td>
-		<td colspan="2" ></td>
+		<td><%= wp.key("htmlimport.input.overwrite") %>:</td>
+		<td colspan="2" ><input name="overwrite" type="checkbox" <%= imp.getOverwrite() %> value="checked" ></td>
 	</tr>
 </table>
 
