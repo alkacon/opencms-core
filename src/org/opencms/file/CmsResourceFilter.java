@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/09/21 09:34:47 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ package org.opencms.file;
  * @author Carsten Weinholz 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 6.0.0 
  */
@@ -259,6 +259,23 @@ public final class CmsResourceFilter {
 
         extendedFilter.m_state = state;
         extendedFilter.m_filterState = EXCLUDED;
+        extendedFilter.updateCacheId();
+
+        return extendedFilter;
+    }
+
+    /**
+     * Returns an extended filter to guarantee all filtered resources ignoring the time range (released and not expired) window.<p>
+     * 
+     * This is the reverse of {@link #addRequireTimerange()}.<p>
+     * 
+     * @return a filter excluding invalid resources
+     */
+    public CmsResourceFilter addExcludeTimerange() {
+
+        CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
+
+        extendedFilter.m_filterTimerange = false;
         extendedFilter.updateCacheId();
 
         return extendedFilter;

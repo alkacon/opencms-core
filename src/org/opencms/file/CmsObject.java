@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2006/09/21 09:34:47 $
+ * Version: $Revision: 1.147 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146 $
+ * @version $Revision: 1.147 $
  * 
  * @since 6.0.0 
  */
@@ -1405,11 +1405,20 @@ public final class CmsObject {
      * @return a list with all <code>{@link CmsResource}</code> objects 
      *               that have been modified in the given time range.
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link #readResources(String, CmsResourceFilter)} and create a filter 
+     *      based on {@link CmsResourceFilter#IGNORE_EXPIRATION}
+     *      using {@link CmsResourceFilter#addRequireLastModifiedAfter(long)} and
+     *      {@link CmsResourceFilter#addRequireLastModifiedBefore(long)} instead
      */
     public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
 
-        return m_securityManager.getResourcesInTimeRange(m_context, addSiteRoot(folder), starttime, endtime);
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
+        filter = filter.addRequireLastModifiedAfter(starttime);
+        filter = filter.addRequireLastModifiedBefore(endtime);
+
+        return readResources(folder, filter);
     }
 
     /**

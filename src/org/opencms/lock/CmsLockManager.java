@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2006/09/21 09:34:47 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  * 
@@ -556,6 +556,6 @@ public final class CmsLockManager {
         List siblings = driverManager.getVfsDriver().readSiblings(dbc, dbc.currentProject(), resource, true);
         siblings.remove(resource);
 
-        return driverManager.updateContextDates(dbc, siblings);
+        return siblings;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/09/21 09:34:48 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  * 
@@ -171,24 +172,13 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_GET_ALL_RESOURCES_0));
         }
-
-        List resources = new ArrayList();
-        //starttime to 01.01.1970
-        long starttime = 0;
-        // endtime to now plus one week
-        long endtime = System.currentTimeMillis() + 604800000;
-        List vfsResources = cms.getResourcesInTimeRange("/", starttime, endtime);
-
+		// read all from the root path, exclude resources flagged as internal        
+        List vfsResources = cms.readResources("/", CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
         // loop through the list and create the list of CmsPublishedResources
+        List resources = new ArrayList(vfsResources.size());
         Iterator i = vfsResources.iterator();
         while (i.hasNext()) {
-            CmsResource vfsResource = (CmsResource)i.next();
-            if ((vfsResource.getFlags() & CmsResource.FLAG_INTERNAL) == CmsResource.FLAG_INTERNAL) {
-                // skip internal files
-                continue;
-            }
-            CmsPublishedResource resource = new CmsPublishedResource(vfsResource);
-
+            CmsPublishedResource resource = new CmsPublishedResource((CmsResource)i.next());
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROCESSING_1, resource.getRootPath()));
             }

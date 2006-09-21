@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/07/19 13:19:12 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2006/09/21 09:34:47 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.92 $
+ * @version $Revision: 1.93 $
  * 
  * @since 6.0.0
  */
@@ -2519,22 +2519,6 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Gets a list of all subresources in of a folder.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the folder to get the subtree from
-     * @return list of CmsResource objects
-     * @throws CmsException if something goes wrong
-     */
-    public List getSubtree(CmsObject cms, String resourceName) throws CmsException {
-
-        return cms.getResourcesInTimeRange(
-            resourceName,
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT);
-    }
-
-    /**
      * Resets the mapping for resourcenames.<p>
      */
     public void resetMapping() {
@@ -2597,7 +2581,7 @@ public class OpenCmsTestCase extends TestCase {
                 }
 
                 // now get all subresources and add them as well
-                List resources = getSubtree(cms, resourceName);
+                List resources = cms.readResources(resourceName, CmsResourceFilter.ALL);
                 Iterator i = resources.iterator();
                 while (i.hasNext()) {
                     CmsResource res = (CmsResource)i.next();

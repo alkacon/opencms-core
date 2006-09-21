@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/09/21 09:34:47 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class TestChacc extends OpenCmsTestCase {
   
@@ -170,7 +170,7 @@ public class TestChacc extends OpenCmsTestCase {
         tc.assertAcl(cms, resource1, group.getId(), permission);
         
         // now check all the subresources in the folder, access must be modified as well
-        List subresources = tc.getSubtree(cms, resource1);
+        List subresources = cms.readResources(resource1, CmsResourceFilter.ALL);
         Iterator j = subresources.iterator();
         
         while (j.hasNext()) {

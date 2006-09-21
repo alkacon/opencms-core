@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/09/21 09:34:47 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class TestTouch extends OpenCmsTestCase {
   
@@ -144,7 +144,7 @@ public class TestTouch extends OpenCmsTestCase {
         tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
         
         // evaluate all subresources
-        List subresources = tc.getSubtree(cms, resource1);
+        List subresources = cms.readResources(resource1, CmsResourceFilter.ALL);
         
         // iterate through the subresources
         Iterator i = subresources.iterator();
@@ -184,7 +184,7 @@ public class TestTouch extends OpenCmsTestCase {
         tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
         
         // evaluate all subresources
-        List subresources = tc.getSubtree(cms, resource1);
+        List subresources = cms.readResources(resource1, CmsResourceFilter.ALL);
         
         // iterate through the subresources
         Iterator i = subresources.iterator();

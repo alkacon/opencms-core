@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportExportRule.java,v $
- * Date   : $Date: 2005/07/08 17:42:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/09/21 09:34:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.staticexport;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ import java.util.regex.Pattern;
  * Help class for storing of export-rules.<p>
  * 
  * @author Michael Moossen
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0.0
  */
 public class CmsStaticExportExportRule {
@@ -150,30 +151,18 @@ public class CmsStaticExportExportRule {
      */
     public Set getExportResources(CmsObject cms) throws CmsException {
 
-        Set resources = new HashSet();
-        // now get all resources matching the export resource patterns. 
-        // since the long min and max value
-        // do not work with the sql timestamp function in the driver, we must calculate 
-        // some different, but usable start and endtime values first
-
-        //starttime to 01.01.1970
-        long starttime = 0;
-        // endtime to now plus one week
-        long endtime = System.currentTimeMillis() + 604800000;
-
+        Set resources = new HashSet(128);
         Iterator itExpRes = m_exportResources.iterator();
         while (itExpRes.hasNext()) {
             String exportRes = (String)itExpRes.next();
-
-            List vfsResources = cms.getResourcesInTimeRange(exportRes, starttime, endtime);
+			// read all from the configured node path, exclude resources flagged as internal        
+            List vfsResources = cms.readResources(
+                exportRes,
+                CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
             // loop through the list and create the list of CmsPublishedResources
             Iterator itRes = vfsResources.iterator();
             while (itRes.hasNext()) {
                 CmsResource vfsResource = (CmsResource)itRes.next();
-                if ((vfsResource.getFlags() & CmsResource.FLAG_INTERNAL) == CmsResource.FLAG_INTERNAL) {
-                    // skip internal files
-                    continue;
-                }
                 CmsPublishedResource resource = new CmsPublishedResource(vfsResource);
                 resources.add(resource);
             }

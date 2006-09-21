@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsNotificationCandidates.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/09/21 09:34:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -133,7 +133,9 @@ public class CmsNotificationCandidates {
         // read all files that were not modified longer than the max notification-time
         GregorianCalendar oneYearAgo = (GregorianCalendar)now.clone();
         oneYearAgo.add(Calendar.DAY_OF_YEAR, -OpenCms.getSystemInfo().getNotificationTime());
-        resources = m_cms.getResourcesInTimeRange(folder, 0, oneYearAgo.getTimeInMillis()).iterator();
+        // create a resource filter to get the resources with
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireLastModifiedBefore(oneYearAgo.getTimeInMillis());
+        resources = m_cms.readResources(folder, filter).iterator();
         while (resources.hasNext()) {
             resource = (CmsResource)resources.next();
             m_resources.add(new CmsExtendedNotificationCause(

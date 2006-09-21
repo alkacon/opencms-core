@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2005/06/29 14:22:49 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/09/21 09:34:47 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class TestCopy extends OpenCmsTestCase {
   
@@ -297,7 +297,7 @@ public class TestCopy extends OpenCmsTestCase {
         List subresources;
         Iterator i;
         
-        subresources = getSubtree(cms, source);
+        subresources = cms.readResources(source, CmsResourceFilter.ALL);
         
         // iterate through the subresources
         i = subresources.iterator();
@@ -307,7 +307,7 @@ public class TestCopy extends OpenCmsTestCase {
             assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_EQUAL);
         }     
         
-        subresources = getSubtree(cms, destination);
+        subresources = cms.readResources(destination, CmsResourceFilter.ALL);
         setMapping(destination, source);    
         
         // prepare filter without sibling count

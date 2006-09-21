@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/09/21 09:34:47 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
 
@@ -256,7 +256,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         TestProperty.writeProperty(tc, cms, resource1, property1);
 
         // change the property on all subresources
-        List subresources = tc.getSubtree(cms, resource1);
+        List subresources = cms.readResources(resource1, CmsResourceFilter.ALL);
         Iterator i = subresources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
@@ -315,7 +315,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         TestProperty.writeProperty(tc, cms, resource1, property1);
 
         // change the property on all subresources
-        List subresources = tc.getSubtree(cms, resource1);
+        List subresources = cms.readResources(resource1, CmsResourceFilter.ALL);
         Iterator i = subresources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();

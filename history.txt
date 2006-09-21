@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/20 09:28:45 $
- * Version: $Revision: 1.751 $
+ * Date   : $Date: 2006/09/21 09:34:47 $
+ * Version: $Revision: 1.752 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.2.3 - 
+* Fixed issue with readResourcesWithProperty and getResourceInTimeRange not applying user permissions
 * Workplace search tool generated invalid result links if current site is not root
 ! Extended <cms:parse>/<cms:decorate> by attribute "noAutoCloseTags" for tag names that must not be auto-closed 
 - Modified calculation of inserted nav positions
