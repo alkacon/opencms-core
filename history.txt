@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/22 15:17:02 $
- * Version: $Revision: 1.754 $
+ * Date   : $Date: 2006/09/22 15:27:20 $
+ * Version: $Revision: 1.755 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ OpenCms 6.2.3 -
 - Updated commons-httpclient.jar to version 3.0.1
 - Updated the list of supported MIME-types
 ! MIME-types are now configured in opencms-vfs.xml instead of internal properties file
-* Fixed javascript errror in workplace search tool dialog for internet explorer
+* Fixed javascript error in workplace search tool dialog for internet explorer
 * Fixed issue with readResourcesWithProperty and getResourceInTimeRange not applying user permissions
 * Workplace search tool generated invalid result links if current site is not root
 ! Extended <cms:parse>/<cms:decorate> by attribute "noAutoCloseTags" for tag names that must not be auto-closed 
@@ -39,6 +39,7 @@ OpenCms 6.2.3 -
 * Fixed issue with upload applet always using the site root set in the user preferences
 - Legacy element cache is cleared on clear cache event
 - Modified handling of scrub export folder for static export on demand
+* Fixed issue #1238: Form-Module produces wrong HTML-code
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
