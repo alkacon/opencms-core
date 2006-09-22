@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2006/09/20 08:21:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/09/22 12:51:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -422,7 +422,6 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
             m_search.setParameters(m_searchParams);
             result.append("<div style=\"padding:12px;\">\n").append(resultView.displaySearchResult(m_search)).append(
                 "\n</div>\n");
-
         } else {
             // Just don't perform search
         }
@@ -509,13 +508,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
         StringBuffer result = new StringBuffer();
         result.append("  function validateQuery() {\n");
-        result.append("    var searchform = document.forms['EDITOR'];\n");
+        result.append("    var searchform = document.getElementById(\"EDITOR\");\n");
         result.append("    var query = searchform.elements['query.0'].value;\n");
         result.append("    searchform.elements['query.0'].value = query;\n");
         result.append("    return true;\n");
         result.append("  }\n");
-        result.append("  window.captureEvents(Event.SUBMIT);\n");
-        result.append("  window.onsubmit = validateQuery();\n");
         return result.toString();
     }
 }

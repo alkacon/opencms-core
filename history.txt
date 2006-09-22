@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/21 09:34:47 $
- * Version: $Revision: 1.752 $
+ * Date   : $Date: 2006/09/22 12:51:38 $
+ * Version: $Revision: 1.753 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.2.3 - 
+* Fixed javascript errror in workplace search tool dialog for internet explorer
 * Fixed issue with readResourcesWithProperty and getResourceInTimeRange not applying user permissions
 * Workplace search tool generated invalid result links if current site is not root
 ! Extended <cms:parse>/<cms:decorate> by attribute "noAutoCloseTags" for tag names that must not be auto-closed 
