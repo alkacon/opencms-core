@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2006/09/22 16:19:12 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,12 +65,6 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /** HTML start. */
     public static final String HTML_START = "<html><body>";
-
-    /** End of a macro. */
-    private static final String MACRO_END = "}";
-
-    /** Start of a macro. */
-    private static final String MACRO_START = "${";
 
     /** Processing mode "process links". */
     private static final int PROCESS_LINKS = 1;
@@ -253,7 +247,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
                 case PROCESS_LINKS:
                     // macros are replaced with links
-                    link = m_linkTable.getLink(getLinkName(tag.getImageURL()));
+                    link = m_linkTable.getLink(CmsMacroResolver.stripMacro(tag.getImageURL()));
                     if (link != null) {
                         tag.setImageURL(processLink(link));
                     }
@@ -317,7 +311,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
                 case PROCESS_LINKS:
                     // macros are replaced with links
-                    link = m_linkTable.getLink(getLinkName(tag.getLink()));
+                    link = m_linkTable.getLink(CmsMacroResolver.stripMacro(tag.getLink()));
                     if (link != null) {
                         tag.setLink(escapeLink(processLink(link)));
                     }
@@ -342,24 +336,6 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                 default: // noop
             }
         }
-    }
-
-    /**
-     * Internal method to get the name of a macro string.<p>
-     * 
-     * @param macro the macro string
-     * 
-     * @return the name of the macro
-     */
-    private String getLinkName(String macro) {
-
-        if (CmsStringUtil.isNotEmpty(macro)) {
-            if (macro.startsWith(MACRO_START) && macro.endsWith(MACRO_END)) {
-                // make sure the macro really is a macro
-                return macro.substring(MACRO_START.length(), macro.length() - MACRO_END.length());
-            }
-        }
-        return "";
     }
 
     /**
