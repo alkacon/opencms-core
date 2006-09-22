@@ -67,6 +67,11 @@ case CmsEditor.ACTION_SAVEEXIT:
 		break;
 	}
 
+case CmsEditor.ACTION_DELETELOCALE:
+//////////////////// ACTION: delete a localeand show the editor again
+	if (wp.getAction() == CmsEditor.ACTION_DELETELOCALE) {
+		wp.actionDeleteElementLocale();
+        }
 
 case CmsEditor.ACTION_SAVE:
 //////////////////// ACTION: save the modified content and show the editor again
@@ -141,6 +146,7 @@ var actionSaveExit = "<%= CmsEditor.EDITOR_SAVEEXIT %>";
 var actionSave = "<%= CmsEditor.EDITOR_SAVE %>";
 var actionMoveElementDown = "<%= CmsXmlContentEditor.EDITOR_ACTION_ELEMENT_MOVE_DOWN %>";
 var actionMoveElementUp = "<%= CmsXmlContentEditor.EDITOR_ACTION_ELEMENT_MOVE_UP %>";
+var actionDeleteLocale = "<%= CmsEditor.EDITOR_DELETELOCALE %>";
 
 // Localized button labels
 var LANG_BT_DELETE = "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0) %>";
@@ -158,11 +164,20 @@ function confirmExit() {
 	}
 }
 
+// Ask user whether he really wants to delete the locale
+function confirmDeleteLocale() {
+	if (confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_DELETELOCALE_0) %>")) {
+		buttonAction(14);
+	}
+}
+
 function init() {
 	checkElementLanguage("<%= wp.getParamElementlanguage() %>");
 <%= wp.getXmlEditorInitCalls() %>
 	setTimeout("scrollForm();", 200);
 	initialized = true;
+	//parent.frames[0].location.reload(true);
+	parent.frames[0].buttons.submit();
 }
 
 function exitEditor() {

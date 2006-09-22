@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Messages.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/09/22 15:17:03 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -275,6 +275,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_MESSAGE_CONFIRMHTTP_0 = "GUI_EDITOR_MESSAGE_CONFIRMHTTP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_MESSAGE_DELETELOCALE_0 = "GUI_EDITOR_MESSAGE_DELETELOCALE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_MESSAGE_EXIT_0 = "GUI_EDITOR_MESSAGE_EXIT_0";
@@ -514,6 +517,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_EDITOR_CONFIG_NO_URI_0 = "LOG_EDITOR_CONFIG_NO_URI_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_GET_LOCALES_1 = "LOG_GET_LOCALES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MAP_CONFIG_FILE_TO_USER_2 = "LOG_MAP_CONFIG_FILE_TO_USER_2";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/07/21 12:01:54 $
- * Version: $Revision: 1.160 $
+ * Date   : $Date: 2006/09/22 15:17:02 $
+ * Version: $Revision: 1.161 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,18 +61,13 @@ import org.opencms.workplace.help.CmsHelpTemplateBean;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -89,7 +84,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.160 $ 
+ * @version $Revision: 1.161 $ 
  * 
  * @since 6.0.0 
  */
@@ -333,30 +328,6 @@ public abstract class CmsWorkplace {
             result.append("\n");
         }
         return result.toString();
-    }
-
-    /**
-     * Parses the JS calendar date format to the java patterns of SimpleDateFormat.<p>
-     * 
-     * @param dateFormat the dateformat String of the JS calendar
-     * @return the parsed SimpleDateFormat pattern String
-     */
-    public static String getCalendarJavaDateFormat(String dateFormat) {
-
-        dateFormat = CmsStringUtil.substitute(dateFormat, "%", ""); // remove all "%"
-        dateFormat = CmsStringUtil.substitute(dateFormat, "m", "${month}");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "H", "${hour}");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "Y", "${4anno}");
-        dateFormat = dateFormat.toLowerCase();
-        dateFormat = CmsStringUtil.substitute(dateFormat, "${month}", "M");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "${hour}", "H");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "y", "yy");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "${4anno}", "yyyy");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "m", "mm"); // minutes with two digits
-        dateFormat = dateFormat.replace('e', 'd'); // day of month
-        dateFormat = dateFormat.replace('i', 'h'); // 12 hour format
-        dateFormat = dateFormat.replace('p', 'a'); // pm/am String
-        return dateFormat;
     }
 
     /**
@@ -998,158 +969,6 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Displays a javascript calendar element with the standard "opencms" style.<p>
-     * 
-     * Creates the HTML javascript and stylesheet includes for the head of the page.<p>
-     * 
-     * @return the necessary HTML code for the js and stylesheet includes
-     */
-    public String calendarIncludes() {
-
-        return calendarIncludes("opencms");
-    }
-
-    /**
-     * Displays a javascript calendar element.<p>
-     * 
-     * Creates the HTML javascript and stylesheet includes for the head of the page.<p>
-     * 
-     * @param style the name of the used calendar style, e.g. "system", "blue"
-     * @return the necessary HTML code for the js and stylesheet includes
-     */
-    public String calendarIncludes(String style) {
-
-        StringBuffer result = new StringBuffer(512);
-        String calendarPath = getSkinUri() + "components/js_calendar/";
-        if (CmsStringUtil.isEmpty(style)) {
-            style = "system";
-        }
-        result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-        result.append(calendarPath);
-        result.append("calendar-");
-        result.append(style);
-        result.append(".css\">\n");
-        result.append("<script type=\"text/javascript\" src=\"");
-        result.append(calendarPath);
-        result.append("calendar.js\"></script>\n");
-        result.append("<script type=\"text/javascript\" src=\"");
-        result.append(calendarPath);
-        result.append("lang/calendar-");
-        result.append(getLocale().getLanguage());
-        result.append(".js\"></script>\n");
-        result.append("<script type=\"text/javascript\" src=\"");
-        result.append(calendarPath);
-        result.append("calendar-setup.js\"></script>\n");
-        return result.toString();
-    }
-
-    /**
-     * Initializes a javascript calendar element to be shown on a page.<p>
-     * 
-     * This method must be called at the end of a HTML page, e.g. before the closing &lt;body&gt; tag.<p>
-     * 
-     * @param inputFieldId the ID of the input field where the date is pasted to
-     * @param triggerButtonId the ID of the button which triggers the calendar
-     * @param align initial position of the calendar popup element
-     * @param singleClick if true, a single click selects a date and closes the calendar, otherwise calendar is closed by doubleclick
-     * @param weekNumbers show the week numbers in the calendar or not
-     * @param mondayFirst show monday as first day of week
-     * @param dateStatusFunc name of the function which determines if/how a date should be disabled
-     * @return the HTML code to initialize a calendar poup element
-     */
-    public String calendarInit(
-        String inputFieldId,
-        String triggerButtonId,
-        String align,
-        boolean singleClick,
-        boolean weekNumbers,
-        boolean mondayFirst,
-        String dateStatusFunc) {
-
-        return calendarInit(
-            inputFieldId,
-            triggerButtonId,
-            align,
-            singleClick,
-            weekNumbers,
-            mondayFirst,
-            dateStatusFunc,
-            false);
-    }
-
-    /**
-     * Initializes a javascript calendar element to be shown on a page.<p>
-     * 
-     * This method must be called at the end of a HTML page, e.g. before the closing &lt;body&gt; tag.<p>
-     * 
-     * @param inputFieldId the ID of the input field where the date is pasted to
-     * @param triggerButtonId the ID of the button which triggers the calendar
-     * @param align initial position of the calendar popup element
-     * @param singleClick if true, a single click selects a date and closes the calendar, otherwise calendar is closed by doubleclick
-     * @param weekNumbers show the week numbers in the calendar or not
-     * @param mondayFirst show monday as first day of week
-     * @param dateStatusFunc name of the function which determines if/how a date should be disabled
-     * @param showTime true if the time selector should be shown, otherwise false
-     * @return the HTML code to initialize a calendar poup element
-     */
-    public String calendarInit(
-        String inputFieldId,
-        String triggerButtonId,
-        String align,
-        boolean singleClick,
-        boolean weekNumbers,
-        boolean mondayFirst,
-        String dateStatusFunc,
-        boolean showTime) {
-
-        StringBuffer result = new StringBuffer(512);
-        if (CmsStringUtil.isEmpty(align)) {
-            align = "Bc";
-        }
-        result.append("<script type=\"text/javascript\">\n");
-        result.append("<!--\n");
-        result.append("\tCalendar.setup({\n");
-        result.append("\t\tinputField     :    \"");
-        result.append(inputFieldId);
-        result.append("\",\n");
-        result.append("\t\tifFormat       :    \"");
-        result.append(key(Messages.GUI_CALENDAR_DATE_FORMAT_0));
-        if (showTime) {
-            result.append(" ");
-            result.append(key(Messages.GUI_CALENDAR_TIME_FORMAT_0));
-        }
-        result.append("\",\n");
-        result.append("\t\tbutton         :    \"");
-        result.append(triggerButtonId);
-        result.append("\",\n");
-        result.append("\t\talign          :    \"");
-        result.append(align);
-        result.append("\",\n");
-        result.append("\t\tsingleClick    :    ");
-        result.append(singleClick);
-        result.append(",\n");
-        result.append("\t\tweekNumbers    :    ");
-        result.append(weekNumbers);
-        result.append(",\n");
-        result.append("\t\tmondayFirst    :    ");
-        result.append(mondayFirst);
-        result.append(",\n");
-        result.append("\t\tshowsTime      :    " + showTime);
-        if (showTime && key(Messages.GUI_CALENDAR_TIMEFORMAT_0).toLowerCase().indexOf("p") != -1) {
-            result.append(",\n\t\ttimeFormat     :    \"12\"");
-        }
-        if (CmsStringUtil.isNotEmpty(dateStatusFunc)) {
-            result.append(",\n\t\tdateStatusFunc :    ");
-            result.append(dateStatusFunc);
-        }
-        result.append("\n\t});\n");
-
-        result.append("//-->\n");
-        result.append("</script>\n");
-        return result.toString();
-    }
-
-    /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
      * 
      * @param resource the resource name which is checked
@@ -1296,50 +1115,6 @@ public abstract class CmsWorkplace {
         }
         // no message pending, return null
         return null;
-    }
-
-    /**
-     * Creates the time in milliseconds from the given parameter.<p>
-     * 
-     * @param dateString the String representation of the date
-     * @param useTime true if the time should be parsed, too, otherwise false
-     * @return the time in milliseconds
-     * @throws ParseException if something goes wrong
-     */
-    public long getCalendarDate(String dateString, boolean useTime) throws ParseException {
-
-        long dateLong = 0;
-
-        // substitute some chars because calendar syntax != DateFormat syntax
-        String dateFormat = key(Messages.GUI_CALENDAR_DATE_FORMAT_0);
-        if (useTime) {
-            dateFormat += " " + key(Messages.GUI_CALENDAR_TIME_FORMAT_0);
-        }
-        dateFormat = getCalendarJavaDateFormat(dateFormat);
-
-        SimpleDateFormat df = new SimpleDateFormat(dateFormat);
-        dateLong = df.parse(dateString).getTime();
-        return dateLong;
-    }
-
-    /**
-     * Returns the given timestamp as String formatted in a localized pattern.<p>
-     * 
-     * @param timestamp the time to format
-     * @return the given timestamp as String formatted in a localized pattern
-     */
-    public String getCalendarLocalizedTime(long timestamp) {
-
-        // get the current date & time 
-        Locale locale = getLocale();
-        TimeZone zone = TimeZone.getDefault();
-        GregorianCalendar cal = new GregorianCalendar(zone, locale);
-        cal.setTimeInMillis(timestamp);
-        // format it nicely according to the localized pattern
-        DateFormat df = new SimpleDateFormat(getCalendarJavaDateFormat(key(Messages.GUI_CALENDAR_DATE_FORMAT_0)
-            + " "
-            + key(Messages.GUI_CALENDAR_TIME_FORMAT_0)));
-        return df.format(cal.getTime());
     }
 
     /**

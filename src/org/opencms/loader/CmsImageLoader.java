@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2006/07/20 12:38:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/09/22 15:17:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -256,7 +256,7 @@ public class CmsImageLoader extends CmsDumpLoader {
                 m_vfsDiskCache.getRepositoryPath()));
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_IMAGE_SCALING_ENABLED_1,
-                new Boolean(m_enabled)));
+                Boolean.valueOf(m_enabled)));
         }
     }
 

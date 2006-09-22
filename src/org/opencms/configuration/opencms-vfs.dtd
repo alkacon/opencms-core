@@ -18,7 +18,8 @@
 <!ELEMENT resources (
 	resourceloaders, 
 	resourcetypes,
-	collectors? )>
+	collectors?,
+	mimetypes?)>
 
 <!ELEMENT resourceloaders (loader+)>
 <!ELEMENT loader (param*)>
@@ -33,6 +34,15 @@
 <!ELEMENT collectors (collector+)>
 <!ELEMENT collector EMPTY>
 <!ATTLIST collector class CDATA #REQUIRED order CDATA #REQUIRED>
+
+<!--
+# MIME type configuration.
+#
+# This is a simple list of "extension" and "type" attributes.
+-->
+<!ELEMENT mimetypes (mimetype*)>
+<!ELEMENT mimetype EMPTY>
+<!ATTLIST mimetype extension CDATA #REQUIRED type CDATA #REQUIRED>
 
 <!--
 # Default file names for directories.
@@ -107,10 +117,6 @@
 <!ELEMENT schematypes (schematype*)>
 <!ELEMENT schematype EMPTY>
 <!ATTLIST schematype class CDATA #REQUIRED defaultwidget CDATA #REQUIRED>
-
-<!--
-# Individual resource types. 
--->
 
 <!--
 # Name for the property node (see below), this node already exists in opencms-modules.xml

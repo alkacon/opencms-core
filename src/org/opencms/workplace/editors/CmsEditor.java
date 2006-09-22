@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2006/09/22 15:17:03 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,10 +42,13 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,6 +76,9 @@ public abstract class CmsEditor extends CmsDialog {
 
     /** Value for the action: change the body. */
     public static final int ACTION_CHANGE_BODY = 124;
+
+    /** Value for the action: delete the current locale. */
+    public static final int ACTION_DELETELOCALE = 140;
 
     /** Value for the action: exit. */
     public static final int ACTION_EXIT = 122;
@@ -101,6 +107,9 @@ public abstract class CmsEditor extends CmsDialog {
     /** Value for the action parameter: cleanup content. */
     public static final String EDITOR_CLEANUP = "cleanup";
 
+    /** Value for the action parameter: delete the current locale. */
+    public static final String EDITOR_DELETELOCALE = "deletelocale";
+
     /** Value for the action parameter: exit editor. */
     public static final String EDITOR_EXIT = "exit";
 
@@ -121,6 +130,9 @@ public abstract class CmsEditor extends CmsDialog {
 
     /** Value for the action parameter: an error occured. */
     public static final String EDITOR_SHOW_ERRORMESSAGE = "error";
+
+    /** Marker for empty locale in locale selection. */
+    public static final String EMPTY_LOCALE = " [-]";
 
     /** Stores the VFS editor path. */
     public static final String PATH_EDITORS = PATH_WORKPLACE + "editors/";
@@ -226,11 +238,41 @@ public abstract class CmsEditor extends CmsDialog {
         List options = new ArrayList(locales.size());
         List selectList = new ArrayList(locales.size());
         int currentIndex = -1;
+
+        String filename = resource;
+
+        //get the locales already used in the resource
+        List contentLocales = new ArrayList();
+        try {
+
+            CmsResource res = getCms().readResource(filename);
+
+            String temporaryFilename = CmsResource.getFolderPath(resource)
+                + CmsWorkplace.TEMP_FILE_PREFIX
+                + res.getName();
+            if (getCms().existsResource(temporaryFilename)) {
+                res = getCms().readResource(temporaryFilename);
+            }
+            CmsFile file = CmsFile.upgrade(res, getCms());
+            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
+            contentLocales = xmlContent.getLocales();
+        } catch (CmsException e) {
+            // to nothing here in case the resource could not be opened
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, filename), e);
+            }
+        }
+
         for (int counter = 0; counter < locales.size(); counter++) {
             // create the list of options and values
             Locale curLocale = (Locale)locales.get(counter);
             selectList.add(curLocale.toString());
-            options.add(curLocale.getDisplayName(getLocale()));
+            StringBuffer buf = new StringBuffer();
+            buf.append(curLocale.getDisplayName(getLocale()));
+            if (!contentLocales.contains(curLocale)) {
+                buf.append(EMPTY_LOCALE);
+            }
+            options.add(buf.toString());
             if (curLocale.equals(selectedLocale)) {
                 // set the selected index of the selector
                 currentIndex = counter;
@@ -239,7 +281,7 @@ public abstract class CmsEditor extends CmsDialog {
 
         if (currentIndex == -1) {
             // no matching element language found, use first element language in list
-            if (selectList != null && selectList.size() > 0) {
+            if (selectList.size() > 0) {
                 currentIndex = 0;
                 setParamElementlanguage((String)selectList.get(0));
             }
@@ -349,6 +391,49 @@ public abstract class CmsEditor extends CmsDialog {
             setParamModified(Boolean.TRUE.toString());
         }
         super.checkLock(resource, mode);
+    }
+
+    /**
+     * Generates a button for delete locale.<p>
+     * 
+     * @param href the href link for the button, if none is given the button will be disabled
+     * @param target the href link target for the button, if none is given the target will be same window
+     * @param image the image name for the button, skin path will be automattically added as prefix
+     * @param label the label for the text of the button 
+     * @param type 0: image only (default), 1: image and text, 2: text only
+     * 
+     * @return a button for the OpenCms workplace
+     */
+    public String deleteLocaleButton(String href, String target, String image, String label, int type) {
+
+        String filename = getParamResource();
+
+        try {
+            CmsResource res = getCms().readResource(filename);
+
+            String temporaryFilename = CmsResource.getFolderPath(filename)
+                + CmsWorkplace.TEMP_FILE_PREFIX
+                + res.getName();
+            if (getCms().existsResource(temporaryFilename)) {
+                res = getCms().readResource(temporaryFilename);
+            }
+            CmsFile file = CmsFile.upgrade(res, getCms());
+            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
+            int locales = xmlContent.getLocales().size();
+            // there are less than 2 locales, so disable the delete locale button
+            if (locales < 2) {
+                href = null;
+                target = null;
+                image += "_in";
+            }
+        } catch (CmsException e) {
+            // to nothing here in case the resource could not be opened
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, filename), e);
+            }
+        }
+        return button(href, target, image, label, type, getSkinUri() + "buttons/");
+
     }
 
     /**
@@ -509,7 +594,7 @@ public abstract class CmsEditor extends CmsDialog {
 
         m_paramBackLink = backLink;
     }
-   
+
     /**
      * Sets the content of the editor.<p>
      * 
@@ -656,6 +741,15 @@ public abstract class CmsEditor extends CmsDialog {
             orgFile.setContents(tempFile.getContents());
             getCms().writeFile(orgFile);
         } else {
+            // original file does not exist, remove visibility permission entries and copy temporary file
+            getCms().rmacc(
+                getParamTempfile(),
+                I_CmsPrincipal.PRINCIPAL_GROUP,
+                OpenCms.getDefaultUsers().getGroupUsers());
+            getCms().rmacc(
+                getParamTempfile(),
+                I_CmsPrincipal.PRINCIPAL_GROUP,
+                OpenCms.getDefaultUsers().getGroupProjectmanagers());
             getCms().copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
         }
         // remove the temporary file flag
@@ -663,7 +757,7 @@ public abstract class CmsEditor extends CmsDialog {
         if ((flags & CmsResource.FLAG_TEMPFILE) == CmsResource.FLAG_TEMPFILE) {
             flags ^= CmsResource.FLAG_TEMPFILE;
             getCms().chflags(getParamResource(), flags);
-        }       
+        }
     }
 
     /**
@@ -701,10 +795,7 @@ public abstract class CmsEditor extends CmsDialog {
         // copy the file to edit to a temporary file
         try {
             getCms().copyResource(getCms().getSitePath(file), temporaryFilename, CmsResource.COPY_AS_NEW);
-            getCms().setDateLastModified(
-                temporaryFilename,
-                System.currentTimeMillis(),
-                false);
+            getCms().setDateLastModified(temporaryFilename, System.currentTimeMillis(), false);
             // set the temporary file flag
             int flags = getCms().readResource(temporaryFilename, CmsResourceFilter.ALL).getFlags();
             if ((flags & CmsResource.FLAG_TEMPFILE) == 0) {
@@ -714,6 +805,17 @@ public abstract class CmsEditor extends CmsDialog {
             // remove eventual release & expiration date from temporary file to make preview in editor work
             getCms().setDateReleased(temporaryFilename, CmsResource.DATE_RELEASED_DEFAULT, false);
             getCms().setDateExpired(temporaryFilename, CmsResource.DATE_EXPIRED_DEFAULT, false);
+            // remove visibility permissions for users and projectmanagers on temporary file
+            getCms().chacc(
+                temporaryFilename,
+                I_CmsPrincipal.PRINCIPAL_GROUP,
+                OpenCms.getDefaultUsers().getGroupUsers(),
+                "-v");
+            getCms().chacc(
+                temporaryFilename,
+                I_CmsPrincipal.PRINCIPAL_GROUP,
+                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                "-v");
         } catch (CmsException e) {
             switchToCurrentProject();
             throw e;

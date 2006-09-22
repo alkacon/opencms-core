@@ -49,10 +49,19 @@ case CmsEditor.ACTION_SAVEEXIT:
 	wp.actionExit();
 
 break;
+
+case CmsEditor.ACTION_DELETELOCALE:
+//////////////////// ACTION: delete a localeand show the editor again
+	if (wp.getAction() == CmsEditor.ACTION_DELETELOCALE) {
+		wp.actionDeleteElementLocale();
+        }
+
 case CmsEditor.ACTION_SAVE:
 //////////////////// ACTION: save the modified content
+	if (wp.getAction() == CmsEditor.ACTION_SAVE) {
 
-	wp.actionSave();
+		wp.actionSave();
+	}
 
 case CmsDialog.ACTION_DEFAULT:
 case CmsEditor.ACTION_SHOW:
@@ -86,6 +95,13 @@ var linkEditorPrefix = "<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
 // saves the editors contents
 function saveContent() {
     document.EDITOR.content.value = encodeURIComponent(FCKeditorAPI.GetInstance("fckeditor").GetXHTML(false));
+}
+
+// Ask user whether he really wants to delete the locale
+function confirmDeleteLocale() {
+	if (confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_DELETELOCALE_0) %>")) {
+		buttonAction(14);
+	}
 }
 
 //action on button click 
@@ -135,6 +151,11 @@ function buttonAction(para) {
 		_form.target = "_self";
 		_form.submit();
         break;	
+    case 14:
+	// delete the current locale content
+	_form.action.value = "<%= CmsEditor.EDITOR_DELETELOCALE %>";
+	_form.submit();
+	break;
     }
 }
 
@@ -213,6 +234,7 @@ if (elementSelection || elementLanguage) {
 	out.println(wp.buttonBarLabel(org.opencms.workplace.editors.Messages.GUI_INPUT_ELEMENT_0));
 	if (elementLanguage) {
 		out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + CmsEditor.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
+		out.println(wp.deleteLocaleButton("javascript:confirmDeleteLocale();", null, "deletecontent", org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0, buttonStyle));
 		out.println(wp.buttonBarSpacer(2));
 	} else {
 		%><input type="hidden" name="<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>"><%

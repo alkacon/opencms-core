@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchResultView.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/09/22 15:17:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -193,7 +193,7 @@ public class CmsSearchResultView {
                     CmsSearchResult entry = (CmsSearchResult)iterator.next();
                     result.append("\n<div class=\"searchResult\">");
                     result.append("<a class=\"navhelp\" href=\"#\" onclick=\"javascript:window.open('");
-                    result.append(m_jsp.link(m_jsp.getRequestContext().removeSiteRoot(entry.getPath())).toString());
+                    result.append(m_jsp.link(m_jsp.getRequestContext().removeSiteRoot(entry.getPath())));
                     result.append("', '_blank', 'width='+screen.availWidth+', height='+ screen.availHeight+', scrollbars=yes, menubar=yes, toolbar=yes')\"");
                     result.append("\">\n");
                     name = entry.getTitle();

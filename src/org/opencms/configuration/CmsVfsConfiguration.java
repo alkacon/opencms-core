@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2006/09/22 15:17:02 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.configuration;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsMimeType;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
@@ -58,7 +59,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 6.0.0
  */
@@ -66,6 +67,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The widget attribute. */
     public static final String A_DEFAULTWIDGET = "defaultwidget";
+
+    /** The extension attribute name. */
+    public static final String A_EXTENSION = "extension";
 
     /** The source attribute name. */
     public static final String A_SOURCE = "source";
@@ -111,6 +115,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The mappings node name. */
     public static final String N_MAPPINGS = "mappings";
+
+    /** The mimetype node name. */
+    public static final String N_MIMETYPE = "mimetype";
+
+    /** The mimetypes node name. */
+    public static final String N_MIMETYPES = "mimetypes";
 
     /** The properties node name. */
     public static final String N_PROPERTIES = "properties";
@@ -370,19 +380,13 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                     while (it.hasNext()) {
                         String key = (String)it.next();
                         // create <param name="">value</param> subnodes
-                        Object valueObject = prop.get(key);
-                        String value = new String();
-                        if (valueObject instanceof String) {
-                            value = (String)valueObject;
-                        } else if (valueObject instanceof Integer) {
-                            value = ((Integer)valueObject).toString();
+                        Object val = prop.get(key);
+                        resourceType.addElement(N_PARAM).addAttribute(A_NAME, key).addText(String.valueOf(val));
                         }
-                        resourceType.addElement(N_PARAM).addAttribute(A_NAME, key).addText(value);
                     }
                 }
             }
         }
-    }
 
     /**
      * Adds a directory default file.<p>
@@ -461,6 +465,14 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             2);
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 0, A_CLASS);
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 1, A_ORDER);
+
+        // add MIME type rules
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_MIMETYPES + "/" + N_MIMETYPE,
+            "addMimeType",
+            2);
+        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_MIMETYPES + "/" + N_MIMETYPE, 0, A_EXTENSION);
+        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_MIMETYPES + "/" + N_MIMETYPE, 1, A_TYPE);
 
         // generic <param> parameter rules
         digester.addCallMethod(
@@ -570,6 +582,16 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                 String.valueOf(collector.getOrder()));
         }
 
+        // add MIME types
+        Element mimeTypesElement = resources.addElement(N_MIMETYPES);
+        it = m_resourceManager.getMimeTypes().iterator();
+        while (it.hasNext()) {
+            CmsMimeType type = (CmsMimeType)it.next();
+            mimeTypesElement.addElement(N_MIMETYPE).addAttribute(A_EXTENSION, type.getExtension()).addAttribute(
+                A_TYPE,
+                type.getType());
+        }
+
         // add default file names
         Element defaultFileElement = vfs.addElement(N_DEFAULTFILES);
         it = m_defaultFiles.iterator();
@@ -583,7 +605,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // file translation rules
         Element fileTransElement = translationsElement.addElement(N_FILETRANSLATIONS).addAttribute(
             A_ENABLED,
-            new Boolean(m_fileTranslationEnabled).toString());
+            String.valueOf(m_fileTranslationEnabled));
         it = m_fileTranslations.iterator();
         while (it.hasNext()) {
             fileTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
@@ -592,7 +614,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // folder translation rules
         Element folderTransElement = translationsElement.addElement(N_FOLDERTRANSLATIONS).addAttribute(
             A_ENABLED,
-            new Boolean(m_folderTranslationEnabled).toString());
+            String.valueOf(m_folderTranslationEnabled));
         it = m_folderTranslations.iterator();
         while (it.hasNext()) {
             folderTransElement.addElement(N_TRANSLATION).setText(it.next().toString());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/09/22 15:17:03 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -183,6 +184,42 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e);
                 }
+            }
+        }
+    }
+
+    /**
+     * Performs the delete locale action.<p>
+     * 
+     * @throws JspException if something goes wrong
+     */
+    public void actionDeleteElementLocale() throws JspException {
+
+        try {
+            Locale loc = getElementLocale();
+            m_page.removeLocale(loc);
+            //write the modified xml content
+            m_file.setContents(m_page.marshal());
+            m_file = getCms().writeFile(m_file);
+            List locales = m_page.getLocales();
+            if (locales.size() > 0) {
+                // set first locale as new display locale
+                Locale newLoc = (Locale)locales.get(0);
+                setParamElementlanguage(newLoc.toString());
+                m_elementLocale = newLoc;
+            } else {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, getParamResource()));
+                }
+            }
+            initContent();
+        } catch (CmsXmlException e) {
+            // an error occured while trying to delete the locale, stop action
+            showErrorPage(e);
+        } catch (CmsException e) {
+            // should usually never happen
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage(), e);
             }
         }
     }

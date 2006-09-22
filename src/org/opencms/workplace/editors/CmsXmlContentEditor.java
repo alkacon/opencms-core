@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/03/28 07:53:23 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2006/09/22 15:17:03 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68 $ 
+ * @version $Revision: 1.69 $ 
  * 
  * @since 6.0.0 
  */
@@ -237,6 +237,41 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
+     * Performs the delete locale action.<p>
+     * 
+     * @throws JspException if something goes wrong
+     */
+    public void actionDeleteElementLocale() throws JspException {
+
+        try {
+            Locale loc = getElementLocale();
+            m_content.removeLocale(loc);
+            //write the modified xml content
+            writeContent();
+            List locales = m_content.getLocales();
+            if (locales.size() > 0) {
+                // set first locale as new display locale
+                Locale newLoc = (Locale)locales.get(0);
+                setParamElementlanguage(newLoc.toString());
+                m_elementLocale = newLoc;
+            } else {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, getParamResource()));
+                }
+            }
+
+        } catch (CmsXmlException e) {
+            // an error occured while trying to delete the locale, stop action
+            showErrorPage(e);
+        } catch (CmsException e) {
+            // should usually never happen
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage(), e);
+            }
+        }
+    }
+
+    /**
      * Performs a configurable action performed by the editor.<p>
      * 
      * The default action is: save resource, clear temporary files and publish the resource directly.<p>
@@ -292,40 +327,36 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             showErrorPage(e);
             return;
         }
+        // get the necessary parameters to move the element
+        int index = 0;
+        try {
+            index = Integer.parseInt(getParamElementIndex());
+        } catch (Exception e) {
+            // ignore, should not happen
+        }
 
-        // validate the content values
-        if (!getErrorHandler().hasErrors()) {
-            // get the necessary parameters to move the element
-            int index = 0;
-            try {
-                index = Integer.parseInt(getParamElementIndex());
-            } catch (Exception e) {
-                // ignore, should not happen
-            }
+        // get the value to move
+        I_CmsXmlContentValue value = m_content.getValue(getParamElementName(), getElementLocale(), index);
 
-            // get the value to move
-            I_CmsXmlContentValue value = m_content.getValue(getParamElementName(), getElementLocale(), index);
+        if (getAction() == ACTION_ELEMENT_MOVE_DOWN) {
+            // move down the value
+            value.moveDown();
+        } else {
+            // move up the value
+            value.moveUp();
+        }
 
-            if (getAction() == ACTION_ELEMENT_MOVE_DOWN) {
-                // move down the value
-                value.moveDown();
-            } else {
-                // move up the value
-                value.moveUp();
-            }
+        if (getErrorHandler().hasWarnings(getElementLocale())) {
+            // there were warnings for the edited content, reset error handler to avoid display issues
+            resetErrorHandler();
+        }
 
-            if (getErrorHandler().hasWarnings(getElementLocale())) {
-                // there were warnings for the edited content, reset error handler to avoid display issues
-                resetErrorHandler();
-            }
-
-            try {
-                // write the modified content to the temporary file
-                writeContent();
-            } catch (CmsException e) {
-                // an error occured while trying to save
-                showErrorPage(e);
-            }
+        try {
+            // write the modified content to the temporary file
+            writeContent();
+        } catch (CmsException e) {
+            // an error occured while trying to save
+            showErrorPage(e);
         }
     }
 
@@ -496,40 +527,37 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             return;
         }
 
-        // validate the content values
-        if (!getErrorHandler().hasErrors()) {
-            // get the necessary parameters to add/remove the element
-            int index = 0;
-            try {
-                index = Integer.parseInt(getParamElementIndex());
-            } catch (Exception e) {
-                // ignore, should not happen
-            }
+        // get the necessary parameters to add/remove the element
+        int index = 0;
+        try {
+            index = Integer.parseInt(getParamElementIndex());
+        } catch (Exception e) {
+            // ignore, should not happen
+        }
 
-            if (getAction() == ACTION_ELEMENT_REMOVE) {
-                // remove the value
-                m_content.removeValue(getParamElementName(), getElementLocale(), index);
-            } else {
-                // add the new value after the clicked element
-                if (m_content.hasValue(getParamElementName(), getElementLocale())) {
-                    // when other values are present, increase index to use right position
-                    index += 1;
-                }
-                m_content.addValue(getCms(), getParamElementName(), getElementLocale(), index);
+        if (getAction() == ACTION_ELEMENT_REMOVE) {
+            // remove the value
+            m_content.removeValue(getParamElementName(), getElementLocale(), index);
+        } else {
+            // add the new value after the clicked element
+            if (m_content.hasValue(getParamElementName(), getElementLocale())) {
+                // when other values are present, increase index to use right position
+                index += 1;
             }
+            m_content.addValue(getCms(), getParamElementName(), getElementLocale(), index);
+        }
 
-            if (getErrorHandler().hasWarnings(getElementLocale())) {
-                // there were warnings for the edited content, reset error handler to avoid display issues
-                resetErrorHandler();
-            }
+        if (getErrorHandler().hasWarnings(getElementLocale())) {
+            // there were warnings for the edited content, reset error handler to avoid display issues
+            resetErrorHandler();
+        }
 
-            try {
-                // write the modified content to the temporary file
-                writeContent();
-            } catch (CmsException e) {
-                // an error occured while trying to save
-                showErrorPage(e);
-            }
+        try {
+            // write the modified content to the temporary file
+            writeContent();
+        } catch (CmsException e) {
+            // an error occured while trying to save
+            showErrorPage(e);
         }
     }
 
@@ -638,7 +666,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public String getXmlEditorForm() {
 
         // set "editor mode" attribute (required for link replacement in the root site) 
-        getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
+        getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, Boolean.TRUE);
 
         // add customized message bundle eventually specified in XSD of XML content
         addMessages(m_content.getContentDefinition().getContentHandler().getMessages(getLocale()));
@@ -953,6 +981,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 }
             }
             setAction(ACTION_EXIT);
+        } else if (EDITOR_DELETELOCALE.equals(getParamAction())) {
+            setAction(ACTION_DELETELOCALE);
         } else if (EDITOR_SHOW.equals(getParamAction())) {
             setAction(ACTION_SHOW);
         } else if (EDITOR_SHOW_ERRORMESSAGE.equals(getParamAction())) {
