@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/25 08:25:28 $
- * Version: $Revision: 1.717.2.47 $
+ * Date   : $Date: 2006/09/25 08:37:10 $
+ * Version: $Revision: 1.717.2.48 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ OpenCms 6.5.3 - September xxxx, 2006
 - Modified calculation of inserted nav positions
 * Fixed issue with upload applet always using the site root set in the user preferences
 - Modified handling of scrub export folder for static export on demand
+- Extented Html Import: Added possibility to leave images and downloads at original location
 
 OpenCms 6.5.2 - September 1st, 2006
 - Improved delete dialog
@@ -2324,5 +2325,4 @@ OpenCms 4.0a20 Giedi Prime: Rabban - 01 March 2000
 OpenCms 4.0a19 Giedi Prime: Rabban - 24 February 2000
 
 - Public Open Source release of OpenCms
-
 

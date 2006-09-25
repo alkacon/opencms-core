@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2006/09/21 10:01:50 $
- * Version: $Revision: 1.12.4.4 $
+ * Date   : $Date: 2006/09/25 08:37:10 $
+ * Version: $Revision: 1.12.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.12.4.4 $ 
+ * @version $Revision: 1.12.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -414,7 +414,7 @@ public class CmsHtmlImport {
                 String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
                 if (!name.equals("imagegallery")) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.GUI_HTMLIMPORT_IMGGALLERY_2,
+                        Messages.GUI_HTMLIMPORT_IMGGALLERY_INVALID_1,
                         m_imageGallery));
                 }
             } catch (CmsException e) {
@@ -432,7 +432,7 @@ public class CmsHtmlImport {
             String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
             if (!name.equals("linkgallery")) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.GUI_HTMLIMPORT_LINKGALLERY_2,
+                    Messages.GUI_HTMLIMPORT_LINKGALLERY_INVALID_1,
                     m_linkGallery));
             }
         } catch (CmsException e) {
@@ -450,7 +450,7 @@ public class CmsHtmlImport {
                 String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
                 if (!name.equals("downloadgallery")) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.GUI_HTMLIMPORT_DOWNGALLERY_2,
+                        Messages.GUI_HTMLIMPORT_DOWNGALLERY_INVALID_1,
                         m_downloadGallery));
                 }
             } catch (CmsException e) {
