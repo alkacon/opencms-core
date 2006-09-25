@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyChange.java,v $
- * Date   : $Date: 2006/03/31 13:59:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/09/25 08:27:38 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
@@ -61,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -432,17 +434,78 @@ public class CmsPropertyChange extends CmsDialog {
         // lock the selected resource
         checkLock(getParamResource());
         // change the property values    
-        List changedResources = new ArrayList();
-        changedResources = getCms().changeResourcesInFolderWithProperty(
-            getParamResource(),
-            getParamPropertyName(),
-            getParamOldValue(),
-            getParamNewValue(),
-            recursive);
+        List changedResources = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamOldValue())) {
+            changedResources = getCms().changeResourcesInFolderWithProperty(
+                getParamResource(),
+                getParamPropertyName(),
+                getParamOldValue(),
+                getParamNewValue(),
+                recursive);
+        } else {
+            changedResources = setPropertyInFolder(
+                getParamResource(),
+                getParamPropertyName(),
+                getParamNewValue(),
+                recursive);
+        }
         setChangedResources(changedResources);
         return true;
     }
+    
+    /**
+     * Sets the given property with the given value to the given resource 
+     * (potentially recursiv) if it has not been set before.<p>
+     * 
+     * Returns a list with all sub resources that have been modified this way.<p>
+     *
+     * @param context the current request context
+     * @param resourceRootPath the resource on which property definition values are changed
+     * @param propertyDefinition the name of the propertydefinition to change the value
+     * @param newValue the new value of the propertydefinition
+     * @param recursive if true, change recursively all property values on sub-resources (only for folders)
+     * 
+     * @return a list with the <code>{@link CmsResource}</code>'s where the property value has been changed
+     *
+     * @throws CmsVfsException for now only when the search for the oldvalue failed. 
+     * @throws CmsException if operation was not successful
+     */
+    private List setPropertyInFolder(
+        String resourceRootPath,
+        String propertyDefinition,
+        String newValue,
+        boolean recursive) throws CmsException, CmsVfsException {
 
+        CmsObject cms = this.getCms();
+
+        // collect the resources to look up
+        List resources = new ArrayList();
+        if (recursive) {
+            resources = cms.readResources(resourceRootPath, CmsResourceFilter.IGNORE_EXPIRATION);
+        } else {
+            resources.add(resourceRootPath);
+        }
+
+        List changedResources = new ArrayList(resources.size());
+        CmsProperty newProperty = new CmsProperty(propertyDefinition, null, null);
+        // create permission set and filter to check each resource
+        for (int i = 0; i < resources.size(); i++) {
+            // loop through found resources and check property values
+            CmsResource res = (CmsResource)resources.get(i);
+            CmsProperty property = cms.readPropertyObject(res, propertyDefinition, false);
+            if (property.isNullProperty()) {
+                // change structure value
+                newProperty.setStructureValue(newValue);
+                newProperty.setName(propertyDefinition);
+                cms.writePropertyObject(cms.getRequestContext().removeSiteRoot(res.getRootPath()), newProperty);
+                changedResources.add(res);
+            } else {
+                // nop
+            }
+        }
+        return changedResources;
+    }
+    
     /**
      * Sets the changed resources that were affected by the property change action.<p>
      *
