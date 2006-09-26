@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.36.4.2 $
+ * Date   : $Date: 2006/09/26 14:13:19 $
+ * Version: $Revision: 1.36.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.2 $
+ * @version $Revision: 1.36.4.3 $
  * 
  * @since 6.0.0
  */
@@ -90,6 +90,12 @@ public class CmsUserSettings {
 
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_ZIPCODE = "USER_ZIPCODE";
+
+    /** The default button style. */
+    private static final int BUTTONSTYLE_DEFAULT = 1;
+
+    /** The default number of entries per page. */
+    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
 
     /** Flag for displaying the date created column. */
     public static final int FILELIST_DATE_CREATED = 1024;
@@ -133,12 +139,6 @@ public class CmsUserSettings {
     /** Flag for displaying the workflow check column. */
     public static final int FILELIST_WORKFLOW_STATE = 16384;
 
-    /** The default button style. */
-    private static final int BUTTONSTYLE_DEFAULT = 1;
-
-    /** The default number of entries per page. */
-    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
-
     /** Identifier prefix for all keys in the user additional info table. */
     private static final String PREFERENCES = "USERPREFERENCES_";
 
@@ -176,10 +176,13 @@ public class CmsUserSettings {
 
     private Locale m_locale;
 
+    /** The default settings for the new resource dialogs. */
+    private CmsUserNewResourceSettings m_newResourceSettings;
+
     private String m_project;
 
     private CmsUserProjectSettings m_projectSettings;
-
+    
     /** Controls appearance of the publish button. */
     private String m_publishButtonAppearance;
 
@@ -420,6 +423,16 @@ public class CmsUserSettings {
     public Locale getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Returns the settings for new resource dialogs.<p> 
+     * 
+     * @return the settings for new resource dialogs
+     */
+    public CmsUserNewResourceSettings getNewResourceSettings() {
+    
+        return m_newResourceSettings;
     }
 
     /**
@@ -807,6 +820,11 @@ public class CmsUserSettings {
                 // ignore
             }
             m_projectSettings.setProjectFilesMode(CmsProjectResourcesDisplayMode.ALL_CHANGES);
+        }
+        if(m_newResourceSettings == null) {
+            // was not configured
+            m_newResourceSettings = new CmsUserNewResourceSettings();
+            m_newResourceSettings.setNewFolderSettings(new CmsUserNewFolderSettings());
         }
 
         try {
@@ -1247,6 +1265,21 @@ public class CmsUserSettings {
     }
 
     /**
+     * Sets a specific explorer setting depending on the set parameter.<p>
+     * 
+     * @param set true if the setting should be set, otherwise false
+     * @param setting the settings constant value for the explorer settings
+     */
+    private void setExplorerSetting(boolean set, int setting) {
+
+        if (set) {
+            m_explorerSettings |= setting;
+        } else {
+            m_explorerSettings &= ~setting;
+        }
+    }
+
+    /**
      * Sets the explorer start settings.<p>
      * 
      * @param settings explorer start settings tu use
@@ -1264,6 +1297,16 @@ public class CmsUserSettings {
     public void setLocale(Locale locale) {
 
         m_locale = locale;
+    }
+
+    /**
+     * Sets the settings for new resource dialogs.<p>
+     * 
+     * @param the settings for new resource dialogs
+     */
+    public void setNewResourceSettings(CmsUserNewResourceSettings newResourceSettings) {
+    
+        m_newResourceSettings = newResourceSettings;
     }
 
     /**
@@ -1700,6 +1743,7 @@ public class CmsUserSettings {
         return ((m_explorerSettings & CmsUserSettings.FILELIST_WORKFLOW_STATE) > 0);
     }
 
+
     /**
      * Determines if the upload applet should be used.<p>
      * 
@@ -1708,20 +1752,5 @@ public class CmsUserSettings {
     public boolean useUploadApplet() {
 
         return m_uploadApplet;
-    }
-
-    /**
-     * Sets a specific explorer setting depending on the set parameter.<p>
-     * 
-     * @param set true if the setting should be set, otherwise false
-     * @param setting the settings constant value for the explorer settings
-     */
-    private void setExplorerSetting(boolean set, int setting) {
-
-        if (set) {
-            m_explorerSettings |= setting;
-        } else {
-            m_explorerSettings &= ~setting;
-        }
     }
 }

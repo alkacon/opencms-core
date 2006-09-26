@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/25 08:37:10 $
- * Version: $Revision: 1.717.2.48 $
+ * Date   : $Date: 2006/09/26 14:13:19 $
+ * Version: $Revision: 1.717.2.49 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.5.3 - September xxxx, 2006
+! New configuration option for initial checkbox state on new folder dialog in opencms-workplace.xml 
 ! Content tool for property change allows to set property values for resources that have an empty old value
 * Fixed javascript errror on workplace admin search dialog for internet explorer
 * Fixed issue with readResourcesWithProperty and getResourceInTimeRange not applying user permissions

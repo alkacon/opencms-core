@@ -1,35 +1,41 @@
-<%@ page import="org.opencms.workplace.explorer.*" %><%	
+<%@ page import="org.opencms.workplace.explorer.*,org.opencms.main.OpenCms,org.opencms.db.CmsUserNewFolderSettings"%>
+<%!String getCheckBoxValue(Boolean b) {
 
-	// initialize the workplace class
-	CmsNewResourceFolder wp = new CmsNewResourceFolder(pageContext, request, response);
+        boolean bool = b.booleanValue();
+        return (bool) ? "checked=\"checked\"" : "";
+    }%>
+<%
+            // initialize the workplace class
+            CmsNewResourceFolder wp = new CmsNewResourceFolder(pageContext, request, response);
+            CmsUserNewFolderSettings folderSettings = OpenCms.getWorkplaceManager().getDefaultUserSettings().getNewResourceSettings().getNewFolderSettings();
+            Boolean editPropsChecked = folderSettings.isEditPropsChecked();
+            Boolean createIndexPageChecked = folderSettings.isCeateIndexPageChecked();
+            //////////////////// start of switch statement 
 
-//////////////////// start of switch statement 
-	
-switch (wp.getAction()) {
+            switch (wp.getAction()) {
 
-case CmsNewResourceFolder.ACTION_CANCEL:
-//////////////////// ACTION: cancel button pressed
-	wp.actionCloseDialog();
-break;
+                case CmsNewResourceFolder.ACTION_CANCEL:
+                    //////////////////// ACTION: cancel button pressed
+                    wp.actionCloseDialog();
+                    break;
 
+                case CmsNewResourceFolder.ACTION_OK:
+                    //////////////////// ACTION: resource name specified and form submitted
+                    wp.actionCreateResource();
+                    if (wp.isResourceCreated()) {
+                        wp.actionEditProperties(); // redirects only if the edit properties option was checked
+                    }
+                    break;
 
-case CmsNewResourceFolder.ACTION_OK:
-//////////////////// ACTION: resource name specified and form submitted
-	wp.actionCreateResource();
-	if (wp.isResourceCreated()) {
-		wp.actionEditProperties(); // redirects only if the edit properties option was checked
-	}
-break;
+                case CmsNewResourceFolder.ACTION_NEWFORM:
+                case CmsNewResourceFolder.ACTION_DEFAULT:
+                default:
+                    //////////////////// ACTION: show the form to specify the folder name, edit properties option and create index file option
 
-
-case CmsNewResourceFolder.ACTION_NEWFORM:
-case CmsNewResourceFolder.ACTION_DEFAULT:
-default:
-//////////////////// ACTION: show the form to specify the folder name, edit properties option and create index file option
-	
-	wp.setParamAction(wp.DIALOG_OK);
-
-%><%= wp.htmlStart("help.explorer.new.file") %>
+                    wp.setParamAction(wp.DIALOG_OK);
+%>
+<%=wp.htmlStart("help.explorer.new.file")%>
+<%@page import="org.opencms.db.CmsUserNewFolderSettings;"%>
 <script type="text/javascript">
 <!--
 	var labelFinish = "<%= wp.key(Messages.GUI_BUTTON_ENDWIZARD_0) %>";
@@ -60,40 +66,49 @@ default:
 	}
 //-->
 </script>
-<%= wp.bodyStart("dialog") %>
-<%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
+<%=wp.bodyStart("dialog")%>
+<%=wp.dialogStart()%>
+<%=wp.dialogContentStart(wp.getParamTitle())%>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
-<%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post"
+	class="nomargin"
+	onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<%=wp.paramsAsHidden()%> <input type="hidden"
+	name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <table border="0" width="100%">
-<tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_RESOURCE_NAME_0) %></td>
-	<td class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>" id="newresfield" type="text" value="" class="maxwidth" onkeyup="checkValue();"></td>
-</tr> 
-<tr>
-	<td>&nbsp;</td>
-	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key(Messages.GUI_NEWFILE_EDITPROPERTIES_0) %></td>    
-</tr>
-<tr>
-	<td>&nbsp;</td>
-	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_CREATEINDEX %>" id="<%= wp.PARAM_CREATEINDEX %>" type="checkbox" value="true" checked="checked">&nbsp;<%= wp.key(Messages.GUI_NEWFOLDER_CREATEINDEX_0) %></td>    
-</tr>
+	<tr>
+		<td style="white-space: nowrap;" unselectable="on"><%=wp.key(Messages.GUI_RESOURCE_NAME_0)%></td>
+		<td class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>"
+			id="newresfield" type="text" value="" class="maxwidth"
+			onkeyup="checkValue();"></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input
+			name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit"
+			type="checkbox" value="<%= editPropsChecked %>"
+			<%= this.getCheckBoxValue(editPropsChecked)%>
+			onclick="toggleButtonLabel();">&nbsp;<%=wp.key(Messages.GUI_NEWFILE_EDITPROPERTIES_0)%></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input
+			name="<%= wp.PARAM_CREATEINDEX %>" id="<%= wp.PARAM_CREATEINDEX %>"
+			type="checkbox" value="<%= createIndexPageChecked%>"
+			<%= this.getCheckBoxValue(createIndexPageChecked) %>>&nbsp;<%=wp.key(Messages.GUI_NEWFOLDER_CREATEINDEX_0)%></td>
+	</tr>
 </table>
 
-<%= wp.dialogContentEnd() %>
-
-<%= wp.dialogButtonsNextCancel("id=\"nextButton\" disabled=\"disabled\"", null) %>
+<%=wp.dialogContentEnd()%> <%=wp.dialogButtonsNextCancel("id=\"nextButton\" disabled=\"disabled\"", null)%>
 
 </form>
 
-<%= wp.dialogEnd() %>
+<%=wp.dialogEnd()%>
 
-<%= wp.bodyEnd() %>
-<%= wp.htmlEnd() %>
+<%=wp.bodyEnd()%>
+<%=wp.htmlEnd()%>
 <%
-} 
-//////////////////// end of switch statement 
+            }
+            //////////////////// end of switch statement
 %>

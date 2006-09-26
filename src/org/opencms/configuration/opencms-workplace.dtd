@@ -353,7 +353,8 @@
 									uploadapplet,
 									publishbuttonappearance?,
 									show-fileuploadbutton?,
-									allowbrokenrelations?)>
+									allowbrokenrelations?, 
+									newresource-settings?)>
 <!--
 # The buttonstyle controls the appearence of the buttons on the workplace.
 # Possible values are [image|textimage|text].
@@ -394,6 +395,19 @@
 # Default value is <code>true</code>
 -->
 <!ELEMENT allowbrokenrelations (#PCDATA)>
+
+<!-- 
+# wrapper node for settings for the various new resource dialogs.
+--> 
+<!ELEMENT newresource-settings (editPropsChecked?,
+								newfolder-settings?)>
+								
+<!ELEMENT editPropsChecked (#PCDATA)>
+
+<!ELEMENT newfolder-settings (editPropsChecked?, 
+					          createIndexPageChecked?)>
+
+<!ELEMENT createIndexPageChecked (#PCDATA)>
 
 <!--
 # The workplace startupsettings are used to define locale, project and view used directly

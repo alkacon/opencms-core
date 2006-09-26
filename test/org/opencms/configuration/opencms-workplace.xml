@@ -663,6 +663,12 @@
 					<publishbuttonappearance>always</publishbuttonappearance>
 					<show-fileuploadbutton>false</show-fileuploadbutton>
 					<allowbrokenrelations>false</allowbrokenrelations>
+					<newresource-settings>
+						<editPropsChecked>true</editPropsChecked>            			
+						<newfolder-settings>
+              				<createIndexPageChecked>true</createIndexPageChecked>            
+            			</newfolder-settings>
+          			</newresource-settings>         					
 				</workplace-generaloptions>
 				<workplace-startupsettings>
 					<locale>en</locale>
