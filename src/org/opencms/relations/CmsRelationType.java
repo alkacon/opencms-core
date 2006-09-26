@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2006/09/10 20:56:15 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/09/26 15:03:16 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Wrapper class for
@@ -54,7 +55,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.3.0
  */
@@ -164,6 +165,38 @@ public final class CmsRelationType implements Serializable {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Returns a localized name for the given relation type.<p>
+     * 
+     * @param locale the locale
+     * 
+     * @return a localized name
+     */
+    public String getLocalizedName(Locale locale) {
+
+        String nameKey = null;
+        switch (getMode()) {
+            // hyperlink
+            case 1:
+                nameKey = Messages.GUI_RELATION_TYPE_HYPERLINK_0;
+                break;
+            // embedded image
+            case 2:
+                nameKey = Messages.GUI_RELATION_TYPE_EMBEDDED_IMAGE_0;
+                break;
+            // attachment
+            case 3:
+                nameKey = Messages.GUI_RELATION_TYPE_ATTACHMENT_0;
+                break;
+            // reference
+            case 4:
+            default:
+                nameKey = Messages.GUI_RELATION_TYPE_REFERENCE_0;
+                break;
+        }
+        return Messages.get().getBundle(locale).key(nameKey);
     }
 
     /**
