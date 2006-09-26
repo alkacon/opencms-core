@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2006/06/08 09:38:46 $
- * Version: $Revision: 1.32.4.3 $
+ * Date   : $Date: 2006/09/26 13:25:44 $
+ * Version: $Revision: 1.32.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.32.4.3 $
+ * @version $Revision: 1.32.4.4 $
  * 
  * @since 6.0.0
  * 
@@ -655,7 +655,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public void setLastname(String lastname) {
 
-        OpenCms.getValidationHandler().checkFirstname(lastname);
+        OpenCms.getValidationHandler().checkLastname(lastname);
         m_lastname = lastname;
     }
 
