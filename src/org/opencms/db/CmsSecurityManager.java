@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/09/20 10:54:59 $
- * Version: $Revision: 1.97.4.7 $
+ * Date   : $Date: 2006/09/26 08:37:37 $
+ * Version: $Revision: 1.97.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -5386,9 +5386,10 @@ public final class CmsSecurityManager {
 
         if (source.isFolder()) {
             if (!CmsResource.isFolder(destination)) {
-                // ensure folder name end's with a / (required for the following comparison)
+                // ensure folder name end's with a /
                 destination = destination.concat("/");
-            } // first validate the destination name
+            } 
+            // validate the destination name
             destination = CmsResource.validateFoldername(destination);
             // collect all resources in the folder (including everything)
             resources = m_driverManager.readChildResources(dbc, source, CmsResourceFilter.ALL, true, true, false);
@@ -5396,11 +5397,18 @@ public final class CmsSecurityManager {
 
         // target permissions will be checked later
         m_driverManager.moveResource(dbc, source, destination, false, true);
+
         // make sure lock is set
         CmsResource destinationResource = m_driverManager.readResource(dbc, destination, CmsResourceFilter.ALL);
-
-        // the destination must always get a new lock
-        m_driverManager.lockResource(dbc, destinationResource, dbc.currentProject(), CmsLockType.EXCLUSIVE);
+        try {
+            // the destination must always get a new lock
+            m_driverManager.lockResource(dbc, destinationResource, dbc.currentProject(), CmsLockType.EXCLUSIVE);
+        } catch (Exception e) {
+            // could happen with workflow (and harder with shared) locks on single files
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(e);
+            }
+        }
 
         if (resources != null) {
             // now walk through all sub-resources in the folder

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/08/25 12:22:55 $
- * Version: $Revision: 1.16.4.3 $
+ * Date   : $Date: 2006/09/26 08:37:37 $
+ * Version: $Revision: 1.16.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,17 +41,20 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsMultiException;
 import org.opencms.main.OpenCms;
 
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Resource type descriptor for the type "folder".<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.3 $ 
+ * @version $Revision: 1.16.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -226,10 +229,15 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                 }
             }
             if (!me.getExceptions().isEmpty()) {
-                throw me;
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(me);
+                }
             }
         }
     }
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsResourceTypeFolderBase.class);
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
