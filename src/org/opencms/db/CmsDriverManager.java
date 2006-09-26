@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/09/20 14:37:59 $
- * Version: $Revision: 1.570.2.19 $
+ * Date   : $Date: 2006/09/26 15:02:44 $
+ * Version: $Revision: 1.570.2.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -6585,9 +6585,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             link.getType());
                     }
                     // do not write twice the same relation
-                    if (!writtenRelations.contains(relation.getTargetPath())) {
+                    String key = relation.getTargetPath() + relation.getType();
+                    if (!writtenRelations.contains(key)) {
                         createRelation(dbc, relation);
-                        writtenRelations.add(relation.getTargetPath());
+                        writtenRelations.add(key);
                         newRelations.add(relation);
                     }
                 }

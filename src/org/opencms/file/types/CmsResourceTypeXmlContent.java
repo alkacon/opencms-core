@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2006/08/25 12:22:55 $
- * Version: $Revision: 1.22.8.3 $
+ * Date   : $Date: 2006/09/26 15:02:44 $
+ * Version: $Revision: 1.22.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.8.3 $ 
+ * @version $Revision: 1.22.8.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -178,7 +179,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             cms.getRequestContext().setRequestTime(requestTime);
         }
 
-        List links = new ArrayList();
+        Map links = new HashMap();
         List locales = xmlContent.getLocales();
 
         // iterate over all languages
@@ -203,19 +204,27 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                         // external links are ommitted
                         if (link.isInternal()) {
                             link.checkConsistency(cms);
-                            links.add(link);
+                            // be sure not to add twice the same link/type
+                            String key = link.getTarget() + link.getType().toString();
+                            if (!links.containsKey(key)) {
+                                links.put(key, link);
+                            }
                         }
                     }
                 } else if (value instanceof CmsXmlVfsFileReferenceValue) {
                     CmsXmlVfsFileReferenceValue refValue = (CmsXmlVfsFileReferenceValue)value;
                     CmsLink link = refValue.getLink(cms);
                     if (link != null) {
-                        links.add(link);
+                        // be sure not to add twice the same link/type
+                        String key = link.getTarget() + link.getType().toString();
+                        if (!links.containsKey(key)) {
+                            links.put(key, link);
+                        }
                     }
                 }
             }
         }
-        return links;
+        return new ArrayList(links.values());
     }
 
     /**

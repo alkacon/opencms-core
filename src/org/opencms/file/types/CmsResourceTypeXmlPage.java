@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2006/08/25 12:22:55 $
- * Version: $Revision: 1.25.4.3 $
+ * Date   : $Date: 2006/09/26 15:02:44 $
+ * Version: $Revision: 1.25.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25.4.3 $ 
+ * @version $Revision: 1.25.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,8 +190,10 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
                         CmsLink link = (CmsLink)k.next();
                         if (link.isInternal()) {
                             link.checkConsistency(cms);
-                            if (!links.containsKey(link.getTarget())) {
-                                links.put(link.getTarget(), link);
+                            // be sure not to add twice the same link/type
+                            String key = link.getTarget() + link.getType().toString();
+                            if (!links.containsKey(key)) {
+                                links.put(key, link);
                             }
                         }
                     }
