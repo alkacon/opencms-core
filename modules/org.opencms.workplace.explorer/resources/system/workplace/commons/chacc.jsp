@@ -1,10 +1,12 @@
 <%@ page import="
-	org.opencms.workplace.commons.*"
-%><%
+	org.opencms.workplace.CmsDialog,
+	org.opencms.workplace.CmsWorkplace,
+	org.opencms.workplace.commons.CmsChacc
+" %><%
 	
 	// initialize the workplace class
 	CmsChacc wp = new CmsChacc(pageContext, request, response);
-	if (wp.getAction() != CmsChacc.ACTION_CANCEL) {
+	if (wp.getAction() != CmsDialog.ACTION_CANCEL) {
 		wp.init();
 	}
 	boolean displayForm = true;
@@ -13,7 +15,7 @@
 switch (wp.getAction()) {
 
 
-case CmsChacc.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
@@ -22,7 +24,7 @@ case CmsChacc.ACTION_CANCEL:
 break;
 
 
-case CmsChacc.ACTION_SET:
+case CmsDialog.ACTION_SET:
 	wp.actionModifyAce(request);
 break;
 
@@ -72,10 +74,10 @@ function toggleDetail(id) {
     var cl = element.className;
     if (cl == "hide") {
         element.className = "show";
-        icon.setAttribute("src", '<%= wp.getSkinUri() %>commons/minus.png');
+        icon.setAttribute("src", '<%= CmsWorkplace.getSkinUri() %>commons/minus.png');
     } else {
         element.className = "hide";
-        icon.setAttribute("src", '<%= wp.getSkinUri() %>commons/plus.png');
+        icon.setAttribute("src", '<%= CmsWorkplace.getSkinUri() %>commons/plus.png');
     }
 }
 
@@ -106,8 +108,8 @@ function toggleDetail(id) {
 <%= wp.dialogContentEnd() %>
 
 <form name="buttons" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
-<input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.DIALOG_CANCEL %>">
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_ACTION %>" value="<%= CmsDialog.DIALOG_CANCEL %>">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 <%= wp.dialogButtonsClose() %>
 </form>
 

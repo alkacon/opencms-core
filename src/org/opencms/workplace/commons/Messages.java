@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/09/01 10:29:39 $
- * Version: $Revision: 1.15.4.3 $
+ * Date   : $Date: 2006/09/26 08:39:31 $
+ * Version: $Revision: 1.15.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.3 $ 
+ * @version $Revision: 1.15.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -194,6 +194,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_AVAILABILITY_RESPONSIBLES_0 = "GUI_AVAILABILITY_RESPONSIBLES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKENRELATIONS_1 = "GUI_BROKENRELATIONS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKENRELATIONS_MULTI_2 = "GUI_BROKENRELATIONS_MULTI_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CALENDAR_CHOOSE_DATE_0 = "GUI_CALENDAR_CHOOSE_DATE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -305,9 +311,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DELETE_PRESERVE_SIBLINGS_0 = "GUI_DELETE_PRESERVE_SIBLINGS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DELETE_RELATIONS_0 = "GUI_DELETE_RELATIONS_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_RELATIONS_NOT_ALLOWED_0 = "GUI_DELETE_RELATIONS_NOT_ALLOWED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -315,6 +318,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_RESOURCE_1 = "GUI_DELETE_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_SIBLING_RELATION_1 = "GUI_DELETE_SIBLING_RELATION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_WARNING_SIBLINGS_0 = "GUI_DELETE_WARNING_SIBLINGS_0";

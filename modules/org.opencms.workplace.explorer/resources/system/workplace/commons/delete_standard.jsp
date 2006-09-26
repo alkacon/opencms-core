@@ -1,6 +1,8 @@
 <%@ page import="
 		org.opencms.workplace.CmsDialog,
-		org.opencms.workplace.commons.CmsDelete
+		org.opencms.workplace.CmsWorkplace,
+		org.opencms.workplace.commons.CmsDelete,
+		java.util.Collections
 " %><%	
 
 	// initialize the workplace class
@@ -14,18 +16,8 @@ case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
-
-break;
-
-////////////////////ACTION: other actions handled outside of this JSP
-case CmsDialog.ACTION_CONFIRMED:
-case CmsDialog.ACTION_REPORT_BEGIN:
-case CmsDialog.ACTION_REPORT_UPDATE:
-case CmsDialog.ACTION_REPORT_END:
-
-	wp.actionReport();
 	break;
-	
+
 case CmsDelete.ACTION_DELETE:
 case CmsDialog.ACTION_WAIT:
 
@@ -34,15 +26,46 @@ case CmsDialog.ACTION_WAIT:
 	wp.actionDelete();
 	break;
 
-
 case CmsDialog.ACTION_DEFAULT:
 default:
 
 //////////////////// ACTION: show delete dialog (default)
 
-	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
+	wp.setParamAction("delete");
 
 %><%= wp.htmlStart("help.explorer.contextmenu.delete") %>
+<script type="text/javascript">
+<!--
+
+function toggleDetail(id) {
+
+    var element = document.getElementById(id);
+    var icon = document.getElementById("ic-"+id);
+    var cl = element.className;
+    if (cl == "hide") {
+        element.className = "show";
+        icon.setAttribute("src", '<%= CmsWorkplace.getSkinUri() %>commons/minus.png');
+    } else {
+        element.className = "hide";
+        icon.setAttribute("src", '<%= CmsWorkplace.getSkinUri() %>commons/plus.png');
+    }
+}
+
+function reloadDialog(deleteSiblings) {
+
+   document.forms["reloadform"].<%=CmsDelete.PARAM_DELETE_SIBLINGS%>.value=deleteSiblings;
+   document.forms["reloadform"].submit();
+}
+
+function printBrokenRelations() {
+
+   document.forms["reloadform"].action = "<%= wp.getJsp().link("/system/workplace/commons/print-brokenrelations.jsp") %>";
+   document.forms["reloadform"].target = "print-brokenrelations";
+   document.forms["reloadform"].submit();
+}
+
+//-->
+</script>
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
@@ -57,10 +80,15 @@ if (wp.isMultiOperation()) {
 
 <%= wp.dialogSpacer() %>
 
+<form name="reloadform" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" >
+<%= wp.paramsAsHidden(Collections.singleton(CmsDialog.PARAM_ACTION)) %>
+</form>
+
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
+<%= wp.buildRelations(false) %>
 <%= wp.buildDeleteSiblings() %>
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>
