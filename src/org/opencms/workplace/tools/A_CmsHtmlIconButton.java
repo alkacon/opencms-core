@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.21.4.1 $
+ * Date   : $Date: 2006/09/26 08:38:57 $
+ * Version: $Revision: 1.21.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -43,7 +44,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21.4.1 $ 
+ * @version $Revision: 1.21.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,6 +174,9 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String onClick,
         boolean singleHelp) {
 
+        // TODO: remove the jsp parameter
+        int todo_v7;
+        
         StringBuffer html = new StringBuffer(1024);
         if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
             html.append("<div class='bigLink' id='img");
@@ -229,15 +233,10 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
                 icon.append(iconPath.substring(0, iconPath.lastIndexOf('.')));
                 icon.append("_disabled");
                 icon.append(iconPath.substring(iconPath.lastIndexOf('.')));
-                if (jsp != null) {
-                    String resorcesRoot = jsp.getJspContext().getServletConfig().getServletContext().getRealPath(
-                        "/resources/");
-                    File test = new File(resorcesRoot + "/" + icon.toString());
-                    if (test.exists()) {
-                        html.append(icon);
-                    } else {
-                        html.append(iconPath);
-                    }
+                String resorcesRoot = OpenCms.getSystemInfo().getWebApplicationRfsPath() + "resources";
+                File test = new File(resorcesRoot + "/" + icon.toString());
+                if (test.exists()) {
+                    html.append(icon);
                 } else {
                     html.append(iconPath);
                 }
@@ -259,7 +258,8 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
             }
         }
         if ((style != CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath) && (style != CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT)) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)
+                && (style != CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT)) {
                 html.append("&nbsp;");
             }
             if (enabled) {
