@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/09/26 15:10:04 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,11 +52,15 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 6.0.0
  */
 public class CmsUserSettings {
+
+    /** Key for additional info city. */
+    // Value must unfortunatly still be "USER_TOWN" or existing serialized user information will be lost
+    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN";
 
     /** Key for additional info of resources that were confirmemed by the user. */
     public static final String ADDITIONAL_INFO_CONFIRMED_RESOURCES = "ADDITIONAL_INFO_CONFIRMED_RESOURCES";
@@ -76,10 +80,6 @@ public class CmsUserSettings {
     /** Key for additional info start settings. */
     public static final String ADDITIONAL_INFO_STARTSETTINGS = "USER_STARTSETTINGS";
 
-    /** Key for additional info city. */
-    // Value must unfortunatly still be "USER_TOWN" or existing serialized user information will be lost
-    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN";
-    
     /**
      *  Key for additional info city.
      *  
@@ -89,6 +89,12 @@ public class CmsUserSettings {
 
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_ZIPCODE = "USER_ZIPCODE";
+
+    /** The default button style. */
+    private static final int BUTTONSTYLE_DEFAULT = 1;
+
+    /** The default number of entries per page. */
+    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
 
     /** Flag for displaying the date created column. */
     public static final int FILELIST_DATE_CREATED = 1024;
@@ -129,12 +135,6 @@ public class CmsUserSettings {
     /** Flag for displaying the user who last modified column. */
     public static final int FILELIST_USER_LASTMODIFIED = 2048;
 
-    /** The default button style. */
-    private static final int BUTTONSTYLE_DEFAULT = 1;
-
-    /** The default number of entries per page. */
-    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
-
     /** Identifier prefix for all keys in the user additional info table. */
     private static final String PREFERENCES = "USERPREFERENCES_";
 
@@ -171,6 +171,9 @@ public class CmsUserSettings {
     private int m_explorerSettings;
 
     private Locale m_locale;
+
+    /** The default settings for the new resource dialogs. */
+    private CmsUserNewResourceSettings m_newResourceSettings;
 
     private String m_project;
 
@@ -412,6 +415,16 @@ public class CmsUserSettings {
     public Locale getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Returns the settings for new resource dialogs.<p> 
+     * 
+     * @return the settings for new resource dialogs
+     */
+    public CmsUserNewResourceSettings getNewResourceSettings() {
+
+        return m_newResourceSettings;
     }
 
     /**
@@ -860,6 +873,11 @@ public class CmsUserSettings {
                 // ignore
             }
             m_projectSettings.setProjectFilesMode(CmsProjectResourcesDisplayMode.ALL_CHANGES);
+        }
+        if (m_newResourceSettings == null) {
+            // was not configured
+            m_newResourceSettings = new CmsUserNewResourceSettings();
+            m_newResourceSettings.setNewFolderSettings(new CmsUserNewFolderSettings());
         }
 
         try {
@@ -1321,6 +1339,21 @@ public class CmsUserSettings {
     }
 
     /**
+     * Sets a specific explorer setting depending on the set parameter.<p>
+     * 
+     * @param set true if the setting should be set, otherwise false
+     * @param setting the settings constant value for the explorer settings
+     */
+    private void setExplorerSetting(boolean set, int setting) {
+
+        if (set) {
+            m_explorerSettings |= setting;
+        } else {
+            m_explorerSettings &= ~setting;
+        }
+    }
+
+    /**
      * Sets the explorer start settings.<p>
      * 
      * @param settings explorer start settings tu use
@@ -1338,6 +1371,16 @@ public class CmsUserSettings {
     public void setLocale(Locale locale) {
 
         m_locale = locale;
+    }
+
+    /**
+     * Sets the settings for new resource dialogs.<p>
+     * 
+     * @param the settings for new resource dialogs
+     */
+    public void setNewResourceSettings(CmsUserNewResourceSettings newResourceSettings) {
+
+        m_newResourceSettings = newResourceSettings;
     }
 
     /**
@@ -1595,6 +1638,21 @@ public class CmsUserSettings {
     }
 
     /**
+     * Sets a specific task message setting depending on the set parameter.<p>
+     * 
+     * @param set true if the setting should be set, otherwise false
+     * @param setting the settings constant value for the task message settings
+     */
+    private void setTaskMessageSetting(boolean set, int setting) {
+
+        if (set) {
+            m_taskMessages |= setting;
+        } else {
+            m_taskMessages &= ~setting;
+        }
+    }
+
+    /**
      * Sets the task message values.<p>
      * 
      * @param value the value of the task messages
@@ -1792,35 +1850,5 @@ public class CmsUserSettings {
     public boolean useUploadApplet() {
 
         return m_uploadApplet;
-    }
-
-    /**
-     * Sets a specific explorer setting depending on the set parameter.<p>
-     * 
-     * @param set true if the setting should be set, otherwise false
-     * @param setting the settings constant value for the explorer settings
-     */
-    private void setExplorerSetting(boolean set, int setting) {
-
-        if (set) {
-            m_explorerSettings |= setting;
-        } else {
-            m_explorerSettings &= ~setting;
-        }
-    }
-
-    /**
-     * Sets a specific task message setting depending on the set parameter.<p>
-     * 
-     * @param set true if the setting should be set, otherwise false
-     * @param setting the settings constant value for the task message settings
-     */
-    private void setTaskMessageSetting(boolean set, int setting) {
-
-        if (set) {
-            m_taskMessages |= setting;
-        } else {
-            m_taskMessages &= ~setting;
-        }
     }
 }

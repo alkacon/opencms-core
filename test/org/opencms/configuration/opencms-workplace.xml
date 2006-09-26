@@ -482,6 +482,12 @@
           <reporttype>extended</reporttype>
           <uploadapplet>true</uploadapplet>
           <publishbuttonappearance>always</publishbuttonappearance>
+          <newresource-settings>
+            <editPropsChecked>true</editPropsChecked>
+            <newfolder-settings>
+              <createIndexPageChecked>true</createIndexPageChecked>
+            </newfolder-settings>
+          </newresource-settings>          
         </workplace-generaloptions>
         <workplace-startupsettings>
           <locale>en</locale>
