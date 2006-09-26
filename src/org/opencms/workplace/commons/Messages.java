@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/09/26 08:39:31 $
- * Version: $Revision: 1.15.4.4 $
+ * Date   : $Date: 2006/09/26 15:03:54 $
+ * Version: $Revision: 1.15.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.4 $ 
+ * @version $Revision: 1.15.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -299,6 +299,30 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DELETE_ALL_SIBLINGS_0 = "GUI_DELETE_ALL_SIBLINGS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_HELP_0 = "GUI_DELETE_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_NAME_0 = "GUI_DELETE_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_HELP_0 = "GUI_DELETE_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_NAME_0 = "GUI_DELETE_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_BROKENRELATIONS_LABEL_RELATIONS_0 = "GUI_DELETE_BROKENRELATIONS_LABEL_RELATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_BROKENRELATIONS_LIST_COLS_RESOURCE_0 = "GUI_DELETE_BROKENRELATIONS_LIST_COLS_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_BROKENRELATIONS_LIST_COLS_RESOURCE_HELP_0 = "GUI_DELETE_BROKENRELATIONS_LIST_COLS_RESOURCE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_BROKENRELATIONS_LIST_NAME_0 = "GUI_DELETE_BROKENRELATIONS_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_CONFIRMATION_0 = "GUI_DELETE_CONFIRMATION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -321,6 +345,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_SIBLING_RELATION_1 = "GUI_DELETE_SIBLING_RELATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_SITE_RELATION_2 = "GUI_DELETE_SITE_RELATION_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_WARNING_SIBLINGS_0 = "GUI_DELETE_WARNING_SIBLINGS_0";

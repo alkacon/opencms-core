@@ -56,14 +56,6 @@ function reloadDialog(deleteSiblings) {
    document.forms["reloadform"].<%=CmsDelete.PARAM_DELETE_SIBLINGS%>.value=deleteSiblings;
    document.forms["reloadform"].submit();
 }
-
-function printBrokenRelations() {
-
-   document.forms["reloadform"].action = "<%= wp.getJsp().link("/system/workplace/commons/print-brokenrelations.jsp") %>";
-   document.forms["reloadform"].target = "print-brokenrelations";
-   document.forms["reloadform"].submit();
-}
-
 //-->
 </script>
 <%= wp.bodyStart("dialog") %>
@@ -84,11 +76,15 @@ if (wp.isMultiOperation()) {
 <%= wp.paramsAsHidden(Collections.singleton(CmsDialog.PARAM_ACTION)) %>
 </form>
 
+<form name="printform" action="<%= wp.getJsp().link("/system/workplace/commons/print-brokenrelations.jsp") %>" method="post" class="nomargin" target="print-brokenrelations" >
+<%= wp.paramsAsHidden(Collections.singleton(CmsDialog.PARAM_ACTION)) %>
+</form>
+
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
-<%= wp.buildRelations(false) %>
+<%= wp.buildRelations() %>
 <%= wp.buildDeleteSiblings() %>
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>

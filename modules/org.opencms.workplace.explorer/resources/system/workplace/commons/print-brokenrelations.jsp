@@ -1,5 +1,5 @@
-<%@ page import="org.opencms.workplace.commons.CmsDelete" %><%	
-
-	CmsDelete wp = new CmsDelete(pageContext, request, response);
-%><%= wp.printBrokenRelations() %>
-
+<%@page import="org.opencms.workplace.commons.CmsDeleteBrokenRelationsList"%>
+<%	
+   CmsDeleteBrokenRelationsList wp = new CmsDeleteBrokenRelationsList(pageContext, request, response);
+   wp.actionDialog();
+%><%= wp.generateHtml() %>
