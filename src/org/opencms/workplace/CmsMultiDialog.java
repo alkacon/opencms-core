@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsMultiDialog.java,v $
- * Date   : $Date: 2006/09/10 21:08:43 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/09/26 08:36:01 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -132,13 +132,24 @@ public abstract class CmsMultiDialog extends CmsDialog {
      */
     public String buildResourceList() {
 
+        // check how many resources are selected to decide using a div or not
+        boolean scroll = (getResourceList().size() > 6);
+
         StringBuffer result = new StringBuffer(1024);
+
+        result.append(dialogWhiteBoxStart());
+        
+        // if the output to long, wrap it in a div
+        if (scroll) {
+            result.append("<div style='width: 100%; height:100px; overflow: auto;'>\n");
+        }
+
         result.append("<table border=\"0\">\n");
         Iterator i = getResourceList().iterator();
         while (i.hasNext()) {
             String resName = (String)i.next();
             result.append("\t<tr>\n");
-            result.append("\t\t<td style=\"vertical-align:top;\">./");
+            result.append("\t\t<td class='textbold' style=\"vertical-align:top;\">");
             result.append(CmsResource.getName(resName));
             result.append("&nbsp;</td>\n\t\t<td style=\"vertical-align:top;\">");
             String title = null;
@@ -155,6 +166,12 @@ public abstract class CmsMultiDialog extends CmsDialog {
             result.append("</td>\n\t</tr>\n");
         }
         result.append("</table>");
+
+        // close the div if needed
+        if (scroll) {
+            result.append("</div>\n");
+        }
+        result.append(dialogWhiteBoxEnd());
         return result.toString();
     }
 
