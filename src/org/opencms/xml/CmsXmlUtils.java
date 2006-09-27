@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/09/27 14:57:56 $
+ * Version: $Revision: 1.21.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.util.CmsStringUtil;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -65,7 +66,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -626,6 +627,20 @@ public final class CmsXmlUtils {
      * @throws CmsXmlException if the validation fails
      */
     public static void validateXmlStructure(byte[] xmlData, EntityResolver resolver) throws CmsXmlException {
+       
+        validateXmlStructure(new ByteArrayInputStream(xmlData), resolver);
+    }
+        
+    /**
+     * Validates the structure of a XML document contained in a byte array 
+     * with the DTD or XML schema used by the document.<p>
+     * 
+     * @param xmlStream a source providing a XML document that should be validated
+     * @param resolver the XML entitiy resolver to use
+     * 
+     * @throws CmsXmlException if the validation fails
+     */
+    public static void validateXmlStructure(InputStream xmlStream, EntityResolver resolver) throws CmsXmlException {
 
         XMLReader reader;
         try {
@@ -672,7 +687,7 @@ public final class CmsXmlUtils {
         }
 
         try {
-            reader.parse(new InputSource(new ByteArrayInputStream(xmlData)));
+            reader.parse(new InputSource(xmlStream));
         } catch (IOException e) {
             // should not happen since we read form a byte array
             if (LOG.isErrorEnabled()) {
