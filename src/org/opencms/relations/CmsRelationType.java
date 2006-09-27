@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2006/09/26 15:03:16 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/09/27 10:56:01 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,6 @@ package org.opencms.relations;
 import org.opencms.main.CmsIllegalArgumentException;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -55,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.3.0
  */
@@ -78,9 +74,6 @@ public final class CmsRelationType implements Serializable {
 
     /** Array constant for all available align types. */
     private static final CmsRelationType[] VALUE_ARRAY = {HYPERLINK, EMBEDDED_IMAGE, ATTACHMENT, REFERENCE};
-
-    /** List of mode constants. */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 
     /** Internal representation. */
     private final int m_mode;
@@ -133,11 +126,10 @@ public final class CmsRelationType implements Serializable {
      */
     public static CmsRelationType valueOf(String value) throws CmsIllegalArgumentException {
 
-        Iterator iter = VALUES.iterator();
-        while (iter.hasNext()) {
-            CmsRelationType target = (CmsRelationType)iter.next();
-            if (value.equalsIgnoreCase(target.getType())) {
-                return target;
+        String valueUp = value.toUpperCase();
+        for (int i = 0; i < VALUE_ARRAY.length; i++) {
+            if (valueUp.equals(VALUE_ARRAY[i].m_type)) {
+                return VALUE_ARRAY[i];
             }
         }
         throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
@@ -154,17 +146,10 @@ public final class CmsRelationType implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
+        if (obj instanceof CmsRelationType) {
+            return m_mode == ((CmsRelationType)obj).m_mode;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final CmsRelationType other = (CmsRelationType)obj;
-        if (m_mode != other.m_mode) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
@@ -224,10 +209,7 @@ public final class CmsRelationType implements Serializable {
      */
     public int hashCode() {
 
-        final int PRIME = 31;
-        int result = 1;
-        result = PRIME * result + m_mode;
-        return result;
+        return m_mode;
     }
 
     /**

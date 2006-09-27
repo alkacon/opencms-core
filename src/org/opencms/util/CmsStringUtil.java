@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.39.4.3 $
+ * Date   : $Date: 2006/09/27 10:56:02 $
+ * Version: $Revision: 1.39.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.4.3 $ 
+ * @version $Revision: 1.39.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -561,6 +561,24 @@ public final class CmsStringUtil {
     public static boolean isEmptyOrWhitespaceOnly(String value) {
 
         return isEmpty(value) || (value.trim().length() == 0);
+    }
+
+    /**
+     * Returns <code>true</code> if the provided Objects are either both <code>null</code> 
+     * or equal according to {@link Object#equals(Object)}.<p>
+     * 
+     * @param value1 the firt object to compare
+     * @param value2 the second object to compare
+     * 
+     * @return <code>true</code> if the provided Objects are either both <code>null</code> 
+     * or equal according to {@link Object#equals(Object)} 
+     */
+    public static boolean isEqual(Object value1, Object value2) {
+
+        if (value1 == null) {
+            return value2 == null;
+        }
+        return value1.equals(value2);
     }
 
     /**

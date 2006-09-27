@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelation.java,v $
- * Date   : $Date: 2006/09/10 20:56:15 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/09/27 10:56:01 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,17 +43,23 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.3.0 
  */
 public class CmsRelation {
+
+    /** Default value for undefined Strings. */
+    private static final String UNDEF = "";
 
     /** The start date of the relation. */
     private final long m_dateBegin;
 
     /** The end date of the relation. */
     private final long m_dateEnd;
+
+    /** Precalculated hashcode. */
+    private int m_hashCode;
 
     /** The structure id of the source resource. */
     private final CmsUUID m_sourceId;
@@ -109,14 +115,14 @@ public class CmsRelation {
         long dateEnd,
         CmsRelationType type) {
 
-        m_sourceId = sourceId;
-        m_sourcePath = sourcePath;
-        m_targetId = targetId;
-        m_targetPath = targetPath;
+        // make sure no value can ever be null
+        m_sourceId = sourceId != null ? sourceId : CmsUUID.getNullUUID();
+        m_sourcePath = sourcePath != null ? sourcePath : UNDEF;
+        m_targetId = targetId != null ? targetId : CmsUUID.getNullUUID();
+        m_targetPath = targetPath != null ? targetPath : UNDEF;
         m_dateBegin = dateBegin;
         m_dateEnd = dateEnd;
-        m_type = type;
-
+        m_type = type != null ? type : CmsRelationType.REFERENCE;
     }
 
     /**
@@ -127,55 +133,18 @@ public class CmsRelation {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
+        if (obj instanceof CmsRelation) {
+            CmsRelation other = (CmsRelation)obj;
+            return (m_type == other.m_type)
+                // we don't really need the following (optimization for speed) 
+                // && (m_dateBegin == other.m_dateBegin)
+                // && (m_dateEnd == other.m_dateEnd)
+                // && m_sourcePath.equals(other.m_sourcePath)
+                // && m_targetPath.equals(other.m_targetPath)
+                && m_sourceId.equals(other.m_sourceId)
+                && m_targetId.equals(other.m_targetId);
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final CmsRelation other = (CmsRelation)obj;
-        if (m_dateBegin != other.m_dateBegin) {
-            return false;
-        }
-        if (m_dateEnd != other.m_dateEnd) {
-            return false;
-        }
-        if (m_sourceId == null) {
-            if (other.m_sourceId != null) {
-                return false;
-            }
-        } else if (!m_sourceId.equals(other.m_sourceId)) {
-            return false;
-        }
-        if (m_sourcePath == null) {
-            if (other.m_sourcePath != null) {
-                return false;
-            }
-        } else if (!m_sourcePath.equals(other.m_sourcePath)) {
-            return false;
-        }
-        if (m_targetId == null) {
-            if (other.m_targetId != null) {
-                return false;
-            }
-        } else if (!m_targetId.equals(other.m_targetId)) {
-            return false;
-        }
-        if (m_targetPath == null) {
-            if (other.m_targetPath != null) {
-                return false;
-            }
-        } else if (!m_targetPath.equals(other.m_targetPath)) {
-            return false;
-        }
-        if (m_type == null) {
-            if (other.m_type != null) {
-                return false;
-            }
-        } else if (!m_type.equals(other.m_type)) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
@@ -273,16 +242,20 @@ public class CmsRelation {
      */
     public int hashCode() {
 
-        final int PRIME = 31;
-        int result = 1;
-        result = PRIME * result + (int)(m_dateBegin ^ (m_dateBegin >>> 32));
-        result = PRIME * result + (int)(m_dateEnd ^ (m_dateEnd >>> 32));
-        result = PRIME * result + ((m_sourceId == null) ? 0 : m_sourceId.hashCode());
-        result = PRIME * result + ((m_sourcePath == null) ? 0 : m_sourcePath.hashCode());
-        result = PRIME * result + ((m_targetId == null) ? 0 : m_targetId.hashCode());
-        result = PRIME * result + ((m_targetPath == null) ? 0 : m_targetPath.hashCode());
-        result = PRIME * result + ((m_type == null) ? 0 : m_type.hashCode());
-        return result;
+        if (m_hashCode == 0) {
+            // calculate hashcode only once
+            final int PRIME = 31;
+            int result = 1;
+            result = PRIME * result + (int)(m_dateBegin ^ (m_dateBegin >>> 32));
+            result = PRIME * result + (int)(m_dateEnd ^ (m_dateEnd >>> 32));
+            result = PRIME * result + ((m_sourceId == null) ? 0 : m_sourceId.hashCode());
+            result = PRIME * result + ((m_sourcePath == null) ? 0 : m_sourcePath.hashCode());
+            result = PRIME * result + ((m_targetId == null) ? 0 : m_targetId.hashCode());
+            result = PRIME * result + ((m_targetPath == null) ? 0 : m_targetPath.hashCode());
+            result = PRIME * result + ((m_type == null) ? 0 : m_type.hashCode());
+            m_hashCode = result;
+        }
+        return m_hashCode;
     }
 
     /**

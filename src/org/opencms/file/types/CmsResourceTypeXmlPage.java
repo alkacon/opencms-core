@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2006/09/26 15:02:44 $
- * Version: $Revision: 1.25.4.4 $
+ * Date   : $Date: 2006/09/27 10:56:34 $
+ * Version: $Revision: 1.25.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,11 +51,11 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25.4.4 $ 
+ * @version $Revision: 1.25.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,7 +167,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
      */
     public List parseLinks(CmsObject cms, CmsFile file) {
 
-        Map links = new HashMap();
+        Set links = new HashSet();
         try {
             CmsXmlPage xmlPage = CmsXmlPageFactory.unmarshal(cms, file);
             List locales = xmlPage.getLocales();
@@ -190,11 +190,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
                         CmsLink link = (CmsLink)k.next();
                         if (link.isInternal()) {
                             link.checkConsistency(cms);
-                            // be sure not to add twice the same link/type
-                            String key = link.getTarget() + link.getType().toString();
-                            if (!links.containsKey(key)) {
-                                links.put(key, link);
-                            }
+                            links.add(link);
                         }
                     }
                 }
@@ -206,7 +202,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
 
             return Collections.EMPTY_LIST;
         }
-        return new ArrayList(links.values());
+        return new ArrayList(links);
     }
 
     /**

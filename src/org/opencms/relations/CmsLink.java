@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/09/27 10:56:01 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsUriSplitter;
 
@@ -57,7 +58,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -247,6 +248,23 @@ public class CmsLink {
                 }
             }
         }
+    }
+
+    /**
+     * A link is considered equal if the link target and the link type is equal.<p>
+     *  
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsLink) {
+            CmsLink other = (CmsLink)obj;
+            return (m_type == other.m_type) && CmsStringUtil.isEqual(this.m_target, other.m_target);
+        }
+        return false;
     }
 
     /**
@@ -467,6 +485,18 @@ public class CmsLink {
         }
 
         return null;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        int result = m_type.hashCode();
+        if (m_target != null) {
+            result += m_target.hashCode();
+        }
+        return result;
     }
 
     /**
