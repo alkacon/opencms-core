@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/09/26 14:13:19 $
- * Version: $Revision: 1.36.4.3 $
+ * Date   : $Date: 2006/09/27 09:53:52 $
+ * Version: $Revision: 1.36.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.3 $
+ * @version $Revision: 1.36.4.4 $
  * 
  * @since 6.0.0
  */
@@ -61,17 +61,18 @@ public class CmsUserSettings {
 
     /** Key for additional info city. */
     // Value must unfortunatly still be "USER_TOWN" or existing serialized user information will be lost
-    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN";
+    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN"; 
 
     /** Key for additional info of resources that were confirmemed by the user. */
-    public static final String ADDITIONAL_INFO_CONFIRMED_RESOURCES = "ADDITIONAL_INFO_CONFIRMED_RESOURCES";
+    public static final String ADDITIONAL_INFO_CONFIRMED_RESOURCES = "ADDITIONAL_INFO_CONFIRMED_RESOURCES"; 
 
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_COUNTRY = "USER_COUNTRY";
-
+    
     /** Key for additional info default group. */
     public static final String ADDITIONAL_INFO_DEFAULTGROUP = "USER_DEFAULTGROUP";
-
+    
+    
     /** Key for additional info explorer settings. */
     public static final String ADDITIONAL_INFO_EXPLORERSETTINGS = "USER_EXPLORERSETTINGS";
 
@@ -176,13 +177,16 @@ public class CmsUserSettings {
 
     private Locale m_locale;
 
-    /** The default settings for the new resource dialogs. */
-    private CmsUserNewResourceSettings m_newResourceSettings;
+    /** Controls if the "create index page" checkbox in the new folder dialog should be initially be checked or not. */
+    private Boolean m_newFolderCreateIndexPage;
+
+    /** Controls if the "edit properties" checkbox in the new folder dialog should be initially be checked or not. */
+    private Boolean m_newFolderEditProperties;
 
     private String m_project;
 
     private CmsUserProjectSettings m_projectSettings;
-    
+
     /** Controls appearance of the publish button. */
     private String m_publishButtonAppearance;
 
@@ -228,6 +232,8 @@ public class CmsUserSettings {
         m_showFileUploadButton = true;
         m_uploadApplet = true;
         m_publishButtonAppearance = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_ALWAYS;
+        m_newFolderCreateIndexPage = Boolean.TRUE;
+        m_newFolderEditProperties = Boolean.TRUE;
     }
 
     /**
@@ -426,13 +432,27 @@ public class CmsUserSettings {
     }
 
     /**
-     * Returns the settings for new resource dialogs.<p> 
+     * Returns <code>{@link Boolean#TRUE}</code> if the "create index page" checkbox in the new folder 
+     * dialog should be initially be checked or not. <p>
      * 
-     * @return the settings for new resource dialogs
+     * @return <code>{@link Boolean#TRUE}</code> if the "create index page" checkbox in the new folder 
+     *      dialog should be initially be checked or not. 
      */
-    public CmsUserNewResourceSettings getNewResourceSettings() {
+    public Boolean getNewFolderCreateIndexPage() {
     
-        return m_newResourceSettings;
+        return m_newFolderCreateIndexPage;
+    }
+
+    /**
+     * Returns <code>{@link Boolean#TRUE}</code> if the "edit properties" checkbox in the new folder 
+     * dialog should be initially be checked or not. <p>
+     * 
+     * @return <code>{@link Boolean#TRUE}</code> if the "edit properties" checkbox in the new folder 
+     *      dialog should be initially be checked or not. 
+     */
+    public Boolean getNewFolderEditProperties() {
+    
+        return m_newFolderEditProperties;
     }
 
     /**
@@ -821,12 +841,7 @@ public class CmsUserSettings {
             }
             m_projectSettings.setProjectFilesMode(CmsProjectResourcesDisplayMode.ALL_CHANGES);
         }
-        if(m_newResourceSettings == null) {
-            // was not configured
-            m_newResourceSettings = new CmsUserNewResourceSettings();
-            m_newResourceSettings.setNewFolderSettings(new CmsUserNewFolderSettings());
-        }
-
+       
         try {
             save(null);
         } catch (CmsException e) {
@@ -1298,15 +1313,28 @@ public class CmsUserSettings {
 
         m_locale = locale;
     }
+    
+    /**
+     * Sets if the "create index page" checkbox in the new folder 
+     * dialog should be initially be checked or not. <p>
+     * 
+     * @param controls if the "create index page" checkbox in the new folder 
+     *      dialog should be initially be checked or not.
+     */
+    public void setNewFolderCreateIndexPage(Boolean setting) {
+        m_newFolderCreateIndexPage = setting;
+    }
+   
 
     /**
-     * Sets the settings for new resource dialogs.<p>
+     * Sets if the "edit properties" checkbox in the new folder 
+     * dialog should be initially be checked or not. <p>
      * 
-     * @param the settings for new resource dialogs
+     * @param controls if the "edit properties" checkbox in the new folder 
+     *      dialog should be initially be checked or not.
      */
-    public void setNewResourceSettings(CmsUserNewResourceSettings newResourceSettings) {
-    
-        m_newResourceSettings = newResourceSettings;
+    public void setNewFolderEditPropertes(Boolean setting) {
+        m_newFolderEditProperties = setting;
     }
 
     /**
@@ -1733,6 +1761,7 @@ public class CmsUserSettings {
         return ((m_explorerSettings & CmsUserSettings.FILELIST_USER_LASTMODIFIED) > 0);
     }
 
+
     /**
      * Determines if the file state should be shown in explorer view.<p>
      * 
@@ -1742,7 +1771,6 @@ public class CmsUserSettings {
 
         return ((m_explorerSettings & CmsUserSettings.FILELIST_WORKFLOW_STATE) > 0);
     }
-
 
     /**
      * Determines if the upload applet should be used.<p>

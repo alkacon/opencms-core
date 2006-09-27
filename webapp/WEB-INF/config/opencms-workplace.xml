@@ -451,12 +451,8 @@
           <publishbuttonappearance>always</publishbuttonappearance>
           <show-fileuploadbutton>true</show-fileuploadbutton>
           <allowbrokenrelations>false</allowbrokenrelations>
- 		  <newresource-settings>
-            <editPropsChecked>true</editPropsChecked>
-            <newfolder-settings>
-              <createIndexPageChecked>true</createIndexPageChecked>
-            </newfolder-settings>
-          </newresource-settings>
+ 		  <newfolder-editproperties>true</newfolder-editproperties>
+ 		  <newfolder-createindexpage>true</newfolder-createindexpage>
         </workplace-generaloptions>
         <workplace-startupsettings>
           <locale>en</locale>

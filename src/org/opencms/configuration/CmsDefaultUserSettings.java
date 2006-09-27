@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2006/08/25 13:51:20 $
- * Version: $Revision: 1.17.4.3 $
+ * Date   : $Date: 2006/09/27 09:53:52 $
+ * Version: $Revision: 1.17.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.3 $
+ * @version $Revision: 1.17.4.4 $
  * 
  * @since 6.0.0 
  */
@@ -61,15 +61,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Array list for fast lookup of "button styles". */
     public static final List BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
-
-    /** Publish button appearance: show always. */
-    public static final String PUBLISHBUTTON_SHOW_ALWAYS = "always";
-
-    /** Publish button appearance: show auto (only if user has publish permissions). */
-    public static final String PUBLISHBUTTON_SHOW_AUTO = "auto";
-
-    /** Publish button appearance: show never. */
-    public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
     /** Parameter for buttonstyle text & image. */
     private static final int BUTTONSTYLE_TEXTIMAGE = 1;
@@ -88,6 +79,15 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Value for preserving siblings in delete dialog settings. */
     private static final String DELETEMODE_PRESERVE = "preservesiblings";
+
+    /** Publish button appearance: show always. */
+    public static final String PUBLISHBUTTON_SHOW_ALWAYS = "always";
+
+    /** Publish button appearance: show auto (only if user has publish permissions). */
+    public static final String PUBLISHBUTTON_SHOW_AUTO = "auto";
+
+    /** Publish button appearance: show never. */
+    public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
     /** Value for publishing only resources in publish dialog settings. */
     private static final String PUBLISHMODE_ONLYRESOURCE = "onlyresource";
@@ -239,6 +239,17 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getExplorerButtonStyleString() {
 
         return BUTTON_STYLES[getExplorerButtonStyle()];
+    }
+
+    /**
+     * Checks if  a specific explorer setting depending is set.<p>
+     * 
+     * @param setting the settings constant value for the explorer settings
+     * @return <code>"true"</code> if the explorer setting is set, otherwise <code>"false"</code>
+     */
+    private String getExplorerSetting(int setting) {
+
+        return String.valueOf((getExplorerSettings() & setting) > 0);
     }
 
     /**
@@ -600,6 +611,34 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
+     * Digester support method for configuration if the "create index page" checkbox in the new folder 
+     * dialog should be initially be checked or not. <p>
+     * 
+     * The given <code>String</code> value is interpreted as a {@link Boolean} by the means 
+     * of <code>{@link Boolean#valueOf(String)}</code>. <p>
+     * 
+     * @param booleanValue a <code>String</code> that is interpred as a {@link Boolean} by the means 
+     *      of <code>{@link Boolean#valueOf(String)}</code> 
+     */
+    public void setNewFolderCreateIndexPage(String booleanValue) {
+       setNewFolderCreateIndexPage(Boolean.valueOf(booleanValue));
+    }
+
+    /**
+     * Digester support method for configuration if the "edit properties" checkbox in the new folder 
+     * dialog should be initially be checked or not. <p>
+     * 
+     * The given <code>String</code> value is interpreted as a {@link Boolean} by the means 
+     * of <code>{@link Boolean#valueOf(String)}</code>. <p>
+     * 
+     * @param booleanValue a <code>String</code> that is interpred as a {@link Boolean} by the means 
+     *      of <code>{@link Boolean#valueOf(String)}</code> 
+     */
+    public void setNewFolderEditProperties(String booleanValue) {
+        setNewFolderEditPropertes(Boolean.valueOf(booleanValue));
+    }
+
+    /**
      * Sets if the explorer view is restricted to the defined site and folder.<p>
      * 
      * @param restrict true if the explorer view is restricted, otherwise false
@@ -738,7 +777,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         setDialogShowExportSettings(Boolean.valueOf(mode).booleanValue());
     }
-
+    
     /**
      * Controls whether to display a file upload icon or not.<p>
      * 
@@ -758,7 +797,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         setDialogShowLock(Boolean.valueOf(mode).booleanValue());
     }
-
+    
     /**
      * Sets the usage of the upload applet for the user user.<p>
      * 
@@ -788,16 +827,5 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         }
 
         setWorkplaceButtonStyle(buttonstyleValue);
-    }
-
-    /**
-     * Checks if  a specific explorer setting depending is set.<p>
-     * 
-     * @param setting the settings constant value for the explorer settings
-     * @return <code>"true"</code> if the explorer setting is set, otherwise <code>"false"</code>
-     */
-    private String getExplorerSetting(int setting) {
-
-        return String.valueOf((getExplorerSettings() & setting) > 0);
     }
 }

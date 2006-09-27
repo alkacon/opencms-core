@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/09/26 14:13:19 $
- * Version: $Revision: 1.40.4.7 $
+ * Date   : $Date: 2006/09/27 09:53:52 $
+ * Version: $Revision: 1.40.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,6 @@
 package org.opencms.configuration;
 
 import org.opencms.db.CmsExportPoint;
-import org.opencms.db.CmsUserNewFolderSettings;
-import org.opencms.db.CmsUserNewResourceSettings;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRfsFileViewer;
@@ -63,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.7 $
+ * @version $Revision: 1.40.4.8 $
  * 
  * @since 6.0.0
  */
@@ -107,6 +105,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the access entry node. */
     public static final String N_ACCESSENTRY = "accessentry";
+
+    /** The name of the "allow broken relations" node. */
+    public static final String N_ALLOWBROKENRELATIONS = "allowbrokenrelations";
 
     /** The name of the autolock node. */
     public static final String N_AUTOLOCK = "autolock";
@@ -192,21 +193,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The subname of the rfsfilesettings/enabled node. */
     public static final String N_ENABLED = "enabled";
 
-    /** The name of the "allow broken relations" node. */
-    public static final String N_ALLOWBROKENRELATIONS = "allowbrokenrelations";
-
-    /** The name of the "newresource-settings" complex node. */
-    public static final String N_NEWRESOURCESETINGS = "newresource-settings";
-
-    /** The name of the "newresource-settings" complex node. */
-    public static final String N_CREATEINDEXFILECHECKED = "createIndexPageChecked";
-
-    /** The name of the "newfolder" node. */
-    public static final String N_NEWFOLDERSETTINGS = "newfolder-settings";
-
-    /** The name of the "newresource-settings" complex node. */
-    public static final String N_NEWRESOURCEEDITPROPSCHECKED = "editPropsChecked";
-
     /** The name of the "user management enabled" node. */
     public static final String N_ENABLEUSERMGMT = "enableusermanagement";
 
@@ -281,6 +267,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the context menu node. */
     public static final String N_MULTICONTEXTMENU = "multicontextmenu";
+
+    /** The name of the "create new folder with index page" node. */
+    public static final String N_NEWFOLDERCREATEINDEXPAGE = "newfolder-createindexpage";
+
+    /** The name of the "create new folder with edit properties" node. */
+    public static final String N_NEWFOLDEREDITPROPERTIES = "newfolder-editproperties";
 
     /** The name of the new resource node. */
     public static final String N_NEWRESOURCE = "newresource";
@@ -858,8 +850,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + "/"
             + N_ALLOWBROKENRELATIONS, "setAllowBrokenRelations", 0);
 
-        // add new resource settings  of the workplace - generaloptions rules
-        digester.addObjectCreate("*/"
+        // add rules for the new folder dialog settings
+        digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
             + N_DEFAULTPREFERENCES
@@ -868,35 +860,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + "/"
             + N_WORKPLACEGENERALOPTIONS
             + "/"
-            + N_NEWRESOURCESETINGS, CmsUserNewResourceSettings.class);
+            + N_NEWFOLDEREDITPROPERTIES, "setNewFolderEditProperties", 0);
         
-        digester.addSetNext("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_NEWRESOURCESETINGS, "setNewResourceSettings");
-
-        digester.addBeanPropertySetter("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_NEWRESOURCESETINGS
-            + "/"
-            + N_NEWRESOURCEEDITPROPSCHECKED);
         
-
-        // add rules for the nested <newfolder-settings> for newresource settings
-        digester.addObjectCreate("*/"
+        digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
             + N_DEFAULTPREFERENCES
@@ -905,52 +872,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + "/"
             + N_WORKPLACEGENERALOPTIONS
             + "/"
-            + N_NEWRESOURCESETINGS
-            + "/"
-            + N_NEWFOLDERSETTINGS, CmsUserNewFolderSettings.class);
-
-        digester.addSetNext("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_NEWRESOURCESETINGS
-            + "/"
-            + N_NEWFOLDERSETTINGS, "setNewFolderSettings");
-
-        digester.addBeanPropertySetter("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_NEWRESOURCESETINGS
-            + "/"
-            + N_NEWFOLDERSETTINGS
-            + "/"
-            + N_CREATEINDEXFILECHECKED);
-
-        digester.addBeanPropertySetter("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_NEWRESOURCESETINGS
-            + "/"
-            + N_NEWFOLDERSETTINGS
-            + "/"
-            + N_NEWRESOURCEEDITPROPSCHECKED);
+            + N_NEWFOLDERCREATEINDEXPAGE, "setNewFolderCreateIndexPage", 0);
         
         
         // add workplace preferences startupsettings rules 
@@ -1485,26 +1407,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <allowbrokenrelations> node
         workplaceGeneraloptions.addElement(N_ALLOWBROKENRELATIONS).setText(
             String.valueOf(m_workplaceManager.getDefaultUserSettings().isAllowBrokenRelations()));
-        
-        // add the configuration for new resources 
-        // <newresource-settings>
-        CmsUserNewResourceSettings newResourceSettings = m_workplaceManager.getDefaultUserSettings().getNewResourceSettings();
-        CmsUserNewFolderSettings newFolderSettings = newResourceSettings.getNewFolderSettings();
-        
-        Element newResourceSettingsNode = workplaceGeneraloptions.addElement(N_NEWRESOURCESETINGS);
-        // <editPropsChecked>
-        newResourceSettingsNode.addElement(N_NEWRESOURCEEDITPROPSCHECKED).setText(
-            newResourceSettings.isEditPropsChecked().toString());
-        // nested <newfolder-settings>
-        Element newFolderSettingsNode = newResourceSettingsNode.addElement(N_NEWFOLDERSETTINGS);
-        // <editPropsChecked> (overrriden, only if different from <newresource-settings> value
-        if(!newResourceSettings.isEditPropsChecked().equals(newFolderSettings.isEditPropsChecked())) {
-            newFolderSettingsNode.addElement(N_NEWRESOURCEEDITPROPSCHECKED).setText(
-                newFolderSettings.isEditPropsChecked().toString());            
-        }
+        // add the configuration for new folders
+        // <newfolder-editproperties>
+            workplaceGeneraloptions.addElement(N_NEWFOLDEREDITPROPERTIES).setText(
+                m_workplaceManager.getDefaultUserSettings().getNewFolderEditProperties().toString());            
         // <createIndexPageChecked>
-        newFolderSettingsNode.addElement(N_CREATEINDEXFILECHECKED).setText(
-            newFolderSettings.isCeateIndexPageChecked().toString());            
+            workplaceGeneraloptions.addElement(N_NEWFOLDERCREATEINDEXPAGE).setText(
+                m_workplaceManager.getDefaultUserSettings().getNewFolderCreateIndexPage().toString());            
         
         // add the <workplace-startupsettings> node
         Element workplaceStartupsettings = workplacePreferences.addElement(N_WORKPLACESTARTUPSETTINGS);

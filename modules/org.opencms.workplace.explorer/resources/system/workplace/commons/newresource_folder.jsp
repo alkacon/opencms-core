@@ -1,15 +1,14 @@
-<%@ page import="org.opencms.workplace.explorer.*,org.opencms.main.OpenCms,org.opencms.db.CmsUserNewFolderSettings"%>
+<%@ page import="org.opencms.workplace.explorer.*,org.opencms.main.OpenCms"%>
 <%!String getCheckBoxValue(Boolean b) {
-
         boolean bool = b.booleanValue();
         return (bool) ? "checked=\"checked\"" : "";
     }%>
 <%
             // initialize the workplace class
             CmsNewResourceFolder wp = new CmsNewResourceFolder(pageContext, request, response);
-            CmsUserNewFolderSettings folderSettings = OpenCms.getWorkplaceManager().getDefaultUserSettings().getNewResourceSettings().getNewFolderSettings();
-            Boolean editPropsChecked = folderSettings.isEditPropsChecked();
-            Boolean createIndexPageChecked = folderSettings.isCeateIndexPageChecked();
+            CmsDefaultUserSettings userSettings = OpenCms.getWorkplaceManager().getDefaultUserSettings();
+            Boolean editPropsChecked = userSettings.getNewFolderEditProperties() ;
+            Boolean createIndexPageChecked = userSettings.getNewFolderCreateIndexPage();
             //////////////////// start of switch statement 
 
             switch (wp.getAction()) {
@@ -35,7 +34,7 @@
                     wp.setParamAction(wp.DIALOG_OK);
 %>
 <%=wp.htmlStart("help.explorer.new.file")%>
-<%@page import="org.opencms.db.CmsUserNewFolderSettings;"%>
+<%@page import="org.opencms.configuration.CmsDefaultUserSettings"%>
 <script type="text/javascript">
 <!--
 	var labelFinish = "<%= wp.key(Messages.GUI_BUTTON_ENDWIZARD_0) %>";
