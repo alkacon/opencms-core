@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Attic/CmsDeleteResourcesHelper.java,v $
- * Date   : $Date: 2006/09/26 15:03:54 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/09/27 07:36:01 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.3
  */
@@ -66,7 +66,7 @@ public class CmsDeleteResourcesHelper {
      * 
      * @author Michael Moossen 
      * 
-     * @version $Revision: 1.1.2.1 $ 
+     * @version $Revision: 1.1.2.2 $ 
      * 
      * @since 6.5.3 
      */
@@ -280,13 +280,9 @@ public class CmsDeleteResourcesHelper {
                 String resName = m_cms.getRequestContext().addSiteRoot(site, (String)itResources.next());
                 try {
                     CmsResource resource = m_cms.readResource(resName);
-                    resourceList.add(resName);
+                    resourceList.add(resource);
                     if (resource.isFolder()) {
-                        Iterator itChilds = m_cms.readResources(resName, CmsResourceFilter.ALL, true).iterator();
-                        while (itChilds.hasNext()) {
-                            CmsResource child = (CmsResource)itChilds.next();
-                            resourceList.add(child.getRootPath());
-                        }
+                        resourceList.addAll(m_cms.readResources(resName, CmsResourceFilter.ALL, true));
                     }
                 } catch (CmsException e) {
                     // should never happen
@@ -295,23 +291,29 @@ public class CmsDeleteResourcesHelper {
                     }
                 }
             }
-            resources.addAll(resourceList);
+            
+            // collect the root paths
+            itResources = resourceList.iterator();
+            while (itResources.hasNext()) {
+                CmsResource resource = (CmsResource)itResources.next();
+                resources.add(resource.getRootPath());
+            }
+            
             if (Boolean.valueOf(includeSiblings).booleanValue()) {
-                // expand to siblings
+                // expand the siblings
                 itResources = new ArrayList(resourceList).iterator();
                 while (itResources.hasNext()) {
-                    // they are already root paths
-                    String resName = (String)itResources.next();
+                    CmsResource resource = (CmsResource)itResources.next();
                     try {
-                        CmsResource resource = m_cms.readResource(resName);
-                        if (!resource.isFolder()) {
-                            Iterator itSiblings = m_cms.readSiblings(resName, CmsResourceFilter.IGNORE_EXPIRATION).iterator();
+                        if (!resource.isFolder() && resource.getSiblingCount() > 1) {
+                            Iterator itSiblings = m_cms.readSiblings(resource.getRootPath(), CmsResourceFilter.IGNORE_EXPIRATION).iterator();
                             while (itSiblings.hasNext()) {
                                 CmsResource sibling = (CmsResource)itSiblings.next();
                                 if (!resources.contains(sibling.getRootPath())) {
-                                    String siblingKey = resName + SIBLING_KEY_PREFIX + sibling.getRootPath();
-                                    resourceList.add(siblingKey);
+                                    String siblingKey = resource.getRootPath() + SIBLING_KEY_PREFIX + sibling.getRootPath();
                                     resources.add(sibling.getRootPath());
+                                    // be careful mixing string and resources in one list
+                                    resourceList.add(siblingKey);
                                 }
                             }
                         }
@@ -327,7 +329,14 @@ public class CmsDeleteResourcesHelper {
             // check every resource
             itResources = resourceList.iterator();
             while (itResources.hasNext()) {
-                String resName = (String)itResources.next();
+                String resName = null;
+                Object item = itResources.next();
+                if (item instanceof CmsResource) {
+                    CmsResource resource = (CmsResource)item;
+                    resName = resource.getRootPath();
+                } else {
+                    resName = (String)item;
+                }
                 String resourceName = resName;
                 if (resourceName.lastIndexOf(SIBLING_KEY_PREFIX) > 0) {
                     resourceName = resName.substring(resName.lastIndexOf(SIBLING_KEY_PREFIX)
