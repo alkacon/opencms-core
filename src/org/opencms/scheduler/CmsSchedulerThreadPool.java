@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThreadPool.java,v $
- * Date   : $Date: 2006/08/24 12:47:42 $
- * Version: $Revision: 1.12.4.2 $
+ * Date   : $Date: 2006/09/27 12:04:40 $
+ * Version: $Revision: 1.12.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.quartz.spi.ThreadPool;
  * @author James House
  * @author Juergen Donnerstag
  *
- * @version $Revision: 1.12.4.2 $ 
+ * @version $Revision: 1.12.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -267,13 +267,14 @@ public class CmsSchedulerThreadPool implements ThreadPool {
         // note: the synchronized section should be as short (time) as
         // possible as starting a new thread is not a quick action
         if (m_isShutdown) {
-            new CmsSchedulerThread(
+            CmsSchedulerThread thread = new CmsSchedulerThread(
                 this,
                 m_threadGroup,
                 m_threadNamePrefix + "(final)",
                 m_threadPriority,
                 false,
                 runnable);
+            thread.start();
         }
 
         return true;
@@ -388,6 +389,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
             synchronized (m_nextRunnableLock) {
                 m_workers[m_currentThreadCount] = new CmsSchedulerThread(this, m_threadGroup, m_threadNamePrefix
                     + m_currentThreadCount, m_threadPriority, m_makeThreadsDaemons);
+                m_workers[m_currentThreadCount].start();
                 if (m_inheritLoader) {
                     m_workers[m_currentThreadCount].setContextClassLoader(Thread.currentThread().getContextClassLoader());
                 }

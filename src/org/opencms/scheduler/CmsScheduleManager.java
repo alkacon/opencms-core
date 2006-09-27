@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2006/08/24 12:47:42 $
- * Version: $Revision: 1.27.4.1 $
+ * Date   : $Date: 2006/09/27 12:04:40 $
+ * Version: $Revision: 1.27.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.27.4.1 $ 
+ * @version $Revision: 1.27.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -158,14 +158,16 @@ public class CmsScheduleManager implements Job {
         I_CmsScheduledJob job = jobInfo.getJobInstance();
 
         if (job != null) {
+            // launch the job
             try {
-                // launch the job
-                CmsObject cms = null;
 
-                // only simple test cases might not have admin cms available
-                if (m_adminCms != null) {
+                CmsObject cms = null;
+                // some simple test cases might run below this runlevel
+                if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
                     // generate a CmsObject for the job context                    
-                    cms = OpenCms.initCmsObject(m_adminCms, jobInfo.getContextInfo());
+                    // must access the scheduler manager instrance from the OpenCms singleton 
+                    // to get the initialized CmsObject
+                    cms = OpenCms.initCmsObject(OpenCms.getScheduleManager().getAdminCms(), jobInfo.getContextInfo());
                 }
 
                 String result = job.launch(cms, jobInfo.getParameters());
@@ -227,22 +229,22 @@ public class CmsScheduleManager implements Job {
     /**
      * Initializes the OpenCms scheduler.<p> 
      * 
-     * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
+     * @param adminCms an OpenCms context object that must have been initialized with "Admin" permissions
      * 
      * @throws CmsRoleViolationException if the user has insufficient role permissions
      */
-    public synchronized void initialize(CmsObject cms) throws CmsRoleViolationException {
+    public synchronized void initialize(CmsObject adminCms) throws CmsRoleViolationException {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // simple unit tests will have runlevel 1 and no CmsObject
-            cms.checkRole(CmsRole.SCHEDULER_MANAGER);
+            adminCms.checkRole(CmsRole.SCHEDULER_MANAGER);
         }
 
         // the list of job entries
         m_jobs = new ArrayList();
 
         // save the admin cms
-        m_adminCms = cms;
+        m_adminCms = adminCms;
 
         // Quartz scheduler settings
         Properties properties = new Properties();
@@ -273,7 +275,7 @@ public class CmsScheduleManager implements Job {
             for (int i = 0; i < m_configuredJobs.size(); i++) {
                 try {
                     CmsScheduledJobInfo job = (CmsScheduledJobInfo)m_configuredJobs.get(i);
-                    scheduleJob(cms, job);
+                    scheduleJob(adminCms, job);
                 } catch (CmsSchedulerException e) {
                     // ignore this job, but keep scheduling the other jobs
                     // note: the log is has already been written
@@ -542,5 +544,15 @@ public class CmsScheduleManager implements Job {
         }
 
         return jobInfo;
+    }
+
+    /**
+     * Returns the {@link CmsObject} this Scheduler Manager was initialized with.<p>
+     * 
+     * @return the {@link CmsObject} this Scheduler Manager was initialized with
+     */
+    private synchronized CmsObject getAdminCms() {
+
+        return m_adminCms;
     }
 }

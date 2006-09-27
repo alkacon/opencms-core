@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestScheduledJob.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestScheduledJobWithCmsAccess.java,v $
  * Date   : $Date: 2006/09/27 12:04:40 $
- * Version: $Revision: 1.6.8.1 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,25 +36,19 @@ import org.opencms.file.CmsObject;
 import java.util.Map;
 
 /**
- * Test class for OpenCms scheduled jobs.<p>
+ * Test class for OpenCms scheduled jobs with access to the {@link CmsObject}.<p>
  */
-public class TestScheduledJob implements I_CmsScheduledJob {
-
-    /** Indicates if this class was run. */
-    static int m_runCount = 0; 
+public class TestScheduledJobWithCmsAccess implements I_CmsScheduledJob {
     
-    /** Static copy of the instance run count for easy test access. */
-    static int m_instanceCountCopy;
-    
-    /** Instance run count. */
-    private int m_instanceRunCount;
+    /** Indicates if the run was a success. */
+    static boolean m_success; 
     
     /**
      * Default constructor.<p> 
      */
-    public TestScheduledJob() {        
-
-        m_instanceRunCount = 0;
+    public TestScheduledJobWithCmsAccess() {        
+        
+        m_success = false;
     }
 
     /**
@@ -62,9 +56,10 @@ public class TestScheduledJob implements I_CmsScheduledJob {
      */
     public String launch(CmsObject cms, Map parameters) throws Exception {
 
-        m_runCount++;
-        m_instanceRunCount++;
-        m_instanceCountCopy = m_instanceRunCount;
-        return "OpenCms scheduler test job " + m_runCount + " was run (instance count: " + m_instanceRunCount + ").";
+        if ((cms == null) || (parameters == null)) {
+            throw new RuntimeException("CmsObject in TestScheduledJobWithCmsAccess (or parameter Map) is null!");
+        }
+        m_success = true;
+        return "success";
     }
 }
