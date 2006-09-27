@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -412,7 +412,7 @@ public class CmsHtmlImport {
                 String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
                 if (!name.equals("imagegallery")) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.GUI_HTMLIMPORT_IMGGALLERY_2,
+                        Messages.GUI_HTMLIMPORT_IMGGALLERY_INVALID_1,
                         m_imageGallery));
                 }
             } catch (CmsException e) {
@@ -430,7 +430,7 @@ public class CmsHtmlImport {
             String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
             if (!name.equals("linkgallery")) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.GUI_HTMLIMPORT_LINKGALLERY_2,
+                    Messages.GUI_HTMLIMPORT_LINKGALLERY_INVALID_1,
                     m_linkGallery));
             }
         } catch (CmsException e) {
@@ -448,7 +448,7 @@ public class CmsHtmlImport {
                 String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
                 if (!name.equals("downloadgallery")) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.GUI_HTMLIMPORT_DOWNGALLERY_2,
+                        Messages.GUI_HTMLIMPORT_DOWNGALLERY_INVALID_1,
                         m_downloadGallery));
                 }
             } catch (CmsException e) {

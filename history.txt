@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/26 15:10:04 $
- * Version: $Revision: 1.757 $
+ * Date   : $Date: 2006/09/27 10:22:18 $
+ * Version: $Revision: 1.758 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ OpenCms 6.2.3 -
 - Legacy element cache is cleared on clear cache event
 - Modified handling of scrub export folder for static export on demand
 * Fixed issue #1238: Form-Module produces wrong HTML-code
+- Extented Html Import: Added possibility to leave images and downloads at original location
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
@@ -2291,5 +2292,3 @@ OpenCms 4.0a20 Giedi Prime: Rabban - 01 March 2000
 OpenCms 4.0a19 Giedi Prime: Rabban - 24 February 2000
 
 - Public Open Source release of OpenCms
-
-
