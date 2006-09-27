@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentSchemaModifications.java,v $
- * Date   : $Date: 2006/04/10 16:51:20 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/09/27 09:40:32 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,11 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.types.CmsXmlVfsFileReferenceValue;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -56,7 +58,7 @@ import junit.framework.TestSuite;
  * Tests for XML content schema changes.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
@@ -84,6 +86,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsXmlContentSchemaModifications.class.getName());
 
+        suite.addTest(new TestCmsXmlContentSchemaModifications("testVfsFileReference"));
         suite.addTest(new TestCmsXmlContentSchemaModifications("testUsageDemo"));
         suite.addTest(new TestCmsXmlContentSchemaModifications("testAddSchemaNodes"));
         suite.addTest(new TestCmsXmlContentSchemaModifications("testRemoveSchemaNodes"));
@@ -105,6 +108,85 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Demo test for using the XML content correcting API.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testVfsFileReference() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        // filenames to use
+        String changedSchema = "org/opencms/xml/content/xmlcontent-definition-2.mod.xsd";
+        String originalFile = "org/opencms/xml/content/xmlcontent-2.xml";
+        String filename = "/testVfsFileReference.html";
+        // cache the changed content definition
+        cacheSchema(resolver, "http://www.opencms.org/test2.xsd", changedSchema);
+        // read the XML content from the test directory, usually this would be from the VFS
+        String content = CmsFileUtil.readFile(originalFile, CmsEncoder.ENCODING_UTF_8);
+
+        // unmarshal the XML content (the schema is already using the "filereference")
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+
+        // output the XML content (unmodified version)
+        System.out.println(xmlcontent.toString());
+
+        // check the value type
+        assertTrue(xmlcontent.getValue("VfsLink", Locale.ENGLISH) instanceof CmsXmlVfsFileReferenceValue);
+        
+        // validate the XML structure - must be invalid because of the schema change
+        try {
+            xmlcontent.validateXmlStructure(resolver);
+            fail("xml content should not be valid");
+        } catch (CmsXmlException e) {
+            // ignore
+        }
+
+        // enable "auto correction mode" - this is required or the XML structure will not be fully corrected
+        xmlcontent.setAutoCorrectionEnabled(true);
+        // now correct the XML        
+        xmlcontent.correctXmlStructure(cms);
+
+        // output the XML content (modified version)
+        System.out.println(xmlcontent.toString());
+
+        // check again if the XML is correct - this time it must work without exception
+        xmlcontent.validateXmlStructure(resolver);
+        
+        // write the content to the VFS
+        cms.createResource(
+            filename,
+            OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
+            CmsFileUtil.readFile(originalFile),
+            Collections.EMPTY_LIST);
+
+        // assumption: a file is to be corrected automatically while writing it to the VFS
+        // for this, a special OpenCms request context attribute has been introduced
+        // if this is set to a Boolean.TRUE object, the XML content is always corrected while saving it to the VFS
+        CmsFile file = cms.readFile(filename);
+
+        // this is not normally required, but illustrates the differences in the API behaviour
+        // trying to write the file now (with the changed schema but XML still using the old schema) is not possible 
+        // this is because of the build-in validation while writing
+        try {
+            file = cms.writeFile(file);
+            fail("should fail to write the old xml file");
+        } catch (CmsXmlException e) {
+            // ok, ignore
+        }
+
+        // now set the "automatic correction" request context attribute
+        cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
+
+        // write the file again - the correction will now be done automatically while writing (no exceptions)
+        file = cms.writeFile(file);
+
+        // output the XML content (modified version)
+        System.out.println(new String(file.getContents()));
     }
 
     /**
