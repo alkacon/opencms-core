@@ -353,7 +353,8 @@
 									reporttype,
 									uploadapplet,
 									publishbuttonappearance?, 
-									newresource-settings?)>
+									newfolder-editproperties?, 
+									newfolder-createindexpage?)>
 <!--
 # The buttonstyle controls the appearence of the buttons on the workplace.
 # Possible values are [image|textimage|text].
@@ -381,18 +382,9 @@
 -->	
 <!ELEMENT publishbuttonappearance (#PCDATA)>									
 	
-<!-- 
-# wrapper node for settings for the various new resource dialogs.
---> 
-<!ELEMENT newresource-settings (editPropsChecked?,
-								newfolder-settings?)>
-								
-<!ELEMENT editPropsChecked (#PCDATA)>
+<!ELEMENT newfolder-createindexpage (#PCDATA)>
 
-<!ELEMENT newfolder-settings (editPropsChecked?, 
-					          createIndexPageChecked?)>
-
-<!ELEMENT createIndexPageChecked (#PCDATA)>
+<!ELEMENT newfolder-editproperties (#PCDATA)>
 	
 <!--
 # The workplace startupsettings are used to define locale, project and view used directly

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/09/27 10:07:04 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 6.0.0
  */
@@ -57,6 +57,23 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Array list for fast lookup of "button styles". */
     public static final List BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
+    /** Parameter for buttonstyle text & image. */
+    private static final int BUTTONSTYLE_TEXTIMAGE = 1;
+
+    /** Value for preserving siblings in copy dialog settings. */
+    private static final String COPYMODE_PRESERVE = "preservesiblings";
+
+    /** Value for creating a resource in copy dialog settings. */
+    private static final String COPYMODE_RESOURCE = "createresource";
+
+    /** Value for creating a sibling in copy dialog settings. */
+    private static final String COPYMODE_SIBLING = "createsibling";
+
+    /** Value for deleting siblings in delete dialog settings. */
+    private static final String DELETEMODE_DELETE = "deletesiblings";
+
+    /** Value for preserving siblings in delete dialog settings. */
+    private static final String DELETEMODE_PRESERVE = "preservesiblings";
 
     /** Array of the "task startupfilter" nicenames. */
     public static final String[] FILTER_NAMES = {
@@ -93,24 +110,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Array list for fast lookup of "task startupfilter" values. */
     public static final List FILTER_VALUES_LIST = Collections.unmodifiableList(Arrays.asList(FILTER_VALUES));
-
-    /** Parameter for buttonstyle text & image. */
-    private static final int BUTTONSTYLE_TEXTIMAGE = 1;
-
-    /** Value for preserving siblings in copy dialog settings. */
-    private static final String COPYMODE_PRESERVE = "preservesiblings";
-
-    /** Value for creating a resource in copy dialog settings. */
-    private static final String COPYMODE_RESOURCE = "createresource";
-
-    /** Value for creating a sibling in copy dialog settings. */
-    private static final String COPYMODE_SIBLING = "createsibling";
-
-    /** Value for deleting siblings in delete dialog settings. */
-    private static final String DELETEMODE_DELETE = "deletesiblings";
-
-    /** Value for preserving siblings in delete dialog settings. */
-    private static final String DELETEMODE_PRESERVE = "preservesiblings";
 
     /** Value for publishing only resources in publish dialog settings. */
     private static final String PUBLISHMODE_ONLYRESOURCE = "onlyresource";
@@ -255,6 +254,17 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getExplorerButtonStyleString() {
 
         return BUTTON_STYLES[getExplorerButtonStyle()];
+    }
+
+    /**
+     * Checks if  a specific explorer setting depending is set.<p>
+     * 
+     * @param setting the settings constant value for the explorer settings
+     * @return <code>"true"</code> if the explorer setting is set, otherwise <code>"false"</code>
+     */
+    private String getExplorerSetting(int setting) {
+
+        return String.valueOf((getExplorerSettings() & setting) > 0);
     }
 
     /**
@@ -636,6 +646,36 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
+     * Digester support method for configuration if the "create index page" checkbox in the new folder 
+     * dialog should be initially be checked or not. <p>
+     * 
+     * The given <code>String</code> value is interpreted as a {@link Boolean} by the means 
+     * of <code>{@link Boolean#valueOf(String)}</code>. <p>
+     * 
+     * @param booleanValue a <code>String</code> that is interpred as a {@link Boolean} by the means 
+     *      of <code>{@link Boolean#valueOf(String)}</code> 
+     */
+    public void setNewFolderCreateIndexPage(String booleanValue) {
+
+        setNewFolderCreateIndexPage(Boolean.valueOf(booleanValue));
+    }
+
+    /**
+     * Digester support method for configuration if the "edit properties" checkbox in the new folder 
+     * dialog should be initially be checked or not. <p>
+     * 
+     * The given <code>String</code> value is interpreted as a {@link Boolean} by the means 
+     * of <code>{@link Boolean#valueOf(String)}</code>. <p>
+     * 
+     * @param booleanValue a <code>String</code> that is interpred as a {@link Boolean} by the means 
+     *      of <code>{@link Boolean#valueOf(String)}</code> 
+     */
+    public void setNewFolderEditProperties(String booleanValue) {
+
+        setNewFolderEditPropertes(Boolean.valueOf(booleanValue));
+    }
+
+    /**
      * Sets if the explorer view is restricted to the defined site and folder.<p>
      * 
      * @param restrict true if the explorer view is restricted, otherwise false
@@ -883,16 +923,5 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         }
 
         setWorkplaceButtonStyle(buttonstyleValue);
-    }
-
-    /**
-     * Checks if  a specific explorer setting depending is set.<p>
-     * 
-     * @param setting the settings constant value for the explorer settings
-     * @return <code>"true"</code> if the explorer setting is set, otherwise <code>"false"</code>
-     */
-    private String getExplorerSetting(int setting) {
-
-        return String.valueOf((getExplorerSettings() & setting) > 0);
     }
 }
