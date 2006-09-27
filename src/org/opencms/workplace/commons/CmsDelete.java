@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/09/26 15:03:54 $
- * Version: $Revision: 1.17.4.6 $
+ * Date   : $Date: 2006/09/27 07:36:40 $
+ * Version: $Revision: 1.17.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.6 $ 
+ * @version $Revision: 1.17.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,9 +142,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         try {
             boolean isFolder = false;
             if (!isMultiOperation()) {
-                CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-                resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-                isFolder = resource.isFolder();
+                isFolder = getCms().readResource(getParamResource(), CmsResourceFilter.ALL).isFolder();
             }
             if (performDialogOperation()) {
                 // if no exception is caused and "true" is returned delete operation was successful
@@ -176,11 +174,19 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
             return "";
         }
         StringBuffer result = new StringBuffer(512);
-        if (isMultiOperation() || (hasSiblings() && hasCorrectLockstate())) {
+        boolean isFolder = false;
+        if (!isMultiOperation()) {
+            try {
+                isFolder = getCms().readResource(getParamResource(), CmsResourceFilter.ALL).isFolder();
+            } catch (CmsException e) {
+                // ignore
+            }
+        }
+        if (isMultiOperation() || isFolder || (hasSiblings() && hasCorrectLockstate())) {
             // show only for multi resource operation or if resource has siblings and correct lock state
             int defaultMode = Boolean.valueOf(getParamDeleteSiblings()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
             : CmsResource.DELETE_PRESERVE_SIBLINGS;
-            if (!isMultiOperation()) {
+            if (!isMultiOperation() && !isFolder) {
                 result.append(key(Messages.GUI_DELETE_WARNING_SIBLINGS_0));
                 result.append("<p>");
             }
@@ -372,7 +378,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     public boolean hasSiblings() {
 
         try {
-            return getCms().readSiblings(getParamResource(), CmsResourceFilter.ALL).size() > 1;
+            return getCms().readResource(getParamResource(), CmsResourceFilter.ALL).getSiblingCount() > 1;
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
             return false;
