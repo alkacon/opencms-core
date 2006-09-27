@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/Attic/CmsXmlVfsFileReferenceValue.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/09/27 09:39:21 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsLinkUpdateUtil;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
 
@@ -51,7 +52,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.0.0 
  */
@@ -141,7 +142,14 @@ public class CmsXmlVfsFileReferenceValue extends A_CmsXmlContentValue {
 
         Element linkElement = m_element.element(CmsXmlPage.NODE_LINK);
         if (linkElement == null) {
-            return null;
+            String uri = m_element.getText();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(uri)) {
+                setStringValue(cms, uri);
+            }
+            linkElement = m_element.element(CmsXmlPage.NODE_LINK);
+            if (linkElement == null) {
+                return null;
+            }
         }
         CmsLinkUpdateUtil.updateType(linkElement, getContentDefinition().getContentHandler().getRelationType(this));
         CmsLink link = new CmsLink(linkElement);
@@ -209,6 +217,10 @@ public class CmsXmlVfsFileReferenceValue extends A_CmsXmlContentValue {
         }
         String path = value;
         if (cms != null) {
+            // remove the site root, because the next call will append it anyway
+            if (path.startsWith(cms.getRequestContext().getSiteRoot())) {
+                path = path.substring(cms.getRequestContext().getSiteRoot().length());
+            }
             // get the site path
             path = CmsLinkManager.getSitePath(cms, null, path);
         }
