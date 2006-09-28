@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.13.4.5 $
+ * Date   : $Date: 2006/09/28 15:15:33 $
+ * Version: $Revision: 1.13.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1627,4 +1627,73 @@ function setFormValue(filename) {
 			}
 		}
 	}
+}
+
+/**
+ * This method executes an AJAX request to the given url.<p>
+ *
+ * The given method is used to communicate the result of the request.<p>
+ *
+ * The method needs to have following signature:<br>
+ * <code>method(result, state);</code><p>
+ *
+ * Normally you have to call this method using following syntax:<br>
+ * <code>top.makeRequest('url', 'body.explorer_body.explorer_files.method')</code><p>
+ *
+ * Where the <code>state</code> can have following values:<br>
+ * <code>'ok'</code>   : Everything went fine and the result of the request is given in the <code>result</code> parameter.<br>
+ * <code>'fatal'</code>: The AJAX XmlHttpRequest object could not be created, the <code>result</code> parameter is empty.<br>
+ * <code>'wait'</code> : The AJAX request was successfully send, so please wait, the <code>result</code> parameter is empty.<br>
+ * <code>'error'</code>: The AJAX request was successfully send, but the response status was not ok (code 200), 
+ *                       The <code>result</code> parameter is the received status code.<br>
+ */
+function makeRequest(url, method) {
+
+   var http_request = false;
+   if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+      http_request = new XMLHttpRequest();
+      if (http_request.overrideMimeType) {
+         http_request.overrideMimeType('text/xml');
+      }
+   } else if (window.ActiveXObject) { // IE
+      try {
+         http_request = new ActiveXObject("Msxml2.XMLHTTP");
+      } catch (e) {
+         try {
+            http_request = new ActiveXObject("Microsoft.XMLHTTP");
+         } catch (e) {}
+      }
+   }
+   if (!http_request) {
+      updateContents('fatal', eval(method));
+      return false;
+   }
+   updateContents('wait', eval(method));
+   http_request.onreadystatechange = function() { updateContents(http_request, eval(method)); };
+   http_request.open('POST', url, true);
+   http_request.send(null);
+}
+
+/**
+ * Help method for AJAX request.<p>
+ *
+ * see #makeRequest(url, method)
+ */
+function updateContents(http_request, method) {
+
+   var state = "";
+   var msg = "";
+   if (http_request == 'fatal' || http_request == 'wait') {
+      state = http_request;
+   } else if (http_request.readyState != 4) {
+      // ignore if request still not ready
+   } else if (http_request.status != 200) {
+      state = 'error';
+      msg = http_request.status;
+   } else {
+      method(http_request.responseText, 'ok');
+   }
+   if (state.length > 0) {
+      method(msg, state);
+   }
 }
