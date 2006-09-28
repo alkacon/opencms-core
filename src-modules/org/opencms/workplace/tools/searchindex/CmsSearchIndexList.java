@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexList.java,v $
- * Date   : $Date: 2006/06/09 15:16:14 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/09/28 10:34:40 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  * 
  * @since 6.0.0
  */
@@ -127,6 +127,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
     /** list item detail id constant. */
     public static final String LIST_DETAIL_INDEXSOURCE = "di";
+    
     /** list id constant. */
     public static final String LIST_ID = "lssi";
 
@@ -306,9 +307,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             if (detailId.equals(LIST_DETAIL_INDEXSOURCE)) {
                 fillDetailIndexSource(item, detailId);
             }
-
         }
-
     }
 
     /**
