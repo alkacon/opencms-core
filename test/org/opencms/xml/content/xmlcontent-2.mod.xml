@@ -14,10 +14,6 @@
 <a href="/folder1/index.html?a2=b2&c2=d2">Index page with unescaped ampersand</a>
 ]]></content>
 		</Html>
-		<VfsLink>
-			<link>
-				<target><![CDATA[/sites/default/index.html]]></target>
-			</link>
-		</VfsLink>
+		<VfsLink>/sites/default/index.html</VfsLink>
 	</Linktest>
 </Linktests>

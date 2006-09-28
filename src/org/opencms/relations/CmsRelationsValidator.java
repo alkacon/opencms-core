@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Attic/CmsRelationsValidator.java,v $
- * Date   : $Date: 2006/08/25 08:13:11 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/09/28 07:53:12 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * Validates relations of resources in the OpenCms VFS.<p>
  *  
  * Relations are, for instance, href attribs in anchor tags and src attribs in 
- * image tags, as well as OpenCmsVfsFileReference values in Xml Content.<p>
+ * image tags, as well as OpenCmsVfsFile values in Xml Content.<p>
  * 
  * External links to targets outside the OpenCms VFS don't get validated.<p>
  * 
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.3.0 
  */

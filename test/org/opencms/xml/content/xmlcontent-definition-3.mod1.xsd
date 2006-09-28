@@ -14,7 +14,7 @@
 	<xsd:complexType name="OpenCmsHandlertest">
 		<xsd:sequence>
 			<xsd:element name="MyString" type="OpenCmsString" />
-			<xsd:element name="VfsLink" type="OpenCmsVfsFile" maxOccurs="5" default="/system/modules/index.html" />
+			<xsd:element name="VfsLink" type="OpenCmsVfsFile" maxOccurs="5" />
 			<xsd:element name="Html" type="OpenCmsHtml" />
 			<xsd:element name="Option" type="OpenCmsString" minOccurs="0" maxOccurs="2" default="Default value from the XML" />
 		</xsd:sequence>
@@ -30,6 +30,7 @@
 			</validationrules>
 			<defaults>
 				<default element="Option" value="Default value from the appinfos" />
+				<default element="VfsLink" value="/system/modules/index.html" />
 			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  

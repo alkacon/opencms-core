@@ -15,7 +15,7 @@
 		<xsd:sequence>
 			<xsd:element name="Html" type="OpenCmsHtml" />
 			<xsd:element name="Option" type="OpenCmsString" minOccurs="0" maxOccurs="2" default="Default value from the XML" />
-			<xsd:element name="VfsLink" type="OpenCmsVfsFile" maxOccurs="5" default="/system/modules/index.html" />
+			<xsd:element name="VfsLink" type="OpenCmsVfsFile" maxOccurs="5" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
@@ -29,6 +29,7 @@
 			</validationrules>
 			<defaults>
 				<default element="Option" value="Default value from the appinfos" />
+				<default element="VfsLink" value="/system/modules/index.html" />
 			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  

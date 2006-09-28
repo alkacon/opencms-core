@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLinkUpdateUtil.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/09/28 07:53:12 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,7 +152,7 @@ public final class CmsLinkUpdateUtil {
      * @param link the link to get the information from
      * @param element the &lt;link&gt; element to update
      */
-    public static void updateXmlForVfsFileReference(CmsLink link, Element element) {
+    public static void updateXmlForVfsFile(CmsLink link, Element element) {
 
         // if element is not null
         if (element != null) {
@@ -177,7 +177,7 @@ public final class CmsLinkUpdateUtil {
             updateAttribute(element, CmsLink.ATTRIBUTE_NAME, link.getName());
             updateAttribute(element, CmsLink.ATTRIBUTE_INTERNAL, Boolean.toString(link.isInternal()));
             // update the common sub-elements and attributes
-            updateXmlForVfsFileReference(link, element);
+            updateXmlForVfsFile(link, element);
         }
     }
 }

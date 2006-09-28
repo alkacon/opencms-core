@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentSchemaModifications.java,v $
- * Date   : $Date: 2006/09/27 09:40:32 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/09/28 07:53:12 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,9 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
-import org.opencms.xml.types.CmsXmlVfsFileReferenceValue;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -58,7 +56,7 @@ import junit.framework.TestSuite;
  * Tests for XML content schema changes.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  */
 public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
@@ -86,7 +84,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsXmlContentSchemaModifications.class.getName());
 
-        suite.addTest(new TestCmsXmlContentSchemaModifications("testVfsFileReference"));
+        suite.addTest(new TestCmsXmlContentSchemaModifications("testVfsFile"));
         suite.addTest(new TestCmsXmlContentSchemaModifications("testUsageDemo"));
         suite.addTest(new TestCmsXmlContentSchemaModifications("testAddSchemaNodes"));
         suite.addTest(new TestCmsXmlContentSchemaModifications("testRemoveSchemaNodes"));
@@ -115,15 +113,15 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
      * 
      * @throws Exception in case the test fails
      */
-    public void testVfsFileReference() throws Exception {
+    public void testVfsFile() throws Exception {
 
         CmsObject cms = getCmsObject();
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
         // filenames to use
         String changedSchema = "org/opencms/xml/content/xmlcontent-definition-2.mod.xsd";
-        String originalFile = "org/opencms/xml/content/xmlcontent-2.xml";
-        String filename = "/testVfsFileReference.html";
+        String originalFile = "org/opencms/xml/content/xmlcontent-2.mod.xml";
+        String filename = "/testVfsFile.html";
         // cache the changed content definition
         cacheSchema(resolver, "http://www.opencms.org/test2.xsd", changedSchema);
         // read the XML content from the test directory, usually this would be from the VFS
@@ -135,9 +133,6 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         // output the XML content (unmodified version)
         System.out.println(xmlcontent.toString());
 
-        // check the value type
-        assertTrue(xmlcontent.getValue("VfsLink", Locale.ENGLISH) instanceof CmsXmlVfsFileReferenceValue);
-        
         // validate the XML structure - must be invalid because of the schema change
         try {
             xmlcontent.validateXmlStructure(resolver);

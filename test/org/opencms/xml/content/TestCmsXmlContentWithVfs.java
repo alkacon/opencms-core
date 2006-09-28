@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2006/08/31 08:51:27 $
- * Version: $Revision: 1.43.4.5 $
+ * Date   : $Date: 2006/09/28 07:53:12 $
+ * Version: $Revision: 1.43.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,13 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.TestLinkParseableResourceTypes;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelation;
@@ -54,11 +57,11 @@ import org.opencms.widgets.CmsHtmlWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlStringValue;
-import org.opencms.xml.types.CmsXmlVfsFileReferenceValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -76,7 +79,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.5 $
+ * @version $Revision: 1.43.4.6 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -317,7 +320,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         xmlcontent.addValue(cms, "Homepage", Locale.ENGLISH, 0);
-        CmsXmlVfsFileReferenceValue value = (CmsXmlVfsFileReferenceValue)xmlcontent.getValue("Homepage", Locale.ENGLISH);
+        CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)xmlcontent.getValue("Homepage", Locale.ENGLISH);
         value.setStringValue(cms, filename + "?a=b&c=d#e");
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
@@ -971,9 +974,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         assertEquals(4, result);
 
-        table = vfsValue.getLinkTable();
-        assertEquals(1, table.size());
-        CmsLink link = (CmsLink)table.iterator().next();
+        CmsLink link = vfsValue.getLink(cms);
         assertEquals("/sites/default/index.html", link.getTarget());
         assertTrue(link.isInternal());
         assertEquals("/index.html", vfsValue.getStringValue(cms));
@@ -1673,8 +1674,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         errorHandler = xmlcontent.validate(cms);
         assertTrue(errorHandler.hasErrors());
         assertTrue(errorHandler.hasWarnings());
-        assertEquals(2, errorHandler.getErrors(Locale.ENGLISH).size());
-        assertEquals(3, errorHandler.getWarnings(Locale.ENGLISH).size());
+        assertEquals(3, errorHandler.getErrors(Locale.ENGLISH).size());
+        assertEquals(2, errorHandler.getWarnings(Locale.ENGLISH).size());
     }
 
     /**

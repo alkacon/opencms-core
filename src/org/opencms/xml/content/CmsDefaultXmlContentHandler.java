@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.46.4.2 $
+ * Date   : $Date: 2006/09/28 07:53:12 $
+ * Version: $Revision: 1.46.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
-import org.opencms.xml.types.CmsXmlVfsFileReferenceValue;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -80,7 +80,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46.4.2 $ 
+ * @version $Revision: 1.46.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -745,8 +745,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 Messages.ERR_XMLCONTENT_CHECK_INVALID_ELEM_1,
                 elementName));
         }
-        if (!CmsXmlVfsFileReferenceValue.TYPE_NAME.equals(schemaType.getTypeName())) {
-            // element is not a OpenCmsVfsFileReference
+        if (!CmsXmlVfsFileValue.TYPE_NAME.equals(schemaType.getTypeName())) {
+            // element is not a OpenCmsVfsFile
             throw new CmsXmlException(Messages.get().container(
                 Messages.ERR_XMLCONTENT_CHECK_INVALID_TYPE_1,
                 elementName));
@@ -852,7 +852,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         if ((schemaType != null) && schemaType.isSimpleType()) {
             if ((schemaType.getMinOccurs() == 0)
-                && CmsXmlVfsFileReferenceValue.TYPE_NAME.equals(schemaType.getTypeName())
+                && CmsXmlVfsFileValue.TYPE_NAME.equals(schemaType.getTypeName())
                 && !m_relations.containsKey(elementPath)
                 && !m_relations.containsKey(RELATION_TYPE_PREFIX + elementPath)) {
                 // add default check rule for the element
@@ -1053,7 +1053,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * Initializes the relation configuration for this content handler.<p>
      * 
      * OpenCms performs link checks for all OPTIONAL links defined in XML content values of type 
-     * OpenCmsVfsFileReference. However, for most projects in the real world a more fine-grained control 
+     * OpenCmsVfsFile. However, for most projects in the real world a more fine-grained control 
      * over the link check process is required. For these cases, individual relation behaviour can 
      * be defined for the appinfo node.<p>
      * 
@@ -1419,11 +1419,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     protected boolean validateLink(CmsObject cms, I_CmsXmlContentValue value, CmsXmlContentErrorHandler errorHandler) {
 
         // if there is a value of type file ref
-        if ((value == null) || !(value instanceof CmsXmlVfsFileReferenceValue)) {
+        if ((value == null) || !(value instanceof CmsXmlVfsFileValue)) {
             return false;
         }
         // if the value has a link (this will automatically fix, for instance, the path of moved resources)
-        CmsLink link = ((CmsXmlVfsFileReferenceValue)value).getLink(cms);
+        CmsLink link = ((CmsXmlVfsFileValue)value).getLink(cms);
         if (link == null) {
             return false;
         }

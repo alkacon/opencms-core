@@ -14,7 +14,7 @@
 	<xsd:complexType name="OpenCmsTest2Link">
 		<xsd:sequence>
 			<xsd:element name="Html" type="OpenCmsHtml" />
-			<xsd:element name="VfsLink" type="OpenCmsVfsFileReference" />
+			<xsd:element name="VfsLink" type="OpenCmsVfsFile" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
 	</xsd:complexType>

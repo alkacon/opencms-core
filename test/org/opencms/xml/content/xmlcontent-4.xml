@@ -1,31 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Cascadetests 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test4.xsd">
-  
-	<Cascadetest language="en">
-		<Title>This is a cascade test</Title>
-		<Cascade>
-			<Html>
-				<links />
-				<content><![CDATA[
+<Cascadetests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/test4.xsd">
+  <Cascadetest language="en">
+    <Title>This is a cascade test</Title>
+    <Cascade>
+      <Html>
+        <links/>
+        <content><![CDATA[
 <a href="http://www.alkacon.com">Alkacon</a>
 <a href="/noexist/index.html">Index page</a>
 <a href="/noexist/folder1/index.html?a=b&c=d#anchor">Index page</a>
 Please note: The internal link targets must not exist,
 because otherwise the link management will add <uuid> nodes which are unknown in the test case.
 ]]></content>
-			</Html>
-			<VfsLink>/index.html</VfsLink>			
-			<VfsLink>/test.html</VfsLink>			
-		</Cascade>
-		<Cascade>
-			<Html>
-				<links />
-				<content><![CDATA[This is Cascade 2]]></content>
-			</Html>
-			<VfsLink>/index.jsp</VfsLink>			
-		</Cascade>
-	</Cascadetest>
+      </Html>
+      <VfsLink>
+        <link>
+          <target><![CDATA[/sites/default/index.html]]></target>
+        </link>
+      </VfsLink>
+      <VfsLink>
+        <link>
+          <target><![CDATA[/sites/default/test.html]]></target>
+        </link>
+      </VfsLink>
+    </Cascade>
+    <Cascade>
+      <Html>
+        <links/>
+        <content><![CDATA[This is Cascade 2]]></content>
+      </Html>
+      <VfsLink>
+        <link>
+          <target><![CDATA[/sites/default/index.jsp]]></target>
+        </link>
+      </VfsLink>
+    </Cascade>
+  </Cascadetest>
 </Cascadetests>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentLinks.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/09/28 07:53:12 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.types.CmsXmlHtmlValue;
-import org.opencms.xml.types.CmsXmlVfsFileReferenceValue;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
@@ -145,7 +145,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
      */
     public static CmsLink getVfsFileRefLink(CmsObject cms, CmsXmlContent xmlcontent, String nodeName) {
 
-        CmsLink link = ((CmsXmlVfsFileReferenceValue)xmlcontent.getValue(nodeName, Locale.ENGLISH)).getLink(cms);
+        CmsLink link = ((CmsXmlVfsFileValue)xmlcontent.getValue(nodeName, Locale.ENGLISH)).getLink(cms);
         assertNotNull(link);
         return link;
     }
