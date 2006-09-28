@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/09/26 15:03:54 $
- * Version: $Revision: 1.15.4.5 $
+ * Date   : $Date: 2006/09/28 15:10:04 $
+ * Version: $Revision: 1.15.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.5 $ 
+ * @version $Revision: 1.15.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -336,6 +336,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_RELATIONS_NOT_ALLOWED_0 = "GUI_DELETE_RELATIONS_NOT_ALLOWED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_RELATIONS_NOT_BROKEN_0 = "GUI_DELETE_RELATIONS_NOT_BROKEN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_RELATIONS_REPORT_ERROR_0 = "GUI_DELETE_RELATIONS_REPORT_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_RELATIONS_REPORT_GIVEUP_0 = "GUI_DELETE_RELATIONS_REPORT_GIVEUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_RELATIONS_REPORT_WAIT_0 = "GUI_DELETE_RELATIONS_REPORT_WAIT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_RELATIONS_TITLE_0 = "GUI_DELETE_RELATIONS_TITLE_0";

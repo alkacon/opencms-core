@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/09/27 07:36:40 $
- * Version: $Revision: 1.17.4.7 $
+ * Date   : $Date: 2006/09/28 15:10:04 $
+ * Version: $Revision: 1.17.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.7 $ 
+ * @version $Revision: 1.17.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -170,9 +170,6 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
      */
     public String buildDeleteSiblings() {
 
-        if (!isCanDelete()) {
-            return "";
-        }
         StringBuffer result = new StringBuffer(512);
         boolean isFolder = false;
         if (!isMultiOperation()) {
@@ -209,11 +206,32 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
             result.append(key(Messages.GUI_DELETE_ALL_SIBLINGS_0));
             result.append("<p>");
         }
-        if (isMultiOperation()) {
+        return result.toString();
+    }
+
+    /**
+     * Returns the html for the confirmation message.<p>
+     * 
+     * @return the html for the confirmation message
+     */
+    public String buildConfirmation() {
+
+        StringBuffer result = new StringBuffer(512);
+        boolean isFolder = false;
+        if (!isMultiOperation()) {
+            try {
+                isFolder = getCms().readResource(getParamResource(), CmsResourceFilter.ALL).isFolder();
+            } catch (CmsException e) {
+                // ignore
+            }
+        }
+        result.append("<div id='conf-msg' class='show' >\n");
+        if (isMultiOperation() || isFolder || (hasSiblings() && hasCorrectLockstate())) {
             result.append(key(Messages.GUI_DELETE_MULTI_CONFIRMATION_0));
         } else {
             result.append(key(Messages.GUI_DELETE_CONFIRMATION_0));
         }
+        result.append("\n</div>\n");
         return result.toString();
     }
 
@@ -225,7 +243,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     public String buildRelations() {
 
         if (getHelper().isEmpty()) {
-            return "";
+            return key(Messages.GUI_DELETE_RELATIONS_NOT_BROKEN_0);
         }
 
         // check how many row we will need to display to decide using a div or not
@@ -240,11 +258,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
             }
         }
 
-        // open the frame
         StringBuffer result = new StringBuffer(512);
-        result.append(dialogBlockStart(key(Messages.GUI_DELETE_RELATIONS_TITLE_0)));
-        result.append(dialogWhiteBoxStart());
-
         // TODO: display the 'Print' text at the right of the icon  
         result.append("<div style='z-index: 100; position:absolute; padding-right: ");
         result.append(rows > 6 ? 35 : 15);
@@ -280,30 +294,13 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         }
 
         // write footer
-        if (!isCanDelete()) {
-            result.append("&nbsp;<br>\n");
+        if (!isCanDelete() && !getHelper().isEmpty()) {
+            result.append("<b>");
             result.append(key(Messages.GUI_DELETE_RELATIONS_NOT_ALLOWED_0));
+            result.append("</b>");
         }
-
-        // close the frame
-        result.append(dialogWhiteBoxEnd());
-        result.append(dialogBlockEnd());
-        result.append("&nbsp;<br>\n");
 
         return result.toString();
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsDialog#dialogButtonsOkCancel()
-     */
-    public String dialogButtonsOkCancel() {
-
-        if (isCanDelete()) {
-            return super.dialogButtonsOkCancel();
-        } else {
-            // do not allow to delete resources that would break relations 
-            return super.dialogButtonsClose();
-        }
     }
 
     /**
@@ -576,11 +573,10 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
      * @return <code>true</code> if the current user is allowed 
      *          to delete the selected resources
      */
-    private boolean isCanDelete() {
+    public boolean isCanDelete() {
 
         return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
-            || getCms().hasRole(CmsRole.VFS_MANAGER)
-            || getHelper().isEmpty();
+            || getCms().hasRole(CmsRole.VFS_MANAGER);
     }
 
 }

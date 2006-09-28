@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace Explorer.</p>
 <p>Install this module if you want a GUI to work on the OpenCms VFS.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.7</version>
+		<version>1.2.8</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -65,6 +65,7 @@
 			<resource uri="/system/workplace/commons/publishresource.jsp"/>
 			<resource uri="/system/workplace/commons/renameimages.jsp"/>
 			<resource uri="/system/workplace/commons/replace.jsp"/>
+			<resource uri="/system/workplace/commons/report-brokenrelations.jsp"/>
 			<resource uri="/system/workplace/commons/secure.jsp"/>
 			<resource uri="/system/workplace/commons/synchronize.jsp"/>
 			<resource uri="/system/workplace/commons/touch.jsp"/>
@@ -2179,6 +2180,29 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dialog - Replace resource]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/report-brokenrelations.jsp</source>
+			<destination>system/workplace/commons/report-brokenrelations.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>4e125cb6-4ecd-11db-8904-5bf59c6009b3</uuidstructure>
+			<uuidresource>4e125cb7-4ecd-11db-8904-5bf59c6009b3</uuidresource>
+			<datelastmodified>Thu, 28 Sep 2006 08:43:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Sep 2006 08:42:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Delete Dialog - Print Broken Relations]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
