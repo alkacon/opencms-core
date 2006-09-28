@@ -599,11 +599,11 @@ It will also remove the "default" template.</p>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.welcome/resources/logo_alkacon.gif</source>
-			<destination>system/modules/org.opencms.welcome/resources/logo_alkacon.gif</destination>
+			<source>system/modules/org.opencms.welcome/resources/logo_alkacon.png</source>
+			<destination>system/modules/org.opencms.welcome/resources/logo_alkacon.png</destination>
 			<type>image</type>
-			<uuidstructure>f19c6f12-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>5c99ec74-6614-11d8-ab96-cbfb51df5f23</uuidresource>
+			<uuidstructure>5c99ec74-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>f19c6f12-6614-11d8-ab96-cbfb51df5f23</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

@@ -52,7 +52,7 @@
 --%><cms:include file="../elements/login_element.jsp" /><%--
 --%><!-- Login element ends here -->
 
-<p class="small"><img src="<cms:link>../resources/logo_alkacon.gif</cms:link>" alt="Alkacon Software GmbH" width="100" height="36" border="0" align="left">
+<p class="small"><img src="<cms:link>../resources/logo_alkacon.png</cms:link>" alt="Alkacon Software GmbH" width="118" height="40" border="0" align="left">
 &copy; 2006 Alkacon Software GmbH<br>
 The OpenCms experts<br>
 <a href="http://www.alkacon.com" target="alkacon">http://www.alkacon.com</a></p>
