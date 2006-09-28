@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion5.java,v $
- * Date   : $Date: 2006/08/19 13:40:36 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/09/28 07:48:26 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,10 @@ package org.opencms.importexport;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -70,7 +72,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.3.0 
  * 
@@ -411,7 +413,12 @@ public class CmsImportVersion5 extends A_CmsImport {
 
                 // <type>
                 String typeName = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
+                I_CmsResourceType type;
+                try {
+                    type = OpenCms.getResourceManager().getResourceType(typeName);
+                } catch (CmsLoaderException e) {
+                    type = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeId());
+                }
 
                 // <uuidstructure>
                 uuidstructure = CmsImport.getChildElementTextValue(
