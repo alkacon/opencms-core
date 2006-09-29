@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/09/29 09:34:55 $
- * Version: $Revision: 1.15.4.8 $
+ * Date   : $Date: 2006/09/29 09:37:01 $
+ * Version: $Revision: 1.15.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.8 $ 
+ * @version $Revision: 1.15.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -575,6 +575,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_WORKFLOW_STATUS_0 = "GUI_LABEL_WORKFLOW_STATUS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_HISTORY_DETAIL_PROJECT_HIDE_HELP_0 = "GUI_LIST_HISTORY_DETAIL_PROJECT_HIDE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_HISTORY_DETAIL_PROJECT_INFO_0 = "GUI_LIST_HISTORY_DETAIL_PROJECT_INFO_0";
 
     /** Message constant for key in the resource bundle. */
@@ -582,9 +585,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_HISTORY_DETAIL_PROJECT_NAME_SHOW_0 = "GUI_LIST_HISTORY_DETAIL_PROJECT_NAME_SHOW_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LIST_HISTORY_DETAIL_PROJECT_HIDE_HELP_0 = "GUI_LIST_HISTORY_DETAIL_PROJECT_HIDE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_HISTORY_DETAIL_PROJECT_SHOW_HELP_0 = "GUI_LIST_HISTORY_DETAIL_PROJECT_SHOW_HELP_0";
