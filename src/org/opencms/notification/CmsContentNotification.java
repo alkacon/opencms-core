@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsContentNotification.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/09/29 08:57:33 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,29 +31,23 @@
 
 package org.opencms.notification;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.mail.CmsHtmlMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsDateUtil;
-import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,11 +56,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-
-import javax.mail.MessagingException;
 
 import org.apache.commons.logging.Log;
 
@@ -74,23 +65,15 @@ import org.apache.commons.logging.Log;
  * The E-Mail to be written to responsibles of resources.<p>
  * 
  * @author Jan Baudisch
+ * @author Peter Bonrad
  */
-public class CmsContentNotification extends CmsHtmlMail {
+public class CmsContentNotification extends A_CmsNotification {
 
     /** The path to the xml content with the subject, header and footer of the notification e-mail.<p> */
     public static final String NOTIFICATION_CONTENT = "/system/workplace/admin/notification/notification";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContentNotification.class);
-
-    /** The CmsObject. */
-    private CmsObject m_cms;
-
-    /** The locale of the reciever of the content notification. */
-    private Locale m_locale;
-
-    /** The xml-content to read subject, header and footer of the notification. */
-    private CmsXmlContent m_mailContent;
 
     /** The message bundle initialized with the locale of the reciever. */
     private CmsMessages m_messages;
@@ -119,9 +102,8 @@ public class CmsContentNotification extends CmsHtmlMail {
      */
     CmsContentNotification(CmsUser responsible, CmsObject cms) {
 
+        super(cms, responsible);
         m_responsible = responsible;
-        m_cms = cms;
-
     }
 
     /**
@@ -152,62 +134,19 @@ public class CmsContentNotification extends CmsHtmlMail {
     }
 
     /**
-     * 
-     * @see org.apache.commons.mail.Email#send()
-     */
-    public void send() throws MessagingException {
-
-        try {
-            m_mailContent = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(
-                NOTIFICATION_CONTENT,
-                CmsResourceFilter.ALL));
-            List locales = m_mailContent.getLocales();
-            Locale userLocale = new CmsUserSettings(m_responsible).getLocale();
-            if (locales.contains(userLocale)) {
-                // mail is localized in the user locale, use that
-                m_locale = userLocale;
-            } else if (locales.contains(OpenCms.getWorkplaceManager().getDefaultLocale())) {
-                // mail is localized in the system default locale, use that
-                m_locale = OpenCms.getWorkplaceManager().getDefaultLocale();
-            } else {
-                // use any localization
-                m_locale = (Locale)locales.get(0);
-            }
-            // set the messages
-            m_messages = Messages.get().getBundle(m_locale);
-
-            addTo(m_responsible.getEmail(), m_responsible.getFirstname() + ' ' + m_responsible.getLastname());
-
-            setSubject(m_mailContent.getStringValue(m_cms, "Subject", m_locale));
-            setHtmlMsg(generateHtmlMsg());
-            super.send();
-        } catch (CmsException e) {
-            LOG.error(e);
-        }
-    }
-
-    /**
      * Creates the mail to be sent to the responsible user.<p>
      * 
      * @return the mail to be sent to the responsible user
      * @throws CmsException if something goes wrong
      */
-    protected String generateHtmlMsg() throws CmsException {
+    protected String generateHtmlMsg() {
 
-        StringBuffer htmlMsg = new StringBuffer("<html><head><style type=\"text/css\">");
-        htmlMsg.append("<!-- body { font-family: Verdana, Arial, Helvetica, sans-serif; background-color:#ffefdb; }");
-        htmlMsg.append("a {color:#b22222;} table { white-space: nowrap; font-size: x-small; } tr.trow1 { background-color: #cdc0b0; } ");
-        htmlMsg.append("tr.trow2 { background-color: #eedfcc; } tr.trow3 { background-color: #ffefdb; } a { text-decoration:none }--></style>");
-        htmlMsg.append("</head><body><span style='font-size:8.0pt;'> <table border=\"0\" cellpadding=\"0\" ");
-        htmlMsg.append("cellspacing=\"0\" width=\"100%\"><tr><td colspan=\"5\"><br/>");
-        m_mailContent = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(NOTIFICATION_CONTENT));
-        CmsMacroResolver macroResolver = new CmsMacroResolver();
-        macroResolver.addMacro("firstname", m_responsible.getFirstname());
-        macroResolver.addMacro("lastname", m_responsible.getLastname());
-        htmlMsg.append(CmsMacroResolver.resolveMacros(
-            m_mailContent.getStringValue(m_cms, "Header", m_locale),
-            macroResolver));
-        htmlMsg.append("<br/></td>");
+        // set the messages
+        m_messages = Messages.get().getBundle(getLocale());
+
+        StringBuffer htmlMsg = new StringBuffer();
+        htmlMsg.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">");
+        htmlMsg.append("<tr><td colspan=\"5\"><br/>");
 
         GregorianCalendar tomorrow = new GregorianCalendar(TimeZone.getDefault(), CmsLocaleManager.getDefaultLocale());
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
@@ -236,9 +175,8 @@ public class CmsContentNotification extends CmsHtmlMail {
         appendResourceList(htmlMsg, outdatedResources, m_messages.key(
             Messages.GUI_FILES_NOT_UPDATED_1,
             String.valueOf(OpenCms.getSystemInfo().getNotificationTime())));
-        htmlMsg.append("<tr><td colspan=\"5\"><br/>");
-        htmlMsg.append(m_mailContent.getStringValue(m_cms, "Footer", m_locale));
-        htmlMsg.append("</td></tr></table></span></body></html>");
+
+        htmlMsg.append("</td></tr></table>");
         String result = htmlMsg.toString();
         return result;
     }
@@ -251,6 +189,14 @@ public class CmsContentNotification extends CmsHtmlMail {
     protected List getNotificationCauses() {
 
         return m_notificationCauses;
+    }
+
+    /**
+     * @see org.opencms.notification.A_CmsNotification#getNotificationContent()
+     */
+    protected String getNotificationContent() {
+
+        return NOTIFICATION_CONTENT;
     }
 
     /**
@@ -288,7 +234,7 @@ public class CmsContentNotification extends CmsHtmlMail {
             params.put(CmsFrameset.PARAM_WP_START, wpStartUri.toString());
             params.put(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE, CmsResource.getParentFolder(resourcePath));
             params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
-            int projectId = m_cms.readProject(OpenCms.getSystemInfo().getNotificationProject()).getId();
+            int projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getId();
             params.put(CmsWorkplace.PARAM_WP_PROJECT, String.valueOf(projectId));
             html.append(CmsRequestUtil.appendParameters(m_uriWorkplaceJsp, params, true));
             html.append("\">");
@@ -317,7 +263,7 @@ public class CmsContentNotification extends CmsHtmlMail {
                 String siteRoot = CmsSiteManager.getSiteRoot(resourcePath);
                 resourcePath = resourcePath.substring(siteRoot.length());
                 Map params = new HashMap();
-                int projectId = m_cms.readProject(OpenCms.getSystemInfo().getNotificationProject()).getId();
+                int projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getId();
                 params.put(CmsWorkplace.PARAM_WP_PROJECT, String.valueOf(projectId));
                 params.put(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE, CmsResource.getParentFolder(resourcePath));
                 params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
@@ -357,7 +303,7 @@ public class CmsContentNotification extends CmsHtmlMail {
             params.put(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE, CmsResource.getParentFolder(resourcePath));
             params.put(CmsFrameset.PARAM_WP_START, wpStartUri.toString());
             params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
-            int projectId = m_cms.readProject(OpenCms.getSystemInfo().getNotificationProject()).getId();
+            int projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getId();
             params.put(CmsWorkplace.PARAM_WP_PROJECT, String.valueOf(projectId));
             html.append(CmsRequestUtil.appendParameters(m_uriWorkplaceJsp, params, true));
             html.append("\">");

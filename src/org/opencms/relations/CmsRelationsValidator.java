@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Attic/CmsRelationsValidator.java,v $
- * Date   : $Date: 2006/09/28 07:53:12 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/09/29 08:57:33 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.3.0 
  */
@@ -207,7 +207,7 @@ public class CmsRelationsValidator {
                 List brokenLinks = (List)entry.getValue();
                 report.println(
                     Messages.get().container(Messages.RPT_BROKEN_LINKS_IN_1, resourceName),
-                    I_CmsReport.FORMAT_NOTE);
+                    I_CmsReport.FORMAT_WARNING);
                 Iterator itBrokenLinks = brokenLinks.iterator();
                 while (itBrokenLinks.hasNext()) {
                     String brokenLink = (String)itBrokenLinks.next();

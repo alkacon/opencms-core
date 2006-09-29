@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/09/29 08:57:33 $
+ * Version: $Revision: 1.21.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,9 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
+ * @author Peter Bonrad
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,6 +96,7 @@ public class CmsLogReport extends A_CmsReport {
                 m_buffer.append("!!! ");
                 m_buffer.append(value);
                 m_buffer.append(" !!!");
+                addWarning(value);
                 break;
             case FORMAT_ERROR:
                 m_buffer.append("!!! ");
@@ -127,8 +129,11 @@ public class CmsLogReport extends A_CmsReport {
     public synchronized void println(Throwable t) {
 
         if (CmsLog.getLog(m_clazz).isInfoEnabled()) {
-            m_buffer.append(getMessages().key(Messages.RPT_EXCEPTION_0));
-            m_buffer.append(t.getMessage());
+            StringBuffer message = new StringBuffer();
+            message.append(getMessages().key(Messages.RPT_EXCEPTION_0));
+            message.append(t.getMessage());
+            m_buffer.append(message);
+            addError(message.toString());
             CmsLog.getLog(m_clazz).info(m_buffer.toString(), t);
         }
         m_buffer = new StringBuffer();

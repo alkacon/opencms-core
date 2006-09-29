@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2006/09/29 08:57:33 $
+ * Version: $Revision: 1.27.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,9 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior  
  * @author Jan Baudisch 
+ * @author Peter Bonrad
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.27.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,6 +81,13 @@ public interface I_CmsReport {
      * @param obj the error object
      */
     void addError(Object obj);
+
+    /**
+     * Adds a warning object to the list of warnings that occured during the report.<p>
+     * 
+     * @param obj the error object
+     */
+    void addWarning(Object obj);
 
     /**
      * Formats the runtime formatted as "hh:mm:ss".<p>
@@ -129,11 +137,25 @@ public interface I_CmsReport {
     String getSiteRoot();
 
     /**
+     * Returns a list of all warnings that occured during the report.<p>
+     * 
+     * @return a warning list that occured during the report
+     */
+    List getWarnings();
+
+    /**
      * Returns if the report generated an error output.<p>
      * 
      * @return true if the report generated an error, otherwise false
      */
     boolean hasError();
+
+    /**
+     * Returns if the report generated a warning output.<p>
+     * 
+     * @return true if the report generated a warning, otherwise false
+     */
+    boolean hasWarning();
 
     /**
      * Prints a localized message to the report.<p>
