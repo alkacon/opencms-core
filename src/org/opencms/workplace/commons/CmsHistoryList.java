@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.5.4.3 $
+ * Date   : $Date: 2006/09/29 09:26:06 $
+ * Version: $Revision: 1.5.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,8 @@ import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemActionIconComparator;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListItemSelectionAction;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
@@ -76,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.3 $ 
+ * @version $Revision: 1.5.4.4 $ 
  * 
  * @since 6.0.2 
  */
@@ -136,11 +138,17 @@ public class CmsHistoryList extends A_CmsListDialog {
 
     }
 
+    /** list item detail id constant. */
+    public static final String GUI_LIST_HISTORY_DETAIL_PROJECT_0 = "lhdp";
+
     /** List action export. */
     public static final String LIST_ACTION_RESTORE = "ar";
 
     /** list action id constant. */
     public static final String LIST_ACTION_VIEW = "av";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_BACKUP_TAG = "cbt";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_DATE_LAST_MODIFIED = "cm";
@@ -181,14 +189,26 @@ public class CmsHistoryList extends A_CmsListDialog {
     /** list id constant. */
     public static final String LIST_ID = "him";
 
+    /** list multi action id constant. */
+    private static final String LIST_MACTION_COMPARE = "mc";
+
     /** list independent action id constant. */
     public static final String LIST_RACTION_SEL1 = "rs1";
 
     /** list independent action id constant. */
     public static final String LIST_RACTION_SEL2 = "rs2";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHistoryList.class);
+
     /** constant for the offline project.<p> */
     public static final String OFFLINE_PROJECT = "offline";
+
+    /** parameter for the path of the first resource. */
+    public static final String PARAM_PATH_1 = "path1";
+
+    /** parameter for the path of the second resource. */
+    public static final String PARAM_PATH_2 = "path2";
 
     /** parameter for the version of the first resource. */
     public static final String PARAM_TAGID_1 = "tagid1";
@@ -202,20 +222,8 @@ public class CmsHistoryList extends A_CmsListDialog {
     /** parameter for the version of the second resource. */
     public static final String PARAM_VERSION_2 = "version2";
 
-    /** parameter for the path of the first resource. */
-    public static final String PARAM_PATH_1 = "path1";
-
-    /** parameter for the path of the second resource. */
-    public static final String PARAM_PATH_2 = "path2";
-
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "buttons/";
-
-    /** list multi action id constant. */
-    private static final String LIST_MACTION_COMPARE = "mc";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsHistoryList.class);
 
     /**
      * Public constructor.<p>
@@ -243,6 +251,56 @@ public class CmsHistoryList extends A_CmsListDialog {
     public CmsHistoryList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Returns the link to a backup file.<p>
+     * 
+     * @param resourcePath the path of the file
+     * @param versionId the version of the file
+     * @return the link to a backup file
+     */
+    public static String getBackupLink(String resourcePath, String versionId) {
+
+        StringBuffer link = new StringBuffer();
+        link.append(CmsBackupResourceHandler.BACKUP_HANDLER);
+        link.append(resourcePath);
+        link.append('?');
+        link.append(CmsBackupResourceHandler.PARAM_VERSIONID);
+        link.append('=');
+        link.append(versionId);
+        return link.toString();
+    }
+
+    /** 
+     * Returns the user last modified of a backup resource.<p>
+     * 
+     * @param cms the cms object
+     * @param file the file to use
+     * @return the user last modified of a backup resource
+     * @throws CmsException if something goes wrong
+     */
+    public static String readUserNameOfBackupFile(CmsObject cms, CmsFile file) throws CmsException {
+
+        String userName;
+        try {
+            userName = cms.readUser(file.getUserLastModified()).getName();
+        } catch (CmsException e) {
+            if (file instanceof CmsBackupResource) {
+                userName = ((CmsBackupResource)file).getLastModifiedByName();
+            } else {
+                throw e;
+            }
+        }
+        return userName;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
+     */
+    protected String defaultActionHtmlStart() {
+
+        return getList().listJs() + dialogContentStart(getParamTitle());
     }
 
     /**
@@ -297,11 +355,33 @@ public class CmsHistoryList extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
+     * Fills details of the project into the given item. <p> 
+     * 
+     * @param item the list item to fill 
+     * 
+     * @param detailId the id for the detail to fill
+     * 
      */
-    protected String defaultActionHtmlStart() {
+    private void fillDetailProject(CmsListItem item, String detailId) {
 
-        return getList().listJs() + dialogContentStart(getParamTitle());
+        StringBuffer html = new StringBuffer();
+
+        // search /read for the corresponding backup project: it's tag id transmitted from getListItems() 
+        // in a hidden column
+        Object tagIdObj = item.get(LIST_COLUMN_BACKUP_TAG);
+        if (tagIdObj != null) {
+            // it is null if the offline version with changes is shown here: now backup project available then
+
+            int tagId = ((Integer)tagIdObj).intValue();
+            try {
+                CmsBackupProject project = getCms().readBackupProject(tagId);
+                // output of project info
+                html.append(project.getName()).append("<br/>").append(project.getDescription());
+            } catch (CmsException cmse) {
+                html.append(cmse.getMessageContainer().key(this.getLocale()));
+            }
+        }
+        item.set(detailId, html.toString());
     }
 
     /**
@@ -309,7 +389,16 @@ public class CmsHistoryList extends A_CmsListDialog {
      */
     protected void fillDetails(String detailId) {
 
-        // no-op
+        // get content
+        List items = getList().getAllContent();
+        Iterator itItems = items.iterator();
+        CmsListItem item;
+        while (itItems.hasNext()) {
+            item = (CmsListItem)itItems.next();
+            if (detailId.equals(GUI_LIST_HISTORY_DETAIL_PROJECT_0)) {
+                fillDetailProject(item, detailId);
+            }
+        }
     }
 
     /**
@@ -346,6 +435,8 @@ public class CmsHistoryList extends A_CmsListDialog {
             // size 
             item.set(LIST_COLUMN_SIZE, new Integer(file.getLength()).toString());
             result.add(item);
+            // invisible backup tag (for reading backup project in fillDetails)
+            item.set(LIST_COLUMN_BACKUP_TAG, new Integer(tagId));
         }
         CmsFile offlineFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
 
@@ -371,29 +462,6 @@ public class CmsHistoryList extends A_CmsListDialog {
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_SEL1).setVisible(result.size() > 1);
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_SEL2).setVisible(result.size() > 1);
         return result;
-    }
-
-    /** 
-     * Returns the user last modified of a backup resource.<p>
-     * 
-     * @param cms the cms object
-     * @param file the file to use
-     * @return the user last modified of a backup resource
-     * @throws CmsException if something goes wrong
-     */
-    public static String readUserNameOfBackupFile(CmsObject cms, CmsFile file) throws CmsException {
-
-        String userName;
-        try {
-            userName = cms.readUser(file.getUserLastModified()).getName();
-        } catch (CmsException e) {
-            if (file instanceof CmsBackupResource) {
-                userName = ((CmsBackupResource)file).getLastModifiedByName();
-            } else {
-                throw e;
-            }
-        }
-        return userName;
     }
 
     /**
@@ -556,6 +624,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         radioSel1Col.setWidth("20");
         radioSel1Col.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         radioSel1Col.setSorteable(false);
+
         // add item selection action
         CmsListItemSelectionAction sel1Action = new CmsListItemSelectionAction(LIST_RACTION_SEL1, LIST_MACTION_COMPARE);
         sel1Action.setName(Messages.get().container(Messages.GUI_HISTORY_FIRST_VERSION_0));
@@ -576,25 +645,16 @@ public class CmsHistoryList extends A_CmsListDialog {
         sel2Action.setEnabled(true);
         radioSel2Col.addDirectAction(sel2Action);
         metadata.addColumn(radioSel2Col);
-    }
 
-    /**
-     * Returns the link to a backup file.<p>
-     * 
-     * @param resourcePath the path of the file
-     * @param versionId the version of the file
-     * @return the link to a backup file
-     */
-    public static String getBackupLink(String resourcePath, String versionId) {
-
-        StringBuffer link = new StringBuffer();
-        link.append(CmsBackupResourceHandler.BACKUP_HANDLER);
-        link.append(resourcePath);
-        link.append('?');
-        link.append(CmsBackupResourceHandler.PARAM_VERSIONID);
-        link.append('=');
-        link.append(versionId);
-        return link.toString();
+        // create invisible backup tag column to allow fillDetails to be able to read the proper 
+        // backup project
+        CmsListColumnDefinition backupTagCol = new CmsListColumnDefinition(LIST_COLUMN_BACKUP_TAG);
+        //radioSel2Col.setName(Messages.get().container(Messages.GUI_HISTORY_COLS_VERSION2_0));
+        //radioSel2Col.setWidth("20");
+        //radioSel2Col.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        backupTagCol.setSorteable(false);
+        backupTagCol.setVisible(false);
+        metadata.addColumn(backupTagCol);
     }
 
     /**
@@ -602,7 +662,20 @@ public class CmsHistoryList extends A_CmsListDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // no-op
+        // add index source details
+        CmsListItemDetails indexDetails = new CmsListItemDetails(GUI_LIST_HISTORY_DETAIL_PROJECT_0);
+        indexDetails.setAtColumn(LIST_COLUMN_VERSION);
+        indexDetails.setVisible(false);
+        indexDetails.setShowActionName(Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_NAME_SHOW_0));
+        indexDetails.setShowActionHelpText(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_PROJECT_SHOW_HELP_0));
+        indexDetails.setHideActionName(Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_NAME_HIDE_0));
+        indexDetails.setHideActionHelpText(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_PROJECT_HIDE_HELP_0));
+        indexDetails.setName(Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_INFO_0));
+        indexDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_INFO_0)));
+        metadata.addItemDetails(indexDetails);
     }
 
     /**
