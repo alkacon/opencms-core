@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishJob.java,v $
- * Date   : $Date: 2006/09/29 08:57:33 $
- * Version: $Revision: 1.10.4.1 $
+ * Date   : $Date: 2006/09/29 10:21:53 $
+ * Version: $Revision: 1.10.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,12 +54,14 @@ import org.apache.commons.logging.Log;
  * Per default, it publishes all new, edited and deleted resources in the project which are not locked.
  * To unlock all resources in the project before publishing, add the parameter <code>unlock=true</code>
  * in the scheduled job configuration. In addition you are able to perform a link validation before
- * publishing the project by adding the parameter <code>linkcheck=true</code>.<p>
+ * publishing the project by adding the parameter <code>linkcheck=true</code>. It is possible to send
+ * an email to a user in OpenCms in case somthing went wrong during this process. To do so specifiy
+ * a parameter<code>mail-to-user=username_in_opencms</code>.<p>
  * 
  * @author Michael Emmerich 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.10.4.1 $ 
+ * @version $Revision: 1.10.4.2 $ 
  * 
  * @since 6.0.0 
  */
