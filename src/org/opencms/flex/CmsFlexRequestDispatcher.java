@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.44.4.1 $
+ * Date   : $Date: 2006/09/29 10:04:03 $
+ * Version: $Revision: 1.44.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44.4.1 $ 
+ * @version $Revision: 1.44.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,8 +185,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
     private void includeExternal(ServletRequest req, ServletResponse res) throws ServletException, IOException {
 
         // This is an external include, probably to a JSP page, dispatch with system dispatcher
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDING_EXTERNAL_TARGET_1,
                 m_extTarget));
         }
