@@ -59,40 +59,47 @@ function reloadDialog(deleteSiblings) {
    top.makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-brokenrelations.jsp") %>?<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsDelete.PARAM_DELETE_SIBLINGS%>=' + deleteSiblings, 'body.explorer_body.explorer_files.doReportUpdate');
 }
 
+var cnfMsgTxt = '';
+
 function doReportUpdate(msg, state) {
    var elem = document.getElementById("relationsreport");
-   if (state != 'ok') {
-      var img = state + ".gif";
+   if (state != 'ok' || msg == '') {
+      var img = state + ".png";
+      var txt = msg;
       if (state == 'fatal') {
-         img = "error.gif";
-         msg = "<%= wp.key(Messages.GUI_DELETE_RELATIONS_REPORT_GIVEUP_0) %>";
+         img = "error.png";
+         txt = "<%= wp.key(Messages.GUI_DELETE_RELATIONS_REPORT_GIVEUP_0) %>";
       } else if (state == 'wait') {
-         msg = "<%= wp.key(Messages.GUI_DELETE_RELATIONS_REPORT_WAIT_0) %>";
+         img = "wait.gif";
+         txt = "<%= wp.key(Messages.GUI_DELETE_RELATIONS_REPORT_WAIT_0) %>";
       } else if (state == 'error') {
-         msg = "<%= wp.key(Messages.GUI_DELETE_RELATIONS_REPORT_ERROR_0) %> " + msg;
+         txt = "<%= wp.key(Messages.GUI_DELETE_RELATIONS_REPORT_ERROR_0) %> " + msg;
+      } else {
+         txt = "<%= wp.key(Messages.GUI_DELETE_RELATIONS_NOT_BROKEN_0) %>";
       }
       var html = "<table border='0' style='vertical-align:middle; height: 100px;'>";
       html += "<tr><td width='40' align='center' valign='middle'><img src='<%= CmsWorkplace.getSkinUri() %>commons/";
       html += img;
       html += "' width='32' height='32' alt=''></td>";
       html += "<td valign='middle'><span style='color: #000099; font-weight: bold;'>";
-      html += msg;
+      html += txt;
       html += "</span><br></td></tr></table>";
-      msg = html;
+      elem.innerHTML = html;
+   } else {
+      elem.innerHTML = msg;
    }
-   elem.innerHTML = msg;
 
    var okButton = document.getElementById("ok-button");
    var confMsg = document.getElementById('conf-msg');
-   var isCanNotDelete = <%= !wp.isCanDelete() %>;
-   if (state == 'ok') {
-      isCanNotDelete = (isCanNotDelete && !(msg == '\n<%= wp.key(Messages.GUI_DELETE_RELATIONS_NOT_BROKEN_0) %>\n\n'));
-   }
-   okButton.disabled = isCanNotDelete;
-   if (isCanNotDelete) {
-      confMsg.className = 'hide';
+   var isCanDelete = <%= wp.isCanDelete() %>;
+   okButton.disabled = !isCanDelete;
+   if (!isCanDelete && state == 'ok' && msg != '') {
+      confMsg.innerHTML = '<%= wp.key(Messages.GUI_DELETE_RELATIONS_NOT_ALLOWED_0) %>';
+   } else if (isCanDelete || state == 'ok') {
+      confMsg.innerHTML = cnfMsgTxt;
+      okButton.disabled = false;
    } else {
-      confMsg.className = 'show';
+      confMsg.innerHTML = '<%= wp.key(Messages.GUI_DELETE_RELATIONS_REPORT_WAIT_0) %>';
    }
 }
 //-->
@@ -136,6 +143,8 @@ if (wp.isMultiOperation()) {
 <%= wp.bodyEnd() %>
 <script type="text/javascript">
 <!--
+var confMsg = document.getElementById('conf-msg');
+cnfMsgTxt = confMsg.innerHTML;
 top.makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-brokenrelations.jsp") %>?<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsDelete.PARAM_DELETE_SIBLINGS%>=<%=wp.getParamDeleteSiblings()%>', 'body.explorer_body.explorer_files.doReportUpdate');
 //-->
 </script>

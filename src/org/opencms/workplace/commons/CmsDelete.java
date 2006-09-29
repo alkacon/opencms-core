@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/09/28 15:10:04 $
- * Version: $Revision: 1.17.4.8 $
+ * Date   : $Date: 2006/09/29 11:44:56 $
+ * Version: $Revision: 1.17.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.8 $ 
+ * @version $Revision: 1.17.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -225,7 +225,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
                 // ignore
             }
         }
-        result.append("<div id='conf-msg' class='show' >\n");
+        result.append("<div id='conf-msg'>\n");
         if (isMultiOperation() || isFolder || (hasSiblings() && hasCorrectLockstate())) {
             result.append(key(Messages.GUI_DELETE_MULTI_CONFIRMATION_0));
         } else {
@@ -243,7 +243,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     public String buildRelations() {
 
         if (getHelper().isEmpty()) {
-            return key(Messages.GUI_DELETE_RELATIONS_NOT_BROKEN_0);
+            return "";
         }
 
         // check how many row we will need to display to decide using a div or not
@@ -270,10 +270,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         result.append("</a>");
         result.append("</div>\n");
 
-        // if the output is to long, wrap it in a div
-        if (rows > 6) {
-            result.append("<div style='width: 100%; height:100px; overflow: auto;'>\n");
-        }
+        result.append("<div style='width: 100%; height:100px; overflow: auto;'>\n");
 
         // sort the resulting hash map
         List resourceList = new ArrayList(getHelper().keySet());
@@ -288,17 +285,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
             id++;
         }
 
-        // close the div if needed
-        if (rows > 6) {
-            result.append("</div>\n");
-        }
-
-        // write footer
-        if (!isCanDelete() && !getHelper().isEmpty()) {
-            result.append("<b>");
-            result.append(key(Messages.GUI_DELETE_RELATIONS_NOT_ALLOWED_0));
-            result.append("</b>");
-        }
+        result.append("</div>\n");
 
         return result.toString();
     }
