@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2006/09/29 09:26:06 $
- * Version: $Revision: 1.5.4.4 $
+ * Date   : $Date: 2006/09/29 09:34:55 $
+ * Version: $Revision: 1.5.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.4 $ 
+ * @version $Revision: 1.5.4.5 $ 
  * 
  * @since 6.0.2 
  */
@@ -668,10 +668,10 @@ public class CmsHistoryList extends A_CmsListDialog {
         indexDetails.setVisible(false);
         indexDetails.setShowActionName(Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_NAME_SHOW_0));
         indexDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_LIST_SEARCHINDEX_DETAIL_PROJECT_SHOW_HELP_0));
+            Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_SHOW_HELP_0));
         indexDetails.setHideActionName(Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_NAME_HIDE_0));
         indexDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_LIST_SEARCHINDEX_DETAIL_PROJECT_HIDE_HELP_0));
+            Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_HIDE_HELP_0));
         indexDetails.setName(Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_INFO_0));
         indexDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_INFO_0)));
