@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsPublishNotification.java,v $
- * Date   : $Date: 2006/09/29 08:57:33 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/09/29 11:46:47 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.3
  */
@@ -77,7 +77,7 @@ public class CmsPublishNotification extends A_CmsNotification {
         // add warnings to the notification
         if (m_report.hasWarning()) {
             buffer.append("<b>");
-            buffer.append(Messages.get().getBundle().key(Messages.LOG_PUBLISH_WARNING_HEADER_0));
+            buffer.append(Messages.get().getBundle().key(Messages.GUI_PUBLISH_WARNING_HEADER_0));
             buffer.append("</b><br/>\n");
             appendList(buffer, m_report.getWarnings());
             buffer.append("<br/>\n");
@@ -86,7 +86,7 @@ public class CmsPublishNotification extends A_CmsNotification {
         // add errors to the notification
         if (m_report.hasError()) {
             buffer.append("<b>");
-            buffer.append(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ERROR_HEADER_0));
+            buffer.append(Messages.get().getBundle().key(Messages.GUI_PUBLISH_ERROR_HEADER_0));
             buffer.append("</b><br/>\n");
             appendList(buffer, m_report.getErrors());
             buffer.append("<br/>\n");

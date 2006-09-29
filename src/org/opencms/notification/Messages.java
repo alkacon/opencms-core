@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/Messages.java,v $
- * Date   : $Date: 2006/09/29 08:57:33 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/09/29 11:46:47 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,6 +79,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODIFY_0 = "GUI_MODIFY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_ERROR_HEADER_0 = "GUI_PUBLISH_ERROR_HEADER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_WARNING_HEADER_0 = "GUI_PUBLISH_WARNING_HEADER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RELEASE_AT_1 = "GUI_RELEASE_AT_1";
 
     /** Message constant for key in the resource bundle. */
@@ -115,16 +121,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_NOTIFICATIONS_SENT_TO_0 = "LOG_NOTIFICATIONS_SENT_TO_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_PUBLISH_ERROR_HEADER_0 = "LOG_PUBLISH_ERROR_HEADER_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_FAILED_2 = "LOG_PUBLISH_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_FINISHED_1 = "LOG_PUBLISH_FINISHED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_PUBLISH_WARNING_HEADER_0 = "LOG_PUBLISH_WARNING_HEADER_0";
     
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.notification.messages";
