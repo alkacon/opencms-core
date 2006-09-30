@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadUtils.java,v $
- * Date   : $Date: 2005/06/27 14:21:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/09/30 10:04:04 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.io.File;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,10 +66,85 @@ public final class FileUploadUtils {
         if (f != null) {
             String s = f.getName();
             int i = s.lastIndexOf('.');
-            if (i > 0 && i < s.length() - 1) {
+            if ((i > 0) && (i < s.length() - 1)) {
                 ext = s.substring(i).toLowerCase();
             }
         }
         return ext;
+    }
+
+    /**
+     * Returns <code>true</code> in case the given extension is one of the known image extensions.<p>
+     * 
+     * Known extensions are: <code>.gif, .tiff, .jpeg, .jpg, .bmp, .png, .pnm, .pgm, .ppm, .pbm</code>.<p>
+     * 
+     * @param extension the extension to check, must start with a dot '.'
+     * @return <code>true</code> in case the given extension is one of the known image extensions
+     */
+    public static boolean isImageExtension(String extension) {
+
+        if (extension != null) {
+            return (extension.equals(".gif")
+                || extension.equals(".tiff")
+                || extension.equals(".tif")
+                || extension.equals(".jpeg")
+                || extension.equals(".jpg")
+                || extension.equals(".bmp")
+                || extension.equals(".pnm")
+                || extension.equals(".pbm")
+                || extension.equals(".pgm")
+                || extension.equals(".ppm") || extension.equals(".png"));
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns <code>true</code> in case the given extension is one of the known text file extensions.<p>
+     * 
+     * Known extensions are: <code>.txt, .ini, .bat, .cmd, .sh, .java, .log, .xml, .html, .sys</code>.<p>
+     * 
+     * @param extension the extension to check, must start with a dot '.'
+     * @return <code>true</code> in case the given extension is one of the known text file extensions
+     */
+    public static boolean isTextExtension(String extension) {
+
+        if (extension != null) {
+            return (extension.equals(".txt")
+                || extension.equals(".ini")
+                || extension.equals(".bat")
+                || extension.equals(".cmd")
+                || extension.equals(".sh")
+                || extension.equals(".java")
+                || extension.equals(".log")
+                || extension.equals(".xml")
+                || extension.equals(".html") || extension.equals(".sys"));
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns <code>true</code> in case the given extension is one of the known office file extensions.<p>
+     * 
+     * Known extensions are: <code>.pdf, .odt, .ods, .odp, .odg, .doc, .xls, .ppt, .vsd</code>.<p>
+     * 
+     * @param extension the extension to check, must start with a dot '.'
+     * @return <code>true</code> in case the given extension is one of the known office file extensions
+     */
+    public static boolean isOfficeExtension(String extension) {
+
+        if (extension != null) {
+            return (extension.equals(".odt")
+                || extension.equals(".ods")
+                || extension.equals(".odp")
+                || extension.equals(".odg")
+                || extension.equals(".pdf")
+                || extension.equals(".doc")
+                || extension.equals(".xls")
+                || extension.equals(".vsd") || extension.equals(".ppt"));
+        } else {
+            return false;
+        }
     }
 }

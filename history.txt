@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/29 10:21:53 $
- * Version: $Revision: 1.717.2.51 $
+ * Date   : $Date: 2006/09/30 10:04:04 $
+ * Version: $Revision: 1.717.2.52 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ OpenCms 6.5.3 - September xxxx, 2006
 - Locks now store the complete project instead of only the project id
 - Updated simapi.jar to version 0.9.4
 - Updated commons-httpclient.jar to version 3.0.1
+- Updated commons-logging.jar to version 1.1
 - Updated the list of supported MIME-types
 ! MIME-types are now configured in opencms-vfs.xml instead of internal properties file
 ! Added new WOFKFLOW_MANAGER role definition
@@ -45,6 +46,8 @@ OpenCms 6.5.3 - September xxxx, 2006
 - Modified handling of scrub export folder for static export on demand
 - Extented Html Import: Added possibility to leave images and downloads at original location
 - Updated the publish job to validate the links before publishing and sending mails to user in case of errors
+! Added new target "uploadjar" for upload applet to main build.xml file
+! Several small improvements to upload applet, including removal of deprecation warnings for commons-httpclient 3.0
 
 OpenCms 6.5.2 - September 1st, 2006
 - Improved delete dialog

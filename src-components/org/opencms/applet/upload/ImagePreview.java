@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImagePreview.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.11.4.1 $
+ * Date   : $Date: 2006/09/30 10:04:04 $
+ * Version: $Revision: 1.11.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,18 +54,18 @@ import javax.swing.JFileChooser;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.11.4.1 $ 
+ * @version $Revision: 1.11.4.2 $ 
  * 
  * @since 6.0.0 
  */
 public class ImagePreview extends JComponent implements PropertyChangeListener {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = 4851280416316056303L;
-    
     private static final int C_MODE_EMPTY = 0;
+
     private static final int C_MODE_IMAGE = 1;
     private static final int C_MODE_TEXT = 2;
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 4851280416316056303L;
 
     private File m_file;
     private Font m_font;
@@ -200,18 +200,10 @@ public class ImagePreview extends JComponent implements PropertyChangeListener {
 
         int mode = C_MODE_EMPTY;
         String extension = FileUploadUtils.getExtension(m_file);
-        if (extension != null) {
-            if ((extension.equals(".gif"))
-                || (extension.equals(".jpg"))
-                || (extension.equals(".jpeg"))
-                || (extension.equals(".png"))) {
-                mode = C_MODE_IMAGE;
-            } else if ((extension.equals(".txt"))
-                || (extension.equals(".ini"))
-                || (extension.equals(".bat"))
-                || (extension.equals(".java") || (extension.equals(".sys")))) {
-                mode = C_MODE_TEXT;
-            }
+        if (FileUploadUtils.isImageExtension(extension)) {
+            mode = C_MODE_IMAGE;
+        } else if (FileUploadUtils.isTextExtension(extension)) {
+            mode = C_MODE_TEXT;
         }
         return mode;
     }

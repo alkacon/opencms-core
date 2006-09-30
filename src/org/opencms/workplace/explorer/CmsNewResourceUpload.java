@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/09/18 15:26:14 $
- * Version: $Revision: 1.22.4.3 $
+ * Date   : $Date: 2006/09/30 10:04:04 $
+ * Version: $Revision: 1.22.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.3 $ 
+ * @version $Revision: 1.22.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -491,6 +491,12 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append("<param name=\"errorLine1\" value=\"");
         applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_LINE1_0));
         applet.append(" \">\n");
+        applet.append("<param name=\"certificateErrorTitle\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_TITLE_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"certificateErrorMessage\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_MESSAGE_0));
+        applet.append(" \">\n");
         applet.append("</applet>\n");
 
         return applet.toString();
@@ -697,5 +703,4 @@ public class CmsNewResourceUpload extends CmsNewResource {
             setParamTitle(key(Messages.GUI_NEWRESOURCE_UPLOAD_0));
         }
     }
-
 }

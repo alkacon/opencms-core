@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFileView.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.9.8.1 $
+ * Date   : $Date: 2006/09/30 10:04:04 $
+ * Version: $Revision: 1.9.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.swing.filechooser.FileView;
  * 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.9.8.1 $ 
+ * @version $Revision: 1.9.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,9 +74,9 @@ public class ImageFileView extends FileView {
      * @param fileExtensions list of file extensions to select the correct icons
      */
     public ImageFileView(String opencms, String fileExtensions) {
-        
+
         super();
-   
+
         m_opencms = opencms;
         m_extensions = extractExtensions(fileExtensions);
 
@@ -173,9 +173,8 @@ public class ImageFileView extends FileView {
             // try to load the image     
             ImageIcon icon = createImageIcon(m_opencms + type + ".gif");
             extensions.put(extension, icon);
-     
+
         }
         return extensions;
     }
-
 }

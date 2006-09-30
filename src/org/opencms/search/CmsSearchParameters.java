@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2006/04/19 08:36:59 $
- * Version: $Revision: 1.6.4.1 $
+ * Date   : $Date: 2006/09/30 10:04:04 $
+ * Version: $Revision: 1.6.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,12 +54,9 @@ import org.apache.lucene.search.SortField;
  * Primary purpose is translation of search arguments to response parameters and from request parameters as 
  * well as support for creation of restrictions of several search query parameter sets. <p>
  * 
- *   
- * @version $Revision: 1.6.4.1 $
- * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6.4.1 $ 
+ * @version $Revision: 1.6.4.2 $ 
  * 
  * @since 6.0.0 
  */

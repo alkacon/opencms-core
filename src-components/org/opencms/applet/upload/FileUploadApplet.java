@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/09/30 10:04:04 $
+ * Version: $Revision: 1.19.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -54,19 +55,29 @@ import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.methods.MultipartPostMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.commons.httpclient.params.HttpConnectionParams;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 
 /**
  * File Upload Applet, displays a file selector box to upload multiple resources into OpenCms.<p>
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public class FileUploadApplet extends JApplet implements Runnable {
+
+    /** The JSESSIONID cookie header name. */
+    public static final String C_JSESSIONID = "JSESSIONID";
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -3710093915699772778L;
@@ -82,7 +93,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
     /** The URL to return to after uploading the files. */
     private String m_redirectUrl = "";
-    
+
     /** The Target Frame to return to after uploading the files. */
     private String m_redirectTargetFrame = "";
 
@@ -115,7 +126,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
     /** Counter for creating the progress bar. */
     private int m_step;
-
+    
     /** Definition of the images during upload. */
     private Image m_source;
     private Image m_target;
@@ -123,7 +134,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
     /** Image position for the floater during upload. */
     private int m_floaterPos = 50;
-
+    
     /** Defintion of output strings.*/
     private String m_actionOutputSelect = "Seleting files for upload....";
     private String m_actionOutputCount = "Counting resources ....";
@@ -136,6 +147,8 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private String m_messageOutputAdding = "Adding ";
     private String m_messageOutputErrorSize = "Zip file too big:";
     private String m_messageOutputErrorZip = "Error creating Zip-File, see Java Console.";
+    private String m_certificateErrorTitle = "Error initializing the OpenCms Upload Applet";
+    private String m_certificateErrorMessage = "The required Applet certificate has not been accepted!";
 
     /** Definition variables for graphics output. */
     private Font m_font;
@@ -146,6 +159,39 @@ public class FileUploadApplet extends JApplet implements Runnable {
     /** The file selector. */
     private JFileChooser m_fileSelector;
 
+    /** Indicates if the applet certificate has been accepted. */
+    private boolean m_certificateAccepted;
+
+    /**
+     * @see java.applet.Applet#destroy()
+     */
+    public void destroy() {
+
+        // NOOP
+    }
+
+    /**
+     * Displays an error message in case the applet could not be initialized.<p>
+     */
+    public void displayError() {
+
+        m_outputMode = 5;
+        m_action = m_certificateErrorTitle;
+        m_message = m_certificateErrorMessage;
+
+        JOptionPane.showMessageDialog(this, m_message, m_action, JOptionPane.ERROR_MESSAGE);
+
+        try {
+            // redirect back to the server
+            getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
+        } catch (MalformedURLException e) {
+            // this should never happen
+            e.printStackTrace();
+        }
+
+        stop();
+    }
+
     /**
      * @see java.applet.Applet#init()
      */
@@ -155,13 +201,13 @@ public class FileUploadApplet extends JApplet implements Runnable {
         m_targetUrl = getParameter("target");
         m_redirectUrl = getParameter("redirect");
         m_redirectTargetFrame = getParameter("targetframe");
-        if (m_redirectTargetFrame == null || m_redirectTargetFrame.equals("")) {
+        if ((m_redirectTargetFrame == null) || m_redirectTargetFrame.equals("")) {
             m_redirectTargetFrame = "explorer_files";
         }
         m_errorUrl = getParameter("error");
         m_uploadFolder = getParameter("filelist");
         String tmpSize = getParameter("maxsize");
-        if (tmpSize != null && tmpSize.length() > 0) {
+        if ((tmpSize != null) && (tmpSize.length() > 0)) {
             m_maxsize = Long.parseLong(tmpSize);
         }
         m_fileExtensions = getParameter("fileExtensions");
@@ -208,171 +254,36 @@ public class FileUploadApplet extends JApplet implements Runnable {
         if (getParameter("errorLine1") != null) {
             m_errorLine1 = getParameter("errorLine1");
         }
-    }
+        if (getParameter("certificateErrorTitle") != null) {
+            m_certificateErrorTitle = getParameter("certificateErrorTitle");
+        }
+        if (getParameter("certificateErrorMessage") != null) {
+            m_certificateErrorMessage = getParameter("certificateErrorMessage");
+        }
 
-    /**
-     * @see java.applet.Applet#destroy()
-     */
-    public void destroy() {
-
-        // NOOP
-    }
-
-    /**
-     * @see java.applet.Applet#start()
-     */
-    public void start() {
-
-        m_runner = new Thread(this);
-        m_runner.start();
-    }
-
-    /**
-     * @see java.applet.Applet#stop()
-     */
-    public void stop() {
-
-        m_runner = null;
-    }
-
-    /**
-     * @see java.lang.Runnable#run()
-     */
-    public void run() {
-
+        m_certificateAccepted = true;
         try {
-            boolean ok = true;
-            while (ok) {
-                ok = true;
-                
-                //System.out.println("Version 1.62");
-                                
-                m_message = "";
-                m_resources = 0;
-                m_step = 0;
-                // create a new file chooser
-
-                if (m_fileSelector == null) {
-                    m_fileSelector = new JFileChooser();
-                }
-
-                // file selector can read files and folders
-                m_fileSelector.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-
-                m_fileSelector.setDialogTitle(m_actionOutputSelect);
-
-                // add two custom file filters (office and images) and the default filters
-                m_fileSelector.addChoosableFileFilter(new ImageFilter());
-                m_fileSelector.addChoosableFileFilter(new OfficeFilter());
-                m_fileSelector.setAcceptAllFileFilterUsed(true);
-                // enable multi-selection of files
-                m_fileSelector.setMultiSelectionEnabled(true);
-                // add custom icons for file types.
-                m_fileSelector.setFileView(new ImageFileView(m_opencms, m_fileExtensions));
-                // add the image preview pane.
-                m_fileSelector.setAccessory(new ImagePreview(m_fileSelector, m_messageNoPreview));
-
-                m_action = m_actionOutputSelect;
-                repaint();
-
-                // show the file selector dialog
-                int returnVal = m_fileSelector.showDialog(this, "OK");
-
-                // process the results.
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    // count all resources
-                    m_outputMode = 1;
-                    m_action = m_actionOutputCount;
-                    repaint();
-                    m_resources = countResources(m_fileSelector.getSelectedFiles());
-                    // create the zipfile  
-                    m_outputMode = 2;
-                    File targetFile = createZipFile(m_fileSelector.getSelectedFiles());
-                    // check the size of the zip files
-                    if (targetFile == null || m_maxsize > 0 && targetFile.length() > m_maxsize) {
-                        // show some details in the applet itself
-                        m_outputMode = 4;
-                        if (targetFile == null) {
-                            m_message = m_messageOutputErrorZip;
-                        } else {
-                            m_message = m_messageOutputErrorSize + " " + targetFile.length() + " > " + m_maxsize;
-                        }
-                        m_action = m_actionOutputError;
-                        repaint();
-                        // show an error-alertbog
-                        JOptionPane.showMessageDialog(this, m_message, m_action, JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        m_outputMode = 3;
-                        m_message = m_messageOutputUpload + " (" + targetFile.length() / 1024 + " kb)";
-                        repaint();
-                        // upload the zipfile
-                        FileUploadThread uploadThreat = new FileUploadThread();
-
-                        uploadThreat.init(this);
-                        uploadThreat.start();
-
-                        uploadZipFile(targetFile);
-                        ok = false;
-                    }
-
-                } else {
-                    //the cancel button was used, so go back to the workplace
-                    ok = false;
-                    getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
-                }
-            }
-        } catch (Exception e) {
-            System.err.println(e);
+            // set log factory to default log factory, otherwise commons logging detection will fail with an exception 
+            System.setProperty(
+                org.apache.commons.logging.LogFactory.FACTORY_PROPERTY,
+                org.apache.commons.logging.LogFactory.FACTORY_DEFAULT);
+        } catch (SecurityException e) {
+            // this indicates the applet certificate has not been accepted
+            m_certificateAccepted = false;
+            e.printStackTrace();
         }
     }
 
     /**
-     * Counts all resources to add to the zip file.<p>
-     * 
-     * @param files the files to be packed into the zipfile
-     * @return number of resources
+     * Move the floating upload image to right, wrap around on right side.<p>
      */
-    private int countResources(File[] files) {
+    public void moveFloater() {
 
-        int count = 0;
-        // look through all selected resources
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isFile()) {
-                // its a file, count it
-                count++;
-            } else {
-                // its a folder, count all resources in it and add the number
-                count += countSubresources(files[i]);
-            }
+        m_floaterPos += 10;
+        if ((m_floaterPos) > 430) {
+            m_floaterPos = 50;
         }
-        return count;
-    }
-
-    /**
-     * Counts all resources in a folder.<p>
-     * 
-     * @param folder the folder to count
-     * @return number of resources
-     */
-    private int countSubresources(File folder) {
-
-        int count = 0;
-        if (folder.isFile()) {
-            // check if is really a folder
-            count = 1;
-        } else {
-            // recurest to count
-            count = countResources(folder.listFiles());
-        }
-        return count;
-    }
-
-    /**
-     * @see java.awt.Component#update(java.awt.Graphics)
-     */
-    public void update(Graphics g) {
-
-        paint(g);
+        repaint();
     }
 
     /**
@@ -415,8 +326,8 @@ public class FileUploadApplet extends JApplet implements Runnable {
         m_offgraphics.drawString(m_action, cx, cy);
 
         m_offgraphics.setColor(getColor("colorText"));
-        //draw process message
-        if (m_outputMode == 3 || m_outputMode == 4) {
+        // draw process message
+        if (m_outputMode >= 3) {
             cx = Math.max((getSize().width - m_metrics.stringWidth(m_message)) / 2, 0);
         } else {
             cx = 25;
@@ -440,12 +351,11 @@ public class FileUploadApplet extends JApplet implements Runnable {
             m_offgraphics.drawString(barText, cx, cy);
         }
 
-        // show nonsense during upload
+        // show floater during upload
         if (m_outputMode == 3) {
             m_offgraphics.drawImage(m_floater, m_floaterPos, 57, this);
             m_offgraphics.drawImage(m_source, 30, 47, this);
             m_offgraphics.drawImage(m_target, 440, 47, this);
-            
         }
 
         // copy the offcreen graphics to the applet
@@ -453,60 +363,125 @@ public class FileUploadApplet extends JApplet implements Runnable {
     }
 
     /**
-     * Move the floating upload image to right, wrap around on right side.<p>
+     * @see java.lang.Runnable#run()
      */
-    public void moveFloater() {
+    public void run() {
 
-        m_floaterPos += 10;
-        if ((m_floaterPos) > 430) {
-            m_floaterPos = 50;
+        try {
+            boolean ok = true;
+            while (ok) {
+                ok = true;
+
+                m_message = "";
+                m_resources = 0;
+                m_step = 0;
+                // create a new file chooser
+
+                if (m_fileSelector == null) {
+                    m_fileSelector = new JFileChooser();
+                }
+
+                // file selector can read files and folders
+                m_fileSelector.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
+                m_fileSelector.setDialogTitle(m_actionOutputSelect);
+
+                // add two custom file filters (office and images) and the default filters
+                m_fileSelector.addChoosableFileFilter(new ImageFilter());
+                m_fileSelector.addChoosableFileFilter(new OfficeFilter());
+                m_fileSelector.setAcceptAllFileFilterUsed(true);
+                // enable multi-selection of files
+                m_fileSelector.setMultiSelectionEnabled(true);
+                // add custom icons for file types.
+                m_fileSelector.setFileView(new ImageFileView(m_opencms, m_fileExtensions));
+                // add the image preview pane.
+                m_fileSelector.setAccessory(new ImagePreview(m_fileSelector, m_messageNoPreview));
+
+                m_action = m_actionOutputSelect;
+                repaint();
+
+                // show the file selector dialog
+                int returnVal = m_fileSelector.showDialog(this, "OK");
+
+                // process the results.
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    // count all resources
+                    m_outputMode = 1;
+                    m_action = m_actionOutputCount;
+                    repaint();
+                    m_resources = countResources(m_fileSelector.getSelectedFiles());
+                    // create the zipfile  
+                    m_outputMode = 2;
+                    File targetFile = createZipFile(m_fileSelector.getSelectedFiles());
+                    // check the size of the zip files
+                    if ((targetFile == null) || ((m_maxsize > 0) && (targetFile.length() > m_maxsize))) {
+                        // show some details in the applet itself
+                        m_outputMode = 4;
+                        if (targetFile == null) {
+                            m_message = m_messageOutputErrorZip;
+                        } else {
+                            m_message = m_messageOutputErrorSize + " " + targetFile.length() + " > " + m_maxsize;
+                        }
+                        m_action = m_actionOutputError;
+                        repaint();
+                        // show an error-alertbog
+                        JOptionPane.showMessageDialog(this, m_message, m_action, JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        m_outputMode = 3;
+                        m_message = m_messageOutputUpload + " (" + targetFile.length() / 1024 + " kb)";
+                        repaint();
+                        // upload the zipfile
+                        FileUploadThread uploadThreat = new FileUploadThread();
+
+                        uploadThreat.init(this);
+                        uploadThreat.start();
+
+                        uploadZipFile(targetFile);
+                        ok = false;
+                    }
+
+                } else {
+                    //the cancel button was used, so go back to the workplace
+                    ok = false;
+                    getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
+                }
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        repaint();
     }
 
     /**
-     * Creates a ZipFile from all files to upload.<p>
-     * 
-     * @param files the files to be packed into the zipfile
-     * @return reference to the zipfile
+     * @see java.applet.Applet#start()
      */
-    private File createZipFile(File[] files) {
+    public void start() {
 
-        File targetFile = null;
-        m_action = m_actionOutputCreate;
-        try {
-            // create a new zipStream
-            String zipFileName = ".opencms_upload.zip";                
-            String userHome = System.getProperty("user.home");
-            // create file in user home directory where write permissions should exist
-            if (userHome != null) {
-                if (! userHome.endsWith(File.separator)) {
-                    userHome = userHome + File.separator;
-                }
-                zipFileName = userHome + zipFileName;
-            }
-            ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(zipFileName));
-            // loop through all files
-            for (int i = 0; i < files.length; i++) {
-
-                // if its a file, add it to the zipfile
-                if (files[i].isFile()) {
-                    addFileToZip(zipStream, files[i], files[i].getName());
-                } else {
-                    addFolderToZip(zipStream, files[i], "");
-                }
-                repaint();
-                // free mem
-                files[i] = null;
-            }
-            zipStream.close();
-            // get the zipfile
-            targetFile = new File(zipFileName);
-        } catch (Exception e) {
-            System.err.println("Error creating zipfile " + e);
+        if (m_certificateAccepted) {
+            // certificate was accepted, start upload thread
+            m_runner = new Thread(this);
+            m_runner.start();
+        } else {
+            // certificate was not accepted, show error message
+            displayError();
         }
-        return targetFile;
+    }
 
+    /**
+     * @see java.applet.Applet#stop()
+     */
+    public void stop() {
+
+        m_runner = null;
+    }
+
+    /**
+     * @see java.awt.Component#update(java.awt.Graphics)
+     */
+    public void update(Graphics g) {
+
+        paint(g);
     }
 
     /**
@@ -562,101 +537,90 @@ public class FileUploadApplet extends JApplet implements Runnable {
         }
     }
 
-    /** The JSESSIONID cookie header name. */
-    public static final String C_JSESSIONID = "JSESSIONID";
-    
     /**
-     * Uploads the zipfile to the OpenCms.<p>
+     * Counts all resources to add to the zip file.<p>
      * 
-     * @param uploadFile the zipfile to upload
+     * @param files the files to be packed into the zipfile
+     * @return number of resources
      */
-    private void uploadZipFile(File uploadFile) {
+    private int countResources(File[] files) {
 
-        m_action = m_actionOutputUpload;
-        repaint();
-        
-        MultipartPostMethod filePost = new MultipartPostMethod(m_targetUrl);
-
-        try {
-            filePost.addParameter(uploadFile.getName(), uploadFile);
-            // add parameters for the upload zipfile JSP dialog
-            filePost.addParameter("action", "submitform");
-            filePost.addParameter("unzipfile", "true");
-            filePost.addParameter("uploadfolder", m_uploadFolder);
-
-            String sessionId = getParameter("sessionId");
-            
-            // add jsessionid query string
-            String query = ";" + C_JSESSIONID.toLowerCase() + "=" + sessionId;                         
-            filePost.setQueryString(query);
-            filePost.addRequestHeader(C_JSESSIONID, sessionId);
-            
-            HttpClient client = new HttpClient();
-            client.setConnectionTimeout(5000);
-            
-            // add the session cookie
-            HttpState initialState = new HttpState();
-            Cookie sessionCookie = new Cookie(filePost.getHostConfiguration().getHost(), C_JSESSIONID, sessionId, "/", null, false);
-            initialState.addCookie(sessionCookie);
-            initialState.setCookiePolicy(CookiePolicy.COMPATIBILITY);
-            client.setState(initialState);            
-            
-            // no execute the file upload
-            int status = client.executeMethod(filePost);
-
-            if (status == HttpStatus.SC_OK) {
-                //return to the specified url and frame target
-                getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
+        int count = 0;
+        // look through all selected resources
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                // its a file, count it
+                count++;
             } else {
-                // create the error text
-                String error = m_errorLine1 + "\n" + filePost.getStatusLine();
-                //JOptionPane.showMessageDialog(this, error, "Error!", JOptionPane.ERROR_MESSAGE);
-                getAppletContext().showDocument(
-                    new URL(m_errorUrl + "?action=showerror&uploaderror=" + error),
-                    "explorer_files");
+                // its a folder, count all resources in it and add the number
+                count += countSubresources(files[i]);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            filePost.releaseConnection();
-            // finally delete the zipFile on the harddisc
-            uploadFile.delete();
         }
+        return count;
     }
 
     /**
-     * Returns a byte array containing the content of server FS file.<p>
-     *
-     * @param file the name of the file to read
-     * @return bytes[] the content of the file
-     * @throws Exception if something goes wrong
+     * Counts all resources in a folder.<p>
+     * 
+     * @param folder the folder to count
+     * @return number of resources
      */
-    private byte[] getFileBytes(File file) throws Exception {
+    private int countSubresources(File folder) {
 
-        byte[] buffer = null;
-        FileInputStream fileStream = null;
-        int charsRead;
-        int size;
-        try {
-            fileStream = new FileInputStream(file);
-            charsRead = 0;
-            size = new Long(file.length()).intValue();
-            buffer = new byte[size];
-            while (charsRead < size) {
-                charsRead += fileStream.read(buffer, charsRead, size - charsRead);
-            }
-            return buffer;
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            try {
-                if (fileStream != null) {
-                    fileStream.close();
-                }
-            } catch (IOException e) {
-                // ignore
-            }
+        int count = 0;
+        if (folder.isFile()) {
+            // check if is really a folder
+            count = 1;
+        } else {
+            // recurest to count
+            count = countResources(folder.listFiles());
         }
+        return count;
+    }
+
+    /**
+     * Creates a ZipFile from all files to upload.<p>
+     * 
+     * @param files the files to be packed into the zipfile
+     * @return reference to the zipfile
+     */
+    private File createZipFile(File[] files) {
+
+        File targetFile = null;
+        m_action = m_actionOutputCreate;
+        try {
+            // create a new zipStream
+            String zipFileName = ".opencms_upload.zip";
+            String userHome = System.getProperty("user.home");
+            // create file in user home directory where write permissions should exist
+            if (userHome != null) {
+                if (!userHome.endsWith(File.separator)) {
+                    userHome = userHome + File.separator;
+                }
+                zipFileName = userHome + zipFileName;
+            }
+            ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(zipFileName));
+            // loop through all files
+            for (int i = 0; i < files.length; i++) {
+
+                // if its a file, add it to the zipfile
+                if (files[i].isFile()) {
+                    addFileToZip(zipStream, files[i], files[i].getName());
+                } else {
+                    addFolderToZip(zipStream, files[i], "");
+                }
+                repaint();
+                // free mem
+                files[i] = null;
+            }
+            zipStream.close();
+            // get the zipfile
+            targetFile = new File(zipFileName);
+        } catch (Exception e) {
+            System.err.println("Error creating zipfile " + e);
+        }
+        return targetFile;
+
     }
 
     /**
@@ -699,5 +663,109 @@ public class FileUploadApplet extends JApplet implements Runnable {
             System.err.println("Error reading " + colorName + ":" + e);
         }
         return col;
+    }
+
+    /**
+     * Returns a byte array containing the content of server FS file.<p>
+     *
+     * @param file the name of the file to read
+     * @return bytes[] the content of the file
+     * @throws Exception if something goes wrong
+     */
+    private byte[] getFileBytes(File file) throws Exception {
+
+        byte[] buffer = null;
+        FileInputStream fileStream = null;
+        int charsRead;
+        int size;
+        try {
+            fileStream = new FileInputStream(file);
+            charsRead = 0;
+            size = new Long(file.length()).intValue();
+            buffer = new byte[size];
+            while (charsRead < size) {
+                charsRead += fileStream.read(buffer, charsRead, size - charsRead);
+            }
+            return buffer;
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            try {
+                if (fileStream != null) {
+                    fileStream.close();
+                }
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+    }
+
+    /**
+     * Uploads the zipfile to the OpenCms.<p>
+     * 
+     * @param uploadFile the zipfile to upload
+     */
+    private void uploadZipFile(File uploadFile) {
+
+        m_action = m_actionOutputUpload;
+        repaint();
+
+        PostMethod post = new PostMethod(m_targetUrl);
+
+        try {
+            Part[] parts = new Part[4];
+            parts[0] = new FilePart(uploadFile.getName(), uploadFile);
+            parts[1] = new StringPart("action", "submitform");
+            parts[2] = new StringPart("unzipfile", "true");
+            parts[3] = new StringPart("uploadfolder", m_uploadFolder);
+
+            HttpMethodParams methodParams = post.getParams();
+            methodParams.setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+            MultipartRequestEntity request = new MultipartRequestEntity(parts, methodParams);
+            post.setRequestEntity(request);
+
+            // add jsessionid query string
+            String sessionId = getParameter("sessionId");
+            String query = ";" + C_JSESSIONID.toLowerCase() + "=" + sessionId;
+            post.setQueryString(query);
+            post.addRequestHeader(C_JSESSIONID, sessionId);
+
+            HttpClient client = new HttpClient();
+            HttpConnectionParams connectionParams = client.getHttpConnectionManager().getParams();
+            connectionParams.setConnectionTimeout(5000);
+
+            // add the session cookie
+            client.getState();
+            client.getHostConfiguration().getHost();
+
+            HttpState initialState = new HttpState();
+            URI uri = new URI(m_targetUrl, false);
+            Cookie sessionCookie = new Cookie(uri.getHost(), C_JSESSIONID, sessionId, "/", null, false);
+            initialState.addCookie(sessionCookie);
+            client.setState(initialState);
+
+            // no execute the file upload
+            int status = client.executeMethod(post);
+
+            if (status == HttpStatus.SC_OK) {
+                //return to the specified url and frame target
+                getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
+            } else {
+                // create the error text
+                String error = m_errorLine1 + "\n" + post.getStatusLine();
+                //JOptionPane.showMessageDialog(this, error, "Error!", JOptionPane.ERROR_MESSAGE);
+                getAppletContext().showDocument(
+                    new URL(m_errorUrl + "?action=showerror&uploaderror=" + error),
+                    "explorer_files");
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            post.releaseConnection();
+            // finally delete the zipFile on the harddisc
+            uploadFile.delete();
+        }
     }
 }

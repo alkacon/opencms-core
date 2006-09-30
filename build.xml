@@ -2,7 +2,8 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="6.5.3" />    
+    <property name="version.number"             		value="6.5.3" />
+    <property name="java.target.version"                value="1.4" />
     
 	<property name="app.name" 							value="opencms" />
 	<property name="src.all.comps" 						value="src-modules,src-components,modules,test,webapp" />
@@ -42,7 +43,7 @@
     <property name="opencms.inputlib.dbcp"        		location="${opencms.input.libs}/commons-dbcp-1.2.1.jar" />
     <property name="opencms.inputlib.digester"        	location="${opencms.input.libs}/commons-digester-1.7.jar" />
     <property name="opencms.inputlib.pool"        		location="${opencms.input.libs}/commons-pool-1.2.jar" />    
-    <property name="opencms.inputlib.logging"     		location="${opencms.input.libs}/commons-logging-1.0.4.jar" /> 
+    <property name="opencms.inputlib.logging"     		location="${opencms.input.libs}/commons-logging-1.1.jar" /> 
     <property name="opencms.inputlib.collections"     	location="${opencms.input.libs}/commons-collections-3.1.jar" />
     <property name="opencms.inputlib.beanutils"   		location="${opencms.input.libs}/commons-beanutils-1.7.0.jar" />
     <property name="opencms.inputlib.fileupload"   		location="${opencms.input.libs}/commons-fileupload-1.0.jar" />
@@ -170,6 +171,7 @@
         <echo message="OpenCms input directory is: ${opencms.input}" />
         <echo message="OpenCms output directory is: ${opencms.output}" />
         <echo message="Java version detected: ${ant.java.version}"/>
+        <echo message="Java target version: ${java.target.version}"/>
         <echo message="Java home is: ${env.JAVA_HOME}"/>
     	<echo message="Tomcat home is: ${tomcat.home}" />        
         <echo message="Excluding from build: ${build.excludes}" />
@@ -287,7 +289,7 @@ ${opencms.inputlib.textextraction}
             optimize="on"
             deprecation="on"
        		source="1.4"
-    		target="1.4">
+    		target="${java.target.version}">
        		<!-- compilerarg value="-Xlint:unchecked"/ -->
        	</javac>
 		
@@ -721,7 +723,7 @@ ${opencms.inputlib.textextraction}
             optimize="on"
             deprecation="on" 
        		source="1.4"
-    		target="1.4"/>
+    		target="${java.target.version}"/>
 		
         <copy todir="${opencms.output.tests}">
             <fileset dir="${opencms.input}/test" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd" excludes="${excludes},**/data/**"/>
@@ -789,4 +791,75 @@ ${opencms.inputlib.textextraction}
 			<test name="org.opencms.xml.content.AllTests" />			
 		</junit>
 	</target>
+
+    <property name="signjar.storepass" value="secret" />
+
+    <target name="uploadjar" depends="checklibs" if="libsAvailable" 
+        description="Build the upload.jar">
+        
+        <delete dir="${opencms.output}/upload/" />
+        <mkdir dir="${opencms.output}/upload/org/opencms/applet/" />
+        
+        <copy todir="${opencms.output}/upload/org/opencms/applet/">
+            <fileset dir="${opencms.input}/src-components/org/opencms/applet">
+                <include name="**/*.png"/>
+                <include name="**/*.gif"/>
+            </fileset>
+        </copy>  
+                    
+        <unjar dest="${opencms.output}/upload/" src="${opencms.inputlib.httpclient}" />
+        <unjar dest="${opencms.output}/upload/" src="${opencms.inputlib.logging}" />
+        <unjar dest="${opencms.output}/upload/" src="${opencms.inputlib.codec}" />
+
+        <delete>
+            <fileset dir="${opencms.output}/upload/">
+                <include name="**/*.html" />
+            </fileset>
+        </delete>
+        
+        <javac
+            srcdir="${opencms.input}/src-components/org/opencms/applet"
+            destdir="${opencms.output}/upload"
+            excludes="${build.excludes}"
+            debug="on"
+            optimize="on"
+            deprecation="on"
+            source="1.4"
+            target="${java.target.version}">
+        </javac>
+ 
+        <jar
+            jarfile="${opencms.output}/upload/upload_unsigned.jar"
+            basedir="${opencms.output}/upload/"
+            includes="org/**" >  
+        </jar>
+       
+        <genkey 
+            keystore="${opencms.output}/upload/keystore" 
+            validity="3650" 
+            alias="OpenCms" 
+            storepass="${signjar.storepass}">
+            <dname>
+                <param name="CN" value="OpenCms Upload Applet" />
+                <param name="OU" value="opencms.org" />
+                <param name="O"  value="Alkacon Software GmbH" />
+                <param name="L"  value="An der Wachsfabrik 13" />
+                <param name="S"  value="Cologne" />
+                <param name="C"  value="DE" />
+            </dname>
+        </genkey>       
+
+        <signjar 
+            signedjar="${opencms.output}/upload/upload.jar" 
+            alias="OpenCms" 
+            jar="${opencms.output}/upload/upload_unsigned.jar" 
+            storepass="${signjar.storepass}"
+            keystore="${opencms.output}/upload/keystore" />
+        
+        <delete file="${opencms.output}/upload/upload_unsigned.jar" />
+
+        <copy 
+            todir="${opencms.input}/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/components/upload_applet/"
+            file="${opencms.output}/upload/upload.jar" />
+    </target>    
 </project>
