@@ -196,6 +196,7 @@
 		<echo message="Module input directory is: ${module.input}" />
 		<echo message="Module source directory is: ${module.input.src}" />
 		<echo message="Detected Java version: ${ant.java.version}" />
+        <echo message="Java target version: ${java.target.version}"/>		
 		<echo message="Tomcat home is: ${tomcat.home}" />
 		<echo message="Excluded files in Jar: ${jar.excludes}" />
 		<if>
