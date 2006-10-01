@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/A_CmsMessageBundle.java,v $
- * Date   : $Date: 2006/08/21 17:04:18 $
- * Version: $Revision: 1.51.4.3 $
+ * Date   : $Date: 2006/10/01 20:35:07 $
+ * Version: $Revision: 1.51.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51.4.3 $
+ * @version $Revision: 1.51.4.4 $
  * 
  * @since 6.0.0
  */
@@ -63,6 +63,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.i18n.Messages.get(),
             org.opencms.importexport.Messages.get(),
             org.opencms.jsp.Messages.get(),
+            org.opencms.jsp.decorator.Messages.get(),
             org.opencms.jsp.util.Messages.get(),
             org.opencms.loader.Messages.get(),
             org.opencms.lock.Messages.get(),
@@ -70,8 +71,9 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.main.Messages.get(),
             org.opencms.module.Messages.get(),
             org.opencms.monitor.Messages.get(),
-            org.opencms.report.Messages.get(),
+            org.opencms.notification.Messages.get(),
             org.opencms.relations.Messages.get(),
+            org.opencms.report.Messages.get(),
             org.opencms.scheduler.Messages.get(),
             org.opencms.scheduler.jobs.Messages.get(),
             org.opencms.search.Messages.get(),
@@ -91,6 +93,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.workplace.editors.Messages.get(),
             org.opencms.workplace.explorer.Messages.get(),
             org.opencms.workplace.galleries.Messages.get(),
+            org.opencms.workplace.help.Messages.get(),
             org.opencms.workplace.list.Messages.get(),
             org.opencms.workplace.search.Messages.get(),
             org.opencms.workplace.threads.Messages.get(),
