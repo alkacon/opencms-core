@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/help.js,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/10/02 08:14:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -121,6 +121,12 @@ function hideSelectBoxes(elem, y) {
     		var topPos = findPosY(selectBoxes[i]);
     		if (topPos + selectBoxes[i].offsetHeight >= y && topPos <= y + textHeight) {
     			// hide this select box
+    			for (var attrs=0; attrs<selectBoxes[i].attributes.length; attrs++) {
+    				if (selectBoxes[i].attributes[attrs].nodeName == "multiple" && selectBoxes[i].attributes[attrs].nodeValue == true) {
+    					selectBoxes[i].parentNode.style.height = (selectBoxes[i].offsetHeight + 6) + "px";
+    					break;
+    				}
+    			}
     			selectBoxes[i].style.display = "none";
     		}
     	}
