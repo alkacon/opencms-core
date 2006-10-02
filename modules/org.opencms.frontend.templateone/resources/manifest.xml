@@ -19,7 +19,7 @@
 <p>Install this module if you want to use it for building your own website.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>2.0.0</version>
+		<version>2.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -152,29 +152,39 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/galleries/pics/ocms-templateone/logo_alkacon_150_t.gif</source>
-			<destination>system/galleries/pics/ocms-templateone/logo_alkacon_150_t.gif</destination>
+			<source>system/galleries/pics/ocms-templateone/logo_alkacon_150.png</source>
+			<destination>system/galleries/pics/ocms-templateone/logo_alkacon_150.png</destination>
 			<type>image</type>
-			<uuidresource>2a098fcf-0d73-11d9-b3f3-9b4fc25bdb8f</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidresource>153e87b0-5212-11db-bfef-81a4c7dd791f</uuidresource>
+			<datelastmodified>Mon, 02 Oct 2006 12:32:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 02 Oct 2006 12:32:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:150,h:54]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/galleries/pics/ocms-templateone/logo_opencms_150.gif</source>
-			<destination>system/galleries/pics/ocms-templateone/logo_opencms_150.gif</destination>
+			<source>system/galleries/pics/ocms-templateone/logo_opencms_150.png</source>
+			<destination>system/galleries/pics/ocms-templateone/logo_opencms_150.png</destination>
 			<type>image</type>
-			<uuidresource>7eb3f55b-193e-11d9-9027-95b5e57c814c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidresource>15589f65-5212-11db-bfef-81a4c7dd791f</uuidresource>
+			<datelastmodified>Mon, 02 Oct 2006 12:33:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 02 Oct 2006 12:32:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:150,h:38]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
