@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/09/30 10:04:04 $
- * Version: $Revision: 1.717.2.52 $
+ * Date   : $Date: 2006/10/02 08:12:47 $
+ * Version: $Revision: 1.717.2.53 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.5.3 - September xxxx, 2006
+* fixed display issue for multiple select boxes in IE
 ! History list optionally shows project name and description
 ! New configuration option for initial checkbox state on new folder dialog in opencms-workplace.xml 
 ! Content tool for property change allows to set property values for resources that have an empty old value
@@ -2331,3 +2332,5 @@ OpenCms 4.0a20 Giedi Prime: Rabban - 01 March 2000
 OpenCms 4.0a19 Giedi Prime: Rabban - 24 February 2000
 
 - Public Open Source release of OpenCms
+
+
