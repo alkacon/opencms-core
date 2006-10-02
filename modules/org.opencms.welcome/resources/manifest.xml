@@ -616,7 +616,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property type="shared">
 					<name>image.size</name>
-					<value><![CDATA[w:100,h:36]]></value>
+					<value><![CDATA[w:118,h:40]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
