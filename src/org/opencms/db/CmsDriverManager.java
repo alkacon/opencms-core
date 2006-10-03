@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/09/27 10:56:01 $
- * Version: $Revision: 1.570.2.21 $
+ * Date   : $Date: 2006/10/03 09:00:29 $
+ * Version: $Revision: 1.570.2.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -6680,14 +6680,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Writes all export points into the file system for a publish task 
-     * specified by its publish history ID.<p>
+     * Writes all export points into the file system for the publish task 
+     * specified by trhe given publish history ID.<p>
      * 
      * @param dbc the current database context
      * @param projectId the id of the project that was published
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file
-     * 
-     * @param publishHistoryId unique int ID to identify each publish task in the publish history
+     * @param publishHistoryId ID to identify the publish task in the publish history
      */
     public void writeExportPoints(CmsDbContext dbc, int projectId, I_CmsReport report, CmsUUID publishHistoryId) {
 
@@ -6725,7 +6724,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
 
-            // iterate over all published resources to export them eventually
+            // iterate over all published resources to export them
             Iterator i = publishedResources.iterator();
             while (i.hasNext()) {
                 CmsPublishedResource currentPublishedResource = (CmsPublishedResource)i.next();
@@ -6742,14 +6741,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     if (currentPublishedResource.isFolder()) {
                         // export the folder                        
                         if (currentPublishedResource.getState() == CmsResource.STATE_DELETED) {
-                            exportPointDriver.removeResource(currentPublishedResource.getRootPath(), currentExportPoint);
+                            exportPointDriver.deleteResource(currentPublishedResource.getRootPath(), currentExportPoint);
                         } else {
                             exportPointDriver.createFolder(currentPublishedResource.getRootPath(), currentExportPoint);
                         }
                     } else {
                         // export the file            
                         if (currentPublishedResource.getState() == CmsResource.STATE_DELETED) {
-                            exportPointDriver.removeResource(currentPublishedResource.getRootPath(), currentExportPoint);
+                            exportPointDriver.deleteResource(currentPublishedResource.getRootPath(), currentExportPoint);
                         } else {
                             // read the file content online
                             CmsFile onlineContent = getVfsDriver().readFile(

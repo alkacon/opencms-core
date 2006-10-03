@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.114.4.5 $
+ * Date   : $Date: 2006/10/03 09:00:30 $
+ * Version: $Revision: 1.114.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.5 $
+ * @version $Revision: 1.114.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -301,8 +301,9 @@ public interface I_CmsVfsDriver {
      * 
      * The <code>projectId</code> and <code>includeDeleted</code> are not used anymore.
      * They are still parameters of the method to maintain compatibility to older versions.<p>
+     * 
      * The returned file possesses only the content of the file as a byte array, 
-     * which can be by (@link CmsFile#getContents()), and the content ID.<p>
+     * which can be obtained by {@link CmsFile#getContents()}, and the content ID.<p>
      * 
      * @param dbc the current database context
      * @param projectId the ID of the current project
