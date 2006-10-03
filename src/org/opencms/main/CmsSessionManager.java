@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.12.4.2 $
+ * Date   : $Date: 2006/10/03 07:00:16 $
+ * Version: $Revision: 1.12.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.2 $ 
+ * @version $Revision: 1.12.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,6 +161,25 @@ public class CmsSessionManager {
     public CmsSessionInfo getSessionInfo(CmsUUID sessionId) {
 
         return (CmsSessionInfo)m_sessions.get(sessionId);
+    }
+
+    /**
+     * Returns the OpenCms user session info for the given request, 
+     * or <code>null</code> if no user session is available.<p>
+     * 
+     * @param req the current request
+     * 
+     * @return the OpenCms user session info for the given request, or <code>null</code> if no user session is available
+     */
+    public CmsSessionInfo getSessionInfo(HttpServletRequest req) {
+
+        HttpSession session = req.getSession(false);
+        if (session == null) {
+            // special case for acessing a session from "outside" requests (e.g. upload applet)
+            String sessionId = req.getHeader(CmsRequestUtil.HEADER_JSESSIONID);
+            return sessionId == null ? null : getSessionInfo(sessionId);
+        }
+        return getSessionInfo(session);
     }
 
     /**
@@ -340,25 +359,6 @@ public class CmsSessionManager {
     protected void addSessionInfo(CmsSessionInfo sessionInfo) {
 
         m_sessions.put(sessionInfo.getSessionId(), sessionInfo);
-    }
-
-    /**
-     * Returns the OpenCms user session info for the given request, 
-     * or <code>null</code> if no user session is available.<p>
-     * 
-     * @param req the current request
-     * 
-     * @return the OpenCms user session info for the given request, or <code>null</code> if no user session is available
-     */
-    protected CmsSessionInfo getSessionInfo(HttpServletRequest req) {
-
-        HttpSession session = req.getSession(false);
-        if (session == null) {
-            // special case for acessing a session from "outside" requests (e.g. upload applet)
-            String sessionId = req.getHeader(CmsRequestUtil.HEADER_JSESSIONID);
-            return sessionId == null ? null : getSessionInfo(sessionId);
-        }
-        return getSessionInfo(session);
     }
 
     /**
