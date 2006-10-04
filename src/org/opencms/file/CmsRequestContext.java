@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2006/09/14 11:36:47 $
- * Version: $Revision: 1.29.4.4 $
+ * Date   : $Date: 2006/10/04 15:54:09 $
+ * Version: $Revision: 1.29.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29.4.4 $
+ * @version $Revision: 1.29.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -188,14 +188,6 @@ public final class CmsRequestContext {
             && ((resourcename.length() == 0) || (resourcename.charAt(0) != '/'))) {
             // add slash between site root and resource if required
             result.append('/');
-        } else if (((siteRoot.length() > 0) && (siteRoot.charAt(siteRoot.length() - 1) == '/'))
-            && ((resourcename.length() > 0) && (resourcename.charAt(0) == '/'))) {
-            
-            int todo_v7;
-            // TODO: Check this additional logic
-        
-            // remove additional slash between site root and resource if required
-            resourcename = resourcename.substring(1);
         }
         result.append(resourcename);
         return m_directoryTranslator.translateResource(result.toString());
@@ -396,11 +388,16 @@ public final class CmsRequestContext {
     public String removeSiteRoot(String resourcename) {
 
         String siteRoot = getAdjustedSiteRoot(m_siteRoot, resourcename);
-        // for startsWith if one siteRoot is prefix of another as siteRoot ends without slash!
-        String siteRootSlashed = siteRoot + "/";
-        if ((siteRoot == m_siteRoot) && resourcename.startsWith(siteRootSlashed)) {
+        if ((siteRoot == m_siteRoot) && resourcename.startsWith(siteRoot)) {
             resourcename = resourcename.substring(siteRoot.length());
         }
+        
+        // TODO: since the site root does not includes the trailing slash,
+        // having a multisite configuration, where one site path is prefix of other,
+        // like: /sites/test and /sites/testA, will result in a mix up of the site 
+        // resources in the whole system (sibling view, project view, and more).
+        int todoV7;
+        
         return resourcename;
     }
 
@@ -411,7 +408,7 @@ public final class CmsRequestContext {
      */
     public void restoreSiteRoot() throws RuntimeException {
 
-         if (m_savedSiteRoot == null) {
+        if (m_savedSiteRoot == null) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EMPTY_SITEROOT_0));
         }
         m_siteRoot = m_savedSiteRoot;
