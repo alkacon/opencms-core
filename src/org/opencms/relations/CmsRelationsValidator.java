@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Attic/CmsRelationsValidator.java,v $
- * Date   : $Date: 2006/09/29 08:57:33 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/10/04 15:58:33 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.3.0 
  */
@@ -105,124 +105,136 @@ public class CmsRelationsValidator {
      */
     public Map validateResources(CmsObject cms, List resources, I_CmsReport report) {
 
-        boolean interProject = (resources != null);
-        report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
-        if (resources == null) {
-            resources = new ArrayList();
-            CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-            Iterator itTypes = OpenCms.getResourceManager().getResourceTypes().iterator();
-            while (itTypes.hasNext()) {
-                I_CmsResourceType type = (I_CmsResourceType)itTypes.next();
-                if (type instanceof I_CmsLinkParseable) {
-                    filter = filter.addRequireType(type.getTypeId());
-                    try {
-                        resources.addAll(cms.readResources("/", filter, true));
-                    } catch (CmsException e) {
-                        LOG.error(
-                            Messages.get().getBundle().key(Messages.LOG_RETRIEVAL_RESOURCES_1, type.getTypeName()),
-                            e);
+        Map invalidResources = new HashMap();
+
+        String site = cms.getRequestContext().getSiteRoot();
+        try {
+            cms.getRequestContext().setSiteRoot("");
+
+            boolean interProject = (resources != null);
+            report.println(
+                Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_BEGIN_0),
+                I_CmsReport.FORMAT_HEADLINE);
+            if (resources == null) {
+                resources = new ArrayList();
+                CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
+                Iterator itTypes = OpenCms.getResourceManager().getResourceTypes().iterator();
+                while (itTypes.hasNext()) {
+                    I_CmsResourceType type = (I_CmsResourceType)itTypes.next();
+                    if (type instanceof I_CmsLinkParseable) {
+                        filter = filter.addRequireType(type.getTypeId());
+                        try {
+                            resources.addAll(cms.readResources("/", filter, true));
+                        } catch (CmsException e) {
+                            LOG.error(Messages.get().getBundle().key(
+                                Messages.LOG_RETRIEVAL_RESOURCES_1,
+                                type.getTypeName()), e);
+                        }
                     }
                 }
             }
-        }
 
-        // populate a lookup map with the project resources that 
-        // actually get published keyed by their resource names.
-        // second, resources that don't get validated are ignored.
-        Map offlineFilesLookup = new HashMap();
-        List validatableResources = new ArrayList();
-        Iterator itResources = resources.iterator();
-        while (itResources.hasNext()) {
-            CmsResource resource = (CmsResource)itResources.next();
-            offlineFilesLookup.put(resource.getRootPath(), resource);
-            try {
-                I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-                if ((resourceType instanceof I_CmsLinkParseable) && (resource.getState() != CmsResource.STATE_DELETED)) {
-                    // don't validate links on deleted resources
-                    validatableResources.add(resource);
+            // populate a lookup map with the project resources that 
+            // actually get published keyed by their resource names.
+            // second, resources that don't get validated are ignored.
+            Map offlineFilesLookup = new HashMap();
+            List validatableResources = new ArrayList();
+            Iterator itResources = resources.iterator();
+            while (itResources.hasNext()) {
+                CmsResource resource = (CmsResource)itResources.next();
+                offlineFilesLookup.put(resource.getRootPath(), resource);
+                try {
+                    I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+                    if ((resourceType instanceof I_CmsLinkParseable)
+                        && (resource.getState() != CmsResource.STATE_DELETED)) {
+                        // don't validate links on deleted resources
+                        validatableResources.add(resource);
+                    }
+                } catch (CmsException e) {
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.LOG_RETRIEVAL_RESOURCETYPE_1,
+                        resource.getRootPath()), e);
                 }
-            } catch (CmsException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(Messages.LOG_RETRIEVAL_RESOURCETYPE_1, resource.getRootPath()),
-                    e);
             }
-        }
 
-        Map invalidResources = new HashMap();
-        boolean foundBrokenLinks = false;
-        for (int index = 0, size = validatableResources.size(); index < size; index++) {
-            CmsResource resource = (CmsResource)validatableResources.get(index);
-            String resourceName = resource.getRootPath();
+            boolean foundBrokenLinks = false;
+            for (int index = 0, size = validatableResources.size(); index < size; index++) {
+                CmsResource resource = (CmsResource)validatableResources.get(index);
+                String resourceName = resource.getRootPath();
 
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                new Integer(index + 1),
-                new Integer(size)), I_CmsReport.FORMAT_NOTE);
-            report.print(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATING_0), I_CmsReport.FORMAT_NOTE);
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                cms.getRequestContext().removeSiteRoot(resourceName)));
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-            List relations = null;
-            try {
-                relations = cms.getRelationsForResource(
-                    cms.getRequestContext().removeSiteRoot(resourceName),
-                    CmsRelationFilter.TARGETS);
-            } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, resourceName), e);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    new Integer(index + 1),
+                    new Integer(size)), I_CmsReport.FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATING_0), I_CmsReport.FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    removeSiteRoot(site, resourceName)));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                List relations = null;
+                try {
+                    relations = cms.getRelationsForResource(resourceName, CmsRelationFilter.TARGETS);
+                } catch (CmsException e) {
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, resourceName), e);
+                    report.println(Messages.get().container(
+                        Messages.LOG_LINK_SEARCH_1,
+                        removeSiteRoot(site, resourceName)), I_CmsReport.FORMAT_ERROR);
+                    continue;
+                }
+                int projectId = CmsProject.ONLINE_PROJECT_ID;
+                if (!interProject) {
+                    projectId = cms.getRequestContext().currentProject().getId();
+                }
+                List brokenLinks = validateLinks(relations, offlineFilesLookup, projectId);
+                if (brokenLinks.size() > 0) {
+                    // the resource contains broken links
+                    invalidResources.put(resourceName, brokenLinks);
+                    foundBrokenLinks = true;
+                    report.println(
+                        Messages.get().container(Messages.RPT_HTMLLINK_FOUND_BROKEN_LINKS_0),
+                        I_CmsReport.FORMAT_WARNING);
+                } else {
+                    // the resource contains *NO* broken links
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                        I_CmsReport.FORMAT_OK);
+                }
+            }
+
+            if (foundBrokenLinks) {
+                // print a summary if we found broken links in the validated resources
                 report.println(
-                    Messages.get().container(Messages.LOG_LINK_SEARCH_1, resourceName),
+                    Messages.get().container(Messages.RPT_BROKEN_LINKS_SUMMARY_BEGIN_0),
+                    I_CmsReport.FORMAT_HEADLINE);
+                Iterator itInvalidResources = invalidResources.entrySet().iterator();
+                while (itInvalidResources.hasNext()) {
+                    Map.Entry entry = (Map.Entry)itInvalidResources.next();
+                    String resourceName = (String)entry.getKey();
+                    List brokenLinks = (List)entry.getValue();
+                    report.println(Messages.get().container(
+                        Messages.RPT_BROKEN_LINKS_IN_1,
+                        removeSiteRoot(site, resourceName)), I_CmsReport.FORMAT_WARNING);
+                    Iterator itBrokenLinks = brokenLinks.iterator();
+                    while (itBrokenLinks.hasNext()) {
+                        String brokenLink = (String)itBrokenLinks.next();
+                        report.print(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            brokenLink), I_CmsReport.FORMAT_WARNING);
+                    }
+                    report.println();
+                }
+                report.println(
+                    Messages.get().container(Messages.RPT_BROKEN_LINKS_SUMMARY_END_0),
+                    I_CmsReport.FORMAT_HEADLINE);
+                report.println(
+                    Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_ERROR_0),
                     I_CmsReport.FORMAT_ERROR);
-                continue;
             }
-            int projectId = CmsProject.ONLINE_PROJECT_ID;
-            if (!interProject) {
-                projectId = cms.getRequestContext().currentProject().getId();
-            }
-            List brokenLinks = validateLinks(relations, offlineFilesLookup, projectId);
-            if (brokenLinks.size() > 0) {
-                // the resource contains broken links
-                invalidResources.put(resourceName, brokenLinks);
-                foundBrokenLinks = true;
-                report.println(
-                    Messages.get().container(Messages.RPT_HTMLLINK_FOUND_BROKEN_LINKS_0),
-                    I_CmsReport.FORMAT_WARNING);
-            } else {
-                // the resource contains *NO* broken links
-                report.println(
-                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.FORMAT_OK);
-            }
+            report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_END_0), I_CmsReport.FORMAT_HEADLINE);
+        } finally {
+            cms.getRequestContext().setSiteRoot(site);
         }
 
-        if (foundBrokenLinks) {
-            // print a summary if we found broken links in the validated resources
-            report.println(
-                Messages.get().container(Messages.RPT_BROKEN_LINKS_SUMMARY_BEGIN_0),
-                I_CmsReport.FORMAT_HEADLINE);
-            Iterator itInvalidResources = invalidResources.entrySet().iterator();
-            while (itInvalidResources.hasNext()) {
-                Map.Entry entry =(Map.Entry)itInvalidResources.next();
-                String resourceName = (String)entry.getKey();
-                List brokenLinks = (List)entry.getValue();
-                report.println(
-                    Messages.get().container(Messages.RPT_BROKEN_LINKS_IN_1, resourceName),
-                    I_CmsReport.FORMAT_WARNING);
-                Iterator itBrokenLinks = brokenLinks.iterator();
-                while (itBrokenLinks.hasNext()) {
-                    String brokenLink = (String)itBrokenLinks.next();
-                    report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        brokenLink), I_CmsReport.FORMAT_WARNING);
-                }
-                report.println();
-            }
-            report.println(
-                Messages.get().container(Messages.RPT_BROKEN_LINKS_SUMMARY_END_0),
-                I_CmsReport.FORMAT_HEADLINE);
-            report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_ERROR_0), I_CmsReport.FORMAT_ERROR);
-        }
-        report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_END_0), I_CmsReport.FORMAT_HEADLINE);
         return invalidResources;
     }
 
@@ -284,5 +296,24 @@ public class CmsRelationsValidator {
             validatedLinks.add(link);
         }
         return brokenLinks;
+    }
+
+    /**
+     * Removes the given site from the given root path, if it starts with the site path.<p>
+     * 
+     * @param site the site to remove
+     * @param resourceName the root path to remove the site root from
+     * 
+     * @return the site relative resource path
+     */
+    private String removeSiteRoot(String site, String resourceName) {
+
+        if (!site.endsWith("/")) {
+            site += "/";
+        }
+        if (resourceName.startsWith(site)) {
+            resourceName = resourceName.substring(site.length());
+        }
+        return resourceName;
     }
 }

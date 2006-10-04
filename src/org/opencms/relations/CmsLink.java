@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2006/09/27 10:56:01 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/10/04 15:56:36 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -221,19 +221,16 @@ public class CmsLink {
             }
             // go on with the resource with the given path
             try {
-                // adjust the path to the site
-                String target = m_target;
-                if (getSiteRoot() != null) {
-                    target = target.substring(getSiteRoot().length());
-                }
+                cms.getRequestContext().saveSiteRoot();
+                cms.getRequestContext().setSiteRoot("");
                 // now look for the resource with the given path
-                CmsResource res = cms.readResource(target, CmsResourceFilter.ALL);
+                CmsResource res = cms.readResource(m_target, CmsResourceFilter.ALL);
                 if (!res.getStructureId().equals(m_structureId)) {
                     // update structure id if needed
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_BROKEN_LINK_UPDATED_BY_NAME_3,
-                            target,
+                            m_target,
                             m_structureId,
                             res.getStructureId()));
                     }
@@ -246,6 +243,8 @@ public class CmsLink {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_BROKEN_LINK_BY_NAME_1, m_target), e1);
                 }
+            } finally {
+                cms.getRequestContext().restoreSiteRoot();
             }
         }
     }
