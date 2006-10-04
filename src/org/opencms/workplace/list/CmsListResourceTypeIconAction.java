@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceTypeIconAction.java,v $
- * Date   : $Date: 2006/08/19 13:40:40 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/10/04 15:52:50 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,10 +90,9 @@ public class CmsListResourceTypeIconAction extends CmsListExplorerDirectAction {
     }
 
     /**
-     * @see org.opencms.workplace.list.CmsListExplorerDirectAction#defButtonHtml(org.opencms.jsp.CmsJspActionElement, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, boolean)
+     * @see org.opencms.workplace.list.CmsListExplorerDirectAction#defButtonHtml(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, boolean)
      */
     protected String defButtonHtml(
-        CmsJspActionElement jsp,
         String id,
         String helpId,
         String name,
@@ -153,15 +152,10 @@ public class CmsListResourceTypeIconAction extends CmsListExplorerDirectAction {
                 icon.append(iconPath.substring(0, iconPath.lastIndexOf('.')));
                 icon.append("_disabled");
                 icon.append(iconPath.substring(iconPath.lastIndexOf('.')));
-                if (jsp != null) {
-                    String resorcesRoot = jsp.getJspContext().getServletConfig().getServletContext().getRealPath(
-                        "/resources/");
-                    File test = new File(resorcesRoot + "/" + icon.toString());
-                    if (test.exists()) {
-                        html.append(icon);
-                    } else {
-                        html.append(iconPath);
-                    }
+                String resourcesRoot = OpenCms.getSystemInfo().getWebApplicationRfsPath() + "resources/";
+                File test = new File(resourcesRoot + icon.toString());
+                if (test.exists()) {
+                    html.append(icon);
                 } else {
                     html.append(iconPath);
                 }
