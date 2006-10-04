@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeleteBrokenRelationsList.java,v $
- * Date   : $Date: 2006/09/26 15:03:54 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/04 16:01:51 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.workplace.commons;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.relations.CmsDeleteResourcesHelper;
 import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationDeleteValidator;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,8 +91,8 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
     /** The delete siblings parameter value. */
     private String m_deleteSiblings;
 
-    /** The broken relations helper object. */
-    private CmsDeleteResourcesHelper m_helper;
+    /** The broken relations validator object. */
+    private CmsRelationDeleteValidator m_validator;
 
     /** The resourcelist parameter value. */
     private String m_paramResourcelist;
@@ -198,17 +198,17 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the broken relations helper object.<p>
+     * Returns the broken relations validator object.<p>
      * 
-     * @return a helper object
+     * @return a validator object
      */
-    public CmsDeleteResourcesHelper getHelper() {
+    public CmsRelationDeleteValidator getValidator() {
 
-        if (m_helper == null) {
-            m_helper = new CmsDeleteResourcesHelper(getCms(), getResourceList(), Boolean.valueOf(
+        if (m_validator == null) {
+            m_validator = new CmsRelationDeleteValidator(getCms(), getResourceList(), Boolean.valueOf(
                 getParamDeleteSiblings()).booleanValue());
         }
-        return m_helper;
+        return m_validator;
     }
 
     /**
@@ -270,7 +270,7 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
     public void setParamDeleteSiblings(String value) {
 
         m_deleteSiblings = value;
-        m_helper = null;
+        m_validator = null;
     }
 
     /**
@@ -298,7 +298,7 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
             StringBuffer html = new StringBuffer(128);
             if (detailId.equals(LIST_DETAIL_RELATIONS)) {
                 // relations
-                CmsDeleteResourcesHelper.InfoEntry infoEntry = getHelper().getInfoEntry(resourceName);
+                CmsRelationDeleteValidator.InfoEntry infoEntry = getValidator().getInfoEntry(resourceName);
                 Iterator itRelations = infoEntry.getRelations().iterator();
 
                 // show all links that will get broken
@@ -344,12 +344,12 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
         List ret = new ArrayList();
         // get content
         // sort the resulting hash map
-        List resourceList = new ArrayList(getHelper().keySet());
+        List resourceList = new ArrayList(getValidator().keySet());
         Collections.sort(resourceList);
         Iterator itResources = resourceList.iterator();
         while (itResources.hasNext()) {
             String resourceName = (String)itResources.next();
-            CmsDeleteResourcesHelper.InfoEntry infoEntry = getHelper().getInfoEntry(resourceName);
+            CmsRelationDeleteValidator.InfoEntry infoEntry = getValidator().getInfoEntry(resourceName);
             String resName = null;
             if (infoEntry.isSibling()) {
                 if (!infoEntry.isInOtherSite()) {

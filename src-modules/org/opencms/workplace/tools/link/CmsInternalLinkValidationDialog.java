@@ -1,0 +1,223 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsInternalLinkValidationDialog.java,v $
+ * Date   : $Date: 2006/10/04 16:01:51 $
+ * Version: $Revision: 1.1.2.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.workplace.tools.link;
+
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.util.CmsFileUtil;
+import org.opencms.widgets.CmsVfsFileWidget;
+import org.opencms.workplace.CmsWidgetDialog;
+import org.opencms.workplace.CmsWidgetDialogParameter;
+import org.opencms.workplace.CmsWorkplaceSettings;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
+
+/**
+ * Dialog in the administration view, to edit the resources to check the internal links for.<p>
+ * 
+ * @author Michael Moossen 
+ * 
+ * @version $Revision: 1.1.2.1 $ 
+ * 
+ * @since 6.5.3 
+ */
+public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
+
+    /** Defines which pages are valid for this dialog. */
+    public static final String[] PAGES = {"page1"};
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return PAGES;
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        // add specific dialog resource bundle
+        addMessages(Messages.get().getBundleName());
+        // add default resource bundles
+        super.initMessages();
+    }
+
+    /** localized messages Keys prefix. */
+    public static final String KEY_PREFIX = "internallinks";
+
+    /** Auxiliary Property for the VFS resources. */
+    private List m_resources;
+
+    /**
+     * Public constructor with JSP action element.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     */
+    public CmsInternalLinkValidationDialog(CmsJspActionElement jsp) {
+
+        super(jsp);
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsInternalLinkValidationDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Commits the edited project to the db.<p>
+     */
+    public void actionCommit() {
+
+        List errors = new ArrayList();
+
+        try {
+            setDialogObject(m_resources);
+            // refresh the list
+            Map objects = (Map)getSettings().getListObject();
+            if (objects != null) {
+                objects.remove(CmsInternalLinkValidationList.class.getName());
+            }
+            // forward to the list
+            getToolManager().jspForwardTool(this, "/linkvalidation/internallinks/list", null);
+        } catch (Throwable t) {
+            errors.add(t);
+        }
+        // set the list of errors to display when saving failed
+        setCommitErrors(errors);
+    }
+
+    /**
+     * Returns the list of VFS resources.<p>
+     *
+     * @return the list of VFS resources
+     */
+    public List getResources() {
+
+        return m_resources;
+    }
+
+    /**
+     * Sets the resources list.<p>
+     * 
+     * @param value the resources to set
+     */
+    public void setResources(List value) {
+
+        if (value == null) {
+            m_resources = new ArrayList();
+            return;
+        }
+        m_resources = CmsFileUtil.removeRedundancies(value);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
+     */
+    protected String createDialogHtml(String dialog) {
+
+        StringBuffer result = new StringBuffer(1024);
+
+        result.append(createWidgetTableStart());
+        // show error header once if there were validation errors
+        result.append(createWidgetErrorHeader());
+
+        if (dialog.equals(PAGES[0])) {
+            // create the widgets for the first dialog page
+            result.append(dialogBlockStart(key(Messages.GUI_INTERNALLINK_EDITOR_LABEL_BLOCK_0)));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(0, 0));
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
+        }
+
+        result.append(createWidgetTableEnd());
+        return result.toString();
+    }
+
+    /**
+     * Creates the list of widgets for this dialog.<p>
+     */
+    protected void defineWidgets() {
+
+        // initialize the project object to use for the dialog
+        initSessionObject();
+
+        setKeyPrefix(KEY_PREFIX);
+
+        // widgets to display
+        addWidget(new CmsWidgetDialogParameter(this, "resources", "/", PAGES[0], new CmsVfsFileWidget(false, null), 1, 20));
+    }
+
+    /**
+     * Initializes the session object to work with depending on the dialog state and request parameters.<p>
+     */
+    protected void initSessionObject() {
+
+        Object o = null;
+        try {
+            o = getDialogObject();
+            m_resources = (List)o;
+            // test
+            m_resources.size();
+        } catch (Exception e) {
+            // create a new project object
+            m_resources = new ArrayList();
+        }
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // initialize parameters and dialog actions in super implementation
+        super.initWorkplaceRequestValues(settings, request);
+
+        // save the current state of the project (may be changed because of the widget values)
+        setDialogObject(m_resources);
+    }
+}

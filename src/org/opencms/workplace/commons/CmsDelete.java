@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/10/04 09:41:00 $
- * Version: $Revision: 1.17.4.10 $
+ * Date   : $Date: 2006/10/04 16:01:51 $
+ * Version: $Revision: 1.17.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
@@ -38,7 +39,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsDeleteResourcesHelper;
+import org.opencms.relations.CmsRelationDeleteValidator;
 import org.opencms.relations.CmsRelation;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.10 $ 
+ * @version $Revision: 1.17.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,8 +95,8 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDelete.class);
 
-    /** The broken relations helper object. */
-    private CmsDeleteResourcesHelper m_helper;
+    /** The broken relations validator object. */
+    private CmsRelationDeleteValidator m_validator;
 
     /** The delete siblings parameter value. */
     private String m_deleteSiblings;
@@ -242,13 +243,13 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
      */
     public String buildRelations() {
 
-        if (getHelper().isEmpty()) {
+        if (getValidator().isEmpty()) {
             return "";
         }
 
         // check how many row we will need to display to decide using a div or not
         int rows = 0;
-        Iterator itBrokenRelations = getHelper().values().iterator();
+        Iterator itBrokenRelations = getValidator().values().iterator();
         while (itBrokenRelations.hasNext()) {
             List relations = (List)itBrokenRelations.next();
             rows++; // resName
@@ -274,10 +275,10 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         result.append("</a>");
         result.append("</div>\n");
 
-        result.append("<div style='width: 100%; height:100px; overflow: auto;'>\n");
+        result.append("<div style='height:100px; overflow: auto;'>\n");
 
         // sort the resulting hash map
-        List resourceList = new ArrayList(getHelper().keySet());
+        List resourceList = new ArrayList(getValidator().keySet());
         Collections.sort(resourceList);
 
         // for every resource that will break a relation 
@@ -295,17 +296,17 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Returns the broken relations helper object.<p>
+     * Returns the broken relations validator object.<p>
      * 
-     * @return a helper object
+     * @return a validator object
      */
-    public CmsDeleteResourcesHelper getHelper() {
+    public CmsRelationDeleteValidator getValidator() {
 
-        if (m_helper == null) {
-            m_helper = new CmsDeleteResourcesHelper(getCms(), getResourceList(), Boolean.valueOf(
+        if (m_validator == null) {
+            m_validator = new CmsRelationDeleteValidator(getCms(), getResourceList(), Boolean.valueOf(
                 getParamDeleteSiblings()).booleanValue());
         }
-        return m_helper;
+        return m_validator;
     }
 
     /**
@@ -382,7 +383,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     public void setParamDeleteSiblings(String value) {
 
         m_deleteSiblings = value;
-        m_helper = null;
+        m_validator = null;
     }
 
     /**
@@ -499,7 +500,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         result.append("<span class=\"textbold\" style='vertical-align:top;'>");
 
         String resName = null;
-        CmsDeleteResourcesHelper.InfoEntry infoEntry = getHelper().getInfoEntry(resourceName);
+        CmsRelationDeleteValidator.InfoEntry infoEntry = getValidator().getInfoEntry(resourceName);
         if (infoEntry.isSibling()) {
             if (!infoEntry.isInOtherSite()) {
                 resName = key(Messages.GUI_DELETE_SIBLING_RELATION_1, new Object[] {infoEntry.getResourceName()});
@@ -534,7 +535,16 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
                 String siteName = site;
                 if (site != null) {
                     relationName = relationName.substring(site.length());
-                    siteName = CmsSiteManager.getSite(site).getTitle();
+                    try {
+                        getCms().getRequestContext().saveSiteRoot();
+                        getCms().getRequestContext().setSiteRoot("/");
+                        siteName = getCms().readPropertyObject(site, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
+                            site);
+                    } catch (CmsException e) {
+                        siteName = site;
+                    } finally {
+                        getCms().getRequestContext().restoreSiteRoot();
+                    }
                 } else {
                     siteName = "/";
                 }

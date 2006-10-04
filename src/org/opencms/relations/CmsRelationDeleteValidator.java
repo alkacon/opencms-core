@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Attic/CmsDeleteResourcesHelper.java,v $
- * Date   : $Date: 2006/09/27 07:36:01 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationDeleteValidator.java,v $
+ * Date   : $Date: 2006/10/04 16:01:51 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,22 +51,22 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 /**
- * Util class for handling eventuall broken links while deleting a bundle of resources.<p>
+ * Util class to find broken links in a bundle of resources.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.1 $
  * 
  * @since 6.5.3
  */
-public class CmsDeleteResourcesHelper {
+public class CmsRelationDeleteValidator {
 
     /**
      * Entry information bean.<p> 
      * 
      * @author Michael Moossen 
      * 
-     * @version $Revision: 1.1.2.2 $ 
+     * @version $Revision: 1.1.2.1 $ 
      * 
      * @since 6.5.3 
      */
@@ -147,7 +147,7 @@ public class CmsDeleteResourcesHelper {
     }
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDeleteResourcesHelper.class);
+    private static final Log LOG = CmsLog.getLog(CmsRelationDeleteValidator.class);
 
     /** Prefix for mapping sibling's relations. */
     private static final String SIBLING_KEY_PREFIX = "_sibling_prefix_";
@@ -165,7 +165,7 @@ public class CmsDeleteResourcesHelper {
      * @param resourceNames a list of resource names to be deleted
      * @param includeSiblings if the siblings should also be deleted
      */
-    public CmsDeleteResourcesHelper(CmsObject cms, List resourceNames, boolean includeSiblings) {
+    public CmsRelationDeleteValidator(CmsObject cms, List resourceNames, boolean includeSiblings) {
 
         m_cms = cms;
         m_brokenRelations = getBrokenRelations(resourceNames, includeSiblings);
@@ -248,7 +248,7 @@ public class CmsDeleteResourcesHelper {
 
     /**
      * Returns a map of where each entry has as key a name of a resource to be deleted,
-     * and value a list of relations (as resource names) that would be broken.<p> 
+     * and value a list of relations that would be broken.<p> 
      * 
      * The keys for non-siblings have following format:
      * <code>file root path</code>.<p>

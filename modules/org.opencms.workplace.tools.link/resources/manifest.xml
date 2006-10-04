@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for validating links in xml documents and pointer links.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.2</version>
+		<version>1.2.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -207,8 +207,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/linkvalidation/validaterelations.jsp</source>
-			<destination>system/workplace/admin/linkvalidation/validaterelations.jsp</destination>
+			<source>system/workplace/admin/linkvalidation/internallinks.jsp</source>
+			<destination>system/workplace/admin/linkvalidation/internallinks.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>da434327-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>db56d9fb-d9aa-11d9-adac-e7655b3582a8</uuidresource>
@@ -245,6 +245,53 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Check Internal Links]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/linkvalidation/internallinks-list.jsp</source>
+			<destination>system/workplace/admin/linkvalidation/internallinks-list.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>1bf5fcad-4fcc-11db-9861-5bf59c6009b3</uuidstructure>
+			<uuidresource>1bf5fcae-4fcc-11db-9861-5bf59c6009b3</uuidresource>
+			<datelastmodified>Fri, 29 Sep 2006 15:08:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 29 Sep 2006 15:06:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_LINK_ADMIN_TOOL_LIST_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_CHECK_INTERNAL_LINK_LIST_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/linkvalidation/icons/big/link_intern_validate.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_CHECK_INTERNAL_LINK_LIST_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Check Internal Links]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/linkvalidation/internallinks/list]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
