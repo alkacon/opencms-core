@@ -441,31 +441,42 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/explorer/project_other.gif</source>
-			<destination>system/workplace/resources/explorer/project_other.gif</destination>
+			<source>system/workplace/resources/explorer/project_other.png</source>
+			<destination>system/workplace/resources/explorer/project_other.png</destination>
 			<type>image</type>
-			<uuidresource>3c958c40-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidresource>ff9d6f48-2205-11db-af69-d5561bf1e338</uuidresource>
+			<datelastmodified>Wed, 02 Aug 2006 09:05:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Wed, 02 Aug 2006 09:05:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/explorer/project_this.gif</source>
-			<destination>system/workplace/resources/explorer/project_this.gif</destination>
+			<source>system/workplace/resources/explorer/project_this.png</source>
+			<destination>system/workplace/resources/explorer/project_this.png</destination>
 			<type>image</type>
-			<uuidresource>3c9cb834-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidresource>ffa4742d-2205-11db-af69-d5561bf1e338</uuidresource>
+			<datelastmodified>Wed, 02 Aug 2006 09:05:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Wed, 02 Aug 2006 09:05:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
+
 		<file>
 			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>

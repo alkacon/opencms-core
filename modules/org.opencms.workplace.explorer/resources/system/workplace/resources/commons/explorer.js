@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/07/20 14:13:51 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/10/04 08:06:41 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -941,10 +941,10 @@ function printList(wo) {
 			var projectAltText;
 			if (vi.liste[i].state != 0) {
 				if (vi.liste[i].project == vr.actProject) {
-					projectIcon = vi.skinPath + 'explorer/project_this.gif';
+					projectIcon = vi.skinPath + 'explorer/project_this.png';
 					projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
 				} else {
-					projectIcon = vi.skinPath + 'explorer/project_other.gif ';
+					projectIcon = vi.skinPath + 'explorer/project_other.png';
 					projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
 				}
 			} else {
