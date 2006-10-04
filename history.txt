@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/04 07:35:21 $
- * Version: $Revision: 1.760 $
+ * Date   : $Date: 2006/10/04 15:53:46 $
+ * Version: $Revision: 1.761 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.2.3 -
+! Additional optional dbcp parameters for connection pooling and validation provided in opencms.properties
 * fixed display issue for multiple select boxes in IE
 ! New configuration option for initial checkbox state on new folder dialog in opencms-workplace.xml 
 ! Content tool for property change allows to set property values for resources that have an empty old value
