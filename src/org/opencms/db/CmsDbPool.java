@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.45.4.2 $
+ * Date   : $Date: 2006/10/04 10:31:55 $
+ * Version: $Revision: 1.45.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.45.4.2 $
+ * @version $Revision: 1.45.4.3 $
  * 
  * @since 6.0.0
  */
@@ -99,6 +99,15 @@ public final class CmsDbPool {
     /** Key for maximum wait time. */
     public static final String KEY_MAX_WAIT = "maxWait";
 
+    /** Key for minimum idle time before a connection is subject to an eviction test. */
+    public static final String KEY_MIN_EVICTABLE_IDLE_TIME = "minEvictableIdleTime";
+
+    /** Key for minimum number of connections kept open. */
+    public static final String KEY_MIN_IDLE = "minIdle";
+    
+    /** Key for number of tested connections per run. */
+    public static final String KEY_NUM_TESTS_PER_EVICTION_RUN = "numTestsPerEvictionRun";
+
     /** Key for database password. */
     public static final String KEY_PASSWORD = "password";
 
@@ -119,10 +128,16 @@ public final class CmsDbPool {
 
     /** Key for test on borrow flag. */
     public static final String KEY_TEST_ON_BORROW = "testOnBorrow";
-
+    
     /** Key for test query. */
     public static final String KEY_TEST_QUERY = "testQuery";
-
+    
+    /** Key for test while idle flag. */
+    public static final String KEY_TEST_WHILE_IDLE = "testWhileIdle";
+    
+    /** Key for time between two eviction runs. */
+    public static final String KEY_TIME_BETWEEN_EVICTION_RUNS = "timeBetweenEvictionRuns";
+    
     /** Key for user name. */
     public static final String KEY_USERNAME = "user";
 
@@ -173,6 +188,10 @@ public final class CmsDbPool {
         int maxActive = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_ACTIVE, 10);
         int maxWait = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_WAIT, 2000);
         int maxIdle = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_IDLE, 5);
+        int minEvictableIdleTime = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_EVICTABLE_IDLE_TIME, 1800000);
+        int minIdle = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_IDLE, 0);
+        int numTestsPerEvictionRun = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_NUM_TESTS_PER_EVICTION_RUN, 3);
+        int timeBetweenEvictionRuns = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TIME_BETWEEN_EVICTION_RUNS, 3600000);
         String testQuery = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_QUERY);
         String username = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_USERNAME);
         String password = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_PASSWORD);
@@ -182,6 +201,8 @@ public final class CmsDbPool {
         byte whenExhaustedAction = 0;
         boolean testOnBorrow = Boolean.valueOf(
             config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_ON_BORROW).trim()).booleanValue();
+        boolean testWhileIdle = Boolean.valueOf(
+            config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_WHILE_IDLE).trim()).booleanValue();
 
         if ("block".equalsIgnoreCase(whenExhaustedActionValue)) {
             whenExhaustedAction = GenericObjectPool.WHEN_EXHAUSTED_BLOCK;
@@ -248,11 +269,17 @@ public final class CmsDbPool {
         // initialize an object pool to store connections
         connectionPool.setMaxActive(maxActive);
         connectionPool.setMaxIdle(maxIdle);
+        connectionPool.setMinIdle(minIdle);
         connectionPool.setMaxWait(maxWait);
         connectionPool.setWhenExhaustedAction(whenExhaustedAction);
 
-        connectionPool.setTestOnBorrow(testOnBorrow && (testQuery != null));
-        connectionPool.setTestWhileIdle(true);
+        if (testQuery != null) {
+            connectionPool.setTestOnBorrow(testOnBorrow);
+            connectionPool.setTestWhileIdle(testWhileIdle);
+            connectionPool.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRuns);
+            connectionPool.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
+            connectionPool.setMinEvictableIdleTimeMillis(minEvictableIdleTime);
+        }
 
         // initialize a connection factory to make the DriverManager taking connections from the pool
         if (jdbcUrlParams != null) {
