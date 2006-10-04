@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2006/10/04 10:31:55 $
- * Version: $Revision: 1.45.4.3 $
+ * Date   : $Date: 2006/10/04 15:12:36 $
+ * Version: $Revision: 1.45.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.45.4.3 $
+ * @version $Revision: 1.45.4.4 $
  * 
  * @since 6.0.0
  */
@@ -200,9 +200,9 @@ public final class CmsDbPool {
             KEY_DATABASE_POOL + '.' + key + '.' + KEY_WHEN_EXHAUSTED_ACTION).trim();
         byte whenExhaustedAction = 0;
         boolean testOnBorrow = Boolean.valueOf(
-            config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_ON_BORROW).trim()).booleanValue();
+            config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_ON_BORROW, "false").trim()).booleanValue();
         boolean testWhileIdle = Boolean.valueOf(
-            config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_WHILE_IDLE).trim()).booleanValue();
+            config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_WHILE_IDLE, "false").trim()).booleanValue();
 
         if ("block".equalsIgnoreCase(whenExhaustedActionValue)) {
             whenExhaustedAction = GenericObjectPool.WHEN_EXHAUSTED_BLOCK;
