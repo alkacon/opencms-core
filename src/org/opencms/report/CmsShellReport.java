@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/10/04 07:35:21 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Locale;
  * @author Alexander Kandzior  
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +83,7 @@ public class CmsShellReport extends A_CmsReport {
                 buf.append("!!! ");
                 buf.append(value);
                 System.out.print(buf);
+                addWarning(value);
                 break;
             case FORMAT_ERROR:
                 buf = new StringBuffer();
@@ -115,7 +116,7 @@ public class CmsShellReport extends A_CmsReport {
         StringBuffer buf = new StringBuffer();
         buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
         buf.append(t.getMessage());
-        this.println(new String(buf), FORMAT_WARNING);
-        t.printStackTrace(System.out);
+        this.println(new String(buf), FORMAT_ERROR);
+        t.printStackTrace(System.out);     
     }
 }

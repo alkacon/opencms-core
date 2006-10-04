@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2006/10/04 07:35:21 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,6 +147,7 @@ public class CmsHtmlReport extends A_CmsReport {
                     buf.append(value);
                     buf.append("'); ");
                     m_content.add(buf);
+                    addWarning(value);
                     break;
                 case FORMAT_ERROR:
                     buf = new StringBuffer();
@@ -201,6 +202,7 @@ public class CmsHtmlReport extends A_CmsReport {
                     buf.append(value);
                     buf.append("</span>");
                     m_content.add(buf);
+                    addWarning(value);
                     break;
                 case FORMAT_ERROR:
                     buf = new StringBuffer();
@@ -244,6 +246,7 @@ public class CmsHtmlReport extends A_CmsReport {
      */
     public synchronized void println(Throwable t) {
 
+        addError(t.getMessage());
         m_content.add(t);
     }
 

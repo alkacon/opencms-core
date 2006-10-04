@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishJob.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/10/04 07:35:21 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,18 @@ package org.opencms.scheduler.jobs;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.notification.CmsPublishNotification;
 import org.opencms.report.CmsLogReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Scheduled job for time based publishing.<p>
@@ -46,35 +53,59 @@ import java.util.Map;
  * 
  * Per default, it publishes all new, edited and deleted resources in the project which are not locked.
  * To unlock all resources in the project before publishing, add the parameter <code>unlock=true</code>
- * in the scheduled job configuration.<p>
+ * in the scheduled job configuration. In addition you are able to perform a link validation before
+ * publishing the project by adding the parameter <code>linkcheck=true</code>. It is possible to send
+ * an email to a user in OpenCms in case somthing went wrong during this process. To do so specifiy
+ * a parameter<code>mail-to-user=username_in_opencms</code>.<p>
  * 
  * @author Michael Emmerich 
+ * @author Peter Bonrad
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsPublishJob implements I_CmsScheduledJob {
 
+    /** Linkcheck parameter. */
+    public static final String PARAM_LINKCHECK = "linkcheck";
+
     /** Unlock parameter. */
     public static final String PARAM_UNLOCK = "unlock";
+
+    /** Mail to user parameter. */
+    public static final String PARAM_USER = "mail-to-user";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPublishJob.class);
 
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
      */
     public String launch(CmsObject cms, Map parameters) throws Exception {
 
+        Date jobStart = new Date();
         String finishMessage;
         String unlock = (String)parameters.get(PARAM_UNLOCK);
+        String linkcheck = (String)parameters.get(PARAM_LINKCHECK);
         CmsProject project = cms.getRequestContext().currentProject();
 
+        CmsLogReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsPublishJob.class);
+
         try {
+
             // check if the unlock parameter was given
             if (Boolean.valueOf(unlock).booleanValue()) {
                 cms.unlockProject(project.getId());
             }
+
+            // validate links if linkcheck parameter was given
+            if (Boolean.valueOf(linkcheck).booleanValue()) {
+                cms.validateHtmlLinks(cms.getPublishList(), report);
+            }
+
             // publish the project, the publish output will be put in the logfile
-            cms.publishProject(new CmsLogReport(cms.getRequestContext().getLocale(), CmsPublishJob.class));
+            cms.publishProject(report);
             finishMessage = Messages.get().getBundle().key(Messages.LOG_PUBLISH_FINISHED_1, project.getName());
         } catch (CmsException e) {
             // there was an error, so create an output for the logfile
@@ -82,8 +113,30 @@ public class CmsPublishJob implements I_CmsScheduledJob {
                 Messages.LOG_PUBLISH_FAILED_2,
                 project.getName(),
                 e.getMessageContainer().key());
+
+            // add error to report
+            report.addError(finishMessage);
+        } finally {
+
+            // send publish notification
+            if (report.hasWarning() || report.hasError()) {
+                try {
+                    String userName = (String)parameters.get(PARAM_USER);
+                    CmsUser user = cms.readUser(userName);
+
+                    CmsPublishNotification notification = new CmsPublishNotification(cms, user, report);
+
+                    DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+                    notification.addMacro("jobStart", df.format(jobStart));
+
+                    notification.send();
+                } catch (Exception e) {
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_PUBLISH_SEND_NOTIFICATION_FAILED_0), e);
+                }
+            }
         }
 
         return finishMessage;
     }
+
 }

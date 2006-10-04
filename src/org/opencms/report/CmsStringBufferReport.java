@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsStringBufferReport.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/10/04 07:35:21 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,6 +80,13 @@ public class CmsStringBufferReport extends A_CmsReport {
         switch (format) {
             case FORMAT_HEADLINE:
             case FORMAT_WARNING:
+                addWarning(value);
+                m_strBuf.append(value);
+                break;
+            case FORMAT_ERROR:
+                addError(value);
+                m_strBuf.append(value);
+                break;
             case FORMAT_NOTE:
             case FORMAT_OK:
             case FORMAT_DEFAULT:
@@ -102,7 +109,7 @@ public class CmsStringBufferReport extends A_CmsReport {
     public void println(Throwable t) {
 
         print(getMessages().key(Messages.RPT_EXCEPTION_0), FORMAT_WARNING);
-        println(t.getMessage(), FORMAT_WARNING);
+        println(t.getMessage(), FORMAT_ERROR);
 
         StackTraceElement[] stackTrace = t.getStackTrace();
         for (int i = 0; i < stackTrace.length; i++) {

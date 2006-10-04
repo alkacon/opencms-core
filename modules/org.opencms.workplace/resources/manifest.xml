@@ -18,7 +18,7 @@
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.2.0</version>
+		<version>1.2.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -631,7 +631,30 @@
 			</properties>
 			<accesscontrol/>
 		</file>
-				<file>
+		<file>
+			<source>system/workplace/admin/notification/publish-notification</source>
+			<destination>system/workplace/admin/notification/publish-notification</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>f7e857b3-4ef3-11db-92dc-338829be47e0</uuidstructure>
+			<uuidresource>f7e857b4-4ef3-11db-92dc-338829be47e0</uuidresource>
+			<datelastmodified>Fri, 29 Sep 2006 07:52:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Sep 2006 13:19:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Publish Notification]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/shared/decoration</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

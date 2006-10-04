@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/02 08:14:00 $
- * Version: $Revision: 1.759 $
+ * Date   : $Date: 2006/10/04 07:35:21 $
+ * Version: $Revision: 1.760 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ OpenCms 6.2.3 -
 - Modified handling of scrub export folder for static export on demand
 * Fixed issue #1238: Form-Module produces wrong HTML-code
 - Extented Html Import: Added possibility to leave images and downloads at original location
+- Updated the publish job to validate the links before publishing and sending mails to user in case of errors
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name

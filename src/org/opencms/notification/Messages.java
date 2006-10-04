@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/10/04 07:35:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,35 +39,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITE_0 = "GUI_SITE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_NO_NOTIFICATIONS_SENT_0 = "LOG_NO_NOTIFICATIONS_SENT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_NOTIFICATIONS_SENT_TO_0 = "LOG_NOTIFICATIONS_SENT_TO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ISSUE_0 = "GUI_ISSUE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPDATE_REQUIRED_1 = "GUI_UPDATE_REQUIRED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNCHANGED_SINCE_1 = "GUI_UNCHANGED_SINCE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RELEASE_AT_1 = "GUI_RELEASE_AT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EXPIRES_AT_1 = "GUI_EXPIRES_AT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CONFIRM_RESOURCE_1 = "ERR_CONFIRM_RESOURCE_1";
@@ -91,13 +67,37 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EVENT_0 = "GUI_EVENT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPIRES_AT_1 = "GUI_EXPIRES_AT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FILES_NOT_UPDATED_1 = "GUI_FILES_NOT_UPDATED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ISSUE_0 = "GUI_ISSUE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODIFY_0 = "GUI_MODIFY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_ERROR_HEADER_0 = "GUI_PUBLISH_ERROR_HEADER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_WARNING_HEADER_0 = "GUI_PUBLISH_WARNING_HEADER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RELEASE_AT_1 = "GUI_RELEASE_AT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_0 = "GUI_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_0 = "GUI_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNCHANGED_SINCE_1 = "GUI_UNCHANGED_SINCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPDATE_REQUIRED_1 = "GUI_UPDATE_REQUIRED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WITHIN_NEXT_DAY_0 = "GUI_WITHIN_NEXT_DAY_0";
@@ -106,11 +106,26 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_WITHIN_NEXT_WEEK_0 = "GUI_WITHIN_NEXT_WEEK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_NO_NOTIFICATIONS_SENT_0 = "LOG_NO_NOTIFICATIONS_SENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_NOTIFICATION_NO_ADDRESS_1 = "LOG_NOTIFICATION_NO_ADDRESS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_NOTIFICATION_SEND_1 = "LOG_NOTIFICATION_SEND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_NOTIFICATION_SEND_ERROR_0 = "LOG_NOTIFICATION_SEND_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_NOTIFICATIONS_SENT_TO_0 = "LOG_NOTIFICATIONS_SENT_TO_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_FAILED_2 = "LOG_PUBLISH_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_FINISHED_1 = "LOG_PUBLISH_FINISHED_1";
-
+    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.notification.messages";
 
