@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/09/29 11:44:56 $
- * Version: $Revision: 1.17.4.9 $
+ * Date   : $Date: 2006/10/04 09:41:00 $
+ * Version: $Revision: 1.17.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.9 $ 
+ * @version $Revision: 1.17.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -261,7 +261,11 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         StringBuffer result = new StringBuffer(512);
         // TODO: display the 'Print' text at the right of the icon  
         result.append("<div style='z-index: 100; position:absolute; padding-right: ");
-        result.append(rows > 6 ? 35 : 15);
+        if (getJsp().getRequest().getHeader("user-agent").indexOf("MSIE") < 0) {
+            result.append(rows > 6 ? 35 : 15);
+        } else {
+            result.append(rows > 6 ? 20 : 0);
+        }
         result.append("px;' >\n");
         result.append("<a href='#' onclick=\"javascript:document.forms['printform'].submit();\" style='color: ButtonText; text-decoration: none; cursor: pointer; '>\n");
         result.append("<img src='");

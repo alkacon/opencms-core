@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/09/28 15:15:33 $
- * Version: $Revision: 1.13.4.6 $
+ * Date   : $Date: 2006/10/04 09:41:00 $
+ * Version: $Revision: 1.13.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1681,19 +1681,19 @@ function makeRequest(url, method) {
  */
 function updateContents(http_request, method) {
 
-   var state = "";
-   var msg = "";
-   if (http_request == 'fatal' || http_request == 'wait') {
-      state = http_request;
-   } else if (http_request.readyState != 4) {
+   try {
+      if (http_request == 'fatal' || http_request == 'wait') {
+         method('', http_request);
+         return;
+      }
+   } catch (e) {
+      // ignore type validation error
+   }
+   if (http_request.readyState != 4) {
       // ignore if request still not ready
    } else if (http_request.status != 200) {
-      state = 'error';
-      msg = http_request.status;
+   	  method(http_request.status, 'error');
    } else {
       method(http_request.responseText, 'ok');
-   }
-   if (state.length > 0) {
-      method(msg, state);
    }
 }
