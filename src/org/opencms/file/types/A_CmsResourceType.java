@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/10/05 12:00:52 $
- * Version: $Revision: 1.42.4.6 $
+ * Date   : $Date: 2006/10/05 16:59:21 $
+ * Version: $Revision: 1.42.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.I_CmsLinkParseable;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.6 $ 
+ * @version $Revision: 1.42.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -300,18 +301,18 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         String resourcename,
         byte[] content,
         List properties) throws CmsException {
-                
+
         // check if the resource already exists by name
         if (cms.existsResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION)) {
-            
+
             int todo_v7;
             // TODO: This should really be done in the securityManager#createResource() method!
-            
+
             throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
                 org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
                 resourcename));
         }
- 
+
         // initialize a macroresolver with the current user OpenCms context
         CmsMacroResolver resolver = getMacroResolver(cms, resourcename);
 
@@ -739,6 +740,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     throws CmsException {
 
         securityManager.undoChanges(cms.getRequestContext(), resource, mode);
+        
+        // TODO: prevent that this code gets executed when called from A_CmsResourceTypeFolderBase
+        
         // type may have changed from non link parseable to link parseable        
         CmsResource undoneResource1 = null;
         try {
@@ -756,10 +760,19 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         if (resourceType instanceof I_CmsLinkParseable) {
             I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
             if (undoneResource1 == null || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
-                securityManager.updateRelationsForResource(
-                    cms.getRequestContext(),
-                    undoneResource2,
-                    linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms)));
+                List links = null;
+                try {
+                    links = linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms));
+                } catch (CmsException e) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e);
+                    }
+                } catch (CmsRuntimeException e) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e);
+                    }
+                }
+                securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links);
             }
         }
     }
@@ -780,7 +793,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     throws CmsException, CmsVfsException, CmsSecurityException {
 
         if (resource.isFile()) {
-            return securityManager.writeFile(cms.getRequestContext(), resource);
+            CmsFile file = securityManager.writeFile(cms.getRequestContext(), resource);
+            // remove lost relation entries
+            if (!(this instanceof I_CmsLinkParseable)) {
+                securityManager.deleteRelationsForResource(cms.getRequestContext(), resource, CmsRelationFilter.TARGETS);
+            }
+            return file;
         }
         // folders can never be written like a file
         throw new CmsVfsException(Messages.get().container(

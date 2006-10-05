@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/09/26 08:37:37 $
- * Version: $Revision: 1.16.4.4 $
+ * Date   : $Date: 2006/10/05 16:59:21 $
+ * Version: $Revision: 1.16.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,14 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsMultiException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.I_CmsLinkParseable;
 
 import java.util.List;
 
@@ -54,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.4 $ 
+ * @version $Revision: 1.16.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -226,6 +229,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                         CmsFile.upgrade(childResource, cms));
                 } catch (CmsException e) {
                     me.addException(e);
+                } catch (CmsRuntimeException e) {
+                    me.addException(new CmsException(e.getMessageContainer(), e));
                 }
             }
             if (!me.getExceptions().isEmpty()) {
@@ -402,7 +407,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         super.undoChanges(cms, securityManager, resource, mode);
 
         if ((mode > CmsResource.UNDO_CONTENT) && (resources != null)) { // recursive?
-            // now walk through all sub-resources in the folder
+            // now walk through all sub-resources in the folder, and undo first
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
                 I_CmsResourceType type = getResourceType(childResource.getTypeId());
@@ -418,6 +423,43 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                                 CmsResourceFilter.ALL).getRootPath()
                                 + childResource.getName());
                         type.moveResource(cms, securityManager, childResource, newPath);
+                    }
+                }
+            }
+
+            // now iterate again all sub-resources in the folder, and actualize the relations
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = (CmsResource)resources.get(i);
+                // type may have changed from non link parseable to link parseable        
+                CmsResource undoneResource1 = null;
+                try {
+                    // first try to locate the resource by path
+                    undoneResource1 = createRelations(cms, securityManager, childResource.getRootPath());
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // ignore, undone move operation
+                }
+                // now, in case a move operation has been undone, locate the resource by id
+                CmsResource undoneResource2 = securityManager.readResource(
+                    cms.getRequestContext(),
+                    childResource.getStructureId(),
+                    CmsResourceFilter.ALL);
+                I_CmsResourceType resourceType = getResourceType(childResource.getTypeId());
+                if (resourceType instanceof I_CmsLinkParseable) {
+                    I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
+                    if (undoneResource1 == null || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
+                        List links = null;
+                        try {
+                            links = linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms));
+                        } catch (CmsException e) {
+                            if (LOG.isWarnEnabled()) {
+                                LOG.warn(e);
+                            }
+                        } catch (CmsRuntimeException e) {
+                            if (LOG.isWarnEnabled()) {
+                                LOG.warn(e);
+                            }
+                        }
+                        securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links);
                     }
                 }
             }

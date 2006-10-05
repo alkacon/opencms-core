@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeLinkParseable.java,v $
- * Date   : $Date: 2006/08/25 15:20:02 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/10/05 16:59:21 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.0 
  */
@@ -141,7 +141,7 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
     throws CmsException, CmsVfsException, CmsSecurityException {
 
         CmsFile file = super.writeFile(cms, securityManager, resource);
-        // update the relations after creating!!
+        // update the relations after writing!!
         securityManager.updateRelationsForResource(cms.getRequestContext(), file, parseLinks(cms, file));
 
         return file;
