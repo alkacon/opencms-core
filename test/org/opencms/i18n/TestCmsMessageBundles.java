@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2006/10/04 07:47:48 $
- * Version: $Revision: 1.13.4.2 $
+ * Date   : $Date: 2006/10/05 12:26:31 $
+ * Version: $Revision: 1.13.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,11 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -51,20 +53,26 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.4.2 $
+ * @version $Revision: 1.13.4.3 $
  * 
  * @since 6.0.0
  */
 public abstract class TestCmsMessageBundles extends TestCase {
 
     /** The source folder to copy the resource bundles from. */
-    private static final String SOURCE_FOLDER = "modules/org.opencms.locale.de/resources/system/workplace/locales/";
+    private static final String SOURCE_FOLDER_INFIX = "/resources/system/workplace/locales/";
+
+    /** The source folder to copy the resource bundles from. */
+    private static final String SOURCE_FOLDER_PREFIX = "modules/org.opencms.locale.";
+
+    /** The source folder to copy the resource bundles from. */
+    private static final String SOURCE_FOLDER_SUFFIX = "/messages/";
 
     /** The taget folder to copy the resource bundles to. */
     private static final String TARGET_FOLDER = "bin/";
 
-    /** cache the resource bundle to exclude from additional locales tests. */
-    private List m_excludedBundles;
+    /** Cache the resource bundle to exclude from additional locales tests. */
+    private Map m_excludedBundles = new HashMap();
 
     /**
      * Tests if message will be returned in the correct locale.<p>
@@ -88,9 +96,11 @@ public abstract class TestCmsMessageBundles extends TestCase {
         I_CmsMessageBundle[] bundles = getTestMessageBundles();
         for (int i = 0; i < bundles.length; i++) {
             doPreTestBundle(bundles[i]);
-            doTestBundle(bundles[i], Locale.ENGLISH);
-            if (!getExludedLocalisedBundles().contains(bundles[i])) {
-                doTestBundle(bundles[i], Locale.GERMAN);
+            Locale[] locales = getTestLocales();
+            for (int j = 0; j < locales.length; j++) {
+                if (!getExcludedLocalizedBundles(locales[j]).contains(bundles[i])) {
+                    doTestBundle(bundles[i], locales[j]);
+                }
             }
         }
     }
@@ -111,20 +121,37 @@ public abstract class TestCmsMessageBundles extends TestCase {
         }
         String fileName = CmsStringUtil.substitute(bundle.getBundleName(), ".", "/")
             + "_"
-            + locale.getLanguage()
+            + locale.toString()
             + ".properties";
-        String source = SOURCE_FOLDER + locale.getLanguage() + "/messages/" + fileName;
+        String source = SOURCE_FOLDER_PREFIX
+            + locale.toString()
+            + SOURCE_FOLDER_INFIX
+            + locale.toString()
+            + SOURCE_FOLDER_SUFFIX
+            + fileName;
         String target = TARGET_FOLDER + fileName;
         CmsFileUtil.copy(source, target);
-        return new CmsMessages(bundle.getBundleName() + "_" + locale.getLanguage(), locale);
+        return new CmsMessages(bundle.getBundleName() + "_" + locale.toString(), locale);
     }
 
     /**
      * Returns a list of bundles not to be localized.<p>
      * 
+     * @param locale the locale to get the not localized bundles for 
+     * 
      * @return a list of bundles not to be localized
      */
-    protected abstract List getNotLocalisedBundles();
+    protected abstract List getNotLocalizedBundles(Locale locale);
+
+    /**
+     * Returns the locales to test.<p>
+     * 
+     * @return the locales to test
+     */
+    protected Locale[] getTestLocales() {
+
+        return new Locale[] {Locale.ENGLISH, Locale.GERMAN};
+    }
 
     /**
      * Template method that has to be overwritten to return the <code>I_CmsMessageBundle</code> 
@@ -345,20 +372,26 @@ public abstract class TestCmsMessageBundles extends TestCase {
     /**
      * Returns the resource bundles to be excluded from additional locales tests.<p>
      * 
+     * @param locale the locale to get the excluded bundles for
+     * 
      * @return the resource bundles to be excluded from additional locales tests
      */
-    private List getExludedLocalisedBundles() {
+    private List getExcludedLocalizedBundles(Locale locale) {
 
-        if (m_excludedBundles == null) {
-            List notLocalized = getNotLocalisedBundles();
+        if (locale == Locale.ENGLISH) {
+            return new ArrayList();
+        }
+        if (m_excludedBundles.get(locale) == null) {
+            List excludedBundles;
+            List notLocalized = getNotLocalizedBundles(locale);
             if (notLocalized == null) {
-                m_excludedBundles = new ArrayList();
+                excludedBundles = new ArrayList();
             } else {
-                m_excludedBundles = new ArrayList(getNotLocalisedBundles());
+                excludedBundles = new ArrayList(notLocalized);
             }
             for (int i = 0; i < getTestMessageBundles().length; i++) {
                 I_CmsMessageBundle bundle = getTestMessageBundles()[i];
-                if (m_excludedBundles.contains(bundle)) {
+                if (excludedBundles.contains(bundle)) {
                     continue;
                 }
                 boolean exclude = true;
@@ -389,10 +422,11 @@ public abstract class TestCmsMessageBundles extends TestCase {
                     }
                 }
                 if (exclude) {
-                    m_excludedBundles.add(bundle);
+                    excludedBundles.add(bundle);
                 }
             }
+            m_excludedBundles.put(locale, excludedBundles);
         }
-        return m_excludedBundles;
+        return (List)m_excludedBundles.get(locale);
     }
 }

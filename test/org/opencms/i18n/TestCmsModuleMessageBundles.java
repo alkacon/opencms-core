@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsModuleMessageBundles.java,v $
- * Date   : $Date: 2006/10/01 20:37:28 $
- * Version: $Revision: 1.16.4.1 $
+ * Date   : $Date: 2006/10/05 12:26:31 $
+ * Version: $Revision: 1.16.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.i18n;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Tests all {@link org.opencms.i18n.I_CmsMessageBundle} instances for the OpenCms 
@@ -39,7 +40,7 @@ import java.util.List;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.16.4.1 $
+ * @version $Revision: 1.16.4.2 $
  * 
  * @since 6.0.0
  */
@@ -51,8 +52,8 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     protected I_CmsMessageBundle[] getTestMessageBundles() {
 
         return new I_CmsMessageBundle[] {
-        	org.opencms.editors.fckeditor.Messages.get(),
-        	org.opencms.editors.htmlarea.Messages.get(),
+            org.opencms.editors.fckeditor.Messages.get(),
+            org.opencms.editors.htmlarea.Messages.get(),
             org.opencms.frontend.layoutpage.Messages.get(),
             org.opencms.frontend.photoalbum.Messages.get(),
             org.opencms.frontend.templateone.Messages.get(),
@@ -81,10 +82,10 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     }
 
     /**
-     * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalisedBundles()
+     * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalizedBundles(Locale)
      */
-    protected List getNotLocalisedBundles() {
-        
+    protected List getNotLocalizedBundles(Locale locale) {
+
         return null;
     }
 }
