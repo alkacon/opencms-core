@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsInternalLinkValidationDialog.java,v $
- * Date   : $Date: 2006/10/04 16:01:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/05 13:13:22 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.3 
  */
@@ -137,6 +137,10 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
      */
     public List getResources() {
 
+        if (m_resources == null || m_resources.isEmpty()) {
+            m_resources = new ArrayList();
+            m_resources.add("/");
+        }
         return m_resources;
     }
 
@@ -189,7 +193,14 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
         setKeyPrefix(KEY_PREFIX);
 
         // widgets to display
-        addWidget(new CmsWidgetDialogParameter(this, "resources", "/", PAGES[0], new CmsVfsFileWidget(false, null), 1, 20));
+        addWidget(new CmsWidgetDialogParameter(
+            this,
+            "resources",
+            "/",
+            PAGES[0],
+            new CmsVfsFileWidget(false, null),
+            1,
+            CmsWidgetDialogParameter.MAX_OCCURENCES));
     }
 
     /**
