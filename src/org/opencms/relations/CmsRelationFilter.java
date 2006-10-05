@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationFilter.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/05 12:04:31 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,6 +57,9 @@ public final class CmsRelationFilter implements Cloneable {
 
     /** To filter all targets, does not matter the relation type. */
     public static final CmsRelationFilter TARGETS = new CmsRelationFilter(false, true);
+
+    /** If set the filter extends the result to the given path and all its childs. */
+    private boolean m_includeChilds = false;
 
     /** To filter relations for a given date. */
     private long m_date;
@@ -98,6 +101,19 @@ public final class CmsRelationFilter implements Cloneable {
         filter.m_types = new HashSet(m_types);
         filter.m_date = m_date;
         filter.m_path = m_path;
+        filter.m_includeChilds = m_includeChilds;
+        return filter;
+    }
+
+    /**
+     * Returns an extended filter that will extend the result to the given path and all its childs.<p>
+     * 
+     * @return an extended filter with the given relation date restriction
+     */
+    public CmsRelationFilter filterIncludeChilds() {
+
+        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        filter.m_includeChilds = true;
         return filter;
     }
 
@@ -212,6 +228,16 @@ public final class CmsRelationFilter implements Cloneable {
     }
 
     /**
+     * Returns the include childs flag.<p>
+     * 
+     * @return if set the filter extends the result to the given path and all its childs
+     */
+    public boolean isIncludeChilds() {
+
+        return m_includeChilds;
+    }
+
+    /**
      * Returns the source flag.<p>
      *
      * @return if set the filter looks for matching targets
@@ -258,11 +284,11 @@ public final class CmsRelationFilter implements Cloneable {
             if (m_target) {
                 mode = "both";
             } else {
-                mode = "target";
+                mode = "source";
             }
         } else {
             if (m_target) {
-                mode = "source";
+                mode = "target";
             } else {
                 mode = "none";
             }
@@ -270,7 +296,8 @@ public final class CmsRelationFilter implements Cloneable {
         str.append(mode).append("=").append(m_structureId).append(", ");
         str.append("path").append("=").append(m_path).append(", ");
         str.append("date").append("=").append(m_date).append(", ");
-        str.append("types").append("=").append(m_types);
+        str.append("types").append("=").append(m_types).append(", ");
+        str.append("childs").append("=").append(m_includeChilds);
         str.append("]");
         return str.toString();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsInternalLinkValidationFilesCollector.java,v $
- * Date   : $Date: 2006/10/04 16:01:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/05 12:04:31 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,32 +32,25 @@
 package org.opencms.workplace.tools.link;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsLog;
 import org.opencms.util.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.CmsListItem;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Collector for file with broken links.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.0 
  */
 public class CmsInternalLinkValidationFilesCollector extends A_CmsListResourceCollector {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsInternalLinkValidationFilesCollector.class);
 
     /** Parameter of the default collector name. */
     public static final String COLLECTOR_NAME = "brokenlinks";
@@ -92,19 +85,7 @@ public class CmsInternalLinkValidationFilesCollector extends A_CmsListResourceCo
      */
     public List getResources(CmsObject cms, Map params) {
 
-        List resources = new ArrayList();
-        Iterator it = m_resourcesBroken.iterator();
-        while (it.hasNext()) {
-            String resourceName = cms.getRequestContext().removeSiteRoot((String)it.next());
-            try {
-                resources.add(cms.readResource(resourceName));
-            } catch (Exception e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e);
-                }
-            }
-        }
-        return resources;
+        return m_resourcesBroken;
     }
 
     /**

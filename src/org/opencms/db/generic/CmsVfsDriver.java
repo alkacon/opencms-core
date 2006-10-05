@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2006/09/10 20:51:53 $
- * Version: $Revision: 1.258.4.7 $
+ * Date   : $Date: 2006/10/05 12:04:31 $
+ * Version: $Revision: 1.258.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.7 $
+ * @version $Revision: 1.258.4.8 $
  * 
  * @since 6.0.0 
  */
@@ -2475,17 +2475,19 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         if (changed == CmsDriverManager.UPDATE_RESOURCE_STATE) {
             resourceState = internalReadResourceState(dbc, project, resource);
-            resourceState = (resourceState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW :CmsResource.STATE_CHANGED);
+            resourceState = (resourceState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW : CmsResource.STATE_CHANGED);
         } else if (changed == CmsDriverManager.UPDATE_STRUCTURE_STATE) {
             structureState = internalReadStructureState(dbc, project, resource);
-            structureState = (structureState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW :CmsResource.STATE_CHANGED);
+            structureState = (structureState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW
+            : CmsResource.STATE_CHANGED);
         } else if (changed == CmsDriverManager.NOTHING_CHANGED) {
             projectId = resource.getProjectLastModified();
         } else {
             resourceState = internalReadResourceState(dbc, project, resource);
-            resourceState = (resourceState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW :CmsResource.STATE_CHANGED);
+            resourceState = (resourceState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW : CmsResource.STATE_CHANGED);
             structureState = internalReadStructureState(dbc, project, resource);
-            structureState = (structureState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW :CmsResource.STATE_CHANGED);
+            structureState = (structureState == CmsResource.STATE_NEW ? CmsResource.STATE_NEW
+            : CmsResource.STATE_CHANGED);
         }
 
         try {
@@ -3044,7 +3046,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 if (filter.isSource()) {
                     conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_ID"));
                     if (filter.isTarget()) {
-                        // if both, or condition is used
+                        // if both, then 'OR' condition is used
                         conditions.append(OR_CONDITION);
                         conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_ID"));
                         params.add(filter.getStructureId().toString());
@@ -3059,18 +3061,22 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 if ((filter.getStructureId() != null) && !filter.getStructureId().isNullUUID()) {
                     conditions.append(OR_CONDITION);
                 }
+                String queryPath = filter.getPath();
+                if (filter.isIncludeChilds()) {
+                    queryPath += '%';
+                }
                 if (filter.isSource()) {
                     conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_PATH"));
                     if (filter.isTarget()) {
                         // if both, or condition is used
                         conditions.append(OR_CONDITION);
                         conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_PATH"));
-                        params.add(filter.getPath() + '%');
+                        params.add(queryPath);
                     }
                 } else if (filter.isTarget()) {
                     conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_PATH"));
                 }
-                params.add(filter.getPath() + '%');
+                params.add(queryPath);
             }
             conditions.append(END_CONDITION);
         }

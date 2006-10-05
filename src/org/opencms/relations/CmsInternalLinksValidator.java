@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsInternalLinksValidator.java,v $
- * Date   : $Date: 2006/10/04 16:01:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/05 12:04:31 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,9 @@
 package org.opencms.relations;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,9 +48,9 @@ import org.apache.commons.logging.Log;
 /**
  * Util class to find broken links in a bundle of resources.<p>
  * 
- * @author Michael Moossen  
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.3
  */
@@ -67,6 +64,12 @@ public class CmsInternalLinksValidator {
 
     /** The cms context object. */
     private CmsObject m_cms;
+
+    /** All resources with broken links. */
+    private List m_resourcesWithBrokenLinks;
+
+    /** The number of not visible resources with broken links. */
+    private int m_notVisibleResourcesCount;
 
     /**
      * Creates a new helper object.<p>
@@ -94,14 +97,51 @@ public class CmsInternalLinksValidator {
     /**
      * Returns all resources with broken links.<p>
      * 
-     * @return a list of root paths
+     * @return a list of {@link org.opencms.file.CmsResource} objects
      */
     public List getResourcesWithBrokenLinks() {
 
-        // sort the resulting hash map
-        List resources = new ArrayList(m_brokenRelations.keySet());
-        Collections.sort(resources);
-        return resources;
+        if (m_resourcesWithBrokenLinks == null) {
+            // sort the resulting hash map
+            List resources = new ArrayList(m_brokenRelations.keySet());
+            Collections.sort(resources);
+
+            m_resourcesWithBrokenLinks = new ArrayList(resources.size());
+            m_notVisibleResourcesCount = 0;
+            // remove not visible resources
+            CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible();
+            try {
+                m_cms.getRequestContext().saveSiteRoot();
+                m_cms.getRequestContext().setSiteRoot("/");
+                Iterator itResources = resources.iterator();
+                while (itResources.hasNext()) {
+                    String resourceName = (String)itResources.next();
+                    try {
+                        m_resourcesWithBrokenLinks.add(m_cms.readResource(resourceName, filter));
+                    } catch (Exception e) {
+                        // resource is not visible, increase count
+                        m_notVisibleResourcesCount++;
+                    }
+                }
+            } finally {
+                m_cms.getRequestContext().restoreSiteRoot();
+            }
+        }
+        return m_resourcesWithBrokenLinks;
+    }
+
+    /**
+     * Returns the number of not visible resources with broken links.<p>
+     * 
+     * @return the number of not visible resources with broken links
+     */
+    public int getNotVisibleResourcesCount() {
+
+        if (m_resourcesWithBrokenLinks == null) {
+            // compute it if needed
+            getResourcesWithBrokenLinks();
+        }
+        return m_notVisibleResourcesCount;
     }
 
     /**
@@ -128,46 +168,18 @@ public class CmsInternalLinksValidator {
 
         Map brokenRelations = new HashMap();
 
-        // expand the folders to single resources
-        List validatableResources = new ArrayList();
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-        Iterator itTypes = OpenCms.getResourceManager().getResourceTypes().iterator();
-        while (itTypes.hasNext()) {
-            I_CmsResourceType type = (I_CmsResourceType)itTypes.next();
-            if (type instanceof I_CmsLinkParseable) {
-                filter = filter.addRequireType(type.getTypeId());
-                Iterator itFolders = resourceNames.iterator();
-                while (itFolders.hasNext()) {
-                    String folderName = (String)itFolders.next();
-                    try {
-                        CmsResource resource = m_cms.readResource(folderName);
-                        if (resource.isFolder()) {
-                            validatableResources.addAll(m_cms.readResources(folderName, filter, true));
-                        } else if (filter.isValid(m_cms.getRequestContext(), resource)) {
-                            validatableResources.add(resource);
-                        }
-                    } catch (CmsException e) {
-                        // TODO: add param for folderName
-                        LOG.error(
-                            Messages.get().getBundle().key(Messages.LOG_RETRIEVAL_RESOURCES_1, type.getTypeName()),
-                            e);
-                    }
-                }
-            }
-        }
+        CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterIncludeChilds();
 
-        // TODO: check the read/visible permissions
-        Iterator itValidatableResources = validatableResources.iterator();
-        while (itValidatableResources.hasNext()) {
-            CmsResource resource = (CmsResource)itValidatableResources.next();
-            String resourceName = resource.getRootPath();
+        Iterator itFolders = resourceNames.iterator();
+        while (itFolders.hasNext()) {
+            String folderName = (String)itFolders.next();
             List relations;
             try {
                 relations = m_cms.getRelationsForResource(
-                    m_cms.getRequestContext().removeSiteRoot(resourceName),
-                    CmsRelationFilter.TARGETS);
+                    folderName,
+                    filter.filterPath(m_cms.getRequestContext().addSiteRoot(folderName)));
             } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, resourceName), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, folderName), e);
                 continue;
             }
             Iterator itRelations = relations.iterator();
@@ -178,6 +190,7 @@ public class CmsInternalLinksValidator {
                     relation.getTarget(m_cms, CmsResourceFilter.IGNORE_EXPIRATION);
                 } catch (Exception e) {
                     // target is broken
+                    String resourceName = relation.getSourcePath();
                     List broken = (List)brokenRelations.get(resourceName);
                     if (broken == null) {
                         broken = new ArrayList();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/10/03 09:00:29 $
- * Version: $Revision: 1.570.2.22 $
+ * Date   : $Date: 2006/10/05 12:04:31 $
+ * Version: $Revision: 1.570.2.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3396,7 +3396,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List getRelationsForResource(CmsDbContext dbc, CmsResource resource, CmsRelationFilter filter)
     throws CmsException {
 
-        if (resource != null) {
+        if (resource != null && CmsStringUtil.isEmptyOrWhitespaceOnly(filter.getPath())) {
             filter = filter.filterStructureId(resource.getStructureId());
         }
         return m_vfsDriver.readRelations(dbc, dbc.currentProject().getId(), filter);

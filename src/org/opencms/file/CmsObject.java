@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/09/20 10:54:59 $
- * Version: $Revision: 1.146.4.8 $
+ * Date   : $Date: 2006/10/05 12:04:31 $
+ * Version: $Revision: 1.146.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.8 $
+ * @version $Revision: 1.146.4.9 $
  * 
  * @since 6.0.0 
  */
@@ -1356,11 +1356,15 @@ public final class CmsObject {
     /**
      * Returns all relations for the given resource mathing the given filter.<p> 
      * 
+     * You should have view/read permissions on the given resource.<p>
+     * 
+     * You may become source and/or target paths to resource you do not have view/read permissions on.<p> 
+     * 
      * @param resourceName the name of the resource to retrieve the relations for
      * @param filter the filter to match the relation 
      * 
      * @return a List containing all {@link org.opencms.relations.CmsRelation} 
-     *          objects for the given resource mathing the given filter
+     *          objects for the given resource matching the given filter
      * 
      * @throws CmsException if something goes wrong
      * 

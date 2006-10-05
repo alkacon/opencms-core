@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsInternalLinkValidationList.java,v $
- * Date   : $Date: 2006/10/04 16:01:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/05 12:04:31 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.3 
  */
@@ -124,17 +124,28 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
-            // get the content check result object
-            Map objects = (Map)getSettings().getDialogObject();
-            Object o = objects.get(CmsInternalLinkValidationDialog.class.getName());
-            List resources = new ArrayList();
-            if ((o != null) && (o instanceof List)) {
-                resources = (List)o;
-            }
-            m_validator = new CmsInternalLinksValidator(getCms(), resources);
-            m_collector = new CmsInternalLinkValidationFilesCollector(this, m_validator.getResourcesWithBrokenLinks());
+            m_collector = new CmsInternalLinkValidationFilesCollector(
+                this,
+                getValidator().getResourcesWithBrokenLinks());
         }
         return m_collector;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
+     */
+    protected String customHtmlStart() {
+
+        StringBuffer result = new StringBuffer(512);
+        if (getValidator().getNotVisibleResourcesCount() > 0) {
+            result.append(dialogBlockStart(key(Messages.GUI_BROKENLINKS_NOTICE_0)));
+            result.append("\n");
+            result.append(key(Messages.GUI_BROKENLINKS_NOT_VISIBLE_RESOURCES_1, new Object[] {new Integer(
+                getValidator().getNotVisibleResourcesCount())}));
+            result.append("\n");
+            result.append(dialogBlockEnd());
+        }
+        return result.toString();
     }
 
     /**
@@ -153,7 +164,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
             // broken links detail is enabled
             if (detailId.equals(LIST_DETAIL_LINKS)) {
                 // get all errors for this resource and show them
-                List brokenLinks = m_validator.getBrokenLinksForResource(res.getRootPath());
+                List brokenLinks = getValidator().getBrokenLinksForResource(res.getRootPath());
                 if (brokenLinks != null) {
                     Iterator j = brokenLinks.iterator();
                     while (j.hasNext()) {
@@ -165,8 +176,10 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
                             try {
                                 getCms().getRequestContext().saveSiteRoot();
                                 getCms().getRequestContext().setSiteRoot("/");
-                                siteName = getCms().readPropertyObject(siteRoot, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
-                                    siteRoot);
+                                siteName = getCms().readPropertyObject(
+                                    siteRoot,
+                                    CmsPropertyDefinition.PROPERTY_TITLE,
+                                    false).getValue(siteRoot);
                             } catch (CmsException e) {
                                 siteName = siteRoot;
                             } finally {
@@ -177,7 +190,9 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
                             siteName = "/";
                         }
                         if (!getCms().getRequestContext().getSiteRoot().equals(siteRoot)) {
-                            link = key(org.opencms.workplace.commons.Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {siteName, link});
+                            link = key(org.opencms.workplace.commons.Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
+                                siteName,
+                                link});
                         }
                         html.append(link);
                         html.append("<br>");
@@ -224,6 +239,26 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMA        
+    }
+
+    /**
+     * Returns the link validator class.<p>
+     * 
+     * @return the link validator class
+     */
+    private CmsInternalLinksValidator getValidator() {
+
+        if (m_validator == null) {
+            // get the content check result object
+            Map objects = (Map)getSettings().getDialogObject();
+            Object o = objects.get(CmsInternalLinkValidationDialog.class.getName());
+            List resources = new ArrayList();
+            if ((o != null) && (o instanceof List)) {
+                resources = (List)o;
+            }
+            m_validator = new CmsInternalLinksValidator(getCms(), resources);
+        }
+        return m_validator;
     }
 
 }
