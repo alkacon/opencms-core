@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDependenciesList.java,v $
- * Date   : $Date: 2006/03/28 10:13:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/10/05 12:02:48 $
+ * Version: $Revision: 1.4.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -298,8 +298,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(512);
-        result.append(dialogBlockStart(Messages.get().container(Messages.GUI_USER_DEPENDENCIES_NOTICE_0).key(
-            getLocale())));
+        result.append(dialogBlockStart(key(Messages.GUI_USER_DEPENDENCIES_NOTICE_0)));
         result.append("\n");
         if (getCurrentToolPath().indexOf("/edit/") < 0) {
             result.append(key(Messages.GUI_USER_DEPENDENCIES_SELECTED_USERS_0));
