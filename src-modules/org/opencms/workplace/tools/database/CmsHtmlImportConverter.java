@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImportConverter.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.9.4.2 $
+ * Date   : $Date: 2006/10/05 10:10:52 $
+ * Version: $Revision: 1.9.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.tidy.Tidy;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9.4.2 $ 
+ * @version $Revision: 1.9.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -455,7 +455,10 @@ public class CmsHtmlImportConverter {
                         if (value.indexOf("://") > 0) {
                             // store it for later creation of an entry in the
                             // link gallery
-                            m_htmlImport.storeExternalLink(value);
+                            String externalLinkFile = m_htmlImport.storeExternalLink(value);
+                            if (externalLinkFile != null) {
+                                value = m_htmlImport.getLinkGallery() + externalLinkFile;
+                            }
                         } else if (!value.startsWith("mailto:") && !value.startsWith("javascript:")) {
 
                             // save an existing anchor link for later use

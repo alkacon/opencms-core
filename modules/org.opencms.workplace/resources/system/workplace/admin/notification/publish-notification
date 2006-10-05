@@ -21,8 +21,8 @@ errors!]]></content>
       <links/>
       <content><![CDATA[Hallo ${firstname} ${lastname}, 
 <br /> 
-<br />Sie sind für einige OpenCms Resourcen verantwortlich. Einige dieser Resourcen sind schon
-längere Zeit nicht mehr aktualisiert worden, werden demnächst aktiv oder ungültig.]]></content>
+<br />beim Publizieren des Projekts "${project}", das um ${jobStart} gestartet wurde sind Warnungen
+und/oder Fehler aufgetreten!]]></content>
     </Header>
     <Footer name="Footer0">
       <links/>
