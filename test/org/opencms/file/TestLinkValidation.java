@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/05 14:34:00 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -69,6 +69,57 @@ public class TestLinkValidation extends OpenCmsTestCase {
     public TestLinkValidation(String arg0) {
 
         super(arg0);
+    }
+
+    /**
+     * Sets the content of a resource.<p>
+     * 
+     * @param cms the cms context
+     * @param filename the resource name
+     * @param content the content to set
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static void setContent(CmsObject cms, String filename, String content) throws CmsException {
+
+        CmsResource res = cms.readResource(filename);
+        CmsFile file = CmsFile.upgrade(res, cms);
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
+        if (!page.hasValue("test", Locale.ENGLISH)) {
+            page.addValue("test", Locale.ENGLISH);
+        }
+        page.setStringValue(cms, "test", Locale.ENGLISH, content);
+        file.setContents(page.marshal());
+        cms.lockResource(filename);
+        cms.writeFile(file);
+    }
+
+    /**
+     * Sets the content of a xmlcontent resource.<p>
+     * 
+     * @param cms the cms context
+     * @param filename the resource name
+     * @param html the content to set in the text field
+     * @param link the vfs file reference to set
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static void setXmlContent(CmsObject cms, String filename, String html, String link) throws CmsException {
+
+        CmsResource res = cms.readResource(filename);
+        CmsFile file = CmsFile.upgrade(res, cms);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+        if (!content.hasValue("Text", Locale.ENGLISH, 0)) {
+            content.addValue(cms, "Text", Locale.ENGLISH, 0);
+        }
+        content.getValue("Text", Locale.ENGLISH, 0).setStringValue(cms, html);
+        if (!content.hasValue("Homepage", Locale.ENGLISH, 0)) {
+            content.addValue(cms, "Homepage", Locale.ENGLISH, 0);
+        }
+        content.getValue("Homepage", Locale.ENGLISH, 0).setStringValue(cms, link);
+        file.setContents(content.marshal());
+        cms.lockResource(filename);
+        cms.writeFile(file);
     }
 
     /**
@@ -188,57 +239,6 @@ public class TestLinkValidation extends OpenCmsTestCase {
         cms.unlockResource(resName);
         cms.publishResource(resName, true, report);
         cms.lockResource(resName);
-    }
-
-    /**
-     * Sets the content of a resource.<p>
-     * 
-     * @param cms the cms context
-     * @param filename the resource name
-     * @param content the content to set
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    private void setContent(CmsObject cms, String filename, String content) throws CmsException {
-
-        CmsResource res = cms.readResource(filename);
-        CmsFile file = CmsFile.upgrade(res, cms);
-        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
-        if (!page.hasValue("test", Locale.ENGLISH)) {
-            page.addValue("test", Locale.ENGLISH);
-        }
-        page.setStringValue(cms, "test", Locale.ENGLISH, content);
-        file.setContents(page.marshal());
-        cms.lockResource(filename);
-        cms.writeFile(file);
-    }
-
-    /**
-     * Sets the content of a xmlcontent resource.<p>
-     * 
-     * @param cms the cms context
-     * @param filename the resource name
-     * @param html the content to set in the text field
-     * @param link the vfs file reference to set
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    private void setXmlContent(CmsObject cms, String filename, String html, String link) throws CmsException {
-
-        CmsResource res = cms.readResource(filename);
-        CmsFile file = CmsFile.upgrade(res, cms);
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-        if (!content.hasValue("Text", Locale.ENGLISH, 0)) {
-            content.addValue(cms, "Text", Locale.ENGLISH, 0);
-        }
-        content.getValue("Text", Locale.ENGLISH, 0).setStringValue(cms, html);
-        if (!content.hasValue("Homepage", Locale.ENGLISH, 0)) {
-            content.addValue(cms, "Homepage", Locale.ENGLISH, 0);
-        }
-        content.getValue("Homepage", Locale.ENGLISH, 0).setStringValue(cms, link);
-        file.setContents(content.marshal());
-        cms.lockResource(filename);
-        cms.writeFile(file);
     }
 
     /**
