@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsCoreMessageBundles.java,v $
- * Date   : $Date: 2006/10/01 20:37:28 $
- * Version: $Revision: 1.7.8.1 $
+ * Date   : $Date: 2006/10/05 12:06:04 $
+ * Version: $Revision: 1.7.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,9 @@ import java.util.List;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.7.8.1 $
+ * @version $Revision: 1.7.8.2 $
  * 
- * @version $Revision: 1.7.8.1 $
+ * @version $Revision: 1.7.8.2 $
  * 
  * @since 6.0.0
  */
@@ -57,11 +57,11 @@ public final class TestCmsCoreMessageBundles extends TestCmsMessageBundles {
         return A_CmsMessageBundle.getOpenCmsMessageBundles();
     }
 
-	/**
-	 * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalisedBundles()
-	 */
+    /**
+     * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalisedBundles()
+     */
     protected List getNotLocalisedBundles() {
-        
+
         List bundles = new ArrayList();
         bundles.add(org.opencms.setup.Messages.get());
         bundles.add(org.opencms.setup.xml.Messages.get());
