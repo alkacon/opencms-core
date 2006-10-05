@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/09/14 11:36:47 $
- * Version: $Revision: 1.42.4.5 $
+ * Date   : $Date: 2006/10/05 12:00:52 $
+ * Version: $Revision: 1.42.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.5 $ 
+ * @version $Revision: 1.42.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -447,7 +447,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         byte[] content,
         List properties) throws CmsException {
 
-        // this triggers the interal "is touched" state
+        // this triggers the internal "is touched" state
         // and prevents the security manager from inserting the current time
         resource.setDateLastModified(resource.getDateLastModified());
         // ensure resource record is updated
