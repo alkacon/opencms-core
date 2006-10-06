@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2006/07/20 12:41:40 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2006/10/06 14:02:20 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -262,25 +262,26 @@ public class CmsToolDialog extends CmsWorkplace {
      */
     public String iconsBlockArea(int segment, String headline) {
 
-        StringBuffer retValue = new StringBuffer(512);
+        StringBuffer result = new StringBuffer(512);
         if (segment == HTML_START) {
-            retValue.append("<!-- icons block area start -->\n");
-            retValue.append("<div class=\"dialogblockborder dialogblockborderheadline iconblock\" unselectable=\"on\" >\n");
-            retValue.append("\t<div class=\"dialogblock\" unselectable=\"on\">\n");
-            retValue.append("\t\t<span class=\"dialogblockhead\" unselectable=\"on\">\n");
-            retValue.append(headline);
-            retValue.append("\t\t</span>\n");
-            retValue.append("\t\t<table class='toolsArea' width='100%' cellspacing='0' cellpadding='0' border='0'>\n");
-            retValue.append("\t\t\t<tr><td>\n");
+            result.append("<!-- icons block area start -->\n");
+            result.append("<div class=\"dialogcontent\" unselectable=\"on\">");
+            result.append("<fieldset class=\"dialogblock\">\n");
+            result.append("<legend>");
+            result.append("<span class=\"textbold");
+            result.append("\" unselectable=\"on\">");
+            result.append(headline);
+            result.append("</span></legend>\n");
+            result.append("\t\t<table class='toolsArea' width='100%' cellspacing='0' cellpadding='0' border='0'>\n");
+            result.append("\t\t\t<tr><td>\n");
         } else {
-            retValue.append("\t\t\t</td></tr>\n");
-            retValue.append("\t\t</table>\n");
-            retValue.append("\t</div>\n");
-            retValue.append("</div>\n");
-            retValue.append("<p>&nbsp;</p>\n");
-            retValue.append("<!-- icons block area end -->\n");
+            result.append("\t\t\t</td></tr>\n");
+            result.append("\t\t</table>\n");
+            result.append("</fieldset></div>\n");
+            result.append("<p>&nbsp;</p>\n");
+            result.append("<!-- icons block area end -->\n");
         }
-        return retValue.toString();
+        return result.toString();
     }
 
     /**

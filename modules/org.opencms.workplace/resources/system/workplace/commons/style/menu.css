@@ -466,7 +466,6 @@ input, select, option, textarea {
 	color: CaptionText;
 	font-size: 12px;
 	font-weight: bold;
-	width: 100%;
 	white-space: nowrap;	
 }
 
@@ -666,48 +665,11 @@ span.separator {
 	white-space: nowrap;
 }
 
-/* 3D block outer border definition */
-div.dialogblockborderheadline {
-	margin-top: 10px;
-}
-
-/* 3D block outer border definition without headline */
-div.dialogblockborder {
-	border-left: 1px solid ThreeDShadow;
-	border-top: 1px solid ThreeDShadow;
-	border-right: 1px solid ThreeDHighlight;
-	border-bottom: 1px solid ThreeDHighlight;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-}
-
 /* 3D block main style */
-div.dialogblock {
-	position: relative;
+fieldset.dialogblock {
+	margin: 0;
 	padding: 8px;
-	border-left: 1px solid ThreeDHighlight;
-	border-top: 1px solid ThreeDHighlight;
-	border-right: 1px solid ThreeDShadow;
-	border-bottom: 1px solid ThreeDShadow;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
 }
-
-/* 3D block headline, positioned "inside" border */
-span.dialogblockhead {
-	font-weight: bold;
-	position:absolute;
-	top: -7px;
-	left: 5px;
-	<% if(style == WORKPLACE) { %>
-	background-color: ThreeDFace;
-	<% } else if(style == NEW_ADMIN) { %>
-	background-color: Window;
-	<% } %>
-	padding: 0 3px;
-	white-space: nowrap;
-}
-
 
 /* outer border of white inner box */
 .dialoginnerboxborder {

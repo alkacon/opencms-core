@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEdit.java,v $
- * Date   : $Date: 2006/03/27 14:52:53 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/10/06 14:02:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,17 +99,19 @@ public class CmsModulesEdit extends CmsModulesEditBase {
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(0, 5));
             result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key("label.modulecreator")));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(6, 7));
             result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
             if (CmsStringUtil.isEmpty(m_module.getName())) {
                 result.append(dialogBlockStart(key("label.modulefolder")));
                 result.append(createWidgetTableStart());
                 result.append(createDialogRowsHtml(8, 13));
                 result.append(createWidgetTableEnd());
-            }
-            result.append(dialogBlockEnd());
+            	result.append(dialogBlockEnd());
+        	}
         }
 
         // close table

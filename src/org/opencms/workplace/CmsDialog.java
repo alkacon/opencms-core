@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2006/10/06 14:02:20 $
+ * Version: $Revision: 1.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96 $ 
+ * @version $Revision: 1.97 $ 
  * 
  * @since 6.0.0 
  */
@@ -419,25 +419,24 @@ public class CmsDialog extends CmsToolDialog {
     public String dialogBlock(int segment, String headline, boolean error) {
 
         if (segment == HTML_START) {
-            StringBuffer retValue = new StringBuffer(512);
-            String errorStyles = "";
+            StringBuffer result = new StringBuffer(512);
+            String errorStyle = "";
             if (error) {
-                errorStyles = " dialogerror textbold";
+                errorStyle = " dialogerror";
             }
-            retValue.append("<!-- 3D block start -->\n");
+            result.append("<!-- 3D block start -->\n");
+            result.append("<fieldset class=\"dialogblock\">\n");
             if (CmsStringUtil.isNotEmpty(headline)) {
-                retValue.append("<div class=\"dialogblockborder dialogblockborderheadline\" unselectable=\"on\">\n");
-                retValue.append("<div class=\"dialogblock" + errorStyles + "\" unselectable=\"on\">\n");
-                retValue.append("<span class=\"dialogblockhead" + errorStyles + "\" unselectable=\"on\">");
-                retValue.append(headline);
-                retValue.append("</span>\n");
-            } else {
-                retValue.append("<div class=\"dialogblockborder\" unselectable=\"on\">\n");
-                retValue.append("<div class=\"dialogblock" + errorStyles + "\" unselectable=\"on\">\n");
+                result.append("<legend>");
+                result.append("<span class=\"textbold");
+                result.append(errorStyle);
+                result.append("\" unselectable=\"on\">");
+                result.append(headline);
+                result.append("</span></legend>\n");
             }
-            return retValue.toString();
+            return result.toString();
         } else {
-            return "</div>\n</div>\n<!-- 3D block end -->\n";
+            return "</fieldset>\n<!-- 3D block end -->\n";
         }
     }
 
