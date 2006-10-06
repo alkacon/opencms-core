@@ -11,7 +11,7 @@
 <div class="element">
 
 <%
-I_CmsXmlContentContainer container = cms.contentload("${elementProperty.collector}", "${opencms.uri}", true);
+I_CmsXmlContentContainer container = cms.contentload("%(elementProperty.collector)", "%(opencms.uri)", true);
 while (container.hasMoreContent()) {
 %>
 

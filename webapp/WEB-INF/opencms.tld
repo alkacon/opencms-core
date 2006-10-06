@@ -1,92 +1,97 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<!DOCTYPE taglib
-  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
-  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
 
-<!-- Created by Alexander Kandzior (a.kandzior@alkacon.com) on 6. April 2002, 17:28 -->
-
-<taglib>
-    <tlib-version>0.9.9</tlib-version>
-    <jsp-version>1.2</jsp-version>
-    <short-name>cms</short-name>
-    <uri>http://www.opencms.org/taglib/cms</uri>
-    <display-name>OpenCms JSP standard taglib</display-name>
     <description>
         The standard OpenCms / JSP integration tag library.
-        Developed by Alkacon Software GmbH / Alexander Kandzior (a.kandzior@alkacon.de)
+        Developed by Alkacon Software GmbH for OpenCms.
     </description>
+    <display-name>OpenCms JSP standard taglib</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>cms</short-name>
+    <uri>http://www.opencms.org/taglib/cms</uri>
 
     <tag>
-        <name>property</name>
-        <tag-class>org.opencms.jsp.CmsJspTagProperty</tag-class>
-        <body-content>empty</body-content>
         <description>
             This tag enables read access to the current files OpenCms properties.
         </description>
+        <name>property</name>
+        <tag-class>org.opencms.jsp.CmsJspTagProperty</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>name</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
             <name>file</name>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>        
         <attribute>
             <name>escapeHtml</name>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>         
         <attribute>
             <name>default</name>
+            <rtexprvalue>true</rtexprvalue>
         </attribute> 
     </tag>        
 
     <tag>
-        <name>user</name>
-        <tag-class>org.opencms.jsp.CmsJspTagUser</tag-class>
-        <body-content>empty</body-content>
         <description>
             This tag enables access to the properties of the currently logged in user.
         </description>
+        <name>user</name>
+        <tag-class>org.opencms.jsp.CmsJspTagUser</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>property</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
     </tag> 
     
     <tag>
-        <name>info</name>
-        <tag-class>org.opencms.jsp.CmsJspTagInfo</tag-class>
-        <body-content>empty</body-content>
         <description>
             This tag enables access to some system information like OpenCms version etc.
         </description>
+        <name>info</name>
+        <tag-class>org.opencms.jsp.CmsJspTagInfo</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>property</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
     </tag>     
             
     <tag>
-        <name>link</name>
-        <tag-class>org.opencms.jsp.CmsJspTagLink</tag-class>
-        <body-content>JSP</body-content>
         <description>
             This tag is used to wrap URLs for the OpenCms static export.
         </description>
+        <name>link</name>
+        <tag-class>org.opencms.jsp.CmsJspTagLink</tag-class>
+        <body-content>JSP</body-content>
     </tag>   
     
     <tag>
-        <name>decorate</name>
-        <tag-class>org.opencms.jsp.CmsJspTagDecorate</tag-class>
-        <body-content>JSP</body-content>
         <description>
             This tag is used to decorate HTML.
         </description>
+        <name>decorate</name>
+        <tag-class>org.opencms.jsp.CmsJspTagDecorate</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>file</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
             <name>locale</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute> 
         <attribute>
             <name>noAutoCloseTags</name>
@@ -95,16 +100,16 @@
         </attribute> 
     </tag>       
    <tag>
-        <name>parse</name>
-        <tag-class>org.opencms.jsp.CmsJspTagParse</tag-class>
-        <body-content>JSP</body-content>
         <description>
             This tag is used to decorate HTML with custom A_CmsConfiguredHtmlParser implementations given in the parserClass attribute.
         </description>
+        <name>parse</name>
+        <tag-class>org.opencms.jsp.CmsJspTagParse</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>parserClass</name>
             <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>  
         <attribute>
             <name>param</name>
@@ -118,198 +123,232 @@
         </attribute> 
     </tag>       
     <tag>
-        <name>template</name>
-        <tag-class>org.opencms.jsp.CmsJspTagTemplate</tag-class>
-        <body-content>JSP</body-content>
         <description>
             This tag allows conditional display of template elements.
         </description>
+        <name>template</name>
+        <tag-class>org.opencms.jsp.CmsJspTagTemplate</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>element</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
             <name>ifexists</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>ifexistsone</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>ifexistsall</name>
+            <rtexprvalue>true</rtexprvalue>                        
         </attribute>
         <attribute>
             <name>ifexistsnone</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>       
     </tag>
     
     <tag>
-        <name>contentload</name>
-        <tag-class>org.opencms.jsp.CmsJspTagContentLoad</tag-class>
-        <body-content>JSP</body-content>
         <description>
             This tag loads XML content items from the OpenCms VFS.
         </description> 
+        <name>contentload</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentLoad</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>collector</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>    
         <attribute>
             <name>param</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>property</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>editable</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>    
         <attribute>
             <name>pageIndex</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute> 
         <attribute>
             <name>pageSize</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
             <name>pageNavLength</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
             <name>preload</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>locale</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
     </tag>    
         
     <tag>
-        <name>contentshow</name>
-        <tag-class>org.opencms.jsp.CmsJspTagContentShow</tag-class>
-        <body-content>empty</body-content>
         <description>
             This tag provides access to individual XML content node element values.
         </description>              
+        <name>contentshow</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentShow</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>element</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>locale</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
     </tag>  
     
     <tag>
-        <name>contentinfo</name>
-        <tag-class>org.opencms.jsp.CmsJspTagContentInfo</tag-class>
-        <body-content>empty</body-content>
         <description>
             This tag provides access to individual XML content node element values.
         </description>              
+        <name>contentinfo</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentInfo</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>var</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>value</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>scope</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>        
     </tag>      
     
     <tag>
-        <name>contentloop</name>
-        <tag-class>org.opencms.jsp.CmsJspTagContentLoop</tag-class>
-        <body-content>JSP</body-content>
         <description>
             This tag allows looping through XML content node element values.
         </description>              
+        <name>contentloop</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentLoop</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>element</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>  
     </tag>   
     
     <tag>
-        <name>contentcheck</name>
-        <tag-class>org.opencms.jsp.CmsJspTagContentCheck</tag-class>
-        <body-content>JSP</body-content>
         <description>
             This tag provides conditional logic for checking the element of a XML content.
         </description>              
+        <name>contentcheck</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentCheck</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>ifexists</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>ifexistsone</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>ifexistsall</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>ifexistsnone</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>locale</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
     </tag>   
     
     <tag>
-        <name>label</name>
-        <tag-class>org.opencms.jsp.CmsJspTagLabel</tag-class>
-        <body-content>tagdependent</body-content>
         <description>
             This tag is used to read values from the OpenCms workplace language files.
         </description>
+        <name>label</name>
+        <tag-class>org.opencms.jsp.CmsJspTagLabel</tag-class>
+        <body-content>scriptless</body-content>
     </tag>            
     
     <tag>
-        <name>include</name>
-        <tag-class>org.opencms.jsp.CmsJspTagInclude</tag-class>
-        <tei-class>org.opencms.jsp.CmsJspTagIncludeTEI</tei-class>
-        <body-content>JSP</body-content>
         <description>
             This tag is used for including OpenCms Subelements in a page.
             It is similar to the "include" JSP directive.
             It loads the input at runtime, not at compile - time.
         </description>
+        <name>include</name>
+        <tag-class>org.opencms.jsp.CmsJspTagInclude</tag-class>
+        <tei-class>org.opencms.jsp.CmsJspTagIncludeTEI</tei-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>page</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
             <name>file</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
             <name>property</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
             <name>attribute</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
             <name>suffix</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>     
         <attribute>
             <name>element</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>editable</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>cacheable</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>                    
     </tag>        
 
     <tag>
-        <name>editable</name>
-        <tag-class>org.opencms.jsp.CmsJspTagEditable</tag-class>
-        <body-content>empty</body-content>
         <description>
             This tag is used to enable the direct editing within a template.
         </description>
+        <name>editable</name>
+        <tag-class>org.opencms.jsp.CmsJspTagEditable</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>file</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
     </tag>
     
     <tag>
+        <description>
+            Adds a parameter to the outer tag (if supported).
+        </description>
         <name>param</name>
         <tag-class>org.opencms.jsp.CmsJspTagParam</tag-class>
         <body-content>JSP</body-content>
-        <description>
-            Adds a parameter to a containing 'import' tag's URL.
-        </description>
         <attribute>
             <name>name</name>
             <required>true</required>
@@ -323,78 +362,99 @@
     </tag>      
     
     <tag>
-        <name>img</name>
-        <tag-class>org.opencms.jsp.CmsJspTagImage</tag-class>
-        <body-content>JSP</body-content>
         <description>
             This tag allows using the OpenCms native image scaling mechanism.
             It generates the HTML required to include the selected image, adding the
             required image scaling parameters.
         </description>
+        <name>img</name>
+        <tag-class>org.opencms.jsp.CmsJspTagImage</tag-class>
+        <body-content>JSP</body-content>
         <!-- These attributes are used to control the image scaling process: -->
         <attribute>
             <name>src</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
             <name>width</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
             <name>height</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
             <name>scaleType</name>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>   
         <attribute>
             <name>scalePosition</name>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>     
         <attribute>
             <name>scaleFilter</name>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
             <name>scaleQuality</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>scaleColor</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>scaleRendermode</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
             <name>partialTag</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>     
         <!-- The following attributes are only convenience attributes for easier HTML generation: -->
         <attribute>
             <name>alt</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>align</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
             <name>border</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>                            
         <attribute>
             <name>hspace</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
             <name>vspace</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
             <name>id</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
             <name>longdesc</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
             <name>name</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
             <name>style</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
             <name>title</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>                                    
         <attribute>
             <name>usemap</name>
+            <rtexprvalue>true</rtexprvalue>            
         </attribute>                         
     </tag>          
 </taglib>

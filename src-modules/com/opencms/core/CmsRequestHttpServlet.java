@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2006/10/06 12:59:42 $
+* Version: $Revision: 1.3.8.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.3.8.1 $ $Date: 2006/10/06 12:59:42 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -743,16 +743,16 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         // Construct the special input stream we'll read from
         CmsMultipartInputStreamHandler in = new CmsMultipartInputStreamHandler(m_req.getInputStream(), length);
 
-        // Read the first line, should be the first boundary
-        String line = in.readLine();
-        if (line == null) {
-            throw new IOException(C_REQUEST_PROMATUREEND);
-        }
-
-        // Verify that the line is the boundary
-        if (!line.startsWith(boundary)) {
-            throw new IOException(C_REQUEST_NOBOUNDARY);
-        }
+//        // Read the first line, should be the first boundary
+//        String line = in.readLine();
+//        if (line == null) {
+//            throw new IOException(C_REQUEST_PROMATUREEND);
+//        }
+//
+//        // Verify that the line is the boundary
+//        if (!line.startsWith(boundary)) {
+//            throw new IOException(C_REQUEST_NOBOUNDARY);
+//        }
 
         // Now that we're just beyond the first boundary, loop over each part
         boolean done = false;

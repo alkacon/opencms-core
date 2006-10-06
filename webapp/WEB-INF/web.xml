@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-        "http://java.sun.com/dtd/web-app_2_3.dtd">
-
-<web-app>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	version="2.4">
 
     <display-name>OpenCms</display-name>
     
@@ -50,19 +49,19 @@
     </listener>
         
     <servlet>
-        <servlet-name>OpenCmsServlet</servlet-name>
         <description>
             The main servlet that handles all requests to the OpenCms VFS.  
         </description>
+        <servlet-name>OpenCmsServlet</servlet-name>
         <servlet-class>org.opencms.main.OpenCmsServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     
     <servlet>
-        <servlet-name>OpenCmsServletErrorHandler</servlet-name>
         <description>
             The error handling servlet, also servers as trigger for static export requests.  
         </description>
+        <servlet-name>OpenCmsServletErrorHandler</servlet-name>
         <servlet-class>org.opencms.main.OpenCmsServletErrorHandler</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>    
@@ -96,10 +95,12 @@
         <error-code>500</error-code>
         <location>/opencms-errorhandler/system/handler/handle500.html</location>
     </error-page>
-    
-    <taglib>
-        <taglib-uri>http://www.opencms.org/taglib/cms</taglib-uri>
-        <taglib-location>/WEB-INF/opencms.tld</taglib-location>
-    </taglib>
+
+	<jsp-config>
+	    <taglib>
+	        <taglib-uri>http://www.opencms.org/taglib/cms</taglib-uri>
+	        <taglib-location>/WEB-INF/opencms.tld</taglib-location>
+	    </taglib>
+	</jsp-config>
 
 </web-app>

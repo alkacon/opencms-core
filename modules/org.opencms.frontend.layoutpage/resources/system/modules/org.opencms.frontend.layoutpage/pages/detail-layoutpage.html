@@ -37,7 +37,7 @@ String template = cms.property(CmsPropertyDefinition.PROPERTY_TEMPLATE, "search"
 
 cms.include(template, "head");
 
-%><cms:contentload collector="singleFile" param="${opencms.filename}" editable="true"><%= layoutBean.buildHtmlParagraphs() %></cms:contentload><%
+%><cms:contentload collector="singleFile" param="%(opencms.filename)" editable="true"><%= layoutBean.buildHtmlParagraphs() %></cms:contentload><%
 
 cms.include(template, "foot");
 

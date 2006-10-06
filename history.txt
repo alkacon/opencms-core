@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/06 12:37:18 $
- * Version: $Revision: 1.717.2.56 $
+ * Date   : $Date: 2006/10/06 12:59:43 $
+ * Version: $Revision: 1.717.2.57 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,14 @@ OpenCms 6.5.3 - September xxxx, 2006
 * Improved site managing preventing problems displaying resources in siblings and project view
 * Creating a resource that would override an existing one now displays the 'right' error message
 - Locks now store the complete project instead of only the project id
+- Updated web application standard to 2.4 (with JSP 2.0) in web.xml
+- Made all possible attribute values in opencms.tld accept <rtexprvalue>s
 - Updated alkacon-simapi.jar to version 0.9.4
 - Updated alkacon-diff.jar to version 0.9.2
 - Updated commons-httpclient.jar to version 3.0.1
 - Updated commons-logging.jar to version 1.1
+- Updated jstl.jar to version 1.1.2
+- Updated standard-jar to version 1.1.2
 - Updated the list of supported MIME-types
 ! MIME-types are now configured in opencms-vfs.xml instead of internal properties file
 ! Added new WOFKFLOW_MANAGER role definition
