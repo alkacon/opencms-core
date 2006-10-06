@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2006/10/06 09:17:16 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.tidy.Tidy;
  * @author Michael Emmerich 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,13 +107,15 @@ public class CmsHtmlConverter {
         "\\(\\r\\n<",
         "\\(\\n<",
         "\\(\\r\\n(\\ ){1,}<",
-        "\\(\\n(\\ ){1,}<"};
+        "\\(\\n(\\ ){1,}<",
+        "\\r\\n<span",
+        "\\n<span"};
 
     /** Patterns for replace. */
     Pattern[] m_replaceStyle;
 
     /** Values for replace. */
-    String[] m_replaceValues = {"&nbsp;", "", "&ndash;", "", "(<", "(<", "(<", "(<"};
+    String[] m_replaceValues = {"&nbsp;", "", "&ndash;", "", "(<", "(<", "(<", "(<", "<span", "<span"};
 
     /** The tidy to use. */
     Tidy m_tidy;
