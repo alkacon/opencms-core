@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCommentImages.java,v $
- * Date   : $Date: 2006/08/19 13:40:47 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/10/06 15:31:41 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.1.3
  */
@@ -153,11 +153,11 @@ public class CmsCommentImages extends CmsDialog {
         StringBuffer result = new StringBuffer(16384);
         Iterator i = getImages().iterator();
 
-        //result.append("<div class=\"maxwidth\" style=\"height: 400px; overflow: auto;\">");
+        result.append("<div style=\"height: 450px; padding: 4px; overflow: auto;\">");
 
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            String imageName = CmsResource.getName(res.getRootPath());
+            String imageName = res.getName();
             String propertySuffix = "" + imageName.hashCode();
             result.append(dialogBlockStart(imageName));
             result.append("<table border=\"0\">\n");
@@ -237,7 +237,7 @@ public class CmsCommentImages extends CmsDialog {
             }
         }
 
-        //result.append("</div>");
+        result.append("</div>");
 
         return result.toString();
     }
@@ -325,7 +325,7 @@ public class CmsCommentImages extends CmsDialog {
         // loop over all image resources to change the properties
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            String imageName = CmsResource.getName(res.getRootPath());
+            String imageName = res.getName();
             String propertySuffix = "" + imageName.hashCode();
 
             // update the title property
