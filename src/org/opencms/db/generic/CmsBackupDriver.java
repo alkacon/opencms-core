@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2006/10/09 12:29:40 $
- * Version: $Revision: 1.141.4.4 $
+ * Date   : $Date: 2006/10/09 16:43:13 $
+ * Version: $Revision: 1.141.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.141.4.4 $
+ * @version $Revision: 1.141.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -361,7 +361,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         m_sqlManager = null;
         m_driverManager = null;
-        
+
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
@@ -426,7 +426,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_READ_BACKUP");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_READ_BACKUP_BYID");
             stmt.setString(1, structureId.toString());
             stmt.setInt(2, tagId);
             res = stmt.executeQuery();
@@ -439,6 +439,43 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
                     Messages.ERR_BACKUP_FILE_NOT_FOUND_1,
                     structureId));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        return file;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupFile(CmsDbContext, int, String)
+     */
+    public CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, String rootPath) throws CmsDataAccessException {
+
+        CmsBackupResource file = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_READ_BACKUP");
+            stmt.setString(1, rootPath);
+            stmt.setInt(2, tagId);
+            res = stmt.executeQuery();
+            if (res.next()) {
+                file = createBackupResource(res, true);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            } else {
+                throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                    Messages.ERR_BACKUP_FILE_NOT_FOUND_1,
+                    rootPath));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/10/09 12:29:40 $
- * Version: $Revision: 1.570.2.24 $
+ * Date   : $Date: 2006/10/09 16:43:13 $
+ * Version: $Revision: 1.570.2.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4634,7 +4634,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, CmsResource resource) throws CmsException {
 
-        return m_backupDriver.readBackupFile(dbc, tagId, resource.getStructureId());
+        try {
+            // this is the most common case
+            return m_backupDriver.readBackupFile(dbc, tagId, resource.getStructureId());
+        } catch (CmsException e) {
+            // this is in case a file has been deleted and another has been created with the same name
+            return m_backupDriver.readBackupFile(dbc, tagId, resource.getRootPath());
+        }
     }
 
     /**
