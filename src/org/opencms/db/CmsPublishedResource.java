@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.31.4.1 $
+ * Date   : $Date: 2006/10/09 15:52:32 $
+ * Version: $Revision: 1.31.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,13 +47,16 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.31.4.1 $
+ * @version $Revision: 1.31.4.2 $
  * 
  * @since 6.0.0
  * 
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(CmsDbContext, int, CmsUUID)
  */
 public class CmsPublishedResource implements Serializable, Comparable {
+
+    /** Additional state flag for moved resources. */
+    public static final int STATE_MOVED = 8;
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1054065812825770479L;
@@ -63,6 +66,9 @@ public class CmsPublishedResource implements Serializable, Comparable {
 
     /** Indicates if the published resource is a folder or a file. */
     private boolean m_isFolder;
+
+    /** falg to signal if the resource was moved. */
+    private boolean m_isMoved;
 
     /** The resource ID of the published resource.<p> */
     private CmsUUID m_resourceId;
@@ -91,14 +97,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
      */
     public CmsPublishedResource(CmsResource resource) {
 
-        m_structureId = resource.getStructureId();
-        m_resourceId = resource.getResourceId();
-        m_backupTagId = -1;
-        m_rootPath = resource.getRootPath();
-        m_resourceType = resource.getTypeId();
-        m_resourceState = resource.getState();
-        m_siblingCount = resource.getSiblingCount();
-        m_isFolder = resource.isFolder();
+        this(resource, -1);
     }
 
     /**
@@ -109,14 +108,27 @@ public class CmsPublishedResource implements Serializable, Comparable {
      */
     public CmsPublishedResource(CmsResource resource, int backupTagId) {
 
-        m_structureId = resource.getStructureId();
-        m_resourceId = resource.getResourceId();
-        m_backupTagId = backupTagId;
-        m_rootPath = resource.getRootPath();
-        m_resourceType = resource.getTypeId();
-        m_resourceState = resource.getState();
-        m_siblingCount = resource.getSiblingCount();
-        m_isFolder = resource.isFolder();
+        this(resource, backupTagId, resource.getState());
+    }
+
+    /**
+     * Creates an object for published VFS resources.<p>
+     * 
+     * @param resource an CmsResource object to create a CmsPublishedResource from
+     * @param state the resource state
+     * @param backupTagId the backup tag id
+     */
+    public CmsPublishedResource(CmsResource resource, int backupTagId, int state) {
+
+        this(
+            resource.getStructureId(),
+            resource.getResourceId(),
+            backupTagId,
+            resource.getRootPath(),
+            resource.getTypeId(),
+            resource.isFolder(),
+            state,
+            resource.getSiblingCount());
     }
 
     /**
@@ -146,9 +158,13 @@ public class CmsPublishedResource implements Serializable, Comparable {
         m_backupTagId = backupTagId;
         m_rootPath = rootPath;
         m_resourceType = resourceType;
+        m_isFolder = isFolder;
         m_resourceState = resourceState;
         m_siblingCount = siblingCount;
-        m_isFolder = isFolder;
+        if (m_resourceState >= STATE_MOVED) {
+            m_resourceState -= STATE_MOVED;
+            m_isMoved = true;
+        }
     }
 
     /**
@@ -304,6 +320,16 @@ public class CmsPublishedResource implements Serializable, Comparable {
     public boolean isFolder() {
 
         return m_isFolder;
+    }
+
+    /**
+     * Returns <code>true</code> if the resource has been moved.<p>
+     *
+     * @return <code>true</code> if the resource has been moved
+     */
+    public boolean isMoved() {
+
+        return m_isMoved;
     }
 
     /**

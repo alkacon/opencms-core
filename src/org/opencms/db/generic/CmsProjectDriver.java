@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/09/14 11:35:45 $
- * Version: $Revision: 1.241.4.9 $
+ * Date   : $Date: 2006/10/09 15:52:32 $
+ * Version: $Revision: 1.241.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.9 $
+ * @version $Revision: 1.241.4.10 $
  * 
  * @since 6.0.0 
  */
@@ -617,7 +617,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 dbc.removeSiteRoot(currentFolder.getRootPath())));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
-            fixMovedResource(dbc, onlineProject, currentFolder);
+            boolean moved = fixMovedResource(dbc, onlineProject, currentFolder, publishHistoryId, backupTagId);
 
             try {
                 // write the folder to the backup and publishing history                
@@ -639,7 +639,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     dbc,
                     dbc.currentProject(),
                     publishHistoryId,
-                    new CmsPublishedResource(currentFolder, backupTagId));
+                    new CmsPublishedResource(currentFolder, backupTagId, getMovedState(currentFolder.getState(), moved)));
             } catch (CmsDataAccessException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
@@ -736,6 +736,22 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * Returns the right state taking into account if the resource has been moved.<p>
+     * 
+     * @param state the original state
+     * @param moved <code>true</code> if the resource has been moved
+     * 
+     * @return the new state
+     */
+    private int getMovedState(int state, boolean moved) {
+
+        if (moved && state < CmsPublishedResource.STATE_MOVED) {
+            state += CmsPublishedResource.STATE_MOVED;
+        }
+        return state;
+    }
+
+    /**
      * @see org.opencms.db.I_CmsProjectDriver#publishFile(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Set, boolean, long, org.opencms.util.CmsUUID, int, int)
      */
     public void publishFile(
@@ -767,8 +783,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 org.opencms.report.Messages.RPT_SUCCESSION_2,
                 String.valueOf(m),
                 String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
-
-            fixMovedResource(dbc, onlineProject, offlineResource);
 
             if (offlineResource.getState() == CmsResource.STATE_DELETED) {
 
@@ -877,8 +891,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsFile offlineFile = null;
 
         try {
-            fixMovedResource(dbc, onlineProject, offlineResource);
-
             // binary content gets only published once while a project is published
             if (!publishedResourceIds.contains(offlineResource.getResourceId())) {
                 // read the file content offline
@@ -958,7 +970,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 dbc.removeSiteRoot(offlineFolder.getRootPath())));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
-            fixMovedResource(dbc, onlineProject, offlineFolder);
+            boolean moved = fixMovedResource(dbc, onlineProject, offlineFolder, publishHistoryId, backupTagId);
 
             if (offlineFolder.getState() == CmsResource.STATE_NEW) {
 
@@ -1106,11 +1118,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         maxVersions);
                 }
 
+                int state = moved ? CmsResource.STATE_NEW : offlineFolder.getState();
                 m_driverManager.getProjectDriver().writePublishHistory(
                     dbc,
                     dbc.currentProject(),
                     publishHistoryId,
-                    new CmsPublishedResource(offlineFolder, backupTagId));
+                    new CmsPublishedResource(offlineFolder, backupTagId, getMovedState(state, moved)));
             } catch (CmsDataAccessException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
@@ -2043,7 +2056,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setString(2, resource.getStructureId().toString());
             stmt.setString(3, resource.getResourceId().toString());
             stmt.setString(4, resource.getRootPath());
-            stmt.setInt(5, resource.getState());
+            stmt.setInt(5, getMovedState(resource.getState(), resource.isMoved()));
             stmt.setInt(6, resource.getType());
             stmt.setString(7, publishId.toString());
             stmt.setInt(8, resource.getSiblingCount());
@@ -2161,11 +2174,17 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      * @param dbc the db context
      * @param onlineProject the online project
      * @param offlineResource the offline resource to check
+     * @param publishHistoryId the publish history id
+     * @param backupTagId the backup tag id
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    private void fixMovedResource(CmsDbContext dbc, CmsProject onlineProject, CmsResource offlineResource)
-    throws CmsDataAccessException {
+    protected boolean fixMovedResource(
+        CmsDbContext dbc,
+        CmsProject onlineProject,
+        CmsResource offlineResource,
+        CmsUUID publishHistoryId,
+        int backupTagId) throws CmsDataAccessException {
 
         CmsResource onlineResource;
         // check if the file has been moved sine last publishing
@@ -2177,11 +2196,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 true);
             if (onlineResource.getRootPath().equals(offlineResource.getRootPath())) {
                 // resource changed, not moved 
-                return;
+                return false;
             }
         } catch (CmsVfsResourceNotFoundException e) {
             // ok, resource new, not moved
-            return;
+            return false;
         }
 
         // remove the links of the moved resource
@@ -2190,12 +2209,29 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         filter = filter.filterPath(onlineResource.getRootPath());
         m_driverManager.getVfsDriver().deleteRelations(dbc, onlineProject.getId(), filter);
 
-        // move the online resource
+        // move the online resource to the new position
         m_driverManager.getVfsDriver().moveResource(
             dbc,
             onlineProject.getId(),
             onlineResource,
             offlineResource.getRootPath());
+
+        try {
+            // write the file to the publishing history
+            m_driverManager.getProjectDriver().writePublishHistory(
+                dbc,
+                dbc.currentProject(),
+                publishHistoryId,
+                new CmsPublishedResource(onlineResource, backupTagId, getMovedState(CmsResource.STATE_DELETED, true)));
+        } catch (CmsDataAccessException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_WRITING_PUBLISHING_HISTORY_1,
+                    onlineResource.getRootPath()), e);
+            }
+            throw e;
+        }
+        return true;
     }
 
     private void publishChangedFile(
@@ -2208,6 +2244,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsUUID publishHistoryId,
         int backupTagId,
         int maxVersions) throws CmsDataAccessException {
+
+        boolean moved = fixMovedResource(dbc, onlineProject, offlineResource, publishHistoryId, backupTagId);
 
         CmsResource onlineResource;
         try {
@@ -2337,11 +2375,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     publishDate,
                     maxVersions);
             }
+            int state = moved ? CmsResource.STATE_NEW : offlineResource.getState();
             m_driverManager.getProjectDriver().writePublishHistory(
                 dbc,
                 dbc.currentProject(),
                 publishHistoryId,
-                new CmsPublishedResource(offlineResource, backupTagId));
+                new CmsPublishedResource(offlineResource, backupTagId, getMovedState(state, moved)));
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
@@ -2361,6 +2400,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         boolean backupEnabled,
         CmsUUID publishHistoryId,
         int backupTagId) throws CmsDataAccessException {
+
+        boolean moved = fixMovedResource(dbc, onlineProject, offlineResource, publishHistoryId, backupTagId);
 
         CmsResource onlineResource;
         try {
@@ -2396,7 +2437,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 dbc,
                 dbc.currentProject(),
                 publishHistoryId,
-                new CmsPublishedResource(offlineResource, backupTagId));
+                new CmsPublishedResource(offlineResource, backupTagId, getMovedState(offlineResource.getState(), moved)));
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
@@ -2505,6 +2546,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         int backupTagId,
         int maxVersions) throws CmsDataAccessException {
 
+        boolean moved = fixMovedResource(dbc, onlineProject, offlineResource, publishHistoryId, backupTagId);
+
         CmsFile newFile;
         try {
             // reset the labeled link flag before writing the online file
@@ -2605,7 +2648,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 dbc,
                 dbc.currentProject(),
                 publishHistoryId,
-                new CmsPublishedResource(offlineResource, backupTagId));
+                new CmsPublishedResource(offlineResource, backupTagId, getMovedState(offlineResource.getState(), moved)));
 
             updateRelations(dbc, onlineProject, offlineResource);
         } catch (CmsDataAccessException e) {
