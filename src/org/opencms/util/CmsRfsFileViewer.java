@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/10/09 09:44:09 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,8 +104,7 @@ public class CmsRfsFileViewer implements Cloneable {
          * Default corresponds to 30 seconds. <p>
          * 
          */
-        protected int m_maxIndexAge = 60000;
-
+        //protected int m_maxIndexAge = 60000;
         /**
          * The internal list with break positions in bytes.<p>
          * 
@@ -216,14 +215,19 @@ public class CmsRfsFileViewer implements Cloneable {
         }
 
         /**
-         * Returns the maximum age in milliseconds this line number index may have.<p> 
+         * Returns the maximum age in milliseconds this line number index may have.<p>
+         * 
+         * This is a calculation that depends on the size of the underlying file. Huge files will 
+         * be scanned less often (as this takes much more time and performance), 
+         * small files may be more "up to date". <p>
          * 
          * @return the maximum age in milliseconds this line number index may have
          */
 
         public int getMaxIndexAge() {
 
-            return m_maxIndexAge;
+            // for large files: 1 KB make 20 ms of validity
+            return (int)Math.max(m_file.length() / 1024 * 20, 60000);
         }
 
         /**
@@ -243,10 +247,12 @@ public class CmsRfsFileViewer implements Cloneable {
          * Set the maximum age in milliseconds this line number index may have.<p> 
          * 
          * @param maxIndexAge the maximum age in milliseconds this line number index may have to set 
+         * 
+         * @deprecated this is ignored as the index expiration is now calculated upon the file size
          */
         public void setMaxIndexAge(int maxIndexAge) {
 
-            m_maxIndexAge = maxIndexAge;
+            // nop
         }
 
         /**
@@ -274,32 +280,41 @@ public class CmsRfsFileViewer implements Cloneable {
          */
         private void rebuildIndex() {
 
-            m_breakPositions.clear();
-            // first line at 0.
-            addLineBreakPosition(0);
-            LineNumberReader reader = null;
-            m_creationTime = System.currentTimeMillis();
-            try {
-                InputStreamCounter streamPeeker = new InputStreamCounter(new FileInputStream(m_file));
-                reader = new LineNumberReader(streamPeeker, 1);
-                while (reader.readLine() != null) {
-                    CmsRfsFileLineIndexInfo.this.addLineBreakPosition(streamPeeker.position());
-                    synchronized (CmsRfsFileLineIndexInfo.this) {
-                        CmsRfsFileLineIndexInfo.this.notify();
-                    }
-                }
+            Runnable rebuildWork = new Runnable() {
 
-            } catch (IOException e) {
-                LOG.error(e.toString());
-            } finally {
-                if (reader != null) {
+                public void run() {
+
+                    m_breakPositions.clear();
+                    // first line at 0.
+                    addLineBreakPosition(0);
+                    LineNumberReader reader = null;
+                    m_creationTime = System.currentTimeMillis();
                     try {
-                        reader.close();
-                    } catch (IOException e1) {
-                        LOG.error(e1);
+                        InputStreamCounter streamPeeker = new InputStreamCounter(new FileInputStream(m_file));
+                        reader = new LineNumberReader(streamPeeker, 1);
+                        while (reader.readLine() != null) {
+                            CmsRfsFileLineIndexInfo.this.addLineBreakPosition(streamPeeker.position());
+                            synchronized (CmsRfsFileLineIndexInfo.this) {
+                                CmsRfsFileLineIndexInfo.this.notify();
+                            }
+                        }
+
+                    } catch (IOException e) {
+                        LOG.error(e.toString());
+                    } finally {
+                        if (reader != null) {
+                            try {
+                                reader.close();
+                            } catch (IOException e1) {
+                                LOG.error(e1);
+                            }
+                        }
                     }
                 }
-            }
+            };
+            Thread rebuilder = new Thread(rebuildWork);
+            rebuilder.start();
+
         }
     }
 
@@ -322,7 +337,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.17 $
+     * @version $Revision: 1.18 $
      * 
      * @since 6.0.0
      */
@@ -654,6 +669,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @return the view portion of lines of text from the underlying file or an 
      *         empty String if <code>{@link #isEnabled()}</code> returns <code>false</code>
+     *         
      * @throws CmsRfsException if something goes wrong
      */
     public String readFilePortion() throws CmsRfsException {
@@ -967,7 +983,7 @@ public class CmsRfsFileViewer implements Cloneable {
                 entry = (Map.Entry)it.next();
                 index = (CmsRfsFileLineIndexInfo)entry.getValue();
                 // expired?
-                if (time - index.m_creationTime > index.m_maxIndexAge) {
+                if (time - index.m_creationTime > index.getMaxIndexAge()) {
                     it.remove();
                 }
             }

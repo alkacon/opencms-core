@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/06 14:02:20 $
- * Version: $Revision: 1.763 $
+ * Date   : $Date: 2006/10/09 09:44:09 $
+ * Version: $Revision: 1.764 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.2.3 -
+! History list optionally shows project name and description
 ! Additional optional dbcp parameters for connection pooling and validation provided in opencms.properties
 * fixed display issue for multiple select boxes in IE
 ! New configuration option for initial checkbox state on new folder dialog in opencms-workplace.xml 
@@ -44,10 +45,6 @@ OpenCms 6.2.3 -
 - Legacy element cache is cleared on clear cache event
 - Modified handling of scrub export folder for static export on demand
 * Fixed issue #1238: Form-Module produces wrong HTML-code
-- Extented Html Import: Added possibility to leave images and downloads at original location
-- Updated the publish job to validate the links before publishing and sending mails to user in case of errors
-* Fixed display issues with 3D boxes of workplace dialogs and lists in Mozilla Firefox
-- Additional cleanup rules for HTML conversion
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
@@ -2297,3 +2294,5 @@ OpenCms 4.0a20 Giedi Prime: Rabban - 01 March 2000
 OpenCms 4.0a19 Giedi Prime: Rabban - 24 February 2000
 
 - Public Open Source release of OpenCms
+
+
