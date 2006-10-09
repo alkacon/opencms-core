@@ -64,7 +64,7 @@ import org.w3c.tidy.Tidy;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -455,7 +455,10 @@ public class CmsHtmlImportConverter {
                         if (value.indexOf("://") > 0) {
                             // store it for later creation of an entry in the
                             // link gallery
-                            m_htmlImport.storeExternalLink(value);
+                            String externalLinkFile = m_htmlImport.storeExternalLink(value);
+                            if (externalLinkFile != null) {
+                                value = m_htmlImport.getLinkGallery() + externalLinkFile;
+                            }
                         } else if (!value.startsWith("mailto:") && !value.startsWith("javascript:")) {
 
                             // save an existing anchor link for later use
@@ -576,7 +579,7 @@ public class CmsHtmlImportConverter {
         // check if we have valid entries for this <META> node, store them
         // in the properties
         if (metaName.length() > 0 && metaContent.length() > 0) {
-            properties.put(metaName, metaContent);
+            properties.put(metaName, CmsStringUtil.substitute(metaContent, "{subst}", "&#"));
         }
     }
 
@@ -600,11 +603,11 @@ public class CmsHtmlImportConverter {
         // add the title property if we have one
         if ((title != null) && (title.length() > 0)) {
 
-            properties.put(CmsPropertyDefinition.PROPERTY_TITLE, title);
+            properties.put(CmsPropertyDefinition.PROPERTY_TITLE, CmsStringUtil.substitute(title, "{subst}", "&#"));
             // the title will be used as navtext if no other navtext is
             // given
             if (properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) == null) {
-                properties.put(CmsPropertyDefinition.PROPERTY_NAVTEXT, title);
+                properties.put(CmsPropertyDefinition.PROPERTY_NAVTEXT, CmsStringUtil.substitute(title, "{subst}", "&#"));
             }
         }
 

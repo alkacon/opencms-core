@@ -104,6 +104,10 @@ default:
 		<td><%=wp.button("javascript:top.openTreeWin('copy', false, 'main', 'downloadGallery', document);", null, "folder", org.opencms.workplace.tools.database.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
 	</tr>
 	<tr>
+		<td><%= wp.key("htmlimport.input.leaveexternallinks") %>:</td>
+		<td colspan="2" ><input name="leaveexternallinks" type="checkbox" <%= imp.getLeaveExternalLinks() %> value="checked" ></td>
+	</tr>
+	<tr>
 		<td><%= wp.key("htmlimport.input.linkgallery") %>:</td>
 		<td><input name="linkGallery" type="text" size="80" maxlength="256" value="<%= imp.getLinkGallery() %>"></td>
 		<td><%=wp.button("javascript:top.openTreeWin('copy', false, 'main', 'linkGallery', document);", null, "folder", org.opencms.workplace.tools.database.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
@@ -135,6 +139,10 @@ default:
 	<tr>
 		<td><%= wp.key("htmlimport.input.overwrite") %>:</td>
 		<td colspan="2" ><input name="overwrite" type="checkbox" <%= imp.getOverwrite() %> value="checked" ></td>
+	</tr>
+	<tr>
+		<td><%= wp.key("htmlimport.input.keepbrokenlinks") %>:</td>
+		<td colspan="2" ><input name="keepbrokenlinks" type="checkbox" <%= imp.getKeepBrokenLinks() %> value="checked" ></td>
 	</tr>
 </table>
 

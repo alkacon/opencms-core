@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,6 +154,30 @@ public class CmsHtmlImport {
     /** the encoding used for all imported input files. */
     private String m_inputEncoding;
 
+    /** should broken links be kept. */
+    private String m_keepBrokenLinks;
+
+    /** the keep broken links mode flag. */
+    private boolean m_keepBrokenLinksMode;
+
+    /** leave downloads at the original location. */
+    private String m_leaveDownloads;
+
+    /** the leave downloads mode flag. */
+    private boolean m_leaveDownloadsMode;
+
+    /** leave external links at the original location. */
+    private String m_leaveExternalLinks;
+
+    /** the leave external links mode flag. */
+    private boolean m_leaveExternalLinksMode;
+
+    /** leave images at the original location. */
+    private String m_leaveImages;
+
+    /** the leave images mode flag. */
+    private boolean m_leaveImagesMode;
+
     /** the external link gallery name. */
     private String m_linkGallery;
 
@@ -166,6 +190,9 @@ public class CmsHtmlImport {
     /** the overwrite mode flag. */
     private boolean m_overwriteMode;
 
+    /** Map with all parents in file system to OpenCms. */
+    private HashMap m_parents;
+
     /** the report for the output. */
     private I_CmsReport m_report;
 
@@ -175,18 +202,6 @@ public class CmsHtmlImport {
     /** the template use for all pages. */
     private String m_template;
 
-    /** leave images at the original location. */
-    private String m_leaveImages;
-
-    /** the leave images mode flag. */
-    private boolean m_leaveImagesMode;
-
-    /** leave downloads at the original location. */
-    private String m_leaveDownloads;
-
-    /** the leave downloads mode flag. */
-    private boolean m_leaveDownloadsMode;
-    
     /**
      * Creates new HtmlImport Object with http request parameters.<p>
      * 
@@ -211,6 +226,8 @@ public class CmsHtmlImport {
             request.getParameter("overwrite"),
             request.getParameter("leaveimages"),
             request.getParameter("leavedownloads"),
+            request.getParameter("keepbrokenlinks"),
+            request.getParameter("leaveexternallinks"),
             request);
     }
 
@@ -232,6 +249,8 @@ public class CmsHtmlImport {
      * @param overwrite the overwrite mode
      * @param leaveImages flag if images are left in original location
      * @param leaveDownloads flag if downloads are left in original location
+     * @param keepBrokenLinks flag if broken links are kept or replaced by a '#'
+     * @param leaveExternalLinks flag if external links are left at their original location
      */
     public CmsHtmlImport(
         CmsJspActionElement cms,
@@ -249,8 +268,9 @@ public class CmsHtmlImport {
         String overwrite,
         String leaveImages,
         String leaveDownloads,
-        HttpServletRequest request
-        ) {
+        String keepBrokenLinks,
+        String leaveExternalLinks,
+        HttpServletRequest request) {
 
         if (inputDir == null) {
             inputDir = "";
@@ -288,12 +308,20 @@ public class CmsHtmlImport {
         String action = request.getParameter("action");
         if (action == null) {
             overwrite = "checked";
-        }        
+        }
         if (leaveImages == null) {
             leaveImages = "";
         }
         if (leaveDownloads == null) {
             leaveDownloads = "";
+        }
+
+        if (keepBrokenLinks == null) {
+            keepBrokenLinks = "";
+        }
+
+        if (leaveExternalLinks == null) {
+            leaveExternalLinks = "";
         }
 
         // store all member variables
@@ -320,12 +348,12 @@ public class CmsHtmlImport {
         if ((!m_imageGallery.equals("")) && (!m_imageGallery.endsWith("/"))) {
             m_imageGallery += "/";
         }
-        
+
         m_linkGallery = linkGallery.trim();
         if ((!m_linkGallery.equals("")) && (!m_linkGallery.endsWith("/"))) {
             m_linkGallery += "/";
         }
-        
+
         m_downloadGallery = downloadGallery.trim();
         if ((!m_downloadGallery.equals("")) && (!m_downloadGallery.endsWith("/"))) {
             m_downloadGallery += "/";
@@ -354,16 +382,31 @@ public class CmsHtmlImport {
         } else {
             m_leaveImagesMode = false;
         }
-        
+
         m_leaveDownloads = leaveDownloads.trim();
         if (m_leaveDownloads.equals("checked")) {
             m_leaveDownloadsMode = true;
         } else {
             m_leaveDownloadsMode = false;
         }
-        
+
+        m_keepBrokenLinks = keepBrokenLinks.trim();
+        if (m_keepBrokenLinks.equals("checked")) {
+            m_keepBrokenLinksMode = true;
+        } else {
+            m_keepBrokenLinksMode = false;
+        }
+
+        m_leaveExternalLinks = leaveExternalLinks.trim();
+        if (m_leaveExternalLinks.equals("checked")) {
+            m_leaveExternalLinksMode = true;
+        } else {
+            m_leaveExternalLinksMode = false;
+        }
+
         // create all other required member objects
         m_fileIndex = new HashMap();
+        m_parents = new HashMap();
         m_externalLinks = new HashSet();
         m_imageInfo = new HashMap();
         m_extensions = OpenCms.getResourceManager().getExtensionMapping();
@@ -424,20 +467,23 @@ public class CmsHtmlImport {
         }
 
         // check the link gallery
-        try {
-            CmsFolder folder = m_cmsObject.readFolder(m_linkGallery);
-            // check if folder is a link gallery
-            String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
-            if (!name.equals("linkgallery")) {
+        // only if flag for leaving external links at original location is off
+        if (!m_leaveExternalLinksMode) {
+            try {
+                CmsFolder folder = m_cmsObject.readFolder(m_linkGallery);
+                // check if folder is a link gallery
+                String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
+                if (!name.equals("linkgallery")) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.GUI_HTMLIMPORT_LINKGALLERY_INVALID_1,
+                        m_linkGallery));
+                }
+            } catch (CmsException e) {
+                // an excpetion is thrown if the folder does not exist
                 throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.GUI_HTMLIMPORT_LINKGALLERY_INVALID_1,
-                    m_linkGallery));
+                    Messages.GUI_HTMLIMPORT_LINKGALLERY_1,
+                    m_linkGallery), e);
             }
-        } catch (CmsException e) {
-            // an excpetion is thrown if the folder does not exist
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.GUI_HTMLIMPORT_LINKGALLERY_1,
-                m_linkGallery), e);
         }
 
         // check the download gallery
@@ -512,7 +558,11 @@ public class CmsHtmlImport {
         try {
             URL url = new URL(new URL(m_baseUrl, "file://" + baseUri), relativeUri);
             if (url.getQuery() == null) {
-                return url.getHost() + windowsAddition + url.getPath();
+                if (url.getRef() == null) {
+                    return url.getHost() + windowsAddition + url.getPath();
+                } else {
+                    return url.getHost() + windowsAddition + url.getPath() + "#" + url.getRef();
+                }
             } else {
                 return url.getHost() + windowsAddition + url.getPath() + "?" + url.getQuery();
             }
@@ -529,7 +579,7 @@ public class CmsHtmlImport {
     public String getDestinationDir() {
 
         return m_destinationDir;
-//        return m_destinationDir.substring(0, m_destinationDir.length() - 1);
+        //        return m_destinationDir.substring(0, m_destinationDir.length() - 1);
     }
 
     /**
@@ -593,6 +643,46 @@ public class CmsHtmlImport {
     }
 
     /**
+     * Returns the keepBrokenLinks.<p>
+     *
+     * @return the keepBrokenLinks
+     */
+    public String getKeepBrokenLinks() {
+
+        return m_keepBrokenLinks;
+    }
+
+    /**
+     * Returns the leaveDownloads.<p>
+     *
+     * @return the leaveDownloads
+     */
+    public String getLeaveDownloads() {
+
+        return m_leaveDownloads;
+    }
+
+    /**
+     * Returns the leaveExternalLinks.<p>
+     *
+     * @return the leaveExternalLinks
+     */
+    public String getLeaveExternalLinks() {
+
+        return m_leaveExternalLinks;
+    }
+
+    /**
+     * Returns the leaveImages.<p>
+     *
+     * @return the leaveImages
+     */
+    public String getLeaveImages() {
+
+        return m_leaveImages;
+    }
+
+    /**
      * Returns the linkGallery.<p>
      *
      * @return the linkGallery
@@ -643,26 +733,6 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Returns the leaveImages.<p>
-     *
-     * @return the leaveImages
-     */
-    public String getLeaveImages() {
-    
-        return m_leaveImages;
-    }
-        
-    /**
-     * Returns the leaveDownloads.<p>
-     *
-     * @return the leaveDownloads
-     */
-    public String getLeaveDownloads() {
-    
-        return m_leaveDownloads;
-    }
-    
-    /**
      * Returns the output of the HtmlImportThread.<p>
      * 
      * @return log output of the import threat
@@ -682,6 +752,26 @@ public class CmsHtmlImport {
     }
 
     /**
+     * Sets the keepBrokenLinks.<p>
+     *
+     * @param keepBrokenLinks the keepBrokenLinks to set
+     */
+    public void setKeepBrokenLinks(String keepBrokenLinks) {
+
+        m_keepBrokenLinks = keepBrokenLinks;
+    }
+
+    /**
+     * Sets the leaveExternalLinks.<p>
+     *
+     * @param leaveExternalLinks the leaveExternalLinks to set
+     */
+    public void setLeaveExternalLinks(String leaveExternalLinks) {
+
+        m_leaveExternalLinks = leaveExternalLinks;
+    }
+
+    /**
      * Imports all resources from the real filesystem, stores them into the correct locations
      * in the OpenCms VFS and modifies all links. This method is called form the JSP to start the
      * import process.<p>
@@ -696,6 +786,8 @@ public class CmsHtmlImport {
 
             // first build the index of all resources
             buildIndex(m_inputDir);
+            // build list with all parent resources of input directory for links to outside import folder
+            buildParentPath();
             // copy and parse all html files first. during the copy process we will collect all 
             // required data for downloads and images
             copyHtmlFiles(m_inputDir);
@@ -718,10 +810,16 @@ public class CmsHtmlImport {
      * 
      * All links in this storage are later used to create entries in the external link gallery.
      * @param externalLink link to an external resource
+     * @return the complete path to the external link file, if one is created.
      */
-    public void storeExternalLink(String externalLink) {
+    public String storeExternalLink(String externalLink) {
 
-        m_externalLinks.add(externalLink);
+        if (!m_leaveExternalLinksMode) {
+            m_externalLinks.add(externalLink);
+            return getExternalLinkFile(externalLink);
+        }
+
+        return null;
     }
 
     /**
@@ -755,7 +853,7 @@ public class CmsHtmlImport {
      * Translated a link into the real filesystem to its new location in the OpenCms VFS.<p>
      * 
      * This is needed by the HtmlConverter to get the correct links for link translation.
-     * @param link link to the reafl filesystem
+     * @param link link to the real filesystem
      * @return string containing absulute link into the OpenCms VFS
      */
     public String translateLink(String link) {
@@ -767,15 +865,48 @@ public class CmsHtmlImport {
             // its an anchor link, so copy use it
             if (link.startsWith("#")) {
                 translatedLink = link;
+            }
 
-            } else if (link.length() >= m_inputDir.length() + 1) {
-                // create a 'faked' link into the VFS. Original link was
-                // directing to a missing page, so let the link so to the
-                // same page inside of OpenCms.
-                String relativeFSName = link.substring(m_inputDir.length() + 1);
-                translatedLink = m_destinationDir + relativeFSName;
+            // relative link to opencms root
+            else if (link.startsWith("/")) {
+
+                // strip cms context path
+                if (link.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                    link = link.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                }
+
+                // check if resource exists
+                if ((m_keepBrokenLinksMode) || (m_cmsObject.existsResource(link))) {
+                    translatedLink = link;
+                }
+            }
+
+            //            // link to subdir
+            //            else if ((link.startsWith(m_inputDir.replace('\\', '/'))) && (link.length() >= m_inputDir.length() + 1)) {
+            //                // create a 'faked' link into the VFS. Original link was
+            //                // directing to a missing page, so let the link so to the
+            //                // same page inside of OpenCms.
+            //                String relativeFSName = link.substring(m_inputDir.length() + 1);
+            //                String relative = m_destinationDir + relativeFSName;
+            //
+            //                if ((m_keepBrokenLinksMode) || (m_cmsObject.existsResource(relative))) {
+            //                    translatedLink = relative;
+            //                }
+            //            }
+
+            else {
+
+                String fileBase = getBasePath(m_inputDir, link);
+                String cmsBase = (String)m_parents.get(fileBase);
+                if (cmsBase != null) {
+                    String outLink = cmsBase + link.substring(fileBase.length()).replace('\\', '/');
+                    if ((m_keepBrokenLinksMode) || (m_cmsObject.existsResource(outLink))) {
+                        translatedLink = outLink;
+                    }
+                }
             }
         }
+
         // if the link goes to a directory, lets link to the index page within
         if ((translatedLink != null) && translatedLink.endsWith("/")) {
             translatedLink += "index.html";
@@ -787,7 +918,7 @@ public class CmsHtmlImport {
         if (translatedLink == null) {
             translatedLink = "#";
         }
-        
+
         return translatedLink;
     }
 
@@ -832,6 +963,28 @@ public class CmsHtmlImport {
                 LOG.error(e);
                 m_report.println(e);
             }
+        }
+    }
+
+    /**
+     * Builds a map with all parents of the destination dir to the real file system.
+     * So links to resources of outside the import folder can be found.
+     *
+     */
+    private void buildParentPath() {
+
+        String destFolder = m_destinationDir;
+        String inputDir = m_inputDir.replace('\\', '/');
+        if (!inputDir.endsWith("/")) {
+            inputDir += "/";
+        }
+        int pos = inputDir.lastIndexOf("/");
+        while ((pos > 0) && (destFolder != null)) {
+            inputDir = inputDir.substring(0, pos);
+            m_parents.put(inputDir + "/", destFolder);
+            
+            pos = inputDir.lastIndexOf("/", pos-1);
+            destFolder = CmsResource.getParentFolder(destFolder);
         }
     }
 
@@ -940,9 +1093,7 @@ public class CmsHtmlImport {
                                     vfsFileName));
                             } else {
 
-                                m_report.print(
-                                    Messages.get().container(Messages.RPT_IMPORT_0),
-                                    I_CmsReport.FORMAT_NOTE);
+                                m_report.print(Messages.get().container(Messages.RPT_IMPORT_0), I_CmsReport.FORMAT_NOTE);
                                 m_report.print(org.opencms.report.Messages.get().container(
                                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                                     vfsFileName));
@@ -980,9 +1131,7 @@ public class CmsHtmlImport {
                                         if (lock.getType() != CmsLock.TYPE_EXCLUSIVE) {
                                             m_cmsObject.lockResource(vfsFileName);
                                         }
-                                        m_cmsObject.deleteResource(
-                                            vfsFileName,
-                                            CmsResource.DELETE_PRESERVE_SIBLINGS);
+                                        m_cmsObject.deleteResource(vfsFileName, CmsResource.DELETE_PRESERVE_SIBLINGS);
                                     } catch (CmsException e) {
                                         // the file did not exist, so create it                                     
                                     } finally {
@@ -1018,8 +1167,7 @@ public class CmsHtmlImport {
         Iterator i = m_externalLinks.iterator();
         while (i.hasNext()) {
             String linkUrl = (String)i.next();
-            String filename = linkUrl.substring(linkUrl.indexOf("://") + 3, linkUrl.length());
-            filename = m_cmsObject.getRequestContext().getFileTranslator().translateResource(filename.replace('/', '-'));
+            String filename = getExternalLinkFile(linkUrl);
 
             m_report.print(Messages.get().container(Messages.RPT_CREATE_EXTERNAL_LINK_0), I_CmsReport.FORMAT_NOTE);
             m_report.print(org.opencms.report.Messages.get().container(
@@ -1271,6 +1419,47 @@ public class CmsHtmlImport {
     }
 
     /**
+     * Compares 2 pathes for the base part which have both equal.
+     * 
+     * @param path1 the first path to compare
+     * @param path2 the second path to compare
+     * @return the base path of both which are equal
+     */
+    private String getBasePath(String path1, String path2) {
+
+        StringBuffer base = new StringBuffer();
+        path1 = path1.replace('\\', '/');
+        path2 = path2.replace('\\', '/');
+
+        String[] parts1 = path1.split("/");
+        String[] parts2 = path2.split("/");
+
+        for (int i = 0; i < parts1.length; i++) {
+            if (i >= parts2.length) {
+                break;
+            }
+            if (parts1[i].equals(parts2[i])) {
+                base.append(parts1[i] + "/");
+            }
+        }
+
+        return base.toString();
+    }
+
+    /**
+     * Creates the filename of the file of the external link.
+     * 
+     * @param link the link to get the file path for.
+     * @return the filename of the file for the external link.
+     */
+    private String getExternalLinkFile(String link) {
+
+        String filename = link.substring(link.indexOf("://") + 3, link.length());
+        filename = m_cmsObject.getRequestContext().getFileTranslator().translateResource(filename.replace('/', '-'));
+        return filename;
+    }
+
+    /**
      * Returns a byte array containing the content of server FS file.<p>
      *
      * @param file the name of the file to read
@@ -1377,9 +1566,9 @@ public class CmsHtmlImport {
                 // as the image gallery is "flat", we must use the file name and not the complete
                 // relative name
                 vfsName = m_imageGallery + name;
-            } else if ((CmsResourceTypePlain.getStaticTypeId() == filetype) 
-                    || (m_leaveImagesMode) 
-                    || (m_leaveDownloadsMode)) {
+            } else if ((CmsResourceTypePlain.getStaticTypeId() == filetype)
+                || (m_leaveImagesMode)
+                || (m_leaveDownloadsMode)) {
                 // move to destination folder
                 //vfsName=m_destinationDir+relativeName;
 
