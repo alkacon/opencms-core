@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImportConverter.java,v $
- * Date   : $Date: 2006/10/05 10:10:52 $
- * Version: $Revision: 1.9.4.3 $
+ * Date   : $Date: 2006/10/09 09:14:05 $
+ * Version: $Revision: 1.9.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.tidy.Tidy;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9.4.3 $ 
+ * @version $Revision: 1.9.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -579,7 +579,7 @@ public class CmsHtmlImportConverter {
         // check if we have valid entries for this <META> node, store them
         // in the properties
         if (metaName.length() > 0 && metaContent.length() > 0) {
-            properties.put(metaName, metaContent);
+            properties.put(metaName, CmsStringUtil.substitute(metaContent, "{subst}", "&#"));
         }
     }
 
@@ -603,11 +603,11 @@ public class CmsHtmlImportConverter {
         // add the title property if we have one
         if ((title != null) && (title.length() > 0)) {
 
-            properties.put(CmsPropertyDefinition.PROPERTY_TITLE, title);
+            properties.put(CmsPropertyDefinition.PROPERTY_TITLE, CmsStringUtil.substitute(title, "{subst}", "&#"));
             // the title will be used as navtext if no other navtext is
             // given
             if (properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) == null) {
-                properties.put(CmsPropertyDefinition.PROPERTY_NAVTEXT, title);
+                properties.put(CmsPropertyDefinition.PROPERTY_NAVTEXT, CmsStringUtil.substitute(title, "{subst}", "&#"));
             }
         }
 

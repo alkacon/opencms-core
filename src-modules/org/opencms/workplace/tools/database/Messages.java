@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Messages.java,v $
- * Date   : $Date: 2006/09/25 08:37:10 $
- * Version: $Revision: 1.10.4.2 $
+ * Date   : $Date: 2006/10/09 09:14:05 $
+ * Version: $Revision: 1.10.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10.4.2 $ 
+ * @version $Revision: 1.10.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,6 +164,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMPORTSERVER_ADMIN_TOOL_NAME_0 = "GUI_IMPORTSERVER_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLIMPORT_BLOCK_LABEL_FOLDER_0 = "GUI_HTMLIMPORT_BLOCK_LABEL_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLIMPORT_BLOCK_LABEL_GALLERY_0 = "GUI_HTMLIMPORT_BLOCK_LABEL_GALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLIMPORT_BLOCK_LABEL_SETTINGS_0 = "GUI_HTMLIMPORT_BLOCK_LABEL_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMPORTSERVER_NO_DB_EXPORTS_0 = "GUI_IMPORTSERVER_NO_DB_EXPORTS_0";

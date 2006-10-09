@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2006/10/05 10:10:52 $
- * Version: $Revision: 1.12.4.6 $
+ * Date   : $Date: 2006/10/09 09:14:05 $
+ * Version: $Revision: 1.12.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,10 +44,8 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportExportException;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
@@ -77,8 +75,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
@@ -89,22 +85,17 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.12.4.6 $ 
+ * @version $Revision: 1.12.4.7 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlImport {
 
-    /** filename of the meta.properties file. */
-    public static final String META_PROPERTIES = "meta.properties";
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlImport.class);
-
-    /** the base URL for link modification. */
-    private URL m_baseUrl;
-
-    private CmsJspActionElement m_cms;
+    
+    /** filename of the meta.properties file. */
+    public static final String META_PROPERTIES = "meta.properties";
 
     /** the CmsObject to use. */
     private CmsObject m_cmsObject;
@@ -112,9 +103,10 @@ public class CmsHtmlImport {
     /** the destination directory in the OpenCms VFS. */
     private String m_destinationDir;
 
-    /** he download gallery name. */
+    /** the download gallery name. */
     private String m_downloadGallery;
 
+    /** the element name of the template. */
     private String m_element;
 
     /** the end pattern for extracting content. */
@@ -123,30 +115,19 @@ public class CmsHtmlImport {
     /** HashMap of all known extensions in OpenCms. */
     private Map m_extensions;
 
-    /**
-     * Storage for external links.<p>
-     * 
-     * It is filled by the HtmlConverter each time a new external link is found.<p>
-     */
+    /** Storage for external links. */
     private HashSet m_externalLinks;
 
-    /** 
-     * The file index contains all resourcenames in the real file system and their renamed ones in the OpenCms VFS.<p>
-     */
+    /** The file index contains all resourcenames in the real file system and their renamed ones in the OpenCms VFS. */
     private HashMap m_fileIndex;
 
     /** the HTML converter to parse and modifiy the content. */
     private CmsHtmlImportConverter m_htmlConverter;
 
-    /** reference to the import thread. */
-    private CmsHtmlImportThread m_htmlImportThread;
-
     /** the image gallery name. */
     private String m_imageGallery;
 
-    /**
-     * Storage for image alt tags, it is filled by the HtmlConverter each time a new image is found.
-     */
+    /** Storage for image alt tags, it is filled by the HtmlConverter each time a new image is found. */
     private HashMap m_imageInfo;
 
     /** the input directory in the "real" file system. */
@@ -156,40 +137,25 @@ public class CmsHtmlImport {
     private String m_inputEncoding;
 
     /** should broken links be kept. */
-    private String m_keepBrokenLinks;
-
-    /** the keep broken links mode flag. */
-    private boolean m_keepBrokenLinksMode;
+    private boolean m_keepBrokenLinks;
 
     /** leave downloads at the original location. */
-    private String m_leaveDownloads;
-
-    /** the leave downloads mode flag. */
-    private boolean m_leaveDownloadsMode;
+    private boolean m_leaveDownloads;
 
     /** leave external links at the original location. */
-    private String m_leaveExternalLinks;
-
-    /** the leave external links mode flag. */
-    private boolean m_leaveExternalLinksMode;
+    private boolean m_leaveExternalLinks;
 
     /** leave images at the original location. */
-    private String m_leaveImages;
-
-    /** the leave images mode flag. */
-    private boolean m_leaveImagesMode;
+    private boolean m_leaveImages;
 
     /** the external link gallery name. */
     private String m_linkGallery;
 
     /** the locale use for content definition. */
-    private Locale m_locale;
+    private String m_locale;
 
     /** the overwrite value new resources. */
-    private String m_overwrite;
-
-    /** the overwrite mode flag. */
-    private boolean m_overwriteMode;
+    private boolean m_overwrite;
 
     /** Map with all parents in file system to OpenCms. */
     private HashMap m_parents;
@@ -204,334 +170,27 @@ public class CmsHtmlImport {
     private String m_template;
 
     /**
-     * Creates new HtmlImport Object with http request parameters.<p>
      * 
-     * @param cms the current CmsJspActionElement  
-     * @param request the http servlet request
      */
-    public CmsHtmlImport(CmsJspActionElement cms, HttpServletRequest request) {
+    public CmsHtmlImport() {
 
-        this(
-            cms,
-            request.getParameter("inputDir"),
-            request.getParameter("destinationDir"),
-            request.getParameter("imageGallery"),
-            request.getParameter("linkGallery"),
-            request.getParameter("downloadGallery"),
-            request.getParameter("template"),
-            request.getParameter("element"),
-            request.getParameter("locale"),
-            request.getParameter("encoding"),
-            request.getParameter("startPattern"),
-            request.getParameter("endPattern"),
-            request.getParameter("overwrite"),
-            request.getParameter("leaveimages"),
-            request.getParameter("leavedownloads"),
-            request.getParameter("keepbrokenlinks"),
-            request.getParameter("leaveexternallinks"),
-            request);
-    }
-
-    /**
-     * Constructor, creates a new HtmlImport.<p>
-     * 
-     * @param cms the current CmsJspActionElement 
-     * @param inputDir the input directory in the "real" file system 
-     * @param destinationDir the destination directory in the OpenCms VFS
-     * @param imageGallery the image gallery name
-     * @param linkGallery the external link gallery name
-     * @param downloadGallery the download gallery name
-     * @param template the template use for all pages
-     * @param element the element property use for all pages
-     * @param locale the full locale name 
-     * @param encoding encoding used for importing all pages
-     * @param startPattern the start pattern definition for content extracting
-     * @param endPattern the end pattern definition for content extracting 
-     * @param overwrite the overwrite mode
-     * @param leaveImages flag if images are left in original location
-     * @param leaveDownloads flag if downloads are left in original location
-     * @param keepBrokenLinks flag if broken links are kept or replaced by a '#'
-     * @param leaveExternalLinks flag if external links are left at their original location
-     */
-    public CmsHtmlImport(
-        CmsJspActionElement cms,
-        String inputDir,
-        String destinationDir,
-        String imageGallery,
-        String linkGallery,
-        String downloadGallery,
-        String template,
-        String element,
-        String locale,
-        String encoding,
-        String startPattern,
-        String endPattern,
-        String overwrite,
-        String leaveImages,
-        String leaveDownloads,
-        String keepBrokenLinks,
-        String leaveExternalLinks,
-        HttpServletRequest request) {
-
-        if (inputDir == null) {
-            inputDir = "";
-        }
-        if (destinationDir == null) {
-            destinationDir = "";
-        }
-        if (imageGallery == null) {
-            imageGallery = "";
-        }
-        if (linkGallery == null) {
-            linkGallery = "";
-        }
-        if (downloadGallery == null) {
-            downloadGallery = "";
-        }
-        if (template == null) {
-            template = "";
-        }
-        if (element == null) {
-            element = "body";
-        }
-        if (encoding == null) {
-            encoding = "";
-        }
-        if (startPattern == null) {
-            startPattern = "";
-        }
-        if (endPattern == null) {
-            endPattern = "";
-        }
-        if (overwrite == null) {
-            overwrite = "";
-        }
-        String action = request.getParameter("action");
-        if (action == null) {
-            overwrite = "checked";
-        }
-        if (leaveImages == null) {
-            leaveImages = "";
-        }
-        if (leaveDownloads == null) {
-            leaveDownloads = "";
-        }
-
-        if (keepBrokenLinks == null) {
-            keepBrokenLinks = "";
-        }
-
-        if (leaveExternalLinks == null) {
-            leaveExternalLinks = "";
-        }
-
-        // store all member variables
-        m_cms = cms;
-        m_cmsObject = m_cms.getCmsObject();
-        m_locale = CmsLocaleManager.getLocale(locale);
-        if (m_locale == null) {
-            m_locale = m_cms.getRequestContext().getLocale();
-        }
-        // body element should be set by html-form
-        m_inputDir = inputDir.trim();
-
-        // cut of a trailing '/' or '\'
-        if (m_inputDir.endsWith("/") || m_inputDir.endsWith("\\")) {
-            m_inputDir = m_inputDir.substring(0, m_inputDir.length() - 1);
-        }
-
-        m_destinationDir = destinationDir.trim();
-        if ((!m_destinationDir.equals("")) && (!m_destinationDir.endsWith("/"))) {
-            m_destinationDir += "/";
-        }
-
-        m_imageGallery = imageGallery.trim();
-        if ((!m_imageGallery.equals("")) && (!m_imageGallery.endsWith("/"))) {
-            m_imageGallery += "/";
-        }
-
-        m_linkGallery = linkGallery.trim();
-        if ((!m_linkGallery.equals("")) && (!m_linkGallery.endsWith("/"))) {
-            m_linkGallery += "/";
-        }
-
-        m_downloadGallery = downloadGallery.trim();
-        if ((!m_downloadGallery.equals("")) && (!m_downloadGallery.endsWith("/"))) {
-            m_downloadGallery += "/";
-        }
-
-        m_template = template;
-        m_element = element;
-        m_inputEncoding = encoding;
-
-        if (CmsStringUtil.isEmpty(m_inputEncoding)) {
-            m_inputEncoding = CmsEncoder.ENCODING_ISO_8859_1;
-        }
-        m_startPattern = startPattern;
-        m_endPattern = endPattern;
-
-        m_overwrite = overwrite.trim();
-        if (m_overwrite.equals("checked")) {
-            m_overwriteMode = true;
-        } else {
-            m_overwriteMode = false;
-        }
-
-        m_leaveImages = leaveImages.trim();
-        if (m_leaveImages.equals("checked")) {
-            m_leaveImagesMode = true;
-        } else {
-            m_leaveImagesMode = false;
-        }
-
-        m_leaveDownloads = leaveDownloads.trim();
-        if (m_leaveDownloads.equals("checked")) {
-            m_leaveDownloadsMode = true;
-        } else {
-            m_leaveDownloadsMode = false;
-        }
-
-        m_keepBrokenLinks = keepBrokenLinks.trim();
-        if (m_keepBrokenLinks.equals("checked")) {
-            m_keepBrokenLinksMode = true;
-        } else {
-            m_keepBrokenLinksMode = false;
-        }
-
-        m_leaveExternalLinks = leaveExternalLinks.trim();
-        if (m_leaveExternalLinks.equals("checked")) {
-            m_leaveExternalLinksMode = true;
-        } else {
-            m_leaveExternalLinksMode = false;
-        }
-
-        // create all other required member objects
+        m_overwrite = true;
+        m_extensions = OpenCms.getResourceManager().getExtensionMapping();
         m_fileIndex = new HashMap();
         m_parents = new HashMap();
-        m_externalLinks = new HashSet();
         m_imageInfo = new HashMap();
-        m_extensions = OpenCms.getResourceManager().getExtensionMapping();
+        m_externalLinks = new HashSet();
         m_htmlConverter = new CmsHtmlImportConverter(this, false);
-        m_baseUrl = null;
-        try {
-            m_baseUrl = new URL("file://");
-        } catch (MalformedURLException e) {
-            // this won't happen
-        }
-
     }
 
     /**
-     * Tests if all given input parameters for the HTML Import are valid, i.e. that all the 
-     * given folders do exist. <p>
      * 
-     * @throws CmsIllegalArgumentException if some parameters are not valid
+     * @param cms
      */
-    public void checkParameters() throws CmsIllegalArgumentException {
+    public CmsHtmlImport(CmsObject cms) {
 
-        // check the input directory
-        File inputDir = new File(m_inputDir);
-        if (!inputDir.exists() || inputDir.isFile()) {
-            // the input directory is not valid
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.GUI_HTMLIMPORT_INPUTDIR_1,
-                m_inputDir));
-        }
-
-        // check the destination directory        
-        try {
-            m_cmsObject.readFolder(m_destinationDir);
-        } catch (CmsException e) {
-            // an excpetion is thrown if the folder does not exist
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.GUI_HTMLIMPORT_DESTDIR_1,
-                m_destinationDir), e);
-        }
-
-        // check the image gallery
-        // only if flag for leaving images at original location is off
-        if (!m_leaveImagesMode) {
-            try {
-                CmsFolder folder = m_cmsObject.readFolder(m_imageGallery);
-                // check if folder is a image gallery
-                String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
-                if (!name.equals("imagegallery")) {
-                    throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.GUI_HTMLIMPORT_IMGGALLERY_INVALID_1,
-                        m_imageGallery));
-                }
-            } catch (CmsException e) {
-                // an excpetion is thrown if the folder does not exist
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.GUI_HTMLIMPORT_IMGGALLERY_1,
-                    m_imageGallery), e);
-            }
-        }
-
-        // check the link gallery
-        // only if flag for leaving external links at original location is off
-        if (!m_leaveExternalLinksMode) {
-            try {
-                CmsFolder folder = m_cmsObject.readFolder(m_linkGallery);
-                // check if folder is a link gallery
-                String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
-                if (!name.equals("linkgallery")) {
-                    throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.GUI_HTMLIMPORT_LINKGALLERY_INVALID_1,
-                        m_linkGallery));
-                }
-            } catch (CmsException e) {
-                // an excpetion is thrown if the folder does not exist
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.GUI_HTMLIMPORT_LINKGALLERY_1,
-                    m_linkGallery), e);
-            }
-        }
-
-        // check the download gallery
-        if ((!isExternal(m_downloadGallery)) && (!m_leaveDownloadsMode)) {
-            try {
-                CmsFolder folder = m_cmsObject.readFolder(m_downloadGallery);
-                // check if folder is a download gallery
-                String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
-                if (!name.equals("downloadgallery")) {
-                    throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.GUI_HTMLIMPORT_DOWNGALLERY_INVALID_1,
-                        m_downloadGallery));
-                }
-            } catch (CmsException e) {
-                // an excpetion is thrown if the folder does not exist
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.GUI_HTMLIMPORT_DOWNGALLERY_1,
-                    m_downloadGallery), e);
-            }
-        }
-
-        // check the template
-        try {
-            m_cmsObject.readResource(m_template, CmsResourceFilter.ALL);
-        } catch (CmsException e) {
-            // an excpetion is thrown if the template does not exist
-            if (!isValidElement()) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.GUI_HTMLIMPORT_TEMPLATE_1,
-                    m_template), e);
-            }
-        }
-
-        // check the element
-        if (!isValidElement()) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.GUI_HTMLIMPORT_INVALID_ELEM_2,
-                m_element,
-                m_template));
-        }
-
-        // check if we are in an offline project
-        if (m_cmsObject.getRequestContext().currentProject().isOnlineProject()) {
-            throw new CmsIllegalArgumentException(
-                Messages.get().container(Messages.GUI_HTMLIMPORT_CONSTRAINT_OFFLINE_0));
-        }
+        this();
+        m_cmsObject = cms;
     }
 
     /**
@@ -558,7 +217,8 @@ public class CmsHtmlImport {
         }
 
         try {
-            URL url = new URL(new URL(m_baseUrl, "file://" + baseUri), relativeUri);
+            URL baseUrl = new URL("file://");
+            URL url = new URL(new URL(baseUrl, "file://" + baseUri), relativeUri);
             if (url.getQuery() == null) {
                 if (url.getRef() == null) {
                     return url.getHost() + windowsAddition + url.getPath();
@@ -581,7 +241,6 @@ public class CmsHtmlImport {
     public String getDestinationDir() {
 
         return m_destinationDir;
-        //        return m_destinationDir.substring(0, m_destinationDir.length() - 1);
     }
 
     /**
@@ -645,46 +304,6 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Returns the keepBrokenLinks.<p>
-     *
-     * @return the keepBrokenLinks
-     */
-    public String getKeepBrokenLinks() {
-
-        return m_keepBrokenLinks;
-    }
-
-    /**
-     * Returns the leaveDownloads.<p>
-     *
-     * @return the leaveDownloads
-     */
-    public String getLeaveDownloads() {
-
-        return m_leaveDownloads;
-    }
-
-    /**
-     * Returns the leaveExternalLinks.<p>
-     *
-     * @return the leaveExternalLinks
-     */
-    public String getLeaveExternalLinks() {
-
-        return m_leaveExternalLinks;
-    }
-
-    /**
-     * Returns the leaveImages.<p>
-     *
-     * @return the leaveImages
-     */
-    public String getLeaveImages() {
-
-        return m_leaveImages;
-    }
-
-    /**
      * Returns the linkGallery.<p>
      *
      * @return the linkGallery
@@ -699,19 +318,9 @@ public class CmsHtmlImport {
      *
      * @return the locale
      */
-    public Locale getLocale() {
+    public String getLocale() {
 
         return m_locale;
-    }
-
-    /**
-     * Returns the overwrite flag.<p>
-     *
-     * @return the overwrite flag
-     */
-    public String getOverwrite() {
-
-        return m_overwrite;
     }
 
     /**
@@ -735,22 +344,123 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Returns the output of the HtmlImportThread.<p>
-     * 
-     * @return log output of the import threat
+     * Returns the keepBrokenLinks.<p>
+     *
+     * @return the keepBrokenLinks
      */
-    public String getThreadOutput() {
+    public boolean isKeepBrokenLinks() {
 
-        String output = "";
-        // check if we have a thread
-        if (m_htmlImportThread != null) {
-            // is it still alive?
-            if (m_htmlImportThread.isAlive()) {
-                output = m_htmlImportThread.getReportUpdate();
-            }
-        }
+        return m_keepBrokenLinks;
+    }
 
-        return output;
+    /**
+     * Returns the leaveDownloads.<p>
+     *
+     * @return the leaveDownloads
+     */
+    public boolean isLeaveDownloads() {
+
+        return m_leaveDownloads;
+    }
+
+    /**
+     * Returns the leaveExternalLinks.<p>
+     *
+     * @return the leaveExternalLinks
+     */
+    public boolean isLeaveExternalLinks() {
+
+        return m_leaveExternalLinks;
+    }
+
+    /**
+     * Returns the leaveImages.<p>
+     *
+     * @return the leaveImages
+     */
+    public boolean isLeaveImages() {
+
+        return m_leaveImages;
+    }
+
+    /**
+     * Returns the overwrite.<p>
+     *
+     * @return the overwrite
+     */
+    public boolean isOverwrite() {
+
+        return m_overwrite;
+    }
+
+    /**
+     * Sets the destinationDir.<p>
+     *
+     * @param destinationDir the destinationDir to set
+     */
+    public void setDestinationDir(String destinationDir) {
+
+        m_destinationDir = destinationDir;
+    }
+
+    /**
+     * Sets the downloadGallery.<p>
+     *
+     * @param downloadGallery the downloadGallery to set
+     */
+    public void setDownloadGallery(String downloadGallery) {
+
+        m_downloadGallery = downloadGallery;
+    }
+
+    /**
+     * Sets the element.<p>
+     *
+     * @param element the element to set
+     */
+    public void setElement(String element) {
+
+        m_element = element;
+    }
+
+    /**
+     * Sets the endPattern.<p>
+     *
+     * @param endPattern the endPattern to set
+     */
+    public void setEndPattern(String endPattern) {
+
+        m_endPattern = endPattern;
+    }
+
+    /**
+     * Sets the imageGallery.<p>
+     *
+     * @param imageGallery the imageGallery to set
+     */
+    public void setImageGallery(String imageGallery) {
+
+        m_imageGallery = imageGallery;
+    }
+
+    /**
+     * Sets the inputDir.<p>
+     *
+     * @param inputDir the inputDir to set
+     */
+    public void setInputDir(String inputDir) {
+
+        m_inputDir = inputDir;
+    }
+
+    /**
+     * Sets the inputEncoding.<p>
+     *
+     * @param inputEncoding the inputEncoding to set
+     */
+    public void setInputEncoding(String inputEncoding) {
+
+        m_inputEncoding = inputEncoding;
     }
 
     /**
@@ -758,9 +468,19 @@ public class CmsHtmlImport {
      *
      * @param keepBrokenLinks the keepBrokenLinks to set
      */
-    public void setKeepBrokenLinks(String keepBrokenLinks) {
+    public void setKeepBrokenLinks(boolean keepBrokenLinks) {
 
         m_keepBrokenLinks = keepBrokenLinks;
+    }
+
+    /**
+     * Sets the leaveDownloads.<p>
+     *
+     * @param leaveDownloads the leaveDownloads to set
+     */
+    public void setLeaveDownloads(boolean leaveDownloads) {
+
+        m_leaveDownloads = leaveDownloads;
     }
 
     /**
@@ -768,9 +488,69 @@ public class CmsHtmlImport {
      *
      * @param leaveExternalLinks the leaveExternalLinks to set
      */
-    public void setLeaveExternalLinks(String leaveExternalLinks) {
+    public void setLeaveExternalLinks(boolean leaveExternalLinks) {
 
         m_leaveExternalLinks = leaveExternalLinks;
+    }
+
+    /**
+     * Sets the leaveImages.<p>
+     *
+     * @param leaveImages the leaveImages to set
+     */
+    public void setLeaveImages(boolean leaveImages) {
+
+        m_leaveImages = leaveImages;
+    }
+
+    /**
+     * Sets the linkGallery.<p>
+     *
+     * @param linkGallery the linkGallery to set
+     */
+    public void setLinkGallery(String linkGallery) {
+
+        m_linkGallery = linkGallery;
+    }
+
+    /**
+     * Sets the locale.<p>
+     *
+     * @param locale the locale to set
+     */
+    public void setLocale(String locale) {
+
+        m_locale = locale;
+    }
+
+    /**
+     * Sets the overwrite.<p>
+     *
+     * @param overwrite the overwrite to set
+     */
+    public void setOverwrite(boolean overwrite) {
+
+        m_overwrite = overwrite;
+    }
+
+    /**
+     * Sets the startPattern.<p>
+     *
+     * @param startPattern the startPattern to set
+     */
+    public void setStartPattern(String startPattern) {
+
+        m_startPattern = startPattern;
+    }
+
+    /**
+     * Sets the template.<p>
+     *
+     * @param template the template to set
+     */
+    public void setTemplate(String template) {
+
+        m_template = template;
     }
 
     /**
@@ -800,11 +580,7 @@ public class CmsHtmlImport {
             m_report.println(Messages.get().container(Messages.RPT_HTML_IMPORT_END_0), I_CmsReport.FORMAT_HEADLINE);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            // clear memory
-            clear();
         }
-
     }
 
     /**
@@ -816,7 +592,7 @@ public class CmsHtmlImport {
      */
     public String storeExternalLink(String externalLink) {
 
-        if (!m_leaveExternalLinksMode) {
+        if (!m_leaveExternalLinks) {
             m_externalLinks.add(externalLink);
             return getExternalLinkFile(externalLink);
         }
@@ -834,21 +610,6 @@ public class CmsHtmlImport {
     public void storeImageInfo(String image, String altText) {
 
         m_imageInfo.put(image, altText);
-    }
-
-    /**
-     * Checks if the HtmlImportThread is still alive.<p>
-     * 
-     * @return true or false
-     */
-    public boolean threadAlive() {
-
-        boolean alive = false;
-        if (m_htmlImportThread != null) {
-            alive = m_htmlImportThread.isAlive();
-        }
-
-        return alive;
     }
 
     /**
@@ -878,23 +639,10 @@ public class CmsHtmlImport {
                 }
 
                 // check if resource exists
-                if ((m_keepBrokenLinksMode) || (m_cmsObject.existsResource(link))) {
+                if ((m_keepBrokenLinks) || (m_cmsObject.existsResource(link))) {
                     translatedLink = link;
                 }
             }
-
-            //            // link to subdir
-            //            else if ((link.startsWith(m_inputDir.replace('\\', '/'))) && (link.length() >= m_inputDir.length() + 1)) {
-            //                // create a 'faked' link into the VFS. Original link was
-            //                // directing to a missing page, so let the link so to the
-            //                // same page inside of OpenCms.
-            //                String relativeFSName = link.substring(m_inputDir.length() + 1);
-            //                String relative = m_destinationDir + relativeFSName;
-            //
-            //                if ((m_keepBrokenLinksMode) || (m_cmsObject.existsResource(relative))) {
-            //                    translatedLink = relative;
-            //                }
-            //            }
 
             else {
 
@@ -902,7 +650,7 @@ public class CmsHtmlImport {
                 String cmsBase = (String)m_parents.get(fileBase);
                 if (cmsBase != null) {
                     String outLink = cmsBase + link.substring(fileBase.length()).replace('\\', '/');
-                    if ((m_keepBrokenLinksMode) || (m_cmsObject.existsResource(outLink))) {
+                    if ((m_keepBrokenLinks) || (m_cmsObject.existsResource(outLink))) {
                         translatedLink = outLink;
                     }
                 }
@@ -925,9 +673,128 @@ public class CmsHtmlImport {
     }
 
     /**
+     * Tests if all given input parameters for the HTML Import are valid, i.e. that all the 
+     * given folders do exist. <p>
+     * 
+     * @throws CmsIllegalArgumentException if some parameters are not valid
+     */
+    public void validate() throws CmsIllegalArgumentException {
+
+        // check the input directory
+        File inputDir = new File(m_inputDir);
+        if (!inputDir.exists() || inputDir.isFile()) {
+            // the input directory is not valid
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.GUI_HTMLIMPORT_INPUTDIR_1,
+                m_inputDir));
+        }
+
+        // check the destination directory        
+        try {
+            if (CmsStringUtil.isEmpty(m_destinationDir)) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.GUI_HTMLIMPORT_DESTDIR_1,
+                    m_destinationDir));
+            }
+            m_cmsObject.readFolder(m_destinationDir);
+        } catch (CmsException e) {
+            // an excpetion is thrown if the folder does not exist
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.GUI_HTMLIMPORT_DESTDIR_1,
+                m_destinationDir), e);
+        }
+
+        // check the image gallery
+        // only if flag for leaving images at original location is off
+        if (!m_leaveImages) {
+            try {
+                CmsFolder folder = m_cmsObject.readFolder(m_imageGallery);
+                // check if folder is a image gallery
+                String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
+                if (!name.equals("imagegallery")) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.GUI_HTMLIMPORT_IMGGALLERY_INVALID_1,
+                        m_imageGallery));
+                }
+            } catch (CmsException e) {
+                // an excpetion is thrown if the folder does not exist
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.GUI_HTMLIMPORT_IMGGALLERY_1,
+                    m_imageGallery), e);
+            }
+        }
+
+        // check the link gallery
+        // only if flag for leaving external links at original location is off
+        if (!m_leaveExternalLinks) {
+            try {
+                CmsFolder folder = m_cmsObject.readFolder(m_linkGallery);
+                // check if folder is a link gallery
+                String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
+                if (!name.equals("linkgallery")) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.GUI_HTMLIMPORT_LINKGALLERY_INVALID_1,
+                        m_linkGallery));
+                }
+            } catch (CmsException e) {
+                // an excpetion is thrown if the folder does not exist
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.GUI_HTMLIMPORT_LINKGALLERY_1,
+                    m_linkGallery), e);
+            }
+        }
+
+        // check the download gallery
+        if ((!isExternal(m_downloadGallery)) && (!m_leaveDownloads)) {
+            try {
+                CmsFolder folder = m_cmsObject.readFolder(m_downloadGallery);
+                // check if folder is a download gallery
+                String name = OpenCms.getResourceManager().getResourceType(folder.getTypeId()).getTypeName();
+                if (!name.equals("downloadgallery")) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.GUI_HTMLIMPORT_DOWNGALLERY_INVALID_1,
+                        m_downloadGallery));
+                }
+            } catch (CmsException e) {
+                // an excpetion is thrown if the folder does not exist
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.GUI_HTMLIMPORT_DOWNGALLERY_1,
+                    m_downloadGallery), e);
+            }
+        }
+
+        // check the template
+        try {
+            m_cmsObject.readResource(m_template, CmsResourceFilter.ALL);
+        } catch (CmsException e) {
+            // an excpetion is thrown if the template does not exist
+            if (!isValidElement()) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.GUI_HTMLIMPORT_TEMPLATE_1,
+                    m_template), e);
+            }
+        }
+
+        // check the element
+        if (!isValidElement()) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.GUI_HTMLIMPORT_INVALID_ELEM_2,
+                m_element,
+                m_template));
+        }
+
+        // check if we are in an offline project
+        if (m_cmsObject.getRequestContext().currentProject().isOnlineProject()) {
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.GUI_HTMLIMPORT_CONSTRAINT_OFFLINE_0));
+        }
+    }
+
+    /**
      * Builds an index of all files to be imported and determines their new names in the OpenCms.<p>
      * 
      * @param startfolder the folder to start with
+     * @param report report to write ouput to
      * 
      * @throws Exception if something goes wrong
      */
@@ -975,30 +842,19 @@ public class CmsHtmlImport {
      */
     private void buildParentPath() {
 
-        File inputFolder = new File(m_inputDir);
-        String inputName = inputFolder.getAbsolutePath();
-        String folderName = m_destinationDir;
-        while ((folderName != null) && (inputName != null)) {
-
-            m_parents.put(inputName.replace('\\', '/') + "/", folderName);
-            inputName = inputFolder.getParent();
-            if (inputName != null) {
-                inputFolder = new File(inputName);
-            }
-            folderName = CmsResource.getParentFolder(folderName);
+        String destFolder = m_destinationDir;
+        String inputDir = m_inputDir.replace('\\', '/');
+        if (!inputDir.endsWith("/")) {
+            inputDir += "/";
         }
-    }
-
-    /**
-     * Clear all used indices and lists.<p>
-     * 
-     * This should only be done when the import has been done. 
-     */
-    private void clear() {
-
-        m_fileIndex = null;
-        m_externalLinks = null;
-        m_imageInfo = null;
+        int pos = inputDir.lastIndexOf("/");
+        while ((pos > 0) && (destFolder != null)) {
+            inputDir = inputDir.substring(0, pos);
+            m_parents.put(inputDir + "/", destFolder);
+            
+            pos = inputDir.lastIndexOf("/", pos-1);
+            destFolder = CmsResource.getParentFolder(destFolder);
+        }
     }
 
     /**
@@ -1124,7 +980,7 @@ public class CmsHtmlImport {
                                     properties.add(property2);
                                 }
                                 // create the file
-                                if (!m_overwriteMode) {
+                                if (!m_overwrite) {
                                     m_cmsObject.createResource(vfsFileName, type, content, properties);
                                 } else {
                                     try {
@@ -1227,12 +1083,13 @@ public class CmsHtmlImport {
                 }
 
                 // create new xml page
-                CmsXmlPage page = new CmsXmlPage(m_locale, OpenCms.getSystemInfo().getDefaultEncoding());
-                page.addValue(m_element, m_locale);
-                page.setStringValue(m_cmsObject, m_element, m_locale, content);
+                Locale locale = new Locale(m_locale);
+                CmsXmlPage page = new CmsXmlPage(locale, OpenCms.getSystemInfo().getDefaultEncoding());
+                page.addValue(m_element, locale);
+                page.setStringValue(m_cmsObject, m_element, locale, content);
 
                 // check links
-                CmsLinkTable linkTable = page.getLinkTable(m_element, m_locale);
+                CmsLinkTable linkTable = page.getLinkTable(m_element, locale);
                 Iterator i = linkTable.iterator();
                 while (i.hasNext()) {
                     CmsLink link = (CmsLink)i.next();
@@ -1249,7 +1106,7 @@ public class CmsHtmlImport {
                 byte[] contentByteArray = page.marshal();
                 List oldProperties = new ArrayList();
 
-                if (!m_overwriteMode) {
+                if (!m_overwrite) {
                     m_cmsObject.createResource(
                         vfsFileName,
                         CmsResourceTypeXmlPage.getStaticTypeId(),
@@ -1562,14 +1419,12 @@ public class CmsHtmlImport {
             // binary -> move into download gallery, if flag to leaave at original location is off
             // plain -> move into destination folder
             // other -> move into download gallery, if flag to leaave at original location is off
-            if ((CmsResourceTypeImage.getStaticTypeId() == filetype) && (!m_leaveImagesMode)) {
+            if ((CmsResourceTypeImage.getStaticTypeId() == filetype) && (!m_leaveImages)) {
                 // move to image gallery
                 // as the image gallery is "flat", we must use the file name and not the complete
                 // relative name
                 vfsName = m_imageGallery + name;
-            } else if ((CmsResourceTypePlain.getStaticTypeId() == filetype)
-                || (m_leaveImagesMode)
-                || (m_leaveDownloadsMode)) {
+            } else if ((CmsResourceTypePlain.getStaticTypeId() == filetype) || (m_leaveImages) || (m_leaveDownloads)) {
                 // move to destination folder
                 //vfsName=m_destinationDir+relativeName;
 
@@ -1633,7 +1488,7 @@ public class CmsHtmlImport {
         List elementList = new ArrayList();
         try {
             // get Elements of template stored in Property "template-elements"
-            String elements = m_cms.property(CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, m_template);
+            String elements = m_cmsObject.readPropertyObject(m_template, CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, false).getValue();
             // template may contain more than one Element
             // Elements are seperated by the delimiter ","
             if (elements != null) {
@@ -1698,7 +1553,7 @@ public class CmsHtmlImport {
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_HTMLIMPORT_PARSE_1,
                 file.getAbsolutePath());
-            LOG.error(message.key(), e);
+            LOG.error(e);
             throw new CmsImportExportException(message, e);
         }
         return parsedHtml;
@@ -1729,7 +1584,7 @@ public class CmsHtmlImport {
 
         // if we are not in overwrite mode, we must find a valid, non-existing filename
         // otherwise we will use the current translated name
-        if (!m_overwriteMode) {
+        if (!m_overwrite) {
 
             while (found) {
                 try {
