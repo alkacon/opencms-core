@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/10/05 16:59:21 $
- * Version: $Revision: 1.42.4.7 $
+ * Date   : $Date: 2006/10/09 16:43:58 $
+ * Version: $Revision: 1.42.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.7 $ 
+ * @version $Revision: 1.42.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -740,41 +740,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     throws CmsException {
 
         securityManager.undoChanges(cms.getRequestContext(), resource, mode);
-        
-        // TODO: prevent that this code gets executed when called from A_CmsResourceTypeFolderBase
-        
-        // type may have changed from non link parseable to link parseable        
-        CmsResource undoneResource1 = null;
-        try {
-            // first try to locate the resource by path
-            undoneResource1 = createRelations(cms, securityManager, resource.getRootPath());
-        } catch (CmsVfsResourceNotFoundException e) {
-            // ignore, undone move operation
-        }
-        // now, in case a move operation has been undone, locate the resource by id
-        CmsResource undoneResource2 = securityManager.readResource(
-            cms.getRequestContext(),
-            resource.getStructureId(),
-            CmsResourceFilter.ALL);
-        I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
-        if (resourceType instanceof I_CmsLinkParseable) {
-            I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
-            if (undoneResource1 == null || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
-                List links = null;
-                try {
-                    links = linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms));
-                } catch (CmsException e) {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(e);
-                    }
-                } catch (CmsRuntimeException e) {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(e);
-                    }
-                }
-                securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links);
-            }
-        }
+        updateRelationForUndo(cms, securityManager, resource);
     }
 
     /**
@@ -828,6 +794,34 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         List properties) throws CmsException {
 
         securityManager.writePropertyObjects(cms.getRequestContext(), resource, properties);
+    }
+
+    /**
+     * Creates the relation information for the resource with the given resource name.<p>
+     * 
+     * @param cms the cms context
+     * @param securityManager the secutiry manager
+     * @param resourceName the resource name of the resource to update the relations for
+     * 
+     * @return the fresh read resource 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsResource createRelations(CmsObject cms, CmsSecurityManager securityManager, String resourceName)
+    throws CmsException {
+
+        CmsResource resource = securityManager.readResource(
+            cms.getRequestContext(),
+            resourceName,
+            CmsResourceFilter.ALL);
+        I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
+        if (resourceType instanceof I_CmsLinkParseable) {
+            I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
+            securityManager.updateRelationsForResource(cms.getRequestContext(), resource, linkParseable.parseLinks(
+                cms,
+                CmsFile.upgrade(resource, cms)));
+        }
+        return resource;
     }
 
     /**
@@ -966,6 +960,52 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
+     * Update the relations after an undo changes operation.<p>
+     * 
+     * @param cms the cms context
+     * @param securityManager the security manager
+     * @param resource the resource that has been undone
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void updateRelationForUndo(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
+    throws CmsException {
+
+        // type may have changed from non link parseable to link parseable        
+        CmsResource undoneResource1 = null;
+        try {
+            // first try to locate the resource by path
+            undoneResource1 = createRelations(cms, securityManager, resource.getRootPath());
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ignore, undone move operation
+        }
+        // now, in case a move operation has been undone, locate the resource by id
+        CmsResource undoneResource2 = securityManager.readResource(
+            cms.getRequestContext(),
+            resource.getStructureId(),
+            CmsResourceFilter.ALL);
+        I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
+        if (resourceType instanceof I_CmsLinkParseable) {
+            I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
+            if (undoneResource1 == null || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
+                List links = null;
+                try {
+                    links = linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms));
+                } catch (CmsException e) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e);
+                    }
+                } catch (CmsRuntimeException e) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e);
+                    }
+                }
+                securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links);
+            }
+        }
+    }
+
+    /**
      * Updates the relation information by removing the relations for the given resource, and then 
      * parsing the links of a fresh read version of the resource with the given resource name.<p>
      * 
@@ -991,33 +1031,5 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         securityManager.deleteRelationsForResource(cms.getRequestContext(), oldResource, CmsRelationFilter.TARGETS);
         // create the relations for the new resource, only if type is link parseable!!
         createRelations(cms, securityManager, newResourceName);
-    }
-
-    /**
-     * Creates the relation information for the resource with the given resource name.<p>
-     * 
-     * @param cms the cms context
-     * @param securityManager the secutiry manager
-     * @param resourceName the resource name of the resource to update the relations for
-     * 
-     * @return the fresh read resource 
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected CmsResource createRelations(CmsObject cms, CmsSecurityManager securityManager, String resourceName)
-    throws CmsException {
-
-        CmsResource resource = securityManager.readResource(
-            cms.getRequestContext(),
-            resourceName,
-            CmsResourceFilter.ALL);
-        I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
-        if (resourceType instanceof I_CmsLinkParseable) {
-            I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
-            securityManager.updateRelationsForResource(cms.getRequestContext(), resource, linkParseable.parseLinks(
-                cms,
-                CmsFile.upgrade(resource, cms)));
-        }
-        return resource;
     }
 }
