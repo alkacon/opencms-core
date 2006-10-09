@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename2.java,v $
- * Date   : $Date: 2006/08/25 12:22:55 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/10/09 16:43:28 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class TestMoveRename2 extends OpenCmsTestCase {
 
@@ -272,6 +272,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         cms.lockResource("/");
         cms.setDateLastModified("/", System.currentTimeMillis(), true);
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
 
         cms.lockResource(deletedFile);
