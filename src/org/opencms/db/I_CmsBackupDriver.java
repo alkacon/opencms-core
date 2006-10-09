@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.52.8.1 $
+ * Date   : $Date: 2006/10/09 12:29:40 $
+ * Version: $Revision: 1.52.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.52.8.1 $
+ * @version $Revision: 1.52.8.2 $
  * 
  * @since 6.0.0
  */
@@ -150,11 +150,13 @@ public interface I_CmsBackupDriver {
      *
      * @param dbc the current database context
      * @param tagId the desired tag ID of the file
-     * @param resourcePath the path of the file to read
+     * @param strcutureId the structure id of the file to read
+     * 
      * @return the backup file
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, String resourcePath) throws CmsDataAccessException;
+    CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, CmsUUID structureId) throws CmsDataAccessException;
 
     /**
      * Reads all backup file headers  excluding the file content.<p>.

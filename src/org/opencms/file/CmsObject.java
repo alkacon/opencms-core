@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/10/05 12:04:31 $
- * Version: $Revision: 1.146.4.9 $
+ * Date   : $Date: 2006/10/09 12:29:40 $
+ * Version: $Revision: 1.146.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.9 $
+ * @version $Revision: 1.146.4.10 $
  * 
  * @since 6.0.0 
  */
@@ -1179,20 +1179,6 @@ public final class CmsObject {
     }
 
     /**
-     * Returns the workflow lock state for a specified resource.<p>
-     * 
-     * @param resource the resource to return the workflow lock state for
-     * 
-     * @return the workflow lock state for the specified resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsLock getLockForWorkflow(CmsResource resource) throws CmsException {
-
-        return m_securityManager.getLockForWorkflow(m_context, resource);
-    }
-
-    /**
      * Returns the lock state for a specified resource name.<p>
      * 
      * @param resourcename the name if the resource to get the lock state for (full path)
@@ -1205,6 +1191,20 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return getLock(resource);
+    }
+
+    /**
+     * Returns the workflow lock state for a specified resource.<p>
+     * 
+     * @param resource the resource to return the workflow lock state for
+     * 
+     * @return the workflow lock state for the specified resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsLock getLockForWorkflow(CmsResource resource) throws CmsException {
+
+        return m_securityManager.getLockForWorkflow(m_context, resource);
     }
 
     /**
@@ -2161,6 +2161,25 @@ public final class CmsObject {
     public CmsFolder readAncestor(String resourcename, int type) throws CmsException {
 
         return readAncestor(resourcename, CmsResourceFilter.requireType(type));
+    }
+
+    /**
+     * Returns a file from the history.<br>
+     * 
+     * The reading includes the file content.<p>
+     *
+     * @param structureId the structure id of the file to be read
+     * @param tagId the tag id of the resource
+     *
+     * @return the file read
+     *
+     * @throws CmsException if the user has not the rights to read the file, or 
+     *                      if the file couldn't be read.
+     */
+    public CmsBackupResource readBackupFile(CmsUUID structureId, int tagId) throws CmsException {
+
+        CmsResource resource = readResource(structureId, CmsResourceFilter.ALL);
+        return m_securityManager.readBackupFile(m_context, tagId, resource);
     }
 
     /**

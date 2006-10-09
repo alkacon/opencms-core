@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.141.4.3 $
+ * Date   : $Date: 2006/10/09 12:29:40 $
+ * Version: $Revision: 1.141.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.141.4.3 $
+ * @version $Revision: 1.141.4.4 $
  * 
  * @since 6.0.0 
  */
@@ -414,9 +414,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#readBackupFile(CmsDbContext, int, String)
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupFile(CmsDbContext, int, CmsUUID)
      */
-    public CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, String resourcePath)
+    public CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, CmsUUID structureId)
     throws CmsDataAccessException {
 
         CmsBackupResource file = null;
@@ -427,7 +427,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_READ_BACKUP");
-            stmt.setString(1, resourcePath);
+            stmt.setString(1, structureId.toString());
             stmt.setInt(2, tagId);
             res = stmt.executeQuery();
             if (res.next()) {
@@ -438,7 +438,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             } else {
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
                     Messages.ERR_BACKUP_FILE_NOT_FOUND_1,
-                    resourcePath));
+                    structureId));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
