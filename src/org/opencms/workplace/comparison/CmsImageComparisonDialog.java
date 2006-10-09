@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsImageComparisonDialog.java,v $
- * Date   : $Date: 2006/03/30 07:50:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/10/09 12:30:42 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -29,6 +29,7 @@
 package org.opencms.workplace.comparison;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.commons.CmsHistoryList;
 
@@ -39,17 +40,17 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsImageComparisonDialog extends CmsDialog {
 
-    /** Parameter value for the path of the first file. */
-    private String m_paramPath1;
+    /** Parameter value for the structure id of the first file. */
+    private String m_paramId1;
 
-    /** Parameter value for the path of the second file. */
-    private String m_paramPath2;
+    /** Parameter value for the structure id of the second file. */
+    private String m_paramId2;
 
     /** Parameter value for the tag id of the first file. */
     private String m_paramTagId1;
@@ -89,13 +90,13 @@ public class CmsImageComparisonDialog extends CmsDialog {
             // offline version
             link1 = getParamResource();
         } else {
-            link1 = CmsHistoryList.getBackupLink(m_paramPath1, m_paramTagId1);
+            link1 = CmsHistoryList.getBackupLink(getCms(), new CmsUUID(m_paramId1), m_paramTagId1);
         }
         if ("-1".equals(m_paramTagId2)) {
             // offline version
             link2 = getParamResource();
         } else {
-            link2 = CmsHistoryList.getBackupLink(m_paramPath2, m_paramTagId2);
+            link2 = CmsHistoryList.getBackupLink(getCms(), new CmsUUID(m_paramId2), m_paramTagId2);
         }
         JspWriter out = getJsp().getJspContext().getOut();
         out.println(dialogBlockStart(key(Messages.GUI_COMPARE_CONTENT_0)));
@@ -127,23 +128,23 @@ public class CmsImageComparisonDialog extends CmsDialog {
     }
 
     /**
-     * Returns the paramPath1.<p>
+     * Returns the paramId1.<p>
      *
-     * @return the paramPath1
+     * @return the paramId1
      */
-    public String getParamPath1() {
+    public String getParamId1() {
 
-        return m_paramPath1;
+        return m_paramId1;
     }
 
     /**
-     * Returns the paramPath2.<p>
+     * Returns the paramId2.<p>
      *
-     * @return the paramPath2
+     * @return the paramId2
      */
-    public String getParamPath2() {
+    public String getParamId2() {
 
-        return m_paramPath2;
+        return m_paramId2;
     }
 
     /**
@@ -187,23 +188,23 @@ public class CmsImageComparisonDialog extends CmsDialog {
     }
 
     /**
-     * Sets the paramPath1.<p>
+     * Sets the paramId1.<p>
      *
-     * @param paramPath1 the paramPath1 to set
+     * @param paramId1 the paramId1 to set
      */
-    public void setParamPath1(String paramPath1) {
+    public void setParamId1(String paramId1) {
 
-        m_paramPath1 = paramPath1;
+        m_paramId1 = paramId1;
     }
 
     /**
-     * Sets the paramPath2.<p>
+     * Sets the paramId2.<p>
      *
-     * @param paramPath2 the paramPath2 to set
+     * @param paramId2 the paramId2 to set
      */
-    public void setParamPath2(String paramPath2) {
+    public void setParamId2(String paramId2) {
 
-        m_paramPath2 = paramPath2;
+        m_paramId2 = paramId2;
     }
 
     /**

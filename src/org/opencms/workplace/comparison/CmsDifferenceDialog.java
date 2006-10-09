@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsDifferenceDialog.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.4.4.1 $
+ * Date   : $Date: 2006/10/09 12:30:42 $
+ * Version: $Revision: 1.4.4.2 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -39,7 +39,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.4.4.1 $ 
+ * @version $Revision: 1.4.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,11 +60,11 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
     /** Parameter value for the locale. */
     private String m_paramLocale;
 
-    /** Parameter value for the path of the first file. */
-    private String m_paramPath1;
+    /** Parameter value for the structure id of the first file. */
+    private String m_paramId1;
 
-    /** Parameter value for the path of the second file. */
-    private String m_paramPath2;
+    /** Parameter value for the structure id of the second file. */
+    private String m_paramId2;
 
     /** Parameter value for the tag id of the first file. */
     private String m_paramTagId1;
@@ -134,23 +134,23 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
     }
 
     /**
-     * Returns the paramPath1.<p>
+     * Returns the paramId1.<p>
      *
-     * @return the paramPath1
+     * @return the paramId1
      */
-    public String getParamPath1() {
+    public String getParamId1() {
 
-        return m_paramPath1;
+        return m_paramId1;
     }
 
     /**
-     * Returns the paramPath2.<p>
+     * Returns the paramId2.<p>
      *
-     * @return the paramPath2
+     * @return the paramId2
      */
-    public String getParamPath2() {
+    public String getParamId2() {
 
-        return m_paramPath2;
+        return m_paramId2;
     }
 
     /**
@@ -254,23 +254,23 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
     }
 
     /**
-     * Sets the paramPath1.<p>
+     * Sets the paramId1.<p>
      *
-     * @param paramPath1 the paramPath1 to set
+     * @param paramId1 the paramId1 to set
      */
-    public void setParamPath1(String paramPath1) {
+    public void setParamId1(String paramId1) {
 
-        m_paramPath1 = paramPath1;
+        m_paramId1 = paramId1;
     }
 
     /**
-     * Sets the paramPath2.<p>
+     * Sets the paramId2.<p>
      *
-     * @param paramPath2 the paramPath2 to set
+     * @param paramId2 the paramId2 to set
      */
-    public void setParamPath2(String paramPath2) {
+    public void setParamId2(String paramId2) {
 
-        m_paramPath2 = paramPath2;
+        m_paramId2 = paramId2;
     }
 
     /**

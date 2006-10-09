@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace Explorer.</p>
 <p>Install this module if you want a GUI to work on the OpenCms VFS.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.8</version>
+		<version>1.2.9</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -241,7 +241,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:path1=${param.path1}&path2=${param.path2}&tagid1=${param.tagid1}&tagid2=${param.tagid2}&version1=${param.version1}&version2=${param.version2}&resource=${param.resource}|path:/history/comparison]]></value>
+					<value><![CDATA[params:id1=${param.id1}&id2=${param.id2}&tagid1=${param.tagid1}&tagid2=${param.tagid2}&version1=${param.version1}&version2=${param.version2}&resource=${param.resource}|path:/history/comparison]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -276,7 +276,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:path1=${param.path1}&path2=${param.path2}&version1=${param.version1}&version2=${param.version2}|path:/history/comparison/difference]]></value>
+					<value><![CDATA[params:id1=${param.id1}&id2=${param.id2}&version1=${param.version1}&version2=${param.version2}|path:/history/comparison/difference]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

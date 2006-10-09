@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2006/10/09 12:30:42 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,10 @@ import org.opencms.file.CmsBackupResourceHandler;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.CmsListIndependentAction;
@@ -62,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.3.4.1 $ 
+ * @version $Revision: 1.3.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,8 +123,8 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         params.put(CmsHistoryList.PARAM_TAGID_2, getParamTagId2());
         params.put(CmsHistoryList.PARAM_VERSION_1, getParamVersion1());
         params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
-        params.put(CmsHistoryList.PARAM_PATH_1, getParamPath1());
-        params.put(CmsHistoryList.PARAM_PATH_2, getParamPath2());
+        params.put(CmsHistoryList.PARAM_ID_1, getParamId1());
+        params.put(CmsHistoryList.PARAM_ID_2, getParamId2());
         params.put(PARAM_COMPARE, CmsResourceComparisonDialog.COMPARE_ATTRIBUTES);
         params.put(PARAM_RESOURCE, getParamResource());
         // forward to the difference screen
@@ -229,7 +231,14 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
              */
             public String buttonHtml(CmsWorkplace wp) {
 
-                return getViewVersionButtonHtml(getParamPath1(), getParamTagId1(), getParamVersion1());
+                try {
+                    return getViewVersionButtonHtml(
+                        getCms().readResource(new CmsUUID(getParamId1())).getRootPath(),
+                        getParamTagId1(),
+                        getParamVersion1());
+                } catch (CmsException e) {
+                    throw new CmsRuntimeException(e.getMessageContainer(), e);
+                }
             }
         };
         metadata.addIndependentAction(viewVersion1);
@@ -241,7 +250,14 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
              */
             public String buttonHtml(CmsWorkplace wp) {
 
-                return getViewVersionButtonHtml(getParamPath2(), getParamTagId2(), getParamVersion2());
+                try {
+                    return getViewVersionButtonHtml(
+                        getCms().readResource(new CmsUUID(getParamId2())).getRootPath(),
+                        getParamTagId2(),
+                        getParamVersion2());
+                } catch (CmsException e) {
+                    throw new CmsRuntimeException(e.getMessageContainer(), e);
+                }
             }
         };
         metadata.addIndependentAction(viewVersion2);

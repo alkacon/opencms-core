@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2006/06/09 12:14:28 $
- * Version: $Revision: 1.5.4.1 $
+ * Date   : $Date: 2006/10/09 12:30:42 $
+ * Version: $Revision: 1.5.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -67,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.5.4.1 $ 
+ * @version $Revision: 1.5.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,11 +125,11 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementComparisonList.class);
 
-    /** Parameter value for the path of the first file. */
-    private String m_paramPath1;
+    /** Parameter value for the structure id of the first file. */
+    private String m_paramId1;
 
-    /** Parameter value for the path of the second file. */
-    private String m_paramPath2;
+    /** Parameter value for the structure id of the second file. */
+    private String m_paramId2;
 
     /** Parameter value for the tag id of the first file. */
     private String m_paramTagId1;
@@ -197,8 +198,8 @@ public class CmsElementComparisonList extends A_CmsListDialog {
             params.put(CmsHistoryList.PARAM_TAGID_2, getParamTagId2());
             params.put(CmsHistoryList.PARAM_VERSION_1, getParamVersion1());
             params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
-            params.put(CmsHistoryList.PARAM_PATH_1, getParamPath1());
-            params.put(CmsHistoryList.PARAM_PATH_2, getParamPath2());
+            params.put(CmsHistoryList.PARAM_ID_1, getParamId1());
+            params.put(CmsHistoryList.PARAM_ID_2, getParamId2());
             params.put(CmsPropertyComparisonList.PARAM_COMPARE, CmsResourceComparisonDialog.COMPARE_ALL_ELEMENTS);
             params.put(PARAM_RESOURCE, getParamResource());
             // forward to the element difference screen
@@ -230,8 +231,8 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         params.put(CmsHistoryList.PARAM_TAGID_2, getParamTagId2());
         params.put(CmsHistoryList.PARAM_VERSION_1, getParamVersion1());
         params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
-        params.put(CmsHistoryList.PARAM_PATH_1, getParamPath1());
-        params.put(CmsHistoryList.PARAM_PATH_2, getParamPath2());
+        params.put(CmsHistoryList.PARAM_ID_1, getParamId1());
+        params.put(CmsHistoryList.PARAM_ID_2, getParamId2());
         params.put(PARAM_LOCALE, getSelectedItem().get(LIST_COLUMN_LOCALE).toString());
         params.put(PARAM_ELEMENT, getSelectedItem().get(LIST_COLUMN_ATTRIBUTE).toString());
         params.put(PARAM_RESOURCE, getParamResource());
@@ -241,23 +242,23 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the paramPath1.<p>
+     * Returns the paramId1.<p>
      *
-     * @return the paramPath1
+     * @return the paramId1
      */
-    public String getParamPath1() {
+    public String getParamId1() {
 
-        return m_paramPath1;
+        return m_paramId1;
     }
 
     /**
-     * Returns the paramPath2.<p>
+     * Returns the paramId2.<p>
      *
-     * @return the paramPath2
+     * @return the paramId2
      */
-    public String getParamPath2() {
+    public String getParamId2() {
 
-        return m_paramPath2;
+        return m_paramId2;
     }
 
     /**
@@ -301,23 +302,23 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     }
 
     /**
-     * Sets the paramPath1.<p>
+     * Sets the paramId1.<p>
      *
-     * @param paramPath1 the paramPath1 to set
+     * @param paramId1 the paramId1 to set
      */
-    public void setParamPath1(String paramPath1) {
+    public void setParamId1(String paramId1) {
 
-        m_paramPath1 = paramPath1;
+        m_paramId1 = paramId1;
     }
 
     /**
-     * Sets the paramPath2.<p>
+     * Sets the paramId2.<p>
      *
-     * @param paramPath2 the paramPath2 to set
+     * @param paramId2 the paramId2 to set
      */
-    public void setParamPath2(String paramPath2) {
+    public void setParamId2(String paramId2) {
 
-        m_paramPath2 = paramPath2;
+        m_paramId2 = paramId2;
     }
 
     /**
@@ -376,12 +377,12 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         List result = new ArrayList();
         CmsFile resource1 = CmsResourceComparisonDialog.readFile(
             getCms(),
-            getParamPath1(),
+            new CmsUUID(getParamId1()),
             getParamVersion1(),
             Integer.parseInt(getParamTagId1()));
         CmsFile resource2 = CmsResourceComparisonDialog.readFile(
             getCms(),
-            getParamPath2(),
+            new CmsUUID(getParamId2()),
             getParamVersion2(),
             Integer.parseInt(getParamTagId2()));
         Iterator diffs = new CmsXmlDocumentComparison(getCms(), resource1, resource2).getElements().iterator();

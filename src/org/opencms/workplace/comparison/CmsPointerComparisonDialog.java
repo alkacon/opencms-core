@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPointerComparisonDialog.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2006/10/09 12:30:42 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -30,6 +30,7 @@ package org.opencms.workplace.comparison;
 
 import org.opencms.file.CmsFile;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 
 import javax.servlet.jsp.JspWriter;
@@ -39,17 +40,17 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3.4.1 $ 
+ * @version $Revision: 1.3.4.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsPointerComparisonDialog extends CmsDialog {
 
-    /** Parameter value for the path of the first file. */
-    private String m_paramPath1;
+    /** Parameter value for the structure Id of the first file. */
+    private String m_paramId1;
 
-    /** Parameter value for the path of the second file. */
-    private String m_paramPath2;
+    /** Parameter value for the structure Id of the second file. */
+    private String m_paramId2;
 
     /** Parameter value for the tag id of the first file. */
     private String m_paramTagId1;
@@ -85,12 +86,12 @@ public class CmsPointerComparisonDialog extends CmsDialog {
         }
         CmsFile resource1 = CmsResourceComparisonDialog.readFile(
             getCms(),
-            getParamPath1(),
+            new CmsUUID(getParamId1()),
             getParamVersion1(),
             Integer.parseInt(getParamTagId1()));
         CmsFile resource2 = CmsResourceComparisonDialog.readFile(
             getCms(),
-            getParamPath2(),
+            new CmsUUID(getParamId2()),
             getParamVersion2(),
             Integer.parseInt(getParamTagId2()));
         String linkTarget1 = new String(resource1.getContents());
@@ -123,23 +124,23 @@ public class CmsPointerComparisonDialog extends CmsDialog {
     }
 
     /**
-     * Returns the paramPath1.<p>
+     * Returns the paramId1.<p>
      *
-     * @return the paramPath1
+     * @return the paramId1
      */
-    public String getParamPath1() {
+    public String getParamId1() {
 
-        return m_paramPath1;
+        return m_paramId1;
     }
 
     /**
-     * Returns the paramPath2.<p>
+     * Returns the paramId2.<p>
      *
-     * @return the paramPath2
+     * @return the paramId2
      */
-    public String getParamPath2() {
+    public String getParamId2() {
 
-        return m_paramPath2;
+        return m_paramId2;
     }
 
     /**
@@ -183,23 +184,23 @@ public class CmsPointerComparisonDialog extends CmsDialog {
     }
 
     /**
-     * Sets the paramPath1.<p>
+     * Sets the paramId1.<p>
      *
-     * @param paramPath1 the paramPath1 to set
+     * @param paramId1 the paramId1 to set
      */
-    public void setParamPath1(String paramPath1) {
+    public void setParamId1(String paramId1) {
 
-        m_paramPath1 = paramPath1;
+        m_paramId1 = paramId1;
     }
 
     /**
-     * Sets the paramPath2.<p>
+     * Sets the paramId2.<p>
      *
-     * @param paramPath2 the paramPath2 to set
+     * @param paramId2 the paramId2 to set
      */
-    public void setParamPath2(String paramPath2) {
+    public void setParamId2(String paramId2) {
 
-        m_paramPath2 = paramPath2;
+        m_paramId2 = paramId2;
     }
 
     /**
