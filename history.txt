@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/10 07:50:10 $
- * Version: $Revision: 1.717.2.59 $
+ * Date   : $Date: 2006/10/10 14:11:55 $
+ * Version: $Revision: 1.717.2.60 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,8 +19,8 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.5.3 - September xxxx, 2006
-* fixed display issue for multiple select boxes in IE
+OpenCms 6.5.3 - October 10, 2006
+* Fixed display issue for multiple select boxes in IE
 ! History list optionally shows project name and description
 ! New configuration option for initial checkbox state on new folder dialog in opencms-workplace.xml 
 ! Content tool for property change allows to set property values for resources that have an empty old value
@@ -57,7 +57,11 @@ OpenCms 6.5.3 - September xxxx, 2006
 - Improved handling of export points
 - Additional cleanup rules for HTML conversion
 * Fixed display issues with 3D boxes of workplace dialogs and lists in Mozilla Firefox
-- While publishing projects in Project Management there is now link validation before publishing 
+- While publishing projects in Project Management there is now link validation before publishing
+* Fixed search index building, export points writting and static export of moved resources
+* Fixed file history for moved resources
+* Fixed issue with relations after undo changes of a moved folder
+! Improved internal link validation tool
 
 OpenCms 6.5.2 - September 1st, 2006
 - Improved delete dialog
