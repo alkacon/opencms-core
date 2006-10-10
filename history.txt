@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/09 09:44:09 $
- * Version: $Revision: 1.764 $
+ * Date   : $Date: 2006/10/10 09:07:47 $
+ * Version: $Revision: 1.765 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ OpenCms 6.2.3 -
 - Legacy element cache is cleared on clear cache event
 - Modified handling of scrub export folder for static export on demand
 * Fixed issue #1238: Form-Module produces wrong HTML-code
+- While publishing projects in Project Management there is now a link validation before publishing
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
