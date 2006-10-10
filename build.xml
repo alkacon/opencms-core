@@ -2,7 +2,7 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="6.5.3" />
+    <property name="version.number"             		value="6.5.4" />
     <property name="java.target.version"                value="1.4" />
     
 	<property name="app.name" 							value="opencms" />
