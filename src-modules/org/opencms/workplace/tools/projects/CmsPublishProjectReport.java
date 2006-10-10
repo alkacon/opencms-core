@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsPublishProjectReport.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/10/10 07:50:10 $
+ * Version: $Revision: 1.9.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,12 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.report.I_CmsReportThread;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.list.A_CmsListReport;
+import org.opencms.workplace.CmsReport;
+import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.commons.Messages;
 import org.opencms.workplace.threads.CmsPublishThread;
+import org.opencms.workplace.threads.CmsRelationsValidatorThread;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,13 +51,14 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provides a report for publishing a project.<p> 
  *
- * @author  Michael Moossen 
+ * @author Michael Moossen 
+ * @author Peter Bonrad
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.4.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsPublishProjectReport extends A_CmsListReport {
+public class CmsPublishProjectReport extends CmsReport {
 
     /** Request parameter name for the project id. */
     public static final String PARAM_PROJECTID = "projectid";
@@ -86,51 +89,25 @@ public class CmsPublishProjectReport extends A_CmsListReport {
     }
 
     /**
-     * Gets the project id parameter.<p>
+     * Performs the dialog actions depending on the initialized action.<p>
      * 
-     * @return the project id parameter
-     */
-    public String getParamProjectid() {
-
-        return m_paramProjectid;
-    }
-
-    /** 
-     * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
-     */
-    public I_CmsReportThread initializeThread() {
-
-        CmsPublishList list;
-        try {
-            CmsProject currentProject = getCms().getRequestContext().currentProject();
-            getCms().getRequestContext().setCurrentProject(
-                getCms().readProject(new Integer(getParamProjectid()).intValue()));
-            list = getCms().getPublishList();
-            getCms().getRequestContext().setCurrentProject(currentProject);
-        } catch (CmsException e) {
-            throw new CmsRuntimeException(e.getMessageContainer(), e);
-        }
-        I_CmsReportThread publishProjectThread = new CmsPublishThread(getCms(), list, getSettings());
-        return publishProjectThread;
-    }
-
-    /** 
-     * Sets the project id parameter.<p>
-     * 
-     * @param projectId the project id parameter
-     */
-    public void setParamProjectid(String projectId) {
-
-        m_paramProjectid = projectId;
-    }
-    
-    
-    /**
-     * @see org.opencms.workplace.list.A_CmsListReport#displayReport()
+     * @throws JspException if dialog actions fail
      */
     public void displayReport() throws JspException {
 
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
+            case ACTION_REPORT_END:
+                actionCloseDialog();
+                break;
+            case ACTION_CANCEL:
+                actionCloseDialog();
+                break;
+            case ACTION_REPORT_UPDATE:
+                setParamAction(REPORT_UPDATE);
+                getJsp().include(FILE_REPORT_OUTPUT);
+                break;
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
             case ACTION_DEFAULT:
@@ -143,7 +120,111 @@ public class CmsPublishProjectReport extends A_CmsListReport {
                 } catch (Exception e) {
                     // ignore
                 }
+
+                CmsPublishList list = null;
+                try {
+                    CmsProject currentProject = getCms().getRequestContext().currentProject();
+                    getCms().getRequestContext().setCurrentProject(
+                        getCms().readProject(new Integer(getParamProjectid()).intValue()));
+                    list = getCms().getPublishList();
+                    getCms().getRequestContext().setCurrentProject(currentProject);
+                } catch (CmsException e) {
+                    throw new CmsRuntimeException(e.getMessageContainer(), e);
+                }
+
+                // start validation check
+                startValidationThread(list);
+                getJsp().include(FILE_REPORT_OUTPUT);
         }
-        super.displayReport();
+    }
+
+    /**
+     * Gets the project id parameter.<p>
+     * 
+     * @return the project id parameter
+     */
+    public String getParamProjectid() {
+
+        return m_paramProjectid;
+    }
+
+    /** 
+     * Sets the project id parameter.<p>
+     * 
+     * @param projectId the project id parameter
+     */
+    public void setParamProjectid(String projectId) {
+
+        m_paramProjectid = projectId;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListReport#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+
+        if (REPORT_UPDATE.equals(getParamAction())) {
+            setAction(ACTION_REPORT_UPDATE);
+        } else if (REPORT_BEGIN.equals(getParamAction())) {
+            setAction(ACTION_REPORT_BEGIN);
+        } else if (REPORT_END.equals(getParamAction())) {
+            if (Boolean.valueOf(getParamThreadHasNext()).booleanValue()) {
+                // after the link check start the publish thread
+                startPublishThread();
+            } else {
+                // ends the publish thread
+                setAction(ACTION_REPORT_END);
+            }
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            setAction(ACTION_CANCEL);
+        } else {
+            // set the default action               
+            setAction(ACTION_DEFAULT);
+        }
+    }
+
+    /**
+     * Starts the publish thread for the project.<p>
+     */
+    private void startPublishThread() {
+
+        // create a publish thread from the current publish list
+        CmsPublishList publishList = getSettings().getPublishList();
+        CmsPublishThread thread = new CmsPublishThread(getCms(), publishList, getSettings());
+
+        // set the new thread id and flag that no thread is following
+        setParamThread(thread.getUUID().toString());
+        setParamThreadHasNext(CmsStringUtil.FALSE);
+
+        setParamAction(REPORT_UPDATE);
+        setAction(ACTION_REPORT_UPDATE);
+
+        // start the publish thread
+        thread.start();
+    }
+
+    /**
+     * Starts the link validation thread for the project.<p>
+     */
+    private void startValidationThread(CmsPublishList publishList) throws JspException {
+
+        try {
+            CmsRelationsValidatorThread thread = new CmsRelationsValidatorThread(getCms(), publishList, getSettings());
+
+            setParamThread(thread.getUUID().toString());
+            setParamThreadHasNext(CmsStringUtil.TRUE);
+
+            setParamAction(REPORT_BEGIN);
+
+            // set the key name for the continue checkbox
+            setParamReportContinueKey(Messages.GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0);
+        } catch (Throwable e) {
+
+            // error while link validation, show error screen
+            includeErrorpage(this, e);
+        }
     }
 }

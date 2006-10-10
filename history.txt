@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/06 13:12:39 $
- * Version: $Revision: 1.717.2.58 $
+ * Date   : $Date: 2006/10/10 07:50:10 $
+ * Version: $Revision: 1.717.2.59 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ OpenCms 6.5.3 - September xxxx, 2006
 - Improved handling of export points
 - Additional cleanup rules for HTML conversion
 * Fixed display issues with 3D boxes of workplace dialogs and lists in Mozilla Firefox
+- While publishing projects in Project Management there is now link validation before publishing 
 
 OpenCms 6.5.2 - September 1st, 2006
 - Improved delete dialog
