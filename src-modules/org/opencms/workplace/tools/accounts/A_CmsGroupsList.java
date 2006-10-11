@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupsList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/10/11 13:41:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,14 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -67,8 +70,9 @@ import javax.servlet.ServletException;
  * Skeleton for a generic group list.<p>
  * 
  * @author Michael Moossen  
+ * @author Peter Bonrad
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,6 +119,9 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
     /** list item detail id constant. */
     public static final String LIST_DETAIL_CHILDS = "dc";
+
+    /** list item detail id constant. */
+    public static final String LIST_DETAIL_SET_PERM = "dsp";
 
     /** list item detail id constant. */
     public static final String LIST_DETAIL_USERS = "du";
@@ -286,6 +293,33 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                         }
                         html.append("\n");
                     }
+                } else if (detailId.equals(LIST_DETAIL_SET_PERM)) {
+                    // folder permissions
+                    getCms().getRequestContext().saveSiteRoot();
+                    getCms().getRequestContext().setSiteRoot("/");
+                    CmsGroup group = getCms().readGroup(groupName);
+                    Iterator itRes = getCms().getResourcesForPrincipal(group.getId(), null, false).iterator();
+                    while (itRes.hasNext()) {
+                        CmsResource resource = (CmsResource)itRes.next();
+                        html.append(resource.getRootPath());
+                        
+                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                        while (itAces.hasNext()) {
+                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                            if (ace.getPrincipal().equals(group.getId())) {
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
+                                    html.append(" (" + ace.getPermissions().getPermissionString() + ")");
+                                }
+                                break;
+                            }
+                        }
+                        
+                        if (itRes.hasNext()) {
+                            html.append("<br>");
+                        }
+                        html.append("\n");
+                    }
+                    getCms().getRequestContext().restoreSiteRoot();
                 } else {
                     continue;
                 }
@@ -520,6 +554,19 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         childDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_GROUPS_DETAIL_CHILDS_NAME_0)));
         metadata.addItemDetails(childDetails);
+
+        // add folder permission details
+        CmsListItemDetails setPermDetails = new CmsListItemDetails(LIST_DETAIL_SET_PERM);
+        setPermDetails.setAtColumn(LIST_COLUMN_NAME);
+        setPermDetails.setVisible(false);
+        setPermDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_SET_PERM_NAME_0));
+        setPermDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_SET_PERM_HELP_0));
+        setPermDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_SET_PERM_NAME_0));
+        setPermDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_SET_PERM_HELP_0));
+        setPermDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SET_PERM_NAME_0));
+        setPermDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_GROUPS_DETAIL_SET_PERM_NAME_0)));
+        metadata.addItemDetails(setPermDetails);
     }
 
     /**
