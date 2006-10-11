@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.100.4.2 $
+ * Date   : $Date: 2006/10/11 14:28:01 $
+ * Version: $Revision: 1.100.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.flex.CmsFlexRequest;
 import org.opencms.flex.CmsFlexResponse;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -105,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100.4.2 $ 
+ * @version $Revision: 1.100.4.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -631,6 +632,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             }
         }
 
+        // parse for special %(link:...) macros
+        content = parseJspLinkMacros(content, controller);
         // parse for special <%@cms file="..." %> tag
         content = parseJspCmsTag(content, controller, includes);
         // parse for included files in tags
@@ -976,6 +979,24 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             content = buf.toString();
         }
         return content;
+    }
+
+    /**
+     * Parses all jsp link macros, and replace them by the right target path.<p>
+     * 
+     * @param content the content to parse
+     * @param controller the request controller
+     * 
+     * @return the parsed content
+     */
+    private String parseJspLinkMacros(String content, CmsFlexController controller) {
+
+        CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(
+            controller.getCmsObject(),
+            null,
+            true,
+            false);
+        return macroResolver.resolveMacros(content);
     }
 
     /**

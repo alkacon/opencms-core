@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/10/09 16:43:58 $
- * Version: $Revision: 1.42.4.8 $
+ * Date   : $Date: 2006/10/11 14:28:01 $
+ * Version: $Revision: 1.42.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,6 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.I_CmsLinkParseable;
-import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -70,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.8 $ 
+ * @version $Revision: 1.42.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -755,8 +754,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsSecurityManager, CmsFile)
      */
-    public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource)
-    throws CmsException, CmsVfsException, CmsSecurityException {
+    public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
 
         if (resource.isFile()) {
             CmsFile file = securityManager.writeFile(cms.getRequestContext(), resource);

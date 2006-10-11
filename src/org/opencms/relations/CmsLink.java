@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2006/10/05 12:01:45 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/10/11 14:28:01 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -178,10 +178,25 @@ public class CmsLink {
      */
     public CmsLink(String name, CmsRelationType type, String uri, boolean internal) {
 
+        this(name, type, null, uri, internal);
+    }
+
+    /**
+     * Creates a new link object without a reference to the xml page link element.<p>
+     * 
+     * @param name the internal name of this link
+     * @param type the type of this link
+     * @param structureId the structure id of the link
+     * @param uri the link uri
+     * @param internal indicates if the link is internal within OpenCms 
+     */
+    public CmsLink(String name, CmsRelationType type, CmsUUID structureId, String uri, boolean internal) {
+
         m_element = null;
         m_name = name;
         m_type = type;
         m_internal = internal;
+        m_structureId = structureId;
         m_uri = uri;
         // update component members from the uri
         setComponents();
@@ -198,6 +213,10 @@ public class CmsLink {
             return;
         }
         try {
+            if (m_structureId == null) {
+                // try by path
+                throw new CmsException(Messages.get().container(Messages.LOG_BROKEN_LINK_NO_ID_0));
+            }
             // first look for the resource with the given structure id
             CmsResource res = cms.readResource(m_structureId, CmsResourceFilter.ALL);
             if (!res.getRootPath().equals(m_target)) {

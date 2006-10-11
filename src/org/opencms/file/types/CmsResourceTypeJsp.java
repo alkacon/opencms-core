@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/10/11 14:28:01 $
+ * Version: $Revision: 1.24.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,16 @@
 package org.opencms.file.types;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.db.CmsSecurityManager;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.loader.CmsJspLoader;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+
+import java.util.List;
 
 /**
  * Resource type descriptor for the type "jsp".<p>
@@ -46,23 +54,23 @@ import org.opencms.main.OpenCms;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.4.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsResourceTypeJsp extends A_CmsResourceType {
-
-    /** The type id of this resource type. */
-    private static final int RESOURCE_TYPE_ID = 4;
-
-    /** The name of this resource type. */
-    private static final String RESOURCE_TYPE_NAME = "jsp";
+public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
 
     /** Indicates that the static configuration of the resource type has been frozen. */
     private static boolean m_staticFrozen;
 
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
+
+    /** The type id of this resource type. */
+    private static final int RESOURCE_TYPE_ID = 4;
+
+    /** The name of this resource type. */
+    private static final String RESOURCE_TYPE_NAME = "jsp";
 
     /**
      * Default constructor, used to initialize member variables.<p>
@@ -92,6 +100,23 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     public static String getStaticTypeName() {
 
         return RESOURCE_TYPE_NAME;
+    }
+
+    /**
+     * Returns the content to be displayed by the editor.<p>
+     * 
+     * @param cms the cms context
+     * @param file the file to handle
+     * @param encoding the encoding
+     * 
+     * @return the content to be displayed by the editor
+     */
+    public String getContent(CmsObject cms, CmsFile file, String encoding) {
+
+        String content = CmsEncoder.createString(file.getContents(), encoding);
+        CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(cms, file.getRootPath(), false, true);
+        content = macroResolver.resolveMacros(content);
+        return content;
     }
 
     /**
@@ -131,5 +156,30 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
         super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;
+    }
+
+    /**
+     * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
+     */
+    public List parseLinks(CmsObject cms, CmsFile file) {
+
+        CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(cms, file.getRootPath(), false, false);
+        String content = CmsEncoder.createString(file.getContents(), OpenCms.getSystemInfo().getDefaultEncoding());
+        macroResolver.resolveMacros(content); // ignore return value
+        return macroResolver.getLinks();
+    }
+
+    /**
+     * @see org.opencms.file.types.A_CmsResourceTypeLinkParseable#writeFile(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsFile)
+     */
+    public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
+
+        // actualize the link paths and/or ids
+        CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(cms, resource.getRootPath(), false, false);
+        String content = CmsEncoder.createString(resource.getContents(), OpenCms.getSystemInfo().getDefaultEncoding());
+        content = macroResolver.resolveMacros(content);
+        resource.setContents(content.getBytes());
+        // write the content with the 'right' links
+        return super.writeFile(cms, securityManager, resource);
     }
 }

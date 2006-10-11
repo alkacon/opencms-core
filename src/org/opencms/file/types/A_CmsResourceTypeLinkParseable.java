@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeLinkParseable.java,v $
- * Date   : $Date: 2006/10/05 16:59:21 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/10/11 14:28:01 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,10 @@ import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsVfsException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.I_CmsLinkParseable;
-import org.opencms.security.CmsSecurityException;
 
 import java.util.List;
 
@@ -49,7 +47,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.0 
  */
@@ -137,8 +135,7 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
     /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsSecurityManager, CmsFile)
      */
-    public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource)
-    throws CmsException, CmsVfsException, CmsSecurityException {
+    public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
 
         CmsFile file = super.writeFile(cms, securityManager, resource);
         // update the relations after writing!!

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2006/09/27 10:56:01 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/10/11 14:28:01 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,34 +46,38 @@ import java.util.Locale;
  *   <li>{@link #EMBEDDED_IMAGE}</li>
  *   <li>{@link #ATTACHMENT}</li>
  *   <li>{@link #REFERENCE}</li>
+ *   <li>{@link #JSP}</li>
  * </ul>
  * <p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.3.0
  */
 public final class CmsRelationType implements Serializable {
 
-    /** Constant for the modified files only view.     */
+    /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'attachments'. */
     public static final CmsRelationType ATTACHMENT = new CmsRelationType("ATTACHMENT", 3);
 
-    /** Constant for the deleted files only view.  */
+    /** Constant for the <code>&ltimg src=''&gt</code> tag in a html page/element. */
     public static final CmsRelationType EMBEDDED_IMAGE = new CmsRelationType("IMG", 2);
 
-    /** Constant for the all changes view. */
+    /** Constant for the <code>&lta href=''&gt</code> tag in a html page/element. */
     public static final CmsRelationType HYPERLINK = new CmsRelationType("A", 1);
 
-    /** Constant for the new files only view. */
+    /** Constant for the all types of links in a jsp file using the <code>link</code> macro. */
+    public static final CmsRelationType JSP = new CmsRelationType("JSP", 5);
+
+    /** Constant for the <code>OpenCmsVfsFile</code> values in xml content. */
     public static final CmsRelationType REFERENCE = new CmsRelationType("REFERENCE", 4);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -4060567973007877250L;
 
     /** Array constant for all available align types. */
-    private static final CmsRelationType[] VALUE_ARRAY = {HYPERLINK, EMBEDDED_IMAGE, ATTACHMENT, REFERENCE};
+    private static final CmsRelationType[] VALUE_ARRAY = {HYPERLINK, EMBEDDED_IMAGE, ATTACHMENT, REFERENCE, JSP};
 
     /** Internal representation. */
     private final int m_mode;
@@ -163,23 +167,25 @@ public final class CmsRelationType implements Serializable {
 
         String nameKey = null;
         switch (getMode()) {
-            // hyperlink
-            case 1:
+            case 1: // hyperlink
                 nameKey = Messages.GUI_RELATION_TYPE_HYPERLINK_0;
                 break;
-            // embedded image
-            case 2:
+            case 2: // embedded image
                 nameKey = Messages.GUI_RELATION_TYPE_EMBEDDED_IMAGE_0;
                 break;
-            // attachment
-            case 3:
+            case 3: // attachment
                 nameKey = Messages.GUI_RELATION_TYPE_ATTACHMENT_0;
                 break;
-            // reference
-            case 4:
-            default:
+            case 4: // reference
                 nameKey = Messages.GUI_RELATION_TYPE_REFERENCE_0;
                 break;
+            case 5: // jsp
+                nameKey = Messages.GUI_RELATION_TYPE_JSP_0;
+                break;
+            default:
+                return Messages.get().getBundle(locale).key(
+                    Messages.GUI_RELATION_TYPE_UNKNOWN_1,
+                    new Integer(getMode()));
         }
         return Messages.get().getBundle(locale).key(nameKey);
     }
