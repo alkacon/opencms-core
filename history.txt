@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/10 14:18:54 $
- * Version: $Revision: 1.717.2.61 $
+ * Date   : $Date: 2006/10/11 10:40:24 $
+ * Version: $Revision: 1.717.2.62 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,7 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.5.4 - xxxx, 2006
-
+- Extended the Account Management: Details for set permissions in group list and extended list for users in group 
 
 OpenCms 6.5.3 - October 10, 2006
 * Fixed display issue for multiple select boxes in IE

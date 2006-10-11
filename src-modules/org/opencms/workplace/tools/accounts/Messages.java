@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/10/11 10:40:24 $
+ * Version: $Revision: 1.9.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -379,16 +379,31 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GROUPS_DETAIL_HIDE_CHILDS_NAME_0 = "GUI_GROUPS_DETAIL_HIDE_CHILDS_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_HIDE_SET_PERM_HELP_0 = "GUI_GROUPS_DETAIL_HIDE_SET_PERM_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_HIDE_SET_PERM_NAME_0 = "GUI_GROUPS_DETAIL_HIDE_SET_PERM_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_HIDE_USERS_HELP_0 = "GUI_GROUPS_DETAIL_HIDE_USERS_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_HIDE_USERS_NAME_0 = "GUI_GROUPS_DETAIL_HIDE_USERS_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_SET_PERM_NAME_0 = "GUI_GROUPS_DETAIL_SET_PERM_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_SHOW_CHILDS_HELP_0 = "GUI_GROUPS_DETAIL_SHOW_CHILDS_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_SHOW_CHILDS_NAME_0 = "GUI_GROUPS_DETAIL_SHOW_CHILDS_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_SHOW_SET_PERM_HELP_0 = "GUI_GROUPS_DETAIL_SHOW_SET_PERM_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_SHOW_SET_PERM_NAME_0 = "GUI_GROUPS_DETAIL_SHOW_SET_PERM_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_SHOW_USERS_HELP_0 = "GUI_GROUPS_DETAIL_SHOW_USERS_HELP_0";
@@ -578,7 +593,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_HELP_0 = "GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_HELP_0";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_NAME_0 = "GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_NAME_0";
 
