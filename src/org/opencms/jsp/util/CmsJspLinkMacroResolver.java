@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspLinkMacroResolver.java,v $
- * Date   : $Date: 2006/10/11 14:28:01 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/12 10:07:35 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.4 
  */
@@ -60,20 +60,22 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
     public static final String KEY_LINK = "link:";
 
     /** Identifier for the link macro separator. */
-    public static final String KEY_SEPARATOR = ":";
+    public static final char KEY_SEPARATOR = ':';
 
     /** The cms context. */
-    private final CmsObject m_cms;
+    private CmsObject m_cms;
 
-    /** If <code>true</code> the macros get really resolved to valid vfs paths, 
-     *  if not just the path/id in the macros, and the file relations are updated. */
-    private final boolean m_forRfs;
+    /** 
+     * If <code>true</code> the macros get really resolved to valid vfs paths, 
+     * otherwise only the path/id in the macros and the file relations are updated. 
+     */
+    private boolean m_forRfs;
 
     /** The list of links. */
-    private final List m_links = new ArrayList();
+    private List m_links = new ArrayList();
 
     /** If <code>true</code> the links are displayed site aware, if not root paths are used. */
-    private final boolean m_forEditor;
+    private boolean m_forEditor;
 
     /** The jsp root path. */
     private String m_jspRootPath;
@@ -111,6 +113,7 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
 
         String path = null;
         String id = null;
+        
         // validate macro command
         String cmd = KEY_LINK;
         if (macro.startsWith(cmd)) {
@@ -122,15 +125,17 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
             if (pos > 0) {
                 path = path.substring(0, pos);
             }
-            if (path.startsWith("/") && !path.startsWith(m_cms.getRequestContext().getSiteRoot())) {
+            if ((path.charAt(0) == '/') && !path.startsWith(m_cms.getRequestContext().getSiteRoot())) {
                 path = m_cms.getRequestContext().addSiteRoot(path);
             } else if (m_jspRootPath != null) {
                 path = CmsLinkManager.getAbsoluteUri(path, CmsResource.getParentFolder(m_jspRootPath));
             }
         } else {
-            // macro command not found
+            // this is an unknown macro, ignore it
             return null;
         }
+        
+        // we do have a valid link macro now
         CmsUUID uuid = null;
         if (id != null) {
             try {
@@ -173,10 +178,11 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
     }
 
     /**
-     * Resolves the macros in the given input.<p>
+     * Resolves the JSP link management macros in the given input.<p>
      * 
-     * Calls <code>{@link #resolveMacros(String)}</code> until no more macros can 
-     * be resolved in the input. This way "nested" macros in the input are resolved as well.<p> 
+     * Calls <code>{@link #resolveMacros(String)}</code> once for each macro in the input.
+     * This means "nested" macros are not supported in this implementation, which is fine since
+     * it can't happen in JSP link management anyway.<p> 
      * 
      * @see org.opencms.util.I_CmsMacroResolver#resolveMacros(java.lang.String)
      */
@@ -186,16 +192,13 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
         m_links.clear();
 
         // parse the input string
-        String result = input;
+        String result;
         if (input != null) {
-            String lastResult;
-            do {
-                // save result for next comparison
-                lastResult = result;
-                // resolve the macros
-                result = CmsMacroResolver.resolveMacros(result, this);
-                // if nothing changes then the final result is found
-            } while (!result.equals(lastResult));
+            // resolve the macros
+            result = CmsMacroResolver.resolveMacros(input, this);
+        } else {
+            // nothing to resolve
+            result = null;
         }
         // return the result
         return result;
