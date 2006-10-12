@@ -35,16 +35,23 @@ body, table {
 }
 </style>
 <%
-CmsRfsFileViewer viewer = OpenCms.getWorkplaceManager().getFileViewSettings();
-org.opencms.i18n.CmsMessages messages = org.opencms.workplace.tools.workplace.rfsfile.Messages.get().getBundle();
-String filePath = viewer.getFilePath();
+            CmsRfsFileViewer viewer = OpenCms.getWorkplaceManager().getFileViewSettings();
+            org.opencms.i18n.CmsMessages messages = org.opencms.workplace.tools.workplace.rfsfile.Messages.get().getBundle();
+            String filePath = viewer.getFilePath();
 
-if (CmsStringUtil.isEmpty(filePath)) {
-  throw new ServletException(
- messages.key(org.opencms.workplace.tools.workplace.rfsfile.Messages.ERR_DOWNLOAD_SERVLET_FILE_ARG_0));
+            if (CmsStringUtil.isEmpty(filePath)) {
+                throw new ServletException(
+                    messages.key(org.opencms.workplace.tools.workplace.rfsfile.Messages.ERR_DOWNLOAD_SERVLET_FILE_ARG_0));
             }
             File file = new File(filePath);
 %>
+<script type="text/javascript">
+function download(){
+  window.location.href = "<%= request.getParameter("servletUrl")%>?filePath=<%=file.getAbsolutePath().replace('\\', '/') %>"
+}
+
+window.setTimeout("download()",500);
+</script>
 </head>
 <body>
 <p>
@@ -67,13 +74,7 @@ if (CmsStringUtil.isEmpty(filePath)) {
 		<td colspan="2" style="text-align:center;"><input type="button"
 			value="Close" onClick="javascript:window.close()" /></td>
 	</tr>
-	</p>
-	<script type="text/javascript">
-function download(){
-  window.location.href = "<%= request.getParameter("servletUrl")%>?filePath=<%=file.getAbsolutePath().replace('\\', '/') %>"
-}
-
-window.setTimeout("download()",500);
-</script>
+</table>
+</p>
 </body>
 </html>
