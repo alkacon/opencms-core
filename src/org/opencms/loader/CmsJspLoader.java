@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/10/13 08:40:49 $
- * Version: $Revision: 1.100.4.4 $
+ * Date   : $Date: 2006/10/13 08:52:47 $
+ * Version: $Revision: 1.100.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100.4.4 $ 
+ * @version $Revision: 1.100.4.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -1177,29 +1177,46 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @param updatedFiles the already updated files
      * 
      * @return if the given JSP file should be update due to dirty included files
+     * 
+     * @throws ServletException might be thrown in the process of including the JSP 
+     * @throws IOException might be thrown in the process of including the JSP 
+     * @throws CmsLoaderException if the resource type can not be read
      */
-    private boolean updateStrongLinks(CmsResource resource, CmsFlexController controller, Set updatedFiles) {
+    private boolean updateStrongLinks(CmsResource resource, CmsFlexController controller, Set updatedFiles)
+    throws CmsLoaderException, IOException, ServletException {
 
         int numberOfUpdates = updatedFiles.size();
+        CmsObject cms = controller.getCmsObject();
+        CmsRelationFilter type = CmsRelationFilter.TARGETS.filterType(CmsRelationType.JSP_STRONG);
+        Iterator it;
         try {
-            CmsObject cms = controller.getCmsObject();
-            CmsRelationFilter type = CmsRelationFilter.TARGETS.filterType(CmsRelationType.JSP_STRONG);
-            Iterator it = cms.getRelationsForResource(cms.getSitePath(resource), type).iterator();
-            while (it.hasNext()) {
-                CmsRelation relation = (CmsRelation)it.next();
-                CmsResource target = relation.getTarget(cms, CmsResourceFilter.DEFAULT);
-                // check if page was already updated
-                if (updatedFiles.contains(target.getRootPath())) {
-                    // no need to write the included file to the real FS more than once
-                    continue;
-                }
-                // update the target
-                updateJsp(target, controller, updatedFiles);
-            }
-        } catch (Exception e) {
+            it = cms.getRelationsForResource(cms.getSitePath(resource), type).iterator();
+        } catch (CmsException e) {
+            // should never happen
             if (LOG.isErrorEnabled()) {
                 LOG.error(e);
             }
+            return false;
+        }
+        while (it.hasNext()) {
+            CmsRelation relation = (CmsRelation)it.next();
+            CmsResource target = null;
+            try {
+                target = relation.getTarget(cms, CmsResourceFilter.DEFAULT);
+            } catch (CmsException e) {
+                // should never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e);
+                }
+                continue;
+            }
+            // check if page was already updated
+            if (updatedFiles.contains(target.getRootPath())) {
+                // no need to write the included file to the real FS more than once
+                continue;
+            }
+            // update the target
+            updateJsp(target, controller, updatedFiles);
         }
         // the current jsp file should be updated only if one of the included jsp has been updated
         return numberOfUpdates < updatedFiles.size();
