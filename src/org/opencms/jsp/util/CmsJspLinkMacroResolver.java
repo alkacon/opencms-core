@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspLinkMacroResolver.java,v $
- * Date   : $Date: 2006/10/12 10:07:35 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/10/13 08:40:49 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,16 @@ import org.opencms.file.CmsResource;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.I_CmsMacroResolver;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,14 +55,26 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.4 
  */
 public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
 
     /** Identifier for the link macro name. */
-    public static final String KEY_LINK = "link:";
+    public static final String MACRO_LINK = "link:";
+
+    /** Identifier for the link macro name. */
+    public static final String MACRO_LINK_WEAK = "link.weak:";
+
+    /** Identifier for the link macro name. */
+    public static final String MACRO_LINK_STRONG = "link.strong:";
+
+    /** Identifier for link commands. */
+    public static final String[] VALUE_NAME_ARRAY = {MACRO_LINK, MACRO_LINK_WEAK, MACRO_LINK_STRONG};
+
+    /** The link commands wrapped in a List. */
+    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAME_ARRAY));
 
     /** Identifier for the link macro separator. */
     public static final char KEY_SEPARATOR = ':';
@@ -67,15 +84,12 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
 
     /** 
      * If <code>true</code> the macros get really resolved to valid vfs paths, 
-     * otherwise only the path/id in the macros and the file relations are updated. 
+     * otherwise only the path/id in the macros are updated. 
      */
     private boolean m_forRfs;
 
     /** The list of links. */
     private List m_links = new ArrayList();
-
-    /** If <code>true</code> the links are displayed site aware, if not root paths are used. */
-    private boolean m_forEditor;
 
     /** The jsp root path. */
     private String m_jspRootPath;
@@ -86,13 +100,11 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
      * @param cms the cms context
      * @param jspRootPath the (optional) jsp root path, needed for saving from the editor to resolve relative links 
      * @param forRfs Only if <code>true</code> the macros get really resolved to valid vfs paths
-     * @param forEditor If <code>true</code> the links are displayed site aware
      */
-    public CmsJspLinkMacroResolver(CmsObject cms, String jspRootPath, boolean forRfs, boolean forEditor) {
+    public CmsJspLinkMacroResolver(CmsObject cms, String jspRootPath, boolean forRfs) {
 
         m_cms = cms;
         m_forRfs = forRfs;
-        m_forEditor = forEditor;
         m_jspRootPath = jspRootPath;
     }
 
@@ -113,30 +125,42 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
 
         String path = null;
         String id = null;
-        
+
         // validate macro command
-        String cmd = KEY_LINK;
-        if (macro.startsWith(cmd)) {
-            path = macro.substring(cmd.length());
-            int pos = path.indexOf(KEY_SEPARATOR);
-            if (pos > 0 && path.length() > pos + 1) {
-                id = path.substring(pos + 1);
+        Iterator it = VALUE_NAMES.iterator();
+        while (it.hasNext()) {
+            String cmd = it.next().toString();
+            if (macro.startsWith(cmd)) {
+                // a macro was found
+                path = macro.substring(cmd.length());
+                macro = cmd;
+                break;
             }
-            if (pos > 0) {
-                path = path.substring(0, pos);
-            }
-            if ((path.charAt(0) == '/') && !path.startsWith(m_cms.getRequestContext().getSiteRoot())) {
-                path = m_cms.getRequestContext().addSiteRoot(path);
-            } else if (m_jspRootPath != null) {
-                path = CmsLinkManager.getAbsoluteUri(path, CmsResource.getParentFolder(m_jspRootPath));
-            }
-        } else {
+        }
+        if (path == null) {
             // this is an unknown macro, ignore it
             return null;
         }
-        
-        // we do have a valid link macro now
+
+        // we do have a valid link macro now, parse path and id
+        int pos = path.indexOf(KEY_SEPARATOR);
+        if (pos > -1 && path.length() > pos + 1) {
+            id = path.substring(pos + 1);
+        }
+        if (pos > -1) {
+            path = path.substring(0, pos);
+        }
+
+        // check the id
         CmsUUID uuid = null;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(id)) {
+            if (path != null) {
+                // try to use the path as an id (in case there is only an id)
+                id = path;
+            } else {
+                id = null;
+            }
+        }
         if (id != null) {
             try {
                 uuid = new CmsUUID(id);
@@ -144,22 +168,45 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
                 // ignore
             }
         }
-        CmsLink link = new CmsLink("link0", CmsRelationType.JSP, uuid, path, true);
+
+        // rewrite the path
+        if (path == null || path.trim().length() == 0) {
+            path = null;
+        } else {
+            boolean isAbsolute = (path.charAt(0) == '/');
+            path = CmsFileUtil.normalizePath(path, '/');
+            if (!isAbsolute) {
+                path = path.substring(1);
+            }
+            if (isAbsolute && !path.startsWith(m_cms.getRequestContext().getSiteRoot())) {
+                // remove the site root if needed
+                path = m_cms.getRequestContext().addSiteRoot(path);
+            } else if (m_jspRootPath != null) {
+                // get the site aware absolute path
+                path = CmsLinkManager.getAbsoluteUri(path, CmsResource.getParentFolder(m_jspRootPath));
+            }
+        }
+
+        // check the relation type
+        CmsRelationType type = CmsRelationType.JSP_WEAK;
+        if (macro == MACRO_LINK_STRONG) {
+            type = CmsRelationType.JSP_STRONG;
+        }
+
+        // get the link object
+        CmsLink link = new CmsLink("link0", type, uuid, path, true);
         link.checkConsistency(m_cms); // update id/path
         m_links.add(link);
-        if (m_forEditor) {
-            return "" + I_CmsMacroResolver.MACRO_DELIMITER_NEW
-                + I_CmsMacroResolver.MACRO_START_NEW
-                + KEY_LINK
-                + m_cms.getRequestContext().removeSiteRoot(link.getTarget())
-                + I_CmsMacroResolver.MACRO_END_NEW;
-        } else if (m_forRfs) {
+
+        if (m_forRfs) {
+            // return the current correct link path 
             return m_cms.getRequestContext().removeSiteRoot(link.getTarget());
         } else {
+            // rewrite the macro with the right absolute path and id 
             StringBuffer newMacro = new StringBuffer(128);
             newMacro.append(I_CmsMacroResolver.MACRO_DELIMITER_NEW);
             newMacro.append(I_CmsMacroResolver.MACRO_START_NEW);
-            newMacro.append(KEY_LINK);
+            newMacro.append(macro);
             newMacro.append(link.getVfsUri());
             if (link.getStructureId() != null && !link.getStructureId().isNullUUID()) {
                 newMacro.append(KEY_SEPARATOR).append(link.getStructureId());

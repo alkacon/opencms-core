@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/10/11 14:28:01 $
- * Version: $Revision: 1.100.4.3 $
+ * Date   : $Date: 2006/10/13 08:40:49 $
+ * Version: $Revision: 1.100.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
@@ -45,6 +46,9 @@ import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
@@ -58,6 +62,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -106,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100.4.3 $ 
+ * @version $Revision: 1.100.4.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -602,7 +607,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @param byteContent the original JSP content
      * @param encoding the encoding to use for the JSP
      * @param controller the controller for the JSP integration
-     * @param includes a Set containing all JSP pages that have been already updated
+     * @param updatedFiles a Set containing all JSP pages that have been already updated
      * @param isHardInclude indicated if this page is actually a "hard" include with <code>&lt;%@ include file="..." &gt;</code>
      * @return the modified JSP content
      * @throws UnsupportedEncodingException
@@ -611,7 +616,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         byte[] byteContent,
         String encoding,
         CmsFlexController controller,
-        Set includes,
+        Set updatedFiles,
         boolean isHardInclude) {
 
         String content;
@@ -635,9 +640,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         // parse for special %(link:...) macros
         content = parseJspLinkMacros(content, controller);
         // parse for special <%@cms file="..." %> tag
-        content = parseJspCmsTag(content, controller, includes);
+        content = parseJspCmsTag(content, controller, updatedFiles);
         // parse for included files in tags
-        content = parseJspIncludes(content, controller, includes);
+        content = parseJspIncludes(content, controller, updatedFiles);
         // parse for <%@page pageEncoding="..." %> tag
         content = parseJspEncoding(content, encoding, isHardInclude);
         // convert the result to bytes and return it
@@ -654,10 +659,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * 
      * @param content the JSP content to parse
      * @param controller the current JSP controller
-     * @param includes a set of already parsed includes
+     * @param updatedFiles a set of already updated jsp files
      * @return the parsed JSP content
      */
-    private String parseJspCmsTag(String content, CmsFlexController controller, Set includes) {
+    private String parseJspCmsTag(String content, CmsFlexController controller, Set updatedFiles) {
 
         // check if a JSP directive occurs in the file
         int i1 = content.indexOf(DIRECTIVE_START);
@@ -718,7 +723,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
                 if (argument != null) {
                     //  try to update the referenced file
-                    String jspname = updateJsp(argument, controller, includes);
+                    String jspname = updateJsp(argument, controller, updatedFiles);
                     if (jspname != null) {
                         directive = jspname;
                         if (LOG.isDebugEnabled()) {
@@ -880,10 +885,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * 
      * @param content the JSP content to parse
      * @param controller the current JSP controller
-     * @param includes a set of already parsed includes
+     * @param updatedFiles a set of already updated files
      * @return the parsed JSP content
      */
-    private String parseJspIncludes(String content, CmsFlexController controller, Set includes) {
+    private String parseJspIncludes(String content, CmsFlexController controller, Set updatedFiles) {
 
         // check if a JSP directive occurs in the file
         int i1 = content.indexOf(DIRECTIVE_START);
@@ -953,7 +958,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     String pre = directive.substring(0, t2 + t3 + t5);
                     String suf = directive.substring(t2 + t3 + t5 + argument.length());
                     // now try to update the referenced file 
-                    String jspname = updateJsp(argument, controller, includes);
+                    String jspname = updateJsp(argument, controller, updatedFiles);
                     if (jspname != null) {
                         // only change something in case no error had occured
                         directive = pre + jspname + suf;
@@ -991,11 +996,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     private String parseJspLinkMacros(String content, CmsFlexController controller) {
 
-        CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(
-            controller.getCmsObject(),
-            null,
-            true,
-            false);
+        CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(controller.getCmsObject(), null, true);
         return macroResolver.resolveMacros(content);
     }
 
@@ -1011,14 +1012,14 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * 
      * @param resource the reqested JSP file resource in the VFS
      * @param controller the controller for the JSP integration
-     * @param updates a Set containing all JSP pages that have been already updated
+     * @param updatedFiles a Set containing all JSP pages that have been already updated
      * @return the file name of the updated JSP in the "real" FS
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
      * @throws CmsLoaderException if the resource type can not be read
      */
-    private String updateJsp(CmsResource resource, CmsFlexController controller, Set updates)
+    private String updateJsp(CmsResource resource, CmsFlexController controller, Set updatedFiles)
     throws IOException, ServletException, CmsLoaderException {
 
         String jspVfsName = resource.getRootPath();
@@ -1042,11 +1043,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             controller.getCurrentRequest().isOnline());
 
         // check if page was already updated
-        if (updates.contains(jspTargetName)) {
+        if (updatedFiles.contains(jspTargetName)) {
             // no need to write the already included file to the real FS more then once
             return jspTargetName;
         }
-        updates.add(jspTargetName);
 
         String jspPath = CmsFileUtil.getRepositoryName(
             m_jspRepository,
@@ -1066,7 +1066,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             d.mkdirs();
         }
 
-        // check if the JSP muse be updated
+        // check if the JSP must be updated
         boolean mustUpdate = false;
         File f = new File(jspPath);
         if (!f.exists()) {
@@ -1078,12 +1078,15 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         } else if (controller.getCurrentRequest().isDoRecompile()) {
             // recompile is forced with parameter
             mustUpdate = true;
+        } else {
+            mustUpdate = updateStrongLinks(resource, controller, updatedFiles);
         }
 
         if (mustUpdate) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRITING_JSP_1, jspTargetName));
             }
+            updatedFiles.add(jspTargetName);
             byte[] contents;
             String encoding;
             try {
@@ -1105,7 +1108,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
             try {
                 // parse the JSP and modify OpenCms critical directives
-                contents = parseJsp(contents, encoding, controller, updates, isHardInclude);
+                contents = parseJsp(contents, encoding, controller, updatedFiles, isHardInclude);
                 // write the parsed JSP content to the real FS
                 synchronized (this) {
                     // this must be done only one file at a time
@@ -1137,10 +1140,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * 
      * @param vfsName the name of the JSP file resource in the VFS
      * @param controller the controller for the JSP integration
-     * @param includes a Set containing all JSP pages that have been already included (i.e. updated)
+     * @param updatedFiles a Set containing all JSP pages that have been already updated
      * @return the file name of the updated JSP in the "real" FS
      */
-    private String updateJsp(String vfsName, CmsFlexController controller, Set includes) {
+    private String updateJsp(String vfsName, CmsFlexController controller, Set updatedFiles) {
 
         String jspVfsName = CmsLinkManager.getAbsoluteUri(vfsName, controller.getCurrentRequest().getElementRootPath());
         if (LOG.isDebugEnabled()) {
@@ -1153,7 +1156,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             cms.getRequestContext().setSiteRoot("");
             CmsResource includeResource = cms.readResource(jspVfsName);
             // make sure the jsp referenced file is generated
-            jspRfsName = updateJsp(includeResource, controller, includes);
+            jspRfsName = updateJsp(includeResource, controller, updatedFiles);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_NAME_REAL_FS_1, jspRfsName));
             }
@@ -1164,5 +1167,41 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             }
         }
         return jspRfsName;
+    }
+
+    /**
+     * Updates all jsp files that include the given jsp file using the 'link.strong' macro.<p>
+     * 
+     * @param resource the current updated jsp file
+     * @param controller the controller for the jsp integration
+     * @param updatedFiles the already updated files
+     * 
+     * @return if the given JSP file should be update due to dirty included files
+     */
+    private boolean updateStrongLinks(CmsResource resource, CmsFlexController controller, Set updatedFiles) {
+
+        int numberOfUpdates = updatedFiles.size();
+        try {
+            CmsObject cms = controller.getCmsObject();
+            CmsRelationFilter type = CmsRelationFilter.TARGETS.filterType(CmsRelationType.JSP_STRONG);
+            Iterator it = cms.getRelationsForResource(cms.getSitePath(resource), type).iterator();
+            while (it.hasNext()) {
+                CmsRelation relation = (CmsRelation)it.next();
+                CmsResource target = relation.getTarget(cms, CmsResourceFilter.DEFAULT);
+                // check if page was already updated
+                if (updatedFiles.contains(target.getRootPath())) {
+                    // no need to write the included file to the real FS more than once
+                    continue;
+                }
+                // update the target
+                updateJsp(target, controller, updatedFiles);
+            }
+        } catch (Exception e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e);
+            }
+        }
+        // the current jsp file should be updated only if one of the included jsp has been updated
+        return numberOfUpdates < updatedFiles.size();
     }
 }

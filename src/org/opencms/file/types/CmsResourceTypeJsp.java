@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2006/10/11 14:28:01 $
- * Version: $Revision: 1.24.4.1 $
+ * Date   : $Date: 2006/10/13 08:40:49 $
+ * Version: $Revision: 1.24.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.1 $ 
+ * @version $Revision: 1.24.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,23 +103,6 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
-     * Returns the content to be displayed by the editor.<p>
-     * 
-     * @param cms the cms context
-     * @param file the file to handle
-     * @param encoding the encoding
-     * 
-     * @return the content to be displayed by the editor
-     */
-    public String getContent(CmsObject cms, CmsFile file, String encoding) {
-
-        String content = CmsEncoder.createString(file.getContents(), encoding);
-        CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(cms, file.getRootPath(), false, true);
-        content = macroResolver.resolveMacros(content);
-        return content;
-    }
-
-    /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
     public int getLoaderId() {
@@ -163,7 +146,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
      */
     public List parseLinks(CmsObject cms, CmsFile file) {
 
-        CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(cms, file.getRootPath(), false, false);
+        CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(cms, file.getRootPath(), false);
         String content = CmsEncoder.createString(file.getContents(), OpenCms.getSystemInfo().getDefaultEncoding());
         macroResolver.resolveMacros(content); // ignore return value
         return macroResolver.getLinks();
@@ -175,7 +158,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
 
         // actualize the link paths and/or ids
-        CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(cms, resource.getRootPath(), false, false);
+        CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(cms, resource.getRootPath(), false);
         String content = CmsEncoder.createString(resource.getContents(), OpenCms.getSystemInfo().getDefaultEncoding());
         content = macroResolver.resolveMacros(content);
         resource.setContents(content.getBytes());
