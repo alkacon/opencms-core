@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.23.8.1 $
+ * Date   : $Date: 2006/10/13 15:46:53 $
+ * Version: $Revision: 1.23.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23.8.1 $ 
+ * @version $Revision: 1.23.8.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -257,7 +257,9 @@ public class CmsJspNavBuilder {
             List defaultFolders = new ArrayList();
             try {
                 CmsProperty p = cms.readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_DEFAULT_FILE, false);
-                defaultFolders.add(p.getValue());
+                if (!p.isNullProperty()) {
+                    defaultFolders.add(p.getValue());
+                }
             } catch (CmsException exc) {
                 // noop
             }
