@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2006/10/11 14:28:01 $
- * Version: $Revision: 1.12.8.1 $
+ * Date   : $Date: 2006/10/13 08:40:05 $
+ * Version: $Revision: 1.12.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,10 @@ package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeJsp;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -65,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12.8.1 $ 
+ * @version $Revision: 1.12.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,12 +144,7 @@ public class CmsSimpleEditor extends CmsEditor {
             }
             // the file content might have been modified during the write operation
             CmsFile writtenFile = getCms().writeFile(editFile);
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(writtenFile.getTypeId());
-            if (type instanceof CmsResourceTypeJsp) {
-                decodedContent = ((CmsResourceTypeJsp)type).getContent(getCms(), writtenFile, getFileEncoding());
-            } else {
-                decodedContent = CmsEncoder.createString(writtenFile.getContents(), getFileEncoding());
-            }
+            decodedContent = CmsEncoder.createString(writtenFile.getContents(), getFileEncoding());
             setParamContent(encodeContent(decodedContent));
             // set the modified parameter
             setParamModified(Boolean.TRUE.toString());
@@ -195,12 +187,7 @@ public class CmsSimpleEditor extends CmsEditor {
             // lock resource if autolock is enabled
             checkLock(getParamResource());
             CmsFile editFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(editFile.getTypeId());
-            if (type instanceof CmsResourceTypeJsp) {
-                content = ((CmsResourceTypeJsp)type).getContent(getCms(), editFile, getFileEncoding());
-            } else {
-                content = CmsEncoder.createString(editFile.getContents(), getFileEncoding());
-            }
+            content = CmsEncoder.createString(editFile.getContents(), getFileEncoding());
         } catch (CmsException e) {
             // reading of file contents failed, show error dialog
             try {
