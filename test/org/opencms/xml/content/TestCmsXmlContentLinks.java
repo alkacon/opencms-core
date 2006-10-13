@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentLinks.java,v $
- * Date   : $Date: 2006/09/28 07:53:12 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/10/13 08:38:28 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  */
 public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
@@ -240,7 +240,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
     private static CmsLink getExpected(CmsObject cms, boolean forHtml) {
 
         String name = forHtml ? "link0" : CmsLink.DEFAULT_NAME;
-        CmsRelationType type = forHtml ? CmsRelationType.EMBEDDED_IMAGE : CmsRelationType.REFERENCE;
+        CmsRelationType type = forHtml ? CmsRelationType.EMBEDDED_IMAGE : CmsRelationType.XML_WEAK;
         String target = cms.getRequestContext().addSiteRoot(FILENAME);
         CmsLink expected = new CmsLink(name, type, target, true);
         expected.checkConsistency(cms);
@@ -830,7 +830,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
         // get and validate the vfs reference
         String name = CmsLink.DEFAULT_NAME;
-        CmsRelationType type = CmsRelationType.ATTACHMENT;
+        CmsRelationType type = CmsRelationType.XML_STRONG;
         String target = cms.getRequestContext().addSiteRoot(FILENAME);
         CmsLink expectedRefLink = new CmsLink(name, type, target, true);
         expectedRefLink.checkConsistency(cms);
@@ -864,7 +864,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
         // get and validate the vfs reference
         String name = CmsLink.DEFAULT_NAME;
-        CmsRelationType type = CmsRelationType.ATTACHMENT;
+        CmsRelationType type = CmsRelationType.XML_STRONG;
         String target = cms.getRequestContext().addSiteRoot(FILENAME);
         CmsLink expectedRefLink = new CmsLink(name, type, target, true);
         expectedRefLink.checkConsistency(cms);

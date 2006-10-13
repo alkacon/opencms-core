@@ -111,7 +111,7 @@
 
 	<xsd:simpleType name="OpenCmsDefaultAppinfoRelationType">
 		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="attachment|ATTACHMENT|reference|REFERENCE" />
+			<xsd:pattern value="attachment|ATTACHMENT|reference|REFERENCE|weak|WEAK|strong|STRONG" />
 		</xsd:restriction>
 	</xsd:simpleType>
 

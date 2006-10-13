@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2006/09/28 07:53:12 $
- * Version: $Revision: 1.43.4.6 $
+ * Date   : $Date: 2006/10/13 08:38:28 $
+ * Version: $Revision: 1.43.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.6 $
+ * @version $Revision: 1.43.4.7 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -351,13 +351,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             new CmsRelation(file, res2, CmsRelationType.HYPERLINK),
             (CmsRelation)links.get(0));
         TestLinkParseableResourceTypes.assertRelation(
-            new CmsRelation(file, file, CmsRelationType.REFERENCE),
+            new CmsRelation(file, file, CmsRelationType.XML_WEAK),
             (CmsRelation)links.get(1));
 
-        links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterType(CmsRelationType.REFERENCE));
+        links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterType(CmsRelationType.XML_WEAK));
         assertEquals(links.size(), 1);
         TestLinkParseableResourceTypes.assertRelation(
-            new CmsRelation(file, file, CmsRelationType.REFERENCE),
+            new CmsRelation(file, file, CmsRelationType.XML_WEAK),
             (CmsRelation)links.get(0));
 
         links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterType(CmsRelationType.HYPERLINK));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2006/09/28 07:53:12 $
- * Version: $Revision: 1.46.4.3 $
+ * Date   : $Date: 2006/10/13 08:38:29 $
+ * Version: $Revision: 1.46.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46.4.3 $ 
+ * @version $Revision: 1.46.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -350,7 +350,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             relationType = (CmsRelationType)m_relations.get(RELATION_TYPE_PREFIX + path);
         }
         if (relationType == null) {
-            return CmsRelationType.REFERENCE;
+            return CmsRelationType.XML_WEAK;
         }
         return relationType;
     }
@@ -764,7 +764,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         if (invalidateParent != null) {
             m_relations.put(elementName, invalidateParent);
         }
-        CmsRelationType relationType = (type == null ? CmsRelationType.REFERENCE : CmsRelationType.valueOf(type));
+        CmsRelationType relationType = (type == null ? CmsRelationType.XML_WEAK : CmsRelationType.valueOf("xml_" + type));
         m_relations.put(RELATION_TYPE_PREFIX + elementName, relationType);
 
         if (invalidateParent != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2006/09/14 11:24:50 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/10/13 08:40:22 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.0.0
  */
@@ -837,7 +837,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         if (m_relationFilter == null) {
             m_relationFilter = CmsRelationFilter.TARGETS;
             m_relationFilter = m_relationFilter.filterType(CmsRelationType.EMBEDDED_IMAGE);
-            m_relationFilter = m_relationFilter.filterType(CmsRelationType.ATTACHMENT);
+            m_relationFilter = m_relationFilter.filterType(CmsRelationType.XML_STRONG);
         }
         return m_relationFilter;
     }

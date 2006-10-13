@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2006/10/11 14:28:01 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/10/13 08:38:29 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,7 +77,7 @@ public class CmsLink {
     public static final String DEFAULT_NAME = "ref";
 
     /** Default link type. */
-    public static final CmsRelationType DEFAULT_TYPE = CmsRelationType.REFERENCE;
+    public static final CmsRelationType DEFAULT_TYPE = CmsRelationType.XML_WEAK;
 
     /** Name of the anchor node. */
     public static final String NODE_ANCHOR = "anchor";
@@ -266,6 +266,7 @@ public class CmsLink {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_BROKEN_LINK_BY_NAME_1, m_target), e1);
                 }
+                m_structureId = null;
             } finally {
                 cms.getRequestContext().setSiteRoot(siteRoot);
             }

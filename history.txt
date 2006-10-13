@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/11 10:40:24 $
- * Version: $Revision: 1.717.2.62 $
+ * Date   : $Date: 2006/10/13 08:38:28 $
+ * Version: $Revision: 1.717.2.63 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,6 +21,9 @@ Legend:
 
 OpenCms 6.5.4 - xxxx, 2006
 - Extended the Account Management: Details for set permissions in group list and extended list for users in group 
+! Added link management support for Jsp files using the new 'link' macro
+! When accessing a Jsp file including a modified Jsp file (using the 'link' macro) will now be automatically re-export this compound file (so no more 'purge jsp repository' needed)
+- Refactored link types in XML Content: reference to weak and attachment to strong. Old types still works but are deprecated.
 
 OpenCms 6.5.3 - October 10, 2006
 * Fixed display issue for multiple select boxes in IE

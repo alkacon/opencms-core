@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2006/10/11 14:28:01 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/10/13 08:38:29 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,14 +52,14 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.3.0
  */
 public final class CmsRelationType implements Serializable {
 
-    /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'attachments'. */
-    public static final CmsRelationType ATTACHMENT = new CmsRelationType("ATTACHMENT", 3);
+    /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'strong' links. */
+    public static final CmsRelationType XML_STRONG = new CmsRelationType("XML_STRONG", 3);
 
     /** Constant for the <code>&ltimg src=''&gt</code> tag in a html page/element. */
     public static final CmsRelationType EMBEDDED_IMAGE = new CmsRelationType("IMG", 2);
@@ -67,17 +67,20 @@ public final class CmsRelationType implements Serializable {
     /** Constant for the <code>&lta href=''&gt</code> tag in a html page/element. */
     public static final CmsRelationType HYPERLINK = new CmsRelationType("A", 1);
 
-    /** Constant for the all types of links in a jsp file using the <code>link</code> macro. */
-    public static final CmsRelationType JSP = new CmsRelationType("JSP", 5);
+    /** Constant for the all types of links in a jsp file using the <code>link.strong</code> macro. */
+    public static final CmsRelationType JSP_STRONG = new CmsRelationType("JSP_STRONG", 5);
 
-    /** Constant for the <code>OpenCmsVfsFile</code> values in xml content. */
-    public static final CmsRelationType REFERENCE = new CmsRelationType("REFERENCE", 4);
+    /** Constant for the all types of links in a jsp file using the <code>link.weak</code> macro. */
+    public static final CmsRelationType JSP_WEAK = new CmsRelationType("JSP_WEAK", 6);
+
+    /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'weak' links. */
+    public static final CmsRelationType XML_WEAK = new CmsRelationType("XML_WEAK", 4);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -4060567973007877250L;
 
     /** Array constant for all available align types. */
-    private static final CmsRelationType[] VALUE_ARRAY = {HYPERLINK, EMBEDDED_IMAGE, ATTACHMENT, REFERENCE, JSP};
+    private static final CmsRelationType[] VALUE_ARRAY = {HYPERLINK, EMBEDDED_IMAGE, XML_STRONG, XML_WEAK, JSP_STRONG, JSP_WEAK};
 
     /** Internal representation. */
     private final int m_mode;
@@ -136,6 +139,13 @@ public final class CmsRelationType implements Serializable {
                 return VALUE_ARRAY[i];
             }
         }
+        // deprecated types
+        if (valueUp.equals("REFERENCE") || valueUp.equals("XML_REFERENCE")) {
+            return XML_WEAK;
+        } else if (valueUp.equals("ATTACHMENT") || valueUp.equals("XML_ATTACHMENT")) {
+            return XML_STRONG;
+        }
+        // no type found
         throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
             org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
             value,
@@ -173,14 +183,17 @@ public final class CmsRelationType implements Serializable {
             case 2: // embedded image
                 nameKey = Messages.GUI_RELATION_TYPE_EMBEDDED_IMAGE_0;
                 break;
-            case 3: // attachment
-                nameKey = Messages.GUI_RELATION_TYPE_ATTACHMENT_0;
+            case 3: // xml strong
+                nameKey = Messages.GUI_RELATION_TYPE_XML_STRONG_0;
                 break;
-            case 4: // reference
-                nameKey = Messages.GUI_RELATION_TYPE_REFERENCE_0;
+            case 4: // xml weak
+                nameKey = Messages.GUI_RELATION_TYPE_XML_WEAK_0;
                 break;
-            case 5: // jsp
-                nameKey = Messages.GUI_RELATION_TYPE_JSP_0;
+            case 5: // jsp strong
+                nameKey = Messages.GUI_RELATION_TYPE_JSP_STRONG_0;
+                break;
+            case 6: // jsp weak
+                nameKey = Messages.GUI_RELATION_TYPE_JSP_WEAK_0;
                 break;
             default:
                 return Messages.get().getBundle(locale).key(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelation.java,v $
- * Date   : $Date: 2006/10/04 15:56:59 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/10/13 08:38:29 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.3.0 
  */
@@ -122,7 +122,7 @@ public class CmsRelation {
         m_targetPath = targetPath != null ? targetPath : UNDEF;
         m_dateBegin = dateBegin;
         m_dateEnd = dateEnd;
-        m_type = type != null ? type : CmsRelationType.REFERENCE;
+        m_type = type != null ? type : CmsRelationType.XML_WEAK;
     }
 
     /**
