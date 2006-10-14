@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2005/07/29 12:13:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/10/14 08:44:58 $
+ * Version: $Revision: 1.10.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -49,6 +50,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
@@ -56,7 +58,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.10 $ $Date: 2005/07/29 12:13:00 $
+ * @version $Revision: 1.10.8.1 $ $Date: 2006/10/14 08:44:58 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
@@ -105,11 +107,11 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
      * 
      * @param cms the cms object
      * @param indexResource the resource
-     * @param language the language requested
+     * @param index the search index
      * @return the raw text content
      * @throws CmsException if something goes wrong
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language)
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, CmsSearchIndex index)
     throws CmsException {
 
         CmsMasterDataSet resource = (CmsMasterDataSet)indexResource.getData();
@@ -152,18 +154,6 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
     }
 
     /**
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKey(java.lang.String)
-     */
-    public String getDocumentKey(String resourceType) throws CmsException {
-
-        try {
-            return C_DOCUMENT_KEY_PREFIX + ((CmsMasterContent)Class.forName(resourceType).newInstance()).getSubId();
-        } catch (Exception exc) {
-            throw new CmsLegacyException("Instanciation of resource type class " + resourceType + " failed.", exc);
-        }
-    }
-
-    /**
      * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
      */
     public List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException {
@@ -196,37 +186,54 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
     }
 
     /**
-     * Generates a new lucene document instance from contents of the given resource.<p>
-     * 
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, org.opencms.search.CmsSearchIndex)
      */
-    public Document newInstance(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
+    public Document createDocument(CmsObject cms, A_CmsIndexResource resource, CmsSearchIndex index)
+    throws CmsException {
 
         Document document = new Document();
         CmsMasterDataSet content = (CmsMasterDataSet)resource.getData();
         String value = content.m_title;
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-            document.add(Field.Keyword(I_CmsDocumentFactory.DOC_TITLE_KEY, value));
-            document.add(Field.UnStored(I_CmsDocumentFactory.DOC_TITLE_INDEXED, value));
-            document.add(Field.UnStored(I_CmsDocumentFactory.DOC_META, value));
+
+            document.add(new Field(I_CmsDocumentFactory.DOC_TITLE_KEY, value, Field.Store.YES, Field.Index.UN_TOKENIZED));
+            document.add(new Field(I_CmsDocumentFactory.DOC_TITLE_INDEXED, value, Field.Store.NO, Field.Index.TOKENIZED));
+            document.add(new Field(I_CmsDocumentFactory.DOC_META, value, Field.Store.NO, Field.Index.TOKENIZED));
         }
 
-        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, new Date(content.m_dateCreated)));
-        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, new Date(content.m_dateLastModified)));
+        document.add(new Field(I_CmsDocumentFactory.DOC_DATE_CREATED, DateTools.dateToString(new Date(
+            content.m_dateCreated), DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED));
+        document.add(new Field(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, DateTools.dateToString(new Date(
+            content.m_dateLastModified), DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED));
 
-        document.add(Field.Keyword(CmsCosDocument.DOC_CHANNEL, ((CmsCosIndexResource)resource).getChannel()));
-        document.add(Field.Keyword(CmsCosDocument.DOC_CONTENT_DEFINITION, ((CmsCosIndexResource)resource)
-            .getContentDefinition()));
+        document.add(new Field(
+            CmsCosDocument.DOC_CHANNEL,
+            ((CmsCosIndexResource)resource).getChannel(),
+            Field.Store.YES,
+            Field.Index.UN_TOKENIZED));
+        document.add(new Field(
+            CmsCosDocument.DOC_CONTENT_DEFINITION,
+            ((CmsCosIndexResource)resource).getContentDefinition(),
+            Field.Store.YES,
+            Field.Index.UN_TOKENIZED));
 
         String path = m_cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, path));
-        document.add(Field.UnIndexed(CmsCosDocument.DOC_CONTENT_ID, resource.getId().toString()));
+        document.add(new Field(I_CmsDocumentFactory.DOC_PATH, path, Field.Store.YES, Field.Index.UN_TOKENIZED));
+        document.add(new Field(
+            CmsCosDocument.DOC_CONTENT_ID,
+            resource.getId().toString(),
+            Field.Store.YES,
+            Field.Index.UN_TOKENIZED));
 
-        I_CmsExtractionResult extract = extractContent(cms, resource, language);
-        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, extract.getContent()));
+        I_CmsExtractionResult extract = extractContent(cms, resource, index);
+        document.add(new Field(
+            I_CmsDocumentFactory.DOC_CONTENT,
+            extract.getContent(),
+            Field.Store.YES,
+            Field.Index.TOKENIZED));
         extract.release();
-            
+
         return document;
     }
 }

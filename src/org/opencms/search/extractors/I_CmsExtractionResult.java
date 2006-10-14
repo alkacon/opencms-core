@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/I_CmsExtractionResult.java,v $
- * Date   : $Date: 2005/07/29 12:13:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.7.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,6 +102,17 @@ public interface I_CmsExtractionResult {
      * @return the extracted meta information
      */
     Map getMetaInfo();
+    
+    /**
+     * Returns the additional extracted content fields.<p>
+     * 
+     * The result Map contains all additional content fields extracted
+     * by the extractor. The key is always a String, and contains the field name.
+     * The value is also a String and contains the extracted text.<p>
+     * 
+     * @return the additional extracted content fields
+     */
+    Map getAdditionalFields();
 
     /**
      * Releases the information stored in this extraction result, to free up the memory used.<p>

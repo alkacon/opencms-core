@@ -6,13 +6,13 @@
     <Cascade>
       <MyString/>
       <VfsLink>
-        <link type="REFERENCE">
+        <link type="WEAK">
           <target><![CDATA[/sites/default/index.html]]></target>
           <uuid>7d6c22cd-4e3a-11db-9016-5bf59c6009b3</uuid>
         </link>
       </VfsLink>
       <VfsLink>
-        <link type="REFERENCE">
+        <link type="WEAK">
           <target><![CDATA[/sites/default/test.html]]></target>
         </link>
       </VfsLink>
@@ -40,7 +40,7 @@ which are unknown in the test case.]]></content>
     <Cascade>
       <MyString/>
       <VfsLink>
-        <link type="REFERENCE">
+        <link type="WEAK">
           <target><![CDATA[/sites/default/index.jsp]]></target>
         </link>
       </VfsLink>

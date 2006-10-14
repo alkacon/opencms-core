@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlContent.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.8.8.1 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.8.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.xml.A_CmsXmlDocument;
@@ -58,7 +59,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.8.8.1 $ 
+ * @version $Revision: 1.8.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,9 +78,9 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
     /**
      * Returns the raw text content of a given vfs resource of type <code>CmsResourceTypeXmlContent</code>.<p>
      * 
-     * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.A_CmsVfsDocument#createDocument(CmsObject, A_CmsIndexResource, CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language)
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, CmsSearchIndex index)
     throws CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
@@ -95,7 +96,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
                 locales = OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath);
             }
             Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(
-                CmsLocaleManager.getLocale(language),
+                CmsLocaleManager.getLocale(index.getLocale()),
                 OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath),
                 locales);
 

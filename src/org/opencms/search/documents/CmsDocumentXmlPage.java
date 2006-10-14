@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlPage.java,v $
- * Date   : $Date: 2005/07/29 12:13:00 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.11.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsHtmlExtractor;
@@ -57,7 +58,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,9 +77,9 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
     /**
      * Returns the raw text content of a given vfs resource of type <code>CmsResourceTypeXmlPage</code>.<p>
      * 
-     * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.A_CmsVfsDocument#createDocument(CmsObject, A_CmsIndexResource, CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language)
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, CmsSearchIndex index)
     throws CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
@@ -96,7 +97,7 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
                 pageLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath);
             }
             Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(
-                CmsLocaleManager.getLocale(language),
+                CmsLocaleManager.getLocale(index.getLocale()),
                 OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath),
                 pageLocales);
 
@@ -120,7 +121,7 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
 
                 if (ext instanceof I_CmsSearchExtractor) {
                     I_CmsSearchExtractor extra = (I_CmsSearchExtractor)ext;
-                    I_CmsExtractionResult extract = extra.extractContent(cms, indexResource, language);
+                    I_CmsExtractionResult extract = extra.extractContent(cms, indexResource, index);
                     result = result + "\n" + extract.getContent();
                     extract.release();
                 } else {

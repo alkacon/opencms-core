@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentPlainText.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.10.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
@@ -49,7 +50,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,9 +69,9 @@ public class CmsDocumentPlainText extends A_CmsVfsDocument {
     /**
      * Returns the raw text content of a given vfs resource containing plain text data.<p>
      * 
-     * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.A_CmsVfsDocument#createDocument(CmsObject, A_CmsIndexResource, CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language)
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, CmsSearchIndex index)
     throws CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
@@ -88,7 +89,7 @@ public class CmsDocumentPlainText extends A_CmsVfsDocument {
                 if (ext instanceof I_CmsSearchExtractor) {
 
                     I_CmsSearchExtractor extractor = (I_CmsSearchExtractor)ext;
-                    return extractor.extractContent(cms, indexResource, language);
+                    return extractor.extractContent(cms, indexResource, index);
                 } else {
                     throw new CmsIndexException(Messages.get().container(
                         Messages.ERR_EXTRACTION_CLASS_2,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLinkUpdateUtil.java,v $
- * Date   : $Date: 2006/09/28 07:53:12 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -51,6 +51,17 @@ public final class CmsLinkUpdateUtil {
     private CmsLinkUpdateUtil() {
 
         // no-op
+    }
+
+    /**
+     * Updates the type for a link xml element node.<p>
+     * 
+     * @param element the link element node to update
+     * @param type the relation type to set
+     */
+    public static void updateType(Element element, CmsRelationType type) {
+
+        updateAttribute(element, CmsLink.ATTRIBUTE_TYPE, type.getTypeShort());
     }
 
     /**
@@ -75,14 +86,38 @@ public final class CmsLinkUpdateUtil {
     }
 
     /**
-     * Updates the type for a link xml element node.<p>
+     * Updates the given xml element with this link information.<p>
      * 
-     * @param element the link element node to update
-     * @param type the relation type to set
+     * @param link the link to get the information from
+     * @param element the &lt;link&gt; element to update
      */
-    public static void updateType(Element element, CmsRelationType type) {
+    public static void updateXmlForHtmlValue(CmsLink link, Element element) {
 
-        updateAttribute(element, CmsLink.ATTRIBUTE_TYPE, type.toString());
+        // if element is not null
+        if (element != null) {
+            // update the additional attributes
+            updateAttribute(element, CmsLink.ATTRIBUTE_NAME, link.getName());
+            updateAttribute(element, CmsLink.ATTRIBUTE_INTERNAL, Boolean.toString(link.isInternal()));
+            // update the common sub-elements and attributes
+            updateXmlForVfsFile(link, element);
+        }
+    }
+
+    /**
+     * Updates the given xml element with this link information.<p>
+     * 
+     * @param link the link to get the information from
+     * @param element the &lt;link&gt; element to update
+     */
+    public static void updateXmlForVfsFile(CmsLink link, Element element) {
+
+        // if element is not null
+        if (element != null) {
+            // update the type attribute
+            updateAttribute(element, CmsLink.ATTRIBUTE_TYPE, link.getType().getTypeShort());
+            // update the sub-elements
+            updateXml(link, element, false);
+        }
     }
 
     /**
@@ -143,41 +178,6 @@ public final class CmsLinkUpdateUtil {
                 // remove element
                 parent.remove(nodeElement);
             }
-        }
-    }
-
-    /**
-     * Updates the given xml element with this link information.<p>
-     * 
-     * @param link the link to get the information from
-     * @param element the &lt;link&gt; element to update
-     */
-    public static void updateXmlForVfsFile(CmsLink link, Element element) {
-
-        // if element is not null
-        if (element != null) {
-            // update the type attribute
-            updateAttribute(element, CmsLink.ATTRIBUTE_TYPE, link.getType().toString());
-            // update the sub-elements
-            updateXml(link, element, false);
-        }
-    }
-
-    /**
-     * Updates the given xml element with this link information.<p>
-     * 
-     * @param link the link to get the information from
-     * @param element the &lt;link&gt; element to update
-     */
-    public static void updateXmlForHtmlValue(CmsLink link, Element element) {
-
-        // if element is not null
-        if (element != null) {
-            // update the additional attributes
-            updateAttribute(element, CmsLink.ATTRIBUTE_NAME, link.getName());
-            updateAttribute(element, CmsLink.ATTRIBUTE_INTERNAL, Boolean.toString(link.isInternal()));
-            // update the common sub-elements and attributes
-            updateXmlForVfsFile(link, element);
         }
     }
 }

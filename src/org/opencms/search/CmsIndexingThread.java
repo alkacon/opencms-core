@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.26.4.1 $
+ * Date   : $Date: 2006/10/14 08:44:58 $
+ * Version: $Revision: 1.26.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.lucene.index.IndexWriter;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.26.4.1 $ 
+ * @version $Revision: 1.26.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,7 +128,7 @@ public class CmsIndexingThread extends Thread {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATING_INDEX_DOC_0));
             }
-            Document doc = m_factory.newInstance(m_cms, m_res, m_index.getLocale());
+            Document doc = m_factory.createDocument(m_cms, m_res, m_index);
 
             if (doc == null) {
                 throw new CmsIndexException(Messages.get().container(Messages.ERR_CREATING_INDEX_DOC_0));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentMsPowerPoint.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.7.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractorMsPowerPoint;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
@@ -46,7 +47,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,9 +66,9 @@ public class CmsDocumentMsPowerPoint extends A_CmsVfsDocument {
     /**
      * Returns the raw text content of a given vfs resource containing MS PowerPoint data.<p>
      * 
-     * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.A_CmsVfsDocument#createDocument(CmsObject, A_CmsIndexResource, org.opencms.search.CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language)
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, CmsSearchIndex index)
     throws CmsIndexException, CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();

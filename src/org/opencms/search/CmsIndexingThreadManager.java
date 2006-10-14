@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.25.4.1 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.25.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.25.4.1 $ 
+ * @version $Revision: 1.25.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,6 +147,10 @@ public class CmsIndexingThreadManager extends Thread {
             return;
         }
 
+        int todo = 0;
+        // TODO: check caching options, add key for projects to distinguish between "online" and "offline"
+        // TODO: what about "concurrent" generation of the same file (if thread has started but not finished yet)
+        
         Document cachedDoc = m_documentCache == null ? null
         : (Document)m_documentCache.get(res.getId().toString().concat(index.getLocale()));
         if (cachedDoc != null) {

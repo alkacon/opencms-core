@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2006/10/13 08:38:29 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,7 +143,7 @@ public class CmsLink {
         }
         Attribute attrType = element.attribute(ATTRIBUTE_TYPE);
         if (attrType != null) {
-            m_type = CmsRelationType.valueOf(attrType.getValue());
+            m_type = CmsRelationType.valueOfXml(attrType.getValue());
         } else {
             m_type = DEFAULT_TYPE;
         }
@@ -173,19 +173,6 @@ public class CmsLink {
      * 
      * @param name the internal name of this link
      * @param type the type of this link
-     * @param uri the link uri
-     * @param internal indicates if the link is internal within OpenCms 
-     */
-    public CmsLink(String name, CmsRelationType type, String uri, boolean internal) {
-
-        this(name, type, null, uri, internal);
-    }
-
-    /**
-     * Creates a new link object without a reference to the xml page link element.<p>
-     * 
-     * @param name the internal name of this link
-     * @param type the type of this link
      * @param structureId the structure id of the link
      * @param uri the link uri
      * @param internal indicates if the link is internal within OpenCms 
@@ -200,6 +187,19 @@ public class CmsLink {
         m_uri = uri;
         // update component members from the uri
         setComponents();
+    }
+
+    /**
+     * Creates a new link object without a reference to the xml page link element.<p>
+     * 
+     * @param name the internal name of this link
+     * @param type the type of this link
+     * @param uri the link uri
+     * @param internal indicates if the link is internal within OpenCms 
+     */
+    public CmsLink(String name, CmsRelationType type, String uri, boolean internal) {
+
+        this(name, type, null, uri, internal);
     }
 
     /**

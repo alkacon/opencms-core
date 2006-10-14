@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.24.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,18 +34,30 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.search.A_CmsIndexResource;
+import org.opencms.search.CmsSearchIndex;
 
 import java.util.List;
 
 import org.apache.lucene.document.Document;
 
 /**
- * Implementation interface for lucene document factories used in OpenCms.<p>
+ * Used to create index Lucene Documents for OpenCms resources,
+ * controls the text extraction algorithm used for a specific OpenCms resource type / MIME type combination.<p>
+ * 
+ * The configuration of the search index is defined in <code>opencms-search.xml</code>.
+ * There you can associate a combintion of OpenCms resource types and MIME types to an instance
+ * of this factory. This rather complex configuration is required because only the combination of
+ * OpenCms resource type and MIME type can decide what to use for search indexing. 
+ * For example, if the OpenCms resource type is <code>plain</code>,
+ * the extraction algorithm for MIME types <code>.html</code> and <code>.txt</code> must be different.
+ * On the other hand, the MIME type <code>.html</code> in OpenCms can be almost any resource type,
+ * like <code>xmlpage</code>, <code>xmlcontent</code> or even <code>jsp</code>.<p> 
  * 
  * @author Carsten Weinholz 
- * @author Thomas Weckert  
+ * @author Thomas Weckert 
+ * @author Alexander Kandzior
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,16 +115,31 @@ public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
     String SEARCH_PRIORITY_NORMAL_VALUE = "normal";
 
     /**
-     * Returns the document key for the search manager.<p>
+     * Creates the Lucene Document for the given index resource and the given search index.<p>
      * 
-     * @param resourceType the resource type to get the document key for
-     * @return the document key for the search manager
+     * This triggers the indexing process for the given index resource accoring to the configuration 
+     * of the provided index.<p>
+     * 
+     * The provided index resource contains the basic contents to index.
+     * The provided search index contains the configuration what to index, such as the locale and 
+     * possible special field mappings.<p>
+     * 
+     * @param cms the cms object used to access the OpenCms VFS
+     * @param resource the search index resource to create the Lucene document from
+     * @param index the search index to create the Document for
+     * 
+     * @return the Lucene Document for the given index resource and the given search index
+     * 
      * @throws CmsException if something goes wrong
      */
-    String getDocumentKey(String resourceType) throws CmsException;
+    Document createDocument(CmsObject cms, A_CmsIndexResource resource, CmsSearchIndex index) throws CmsException;
 
     /**
-     * Returns a list of document keys for the documenttype.<p>
+     * Returns the list of accepted keys for the resource types that can be indexed using this document factory.<p>
+     * 
+     * The result List contains String objects. 
+     * This String is later matched against {@link A_CmsIndexResource#getDocumentKey(boolean)} to find
+     * the corrospondig {@link I_CmsDocumentFactory} for a resource to index.<p> 
      * 
      * The list of accepted resource types may contain a catch-all entry "*";
      * in this case, a list for all possible resource types is returned,
@@ -120,26 +147,17 @@ public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
      * 
      * @param resourceTypes list of accepted resource types
      * @param mimeTypes list of accepted mime types
-     * @return a list of document keys for this document factory
+     * 
+     * @return the list of accepted keys for the resource types that can be indexed using this document factory (String objects)
+     * 
      * @throws CmsException if something goes wrong
      */
     List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException;
 
     /**
-     * Returns the name of the documenttype.<p>
+     * Returns the name of this document type factory.<p>
      * 
-     * @return the name of the documenttype
+     * @return the name of this document type factory
      */
     String getName();
-
-    /**
-     * Creates a new instance of a lucene document type for the concrete file type.<p>
-     * 
-     * @param cms the cms object
-     * @param resource a cms resource
-     * @param language the requested language
-     * @return a lucene document for the given resource
-     * @throws CmsException if something goes wrong
-     */
-    Document newInstance(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractionResult.java,v $
- * Date   : $Date: 2005/07/29 12:13:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.5.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,14 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.8.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExtractionResult implements I_CmsExtractionResult {
+
+    /** The extracted additional fields. */
+    private Map m_additionalFields;
 
     /** The extracted content. */
     private String m_content;
@@ -55,13 +58,24 @@ public class CmsExtractionResult implements I_CmsExtractionResult {
     private Map m_metaInfo;
 
     /**
-     * Creates a new extration result without meta information.<p>
+     * Creates a new extration result without meta information and without additional fields.<p>
      * 
      * @param content the extracted content
      */
     public CmsExtractionResult(String content) {
 
-        this(content, null);
+        this(content, null, null);
+    }
+
+    /**
+     * Creates a new extration result without additional fields.<p>
+     * 
+     * @param content the extracted content
+     * @param metaInfo the extracted documnet meta information
+     */
+    public CmsExtractionResult(String content, Map metaInfo) {
+
+        this(content, metaInfo, null);
     }
 
     /**
@@ -69,15 +83,29 @@ public class CmsExtractionResult implements I_CmsExtractionResult {
      * 
      * @param content the extracted content
      * @param metaInfo the extracted documnet meta information
+     * @param additionalFields the additional extracted fields
      */
-    public CmsExtractionResult(String content, Map metaInfo) {
+    public CmsExtractionResult(String content, Map metaInfo, Map additionalFields) {
 
         m_content = content;
         m_metaInfo = metaInfo;
+        m_additionalFields = additionalFields;
 
         if (m_metaInfo == null) {
             m_metaInfo = Collections.EMPTY_MAP;
         }
+
+        if (m_additionalFields == null) {
+            m_additionalFields = Collections.EMPTY_MAP;
+        }
+    }
+
+    /**
+     * @see org.opencms.search.extractors.I_CmsExtractionResult#getAdditionalFields()
+     */
+    public Map getAdditionalFields() {
+
+        return m_additionalFields;
     }
 
     /**

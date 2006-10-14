@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.14.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,13 +60,13 @@ import org.apache.lucene.document.Field;
 /**
  * Base document factory class for a VFS <code>{@link org.opencms.file.CmsResource}</code>, 
  * just requires a specialized implementation of 
- * <code>{@link I_CmsDocumentFactory#extractContent(CmsObject, A_CmsIndexResource, String)}</code>
+ * <code>{@link I_CmsDocumentFactory#extractContent(CmsObject, A_CmsIndexResource, CmsSearchIndex)}</code>
  * for text extraction from the binary document content.<p>
  * 
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,21 +92,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
         m_name = name;
     }
-
-    /**
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKey(java.lang.String)
-     */
-    public String getDocumentKey(String resourceType) throws CmsIndexException {
-
-        try {
-            return VFS_DOCUMENT_KEY_PREFIX + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getTypeId();
-        } catch (Exception exc) {
-            throw new CmsIndexException(Messages.get().container(
-                Messages.ERR_RESOURCE_TYPE_INSTANTIATION_1,
-                resourceType), exc);
-        }
-    }
-
+    
     /**
      * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
      */
@@ -150,28 +136,28 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     }
 
     /**
-     * Generates a new lucene document instance from contents of the given resource.<p>
+     * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
      * 
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, A_CmsIndexResource, CmsSearchIndex)
      */
-    public Document newInstance(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
+    public Document createDocument(CmsObject cms, A_CmsIndexResource resource, CmsSearchIndex index) throws CmsException {
 
         Document document = new Document();
         CmsResource res = (CmsResource)resource.getData();
         String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
 
         // extract the content from the resource
-        String text = null;
+        String textContent = null;
         try {
-            I_CmsExtractionResult content = extractContent(cms, resource, language);
-            text = mergeMetaInfo(content);
+            I_CmsExtractionResult content = extractContent(cms, resource, index);
+            textContent = mergeMetaInfo(content);
             content.release();
         } catch (Exception e) {
             // text extraction failed for document - continue indexing meta information only
             LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
         }
-        if (text != null) {
-            document.add(new Field(I_CmsDocumentFactory.DOC_CONTENT, text, Field.Store.YES, Field.Index.TOKENIZED));
+        if (textContent != null) {
+            document.add(new Field(I_CmsDocumentFactory.DOC_CONTENT, textContent, Field.Store.YES, Field.Index.TOKENIZED));
         }
 
         StringBuffer meta = new StringBuffer(512);
@@ -305,36 +291,51 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             return null;
         }
 
-        StringBuffer result = new StringBuffer(4096);
+        String result = content;
+        // check if we must append meta information to the result, if not don't use additional memory
         if (metaInfo != null) {
+            // calculate a resonable result content length
+            int bufferSize = content == null ? 256 : content.length() + 256;
+            StringBuffer buffer = null;
             String meta;
             meta = (String)metaInfo.get(I_CmsExtractionResult.META_TITLE);
             if (CmsStringUtil.isNotEmpty(meta)) {
-                result.append(meta);
-                result.append('\n');
+                buffer = new StringBuffer(bufferSize);
+                buffer.append(meta);
+                buffer.append('\n');
             }
             meta = (String)metaInfo.get(I_CmsExtractionResult.META_SUBJECT);
             if (CmsStringUtil.isNotEmpty(meta)) {
-                result.append(meta);
-                result.append('\n');
+                if (buffer == null) {
+                    buffer = new StringBuffer(bufferSize);
+                }
+                buffer.append(meta);
+                buffer.append('\n');
             }
             meta = (String)metaInfo.get(I_CmsExtractionResult.META_KEYWORDS);
             if (CmsStringUtil.isNotEmpty(meta)) {
-                result.append(meta);
-                result.append('\n');
+                if (buffer == null) {
+                    buffer = new StringBuffer(bufferSize);
+                }                
+                buffer.append(meta);
+                buffer.append('\n');
             }
             meta = (String)metaInfo.get(I_CmsExtractionResult.META_COMMENTS);
             if (CmsStringUtil.isNotEmpty(meta)) {
-                result.append(meta);
-                result.append('\n');
+                if (buffer == null) {
+                    buffer = new StringBuffer(bufferSize);
+                }                
+                buffer.append(meta);
+                buffer.append('\n');
             }
-        }
-
-        if (content != null) {
-            result.append(content);
-        }
-
-        return result.toString();
+            if (buffer != null) {
+                if (content != null) {
+                    buffer.append(content);
+                }
+                result = buffer.toString();
+            }
+        }        
+        return result; 
     }
 
     /**

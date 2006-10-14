@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/13 08:38:28 $
- * Version: $Revision: 1.717.2.63 $
+ * Date   : $Date: 2006/10/14 08:44:58 $
+ * Version: $Revision: 1.717.2.64 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,9 +21,14 @@ Legend:
 
 OpenCms 6.5.4 - xxxx, 2006
 - Extended the Account Management: Details for set permissions in group list and extended list for users in group 
-! Added link management support for Jsp files using the new 'link' macro
-! When accessing a Jsp file including a modified Jsp file (using the 'link' macro) will now be automatically re-export this compound file (so no more 'purge jsp repository' needed)
-- Refactored link types in XML Content: reference to weak and attachment to strong. Old types still works but are deprecated.
+! Added link management to JSP files using the new 'link' macro
+! Dependencies in JSP files because of <@include ...> tags will will now be detected if the new 'link.strong' macro 
+  is used to reference the include target - in this case the JSP will be updated if the included target has changed
+- Refactored link types in XML Content: 'reference' to 'weak' and 'attachment' to 'strong'
+- Updated lucene-core.jar to version 2.0.0
+- Updated lucene-analyzers.jar to version 2.0.0
+- Updated lucene-snowball.jar to version 2.0.0
+- Refactoring the Search API, passing the index as a parameter instead of only the locale 
 
 OpenCms 6.5.3 - October 10, 2006
 * Fixed display issue for multiple select boxes in IE

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsInternalLinksValidator.java,v $
- * Date   : $Date: 2006/10/05 12:04:31 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/10/14 08:44:57 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.3
  */
@@ -65,18 +65,17 @@ public class CmsInternalLinksValidator {
     /** The cms context object. */
     private CmsObject m_cms;
 
-    /** All resources with broken links. */
-    private List m_resourcesWithBrokenLinks;
-
     /** The number of not visible resources with broken links. */
     private int m_notVisibleResourcesCount;
+
+    /** All resources with broken links. */
+    private List m_resourcesWithBrokenLinks;
 
     /**
      * Creates a new helper object.<p>
      * 
      * @param cms the cms object
      * @param resourceNames a list of resource names to be deleted
-     * @param includeSiblings if the siblings should also be deleted
      */
     public CmsInternalLinksValidator(CmsObject cms, List resourceNames) {
 
@@ -85,13 +84,29 @@ public class CmsInternalLinksValidator {
     }
 
     /**
-     * If no relation would be broken deleting the given resources.<p>
+     * Returns all broken links for the given resource.<p>
      * 
-     * @return <code>true</code> if no relation would be broken deleting the given resources
+     * @param resourceName the resource to get the broken link
+     * 
+     * @return a list of {@link CmsRelation} objects
      */
-    public boolean isEmpty() {
+    public List getBrokenLinksForResource(String resourceName) {
 
-        return m_brokenRelations.isEmpty();
+        return (List)m_brokenRelations.get(resourceName);
+    }
+
+    /**
+     * Returns the number of not visible resources with broken links.<p>
+     * 
+     * @return the number of not visible resources with broken links
+     */
+    public int getNotVisibleResourcesCount() {
+
+        if (m_resourcesWithBrokenLinks == null) {
+            // compute it if needed
+            getResourcesWithBrokenLinks();
+        }
+        return m_notVisibleResourcesCount;
     }
 
     /**
@@ -131,29 +146,13 @@ public class CmsInternalLinksValidator {
     }
 
     /**
-     * Returns the number of not visible resources with broken links.<p>
+     * If no relation would be broken deleting the given resources.<p>
      * 
-     * @return the number of not visible resources with broken links
+     * @return <code>true</code> if no relation would be broken deleting the given resources
      */
-    public int getNotVisibleResourcesCount() {
+    public boolean isEmpty() {
 
-        if (m_resourcesWithBrokenLinks == null) {
-            // compute it if needed
-            getResourcesWithBrokenLinks();
-        }
-        return m_notVisibleResourcesCount;
-    }
-
-    /**
-     * Returns all broken links for the given resource.<p>
-     * 
-     * @param resourceName the resource to get the broken link
-     * 
-     * @return a list of {@link CmsRelation} objects
-     */
-    public List getBrokenLinksForResource(String resourceName) {
-
-        return (List)m_brokenRelations.get(resourceName);
+        return m_brokenRelations.isEmpty();
     }
 
     /**

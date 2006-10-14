@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsPageDocument.java,v $
- * Date   : $Date: 2005/06/27 23:27:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/10/14 08:44:58 $
+ * Version: $Revision: 1.8.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.search.A_CmsIndexResource;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -46,7 +47,7 @@ import org.htmlparser.parserapplications.StringExtractor;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypePage</code>.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2005/06/27 23:27:46 $
+ * @version $Revision: 1.8.8.1 $ $Date: 2006/10/14 08:44:58 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -65,9 +66,9 @@ public class CmsPageDocument extends A_CmsVfsDocument {
     /**
      * Gets the raw text content of a cms resource.<p>
      * 
-     * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.A_CmsVfsDocument#createDocument(CmsObject, A_CmsIndexResource, CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language) throws CmsException {
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, CmsSearchIndex index) throws CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
         String rawContent = null;
