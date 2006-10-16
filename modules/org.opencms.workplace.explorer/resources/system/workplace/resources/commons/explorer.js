@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/10/04 09:41:00 $
- * Version: $Revision: 1.13.4.7 $
+ * Date   : $Date: 2006/10/16 15:32:02 $
+ * Version: $Revision: 1.13.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -507,7 +507,7 @@ function showContext(doc, i, isSingleContext) {
 						}
 
 						link += "resource=" + resourceName + "\"";
-						if (result == 4) {
+						if (vi.menus[typeId].items[a].target != null && vi.menus[typeId].items[a].target != "''") {
 							// href has a target set
 							link += " target=" + vi.menus[typeId].items[a].target;
 						}
