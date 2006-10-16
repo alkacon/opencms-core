@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/11 13:41:12 $
- * Version: $Revision: 1.766 $
+ * Date   : $Date: 2006/10/16 15:34:03 $
+ * Version: $Revision: 1.767 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,7 +22,7 @@ Legend:
 OpenCms 6.2.3 -
 ! History list optionally shows project name and description
 ! Additional optional dbcp parameters for connection pooling and validation provided in opencms.properties
-* fixed display issue for multiple select boxes in IE
+* Fixed issue #1247: Display issue for multiple select boxes and help texts in IE
 ! New configuration option for initial checkbox state on new folder dialog in opencms-workplace.xml 
 ! Content tool for property change allows to set property values for resources that have an empty old value
 ! Added option to delete locales in XML content and page editor
@@ -47,6 +47,10 @@ OpenCms 6.2.3 -
 * Fixed issue #1238: Form-Module produces wrong HTML-code
 - While publishing projects in Project Management there is now a link validation before publishing
 - Extended the Account Management: Details for permissions in group list and extended list for users in group
+* Fixed issue #1225: Typo in localized message bundle ERR_DIRECT_PUBLISH_PARENT_NEW_2
+* Fixed issue #1227: Insufficient access rights on workplace css files if static export is disabled
+* Fixed issue #1236: Target attribute for explorer contextmenu entries does not work in all cases
+* Fixed issue #1239: Setup Wizard Generic Database error
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
