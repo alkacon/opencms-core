@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsLinkManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/10/16 13:30:24 $
+ * Version: $Revision: 1.8.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.4.1 $
  * 
  * @since 6.0.0
  */
@@ -124,15 +124,50 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
      * @throws Exception
      */
     public void testLinkSubstitution() throws Exception {
-        
+
         String test;
         CmsObject cms = getCmsObject();
         echo("Testing link substitution");
-        
+
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
         CmsLinkManager linkManager = OpenCms.getLinkManager();
+
         test = linkManager.substituteLink(cms, "/folder1/index.html?additionalParam", "/sites/default");
         System.out.println(test);
         assertEquals("/data/opencms/folder1/index.html?additionalParam", test);
+
+        test = linkManager.substituteLink(
+            cms,
+            CmsLinkManager.getAbsoluteUri("/", "/folder1/index.html"),
+            "/sites/default");
+        System.out.println(test);
+        assertEquals("/data/opencms/", test);
+
+        test = linkManager.substituteLink(
+            cms,
+            CmsLinkManager.getAbsoluteUri("./", "/folder1/index.html"),
+            "/sites/default");
+        System.out.println(test);
+        assertEquals("/data/opencms/folder1/", test);
+                
+        test = CmsLinkManager.getRelativeUri("/index.html", "/index.html");
+        System.out.println(test);
+        assertEquals("index.html", test);
+        
+        test = CmsLinkManager.getRelativeUri("/folder1/index.html", "/folder1/");
+        System.out.println(test);
+        assertEquals("./", test);
+        
+        test = CmsLinkManager.getRelativeUri("/index.html", "/");
+        System.out.println(test);
+        assertEquals("./", test);
+        
+        test = CmsLinkManager.getRelativeUri("/index.html", "./");
+        System.out.println(test);
+        assertEquals("./", test);
+        
+        test = CmsLinkManager.getRelativeUri("/", "/");
+        System.out.println(test);
+        assertEquals("./", test);        
     }
 }
