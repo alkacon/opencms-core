@@ -1,10 +1,11 @@
 ﻿<%@ CodePage=65001 Language="VBScript"%>
 <%
 Option Explicit
+Response.Buffer = True
 %>
 <!--
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -71,6 +72,10 @@ Else
 	If ( Right( sServerDir, 1 ) <> "\" ) Then
 		sServerDir = sServerDir & "\"
 	End If
+	
+	If ( ConfigUseFileType = True ) Then
+		sServerDir = sServerDir & resourceType & "\"
+	End If 
 
 	Dim oFSO
 	Set oFSO = Server.CreateObject( "Scripting.FileSystemObject" )
@@ -97,8 +102,12 @@ Else
 			Exit Do
 		End If
 	Loop
-	Response.Write( sFilePath )
-	sFileUrl = ConfigUserFilesPath & sFileName
+
+	If ( ConfigUseFileType = True ) Then
+		sFileUrl = ConfigUserFilesPath & resourceType & "/" & sFileName
+	Else
+		sFileUrl = ConfigUserFilesPath & sFileName
+	End If
 
 	SendResults sErrorNumber, sFileUrl, sFileName, ""
 	

@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -99,13 +99,18 @@ Button			: "Buton",
 SelectionField	: "Câmp selecţie (SelectionField)",
 ImageButton		: "Buton imagine (ImageButton)",
 
+FitWindow		: "Maximizează mărimea editorului",
+
 // Context Menu
 EditLink			: "Editează Link",
-InsertRow			: "Inserează Row",
-DeleteRows			: "Şterge Rows",
-InsertColumn		: "Inserează Column",
-DeleteColumns		: "Şterge Columns",
-InsertCell			: "Inserează Cell",
+CellCM				: "Celulă",
+RowCM				: "Linie",
+ColumnCM			: "Coloană",
+InsertRow			: "Inserează linie",
+DeleteRows			: "Şterge linii",
+InsertColumn		: "Inserează coloană",
+DeleteColumns		: "Şterge celule",
+InsertCell			: "Inserează celulă",
 DeleteCells			: "Şterge celule",
 MergeCells			: "Uneşte celule",
 SplitCell			: "Împarte celulă",
@@ -147,12 +152,12 @@ DlgBtnCancel		: "Anulare",
 DlgBtnClose			: "Închidere",
 DlgBtnBrowseServer	: "Răsfoieşte server",
 DlgAdvancedTag		: "Avansat",
-DlgOpOther			: "&lt;Altul&gt;",
+DlgOpOther			: "<Altul>",
 DlgInfoTab			: "Informaţii",
 DlgAlertUrl			: "Vă rugăm să scrieţi URL-ul",
 
 // General Dialogs Labels
-DlgGenNotSet		: "&lt;nesetat&gt;",
+DlgGenNotSet		: "<nesetat>",
 DlgGenId			: "Id",
 DlgGenLangDir		: "Direcţia cuvintelor",
 DlgGenLangDirLtr	: "stânga-dreapta (LTR)",
@@ -216,12 +221,12 @@ DlgLnkTypeURL		: "URL",
 DlgLnkTypeAnchor	: "Ancoră în această pagină",
 DlgLnkTypeEMail		: "E-Mail",
 DlgLnkProto			: "Protocol",
-DlgLnkProtoOther	: "&lt;altul&gt;",
+DlgLnkProtoOther	: "<altul>",
 DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Selectaţi o ancoră",
 DlgLnkAnchorByName	: "după numele ancorei",
 DlgLnkAnchorById	: "după Id-ul elementului",
-DlgLnkNoAnchors		: "&lt;Nicio ancoră disponibilă în document&gt;",
+DlgLnkNoAnchors		: "<Nicio ancoră disponibilă în document>",
 DlgLnkEMail			: "Adresă de e-mail",
 DlgLnkEMailSubject	: "Subiectul mesajului",
 DlgLnkEMailBody		: "Conţinutul mesajului",
@@ -229,8 +234,8 @@ DlgLnkUpload		: "Încarcă",
 DlgLnkBtnUpload		: "Trimite la server",
 
 DlgLnkTarget		: "Ţintă (Target)",
-DlgLnkTargetFrame	: "&lt;frame&gt;",
-DlgLnkTargetPopup	: "&lt;fereastra popup&gt;",
+DlgLnkTargetFrame	: "<frame>",
+DlgLnkTargetPopup	: "<fereastra popup>",
 DlgLnkTargetBlank	: "Fereastră nouă (_blank)",
 DlgLnkTargetParent	: "Fereastra părinte (_parent)",
 DlgLnkTargetSelf	: "Aceeaşi fereastră (_self)",
@@ -254,6 +259,7 @@ DlgLnkPopTop		: "Poziţia la dreapta",
 DlnLnkMsgNoUrl		: "Vă rugăm să scrieţi URL-ul",
 DlnLnkMsgNoEMail	: "Vă rugăm să scrieţi adresa de e-mail",
 DlnLnkMsgNoAnchor	: "Vă rugăm să selectaţi o ancoră",
+DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
 
 // Color Dialog
 DlgColorTitle		: "Selectează culoare",
@@ -293,16 +299,16 @@ DlgCellWidthPx		: "pixeli",
 DlgCellWidthPc		: "procente",
 DlgCellHeight		: "Înălţime",
 DlgCellWordWrap		: "Desparte cuvintele (Wrap)",
-DlgCellWordWrapNotSet	: "&lt;Nesetat&gt;",
+DlgCellWordWrapNotSet	: "<Nesetat>",
 DlgCellWordWrapYes	: "Da",
 DlgCellWordWrapNo	: "Nu",
 DlgCellHorAlign		: "Aliniament orizontal",
-DlgCellHorAlignNotSet	: "&lt;Nesetat&gt;",
+DlgCellHorAlignNotSet	: "<Nesetat>",
 DlgCellHorAlignLeft	: "Stânga",
 DlgCellHorAlignCenter	: "Centru",
 DlgCellHorAlignRight: "Dreapta",
 DlgCellVerAlign		: "Aliniament vertical",
-DlgCellVerAlignNotSet	: "&lt;Nesetat&gt;",
+DlgCellVerAlignNotSet	: "<Nesetat>",
 DlgCellVerAlignTop	: "Sus",
 DlgCellVerAlignMiddle	: "Mijloc",
 DlgCellVerAlignBottom	: "Jos",
@@ -340,7 +346,6 @@ DlgPasteIgnoreFont		: "Ignoră definiţiile Font Face",
 DlgPasteRemoveStyles	: "Şterge definiţiile stilurilor",
 DlgPasteCleanBox		: "Şterge căsuţa",
 
-
 // Color Picker
 ColorAutomatic	: "Automatic",
 ColorMoreColors	: "Mai multe culori...",
@@ -371,8 +376,11 @@ DlgSpellManyChanges		: "Verificarea textului terminată: 1% cuvinte modificate",
 IeSpellDownload			: "Unealta pentru verificat textul (Spell checker) neinstalată. Doriţi să o descărcaţi acum?",
 
 // Button Dialog
-DlgButtonText	: "Text (Valoare)",
-DlgButtonType	: "Tip",
+DlgButtonText		: "Text (Valoare)",
+DlgButtonType		: "Tip",
+DlgButtonTypeBtn	: "Button",	//MISSING
+DlgButtonTypeSbm	: "Submit",	//MISSING
+DlgButtonTypeRst	: "Reset",	//MISSING
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "Nume",
@@ -421,6 +429,7 @@ DlgHiddenValue	: "Valoare",
 // Bulleted List Dialog
 BulletedListProp	: "Proprietăţile listei punctate (Bulleted List)",
 NumberedListProp	: "Proprietăţile listei numerotate (Numbered List)",
+DlgLstStart			: "Start",	//MISSING
 DlgLstType			: "Tip",
 DlgLstTypeCircle	: "Cerc",
 DlgLstTypeDisc		: "Disc",
@@ -443,6 +452,15 @@ DlgDocLangDirLTR	: "stânga-dreapta (LTR)",
 DlgDocLangDirRTL	: "dreapta-stânga (RTL)",
 DlgDocLangCode		: "Codul limbii",
 DlgDocCharSet		: "Encoding setului de caractere",
+DlgDocCharSetCE		: "Central European",	//MISSING
+DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
+DlgDocCharSetCR		: "Cyrillic",	//MISSING
+DlgDocCharSetGR		: "Greek",	//MISSING
+DlgDocCharSetJP		: "Japanese",	//MISSING
+DlgDocCharSetKR		: "Korean",	//MISSING
+DlgDocCharSetTR		: "Turkish",	//MISSING
+DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
+DlgDocCharSetWE		: "Western European",	//MISSING
 DlgDocCharSetOther	: "Alt encoding al setului de caractere",
 
 DlgDocDocType		: "Document Type Heading",
@@ -472,10 +490,12 @@ DlgTemplatesTitle	: "Template-uri (şabloane) de conţinut",
 DlgTemplatesSelMsg	: "Vă rugăm selectaţi template-ul (şablonul) ce se va deschide în editor<br>(conţinutul actual va fi pierdut):",
 DlgTemplatesLoading	: "Se încarcă lista cu template-uri (şabloane). Vă rugăm aşteptaţi...",
 DlgTemplatesNoTpl	: "(Niciun template (şablon) definit)",
+DlgTemplatesReplace	: "Replace actual contents",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "Despre",
 DlgAboutBrowserInfoTab	: "Informaţii browser",
+DlgAboutLicenseTab	: "Licenţă",
 DlgAboutVersion		: "versiune",
 DlgAboutLicense		: "Licenţiat sub termenii GNU Lesser General Public License",
 DlgAboutInfo		: "Pentru informaţii amănunţite, vizitaţi"

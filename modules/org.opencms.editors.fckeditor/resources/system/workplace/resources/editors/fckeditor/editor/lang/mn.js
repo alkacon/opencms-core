@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -83,7 +83,7 @@ BGColor				: "Фонны өнгө",
 Source				: "Код",
 Find				: "Хайх",
 Replace				: "Солих",
-SpellCheck			: "Check Spell",	//MISSING
+SpellCheck			: "Check Spelling",	//MISSING
 UniversalKeyboard	: "Universal Keyboard",	//MISSING
 PageBreakLbl		: "Page Break",	//MISSING
 PageBreak			: "Insert Page Break",	//MISSING
@@ -98,8 +98,13 @@ Button			: "Button",	//MISSING
 SelectionField	: "Selection Field",	//MISSING
 ImageButton		: "Image Button",	//MISSING
 
+FitWindow		: "Maximize the editor size",	//MISSING
+
 // Context Menu
 EditLink			: "Холбоос засварлах",
+CellCM				: "Cell",	//MISSING
+RowCM				: "Row",	//MISSING
+ColumnCM			: "Column",	//MISSING
 InsertRow			: "Мөр оруулах",
 DeleteRows			: "Мөр устгах",
 InsertColumn		: "Багана оруулах",
@@ -136,7 +141,7 @@ UnknownToolbarItem	: "Багажны хэсгийн \"%1\" item мэдэгдэх
 UnknownCommand		: "\"%1\" комманд нэр мэдагдэхгүй байна",
 NotImplemented		: "Зөвшөөрөгдөхгүй комманд",
 UnknownToolbarSet	: "Багажны хэсэгт \"%1\" оноох, үүсээгүй байна",
-NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+NoActiveX			: "Your browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
 BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
 DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
@@ -146,12 +151,12 @@ DlgBtnCancel		: "Болих",
 DlgBtnClose			: "Хаах",
 DlgBtnBrowseServer	: "Browse Server",	//MISSING
 DlgAdvancedTag		: "Нэмэлт",
-DlgOpOther			: "&lt;Other&gt;",	//MISSING
+DlgOpOther			: "<Other>",	//MISSING
 DlgInfoTab			: "Info",	//MISSING
 DlgAlertUrl			: "Please insert the URL",	//MISSING
 
 // General Dialogs Labels
-DlgGenNotSet		: "&lt;Оноохгүй&gt;",
+DlgGenNotSet		: "<Оноохгүй>",
 DlgGenId			: "Id",
 DlgGenLangDir		: "Хэлний чиглэл",
 DlgGenLangDirLtr	: "Зүүнээс баруун (LTR)",
@@ -215,12 +220,12 @@ DlgLnkTypeURL		: "URL",
 DlgLnkTypeAnchor	: "Энэ хуудасандах холбоос",
 DlgLnkTypeEMail		: "E-Mail",
 DlgLnkProto			: "Протокол",
-DlgLnkProtoOther	: "&lt;бусад&gt;",
+DlgLnkProtoOther	: "<бусад>",
 DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Холбоос сонгох",
 DlgLnkAnchorByName	: "Холбоосын нэрээр",
 DlgLnkAnchorById	: "Элемэнт Id-гаар",
-DlgLnkNoAnchors		: "&lt;Баримт бичиг холбоосгүй байна&gt;",
+DlgLnkNoAnchors		: "<Баримт бичиг холбоосгүй байна>",
 DlgLnkEMail			: "E-Mail Хаяг",
 DlgLnkEMailSubject	: "Message Subject",
 DlgLnkEMailBody		: "Message-ийн агуулга",
@@ -228,8 +233,8 @@ DlgLnkUpload		: "Хуулах",
 DlgLnkBtnUpload		: "Үүнийг серверрүү илгээ",
 
 DlgLnkTarget		: "Байрлал",
-DlgLnkTargetFrame	: "&lt;Агуулах хүрээ&gt;",
-DlgLnkTargetPopup	: "&lt;popup цонх&gt;",
+DlgLnkTargetFrame	: "<Агуулах хүрээ>",
+DlgLnkTargetPopup	: "<popup цонх>",
 DlgLnkTargetBlank	: "Шинэ цонх (_blank)",
 DlgLnkTargetParent	: "Эцэг цонх (_parent)",
 DlgLnkTargetSelf	: "Төстэй цонх (_self)",
@@ -253,6 +258,7 @@ DlgLnkPopTop		: "Дээд байрлал",
 DlnLnkMsgNoUrl		: "Линк URL-ээ төрөлжүүлнэ үү",
 DlnLnkMsgNoEMail	: "Е-mail хаягаа төрөлжүүлнэ үү",
 DlnLnkMsgNoAnchor	: "Холбоосоо сонгоно уу",
+DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
 
 // Color Dialog
 DlgColorTitle		: "Өнгө сонгох",
@@ -272,7 +278,7 @@ DlgTableRows		: "Мөр",
 DlgTableColumns		: "Багана",
 DlgTableBorder		: "Хүрээний хэмжээ",
 DlgTableAlign		: "Эгнээ",
-DlgTableAlignNotSet	: "&lt;Оноохгүй&gt;",
+DlgTableAlignNotSet	: "<Оноохгүй>",
 DlgTableAlignLeft	: "Зүүн талд",
 DlgTableAlignCenter	: "Төвд",
 DlgTableAlignRight	: "Баруун талд",
@@ -292,16 +298,16 @@ DlgCellWidthPx		: "цэг",
 DlgCellWidthPc		: "хувь",
 DlgCellHeight		: "Өндөр",
 DlgCellWordWrap		: "Үг таслах",
-DlgCellWordWrapNotSet	: "&lt;Оноохгүй&gt;",
+DlgCellWordWrapNotSet	: "<Оноохгүй>",
 DlgCellWordWrapYes	: "Тийм",
 DlgCellWordWrapNo	: "Үгүй",
 DlgCellHorAlign		: "Босоо эгнээ",
-DlgCellHorAlignNotSet	: "&lt;Оноохгүй&gt;",
+DlgCellHorAlignNotSet	: "<Оноохгүй>",
 DlgCellHorAlignLeft	: "Зүүн",
 DlgCellHorAlignCenter	: "Төв",
 DlgCellHorAlignRight: "Баруун",
 DlgCellVerAlign		: "Хөндлөн эгнээ",
-DlgCellVerAlignNotSet	: "&lt;Оноохгүй&gt;",
+DlgCellVerAlignNotSet	: "<Оноохгүй>",
 DlgCellVerAlignTop	: "Дээд тал",
 DlgCellVerAlignMiddle	: "Дунд",
 DlgCellVerAlignBottom	: "Доод тал",
@@ -339,7 +345,6 @@ DlgPasteIgnoreFont		: "Ignore Font Face definitions",	//MISSING
 DlgPasteRemoveStyles	: "Remove Styles definitions",	//MISSING
 DlgPasteCleanBox		: "Clean Up Box",	//MISSING
 
-
 // Color Picker
 ColorAutomatic	: "Автоматаар",
 ColorMoreColors	: "Нэмэлт өнгөнүүд...",
@@ -370,8 +375,11 @@ DlgSpellManyChanges		: "Spell check complete: %1 words changed",	//MISSING
 IeSpellDownload			: "Spell checker not installed. Do you want to download it now?",	//MISSING
 
 // Button Dialog
-DlgButtonText	: "Text (Value)",	//MISSING
-DlgButtonType	: "Type",	//MISSING
+DlgButtonText		: "Text (Value)",	//MISSING
+DlgButtonType		: "Type",	//MISSING
+DlgButtonTypeBtn	: "Button",	//MISSING
+DlgButtonTypeSbm	: "Submit",	//MISSING
+DlgButtonTypeRst	: "Reset",	//MISSING
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "Name",	//MISSING
@@ -420,6 +428,7 @@ DlgHiddenValue	: "Value",	//MISSING
 // Bulleted List Dialog
 BulletedListProp	: "Bulleted List Properties",	//MISSING
 NumberedListProp	: "Numbered List Properties",	//MISSING
+DlgLstStart			: "Start",	//MISSING
 DlgLstType			: "Type",	//MISSING
 DlgLstTypeCircle	: "Circle",	//MISSING
 DlgLstTypeDisc		: "Disc",	//MISSING
@@ -442,6 +451,15 @@ DlgDocLangDirLTR	: "Left to Right (LTR)",	//MISSING
 DlgDocLangDirRTL	: "Right to Left (RTL)",	//MISSING
 DlgDocLangCode		: "Language Code",	//MISSING
 DlgDocCharSet		: "Character Set Encoding",	//MISSING
+DlgDocCharSetCE		: "Central European",	//MISSING
+DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
+DlgDocCharSetCR		: "Cyrillic",	//MISSING
+DlgDocCharSetGR		: "Greek",	//MISSING
+DlgDocCharSetJP		: "Japanese",	//MISSING
+DlgDocCharSetKR		: "Korean",	//MISSING
+DlgDocCharSetTR		: "Turkish",	//MISSING
+DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
+DlgDocCharSetWE		: "Western European",	//MISSING
 DlgDocCharSetOther	: "Other Character Set Encoding",	//MISSING
 
 DlgDocDocType		: "Document Type Heading",	//MISSING
@@ -471,10 +489,12 @@ DlgTemplatesTitle	: "Content Templates",	//MISSING
 DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
 DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
 DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
+DlgTemplatesReplace	: "Replace actual contents",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "About",	//MISSING
 DlgAboutBrowserInfoTab	: "Browser Info",	//MISSING
+DlgAboutLicenseTab	: "License",	//MISSING
 DlgAboutVersion		: "Хувилбар",
 DlgAboutLicense		: "GNU цөөн ерөнхий нийтийн лицензийн ангилалд багтсан зөвшөөрөлтэй",
 DlgAboutInfo		: "Мэдээллээр туслах"

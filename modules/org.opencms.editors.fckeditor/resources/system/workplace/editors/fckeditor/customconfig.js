@@ -222,6 +222,3 @@ FCKConfig.FlashBrowserURL = FCKConfig.BasePath + "filemanager/browser/default/br
 FCKConfig.FlashUploadURL = "<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp?Type=Flash") %>";
 FCKConfig.FlashBrowserWindowWidth  = 700;
 FCKConfig.FlashBrowserWindowHeight = 500;
-
-// this fixes the background color issue in Gecko based browsers
-FCKConfig.GeckoUseSPAN	= true;

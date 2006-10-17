@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -85,8 +85,8 @@ Find				: "Sök",
 Replace				: "Ersätt",
 SpellCheck			: "Stavningskontroll",
 UniversalKeyboard	: "Universellt tangentbord",
-PageBreakLbl		: "Page Break",	//MISSING
-PageBreak			: "Insert Page Break",	//MISSING
+PageBreakLbl		: "Sidbrytning",
+PageBreak			: "Infoga sidbrytning",
 
 Form			: "Formulär",
 Checkbox		: "Kryssruta",
@@ -98,8 +98,13 @@ Button			: "Knapp",
 SelectionField	: "Flervalslista",
 ImageButton		: "Bildknapp",
 
+FitWindow		: "Maximize the editor size",	//MISSING
+
 // Context Menu
 EditLink			: "Redigera länk",
+CellCM				: "Cell",	//MISSING
+RowCM				: "Row",	//MISSING
+ColumnCM			: "Column",	//MISSING
 InsertRow			: "Infoga rad",
 DeleteRows			: "Radera rad",
 InsertColumn		: "Infoga kolumn",
@@ -108,7 +113,7 @@ InsertCell			: "Infoga cell",
 DeleteCells			: "Radera celler",
 MergeCells			: "Sammanfoga celler",
 SplitCell			: "Separera celler",
-TableDelete			: "Delete Table",	//MISSING
+TableDelete			: "Radera tabell",
 CellProperties		: "Cellegenskaper",
 TableProperties		: "Tabellegenskaper",
 ImageProperties		: "Bildegenskaper",
@@ -136,9 +141,9 @@ UnknownToolbarItem	: "Okänt verktygsfält \"%1\"",
 UnknownCommand		: "Okänt kommando \"%1\"",
 NotImplemented		: "Kommandot finns ej",
 UnknownToolbarSet	: "Verktygsfält \"%1\" finns ej",
-NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
-BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
-DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
+NoActiveX			: "Din webläsares säkerhetsinställningar kan begränsa funktionaliteten. Du bör aktivera \"Kör ActiveX kontroller och plug-ins\". Fel och avsaknad av funktioner kan annars uppstå.",
+BrowseServerBlocked : "Kunde Ej öppna resursfönstret. Var god och avaktivera alla popup-blockerare.",
+DialogBlocked		: "Kunde Ej öppna dialogfönstret. Var god och avaktivera alla popup-blockerare.",
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -151,7 +156,7 @@ DlgInfoTab			: "Information",
 DlgAlertUrl			: "Var god och ange en URL",
 
 // General Dialogs Labels
-DlgGenNotSet		: "&lt;ej angivet&gt;",
+DlgGenNotSet		: "<ej angivet>",
 DlgGenId			: "Id",
 DlgGenLangDir		: "Språkriktning",
 DlgGenLangDirLtr	: "Vänster till Höger (VTH)",
@@ -215,12 +220,12 @@ DlgLnkTypeURL		: "URL",
 DlgLnkTypeAnchor	: "Ankare i sidan",
 DlgLnkTypeEMail		: "E-post",
 DlgLnkProto			: "Protokoll",
-DlgLnkProtoOther	: "&lt;övrigt&gt;",
+DlgLnkProtoOther	: "<övrigt>",
 DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Välj ett ankare",
 DlgLnkAnchorByName	: "efter ankarnamn",
 DlgLnkAnchorById	: "efter objektid",
-DlgLnkNoAnchors		: "&lt;Inga ankare kunde hittas&gt;",
+DlgLnkNoAnchors		: "<Inga ankare kunde hittas>",
 DlgLnkEMail			: "E-postadress",
 DlgLnkEMailSubject	: "Ämne",
 DlgLnkEMailBody		: "Innehåll",
@@ -228,8 +233,8 @@ DlgLnkUpload		: "Ladda upp",
 DlgLnkBtnUpload		: "Skicka till servern",
 
 DlgLnkTarget		: "Mål",
-DlgLnkTargetFrame	: "&lt;ram&gt;",
-DlgLnkTargetPopup	: "&lt;popup-fönster&gt;",
+DlgLnkTargetFrame	: "<ram>",
+DlgLnkTargetPopup	: "<popup-fönster>",
 DlgLnkTargetBlank	: "Nytt fönster (_blank)",
 DlgLnkTargetParent	: "Föregående Window (_parent)",
 DlgLnkTargetSelf	: "Detta fönstret (_self)",
@@ -253,6 +258,7 @@ DlgLnkPopTop		: "Position från sidans topp",
 DlnLnkMsgNoUrl		: "Var god ange länkens URL",
 DlnLnkMsgNoEMail	: "Var god ange E-postadress",
 DlnLnkMsgNoAnchor	: "Var god ange ett ankare",
+DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
 
 // Color Dialog
 DlgColorTitle		: "Välj färg",
@@ -261,7 +267,7 @@ DlgColorHighlight	: "Markera",
 DlgColorSelected	: "Vald",
 
 // Smiley Dialog
-DlgSmileyTitle		: "Infoga en smiley",
+DlgSmileyTitle		: "Infoga smiley",
 
 // Special Character Dialog
 DlgSpecialCharTitle	: "Välj utökat tecken",
@@ -283,7 +289,7 @@ DlgTableHeight		: "Höjd",
 DlgTableCellSpace	: "Cellavstånd",
 DlgTableCellPad		: "Cellutfyllnad",
 DlgTableCaption		: "Rubrik",
-DlgTableSummary		: "Summary",	//MISSING
+DlgTableSummary		: "Sammanfattning",
 
 // Table Cell Dialog
 DlgCellTitle		: "Cellegenskaper",
@@ -339,7 +345,6 @@ DlgPasteIgnoreFont		: "Ignorera typsnittsdefinitioner",
 DlgPasteRemoveStyles	: "Radera Stildefinitioner",
 DlgPasteCleanBox		: "Töm rutans innehåll",
 
-
 // Color Picker
 ColorAutomatic	: "Automatisk",
 ColorMoreColors	: "Fler färger...",
@@ -370,8 +375,11 @@ DlgSpellManyChanges		: "Stavningskontroll slutförd: %1 ord rättades.",
 IeSpellDownload			: "Stavningskontrollen är ej installerad. Vill du göra det nu?",
 
 // Button Dialog
-DlgButtonText	: "Text (Värde)",
-DlgButtonType	: "Typ",
+DlgButtonText		: "Text (Värde)",
+DlgButtonType		: "Typ",
+DlgButtonTypeBtn	: "Button",	//MISSING
+DlgButtonTypeSbm	: "Submit",	//MISSING
+DlgButtonTypeRst	: "Reset",	//MISSING
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "Namn",
@@ -420,9 +428,10 @@ DlgHiddenValue	: "Värde",
 // Bulleted List Dialog
 BulletedListProp	: "Egenskaper för punktlista",
 NumberedListProp	: "Egenskaper för numrerad lista",
+DlgLstStart			: "Start",	//MISSING
 DlgLstType			: "Typ",
 DlgLstTypeCircle	: "Cirkel",
-DlgLstTypeDisc		: "Disc",	//MISSING
+DlgLstTypeDisc		: "Punkt",
 DlgLstTypeSquare	: "Ruta",
 DlgLstTypeNumbers	: "Nummer (1, 2, 3)",
 DlgLstTypeLCase		: "Gemener (a, b, c)",
@@ -442,6 +451,15 @@ DlgDocLangDirLTR	: "Vänster till Höger",
 DlgDocLangDirRTL	: "Höger till Vänster",
 DlgDocLangCode		: "Språkkod",
 DlgDocCharSet		: "Teckenuppsättningar",
+DlgDocCharSetCE		: "Central European",	//MISSING
+DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
+DlgDocCharSetCR		: "Cyrillic",	//MISSING
+DlgDocCharSetGR		: "Greek",	//MISSING
+DlgDocCharSetJP		: "Japanese",	//MISSING
+DlgDocCharSetKR		: "Korean",	//MISSING
+DlgDocCharSetTR		: "Turkish",	//MISSING
+DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
+DlgDocCharSetWE		: "Western European",	//MISSING
 DlgDocCharSetOther	: "Övriga teckenuppsättningar",
 
 DlgDocDocType		: "Sidhuvud",
@@ -471,10 +489,12 @@ DlgTemplatesTitle	: "Sidmallar",
 DlgTemplatesSelMsg	: "Var god välj en mall att använda med editorn<br>(allt nuvarande innehåll raderas):",
 DlgTemplatesLoading	: "Laddar mallar. Var god vänta...",
 DlgTemplatesNoTpl	: "(Ingen mall är vald)",
+DlgTemplatesReplace	: "Replace actual contents",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "Om",
-DlgAboutBrowserInfoTab	: "Webläsarinfo",
+DlgAboutBrowserInfoTab	: "Webläsare",
+DlgAboutLicenseTab	: "License",	//MISSING
 DlgAboutVersion		: "version",
 DlgAboutLicense		: "Licensierad under villkoren av GNU Lesser General Public License",
 DlgAboutInfo		: "För mer information se"

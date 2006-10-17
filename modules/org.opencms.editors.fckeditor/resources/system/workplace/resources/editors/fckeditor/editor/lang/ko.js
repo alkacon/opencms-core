@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -99,8 +99,13 @@ Button			: "버튼",
 SelectionField	: "펼침목록",
 ImageButton		: "이미지버튼",
 
+FitWindow		: "Maximize the editor size",	//MISSING
+
 // Context Menu
 EditLink			: "링크 수정",
+CellCM				: "Cell",	//MISSING
+RowCM				: "Row",	//MISSING
+ColumnCM			: "Column",	//MISSING
 InsertRow			: "가로줄 삽입",
 DeleteRows			: "가로줄 삭제",
 InsertColumn		: "세로줄 삽입",
@@ -137,7 +142,7 @@ UnknownToolbarItem	: "알수없는 툴바입니다. : \"%1\"",
 UnknownCommand		: "알수없는 기능입니다. : \"%1\"",
 NotImplemented		: "기능이 실행되지 않았습니다.",
 UnknownToolbarSet	: "툴바 설정이 없습니다. : \"%1\"",
-NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+NoActiveX			: "Your browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
 BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
 DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
@@ -147,12 +152,12 @@ DlgBtnCancel		: "아니오",
 DlgBtnClose			: "닫기",
 DlgBtnBrowseServer	: "서버 보기",
 DlgAdvancedTag		: "자세히",
-DlgOpOther			: "&lt;기타&gt;",
+DlgOpOther			: "<기타>",
 DlgInfoTab			: "정보",
 DlgAlertUrl			: "URL을 입력하십시요",
 
 // General Dialogs Labels
-DlgGenNotSet		: "&lt;설정되지 않음&gt;",
+DlgGenNotSet		: "<설정되지 않음>",
 DlgGenId			: "ID",
 DlgGenLangDir		: "쓰기 방향",
 DlgGenLangDirLtr	: "왼쪽에서 오른쪽 (LTR)",
@@ -216,12 +221,12 @@ DlgLnkTypeURL		: "URL",
 DlgLnkTypeAnchor	: "책갈피",
 DlgLnkTypeEMail		: "이메일",
 DlgLnkProto			: "프로토콜",
-DlgLnkProtoOther	: "&lt;기타&gt;",
+DlgLnkProtoOther	: "<기타>",
 DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "책갈피 선택",
 DlgLnkAnchorByName	: "책갈피 이름",
 DlgLnkAnchorById	: "책갈피 ID",
-DlgLnkNoAnchors		: "&lt;문서에 책갈피가 없습니다.&gt;",
+DlgLnkNoAnchors		: "<문서에 책갈피가 없습니다.>",
 DlgLnkEMail			: "이메일 주소",
 DlgLnkEMailSubject	: "제목",
 DlgLnkEMailBody		: "내용",
@@ -229,8 +234,8 @@ DlgLnkUpload		: "업로드",
 DlgLnkBtnUpload		: "서버로 전송",
 
 DlgLnkTarget		: "타겟",
-DlgLnkTargetFrame	: "&lt;프레임&gt;",
-DlgLnkTargetPopup	: "&lt;팝업창&gt;",
+DlgLnkTargetFrame	: "<프레임>",
+DlgLnkTargetPopup	: "<팝업창>",
 DlgLnkTargetBlank	: "새 창 (_blank)",
 DlgLnkTargetParent	: "부모 창 (_parent)",
 DlgLnkTargetSelf	: "현재 창 (_self)",
@@ -254,6 +259,7 @@ DlgLnkPopTop		: "윗쪽 위치",
 DlnLnkMsgNoUrl		: "링크 URL을 입력하십시요.",
 DlnLnkMsgNoEMail	: "이메일주소를 입력하십시요.",
 DlnLnkMsgNoAnchor	: "책갈피명을 입력하십시요.",
+DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
 
 // Color Dialog
 DlgColorTitle		: "색상 선택",
@@ -340,7 +346,6 @@ DlgPasteIgnoreFont		: "폰트 설정 무시",
 DlgPasteRemoveStyles	: "스타일 정의 제거",
 DlgPasteCleanBox		: "글상자 제거",
 
-
 // Color Picker
 ColorAutomatic	: "기본색상",
 ColorMoreColors	: "색상선택...",
@@ -371,8 +376,11 @@ DlgSpellManyChanges		: "철자검사 완료: %1 단어가 변경되었습니다.
 IeSpellDownload			: "철자 검사기가 철치되지 않았습니다. 지금 다운로드하시겠습니까?",
 
 // Button Dialog
-DlgButtonText	: "버튼글자(값)",
-DlgButtonType	: "버튼종류",
+DlgButtonText		: "버튼글자(값)",
+DlgButtonType		: "버튼종류",
+DlgButtonTypeBtn	: "Button",	//MISSING
+DlgButtonTypeSbm	: "Submit",	//MISSING
+DlgButtonTypeRst	: "Reset",	//MISSING
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "이름",
@@ -421,6 +429,7 @@ DlgHiddenValue	: "값",
 // Bulleted List Dialog
 BulletedListProp	: "순서없는 목록 속성",
 NumberedListProp	: "순서있는 목록 속성",
+DlgLstStart			: "Start",	//MISSING
 DlgLstType			: "종류",
 DlgLstTypeCircle	: "원(Circle)",
 DlgLstTypeDisc		: "Disc",	//MISSING
@@ -443,6 +452,15 @@ DlgDocLangDirLTR	: "왼쪽에서 오른쪽 (LTR)",
 DlgDocLangDirRTL	: "오른쪽에서 왼쪽 (RTL)",
 DlgDocLangCode		: "언어코드",
 DlgDocCharSet		: "캐릭터셋 인코딩",
+DlgDocCharSetCE		: "Central European",	//MISSING
+DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
+DlgDocCharSetCR		: "Cyrillic",	//MISSING
+DlgDocCharSetGR		: "Greek",	//MISSING
+DlgDocCharSetJP		: "Japanese",	//MISSING
+DlgDocCharSetKR		: "Korean",	//MISSING
+DlgDocCharSetTR		: "Turkish",	//MISSING
+DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
+DlgDocCharSetWE		: "Western European",	//MISSING
 DlgDocCharSetOther	: "다른 캐릭터셋 인코딩",
 
 DlgDocDocType		: "문서 헤드",
@@ -472,10 +490,12 @@ DlgTemplatesTitle	: "내용 템플릿",
 DlgTemplatesSelMsg	: "에디터에서 사용할 템플릿을 선택하십시요.<br>(지금까지 작성된 내용은 사라집니다.):",
 DlgTemplatesLoading	: "템플릿 목록을 불러오는중입니다. 잠시만 기다려주십시요.",
 DlgTemplatesNoTpl	: "(템플릿이 없습니다.)",
+DlgTemplatesReplace	: "Replace actual contents",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "About",
 DlgAboutBrowserInfoTab	: "브라우저 정보",
+DlgAboutLicenseTab	: "License",	//MISSING
 DlgAboutVersion		: "버전",
 DlgAboutLicense		: "Licensed under the terms of the GNU Lesser General Public License",
 DlgAboutInfo		: "For further information go to"

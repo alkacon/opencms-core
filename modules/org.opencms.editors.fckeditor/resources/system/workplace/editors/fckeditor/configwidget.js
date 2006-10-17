@@ -60,7 +60,7 @@ if (CmsFCKEditorWidget.buildOpenCmsButtonRow(toolbar, configuration)) {
 
 toolbar.append("'SpecialChar','UniversalKey'");
 
-toolbar.append(",'-','Print']");
+toolbar.append(",'-','Print','-','FitWindow']");
 
 %>
 FCKConfig.ToolbarSets["OpenCmsWidget"] = [

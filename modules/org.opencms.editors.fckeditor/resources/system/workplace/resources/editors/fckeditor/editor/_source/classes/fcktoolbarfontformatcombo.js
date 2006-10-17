@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -19,7 +19,7 @@
 
 var FCKToolbarFontFormatCombo = function( tooltip, style )
 {
-	this.Command	= FCKCommands.GetCommand( 'FontFormat' ) ;
+	this.CommandName = 'FontFormat' ;
 	this.Label		= this.GetLabel() ;
 	this.Tooltip	= tooltip ? tooltip : this.Label ;
 	this.Style		= style ? style : FCK_TOOLBARITEM_ICONTEXT ;
@@ -32,6 +32,7 @@ var FCKToolbarFontFormatCombo = function( tooltip, style )
 // Inherit from FCKToolbarSpecialCombo.
 FCKToolbarFontFormatCombo.prototype = new FCKToolbarSpecialCombo ;
 
+
 FCKToolbarFontFormatCombo.prototype.GetLabel = function()
 {
 	return FCKLang.FontFormat ;
@@ -39,6 +40,9 @@ FCKToolbarFontFormatCombo.prototype.GetLabel = function()
 
 FCKToolbarFontFormatCombo.prototype.CreateItems = function( targetSpecialCombo )
 {
+	// Add the Editor Area CSS to the panel to create a realistic preview.
+	FCKTools.AppendStyleSheet( targetSpecialCombo._Panel.Document, FCKConfig.ToolbarComboPreviewCSS ) ;
+
 	// Get the format names from the language file.
 	var aNames = FCKLang['FontFormats'].split(';') ;
 	var oNames = {
