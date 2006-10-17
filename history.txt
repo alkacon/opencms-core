@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/16 15:34:05 $
- * Version: $Revision: 1.717.2.65 $
+ * Date   : $Date: 2006/10/17 09:11:00 $
+ * Version: $Revision: 1.717.2.66 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ OpenCms 6.5.4 - xxxx, 2006
 * Fixed issue #1227: Insufficient access rights on workplace css files if static export is disabled
 * Fixed issue #1236: Target attribute for explorer contextmenu entries does not work in all cases
 * Fixed issue #1239: Setup Wizard Generic Database error
+* Fixed issue #1198: Problem in "Search Management" when deleting all indexes
 
 OpenCms 6.5.3 - October 10, 2006
 * Fixed issue #1247: Display issue for multiple select boxes and help texts in IE
