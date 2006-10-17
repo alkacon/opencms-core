@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/16 15:34:03 $
- * Version: $Revision: 1.767 $
+ * Date   : $Date: 2006/10/17 09:15:48 $
+ * Version: $Revision: 1.768 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,6 @@ OpenCms 6.2.3 -
 ! Added option to delete locales in XML content and page editor
 * Creating a resource that would override an existing one now displays the 'right' error message
 ! Temporary files are now invisible for members of the groups Users and Projectmanagers
-* Fixed issue in preferences dialog deleting synchronisation settings
 * Fixed issue in <cms:img> tag with static export of scaled images not really working
 * Static Export no longer creates a new session for each resource
 - Updated simapi.jar to version 0.9.4
@@ -47,8 +46,10 @@ OpenCms 6.2.3 -
 * Fixed issue #1238: Form-Module produces wrong HTML-code
 - While publishing projects in Project Management there is now a link validation before publishing
 - Extended the Account Management: Details for permissions in group list and extended list for users in group
+* Fixed issue #1171: CmsJspActionElement.img() doesn't work properly in Online project
 * Fixed issue #1225: Typo in localized message bundle ERR_DIRECT_PUBLISH_PARENT_NEW_2
 * Fixed issue #1227: Insufficient access rights on workplace css files if static export is disabled
+* Fixed issue #1229: Synchronisation settings are lost when user changes workplace preferences
 * Fixed issue #1236: Target attribute for explorer contextmenu entries does not work in all cases
 * Fixed issue #1239: Setup Wizard Generic Database error
 
