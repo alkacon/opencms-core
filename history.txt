@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/17 09:22:31 $
- * Version: $Revision: 1.769 $
+ * Date   : $Date: 2006/10/17 11:00:05 $
+ * Version: $Revision: 1.770 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ OpenCms 6.2.3 -
 * Fixed issue #1229: Synchronisation settings are lost when user changes workplace preferences
 * Fixed issue #1236: Target attribute for explorer contextmenu entries does not work in all cases
 * Fixed issue #1239: Setup Wizard Generic Database error
+* Fixed issue #1252: Availability context menu entry not shown for pointer resources
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
