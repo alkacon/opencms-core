@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/17 09:15:48 $
- * Version: $Revision: 1.768 $
+ * Date   : $Date: 2006/10/17 09:22:31 $
+ * Version: $Revision: 1.769 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ OpenCms 6.2.3 -
 - While publishing projects in Project Management there is now a link validation before publishing
 - Extended the Account Management: Details for permissions in group list and extended list for users in group
 * Fixed issue #1171: CmsJspActionElement.img() doesn't work properly in Online project
+* Fixed issue #1198: Problem in "Search Management" when deleting all indexes
 * Fixed issue #1225: Typo in localized message bundle ERR_DIRECT_PUBLISH_PARENT_NEW_2
 * Fixed issue #1227: Insufficient access rights on workplace css files if static export is disabled
 * Fixed issue #1229: Synchronisation settings are lost when user changes workplace preferences
@@ -2301,5 +2302,4 @@ OpenCms 4.0a20 Giedi Prime: Rabban - 01 March 2000
 OpenCms 4.0a19 Giedi Prime: Rabban - 24 February 2000
 
 - Public Open Source release of OpenCms
-
 
