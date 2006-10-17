@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.33.4.1 $
+ * Date   : $Date: 2006/10/17 13:36:30 $
+ * Version: $Revision: 1.33.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -62,7 +61,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.33.4.1 $
+ * @version $Revision: 1.33.4.2 $
  * 
  * @since 6.0.0
  */
@@ -221,11 +220,8 @@ public class CmsImportFolder {
         // TODO: this method looks very crude, it should be re-written sometime...
 
         boolean isFolder = false;
-        boolean exit = false;
-        int j, r, stop, charsRead, size;
+        int j, r, stop, size;
         int entries = 0;
-        int totalBytes = 0;
-        int offset = 0;
         byte[] buffer = null;
         boolean resourceExists;
 
@@ -233,8 +229,6 @@ public class CmsImportFolder {
             // handle the single entries ...
             j = 0;
             stop = 0;
-            charsRead = 0;
-            totalBytes = 0;
             // open the entry ...
             ZipEntry entry = zipStreamIn.getNextEntry();
             if (entry == null) {
@@ -279,58 +273,10 @@ public class CmsImportFolder {
                 int type = OpenCms.getResourceManager().getDefaultTypeForName(path[path.length - 1]).getTypeId();
                 size = new Long(entry.getSize()).intValue();
                 if (size == -1) {
-                    Vector v = new Vector();
-                    while (true) {
-                        buffer = new byte[512];
-                        offset = 0;
-                        while (offset < buffer.length) {
-                            charsRead = zipStreamIn.read(buffer, offset, buffer.length - offset);
-                            if (charsRead == -1) {
-                                exit = true;
-                                break; // end of stream
-                            }
-                            offset += charsRead;
-                            totalBytes += charsRead;
-                        }
-                        if (offset > 0) {
-                            v.addElement(buffer);
-                        }
-                        if (exit) {
-                            exit = false;
-                            break;
-                        }
-                    }
-                    buffer = new byte[totalBytes];
-                    offset = 0;
-                    byte[] act = null;
-                    for (int z = 0; z < v.size() - 1; z++) {
-                        act = (byte[])v.elementAt(z);
-                        System.arraycopy(act, 0, buffer, offset, act.length);
-                        offset += act.length;
-                    }
-                    act = (byte[])v.lastElement();
-                    if ((totalBytes > act.length) && (totalBytes % act.length != 0)) {
-                        totalBytes = totalBytes % act.length;
-                    } else if ((totalBytes > act.length) && (totalBytes % act.length == 0)) {
-                        totalBytes = act.length;
-                    }
-                    System.arraycopy(act, 0, buffer, offset, totalBytes);
-                    // handle empty files ...
-                    if (totalBytes == 0) {
-                        buffer = " ".getBytes();
-                    }
+                    buffer = CmsFileUtil.readFully(zipStreamIn);
                 } else {
-                    // size was read clearly ...
-                    buffer = new byte[size];
-                    while (charsRead < size) {
-                        charsRead += zipStreamIn.read(buffer, charsRead, size - charsRead);
-                    }
-                    // handle empty files ...
-                    if (size == 0) {
-                        buffer = " ".getBytes();
-                    }
+                    buffer = CmsFileUtil.readFully(zipStreamIn, size);
                 }
-
                 filename = actImportPath + path[path.length - 1];
 
                 try {
