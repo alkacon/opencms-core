@@ -285,8 +285,10 @@
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
+            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
             <separator order="240"/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
             <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
