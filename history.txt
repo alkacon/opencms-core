@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/17 11:00:05 $
- * Version: $Revision: 1.770 $
+ * Date   : $Date: 2006/10/17 13:35:34 $
+ * Version: $Revision: 1.771 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ OpenCms 6.2.3 -
 - Extended the Account Management: Details for permissions in group list and extended list for users in group
 * Fixed issue #1171: CmsJspActionElement.img() doesn't work properly in Online project
 * Fixed issue #1198: Problem in "Search Management" when deleting all indexes
+* Fixed issue #1212: Uploading 0-byte files fails
 * Fixed issue #1225: Typo in localized message bundle ERR_DIRECT_PUBLISH_PARENT_NEW_2
 * Fixed issue #1227: Insufficient access rights on workplace css files if static export is disabled
 * Fixed issue #1229: Synchronisation settings are lost when user changes workplace preferences
