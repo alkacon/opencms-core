@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2006/08/24 12:47:42 $
- * Version: $Revision: 1.18.4.2 $
+ * Date   : $Date: 2006/10/17 17:03:57 $
+ * Version: $Revision: 1.18.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,10 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Resolves macros in the form of <code>${key}</code> in an input String.<p>
+ * Resolves macros in the form of <code>%(key)</code> or <code>${key}</code> in an input String.<p>
+ * 
+ * Starting with OpenCms 7.0, the preferred form of a macro is <code>%(key)</code>. This is to 
+ * avoid conflicts / confusion with the JSP EL, which also uses the <code>${key}</code> syntax.<p>
  * 
  * The macro names that can be resolved depend of the context objects provided to the resolver
  * using the <code>set...</code> methods.<p>
@@ -60,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18.4.2 $ 
+ * @version $Revision: 1.18.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,11 +139,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static final String KEY_VALIDATION_VALUE = "validation.value";
 
     /** Identified for "magic" parameter commands. */
-    static final String[] VALUE_NAME_ARRAY = {"uri", "filename", "folder", "default.encoding"};
-
+    static final String[] VALUE_NAMES_ARRAY = {"uri", "filename", "folder", "default.encoding"};
+    
     /** The "magic" commands wrapped in a List. */
-    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAME_ARRAY));
-
+    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));
+    
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMacroResolver.class);
 
@@ -173,18 +176,18 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static String formatMacro(String input) {
 
         StringBuffer result = new StringBuffer(input.length() + 4);
-        result.append(I_CmsMacroResolver.MACRO_DELIMITER_NEW);
-        result.append(I_CmsMacroResolver.MACRO_START_NEW);
+        result.append(I_CmsMacroResolver.MACRO_DELIMITER);
+        result.append(I_CmsMacroResolver.MACRO_START);
         result.append(input);
-        result.append(I_CmsMacroResolver.MACRO_END_NEW);
+        result.append(I_CmsMacroResolver.MACRO_END);
         return result.toString();
     }
 
     /**
      * Returns <code>true</code> if the given input String if formatted like a macro,
-     * that is it starts with <code>{@link I_CmsMacroResolver#MACRO_DELIMITER} +
-     * {@link I_CmsMacroResolver#MACRO_START}</code> and ends with 
-     * <code>{@link I_CmsMacroResolver#MACRO_END}</code>.<p>
+     * that is it starts with <code>{@link I_CmsMacroResolver#MACRO_DELIMITER_OLD} +
+     * {@link I_CmsMacroResolver#MACRO_START_OLD}</code> and ends with 
+     * <code>{@link I_CmsMacroResolver#MACRO_END_OLD}</code>.<p>
      * 
      * @param input the input to check for a macro
      * @return <code>true</code> if the given input String if formatted like a macro
@@ -195,7 +198,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return false;
         }
 
-        return (((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END))) || ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER_NEW) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START_NEW) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END_NEW))));
+        return (((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER_OLD) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START_OLD) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END_OLD))) || ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END))));
     }
 
     /**
@@ -256,8 +259,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return input;
         }
 
-        int pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_NEW);
-        int po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER);
+        int pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER);
+        int po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_OLD);
 
         if ((po == -1) && (pn == -1)) {
             // no macro delimiter found in input
@@ -275,12 +278,12 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         if ((po == -1) || ((pn > -1) && (pn < po))) {
             p = pn;
-            ds = I_CmsMacroResolver.MACRO_START_NEW;
-            de = I_CmsMacroResolver.MACRO_END_NEW;
-        } else {
-            p = po;
             ds = I_CmsMacroResolver.MACRO_START;
             de = I_CmsMacroResolver.MACRO_END;
+        } else {
+            p = po;
+            ds = I_CmsMacroResolver.MACRO_START_OLD;
+            de = I_CmsMacroResolver.MACRO_END_OLD;
         }
 
         // append chars before the first delimiter found
@@ -295,10 +298,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             }
             // get the next macro delimiter
             if ((pn > -1) && (pn < pp1)) {
-                pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_NEW, pp1);
+                pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER, pp1);
             }
             if ((po > -1) && (po < pp1)) {
-                po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER, pp1);
+                po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_OLD, pp1);
             }
             if ((po == -1) && (pn == -1)) {
                 // none found, make sure remaining chars in this segement are appended
@@ -340,11 +343,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             }
             // adpot macro style for next delimiter found
             if (np == pn) {
-                ds = I_CmsMacroResolver.MACRO_START_NEW;
-                de = I_CmsMacroResolver.MACRO_END_NEW;
-            } else {
                 ds = I_CmsMacroResolver.MACRO_START;
                 de = I_CmsMacroResolver.MACRO_END;
+            } else {
+                ds = I_CmsMacroResolver.MACRO_START_OLD;
+                de = I_CmsMacroResolver.MACRO_END_OLD;
             }
             // append the remaining chars after the macro to the start of the next macro
             result.append(input.substring(e, np));

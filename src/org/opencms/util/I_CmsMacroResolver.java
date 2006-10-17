@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/I_CmsMacroResolver.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.7.8.1 $
+ * Date   : $Date: 2006/10/17 17:03:57 $
+ * Version: $Revision: 1.7.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,36 +33,39 @@ package org.opencms.util;
 
 /**
  * Describes a macro mapper, which is used to efficiently resolve macros
- * in the form of <code>${key}</code> in an input String.<p>
+ * in the form of <code>%(key)</code> or <code>${key}</code> in an input String.<p>
+ * 
+ * Starting with OpenCms 7.0, the preferred form of a macro is <code>%(key)</code>. This is to 
+ * avoid conflicts / confusion with the JSP EL, which also uses the <code>${key}</code> syntax.<p>
  * 
  * The macro replacement is pre-implemented in 
  * <code>{@link org.opencms.util.CmsMacroResolver#resolveMacros(String, I_CmsMacroResolver)}</code>.<p>
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.7.8.1 $ 
+ * @version $Revision: 1.7.8.2 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsMacroResolver {
 
-    /** Delimiter char <code>'$'</code> for a macro - old style. */
-    char MACRO_DELIMITER = '$';
+    /** Delimiter char <code>'%'</code> for a macro - new / current style. */
+    char MACRO_DELIMITER = '%';
 
-    /** Delimiter char <code>'%'</code> for a macro - new style. */
-    char MACRO_DELIMITER_NEW = '%';
+    /** Delimiter char <code>'$'</code> for a macro - old style. */
+    char MACRO_DELIMITER_OLD = '$';
+
+    /** End char <code>')'</code> for a macro - new / current style. */
+    char MACRO_END = ')';
 
     /** End char <code>'}'</code> for a macro - old style. */
-    char MACRO_END = '}';
+    char MACRO_END_OLD = '}';
 
-    /** End char <code>')'</code> for a macro - new style. */
-    char MACRO_END_NEW = ')';
+    /** Start char <code>'('</code> for a macro - new / current style. */
+    char MACRO_START = '(';
 
     /** Start char <code>'{'</code> for a macro - old style.  */
-    char MACRO_START = '{';
-
-    /** Start char <code>'('</code> for a macro - new style.  */
-    char MACRO_START_NEW = '(';
+    char MACRO_START_OLD = '{';
 
     /**
      * Resolves a single macro to the macro value, returns <code>null</code> if the macro could not be resolved.<p> 
