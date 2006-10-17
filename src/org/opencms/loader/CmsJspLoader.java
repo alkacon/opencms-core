@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/10/13 08:52:47 $
- * Version: $Revision: 1.100.4.5 $
+ * Date   : $Date: 2006/10/17 17:25:52 $
+ * Version: $Revision: 1.100.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100.4.5 $ 
+ * @version $Revision: 1.100.4.6 $ 
  * 
  * @since 6.0.0 
  * 
@@ -1072,13 +1072,14 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         if (!f.exists()) {
             // file does not exist in real FS
             mustUpdate = true;
-        } else if (f.lastModified() <= resource.getDateLastModified()) {
+        } else if (f.lastModified() <= resource.getDateLastModified()) {            
             // file in real FS is older then file in VFS
             mustUpdate = true;
         } else if (controller.getCurrentRequest().isDoRecompile()) {
             // recompile is forced with parameter
             mustUpdate = true;
         } else {
+            // update strong link dependencies
             mustUpdate = updateStrongLinks(resource, controller, updatedFiles);
         }
 
@@ -1109,14 +1110,23 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             try {
                 // parse the JSP and modify OpenCms critical directives
                 contents = parseJsp(contents, encoding, controller, updatedFiles, isHardInclude);
+                if (LOG.isInfoEnabled()) {
+                    // check for existing file and display some debug info
+                    LOG.info(Messages.get().getBundle().key(
+                        Messages.LOG_JSP_PERMCHECK_4,
+                        new Object[] {
+                            f.getAbsolutePath(),
+                            Boolean.valueOf(f.exists()),
+                            Boolean.valueOf(f.isFile()),
+                            Boolean.valueOf(f.canWrite())}));
+                }                
                 // write the parsed JSP content to the real FS
-                synchronized (this) {
+                synchronized (this) {                                       
                     // this must be done only one file at a time
                     FileOutputStream fs = new FileOutputStream(f);
                     fs.write(contents);
                     fs.close();
                 }
-
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_UPDATED_JSP_2, jspTargetName, jspVfsName));
                 }
@@ -1176,7 +1186,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @param controller the controller for the jsp integration
      * @param updatedFiles the already updated files
      * 
-     * @return if the given JSP file should be update due to dirty included files
+     * @return <code>true</code> if the given JSP file should be updated due to dirty included files
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
