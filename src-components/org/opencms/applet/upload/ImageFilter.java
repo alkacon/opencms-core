@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFilter.java,v $
- * Date   : $Date: 2005/06/27 23:22:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/10/17 13:33:11 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,14 +44,14 @@ import javax.swing.filechooser.FileFilter;
  * 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public class ImageFilter extends FileFilter {
 
     /**
-     * Accept all directorys, GIF, TIF, JPG and PNG files.<p>
+     * Accept all directories, GIF, TIF, JPG, BMP and PNG files.<p>
      * 
      * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
      */
@@ -61,16 +61,7 @@ public class ImageFilter extends FileFilter {
             return true;
         }
 
-        String extension = FileUploadUtils.getExtension(f);
-        if (extension != null) {
-            return (extension.equals(".gif")
-                || extension.equals(".tiff")
-                || extension.equals(".tif")
-                || extension.equals(".jpeg")
-                || extension.equals(".jpg") || extension.equals(".png"));
-        } else {
-            return false;
-        }
+        return FileUploadUtils.isImageExtension(FileUploadUtils.getExtension(f));
     }
 
     /**

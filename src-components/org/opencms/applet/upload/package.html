@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/package.html,v $
- Date   : $Date: 2005/06/23 11:11:24 $
- Version: $Revision: 1.5 $
+ Date   : $Date: 2006/10/17 13:33:11 $
+ Version: $Revision: 1.6 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -36,18 +36,11 @@
 </head>
 <body bgcolor="white">
 
-Classes used to generate the OpenCms upload applet.<p>
+Used to generate the OpenCms upload Applet.<p>
 
-The complete complied applet is imported into the workplace when OpenCms is installed.<p>
-To compile the applet, the following steps must be taken: 
-<ul>
-<li>The sources of the packages <code>org.apache.commons.httpclient</code> and <code>org.apache.commons.logging</code> must be part of the proejct (under src-components)</li>
-<li>The class <code>LogKitLogger</code> must be deleted form the package <code>org.apache.commons.logging</code></li>
-<li>Those two packages and the <code>org.opencms.applet.upload</code> applet must be stored in a single jar file</li>
-<li>The jar file must be signed with a valid certificate</li>
-</ul>
+To compile the Applet, use the <code>uploadjar</code> target in the main OpenCms build file. 
 
-@version $Revision: 1.5 $ 
+@version $Revision: 1.6 $ 
 
 @since 6.0.0 
 

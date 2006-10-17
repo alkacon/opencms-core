@@ -74,6 +74,7 @@
 	<property name="system.runtimeinfo"					value="org.opencms.db.CmsDbContextFactory" />
 
     <property name="excludes"                   		value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath" />
+    <property name="java.target.version"                value="1.4" />
     
     <property environment="env" />
 	
@@ -789,4 +790,73 @@ ${opencms.inputlib.textextraction}
 			<test name="org.opencms.xml.content.AllTests" />			
 		</junit>
 	</target>
+	
+    <target name="uploadjar" depends="checklibs" if="libsAvailable" 
+        description="Build the upload.jar">
+        
+        <delete dir="${opencms.output}/upload/" />
+        <mkdir dir="${opencms.output}/upload/org/opencms/applet/" />
+        
+        <copy todir="${opencms.output}/upload/org/opencms/applet/">
+            <fileset dir="${opencms.input}/src-components/org/opencms/applet">
+                <include name="**/*.png"/>
+                <include name="**/*.gif"/>
+            </fileset>
+        </copy>  
+                    
+        <unjar dest="${opencms.output}/upload/" src="${opencms.inputlib.httpclient}" />
+        <unjar dest="${opencms.output}/upload/" src="${opencms.inputlib.logging}" />
+        <unjar dest="${opencms.output}/upload/" src="${opencms.inputlib.codec}" />
+
+        <delete>
+            <fileset dir="${opencms.output}/upload/">
+                <include name="**/*.html" />
+            </fileset>
+        </delete>
+        
+        <javac
+            srcdir="${opencms.input}/src-components/org/opencms/applet"
+            destdir="${opencms.output}/upload"
+            excludes="${build.excludes}"
+            debug="on"
+            optimize="on"
+            deprecation="on"
+            source="1.4"
+            target="${java.target.version}">
+        </javac>
+ 
+        <jar
+            jarfile="${opencms.output}/upload/upload_unsigned.jar"
+            basedir="${opencms.output}/upload/"
+            includes="org/**" >  
+        </jar>
+       
+        <genkey 
+            keystore="${opencms.output}/upload/keystore" 
+            validity="3650" 
+            alias="OpenCms" 
+            storepass="${signjar.storepass}">
+            <dname>
+                <param name="CN" value="OpenCms Upload Applet" />
+                <param name="OU" value="opencms.org" />
+                <param name="O"  value="Alkacon Software GmbH" />
+                <param name="L"  value="An der Wachsfabrik 13" />
+                <param name="S"  value="Cologne" />
+                <param name="C"  value="DE" />
+            </dname>
+        </genkey>       
+
+        <signjar 
+            signedjar="${opencms.output}/upload/upload.jar" 
+            alias="OpenCms" 
+            jar="${opencms.output}/upload/upload_unsigned.jar" 
+            storepass="${signjar.storepass}"
+            keystore="${opencms.output}/upload/keystore" />
+        
+        <delete file="${opencms.output}/upload/upload_unsigned.jar" />
+
+        <copy 
+            todir="${opencms.input}/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/components/upload_applet/"
+            file="${opencms.output}/upload/upload.jar" />
+    </target>   
 </project>
