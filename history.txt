@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/17 09:11:00 $
- * Version: $Revision: 1.717.2.66 $
+ * Date   : $Date: 2006/10/17 09:15:46 $
+ * Version: $Revision: 1.717.2.67 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,11 +29,12 @@ OpenCms 6.5.4 - xxxx, 2006
 - Updated lucene-analyzers.jar to version 2.0.0
 - Updated lucene-snowball.jar to version 2.0.0
 - Refactoring the Search API, passing the index as a parameter instead of only the locale 
+* Fixed issue #1171: CmsJspActionElement.img() doesn't work properly in Online project
+* Fixed issue #1198: Problem in "Search Management" when deleting all indexes
 * Fixed issue #1225: Typo in localized message bundle ERR_DIRECT_PUBLISH_PARENT_NEW_2
 * Fixed issue #1227: Insufficient access rights on workplace css files if static export is disabled
 * Fixed issue #1236: Target attribute for explorer contextmenu entries does not work in all cases
 * Fixed issue #1239: Setup Wizard Generic Database error
-* Fixed issue #1198: Problem in "Search Management" when deleting all indexes
 
 OpenCms 6.5.3 - October 10, 2006
 * Fixed issue #1247: Display issue for multiple select boxes and help texts in IE
@@ -45,7 +46,7 @@ OpenCms 6.5.3 - October 10, 2006
 ! Extended <cms:parse>/<cms:decorate> by attribute "noAutoCloseTags" for tag names that must not be auto-closed 
 * Workplace search tool generated invalid result links if current site is not root
 ! Temporary files are now invisible for members of the groups Users and Projectmanagers
-* Fixed issue in preferences dialog deleting synchronisation settings
+* Fixed issue #1229: Synchronisation settings are lost when user changes workplace preferences
 * Fixed issue in <cms:img> tag with static export of scaled images not really working
 * Static Export no longer creates a new session for each resource
 * Improved site managing preventing problems displaying resources in siblings and project view
