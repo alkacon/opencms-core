@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/10/13 15:48:05 $
- * Version: $Revision: 1.19.4.7 $
+ * Date   : $Date: 2006/10/17 14:10:21 $
+ * Version: $Revision: 1.19.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.7 $ 
+ * @version $Revision: 1.19.4.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -606,12 +606,14 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         CmsResource vfsResource = cms.readResource(pubResource.getRootPath());
                         if ((vfsResource.getFlags() & CmsResource.FLAG_INTERNAL) != CmsResource.FLAG_INTERNAL) {
                             // add only if not internal
-                            resourceSet.add(pubResource);
+                            // additionally, add all siblings of the resource
+                            resourceSet.addAll(getSiblings(cms, pubResource));
                         }
                     } else {
                         // the resource does not exist, so add them for deletion in the static export
                         resourceSet.add(pubResource);
                     }
+
                     boolean match = false;
                     Iterator itExportRules = OpenCms.getStaticExportManager().getExportRules().iterator();
                     while (itExportRules.hasNext()) {
@@ -633,4 +635,23 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             cms.getRequestContext().restoreSiteRoot();
         }
     }
+    
+    /**
+     * Returns all siblings of the published resource as list of <code>CmsPublishedResource</code>
+     * @param cms the cms object
+     * @param pubResource the published resource
+     * @return all siblings of the published resource
+     * @throws CmsException if something goes wrong
+     */
+    private Set getSiblings(CmsObject cms, CmsPublishedResource pubResource) throws CmsException {
+        
+        Set siblings = new HashSet(); 
+            
+        for (Iterator i = getSiblingsList(cms, pubResource.getRootPath()).iterator(); i.hasNext();) {
+            String sibling = (String)i.next();
+            siblings.add(new CmsPublishedResource(cms.readResource(sibling)));
+        }
+        
+        return siblings;
+    }       
 }
