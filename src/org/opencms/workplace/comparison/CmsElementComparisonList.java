@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2006/03/30 08:58:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/10/17 14:43:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -47,9 +48,12 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.xml.types.CmsXmlDateTimeValue;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -66,8 +70,9 @@ import org.apache.commons.logging.Log;
  * Element comparison list view. <p>
  * 
  * @author Jan Baudisch  
+ * @author Peter Bonrad
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -410,12 +415,31 @@ public class CmsElementComparisonList extends A_CmsListDialog {
                     item.set(LIST_COLUMN_STATUS, key(Messages.GUI_COMPARE_UNCHANGED_0));
                 }
             }
-            item.set(LIST_COLUMN_VERSION_1, CmsStringUtil.escapeHtml(CmsStringUtil.substitute(CmsStringUtil.trimToSize(
+            String value1 = CmsStringUtil.escapeHtml(CmsStringUtil.substitute(CmsStringUtil.trimToSize(
                 comparison.getVersion1(),
-                CmsPropertyComparisonList.TRIM_AT_LENGTH), "\n", "")));
-            item.set(LIST_COLUMN_VERSION_2, CmsStringUtil.escapeHtml(CmsStringUtil.substitute(CmsStringUtil.trimToSize(
+                CmsPropertyComparisonList.TRIM_AT_LENGTH), "\n", ""));
+
+            // formatting DateTime
+            if (((CmsXmlContentElementComparison)comparison).getType().equals(CmsXmlDateTimeValue.TYPE_NAME)) {
+                value1 = CmsDateUtil.getDateTime(
+                    new Date(Long.parseLong(value1)),
+                    DateFormat.SHORT,
+                    getCms().getRequestContext().getLocale());
+            }
+            item.set(LIST_COLUMN_VERSION_1, value1);
+            
+            String value2 = CmsStringUtil.escapeHtml(CmsStringUtil.substitute(CmsStringUtil.trimToSize(
                 comparison.getVersion2(),
-                CmsPropertyComparisonList.TRIM_AT_LENGTH), "\n", "")));
+                CmsPropertyComparisonList.TRIM_AT_LENGTH), "\n", ""));
+            
+            // formatting DateTime
+            if (((CmsXmlContentElementComparison)comparison).getType().equals(CmsXmlDateTimeValue.TYPE_NAME)) {
+                value2 = CmsDateUtil.getDateTime(
+                    new Date(Long.parseLong(value2)),
+                    DateFormat.SHORT,
+                    getCms().getRequestContext().getLocale());
+            }
+            item.set(LIST_COLUMN_VERSION_2, value2);
             result.add(item);
         }
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_1).setName(

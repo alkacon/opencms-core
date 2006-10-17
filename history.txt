@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/17 13:35:34 $
- * Version: $Revision: 1.771 $
+ * Date   : $Date: 2006/10/17 14:43:28 $
+ * Version: $Revision: 1.772 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ OpenCms 6.2.3 -
 * Fixed issue #1236: Target attribute for explorer contextmenu entries does not work in all cases
 * Fixed issue #1239: Setup Wizard Generic Database error
 * Fixed issue #1252: Availability context menu entry not shown for pointer resources
+* Fixed display of date values of xml elements in history comparison
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
