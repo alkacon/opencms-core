@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2006/08/19 13:40:40 $
- * Version: $Revision: 1.22.4.3 $
+ * Date   : $Date: 2006/10/17 12:21:52 $
+ * Version: $Revision: 1.22.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,12 +45,15 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22.4.3 $ 
+ * @version $Revision: 1.22.4.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListMetadata {
 
+    /** the html id for the input element of the search bar. */
+    public static final String SEARCH_BAR_INPUT_ID = "listSearchFilter";
+    
     /** Container for column definitions. */
     private CmsIdentifiableObjectContainer m_columns = new CmsIdentifiableObjectContainer(true, false);
 
@@ -650,7 +653,7 @@ public class CmsListMetadata {
         StringBuffer html = new StringBuffer(1024);
         html.append("<td class='main'>\n");
         html.append("\t<div>\n");
-        html.append("\t\t<input type='text' name='listSearchFilter' value='' size='20' maxlength='245' style='vertical-align: bottom;'>\n");
+        html.append("\t\t<input type='text' name='listSearchFilter' id='" + SEARCH_BAR_INPUT_ID + "' value='' size='20' maxlength='245' style='vertical-align: bottom;'>\n");
         html.append(m_searchAction.buttonHtml());
         I_CmsListAction showAllAction = m_searchAction.getShowAllAction();
         if (showAllAction != null) {
