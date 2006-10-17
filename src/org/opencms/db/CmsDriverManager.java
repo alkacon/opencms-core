@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/10/09 16:43:13 $
- * Version: $Revision: 1.570.2.25 $
+ * Date   : $Date: 2006/10/17 14:09:22 $
+ * Version: $Revision: 1.570.2.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -337,6 +337,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Key to indicate update of structure state. */
     public static final int UPDATE_STRUCTURE_STATE = 2;
 
+    /** 
+     * Values indicating changes of a resource, 
+     * ordered according to the scope of the change. 
+     */
+    /** Value to indicate a change in access control entries of a resource. */
+    public static final int CHANGED_ACCESSCONTROL = 1;
+    
+    /** Value to indicate a change in the availability timeframe. */
+    public static final int CHANGED_TIMEFRAME = 2;
+    
+    /** Value to indicate a change in the lastmodified settings of a resource. */
+    public static final int CHANGED_LASTMODIFIED = 4;
+    
+    /** Value to indicate a change in the resource data. */
+    public static final int CHANGED_RESOURCE = 8;
+    
+    /** Value to indicate a content change. */
+    public static final int CHANGED_CONTENT = 16;
+    
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDriverManager.class);
 
@@ -748,9 +767,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         clearResourceCache();
 
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_LASTMODIFIED));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -1020,9 +1040,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearAccessControlListCache();
 
         // fire a resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            destination)));
+        HashMap data = new HashMap(2);
+        data.put("resource", destination);
+        data.put("change", new Integer(CHANGED_ACCESSCONTROL));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -3953,9 +3974,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_securityManager.clearPermissionCache();
 
         // fire resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(NOTHING_CHANGED));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -5883,9 +5905,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearAccessControlListCache();
 
         // fire a resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_ACCESSCONTROL));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -6018,9 +6041,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // clear the cache
         clearResourceCache();
 
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_RESOURCE|CHANGED_CONTENT));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -6134,9 +6158,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             clearResourceCache();
         }
 
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_RESOURCE|CHANGED_CONTENT));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -6167,9 +6192,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearResourceCache();
 
         // fire the event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_TIMEFRAME));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -6203,9 +6229,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearResourceCache();
 
         // fire the event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_LASTMODIFIED));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -6238,9 +6265,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearResourceCache();
 
         // fire the event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_TIMEFRAME));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -6333,9 +6361,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearResourceCache();
 
         // fire the event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_LASTMODIFIED));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -6453,9 +6482,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_securityManager.clearPermissionCache();
 
         // fire resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(NOTHING_CHANGED));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -6680,9 +6710,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearAccessControlListCache();
 
         // fire a resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_ACCESSCONTROL));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -6836,9 +6867,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // update the cache
         clearResourceCache();
 
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_CONTENT));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
 
         return resource;
     }
@@ -7031,10 +7063,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // update the cache
         clearResourceCache();
-
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_RESOURCE));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -7810,9 +7842,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             if (attrModified || aceModified) {
                 // fire the event
-                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-                    "resource",
-                    resource)));
+                HashMap data = new HashMap(2);
+                data.put("resource", resource);
+                data.put("change", new Integer(
+                    ((attrModified) ? CHANGED_RESOURCE : 0) |
+                    ((aceModified) ? CHANGED_ACCESSCONTROL : 0)));
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
             }
         }
     }
