@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/10/17 09:09:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,7 +121,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         super.defineWidgets();
 
         // widgets to display
-        if (m_index.getName() == null) {
+        if (m_index == null || m_index.getName() == null) {
             addWidget(new CmsWidgetDialogParameter(m_index, "name", PAGES[0], new CmsInputWidget()));
         } else {
             addWidget(new CmsWidgetDialogParameter(m_index, "name", PAGES[0], new CmsDisplayWidget()));
