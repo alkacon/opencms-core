@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/10/18 09:17:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.galleries.A_CmsGallery;
 
@@ -42,7 +41,7 @@ import org.opencms.workplace.galleries.A_CmsGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,8 +140,8 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
             widgetDialog.getButtonStyle()));
         // create preview button
         String previewClass = "hide";
-        if (CmsStringUtil.isNotEmpty(value) && value.startsWith("/")) {
-            // show button if field value is not empty and starts with a "/"
+        if (showPreview(value)) {
+            // show button if preview is enabled
             previewClass = "show";
         }
         result.append("<td class=\"");

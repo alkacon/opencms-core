@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/18 09:14:07 $
- * Version: $Revision: 1.773 $
+ * Date   : $Date: 2006/10/18 09:17:07 $
+ * Version: $Revision: 1.774 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,7 +22,6 @@ Legend:
 OpenCms 6.2.3 -
 ! History list optionally shows project name and description
 ! Additional optional dbcp parameters for connection pooling and validation provided in opencms.properties
-* Fixed issue #1247: Display issue for multiple select boxes and help texts in IE
 ! New configuration option for initial checkbox state on new folder dialog in opencms-workplace.xml 
 ! Content tool for property change allows to set property values for resources that have an empty old value
 ! Added option to delete locales in XML content and page editor
@@ -55,6 +54,8 @@ OpenCms 6.2.3 -
 * Fixed issue #1229: Synchronisation settings are lost when user changes workplace preferences
 * Fixed issue #1236: Target attribute for explorer contextmenu entries does not work in all cases
 * Fixed issue #1239: Setup Wizard Generic Database error
+* Fixed issue #1247: Display issue for multiple select boxes and help texts in IE
+* Fixed issue #1250: Display issue of preview button in link gallery widget
 * Fixed issue #1252: Availability context menu entry not shown for pointer resources
 * Fixed display of date values of xml elements in history comparison
 
