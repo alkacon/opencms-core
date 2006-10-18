@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2006/10/18 09:29:06 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.61 $ 
+ * @version $Revision: 1.62 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,6 +153,12 @@ public class CmsLinkManager {
 
         // append path down from common ancestor to there
         result.append(toUri.substring(pos));
+
+        if (result.length() == 0) {
+            // special case: relative link to the parent folder from a file in that folder
+            result.append("./");
+        }
+
         return result.toString();
     }
 
