@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/17 15:15:18 $
- * Version: $Revision: 1.717.2.71 $
+ * Date   : $Date: 2006/10/18 09:17:18 $
+ * Version: $Revision: 1.717.2.72 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ OpenCms 6.5.4 - xxxx, 2006
 * Fixed issue #1227: Insufficient access rights on workplace css files if static export is disabled
 * Fixed issue #1236: Target attribute for explorer contextmenu entries does not work in all cases
 * Fixed issue #1239: Setup Wizard Generic Database error
+* Fixed issue #1250: Display issue of preview button in link gallery widget
 * Fixed issue #1252: Availability context menu entry not shown for pointer resources
 * Fixed display of date values of xml elements in history comparison
 
