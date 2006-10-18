@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2006/03/27 14:52:50 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/10/18 09:20:05 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -49,11 +49,14 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
+
+    /** The "number" macro. */
+    private static final String MACRO_NUMBER = "number";
 
     /** Format for file create parameter. */
     private static final PrintfFormat NUMBER_FORMAT = new PrintfFormat("%0.4d");
@@ -240,11 +243,13 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
         String checkName;
         StringBuffer checkTempFileName;
         String number;
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
 
         int j = 0;
         do {
             number = NUMBER_FORMAT.sprintf(++j);
-            checkFileName = CmsStringUtil.substitute(fileName, "${number}", number);
+            resolver.addMacro(MACRO_NUMBER, number);
+            checkFileName = resolver.resolveMacros(fileName);
             // get new resource name without path information
             checkName = CmsResource.getName(checkFileName);
             // create temporary file name to check for additionally
