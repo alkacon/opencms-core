@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/18 10:18:31 $
- * Version: $Revision: 1.776 $
+ * Date   : $Date: 2006/10/18 13:10:59 $
+ * Version: $Revision: 1.777 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ OpenCms 6.2.3 -
 - While publishing projects in Project Management there is now a link validation before publishing
 - Extended the Account Management: Details for permissions in group list and extended list for users in group
 - Updated FCKeditor module to FCKeditor version 2.3.2
+* Fixed issue #1161: Nested contentload tags fail, sometimes silently
 * Fixed issue #1171: CmsJspActionElement.img() doesn't work properly in Online project
 * Fixed issue #1189: CmsSelectWidget should have a method to get the option from it's stored value
 * Fixed issue #1198: Problem in "Search Management" when deleting all indexes

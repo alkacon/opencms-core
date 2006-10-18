@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2006/10/18 13:10:59 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -282,7 +282,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             // check if container really is a preloader
             if (!container.isPreloader()) {
                 // don't use ancestor if not a preloader
-                ancestor = null;
+                container = null;
             }
         }
 
