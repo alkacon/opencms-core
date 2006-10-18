@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -32,3 +32,20 @@ function AddSelectOption( selectElement, optionText, optionValue )
 
 var oConnector	= window.parent.oConnector ;
 var oIcons		= window.parent.oIcons ;
+
+
+function StringBuilder( value )
+{
+    this._Strings = new Array( value || '' ) ;
+}
+
+StringBuilder.prototype.Append = function( value )
+{
+    if ( value )
+        this._Strings.push( value ) ;
+}
+
+StringBuilder.prototype.ToString = function()
+{
+    return this._Strings.join( '' ) ;
+}

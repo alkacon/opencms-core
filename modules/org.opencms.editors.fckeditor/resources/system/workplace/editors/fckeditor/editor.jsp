@@ -54,12 +54,11 @@ case CmsEditor.ACTION_DELETELOCALE:
 //////////////////// ACTION: delete a localeand show the editor again
 	if (wp.getAction() == CmsEditor.ACTION_DELETELOCALE) {
 		wp.actionDeleteElementLocale();
-        }
+    }
 
 case CmsEditor.ACTION_SAVE:
 //////////////////// ACTION: save the modified content
 	if (wp.getAction() == CmsEditor.ACTION_SAVE) {
-
 		wp.actionSave();
 	}
 
@@ -150,12 +149,12 @@ function buttonAction(para) {
 		_form.action.value = "<%= CmsEditor.EDITOR_CLEANUP %>";
 		_form.target = "_self";
 		_form.submit();
-        break;	
-    case 14:
-	// delete the current locale content
-	_form.action.value = "<%= CmsEditor.EDITOR_DELETELOCALE %>";
-	_form.submit();
-	break;
+        break;
+	case 14:
+		// delete the current locale content
+		_form.action.value = "<%= CmsEditor.EDITOR_DELETELOCALE %>";
+		_form.submit();
+		break;
     }
 }
 

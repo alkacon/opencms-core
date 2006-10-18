@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -15,6 +15,7 @@
  * 
  * File Authors:
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * 		Dominik Pesch ?dom? (empty selection patch) (d.pesch@11com7.de)
  */
 
 var oEditor		= window.parent.InnerDialogLoaded() ;
@@ -43,6 +44,8 @@ function OnDialogTabChange( tabCode )
 	ShowE('divTarget'	, ( tabCode == 'Target' ) ) ;
 	ShowE('divUpload'	, ( tabCode == 'Upload' ) ) ;
 	ShowE('divAttribs'	, ( tabCode == 'Advanced' ) ) ;
+
+	window.parent.SetAutoSize( true ) ;
 }
 
 //#### Regular Expressions library.
@@ -175,12 +178,12 @@ function LoadAnchorNamesAndIds()
 	{
 		var sName = aAnchors[i].name ;
 		if ( sName && sName.length > 0 )
-			oEditor.FCKTools.AddSelectOption( document, GetE('cmbAnchorName'), sName, sName ) ;
+			oEditor.FCKTools.AddSelectOption( GetE('cmbAnchorName'), sName, sName ) ;
 	}
 
 	for ( var i = 0 ; i < aIds.length ; i++ )
 	{
-		oEditor.FCKTools.AddSelectOption( document, GetE('cmbAnchorId'), aIds[i], aIds[i] ) ;
+		oEditor.FCKTools.AddSelectOption( GetE('cmbAnchorId'), aIds[i], aIds[i] ) ;
 	}
 
 	ShowE( 'divSelAnchor'	, bHasAnchors ) ;
@@ -195,13 +198,9 @@ function LoadSelection()
 
 	// Get the actual Link href.
 	var sHRef = oLink.getAttribute( '_fcksavedurl' ) ;
-	if ( !sHRef || sHRef.length == 0 )
+	if ( sHRef == null )
 		sHRef = oLink.getAttribute( 'href' , 2 ) + '' ;
 	
-	// TODO: Wait stable version and remove the following commented lines.
-//	if ( sHRef.startsWith( FCK.BaseUrl ) )
-//		sHRef = sHRef.remove( 0, FCK.BaseUrl.length ) ;
-
 	// Look for a popup javascript link.
 	var oPopupMatch = oRegex.PopupUri.exec( sHRef ) ;
 	if( oPopupMatch )
@@ -427,7 +426,7 @@ function FillPopupFields( windowName, features )
 //#### The OK button was hit.
 function Ok()
 {
-	var sUri ;
+	var sUri, sInnerHtml ;
 
 	switch ( GetE('cmbLinkType').value )
 	{
@@ -443,7 +442,16 @@ function Ok()
 			sUri = GetE('cmbLinkProtocol').value + sUri ;
 
 			if( GetE('cmbTarget').value == 'popup' )
+			{
+				// Check the window name, according to http://www.w3.org/TR/html4/types.html#type-frame-target (IE throw erros with spaces).
+				if ( /(^[^a-zA-Z])|(\s)/.test( GetE('txtPopupName').value ) )
+				{
+					alert( FCKLang.DlnLnkMsgInvPopName ) ;
+					return false ;
+				}
+				
 				sUri = BuildPopupUri( sUri ) ;
+			}
 
 			break ;
 
@@ -476,19 +484,50 @@ function Ok()
 			break ;
 	}
 
-	if ( oLink )	// Modifying an existent link.
-	{
-		oEditor.FCKUndo.SaveUndoStep() ;
-		oLink.href = sUri ;
-	}
-	else			// Creating a new link.
-	{
+	// No link selected, so try to create one.
+	if ( !oLink )
 		oLink = oEditor.FCK.CreateLink( sUri ) ;
-		if ( ! oLink )
-			return true ;
-	}
 	
+	if ( oLink )
+		sInnerHtml = oLink.innerHTML ;		// Save the innerHTML (IE changes it if it is like an URL).
+	else
+	{
+		// If no selection, use the uri as the link text (by dom, 2006-05-26)
+
+		sInnerHtml = sUri;
+
+		// Built a better text for empty links.
+		switch ( GetE('cmbLinkType').value )
+		{
+			// anchor: use old behavior --> return true
+			case 'anchor':
+				sInnerHtml = sInnerHtml.replace( /^#/, '' ) ;
+				break ;
+
+			// url: try to get path
+			case 'url':
+				var oLinkPathRegEx = new RegExp("//?([^?\"']+)([?].*)?$") ;
+				var asLinkPath = oLinkPathRegEx.exec( sUri ) ;
+				if (asLinkPath != null)
+					sInnerHtml = asLinkPath[1];  // use matched path
+				break ;
+
+			// mailto: try to get email address
+			case 'email':
+				sInnerHtml = GetE('txtEMailAddress').value ;
+				break ;
+		}
+
+		// Create a new (empty) anchor.
+		oLink = oEditor.FCK.CreateElement( 'a' ) ;
+	}
+
+	oEditor.FCKUndo.SaveUndoStep() ;
+
+	oLink.href = sUri ;
 	SetAttribute( oLink, '_fcksavedurl', sUri ) ;
+
+	oLink.innerHTML = sInnerHtml ;		// Set (or restore) the innerHTML
 
 	// Target
 	if( GetE('cmbTarget').value != 'popup' )
@@ -518,6 +557,9 @@ function Ok()
 		SetAttribute( oLink, 'style', GetE('txtAttStyle').value ) ;
 	}
 
+	// Select the link.
+	oEditor.FCKSelection.SelectNode(oLink);
+	
 	return true ;
 }
 

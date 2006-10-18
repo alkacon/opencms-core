@@ -41,7 +41,9 @@ toolbar.append(",'-','Cut','Copy','Paste','PasteText','PasteWord'");
 
 toolbar.append(",'-','Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'");
 
-toolbar.append(",'-','JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'");
+toolbar.append("],[");
+
+toolbar.append("'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'");
 
 toolbar.append(",'-','OrderedList','UnorderedList'");
 
@@ -58,7 +60,7 @@ if (CmsFCKEditorWidget.buildOpenCmsButtonRow(toolbar, configuration)) {
 
 toolbar.append("'SpecialChar','UniversalKey'");
 
-toolbar.append(",'-','Print']");
+toolbar.append(",'-','Print','-','FitWindow']");
 
 %>
 FCKConfig.ToolbarSets["OpenCmsWidget"] = [

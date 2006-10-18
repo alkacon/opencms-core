@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -98,8 +98,13 @@ Button			: "Painike",
 SelectionField	: "Valintakenttä",
 ImageButton		: "Kuvapainike",
 
+FitWindow		: "Suurenna editori koko ikkunaan",
+
 // Context Menu
 EditLink			: "Muokkaa linkkiä",
+CellCM				: "Solu",
+RowCM				: "Rivi",
+ColumnCM			: "Sarake",
 InsertRow			: "Lisää rivi",
 DeleteRows			: "Poista rivit",
 InsertColumn		: "Lisää sarake",
@@ -151,7 +156,7 @@ DlgInfoTab			: "Info",
 DlgAlertUrl			: "Lisää URL",
 
 // General Dialogs Labels
-DlgGenNotSet		: "&lt;ei asetettu&gt;",
+DlgGenNotSet		: "<ei asetettu>",
 DlgGenId			: "Tunniste",
 DlgGenLangDir		: "Kielen suunta",
 DlgGenLangDirLtr	: "Vasemmalta oikealle (LTR)",
@@ -215,12 +220,12 @@ DlgLnkTypeURL		: "Osoite",
 DlgLnkTypeAnchor	: "Ankkuri tässä sivussa",
 DlgLnkTypeEMail		: "Sähköposti",
 DlgLnkProto			: "Protokolla",
-DlgLnkProtoOther	: "&lt;muu&gt;",
+DlgLnkProtoOther	: "<muu>",
 DlgLnkURL			: "Osoite",
 DlgLnkAnchorSel		: "Valitse ankkuri",
 DlgLnkAnchorByName	: "Ankkurin nimen mukaan",
 DlgLnkAnchorById	: "Ankkurin ID:n mukaan",
-DlgLnkNoAnchors		: "&lt;Ei ankkureita tässä dokumentissa&gt;",
+DlgLnkNoAnchors		: "<Ei ankkureita tässä dokumentissa>",
 DlgLnkEMail			: "Sähköpostiosoite",
 DlgLnkEMailSubject	: "Aihe",
 DlgLnkEMailBody		: "Viesti",
@@ -228,8 +233,8 @@ DlgLnkUpload		: "Lisää tiedosto",
 DlgLnkBtnUpload		: "Lähetä palvelimelle",
 
 DlgLnkTarget		: "Kohde",
-DlgLnkTargetFrame	: "&lt;kehys&gt;",
-DlgLnkTargetPopup	: "&lt;popup ikkuna&gt;",
+DlgLnkTargetFrame	: "<kehys>",
+DlgLnkTargetPopup	: "<popup ikkuna>",
 DlgLnkTargetBlank	: "Uusi ikkuna (_blank)",
 DlgLnkTargetParent	: "Emoikkuna (_parent)",
 DlgLnkTargetSelf	: "Sama ikkuna (_self)",
@@ -253,6 +258,7 @@ DlgLnkPopTop		: "Ylhäältä (px)",
 DlnLnkMsgNoUrl		: "Linkille on kirjoitettava URL",
 DlnLnkMsgNoEMail	: "Kirjoita sähköpostiosoite",
 DlnLnkMsgNoAnchor	: "Valitse ankkuri",
+DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
 
 // Color Dialog
 DlgColorTitle		: "Valitse väri",
@@ -339,7 +345,6 @@ DlgPasteIgnoreFont		: "Jätä huomioimatta fonttimääritykset",
 DlgPasteRemoveStyles	: "Poista tyylimääritykset",
 DlgPasteCleanBox		: "Tyhjennä",
 
-
 // Color Picker
 ColorAutomatic	: "Automaattinen",
 ColorMoreColors	: "Lisää värejä...",
@@ -370,8 +375,11 @@ DlgSpellManyChanges		: "Tarkistus valmis: %1 sanaa muutettiin",
 IeSpellDownload			: "Oikeinkirjoituksen tarkistusta ei ole asennettu. Haluatko ladata sen nyt?",
 
 // Button Dialog
-DlgButtonText	: "Teksti (arvo)",
-DlgButtonType	: "Tyyppi",
+DlgButtonText		: "Teksti (arvo)",
+DlgButtonType		: "Tyyppi",
+DlgButtonTypeBtn	: "Button",	//MISSING
+DlgButtonTypeSbm	: "Submit",	//MISSING
+DlgButtonTypeRst	: "Reset",	//MISSING
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "Nimi",
@@ -420,6 +428,7 @@ DlgHiddenValue	: "Arvo",
 // Bulleted List Dialog
 BulletedListProp	: "Luettelon ominaisuudet",
 NumberedListProp	: "Numeroinnin ominaisuudet",
+DlgLstStart			: "Start",	//MISSING
 DlgLstType			: "Tyyppi",
 DlgLstTypeCircle	: "Kehä",
 DlgLstTypeDisc		: "Ympyrä",
@@ -442,6 +451,15 @@ DlgDocLangDirLTR	: "Vasemmalta oikealle (LTR)",
 DlgDocLangDirRTL	: "Oikealta vasemmalle (RTL)",
 DlgDocLangCode		: "Kielikoodi",
 DlgDocCharSet		: "Merkistäkoodaus",
+DlgDocCharSetCE		: "Central European",	//MISSING
+DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
+DlgDocCharSetCR		: "Cyrillic",	//MISSING
+DlgDocCharSetGR		: "Greek",	//MISSING
+DlgDocCharSetJP		: "Japanese",	//MISSING
+DlgDocCharSetKR		: "Korean",	//MISSING
+DlgDocCharSetTR		: "Turkish",	//MISSING
+DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
+DlgDocCharSetWE		: "Western European",	//MISSING
 DlgDocCharSetOther	: "Muu merkistäkoodaus",
 
 DlgDocDocType		: "Dokumentin tyyppi",
@@ -471,10 +489,12 @@ DlgTemplatesTitle	: "Sisältöpohjat",
 DlgTemplatesSelMsg	: "Valitse pohja editoriin<br>(aiempi sisältö menetetään):",
 DlgTemplatesLoading	: "Ladataan listaa pohjista. Hetkinen...",
 DlgTemplatesNoTpl	: "(Ei määriteltyjä pohjia)",
+DlgTemplatesReplace	: "Replace actual contents",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "Editorista",
 DlgAboutBrowserInfoTab	: "Selaimen tiedot",
+DlgAboutLicenseTab	: "Lisenssi",
 DlgAboutVersion		: "versio",
 DlgAboutLicense		: "Lisenssi: GNU Lesser General Public License",
 DlgAboutInfo		: "Lisää tietoa osoitteesta"

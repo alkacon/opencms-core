@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -34,7 +34,7 @@ Cut					: "גזירה",
 Copy				: "העתקה",
 Paste				: "הדבקה",
 PasteText			: "הדבקה כטקסט פשוט",
-PasteWord			: "הדבקה מ-Word",
+PasteWord			: "הדבקה מ-וורד",
 Print				: "הדפסה",
 SelectAll			: "בחירת הכל",
 RemoveFormat		: "הסרת העיצוב",
@@ -86,8 +86,8 @@ Find				: "חיפוש",
 Replace				: "החלפה",
 SpellCheck			: "בדיקת איות",
 UniversalKeyboard	: "מקלדת אוניברסלית",
-PageBreakLbl		: "Page Break",	//MISSING
-PageBreak			: "Insert Page Break",	//MISSING
+PageBreakLbl		: "שבירת דף",
+PageBreak			: "הוסף שבירת דף",
 
 Form			: "טופס",
 Checkbox		: "תיבת סימון",
@@ -99,8 +99,13 @@ Button			: "כפתור",
 SelectionField	: "שדה בחירה",
 ImageButton		: "כפתור תמונה",
 
+FitWindow		: "הגדל את גודל העורך",
+
 // Context Menu
 EditLink			: "עריכת קישור",
+CellCM				: "תא",
+RowCM				: "שורה",
+ColumnCM			: "עמודה",
 InsertRow			: "הוספת שורה",
 DeleteRows			: "מחיקת שורות",
 InsertColumn		: "הוספת עמודה",
@@ -109,7 +114,7 @@ InsertCell			: "הוספת תא",
 DeleteCells			: "מחיקת תאים",
 MergeCells			: "מיזוג תאים",
 SplitCell			: "פיצול תאים",
-TableDelete			: "Delete Table",	//MISSING
+TableDelete			: "מחק טבלה",
 CellProperties		: "תכונות התא",
 TableProperties		: "תכונות הטבלה",
 ImageProperties		: "תכונות התמונה",
@@ -131,15 +136,15 @@ FontFormats			: "נורמלי;קוד;כתובת;כותרת;כותרת 2;כותר
 // Alerts and Messages
 ProcessingXHTML		: "מעבד XHTML, נא להמתין...",
 Done				: "המשימה הושלמה",
-PasteWordConfirm	: "נראה הטקסט שבכוונתך להדביק מקורו בקובץ Word. האם ברצונך לנקות אותו טרם ההדבקה?",
-NotCompatiblePaste	: "פעולה זו זמינה לדפדפן Internet Explorer מגירסא 5.5 ומעלה. האם להמשיך בהדבקה ללא הניקוי?",
+PasteWordConfirm	: "נראה הטקסט שבכוונתך להדביק מקורו בקובץ וורד. האם ברצונך לנקות אותו טרם ההדבקה?",
+NotCompatiblePaste	: "פעולה זו זמינה לדפדפן אינטרנט אקספלורר מגירסא 5.5 ומעלה. האם להמשיך בהדבקה ללא הניקוי?",
 UnknownToolbarItem	: "פריט לא ידוע בסרגל הכלים \"%1\"",
 UnknownCommand		: "שם פעולה לא ידוע \"%1\"",
 NotImplemented		: "הפקודה לא מיושמת",
 UnknownToolbarSet	: "ערכת סרגל הכלים \"%1\" לא קיימת",
-NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
-BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
-DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
+NoActiveX			: "הגדרות אבטחה של הדפדפן עלולות לגביל את אפשרויות העריכה.יש לאפשר את האופציה \"הרץ פקדים פעילים ותוספות\". תוכל לחוות טעויות וחיווים של אפשרויות שחסרים.",
+BrowseServerBlocked : "לא ניתן לגשת לדפדפן משאבים.אנא וודא שחוסם חלונות הקופצים לא פעיל.",
+DialogBlocked		: "לא היה ניתן לפתוח חלון דיאלוג. אנא וודא שחוסם חלונות קופצים לא פעיל.",
 
 // Dialogs
 DlgBtnOK			: "אישור",
@@ -147,12 +152,12 @@ DlgBtnCancel		: "ביטול",
 DlgBtnClose			: "סגירה",
 DlgBtnBrowseServer	: "סייר השרת",
 DlgAdvancedTag		: "אפשרויות מתקדמות",
-DlgOpOther			: "&lt;אחר&gt;",
+DlgOpOther			: "<אחר>",
 DlgInfoTab			: "מידע",
 DlgAlertUrl			: "אנה הזן URL",
 
 // General Dialogs Labels
-DlgGenNotSet		: "&lt;לא נקבע&gt;",
+DlgGenNotSet		: "<לא נקבע>",
 DlgGenId			: "זיהוי (Id)",
 DlgGenLangDir		: "כיוון שפה",
 DlgGenLangDirLtr	: "שמאל לימין (LTR)",
@@ -216,12 +221,12 @@ DlgLnkTypeURL		: "כתובת (URL)",
 DlgLnkTypeAnchor	: "עוגן בעמוד זה",
 DlgLnkTypeEMail		: "דוא''ל",
 DlgLnkProto			: "פרוטוקול",
-DlgLnkProtoOther	: "&lt;אחר&gt;",
+DlgLnkProtoOther	: "<אחר>",
 DlgLnkURL			: "כתובת (URL)",
 DlgLnkAnchorSel		: "בחירת עוגן",
 DlgLnkAnchorByName	: "עפ''י שם העוגן",
 DlgLnkAnchorById	: "עפ''י זיהוי (Id) הרכיב",
-DlgLnkNoAnchors		: "&lt;אין עוגנים זמינים בדף&gt;",
+DlgLnkNoAnchors		: "<אין עוגנים זמינים בדף>",
 DlgLnkEMail			: "כתובת הדוא''ל",
 DlgLnkEMailSubject	: "נושא ההודעה",
 DlgLnkEMailBody		: "גוף ההודעה",
@@ -229,13 +234,13 @@ DlgLnkUpload		: "העלאה",
 DlgLnkBtnUpload		: "שליחה לשרת",
 
 DlgLnkTarget		: "מטרה",
-DlgLnkTargetFrame	: "&lt;frame&gt;",
-DlgLnkTargetPopup	: "&lt;חלון קופץ&gt;",
+DlgLnkTargetFrame	: "<מסגרת>",
+DlgLnkTargetPopup	: "<חלון קופץ>",
 DlgLnkTargetBlank	: "חלון חדש (_blank)",
 DlgLnkTargetParent	: "חלון האב (_parent)",
 DlgLnkTargetSelf	: "באותו החלון (_self)",
 DlgLnkTargetTop		: "חלון ראשי (_top)",
-DlgLnkTargetFrameName	: "שם frame היעד",
+DlgLnkTargetFrameName	: "שם מסגרת היעד",
 DlgLnkPopWinName	: "שם החלון הקופץ",
 DlgLnkPopWinFeat	: "תכונות החלון הקופץ",
 DlgLnkPopResize		: "בעל גודל ניתן לשינוי",
@@ -254,6 +259,7 @@ DlgLnkPopTop		: "מיקום צד עליון",
 DlnLnkMsgNoUrl		: "נא להקליד את כתובת הקישור (URL)",
 DlnLnkMsgNoEMail	: "נא להקליד את כתובת הדוא''ל",
 DlnLnkMsgNoAnchor	: "נא לבחור עוגן במסמך",
+DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
 
 // Color Dialog
 DlgColorTitle		: "בחירת צבע",
@@ -284,7 +290,7 @@ DlgTableHeight		: "גובה",
 DlgTableCellSpace	: "מרווח תא",
 DlgTableCellPad		: "ריפוד תא",
 DlgTableCaption		: "כיתוב",
-DlgTableSummary		: "Summary",	//MISSING
+DlgTableSummary		: "סיכום",
 
 // Table Cell Dialog
 DlgCellTitle		: "תכונות תא",
@@ -333,13 +339,12 @@ PasteErrorCut	: "הגדרות האבטחה בדפדפן שלך לא מאפשרו
 PasteErrorCopy	: "הגדרות האבטחה בדפדפן שלך לא מאפשרות לעורך לבצע פעולות העתקה אוטומטיות. יש להשתמש במקלדת לשם כך (Ctrl+C).",
 
 PasteAsText		: "הדבקה כטקסט פשוט",
-PasteFromWord	: "הדבקה מ-Word",
+PasteFromWord	: "הדבקה מ-וורד",
 
-DlgPasteMsg2	: "Please paste inside the following box using the keyboard (<STRONG>Ctrl+V</STRONG>) and hit <STRONG>OK</STRONG>.",
+DlgPasteMsg2	: "אנא הדבק בתוך הקופסה באמצעות  (<STRONG>Ctrl+V</STRONG>) ולחץ על  <STRONG>אישור</STRONG>.",
 DlgPasteIgnoreFont		: "התעלם מהגדרות סוג פונט",
 DlgPasteRemoveStyles	: "הסר הגדרות סגנון",
-DlgPasteCleanBox		: "קופסת ניקוי",
-
+DlgPasteCleanBox		: "ניקוי קופסה",
 
 // Color Picker
 ColorAutomatic	: "אוטומטי",
@@ -360,7 +365,7 @@ DlgSpellBtnIgnore		: "התעלם",
 DlgSpellBtnIgnoreAll	: "התעלם מהכל",
 DlgSpellBtnReplace		: "החלף",
 DlgSpellBtnReplaceAll	: "החלף הכל",
-DlgSpellBtnUndo			: "Undo",
+DlgSpellBtnUndo			: "החזר",
 DlgSpellNoSuggestions	: "- אין הצעות -",
 DlgSpellProgress		: "בדיקות איות בתהליך ....",
 DlgSpellNoMispell		: "בדיקות איות הסתיימה: לא נמצאו שגיעות כתיב",
@@ -371,8 +376,11 @@ DlgSpellManyChanges		: "בדיקות איות הסתיימה: %1 מילים שו
 IeSpellDownload			: "בודק האיות לא מותקן, האם אתה מעוניין להוריד?",
 
 // Button Dialog
-DlgButtonText	: "טקסט (ערך)",
-DlgButtonType	: "סוג",
+DlgButtonText		: "טקסט (ערך)",
+DlgButtonType		: "סוג",
+DlgButtonTypeBtn	: "Button",	//MISSING
+DlgButtonTypeSbm	: "Submit",	//MISSING
+DlgButtonTypeRst	: "Reset",	//MISSING
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "שם",
@@ -421,9 +429,10 @@ DlgHiddenValue	: "ערך",
 // Bulleted List Dialog
 BulletedListProp	: "מאפייני רשימה",
 NumberedListProp	: "מאפייני רשימה ממוספרת",
+DlgLstStart			: "Start",	//MISSING
 DlgLstType			: "סוג",
 DlgLstTypeCircle	: "עיגול",
-DlgLstTypeDisc		: "Disc",	//MISSING
+DlgLstTypeDisc		: "דיסק",
 DlgLstTypeSquare	: "מרובע",
 DlgLstTypeNumbers	: "מספרים (1, 2, 3)",
 DlgLstTypeLCase		: "אותיות קטנות (a, b, c)",
@@ -443,6 +452,15 @@ DlgDocLangDirLTR	: "שמאל לימין (LTR)",
 DlgDocLangDirRTL	: "ימין לשמאל (RTL)",
 DlgDocLangCode		: "קוד שפה",
 DlgDocCharSet		: "קידוד אותיות",
+DlgDocCharSetCE		: "Central European",	//MISSING
+DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
+DlgDocCharSetCR		: "Cyrillic",	//MISSING
+DlgDocCharSetGR		: "Greek",	//MISSING
+DlgDocCharSetJP		: "Japanese",	//MISSING
+DlgDocCharSetKR		: "Korean",	//MISSING
+DlgDocCharSetTR		: "Turkish",	//MISSING
+DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
+DlgDocCharSetWE		: "Western European",	//MISSING
 DlgDocCharSetOther	: "קידוד אותיות אחר",
 
 DlgDocDocType		: "הגדרות סוג מסמך",
@@ -472,10 +490,12 @@ DlgTemplatesTitle	: "תביות תוכן",
 DlgTemplatesSelMsg	: "אנא בחר תבנית לפתיחה בעורך <BR>התוכן המקורי ימחק:",
 DlgTemplatesLoading	: "מעלה רשימת תבניות אנא המתן",
 DlgTemplatesNoTpl	: "(לא הוגדרו תבניות)",
+DlgTemplatesReplace	: "Replace actual contents",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "אודות",
 DlgAboutBrowserInfoTab	: "גירסת דפדפן",
+DlgAboutLicenseTab	: "רשיון",
 DlgAboutVersion		: "גירסא",
 DlgAboutLicense		: "ברשיון תחת תנאי GNU Lesser General Public License",
 DlgAboutInfo		: "מידע נוסף ניתן למצוא כאן:"

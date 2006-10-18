@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -41,7 +41,7 @@ FCK.LoadLinkedFile = function()
 	var i = 0;
 	while ( eLinkedField || i == 0 )
 	{
-		if ( eLinkedField && ( eLinkedField.tagName == 'INPUT' || eLinkedField.tagName == 'TEXTAREA' ) )
+		if ( eLinkedField && ( eLinkedField.tagName.toLowerCase() == 'input' || eLinkedField.tagName.toLowerCase() == 'textarea' ) )
 		{
 			FCK.LinkedField = eLinkedField ;
 			break ;
@@ -56,22 +56,22 @@ FCKTempBin.Elements = new Array() ;
 
 FCKTempBin.AddElement = function( element )
 {
-	var iIndex = FCKTempBin.Elements.length ;
-	FCKTempBin.Elements[ iIndex ] = element ;
+	var iIndex = this.Elements.length ;
+	this.Elements[ iIndex ] = element ;
 	return iIndex ;
 }
 
 FCKTempBin.RemoveElement = function( index )
 {
-	var e = FCKTempBin.Elements[ index ] ;
-	FCKTempBin.Elements[ index ] = null ;
+	var e = this.Elements[ index ] ;
+	this.Elements[ index ] = null ;
 	return e ;
 }
 
 FCKTempBin.Reset = function()
 {
 	var i = 0 ;
-	while ( i < FCKTempBin.Elements.length )
-		FCKTempBin.Elements[ i++ ] == null ;
-	FCKTempBin.Elements.length = 0 ;
+	while ( i < this.Elements.length )
+		this.Elements[ i++ ] == null ;
+	this.Elements.length = 0 ;
 }

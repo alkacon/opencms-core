@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.fckeditor/resources/system/workplace/resources/components/widgets/fckeditor.js,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/10/18 08:00:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,5 +65,5 @@ function showToolbar(editorInstance) {
 
 // add event for selection change
 function FCKeditor_OnComplete(editorInstance) {
-	editorInstance.Events.AttachEvent("OnSelectionChange", showToolbar) ;
+	editorInstance.Events.AttachEvent("OnFocus", showToolbar) ;
 }
