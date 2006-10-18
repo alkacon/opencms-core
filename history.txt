@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/18 13:10:59 $
- * Version: $Revision: 1.777 $
+ * Date   : $Date: 2006/10/18 15:02:25 $
+ * Version: $Revision: 1.778 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ OpenCms 6.2.3 -
 * Fixed issue #1229: Synchronisation settings are lost when user changes workplace preferences
 * Fixed issue #1236: Target attribute for explorer contextmenu entries does not work in all cases
 * Fixed issue #1239: Setup Wizard Generic Database error
+* Fixed issue #1243: Workplace display messed up after multiple static export
 * Fixed issue #1247: Display issue for multiple select boxes and help texts in IE
 * Fixed issue #1250: Display issue of preview button in link gallery widget
 * Fixed issue #1252: Availability context menu entry not shown for pointer resources
