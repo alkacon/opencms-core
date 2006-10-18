@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/10/18 10:18:13 $
+ * Version: $Revision: 1.11.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.util.CmsMacroResolver;
 
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +52,7 @@ import java.util.List;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,6 +131,27 @@ public class CmsSelectWidget extends A_CmsSelectWidget {
         result.append("</td>");
 
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#getWidgetStringValue(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    public String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+
+        String result = super.getWidgetStringValue(cms, widgetDialog, param);
+        String configuration = CmsMacroResolver.resolveMacros(getConfiguration(), cms, widgetDialog.getMessages());
+        if (configuration == null) {
+            configuration = param.getDefault(cms);
+        }
+        List options = CmsSelectWidgetOption.parseOptions(configuration);
+        for (int m = 0; m < options.size(); m++) {
+            CmsSelectWidgetOption option = (CmsSelectWidgetOption)options.get(m);
+            if (result.equals(option.getValue())) {
+                result = option.getOption();
+                break;
+            }
+        }
+        return result;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/18 09:29:11 $
- * Version: $Revision: 1.717.2.73 $
+ * Date   : $Date: 2006/10/18 10:18:13 $
+ * Version: $Revision: 1.717.2.74 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ OpenCms 6.5.4 - xxxx, 2006
 - Refactoring the Search API, passing the index as a parameter instead of only the locale
 - Updated FCKeditor module to FCKeditor version 2.3.2
 * Fixed issue #1171: CmsJspActionElement.img() doesn't work properly in Online project
+* Fixed issue #1189: CmsSelectWidget should have a method to get the option from it's stored value
 * Fixed issue #1198: Problem in "Search Management" when deleting all indexes
 * Fixed issue #1212: Uploading 0-byte files fails
 * Fixed issue #1217: Cms link with relative path on static export returns empty value when linking to current folder
