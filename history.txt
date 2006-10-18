@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/17 14:43:28 $
- * Version: $Revision: 1.772 $
+ * Date   : $Date: 2006/10/18 09:14:07 $
+ * Version: $Revision: 1.773 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ OpenCms 6.2.3 -
 * Fixed issue #1238: Form-Module produces wrong HTML-code
 - While publishing projects in Project Management there is now a link validation before publishing
 - Extended the Account Management: Details for permissions in group list and extended list for users in group
+- Updated FCKeditor module to FCKeditor version 2.3.2
 * Fixed issue #1171: CmsJspActionElement.img() doesn't work properly in Online project
 * Fixed issue #1198: Problem in "Search Management" when deleting all indexes
 * Fixed issue #1212: Uploading 0-byte files fails
