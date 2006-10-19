@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/07/19 14:53:58 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2006/10/19 15:08:20 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -533,7 +533,8 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Reads all bytes from the given input stream and returns the result in an array.<p> 
+     * Reads all bytes from the given input stream, closes it 
+     * and returns the result in an array.<p> 
      * 
      * @param in the input stream to read the bytes from 
      * @return the byte content of the input stream
@@ -542,14 +543,28 @@ public final class CmsFileUtil {
      */
     public static byte[] readFully(InputStream in) throws IOException {
 
+      return readFully(in, true);
+    }
+    
+    /**
+     * Reads all bytes from the given input stream, conditionally closes the given input stream 
+     * and returns the result in an array.<p> 
+     * 
+     * @param in the input stream to read the bytes from 
+     * @return the byte content of the input stream
+     * @param closeInputStream if true the given stream will be closed afterwards
+     * 
+     * @throws IOException in case of errors in the underlying java.io methods used
+     */
+    public static byte[] readFully(InputStream in, boolean closeInputStream) throws IOException {
+
         if (in instanceof ByteArrayInputStream) {
             // content can be read in one pass
-            return readFully(in, in.available());
+            return readFully(in, in.available(), closeInputStream);
         }
 
         // copy buffer
-        int xferSize = in.available();
-        byte[] xfer = new byte[xferSize == 0 ? 2048 : xferSize];
+        byte[] xfer = new byte[2048];
         // output buffer
         ByteArrayOutputStream out = new ByteArrayOutputStream(xfer.length);
 
@@ -559,13 +574,16 @@ public final class CmsFileUtil {
                 out.write(xfer, 0, bytesRead);
             }
         }
-        in.close();
+        if (closeInputStream) {
+            in.close();
+        }
         out.close();
         return out.toByteArray();
     }
 
     /**
-     * Reads the specified number of bytes from the given input stream and returns the result in an array.<p> 
+     * Reads the specified number of bytes from the given input stream, 
+     * closes it and returns the result in an array.<p> 
      * 
      * @param in the input stream to read the bytes from
      * @param size the number of bytes to read 
@@ -576,27 +594,52 @@ public final class CmsFileUtil {
      */
     public static byte[] readFully(InputStream in, int size) throws IOException {
 
+        return readFully(in, size, true);
+    }
+    
+    /**
+     * Reads the specified number of bytes from the given input stream, conditionally closes the stream 
+     * and returns the result in an array.<p> 
+     * 
+     * @param in the input stream to read the bytes from
+     * @param size the number of bytes to read 
+     * @param closeStream if true the given stream will be closed 
+     *  
+     * @return the byte content read from the input stream
+     * 
+     * @throws IOException in case of errors in the underlying java.io methods used
+     */
+    public static byte[] readFully(InputStream in, int size, boolean closeStream) throws IOException {
+
         // create the byte array to hold the data
         byte[] bytes = new byte[size];
 
         // read in the bytes
         int offset = 0;
         int numRead = 0;
-        while ((offset < bytes.length) && ((numRead = in.read(bytes, offset, bytes.length - offset)) >= 0)) {
-            offset += numRead;
+        while (offset < size) {
+            numRead = in.read(bytes, offset, size - offset);
+            if (numRead >= 0) {
+                offset += numRead;
+            } else {
+                break;
+            }
         }
 
         // close the input stream and return bytes
-        in.close();
+        if (closeStream) {
+            in.close();
+        }
 
         // ensure all the bytes have been read in
         if (offset < bytes.length) {
             throw new IOException("Could not read requested " + size + " bytes from input stream");
         }
-
+        
         return bytes;
     }
 
+    
     /** 
      * Removes all resource names in the given List that are "redundant" because the parent folder name 
      * is also contained in the List.<p> 
