@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPointDriver.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/10/19 09:32:28 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.0.0
  */
@@ -82,38 +82,58 @@ public class CmsExportPointDriver {
     }
 
     /**
-     * Creates a new folder in the real file system.<p>
+     * If required, creates the folder with the given root path in the real file system.<p> 
+     * 
+     * @param resourceName the root path of the folder to create
+     * @param exportpoint the export point to create the folder in
+     */
+    public void createFolder(String resourceName, String exportpoint) {
+
+        writeResource(resourceName, exportpoint, null);
+    }
+
+    /**
+     * Deletes a file or a folder in the real file sytem.<p>
      *
-     * @param foldername the complete path to the folder
+     * If the given resource name points to a folder, then this folder is only deleted if it is empty.
+     * This is required since the same export point RFS target folder may be used by multiple export points.
+     * For example, this is usually the case with the <code>/WEB-INF/classes/</code> and 
+     * <code>/WEB-INF/lib/</code> folders which are export point for multiple modules.
+     * If all resources in the RFS target folder where deleted, uninstalling one module would delete the 
+     * export <code>classes</code> and <code>lib</code> resources of all other modules.<p> 
+     * 
+     * @param resourceName the root path of the resource to be deleted
      * @param exportpoint the name of the export point
      */
-    public void createFolder(String foldername, String exportpoint) {
+    public void deleteResource(String resourceName, String exportpoint) {
 
-        File discFolder = new File(absoluteName(foldername, exportpoint));
-        if (!discFolder.exists()) {
-            boolean success = discFolder.mkdirs();
-            if (LOG.isWarnEnabled() && (!success)) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_CREATE_FOLDER_FAILED_1,
-                    absoluteName(foldername, exportpoint)));
+        File file = getExportPointFile(resourceName, exportpoint);
+        if (file.exists() && file.canWrite()) {
+            // delete the file (or folder)
+            file.delete();
+            // also delete empty parent directories 
+            File parent = file.getParentFile();
+            if (parent.canWrite()) {
+                parent.delete();
             }
         }
     }
 
     /**
-     * Returns the export point path of the given resource,
+     * Returns the export point path for the given resource root path,
      * or <code>null</code> if the resource is not contained in 
      * any export point.<p>
      *
-     * @param filename the uri of a resource in the OpenCms VFS
-     * @return the matching export points path or <code>null</code> if no export point matches
+     * @param rootPath the root path of a resource in the OpenCms VFS
+     * @return the export point path for the given resource, or <code>null</code> if the resource is not contained in 
+     *      any export point
      */
-    public String getExportPoint(String filename) {
+    public String getExportPoint(String rootPath) {
 
         Iterator i = getExportPointPaths().iterator();
         while (i.hasNext()) {
             String point = (String)i.next();
-            if (filename.startsWith(point)) {
+            if (rootPath.startsWith(point)) {
                 return point;
             }
         }
@@ -131,54 +151,68 @@ public class CmsExportPointDriver {
     }
 
     /**
-     * Deletes a file (or folder) in the real file sytem.<p>
-     *
-     * @param resourcename the complete path to the resource to be deleted
-     * @param exportpoint the name of the export point
-     */
-    public void removeResource(String resourcename, String exportpoint) {
-
-        File discFile = new File(absoluteName(resourcename, exportpoint));
-        if (discFile.exists()) {
-            discFile.delete();
-        }
-    }
-
-    /**
-     * Writes a file with the given content to the real file system.<p>
-     *
-     * @param filename the path of the file to write
-     * @param exportpoint the name of the export point
+     * Writes the file with the given root path to the real file system.<p>
+     * 
+     * If required, missing parent folders in the real file system are automatically created.<p>
+     * 
+     * @param resourceName the root path of the file to write
+     * @param exportpoint the export point to write file to
      * @param content the contents of the file to write
      */
-    public void writeFile(String filename, String exportpoint, byte[] content) {
+    public void writeFile(String resourceName, String exportpoint, byte[] content) {
 
-        File discFile = new File(absoluteName(filename, exportpoint));
-        try {
-            OutputStream s = new FileOutputStream(discFile);
-            s.write(content);
-            s.close();
-        } catch (Exception e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_WRITE_EXPORT_POINT_FAILED_1,
-                    discFile.getAbsolutePath()), e);
-            }
-        }
+        writeResource(resourceName, exportpoint, content);
     }
 
     /**
-     * Returns the absolute path of an export point in the real file system.<p>
+     * Returns the File for the given export point resource.<p>
      *
-     * @param filename name of a file in the VFS
+     * @param rootPath name of a file in the VFS
      * @param exportpoint the name of the export point
-     * @return the absolute path of an export point in the real file system
+     * @return the File for the given export point resource
      */
-    private String absoluteName(String filename, String exportpoint) {
+    private File getExportPointFile(String rootPath, String exportpoint) {
 
         StringBuffer exportpath = new StringBuffer(128);
         exportpath.append((String)m_exportpointLookupMap.get(exportpoint));
-        exportpath.append(filename.substring(exportpoint.length()));
-        return exportpath.toString();
+        exportpath.append(rootPath.substring(exportpoint.length()));
+        return new File(exportpath.toString());
+    }
+
+    /**
+     * Writes (if required creates) a resource with the given name to the real file system.<p>  
+     * 
+     * @param resourceName the root path of the resource to write
+     * @param exportpoint the name of the export point
+     * @param content the contents of the file to write
+     */
+    private void writeResource(String resourceName, String exportpoint, byte[] content) {
+
+        File file = getExportPointFile(resourceName, exportpoint);
+        try {
+            File folder;
+            if (content == null) {
+                // a folder is to be created
+                folder = file;
+            } else {
+                // a file is to be written
+                folder = file.getParentFile();
+            }
+            // make sure the parent folder exists
+            boolean success = folder.mkdirs();
+            if (!success) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_CREATE_FOLDER_FAILED_1, folder.getAbsolutePath()));
+            }
+            if (content != null) {
+                // now write the file to the real file system
+                OutputStream s = new FileOutputStream(file);
+                s.write(content);
+                s.close();
+            }
+        } catch (Exception e) {
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_WRITE_EXPORT_POINT_FAILED_1, file.getAbsolutePath()),
+                e);
+        }
     }
 }

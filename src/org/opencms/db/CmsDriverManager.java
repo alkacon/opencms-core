@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/09/21 09:34:47 $
- * Version: $Revision: 1.574 $
+ * Date   : $Date: 2006/10/19 09:32:28 $
+ * Version: $Revision: 1.575 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -7113,14 +7113,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     if (currentPublishedResource.isFolder()) {
                         // export the folder                        
                         if (currentPublishedResource.getState() == CmsResource.STATE_DELETED) {
-                            exportPointDriver.removeResource(currentPublishedResource.getRootPath(), currentExportPoint);
+                            exportPointDriver.deleteResource(currentPublishedResource.getRootPath(), currentExportPoint);
                         } else {
                             exportPointDriver.createFolder(currentPublishedResource.getRootPath(), currentExportPoint);
                         }
                     } else {
                         // export the file            
                         if (currentPublishedResource.getState() == CmsResource.STATE_DELETED) {
-                            exportPointDriver.removeResource(currentPublishedResource.getRootPath(), currentExportPoint);
+                            exportPointDriver.deleteResource(currentPublishedResource.getRootPath(), currentExportPoint);
                         } else {
                             // read the file content online
                             CmsFile file = getVfsDriver().readFile(
