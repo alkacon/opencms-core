@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/09/15 14:47:15 $
- * Version: $Revision: 1.34.4.5 $
+ * Date   : $Date: 2006/10/19 14:15:49 $
+ * Version: $Revision: 1.34.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34.4.5 $ 
+ * @version $Revision: 1.34.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,6 +106,9 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /** Value for the action parameter: cleanup content. */
     public static final String EDITOR_CLEANUP = "cleanup";
+
+    /** Value for the action parameter: close browser window (accidentally). */
+    public static final String EDITOR_CLOSEBROWSER = "closebrowser";
 
     /** Value for the action parameter: delete the current locale. */
     public static final String EDITOR_DELETELOCALE = "deletelocale";

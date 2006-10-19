@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module adds the Microsoft DHTML editor to the OpenCms Workplace.</p>
 <p>Install this module if you want a WYSIWYG editor for IE5+ based browsers.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.3</version>
+		<version>1.2.4</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

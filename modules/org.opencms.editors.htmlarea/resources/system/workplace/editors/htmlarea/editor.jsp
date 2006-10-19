@@ -250,9 +250,6 @@ function closeDialog() {
     if (dialogAnchorWindow) {
     	window.dialogAnchorWindow.close();
     }
-    if (document.EDITOR.<%= CmsDialog.PARAM_ACTION %>.value == "null" || document.EDITOR.<%= CmsDialog.PARAM_ACTION %>.value == "") {
-        top.closeframe.closePage("<%= wp.getParamTempfile() %>", "<%= wp.getParamResource() %>");
-    }        
 }
 
 // action when closing a popup window

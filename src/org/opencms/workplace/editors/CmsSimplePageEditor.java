@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.16.4.2 $
+ * Date   : $Date: 2006/10/19 14:15:49 $
+ * Version: $Revision: 1.16.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.2 $ 
+ * @version $Revision: 1.16.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -206,6 +206,10 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             setAction(ACTION_EXIT);
         } else if (EDITOR_EXIT.equals(getParamAction())) {
             setAction(ACTION_EXIT);
+        } else if (EDITOR_CLOSEBROWSER.equals(getParamAction())) {
+            // closed browser window accidentally, unlock resource and delete temporary file
+            actionClear(true);
+            return;
         } else if (EDITOR_DELETELOCALE.equals(getParamAction())) {
             setAction(ACTION_DELETELOCALE);
         } else if (EDITOR_CHANGE_ELEMENT.equals(getParamAction())) {

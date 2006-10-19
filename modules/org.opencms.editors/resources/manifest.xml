@@ -29,7 +29,6 @@
 		<resources>
 			<resource uri="/system/workplace/editors/direct_edit.jsp"/>
 			<resource uri="/system/workplace/editors/editor.jsp"/>
-			<resource uri="/system/workplace/editors/editor_close.jsp"/>
 			<resource uri="/system/workplace/editors/editor_main.jsp"/>
 			<resource uri="/system/workplace/editors/configuration/"/>
 			<resource uri="/system/workplace/editors/dialogs/"/>
@@ -878,29 +877,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Editor frameset]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/editors/editor_close.jsp</source>
-			<destination>system/workplace/editors/editor_close.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>8975fd74-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>60689221-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Close editor frame]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
