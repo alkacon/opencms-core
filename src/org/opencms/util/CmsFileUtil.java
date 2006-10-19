@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/10/19 13:57:17 $
- * Version: $Revision: 1.24.4.6 $
+ * Date   : $Date: 2006/10/19 14:59:15 $
+ * Version: $Revision: 1.24.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.6 $ 
+ * @version $Revision: 1.24.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -475,7 +475,8 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Reads all bytes from the given input stream and returns the result in an array.<p> 
+     * Reads all bytes from the given input stream, closes it
+     * and returns the result in an array.<p> 
      * 
      * @param in the input stream to read the bytes from 
      * @return the byte content of the input stream
@@ -484,9 +485,24 @@ public final class CmsFileUtil {
      */
     public static byte[] readFully(InputStream in) throws IOException {
 
+        return readFully(in, true);
+    }
+
+    /**
+     * Reads all bytes from the given input stream, conditionally closes the given input stream 
+     * and returns the result in an array.<p> 
+     * 
+     * @param in the input stream to read the bytes from 
+     * @return the byte content of the input stream
+     * @param closeInputStream if true the given stream will be closed afterwards
+     * 
+     * @throws IOException in case of errors in the underlying java.io methods used
+     */
+    public static byte[] readFully(InputStream in, boolean closeInputStream) throws IOException {
+
         if (in instanceof ByteArrayInputStream) {
             // content can be read in one pass
-            return readFully(in, in.available());
+            return readFully(in, in.available(), closeInputStream);
         }
 
         // copy buffer
@@ -500,7 +516,9 @@ public final class CmsFileUtil {
                 out.write(xfer, 0, bytesRead);
             }
         }
-        in.close();
+        if (closeInputStream) {
+            in.close();
+        }
         out.close();
         return out.toByteArray();
     }
@@ -516,6 +534,23 @@ public final class CmsFileUtil {
      * @throws IOException in case of errors in the underlying java.io methods used
      */
     public static byte[] readFully(InputStream in, int size) throws IOException {
+
+        return readFully(in, size, true);
+    }
+
+    /**
+     * Reads the specified number of bytes from the given input stream, conditionally closes the stream 
+     * and returns the result in an array.<p> 
+     * 
+     * @param in the input stream to read the bytes from
+     * @param size the number of bytes to read 
+     * @param closeStream if true the given stream will be closed 
+     *  
+     * @return the byte content read from the input stream
+     * 
+     * @throws IOException in case of errors in the underlying java.io methods used
+     */
+    public static byte[] readFully(InputStream in, int size, boolean closeStream) throws IOException {
 
         // create the byte array to hold the data
         byte[] bytes = new byte[size];
@@ -533,7 +568,9 @@ public final class CmsFileUtil {
         }
 
         // close the input stream and return bytes
-        in.close();
+        if (closeStream) {
+            in.close();
+        }
 
         // ensure all the bytes have been read in
         if (offset < bytes.length) {
