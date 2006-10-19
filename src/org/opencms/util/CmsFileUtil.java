@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/09/14 11:36:47 $
- * Version: $Revision: 1.24.4.5 $
+ * Date   : $Date: 2006/10/19 13:57:17 $
+ * Version: $Revision: 1.24.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.5 $ 
+ * @version $Revision: 1.24.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -490,8 +490,7 @@ public final class CmsFileUtil {
         }
 
         // copy buffer
-        int xferSize = in.available();
-        byte[] xfer = new byte[xferSize == 0 ? 2048 : xferSize];
+        byte[] xfer = new byte[2048];
         // output buffer
         ByteArrayOutputStream out = new ByteArrayOutputStream(xfer.length);
 
