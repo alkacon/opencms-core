@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2006/09/20 14:38:00 $
- * Version: $Revision: 1.37.4.7 $
+ * Date   : $Date: 2006/10/19 13:37:16 $
+ * Version: $Revision: 1.37.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
@@ -63,7 +64,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.37.4.7 $ 
+ * @version $Revision: 1.37.4.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -127,9 +128,22 @@ public final class CmsLockManager {
         String resourceName = resource.getRootPath();
 
         if (!isLockableByUser(driverManager, dbc, lock, user)) {
-            throw new CmsLockException(Messages.get().container(
-                Messages.ERR_RESOURCE_LOCKED_1,
-                dbc.getRequestContext().getSitePath(resource)));
+            CmsMessageContainer message = null;
+            if (lock.isWorkflow()) {
+                message = Messages.get().container(
+                    Messages.ERR_RESOURCE_LOCKED_INWORKFLOW_1,
+                    dbc.getRequestContext().getSitePath(resource));
+            } else if (lock.isInherited()) {
+                message = Messages.get().container(
+                    Messages.ERR_RESOURCE_LOCKED_INHERITED_1,
+                    dbc.getRequestContext().getSitePath(resource));
+            } else {
+                message = Messages.get().container(
+                    Messages.ERR_RESOURCE_LOCKED_BYOTHERUSER_1,
+                    dbc.getRequestContext().getSitePath(resource));                
+            }
+            
+            throw new CmsLockException(message);
         }
 
         if ((type == CmsLockType.EXCLUSIVE) || (type == CmsLockType.TEMPORARY)) {

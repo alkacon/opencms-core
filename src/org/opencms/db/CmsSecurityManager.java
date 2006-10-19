@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/10/05 12:04:31 $
- * Version: $Revision: 1.97.4.9 $
+ * Date   : $Date: 2006/10/19 13:37:07 $
+ * Version: $Revision: 1.97.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -349,8 +349,9 @@ public final class CmsSecurityManager {
             m_driverManager.changeLock(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
-                Messages.ERR_CHANGE_LOCK_OF_RESOURCE_1,
-                context.getSitePath(resource)), e);
+                Messages.ERR_CHANGE_LOCK_OF_RESOURCE_2,
+                context.getSitePath(resource), 
+                " - " + e.getMessage()), e);
         } finally {
             dbc.clear();
         }
