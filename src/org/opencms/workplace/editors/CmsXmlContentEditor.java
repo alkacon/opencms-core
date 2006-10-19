@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/09/22 15:17:03 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2006/10/19 14:16:40 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.69 $ 
+ * @version $Revision: 1.70 $ 
  * 
  * @since 6.0.0 
  */
@@ -968,6 +968,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             setAction(ACTION_SAVEEXIT);
         } else if (EDITOR_EXIT.equals(getParamAction())) {
             setAction(ACTION_EXIT);
+        } else if (EDITOR_CLOSEBROWSER.equals(getParamAction())) {
+            // closed browser window accidentally, unlock resource and delete temporary file
+            actionClear(true);
+            return;
         } else if (EDITOR_ACTION_CHECK.equals(getParamAction())) {
             setAction(ACTION_CHECK);
         } else if (EDITOR_SAVEACTION.equals(getParamAction())) {

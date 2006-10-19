@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/19 13:51:31 $
- * Version: $Revision: 1.780 $
+ * Date   : $Date: 2006/10/19 14:16:40 $
+ * Version: $Revision: 1.781 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,8 @@ OpenCms 6.2.3 -
 * Fixed issue #1189: CmsSelectWidget should have a method to get the option from it's stored value
 * Fixed issue #1198: Problem in "Search Management" when deleting all indexes
 * Fixed issue #1201: Resources in export-points are not re-exported after publish
+* Fixed issue #1203: File lock persists after closing browser window from content editor
+* Fixed issue #1204: Deleting Web Users corrupts OpenCms installation
 * Fixed issue #1212: Uploading 0-byte files fails
 * Fixed issue #1217: Cms link with relative path on static export returns empty value when linking to current folder
 * Fixed issue #1225: Typo in localized message bundle ERR_DIRECT_PUBLISH_PARENT_NEW_2
@@ -63,7 +65,6 @@ OpenCms 6.2.3 -
 * Fixed issue #1250: Display issue of preview button in link gallery widget
 * Fixed issue #1252: Availability context menu entry not shown for pointer resources
 * Fixed display of date values of xml elements in history comparison
-* Fixed issue #1204: Deleting Web Users corrupts OpenCMS installation
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name

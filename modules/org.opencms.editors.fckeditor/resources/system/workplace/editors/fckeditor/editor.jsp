@@ -69,6 +69,7 @@ default:
 
 	// escape the content parameter to display it in the form
 	wp.escapeParams();
+	wp.setParamAction(null);
 
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
@@ -181,9 +182,42 @@ function closeDialog() {
     if (dialogAnchorWindow) {
     	window.dialogAnchorWindow.close();
     }
-    if (document.EDITOR.<%= CmsDialog.PARAM_ACTION %>.value == "null" || document.EDITOR.<%= CmsDialog.PARAM_ACTION %>.value == "") {
-        top.closeframe.closePage("<%= wp.getParamTempfile() %>", "<%= wp.getParamResource() %>");
-    }        
+    
+    var actionValue = document.EDITOR.<%= CmsDialog.PARAM_ACTION %>.value;
+    if (actionValue == null || actionValue == "null" || actionValue == "") {
+		closeBrowserWindow();
+    }
+      
+}
+
+// sends a request to the server to delete the temporary file if the browser was accidentally closed
+function closeBrowserWindow() {
+   var http_request = false;
+   if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+      http_request = new XMLHttpRequest();
+      if (http_request.overrideMimeType) {
+         http_request.overrideMimeType('text/xml');
+      }
+   } else if (window.ActiveXObject) { // IE
+      try {
+         http_request = new ActiveXObject("Msxml2.XMLHTTP");
+      } catch (e) {
+         try {
+            http_request = new ActiveXObject("Microsoft.XMLHTTP");
+         } catch (e) {}
+      }
+   }
+   if (!http_request) {
+	return false;
+   }
+   http_request.onreadystatechange = httpStateDummy;
+   http_request.open("POST", "<%= wp.getDialogRealUri() %>?<%= CmsEditor.PARAM_ACTION %>=<%= CmsEditor.EDITOR_CLOSEBROWSER %>&<%= CmsEditor.PARAM_RESOURCE %>=<%= wp.getParamResource() %>&<%= CmsEditor.PARAM_TEMPFILE %>=<%= wp.getParamTempfile() %>", true);
+   http_request.send(null);
+}
+
+// dummy function for html request
+function httpStateDummy() {
+	return;
 }
 
 // action when closing a popup window
