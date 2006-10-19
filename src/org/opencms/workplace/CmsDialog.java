@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2006/10/06 13:12:40 $
- * Version: $Revision: 1.96.4.2 $
+ * Date   : $Date: 2006/10/19 10:44:32 $
+ * Version: $Revision: 1.96.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96.4.2 $ 
+ * @version $Revision: 1.96.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -333,6 +334,22 @@ public class CmsDialog extends CmsToolDialog {
             } catch (Exception e) {
                 // forward failed
                 throw new JspException(e.getMessage(), e);
+            }
+        } else if (getParamFramename() != null) {
+            // non wp frame mode (currently used for galleries)
+            // framename parameter found, get URI
+            String frameUri = (String)getSettings().getFrameUris().get(getParamFramename());
+            if (frameUri != null) {
+                // URI found, include it
+                if (frameUri.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                    // remove context path from URI before inclusion
+                    frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                }
+                // include the found frame URI
+                getJsp().include(frameUri, null, params);
+            } else {
+                // no URI found, include the explorer file list
+                getJsp().include(FILE_EXPLORER_FILELIST, null, params);
             }
         } else {
             // no framename parameter found, include the explorer file list
