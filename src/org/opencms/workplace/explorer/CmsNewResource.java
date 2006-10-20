@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.26.4.1 $
+ * Date   : $Date: 2006/10/20 10:23:54 $
+ * Version: $Revision: 1.26.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.26.4.1 $ 
+ * @version $Revision: 1.26.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -602,7 +602,7 @@ public class CmsNewResource extends CmsDialog {
 
         // append ".html" suffix to new file if not present
         if ((forceSuffix || Boolean.valueOf(getParamAppendSuffixHtml()).booleanValue())
-            && (resourceName.indexOf('.') < 0)) {
+            && (CmsResource.getName(resourceName).indexOf('.') < 0)) {
             resourceName += ".html";
         }
         return resourceName;
