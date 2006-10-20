@@ -671,6 +671,10 @@ fieldset.dialogblock {
 	padding: 8px;
 }
 
+fieldset.dialogblock span {
+	color: WindowText;
+}
+
 /* outer border of white inner box */
 .dialoginnerboxborder {
 	border-left: 1px solid ThreeDShadow;
