@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/10/16 15:32:01 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/10/20 14:23:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -794,8 +794,8 @@ function printList(wo) {
 	+ "a.cme { color: MenuText; text-decoration: none;} "
 	+ "span.cmenorm { box-sizing: border-box; -moz-box-sizing: border-box; cursor: hand; display: block; width: 100%; padding: 2px 0px 2px 10px; } "
 	+ "span.cmehigh { box-sizing: border-box; -moz-box-sizing: border-box; cursor: hand; display: block; width: 100%; padding: 2px 0px 2px 10px; color: CaptionText; background-color: ActiveCaption; } "
-	+ "span.inanorm { box-sizing: border-box; -moz-box-sizing: border-box; cursor: default; display: block; width: 100%; padding: 2px 0px 2px 10px; color: InactiveCaption; } "
-	+ "span.inahigh { box-sizing: border-box; -moz-box-sizing: border-box; cursor: default; display: block; width: 100%; padding: 2px 0px 2px 10px; color: InactiveCaptionText; background-color: ActiveCaption; } "
+	+ "span.inanorm { box-sizing: border-box; -moz-box-sizing: border-box; cursor: default; display: block; width: 100%; padding: 2px 0px 2px 10px; color: GrayText; } "
+	+ "span.inahigh { box-sizing: border-box; -moz-box-sizing: border-box; cursor: default; display: block; width: 100%; padding: 2px 0px 2px 10px; color: InactiveCaptionText; background-color: InactiveCaption; } "
 
 	+ ".selected { background: ActiveCaption; color: CaptionText; } "
 	+ ".unselected { background: Window; color:WindowText; } "
