@@ -10,7 +10,7 @@ setSiteRoot "@UPDATE_SITE@"
 # Rebuild search indexes
 rebuildAllIndexes
 
-# Rebuild search indexes
+# purge the jsp repository
 purgeJspRepository
 
 # Import the modules that have been selected in the update wizard
