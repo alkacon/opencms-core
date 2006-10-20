@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2006/09/22 15:17:03 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/10/20 10:36:51 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -196,6 +196,22 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         }
 
         return (((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END))) || ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER_NEW) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START_NEW) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END_NEW))));
+    }
+
+    /**
+     * Returns <code>true</code> if the given input String is a macro equal to the given macro name.<p>
+     * 
+     * @param input the input to check for a macro
+     * @param macroName the macro name to check for
+     * 
+     * @return <code>true</code> if the given input String is a macro equal to the given macro name
+     */
+    public static boolean isMacro(String input, String macroName) {
+
+        if (isMacro(input)) {
+            return input.substring(2, input.length() - 1).equals(macroName);
+        }
+        return false;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/09/22 15:17:06 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2006/10/20 10:36:51 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -814,8 +814,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             CmsConfigurationCopyResource copyResource = (CmsConfigurationCopyResource)i.next();
 
             String target = copyResource.getTarget();
-            if (copyResource.isTargetWasNull()
-                || target.equals(CmsMacroResolver.formatMacro(MACRO_RESOURCE_FOLDER_PATH))) {
+            if (copyResource.isTargetWasNull() || CmsMacroResolver.isMacro(target, MACRO_RESOURCE_FOLDER_PATH)) {
                 // target is just the resource folder, must add source file name to target
                 target = target.concat(CmsResource.getName(copyResource.getSource()));
             }

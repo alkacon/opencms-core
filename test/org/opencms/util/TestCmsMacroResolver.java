@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsMacroResolver.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/10/20 10:36:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import junit.framework.TestCase;
  * Test cases for {@link org.opencms.util.CmsMacroResolver}.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestCmsMacroResolver extends TestCase {
       
@@ -350,5 +350,20 @@ public class TestCmsMacroResolver extends TestCase {
         content = "$${test}$}${test} is ${ what ${test}{$} uncle ${${test} Scrooge $ owns ${${test}}";
         result  = resolver.resolveMacros(content);
         assertEquals("$REPLACED$}REPLACED is ${ what REPLACED{$} uncle ${REPLACED Scrooge $ owns ${REPLACED}", result);   
+    }
+    
+    /**
+     * Tests macro util functions.<p>
+     */
+    public void testMacroUtils() {
+        
+        assertTrue(CmsMacroResolver.isMacro("%(newStyle)"));
+        assertTrue(CmsMacroResolver.isMacro("${oldStyle}"));
+        assertTrue(CmsMacroResolver.isMacro("%(newStyle)", "newStyle"));
+        assertTrue(CmsMacroResolver.isMacro("${oldStyle}", "oldStyle"));
+        assertFalse(CmsMacroResolver.isMacro("${oldStyle}", "newStyle"));
+        assertFalse(CmsMacroResolver.isMacro("%(newStyle)", "oldStyle"));
+        assertTrue(CmsMacroResolver.isMacro(CmsMacroResolver.formatMacro("macroName")));
+        assertTrue(CmsMacroResolver.isMacro(CmsMacroResolver.formatMacro("macroName"), "macroName"));
     }
 }
