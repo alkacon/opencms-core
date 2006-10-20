@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationDeleteValidator.java,v $
- * Date   : $Date: 2006/10/04 16:01:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/20 15:36:12 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.3
  */
@@ -66,7 +66,7 @@ public class CmsRelationDeleteValidator {
      * 
      * @author Michael Moossen 
      * 
-     * @version $Revision: 1.1.2.1 $ 
+     * @version $Revision: 1.1.2.2 $ 
      * 
      * @since 6.5.3 
      */
@@ -74,10 +74,6 @@ public class CmsRelationDeleteValidator {
 
         /** The original entry name. */
         protected String m_entryName;
-        /** If the entry is in other site. */
-        protected boolean m_inOtherSite;
-        /** If the entry is a sibling. */
-        protected boolean m_isSibling;
         /** The resource name. */
         protected String m_resourceName;
         /** The site name. */
@@ -124,33 +120,10 @@ public class CmsRelationDeleteValidator {
 
             return m_siteRoot;
         }
-
-        /**
-         * Returns <code>true</code> if the entry is in other site.<p>
-         *
-         * @return <code>true</code> if the entry is in other site
-         */
-        public boolean isInOtherSite() {
-
-            return m_inOtherSite;
-        }
-
-        /**
-         * Returns <code>true</code> if the entry is a sibling.<p>
-         *
-         * @return <code>true</code> if the entry is a sibling
-         */
-        public boolean isSibling() {
-
-            return m_isSibling;
-        }
     }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRelationDeleteValidator.class);
-
-    /** Prefix for mapping sibling's relations. */
-    private static final String SIBLING_KEY_PREFIX = "_sibling_prefix_";
 
     /** The internal computed broken relations map. */
     protected Map m_brokenRelations;
@@ -183,32 +156,27 @@ public class CmsRelationDeleteValidator {
         InfoEntry entry = new InfoEntry();
         String resName = resourceName;
         String siteRoot = m_cms.getRequestContext().getSiteRoot();
-        if (resourceName.lastIndexOf(SIBLING_KEY_PREFIX) > 0) {
-            resName = resourceName.substring(resourceName.lastIndexOf(SIBLING_KEY_PREFIX) + SIBLING_KEY_PREFIX.length());
-            entry.m_isSibling = true;
-            if (resName.startsWith(m_cms.getRequestContext().getSiteRoot())) {
-                resName = m_cms.getRequestContext().removeSiteRoot(resName);
-            } else {
-                entry.m_inOtherSite = true;
-                siteRoot = CmsSiteManager.getSiteRoot(resName);
-                String siteName = siteRoot;
-                if (siteRoot != null) {
-                    try {
-                        m_cms.getRequestContext().saveSiteRoot();
-                        m_cms.getRequestContext().setSiteRoot("/");
-                        siteName = m_cms.readPropertyObject(siteRoot, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
-                            siteRoot);
-                    } catch (CmsException e) {
-                        siteName = siteRoot;
-                    } finally {
-                        m_cms.getRequestContext().restoreSiteRoot();
-                    }
-                    resName = resName.substring(siteRoot.length());
-                } else {
-                    siteName = "/";
+        if (resName.startsWith(m_cms.getRequestContext().getSiteRoot())) {
+            resName = m_cms.getRequestContext().removeSiteRoot(resName);
+        } else {
+            siteRoot = CmsSiteManager.getSiteRoot(resName);
+            String siteName = siteRoot;
+            if (siteRoot != null) {
+                try {
+                    m_cms.getRequestContext().saveSiteRoot();
+                    m_cms.getRequestContext().setSiteRoot("/");
+                    siteName = m_cms.readPropertyObject(siteRoot, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
+                        siteRoot);
+                } catch (CmsException e) {
+                    siteName = siteRoot;
+                } finally {
+                    m_cms.getRequestContext().restoreSiteRoot();
                 }
-                entry.m_siteName = siteName;
+                resName = resName.substring(siteRoot.length());
+            } else {
+                siteName = "/";
             }
+            entry.m_siteName = siteName;
         }
         entry.m_siteRoot = siteRoot;
         entry.m_resourceName = resName;
@@ -310,10 +278,8 @@ public class CmsRelationDeleteValidator {
                             while (itSiblings.hasNext()) {
                                 CmsResource sibling = (CmsResource)itSiblings.next();
                                 if (!resources.contains(sibling.getRootPath())) {
-                                    String siblingKey = resource.getRootPath() + SIBLING_KEY_PREFIX + sibling.getRootPath();
                                     resources.add(sibling.getRootPath());
-                                    // be careful mixing string and resources in one list
-                                    resourceList.add(siblingKey);
+                                    resourceList.add(sibling);
                                 }
                             }
                         }
@@ -329,19 +295,8 @@ public class CmsRelationDeleteValidator {
             // check every resource
             itResources = resourceList.iterator();
             while (itResources.hasNext()) {
-                String resName = null;
-                Object item = itResources.next();
-                if (item instanceof CmsResource) {
-                    CmsResource resource = (CmsResource)item;
-                    resName = resource.getRootPath();
-                } else {
-                    resName = (String)item;
-                }
-                String resourceName = resName;
-                if (resourceName.lastIndexOf(SIBLING_KEY_PREFIX) > 0) {
-                    resourceName = resName.substring(resName.lastIndexOf(SIBLING_KEY_PREFIX)
-                        + SIBLING_KEY_PREFIX.length());
-                }
+                CmsResource resource = (CmsResource)itResources.next();
+                String resourceName = resource.getRootPath();
                 try {
                     Iterator it = m_cms.getRelationsForResource(resourceName, CmsRelationFilter.SOURCES).iterator();
                     while (it.hasNext()) {
@@ -349,10 +304,10 @@ public class CmsRelationDeleteValidator {
                         String relationName = relation.getSourcePath();
                         // add only if the source is not to be deleted too
                         if (!resources.contains(relationName)) {
-                            List broken = (List)brokenRelations.get(resName);
+                            List broken = (List)brokenRelations.get(resourceName);
                             if (broken == null) {
                                 broken = new ArrayList();
-                                brokenRelations.put(resName, broken);
+                                brokenRelations.put(resourceName, broken);
                             }
                             broken.add(relation);
                         }

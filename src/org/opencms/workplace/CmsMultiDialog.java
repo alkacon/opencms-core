@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsMultiDialog.java,v $
- * Date   : $Date: 2006/09/26 08:36:01 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.2.4.3 $ 
+ * @version $Revision: 1.2.4.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -138,7 +138,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
         StringBuffer result = new StringBuffer(1024);
 
         result.append(dialogWhiteBoxStart());
-        
+
         // if the output to long, wrap it in a div
         if (scroll) {
             result.append("<div style='width: 100%; height:100px; overflow: auto;'>\n");
@@ -173,6 +173,22 @@ public abstract class CmsMultiDialog extends CmsDialog {
         }
         result.append(dialogWhiteBoxEnd());
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsDialog#buildLockHeaderBox()
+     */
+    public String buildLockHeaderBox() throws CmsException {
+
+        if (!isMultiOperation()) {
+            return super.buildLockHeaderBox();
+        }
+        StringBuffer html = new StringBuffer(1024);
+        // include multi resource list  
+        html.append(dialogBlockStart(key(org.opencms.workplace.commons.Messages.GUI_MULTI_RESOURCELIST_TITLE_0)));
+        html.append(buildResourceList());
+        html.append(dialogBlockEnd());
+        return html.toString();
     }
 
     /**

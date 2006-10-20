@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2006/10/04 15:53:07 $
- * Version: $Revision: 1.21.4.3 $
+ * Date   : $Date: 2006/10/20 15:36:12 $
+ * Version: $Revision: 1.21.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -44,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21.4.3 $ 
+ * @version $Revision: 1.21.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,7 +106,6 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     /**
      * Generates a default html code for icon buttons.<p>
      * 
-     * @param jsp the jsp context 
      * @param style the style of the button
      * @param id the id
      * @param name the name
@@ -120,7 +118,6 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * @return html code
      */
     public static String defaultButtonHtml(
-        CmsJspActionElement jsp,
         CmsHtmlIconButtonStyleEnum style,
         String id,
         String name,
@@ -130,24 +127,12 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String confirmationMessage,
         String onClick) {
 
-        return defaultButtonHtml(
-            jsp,
-            style,
-            id,
-            id,
-            name,
-            helpText,
-            enabled,
-            iconPath,
-            confirmationMessage,
-            onClick,
-            false);
+        return defaultButtonHtml(style, id, id, name, helpText, enabled, iconPath, confirmationMessage, onClick, false);
     }
 
     /**
      * Generates a default html code where several buttons can have the same help text.<p>
      * 
-     * @param jsp the cms context, can be null
      * @param style the style of the button
      * @param id the id
      * @param helpId the id of the helptext div tag
@@ -162,7 +147,6 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * @return html code
      */
     public static String defaultButtonHtml(
-        CmsJspActionElement jsp,
         CmsHtmlIconButtonStyleEnum style,
         String id,
         String helpId,
@@ -174,9 +158,6 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String onClick,
         boolean singleHelp) {
 
-        // TODO: remove the jsp parameter
-        int todo_v7;
-        
         StringBuffer html = new StringBuffer(1024);
         if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
             html.append("<div class='bigLink' id='img");

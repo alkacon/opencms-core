@@ -1,4 +1,7 @@
-<%@ page import="org.opencms.workplace.commons.*" %><%	
+<%@ page import="
+	org.opencms.workplace.CmsDialog,
+	org.opencms.workplace.commons.CmsCommentImages
+" %><%	
 
 	// initialize the workplace class
 	CmsCommentImages wp = new CmsCommentImages(pageContext, request, response);
@@ -7,7 +10,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsCommentImages.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
@@ -23,8 +26,7 @@ case CmsCommentImages.ACTION_COMMENTIMAGES:
 break;
 
 
-case CmsCommentImages.ACTION_DEFAULT:
-default:
+case CmsDialog.ACTION_LOCKS_CONFIRMED:
 
 //////////////////// ACTION: show comment images dialog (default)
 
@@ -36,9 +38,9 @@ default:
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <%= wp.buildDialogForm() %>
 
@@ -50,7 +52,13 @@ default:
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
-<%
-} 
+<% 
+   break;
+
+case CmsDialog.ACTION_DEFAULT:
+default:
+%>
+<%= wp.buildLockDialog() %>
+<% } 
 //////////////////// end of switch statement 
 %>

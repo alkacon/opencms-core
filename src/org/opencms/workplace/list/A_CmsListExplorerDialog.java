@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.4.4.4 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.4.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4.4.4 $ 
+ * @version $Revision: 1.4.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,6 +76,9 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /** List column id constant. */
     public static final String LIST_COLUMN_DATELASTMOD = "ecdl";
+
+    /** List column id constant. */
+    public static final String LIST_COLUMN_SITE = "ecsi";
 
     /** List column id constant. */
     public static final String LIST_COLUMN_DATEREL = "ecdr";
@@ -233,6 +236,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         setColumnVisibilities();
         CmsListMetadata metadata = getList().getMetadata();
+        metadata.getColumnDefinition(LIST_COLUMN_SITE).setVisible(isColumnVisible(LIST_COLUMN_SITE.hashCode()));
         metadata.getColumnDefinition(LIST_COLUMN_EDIT).setVisible(isColumnVisible(LIST_COLUMN_EDIT.hashCode()));
         metadata.getColumnDefinition(LIST_COLUMN_TYPEICON).setVisible(isColumnVisible(LIST_COLUMN_TYPEICON.hashCode()));
         metadata.getColumnDefinition(LIST_COLUMN_LOCKICON).setVisible(isColumnVisible(LIST_COLUMN_LOCKICON.hashCode()));
@@ -520,6 +524,12 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         lockedByCol.setName(org.opencms.workplace.explorer.Messages.get().container(
             org.opencms.workplace.explorer.Messages.GUI_INPUT_LOCKEDBY_0));
         metadata.addColumn(lockedByCol);
+
+        // position 17: site
+        CmsListColumnDefinition siteCol = new CmsListExplorerColumn(LIST_COLUMN_SITE);
+        siteCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_LABEL_SITE_0));
+        metadata.addColumn(siteCol);
     }
 
     /**
@@ -548,6 +558,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         m_colVisibilities.put(new Integer(LIST_COLUMN_PROJSTATEICON.hashCode()), Boolean.TRUE);
         m_colVisibilities.put(new Integer(LIST_COLUMN_NAME.hashCode()), Boolean.TRUE);
         m_colVisibilities.put(new Integer(LIST_COLUMN_EDIT.hashCode()), Boolean.FALSE);
+        m_colVisibilities.put(new Integer(LIST_COLUMN_SITE.hashCode()), Boolean.FALSE);
     }
 
     /**

@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
@@ -60,11 +61,31 @@ import java.util.List;
  */
 public final class CmsResourceUtil {
 
+    /**
+     * Util class for defining the site modes.<p>
+     */
+    public static class CmsResourceUtilSiteMode {
+
+        // empty class
+    }
+
+    /** Constant that signalizes that all path operations will be based on the current site. */
+    public static final CmsResourceUtilSiteMode SITE_MODE_CURRENT = new CmsResourceUtilSiteMode();
+
+    /** Constant that signalizes that all path operations will be based on the best matching site. */
+    public static final CmsResourceUtilSiteMode SITE_MODE_MATCHING = new CmsResourceUtilSiteMode();
+
+    /** Constant that signalizes that all path operations will be based on the root path. */
+    public static final CmsResourceUtilSiteMode SITE_MODE_ROOT = new CmsResourceUtilSiteMode();
+
     /** Resource states abbreviations table. */
     private static final char[] RESOURCE_STATE = new char[] {'U', 'C', 'N', 'D', '_'};
 
     /** The folder size display string constant. */
     private static final String SIZE_DIR = "-";
+
+    /** If greater than zero, the path will be formatted to this number of chars. */
+    private int m_abbrevLength;
 
     /** The current cms context. */
     private CmsObject m_cms;
@@ -78,14 +99,20 @@ public final class CmsResourceUtil {
     /** The project to use to check project state, if <code>null</code> the current project will be used. */
     private CmsProject m_referenceProject;
 
+    /** The 'relative to' path. */
+    private String m_relativeTo;
+    
     /** The current request context. */
     private CmsRequestContext m_request;
-
+    
     /** The current resource. */
     private CmsResource m_resource;
 
     /** The current resource type. */
     private I_CmsResourceType m_resourceType;
+
+    /** The current site mode. */
+    private CmsResourceUtilSiteMode m_siteMode = SITE_MODE_CURRENT;
 
     /** 
      * TODO: Remove this class, maybe refactor to org.opencms.workplace.list package.
@@ -97,7 +124,7 @@ public final class CmsResourceUtil {
      * TODO: This class does not support the new workflow lock logic.
      */
     private int m_todo_v7 = 0;
-    
+
     /**
      * Creates a new {@link CmsRequestUtil} object.<p> 
      * 
@@ -144,6 +171,20 @@ public final class CmsResourceUtil {
         } else {
             return RESOURCE_STATE[4];
         }
+    }
+
+    /**
+     * Returns the path abbreviation length.<p>
+     *
+     * If greater than zero, the path will be formatted to this number of chars.<p>
+     * 
+     * This only affects the generation of the path for the current resource.<p> 
+     *
+     * @return the path abbreviation Length
+     */
+    public int getAbbrevLength() {
+
+        return m_abbrevLength;
     }
 
     /**
@@ -330,6 +371,46 @@ public final class CmsResourceUtil {
     }
 
     /**
+     * Returns the path of the current resource.<p>
+     * 
+     * Taking into account following settings:<br>
+     * <ul>
+     *    <li>site mode
+     *    <li>abbreviation length
+     *    <li>relative to
+     * </ul>
+     * 
+     * @return the site relative path
+     */
+    public String getPath() {
+
+        String path = "";
+        if (m_siteMode == SITE_MODE_ROOT || m_cms == null) {
+            path = m_resource.getRootPath();
+        } else {
+            String site = getSite();
+            if (m_resource.getRootPath().startsWith(site)) {
+                path = m_resource.getRootPath().substring(site.length());
+            }
+        }
+        if (m_relativeTo != null && path.startsWith(m_relativeTo)) {
+            path = path.substring(m_relativeTo.length());
+            if (path.length() == 0) {
+                path = ".";
+            }
+        }
+        if (m_abbrevLength > 0) {
+            boolean absolute = path.startsWith("/");
+            path = CmsStringUtil.formatResourceName(path, m_abbrevLength);
+            if (!absolute && path.startsWith("/")) {
+                // remove leading '/'
+                path = path.substring(1);
+            }
+        }
+        return path;
+    }
+
+    /**
      * Returns the permissions string for the given resource.<p>
      * 
      * @return the permissions string for the given resource
@@ -400,6 +481,18 @@ public final class CmsResourceUtil {
     }
 
     /**
+     * Returns the 'relative to' path.<p>
+     *
+     * This only affects the generation of the path for the current resource.<p> 
+     *
+     * @return the 'relative to' path
+     */
+    public String getRelativeTo() {
+
+        return m_relativeTo;
+    }
+
+    /**
      * Returns the resource.<p>
      *
      * @return the resource
@@ -450,6 +543,37 @@ public final class CmsResourceUtil {
     public String getResourceTypeName() {
 
         return getResourceType().getTypeName();
+    }
+
+    /**
+     * Returns the site of the current resources,
+     * taking into account the set site mode.<p>
+     * 
+     * @return the site path
+     */
+    public String getSite() {
+
+        String site = null;
+        if (m_siteMode == SITE_MODE_MATCHING || m_cms == null) {
+            site = CmsSiteManager.getSiteRoot(m_resource.getRootPath());
+        } else if (m_siteMode == SITE_MODE_CURRENT) {
+            site = m_cms.getRequestContext().getSiteRoot();
+        } else if (m_siteMode == SITE_MODE_ROOT) {
+            site = "";
+        }
+        return (site == null ? "" : site);
+    }
+
+    /**
+     * Returns the site mode.<p>
+     *
+     * This only affects the generation of the path for the current resource.<p> 
+     *
+     * @return the site mode
+     */
+    public CmsResourceUtilSiteMode getSiteMode() {
+
+        return m_siteMode;
     }
 
     /**
@@ -674,6 +798,20 @@ public final class CmsResourceUtil {
     }
 
     /**
+     * Sets the path abbreviation length.<p>
+     *
+     * If greater than zero, the path will be formatted to this number of chars.<p>
+     *
+     * This only affects the generation of the path for the current resource.<p> 
+     *
+     * @param abbrevLength the path abbreviation length to set
+     */
+    public void setAbbrevLength(int abbrevLength) {
+
+        m_abbrevLength = abbrevLength;
+    }
+
+    /**
      * Sets the cms context.<p>
      *
      * @param cms the cms context to set
@@ -698,6 +836,28 @@ public final class CmsResourceUtil {
     }
 
     /**
+     * Sets the 'relative to' path.<p>
+     *
+     * This only affects the generation of the path for the current resource.<p> 
+     *
+     * @param relativeTo the 'relative to' path to set
+     */
+    public void setRelativeTo(String relativeTo) {
+
+        m_relativeTo = relativeTo;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_relativeTo)) {
+            m_relativeTo = null;
+        } else {
+            if (!m_relativeTo.startsWith("/")) {
+                m_relativeTo = "/" + m_relativeTo;
+            }
+            if (!m_relativeTo.endsWith("/")) {
+                m_relativeTo += "/";
+            }
+        }
+    }
+
+    /**
      * Sets the resource.<p>
      *
      * @param resource the resource to set
@@ -707,5 +867,17 @@ public final class CmsResourceUtil {
         m_resource = resource;
         m_lock = null;
         m_resourceType = null;
+    }
+
+    /**
+     * Sets the site mode.<p>
+     *
+     * This only affects the generation of the path for the current resource.<p> 
+     *
+     * @param siteMode the site mode to set
+     */
+    public void setSiteMode(CmsResourceUtilSiteMode siteMode) {
+
+        m_siteMode = siteMode;
     }
 }

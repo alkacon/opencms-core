@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.4.4.4 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.4.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.4 $ 
+ * @version $Revision: 1.4.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -192,7 +192,6 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         // list view button
         CmsMessages messages = Messages.get().getBundle(getLocale());
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             "id-list-switch",
             messages.key(Messages.GUI_LIST_ACTION_LIST_SWITCH_NAME_0),
@@ -205,7 +204,6 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         // uplevel button only if needed
         if (! toolPath.equals(getParentPath())) {
             html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-                getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 "id-up-level",
                 org.opencms.workplace.tools.Messages.get().getBundle(getLocale()).key(

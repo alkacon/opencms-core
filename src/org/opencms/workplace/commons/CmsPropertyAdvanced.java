@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2006/08/24 07:20:26 $
- * Version: $Revision: 1.28.4.4 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.28.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -82,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28.4.4 $ 
+ * @version $Revision: 1.28.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -836,8 +837,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
                 if (!lock.isNullLock()) {
                     // determine if resource is editable...
-                    if (!lock.isShared()
-                        && lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
+                    if (!lock.isShared() && lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
                         // lock is not shared and belongs to the current user
                         if (lock.isInProject(getCms().getRequestContext().currentProject())
                             || Boolean.valueOf(getParamUsetempfileproject()).booleanValue()) {
@@ -847,6 +847,23 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                         }
                     }
                 } else if (OpenCms.getWorkplaceManager().autoLockResources()) {
+                    if (file == null || file.isFolder()) {
+                        // check locked resources in folder
+                        try {
+                            List lockedResources = getCms().getLockedResources(
+                                resourceName,
+                                CmsLockFilter.FILTER_ALL.filterExcludedUserId(getCms().getRequestContext().currentUser().getId()));
+                            if (!lockedResources.isEmpty()) {
+                                m_isEditable = Boolean.FALSE;
+                                return m_isEditable.booleanValue();
+                            }
+                        } catch (CmsException e1) {
+                            // should usually never happen
+                            if (LOG.isErrorEnabled()) {
+                                LOG.error(e1.getLocalizedMessage(), e1);
+                            }
+                        }
+                    }
                     m_isEditable = Boolean.TRUE;
                     return m_isEditable.booleanValue();
                 }

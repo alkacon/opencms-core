@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2006/10/19 10:44:32 $
- * Version: $Revision: 1.96.4.3 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.96.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,14 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.commons.CmsLock;
 import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolManager;
 
@@ -61,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96.4.3 $ 
+ * @version $Revision: 1.96.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,6 +83,9 @@ public class CmsDialog extends CmsToolDialog {
 
     /** Value for the action: default (show initial dialog form). */
     public static final int ACTION_DEFAULT = 0;
+
+    /** Value for the action: locks confirmed. */
+    public static final int ACTION_LOCKS_CONFIRMED = 99;
 
     /** Value for the action: ok. */
     public static final int ACTION_OK = 3;
@@ -148,6 +153,9 @@ public class CmsDialog extends CmsToolDialog {
 
     /** Request parameter value for the action: initial call. */
     public static final String DIALOG_INITIAL = "initial";
+
+    /** Request parameter value for the action: dialog locks confirmed. */
+    public static final String DIALOG_LOCKS_CONFIRMED = "locksconfirmed";
 
     /** Request parameter value for the action: ok. */
     public static final String DIALOG_OK = "ok";
@@ -225,10 +233,9 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * It will be translated to a javascript variable called onlineHelpUriCustom. 
      * If it is set, the top.head javascript for the online help will use this value. <p> 
-     *  
-     * 
      */
     private String m_onlineHelpUriCustom;
+
     private String m_paramAction;
     private String m_paramCloseLink;
     private String m_paramDialogtype;
@@ -355,6 +362,140 @@ public class CmsDialog extends CmsToolDialog {
             // no framename parameter found, include the explorer file list
             getJsp().include(FILE_EXPLORER_FILELIST, null, params);
         }
+    }
+
+    /**
+     * Override to display additional options in the lock dialog.<p>
+     * 
+     * @return html code to display additional options
+     */
+    public String buildLockAdditionalOptions() {
+
+        return "";
+    }
+
+    /**
+     * Returns the html code to build the confirmation messages.<p>
+     * 
+     * @return html code
+     */
+    public String buildLockConfirmationMessageJS() {
+
+        StringBuffer html = new StringBuffer(512);
+        html.append("<script type='text/javascript'><!--\n");
+        html.append("function setConfirmationMessage(locks, blockinglocks) {\n");
+        html.append("\tvar confMsg = document.getElementById('conf-msg');\n");
+        html.append("\tif (locks > -1) {\n");
+        html.append("\t\tif (blockinglocks > '0') {\n");
+        html.append("\t\t\tdocument.getElementById('butClose').className = '';\n");
+        html.append("\t\t\tdocument.getElementById('butContinue').className = 'hide';\n");
+        html.append("\t\t\tconfMsg.innerHTML = '");
+        html.append(key(Messages.GUI_OPERATION_BLOCKING_LOCKS_0));
+        html.append("';\n");
+        html.append("\t\t} else {\n");
+        html.append("\t\t\tsubmitAction('");
+        html.append(CmsDialog.DIALOG_OK);
+        html.append("', null, 'main');\n");
+        html.append("\t\t\tdocument.forms['main'].submit();\n");
+        html.append("\t\t}\n");
+        html.append("\t} else {\n");
+        html.append("\t\tdocument.getElementById('butClose').className = '';\n");
+        html.append("\t\tdocument.getElementById('butContinue').className = 'hide';\n");
+        html.append("\t\tconfMsg.innerHTML = '");
+        html.append(key(Messages.GUI_AJAX_REPORT_WAIT_0));
+        html.append("';\n");
+        html.append("\t}\n");
+        html.append("}\n");
+        html.append("// -->\n");
+        html.append("</script>\n");
+        return html.toString();
+    }
+
+    /**
+     * Returns the html code to build the lock dialog.<p>
+     * 
+     * @return html code
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String buildLockDialog() throws CmsException {
+
+        return buildLockDialog(null, null);
+    }
+    
+    /**
+     * Returns the html code to build the lock dialog.<p>
+     * 
+     * @param nonBlockingFilter the filter to get all non blocking locks
+     * @param blockingFilter the filter to get all blocking locks
+     * 
+     * @return html code
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String buildLockDialog(CmsLockFilter nonBlockingFilter, CmsLockFilter blockingFilter) throws CmsException {
+
+        setParamAction(CmsDialog.DIALOG_LOCKS_CONFIRMED);
+        CmsLock lockwp = new CmsLock(getJsp());
+        lockwp.setBlockingFilter(blockingFilter);
+        lockwp.setNonBlockingFilter(nonBlockingFilter);
+
+        StringBuffer html = new StringBuffer(512);
+        html.append(htmlStart("help.explorer.contextmenu.lock"));
+        html.append(lockwp.buildIncludeJs());
+        html.append(buildLockConfirmationMessageJS());
+        html.append(bodyStart("dialog"));
+        html.append(dialogStart());
+        html.append(dialogContentStart(getParamTitle()));
+        html.append(buildLockHeaderBox());
+        html.append(dialogSpacer());
+        html.append("<form name='main' action='");
+        html.append(getDialogUri());
+        html.append("' method='post' class='nomargin' onsubmit=\"return submitAction('");
+        html.append(CmsDialog.DIALOG_OK);
+        html.append("', null, 'main');\">\n");
+        html.append(paramsAsHidden());
+        html.append("<input type='hidden' name='");
+        html.append(CmsDialog.PARAM_FRAMENAME);
+        html.append("' value=''>\n");
+        html.append(lockwp.buildLockContainer(key(org.opencms.workplace.commons.Messages.GUI_LOCK_RESOURCES_TITLE_0)));
+        html.append("<div id='conf-msg'></div>\n");
+        html.append(buildLockAdditionalOptions());
+        html.append(dialogContentEnd());
+        html.append(dialogLockButtons());
+        html.append("</form>\n");
+        html.append(dialogEnd());
+        html.append(bodyEnd());
+        html.append(lockwp.buildLockRequest());
+        html.append(htmlEnd());
+        return html.toString();
+    }
+
+    /**
+     * Returns the html code to build the header box.<p>
+     * 
+     * @return html code
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String buildLockHeaderBox() throws CmsException {
+
+        StringBuffer html = new StringBuffer(512);
+        // include resource info  
+        html.append(dialogBlockStart(null));
+        html.append(key(org.opencms.workplace.commons.Messages.GUI_LABEL_TITLE_0));
+        html.append(": ");
+        html.append(getJsp().property("Title", getParamResource(), ""));
+        html.append("<br>\n");
+        html.append(key(org.opencms.workplace.commons.Messages.GUI_LABEL_STATE_0));
+        html.append(": ");
+        html.append(getState());
+        html.append("<br>\n");
+        html.append(key(org.opencms.workplace.commons.Messages.GUI_LABEL_PERMALINK_0));
+        html.append(": ");
+        html.append(OpenCms.getLinkManager().getPermalink(getCms(), getParamResource()));
+        html.append(dialogBlockEnd());
+        return html.toString();
     }
 
     /**
@@ -672,6 +813,25 @@ public class CmsDialog extends CmsToolDialog {
     public String dialogHorizontalSpacer(int width) {
 
         return "<td><span style=\"display:block; height: 1px; width: " + width + "px;\"></span></td>";
+    }
+
+    /**
+     * Builds the necessary button row.<p>
+     * 
+     * @return the button row 
+     */
+    public String dialogLockButtons() {
+
+        StringBuffer html = new StringBuffer(512);
+        html.append("<div id='butClose' >\n");
+        html.append(dialogButtonsClose());
+        html.append("</div>\n");
+        html.append("<div id='butContinue' class='hide' >\n");
+        html.append(dialogButtons(new int[] {BUTTON_CONTINUE, BUTTON_CANCEL}, new String[] {
+            " onclick=\"submitAction('" + DIALOG_OK + "', form); form.submit();\"",
+            ""}));
+        html.append("</div>\n");
+        return html.toString();
     }
 
     /**

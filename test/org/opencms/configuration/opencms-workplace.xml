@@ -45,6 +45,8 @@
 							rules="d d dddd dddd aaaa" order="20" />
 						<entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd"
 							order="30" />
+            			<entry key="GUI_EXPLORER_CONTEXT_LOCKS_0" uri="commons/locks.jsp" rules="d d aaaa aaaa aaaa" 
+            				order="35"/>
 						<separator order="40" />
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rules="d a dddd dddd dddd" order="50" />
@@ -642,6 +644,7 @@
 			<multicontextmenu>
 				<entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="" order="10" />
 				<entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="" order="20" />
+        		<entry key="GUI_EXPLORER_CONTEXT_LOCKS_0" uri="commons/locks.jsp" rules="" order="25"/>
 				<separator order="30" />
 				<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="" order="40" />
 				<separator order="50" />

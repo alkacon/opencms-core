@@ -45,6 +45,7 @@
 			<resource uri="/system/workplace/commons/lock_standard.jsp"/>
 			<resource uri="/system/workplace/commons/lockchange.jsp"/>
 			<resource uri="/system/workplace/commons/lockchange_standard.jsp"/>
+			<resource uri="/system/workplace/commons/locks.jsp"/>
 			<resource uri="/system/workplace/commons/move.jsp"/>
 			<resource uri="/system/workplace/commons/newcsvfile.jsp"/>
 			<resource uri="/system/workplace/commons/newcsvfile_upload.jsp"/>
@@ -66,6 +67,7 @@
 			<resource uri="/system/workplace/commons/renameimages.jsp"/>
 			<resource uri="/system/workplace/commons/replace.jsp"/>
 			<resource uri="/system/workplace/commons/report-brokenrelations.jsp"/>
+			<resource uri="/system/workplace/commons/report-locks.jsp"/>
 			<resource uri="/system/workplace/commons/secure.jsp"/>
 			<resource uri="/system/workplace/commons/synchronize.jsp"/>
 			<resource uri="/system/workplace/commons/touch.jsp"/>
@@ -83,6 +85,7 @@
 			<resource uri="/system/workplace/resources/buttons/upload.png"/>
 			<resource uri="/system/workplace/resources/buttons/upload_in.png"/>
 			<resource uri="/system/workplace/resources/buttons/user.png"/>
+			<resource uri="/system/workplace/resources/commons/ajax.js" />
 			<resource uri="/system/workplace/resources/commons/empty.html"/>
 			<resource uri="/system/workplace/resources/commons/explorer.js"/>
 			<resource uri="/system/workplace/resources/commons/group.png"/>
@@ -1748,6 +1751,29 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/locks.jsp</source>
+			<destination>system/workplace/commons/locks.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>b38cc59a-5ab1-11db-9c58-5bf59c6009b3</uuidstructure>
+			<uuidresource>693e3acf-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Locked Subresources]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/move.jsp</source>
 			<destination>system/workplace/commons/move.jsp</destination>
 			<type>jsp</type>
@@ -2202,7 +2228,30 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Delete Dialog - Print Broken Relations]]></value>
+					<value><![CDATA[Delete Dialog - Broken Relations Report]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/report-locks.jsp</source>
+			<destination>system/workplace/commons/report-locks.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f3e539be-5a9e-11db-8c9b-5bf59c6009b3</uuidstructure>
+			<uuidresource>f3e539bf-5a9e-11db-8c9b-5bf59c6009b3</uuidresource>
+			<datelastmodified>Fri, 13 Oct 2006 09:41:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 13 Oct 2006 09:41:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Lock Dialog - Locked Resources Dialog]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -2578,6 +2627,25 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/ajax.js</source>
+			<destination>system/workplace/resources/commons/ajax.js</destination>
+			<type>plain</type>
+			<uuidstructure>b8048a1d-5dc4-11db-8cf1-5bf59c6009b3</uuidstructure>
+			<uuidresource>b8048a1e-5dc4-11db-8cf1-5bf59c6009b3</uuidresource>
+			<datelastmodified>Tue, 17 Oct 2006 09:50:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Oct 2006 09:49:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[AJAX Workframe Javascript]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>

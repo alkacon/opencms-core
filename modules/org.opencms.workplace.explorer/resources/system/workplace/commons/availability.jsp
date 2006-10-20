@@ -28,14 +28,13 @@ case CmsDialog.ACTION_WAIT:
 
 break;
 
-case CmsDialog.ACTION_DEFAULT:
-default:
-
+case CmsDialog.ACTION_LOCKS_CONFIRMED:
 //////////////////// ACTION: show touch dialog (default)
 
 	wp.setParamAction("availability");
 	
 %><%= wp.htmlStart() %>
+<%@page import="org.opencms.workplace.CmsWorkplace"%>
 <script type="text/javascript">
 <!--
 
@@ -44,10 +43,10 @@ setTimeout("checkReleaseFields()", 500);
 
 function checkReleaseFields(fieldId) {
 	
-	var resetRel = document.getElementById("<%= wp.PARAM_RESETRELEASE %>");
-	var dateRel = document.getElementById("<%= wp.PARAM_RELEASEDATE %>");
+	var resetRel = document.getElementById("<%= CmsAvailability.PARAM_RESETRELEASE %>");
+	var dateRel = document.getElementById("<%= CmsAvailability.PARAM_RELEASEDATE %>");
 	
-	if (fieldId == "<%= wp.PARAM_RESETRELEASE %>") {
+	if (fieldId == "<%= CmsAvailability.PARAM_RESETRELEASE %>") {
 		if (resetRel.checked) {
 			dateRel.value = "";
 		} else {
@@ -68,10 +67,10 @@ setTimeout("checkExpireFields()", 500);
 
 function checkExpireFields(fieldId) {
 	
-	var resetExp = document.getElementById("<%= wp.PARAM_RESETEXPIRE %>");
-	var dateExp = document.getElementById("<%= wp.PARAM_EXPIREDATE %>");
+	var resetExp = document.getElementById("<%= CmsAvailability.PARAM_RESETEXPIRE %>");
+	var dateExp = document.getElementById("<%= CmsAvailability.PARAM_EXPIREDATE %>");
 	
-	if (fieldId == "<%= wp.PARAM_RESETEXPIRE %>") {
+	if (fieldId == "<%= CmsAvailability.PARAM_RESETEXPIRE %>") {
 		if (resetExp.checked) {
 			dateExp.value = "";
 		} else {
@@ -94,10 +93,10 @@ function toggleDetail(id) {
     var cl = element.className;
     if (cl == "hide") {
         element.className = "show";
-        icon.setAttribute("src", '<%= wp.getSkinUri() %>commons/minus.png');
+        icon.setAttribute("src", '<%= CmsWorkplace.getSkinUri() %>commons/minus.png');
     } else {
         element.className = "hide";
-        icon.setAttribute("src", '<%= wp.getSkinUri() %>commons/plus.png');
+        icon.setAttribute("src", '<%= CmsWorkplace.getSkinUri() %>commons/plus.png');
     }
 }
 
@@ -128,18 +127,16 @@ function toggleInheritInfo() {
 <%= wp.bodyStart("dialog") %>
 <%= wp.dialogStart() %>
 
-    <form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+    <form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 <input type="hidden" name="hiddenrelease" value="<%= wp.getCurrentReleaseDate() %>">
 <input type="hidden" name="hiddenexpire" value="<%= wp.getCurrentExpireDate() %>">
 
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
-String checked = "";
-if (wp.isMultiOperation()) { %>
+if (wp.isMultiOperation()) { //%>
 	<%@ include file="includes/multiresourcelist.txt" %><%
-	checked = " checked=\"checked\"";	
-} else { %>
+} else { //%>
 	<%@ include file="includes/resourceinfo.txt" %><%
 } %>
 <%= wp.dialogSpacer() %>
@@ -150,22 +147,22 @@ if (wp.isMultiOperation()) { %>
 <table border="0">
     <tr>
 		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_RELEASED_0) %>
-		<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_RELEASEDATE %>" id="<%= wp.PARAM_RELEASEDATE %>" value="<%= wp.getCurrentReleaseDate() %>"></td>
-		<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggernewreleasedate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
+		<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= CmsAvailability.PARAM_RELEASEDATE %>" id="<%= CmsAvailability.PARAM_RELEASEDATE %>" value="<%= wp.getCurrentReleaseDate() %>"></td>
+		<td>&nbsp;<img src="<%= CmsWorkplace.getSkinUri() %>buttons/calendar.png" id="triggernewreleasedate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
     </tr>
     <tr>
 		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_AVAILABILITY_RESET_RELEASE_0) %>
-		<td colspan="2"><input type="checkbox" name="<%= wp.PARAM_RESETRELEASE %>" id="<%= wp.PARAM_RESETRELEASE %>" value="true" onclick="checkReleaseFields('<%= wp.PARAM_RESETRELEASE %>');"></td>
+		<td colspan="2"><input type="checkbox" name="<%= CmsAvailability.PARAM_RESETRELEASE %>" id="<%= CmsAvailability.PARAM_RESETRELEASE %>" value="true" onclick="checkReleaseFields('<%= CmsAvailability.PARAM_RESETRELEASE %>');"></td>
     </tr>
     
     <tr>
 		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_EXPIRED_0) %>
-		<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_EXPIREDATE %>" id="<%= wp.PARAM_EXPIREDATE %>" value="<%= wp.getCurrentExpireDate() %>"></td>
-		<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggernewexpiredate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
+		<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= CmsAvailability.PARAM_EXPIREDATE %>" id="<%= CmsAvailability.PARAM_EXPIREDATE %>" value="<%= wp.getCurrentExpireDate() %>"></td>
+		<td>&nbsp;<img src="<%= CmsWorkplace.getSkinUri() %>buttons/calendar.png" id="triggernewexpiredate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
     </tr>
     <tr>
 		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_AVAILABILITY_RESET_EXPIRE_0) %>
-		<td colspan="2"><input type="checkbox" name="<%= wp.PARAM_RESETEXPIRE %>" id="<%= wp.PARAM_RESETEXPIRE %>" value="true" onclick="checkExpireFields('<%= wp.PARAM_RESETEXPIRE %>');"></td>
+		<td colspan="2"><input type="checkbox" name="<%= CmsAvailability.PARAM_RESETEXPIRE %>" id="<%= CmsAvailability.PARAM_RESETEXPIRE %>" value="true" onclick="checkExpireFields('<%= CmsAvailability.PARAM_RESETEXPIRE %>');"></td>
     </tr>
 </table>
 <%= wp.dialogBlockEnd() %>
@@ -212,11 +209,17 @@ if (wp.isMultiOperation()) { %>
      */
 
 %>
-<%= CmsCalendarWidget.calendarInit(wp.getMessages(), wp.PARAM_RELEASEDATE, "triggernewreleasedate", "cR", false, false, true, null, true) %>
-<%= CmsCalendarWidget.calendarInit(wp.getMessages(), wp.PARAM_EXPIREDATE, "triggernewexpiredate", "cR", false, false, true, null, true) %>
+<%= CmsCalendarWidget.calendarInit(wp.getMessages(), CmsAvailability.PARAM_RELEASEDATE, "triggernewreleasedate", "cR", false, false, true, null, true) %>
+<%= CmsCalendarWidget.calendarInit(wp.getMessages(), CmsAvailability.PARAM_EXPIREDATE, "triggernewexpiredate", "cR", false, false, true, null, true) %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
-<%
-} 
+<% 
+   break;
+
+case CmsDialog.ACTION_DEFAULT:
+default:
+    %>
+<%= wp.buildLockDialog() %>
+<% } 
 //////////////////// end of switch statement 
 %>

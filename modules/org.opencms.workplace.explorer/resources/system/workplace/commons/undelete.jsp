@@ -1,4 +1,7 @@
-<%@ page import="org.opencms.workplace.commons.*" %><%	
+<%@ page import="
+    org.opencms.workplace.CmsDialog,
+	org.opencms.workplace.commons.CmsUndelete
+" %><%	
 
 	// initialize the workplace class
 	CmsUndelete wp = new CmsUndelete(pageContext, request, response);
@@ -7,7 +10,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsUndelete.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
@@ -16,7 +19,7 @@ break;
 
 
 case CmsUndelete.ACTION_UNDELETE:
-case CmsUndelete.ACTION_WAIT:
+case CmsDialog.ACTION_WAIT:
 
 //////////////////// ACTION: main undelete action (with optional confirm / wait screen)
 
@@ -25,9 +28,7 @@ case CmsUndelete.ACTION_WAIT:
 break;
 
 
-case CmsUndelete.ACTION_DEFAULT:
-default:
-
+case CmsDialog.ACTION_LOCKS_CONFIRMED:
 //////////////////// ACTION: show undelete dialog (default)
 
 	wp.setParamAction("undelete");
@@ -41,9 +42,9 @@ if (wp.isMultiOperation()) { %>
 	<%= wp.dialogSpacer() %><%
 } %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <%= wp.buildConfirmationMessage() %>
 
@@ -56,7 +57,13 @@ if (wp.isMultiOperation()) { %>
 
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
-<%
-} 
+<% 
+   break;
+
+case CmsDialog.ACTION_DEFAULT:
+default:
+%>
+<%= wp.buildLockDialog() %>
+<% } 
 //////////////////// end of switch statement 
 %>

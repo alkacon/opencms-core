@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/A_CmsDiffViewDialog.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.4.4.1 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.4.4.2 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspWriter;
  * @author Michael Moossen  
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.4.4.1 $ 
+ * @version $Revision: 1.4.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -168,7 +168,6 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
         StringBuffer result = new StringBuffer();
         if (firstActive) {
             result.append(A_CmsHtmlIconButton.defaultButtonHtml(
-                getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 "id",
                 label1,
@@ -184,7 +183,6 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
             result.append(deactivatedEmphasizedButtonHtml(label1, A_CmsListDialog.ICON_DETAILS_HIDE));
             result.append("&nbsp;&nbsp;");
             result.append(A_CmsHtmlIconButton.defaultButtonHtml(
-                getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 "id",
                 label2,

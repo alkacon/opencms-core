@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2006/08/19 13:40:40 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.1.0 
  */
@@ -224,7 +224,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             if (item == null) {
                 resUtil.setResource(resource);
                 item = list.newItem(resource.getStructureId().toString());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_NAME, getWp().getCms().getSitePath(resource));
+                item.set(A_CmsListExplorerDialog.LIST_COLUMN_NAME, resUtil.getPath());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, resUtil.getTitle());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_TYPE, resUtil.getResourceTypeName());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_SIZE, resUtil.getSizeString());
@@ -237,6 +237,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEEXP, new Date(resource.getDateExpired()));
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_STATE, resUtil.getStateName());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
+                item.set(A_CmsListExplorerDialog.LIST_COLUMN_SITE, resUtil.getSite());
                 setAdditionalColumns(item, resUtil);
                 m_liCache.put(resource.getStructureId().toString(), item);
             }

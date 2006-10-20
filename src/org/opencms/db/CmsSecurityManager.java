@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/10/19 13:37:07 $
- * Version: $Revision: 1.97.4.10 $
+ * Date   : $Date: 2006/10/20 15:36:12 $
+ * Version: $Revision: 1.97.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
@@ -955,32 +956,6 @@ public final class CmsSecurityManager {
                 Messages.ERR_COUNT_LOCKED_RESOURCES_PROJECT_2,
                 (project == null) ? "<failed to read>" : project.getName(),
                 new Integer(id)), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Counts the locked resources in a given folder.<p>
-     *
-     * @param context the current request context
-     * @param foldername the folder to search in
-     * 
-     * @return the amount of locked resources in this project
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public int countLockedResources(CmsRequestContext context, String foldername) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // perform a test for read permissions on the folder
-        readResource(dbc, foldername, CmsResourceFilter.ALL);
-        int result = 0;
-        try {
-            result = m_driverManager.countLockedResources(dbc, foldername);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1, foldername), e);
         } finally {
             dbc.clear();
         }
@@ -2014,6 +1989,33 @@ public final class CmsSecurityManager {
             result = m_driverManager.getLock(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_LOCK_1, context.getSitePath(resource)), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns all locked resources in a given folder.<p>
+     *
+     * @param context the current request context
+     * @param foldername the folder to search in
+     * @param filter the lock filter
+     * 
+     * @return a list of locked resource paths (relative to current site)
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getLockedResources(CmsRequestContext context, String foldername, CmsLockFilter filter) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        // perform a test for read permissions on the folder
+        readResource(dbc, foldername, CmsResourceFilter.ALL);
+        List result = null;
+        try {
+            result = m_driverManager.getLockedResources(dbc, foldername, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1, foldername), e);
         } finally {
             dbc.clear();
         }
@@ -5389,7 +5391,7 @@ public final class CmsSecurityManager {
             if (!CmsResource.isFolder(destination)) {
                 // ensure folder name end's with a /
                 destination = destination.concat("/");
-            } 
+            }
             // validate the destination name
             destination = CmsResource.validateFoldername(destination);
             // collect all resources in the folder (including everything)

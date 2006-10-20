@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2006/08/19 13:40:40 $
- * Version: $Revision: 1.25.4.2 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.25.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.25.4.2 $ 
+ * @version $Revision: 1.25.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -437,10 +437,6 @@ public class CmsListColumnDefinition {
      */
     public String htmlHeader(CmsHtmlList list) {
 
-        if (!isVisible()) {
-            return "";
-        }
-
         String listId = list.getId();
         String sortedCol = list.getSortedColumn();
         CmsListOrderEnum order = list.getCurrentSortOrder();
@@ -487,7 +483,6 @@ public class CmsListColumnDefinition {
             html.append("px;'>\n");
         }
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            getWp().getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
             getName().key(locale),
@@ -555,6 +550,46 @@ public class CmsListColumnDefinition {
     public boolean isVisible() {
 
         return m_visible;
+    }
+
+    /**
+     * Removes the default action from this column by id.<p>
+     * 
+     * @param actionId the id of the action to remove
+     * 
+     * @return the action if found or <code>null</code>
+     */
+    public CmsListDefaultAction removeDefaultAction(String actionId) {
+
+        Iterator it = m_defaultActions.iterator();
+        while (it.hasNext()) {
+            CmsListDefaultAction action = (CmsListDefaultAction)it.next();
+            if (action.getId().equals(actionId)) {
+                it.remove();
+                return action;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Removes a direct action from this column by id.<p>
+     * 
+     * @param actionId the id of the action to remove
+     * 
+     * @return the action if found or <code>null</code>
+     */
+    public I_CmsListDirectAction removeDirectAction(String actionId) {
+
+        Iterator it = m_directActions.iterator();
+        while (it.hasNext()) {
+            I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
+            if (action.getId().equals(actionId)) {
+                it.remove();
+                return action;
+            }
+        }
+        return null;
     }
 
     /**
@@ -650,11 +685,16 @@ public class CmsListColumnDefinition {
     /**
      * Sets the visible.<p>
      *
+     * This will set also the printable flag to <code>false</code>.<p>
+     *
      * @param visible the visible to set
      */
     public void setVisible(boolean visible) {
 
         m_visible = visible;
+        if (!m_visible) {
+            setPrintable(false);
+        }
     }
 
     /**

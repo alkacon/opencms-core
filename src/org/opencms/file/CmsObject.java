@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/10/09 12:29:40 $
- * Version: $Revision: 1.146.4.10 $
+ * Date   : $Date: 2006/10/20 15:36:12 $
+ * Version: $Revision: 1.146.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -84,7 +85,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.10 $
+ * @version $Revision: 1.146.4.11 $
  * 
  * @since 6.0.0 
  */
@@ -486,20 +487,6 @@ public final class CmsObject {
     public int countLockedResources(int id) throws CmsException {
 
         return m_securityManager.countLockedResources(m_context, id);
-    }
-
-    /**
-     * Counts the locked resources within a folder.<p>
-     *
-     * @param foldername the name of the folder
-     * 
-     * @return the number of locked resources in this folder
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public int countLockedResources(String foldername) throws CmsException {
-
-        return m_securityManager.countLockedResources(m_context, addSiteRoot(foldername));
     }
 
     /**
@@ -1191,6 +1178,21 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return getLock(resource);
+    }
+
+    /**
+     * Returns all locked resources within a folder.<p>
+     *
+     * @param foldername the name of the folder
+     * @param filter the lock filter
+     * 
+     * @return a list of locked resource paths (relative to current site)
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public List getLockedResources(String foldername, CmsLockFilter filter) throws CmsException {
+
+        return m_securityManager.getLockedResources(m_context, addSiteRoot(foldername), filter);
     }
 
     /**

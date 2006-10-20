@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/09/29 09:37:01 $
- * Version: $Revision: 1.15.4.9 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.15.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,15 +40,12 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.9 $ 
+ * @version $Revision: 1.15.4.10 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.commons.messages";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_AVAILABILITY_BAD_TIMEWINDOW_0 = "ERR_AVAILABILITY_BAD_TIMEWINDOW_0";
 
@@ -344,12 +341,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DELETE_RELATIONS_NOT_BROKEN_0 = "GUI_DELETE_RELATIONS_NOT_BROKEN_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DELETE_RELATIONS_REPORT_ERROR_0 = "GUI_DELETE_RELATIONS_REPORT_ERROR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DELETE_RELATIONS_REPORT_GIVEUP_0 = "GUI_DELETE_RELATIONS_REPORT_GIVEUP_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_RELATIONS_REPORT_WAIT_0 = "GUI_DELETE_RELATIONS_REPORT_WAIT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -599,6 +590,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOCK_INFO_LOCKEDSUBRESOURCES_0 = "GUI_LOCK_INFO_LOCKEDSUBRESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_LOCKS_1 = "GUI_LOCK_LOCKS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_MULTI_INFO_LOCKEDSUBRESOURCES_0 = "GUI_LOCK_MULTI_INFO_LOCKEDSUBRESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -606,6 +600,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_MULTI_LOCK_CONFIRMATION_0 = "GUI_LOCK_MULTI_LOCK_CONFIRMATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_MULTI_LOCKS_2 = "GUI_LOCK_MULTI_LOCKS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_MULTI_STEAL_2 = "GUI_LOCK_MULTI_STEAL_2";
@@ -620,6 +617,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOCK_RESOURCE_1 = "GUI_LOCK_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_RESOURCES_NOT_LOCKED_0 = "GUI_LOCK_RESOURCES_NOT_LOCKED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_RESOURCES_TITLE_0 = "GUI_LOCK_RESOURCES_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_STEAL_1 = "GUI_LOCK_STEAL_1";
 
     /** Message constant for key in the resource bundle. */
@@ -627,6 +630,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_UNLOCK_CONFIRMATION_0 = "GUI_LOCK_UNLOCK_CONFIRMATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCKED_FILES_LIST_NAME_0 = "GUI_LOCKED_FILES_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGE_WAIT_0 = "GUI_MESSAGE_WAIT_0";
@@ -938,7 +944,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PUBLISH_ALLSIBLINGS_0 = "GUI_PUBLISH_ALLSIBLINGS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_CONFIRMATION_3 = "GUI_PUBLISH_CONFIRMATION_3";
+    public static final String GUI_PUBLISH_CONFIRMATION_0 = "GUI_PUBLISH_CONFIRMATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0 = "GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0";
@@ -948,6 +954,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_MULTI_SUBRESOURCES_0 = "GUI_PUBLISH_MULTI_SUBRESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_NO_LOCKS_CONFIRMATION_0 = "GUI_PUBLISH_NO_LOCKS_CONFIRMATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_PROJECT_0 = "GUI_PUBLISH_PROJECT_0";
@@ -1174,9 +1183,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERSELECTION_TYPE_WEB_0 = "GUI_USERSELECTION_TYPE_WEB_0";
 
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
-
     /** Message constant for key in the resource bundle. */
     public static final String LOG_COMPUTING_PUBRES_FAILED_0 = "LOG_COMPUTING_PUBRES_FAILED_0";
 
@@ -1188,6 +1194,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_PROJECT_NAME_FAILED_0 = "LOG_SET_PROJECT_NAME_FAILED_0";
+
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.workplace.commons.messages";
+
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**Postfix to create task key. */
     private static final String TASK_POSTFIX = "_0";

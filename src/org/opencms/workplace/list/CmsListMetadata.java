@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2006/10/17 12:21:52 $
- * Version: $Revision: 1.22.4.4 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.22.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22.4.4 $ 
+ * @version $Revision: 1.22.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -496,9 +496,13 @@ public class CmsListMetadata {
         Iterator itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
-            if (!list.isPrintable() || col.isPrintable()) {
-                html.append(col.htmlHeader(list));
+            if (!col.isVisible() && !list.isPrintable()) {
+                continue;
             }
+            if (!col.isPrintable() && list.isPrintable()) {
+                continue;
+            }
+            html.append(col.htmlHeader(list));
         }
         if (!list.isPrintable() && hasCheckMultiActions()) {
             html.append("\t<th width='0' class='select'>\n");
@@ -534,7 +538,10 @@ public class CmsListMetadata {
         int width = 0;
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
-            if (!col.isVisible() || (isPrintable && !col.isPrintable())) {
+            if (!col.isVisible() && !isPrintable) {
+                continue;
+            }
+            if (!col.isPrintable() && isPrintable) {
                 continue;
             }
             width++;
@@ -581,11 +588,14 @@ public class CmsListMetadata {
                 itCols = m_columns.elementList().iterator();
                 while (itCols.hasNext()) {
                     CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
-                    if (!col.isVisible() || (isPrintable && !col.isPrintable())) {
-                        continue;
-                    }
                     if (col.getId().equals(lid.getAtColumn())) {
                         break;
+                    }
+                    if (!col.isVisible() && !isPrintable) {
+                        continue;
+                    }
+                    if (!col.isPrintable() && isPrintable) {
+                        continue;
                     }
                     padCols++;
                 }

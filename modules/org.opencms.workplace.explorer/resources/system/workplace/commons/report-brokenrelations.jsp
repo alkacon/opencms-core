@@ -1,1 +1,1 @@
-<%= new org.opencms.workplace.commons.CmsDelete(pageContext, request, response).buildRelations() %>
+<%= new org.opencms.workplace.commons.CmsDelete(pageContext, request, response).buildReport() %>

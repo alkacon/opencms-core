@@ -43,10 +43,12 @@ case CmsChacc.ACTION_INTERNALUSE:
 break;	
 }
 
-
 if (displayForm) {
-	
-%>
+    if (wp.getAction()==CmsDialog.ACTION_DEFAULT) { %>
+    <%= wp.buildLockDialog() %>
+    <%  return;
+    }  %>
+
 <%= wp.htmlStart() %>
 <script type="text/javascript">
 <!--
@@ -116,6 +118,4 @@ function toggleDetail(id) {
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
-<%
-}
-%>
+<% } %>

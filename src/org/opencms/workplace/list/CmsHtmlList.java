@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2006/08/28 13:52:13 $
- * Version: $Revision: 1.35.4.8 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.35.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.8 $ 
+ * @version $Revision: 1.35.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +83,9 @@ public class CmsHtmlList {
 
     /** Dhtml id. */
     private final String m_id;
+
+    /** If this flag is set the list will be surrounded by a box. */
+    private boolean m_isBoxed = true;
 
     /** Maximum number of items per page. */
     private int m_maxItemsPerPage = 20;
@@ -406,6 +409,18 @@ public class CmsHtmlList {
     }
 
     /**
+     * Returns the isBoxed flag.<p>
+     *
+     * If this flag is set the list will be surrounded by a box.<p>
+     *
+     * @return the isBoxed flag
+     */
+    public boolean isBoxed() {
+
+        return m_isBoxed;
+    }
+
+    /**
      * Returns the printable flag.<p>
      *
      * @return the printable flag
@@ -552,6 +567,18 @@ public class CmsHtmlList {
         String html = listHtml();
         m_printable = false;
         return html;
+    }
+
+    /**
+     * Sets the isBoxed flag.<p>
+     *
+     * If this flag is set, the list will be surrounded by a box.<p>
+     *
+     * @param isBoxed the isBoxed flag to set
+     */
+    public void setBoxed(boolean isBoxed) {
+
+        m_isBoxed = isBoxed;
     }
 
     /**
@@ -829,7 +856,9 @@ public class CmsHtmlList {
         }
         // start list code
         html.append("<div class='listArea'>\n");
-        html.append(getWp().dialogBlock(CmsWorkplace.HTML_START, m_name.key(getWp().getLocale()), false));
+        if (isBoxed()) {
+            html.append(getWp().dialogBlock(CmsWorkplace.HTML_START, m_name.key(getWp().getLocale()), false));
+        }
         html.append("\t\t<table width='100%' cellspacing='0' cellpadding='0' border='0'>\n");
         html.append("\t\t\t<tr><td>\n");
         return html.toString();
@@ -845,7 +874,9 @@ public class CmsHtmlList {
         StringBuffer html = new StringBuffer(512);
         html.append("\t\t\t</td></tr>\n");
         html.append("\t\t</table>\n");
-        html.append(getWp().dialogBlock(CmsWorkplace.HTML_END, m_name.key(getWp().getLocale()), false));
+        if (isBoxed()) {
+            html.append(getWp().dialogBlock(CmsWorkplace.HTML_END, m_name.key(getWp().getLocale()), false));
+        }
         html.append("</div>\n");
         if (!isPrintable() && getMetadata().isSearchable()) {
             html.append("<script type='text/javascript'>\n");
@@ -886,7 +917,6 @@ public class CmsHtmlList {
         }
         String onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() - 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            getWp().getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
             name,
@@ -907,7 +937,6 @@ public class CmsHtmlList {
         }
         onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() + 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            getWp().getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
             name,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/10/17 14:09:22 $
- * Version: $Revision: 1.570.2.26 $
+ * Date   : $Date: 2006/10/20 15:36:12 $
+ * Version: $Revision: 1.570.2.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,6 +58,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsEvent;
@@ -343,19 +344,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     /** Value to indicate a change in access control entries of a resource. */
     public static final int CHANGED_ACCESSCONTROL = 1;
-    
+
     /** Value to indicate a change in the availability timeframe. */
     public static final int CHANGED_TIMEFRAME = 2;
-    
+
     /** Value to indicate a change in the lastmodified settings of a resource. */
     public static final int CHANGED_LASTMODIFIED = 4;
-    
+
     /** Value to indicate a change in the resource data. */
     public static final int CHANGED_RESOURCE = 8;
-    
+
     /** Value to indicate a content change. */
     public static final int CHANGED_CONTENT = 16;
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDriverManager.class);
 
@@ -1268,29 +1269,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     "project",
                     dbc.currentProject())));
             }
-        }
-    }
-
-    /**
-     * Counts the locked resources in a given folder.<p>
-     *
-     * @param dbc the current database context
-     * @param foldername the folder to search in
-     * 
-     * @return the amount of locked resources in this project
-     * 
-     * @throws CmsLockException if the current project is locked
-     */
-    public int countLockedResources(CmsDbContext dbc, String foldername) throws CmsLockException {
-
-        // check the security
-        if (dbc.currentProject().getFlags() == CmsProject.PROJECT_STATE_UNLOCKED) {
-            // count locks
-            return m_lockManager.countExclusiveLocksInFolder(foldername);
-        } else {
-            throw new CmsLockException(org.opencms.lock.Messages.get().container(
-                org.opencms.lock.Messages.ERR_RESOURCE_LOCKED_1,
-                dbc.currentProject().getName()));
         }
     }
 
@@ -2641,9 +2619,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Iterator itGroups = getGroupsOfUser(dbc, username).iterator();
         while (itGroups.hasNext()) {
             CmsGroup group = (CmsGroup)itGroups.next();
-            // add replacement user to user groups
-            if (!userInGroup(dbc, replacementUser.getName(), group.getName())) {
-                addUserToGroup(dbc, replacementUser.getName(), group.getName());
+            if (!m_securityManager.hasRole(dbc, replacementUser, CmsRole.VFS_MANAGER)) {
+                // add replacement user to user groups
+                if (!userInGroup(dbc, replacementUser.getName(), group.getName())) {
+                    addUserToGroup(dbc, replacementUser.getName(), group.getName());
+                }
             }
             // remove user from groups
             if (userInGroup(dbc, username, group.getName())) {
@@ -3320,6 +3300,36 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsLock getLock(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
         return m_lockManager.getLock(this, dbc, resource);
+    }
+
+    /**
+     * Returns all locked resources in a given folder.<p>
+     *
+     * @param dbc the current database context
+     * @param foldername the folder to search in
+     * @param filter the lock filter
+     * 
+     * @return a list of locked resource paths (relative to current site)
+     * 
+     * @throws CmsLockException if the current project is locked
+     */
+    public List getLockedResources(CmsDbContext dbc, String foldername, CmsLockFilter filter) throws CmsLockException {
+
+        // check the security
+        if (dbc.currentProject().getFlags() != CmsProject.PROJECT_STATE_UNLOCKED) {
+            throw new CmsLockException(org.opencms.lock.Messages.get().container(
+                org.opencms.lock.Messages.ERR_RESOURCE_LOCKED_1,
+                dbc.currentProject().getName()));
+        }
+        List lockedResources = new ArrayList();
+        // get locked resources
+        Iterator it = m_lockManager.getLocks(foldername, filter).iterator();
+        while (it.hasNext()) {
+            CmsLock lock = (CmsLock)it.next();
+            lockedResources.add(dbc.removeSiteRoot(lock.getResourceName()));
+        }
+        Collections.sort(lockedResources);
+        return lockedResources;
     }
 
     /**
@@ -6043,7 +6053,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         HashMap data = new HashMap(2);
         data.put("resource", resource);
-        data.put("change", new Integer(CHANGED_RESOURCE|CHANGED_CONTENT));
+        data.put("change", new Integer(CHANGED_RESOURCE | CHANGED_CONTENT));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -6160,7 +6170,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         HashMap data = new HashMap(2);
         data.put("resource", resource);
-        data.put("change", new Integer(CHANGED_RESOURCE|CHANGED_CONTENT));
+        data.put("change", new Integer(CHANGED_RESOURCE | CHANGED_CONTENT));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -7817,8 +7827,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // clear the cache
                 clearResourceCache();
             }
-            // check aces
             boolean aceModified = false;
+            // check aces
             if (withACEs) {
                 Iterator itAces = m_userDriver.readAccessControlEntries(dbc, project, resource.getResourceId(), false).iterator();
                 while (itAces.hasNext()) {
@@ -7835,18 +7845,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         aceModified = true;
                     }
                 }
-            }
-            if (aceModified) {
-                // clear the cache
-                clearAccessControlListCache();
+                if (aceModified) {
+                    // clear the cache
+                    clearAccessControlListCache();
+                }
             }
             if (attrModified || aceModified) {
                 // fire the event
                 HashMap data = new HashMap(2);
                 data.put("resource", resource);
-                data.put("change", new Integer(
-                    ((attrModified) ? CHANGED_RESOURCE : 0) |
-                    ((aceModified) ? CHANGED_ACCESSCONTROL : 0)));
+                data.put("change", new Integer(((attrModified) ? CHANGED_RESOURCE : 0)
+                    | ((aceModified) ? CHANGED_ACCESSCONTROL : 0)));
                 OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
             }
         }
@@ -8034,6 +8043,31 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Updates the current users context dates with the given resource.<p>
+     * 
+     * This checks the date information of the resource based on
+     * {@link CmsResource#getDateLastModified()} as well as 
+     * {@link CmsResource#getDateReleased()} and {@link CmsResource#getDateExpired()}.
+     * The current users requerst context is updated with the the "latest" dates found.<p>
+     * 
+     * This is required in order to ensure proper setting of <code>"last-modified"</code> http headers
+     * and also for expiration of cached elements in the Flex cache.
+     * Consider the following use case: Page A is generated from resources x, y and z. 
+     * If either x, y or z has an expiration / release date set, then page A must expire at a certain point 
+     * in time. This is ensured by the context date check here.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to get the date information from
+     */
+    private void updateContextDates(CmsDbContext dbc, CmsResource resource) {
+
+        CmsFlexRequestContextInfo info = dbc.getFlexRequestContextInfo();
+        if (info != null) {
+            info.updateFromResource(resource);
+        }
+    }
+
+    /**
      * Updates the current users context dates with each {@link CmsResource} object in the given list.<p>
      * 
      * The given input list is returned unmodified.<p>
@@ -8096,31 +8130,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         return result;
-    }
-
-    /**
-     * Updates the current users context dates with the given resource.<p>
-     * 
-     * This checks the date information of the resource based on
-     * {@link CmsResource#getDateLastModified()} as well as 
-     * {@link CmsResource#getDateReleased()} and {@link CmsResource#getDateExpired()}.
-     * The current users requerst context is updated with the the "latest" dates found.<p>
-     * 
-     * This is required in order to ensure proper setting of <code>"last-modified"</code> http headers
-     * and also for expiration of cached elements in the Flex cache.
-     * Consider the following use case: Page A is generated from resources x, y and z. 
-     * If either x, y or z has an expiration / release date set, then page A must expire at a certain point 
-     * in time. This is ensured by the context date check here.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the resource to get the date information from
-     */
-    private void updateContextDates(CmsDbContext dbc, CmsResource resource) {
-
-        CmsFlexRequestContextInfo info = dbc.getFlexRequestContextInfo();
-        if (info != null) {
-            info.updateFromResource(resource);
-        }
     }
 
     /**

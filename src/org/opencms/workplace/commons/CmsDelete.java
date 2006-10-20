@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/10/04 16:01:51 $
- * Version: $Revision: 1.17.4.11 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.17.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.commons;
 
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
@@ -40,21 +39,20 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationDeleteValidator;
-import org.opencms.relations.CmsRelation;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
-import org.opencms.site.CmsSiteManager;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialogSelector;
 import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsDialogHandler;
+import org.opencms.workplace.list.CmsListExplorerColumn;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -74,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.11 $ 
+ * @version $Revision: 1.17.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -237,61 +235,29 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Returns html code for the 'delete despite relations' option.<p>
+     * Returns html code for the possible broken relations.<p>
      * 
-     * @return html code for the 'delete despite relations' option
+     * @return html code for the possible broken relations
+     * 
+     * @throws JspException if dialog actions fail
+     * @throws IOException in case of errros forwarding to the required result page
+     * @throws ServletException in case of errros forwarding to the required result page
      */
-    public String buildRelations() {
+    public String buildReport() throws JspException, ServletException, IOException {
 
-        if (getValidator().isEmpty()) {
-            return "";
-        }
-
-        // check how many row we will need to display to decide using a div or not
-        int rows = 0;
-        Iterator itBrokenRelations = getValidator().values().iterator();
-        while (itBrokenRelations.hasNext()) {
-            List relations = (List)itBrokenRelations.next();
-            rows++; // resName
-            rows += relations.size();
-            if (rows > 6) {
-                break;
-            }
-        }
+        CmsDeleteBrokenRelationsList list = new CmsDeleteBrokenRelationsList(
+            getJsp(),
+            getResourceList(), Boolean.valueOf(getParamDeleteSiblings()).booleanValue());
+        list.actionDialog();
 
         StringBuffer result = new StringBuffer(512);
-        // TODO: display the 'Print' text at the right of the icon  
-        result.append("<div style='z-index: 100; position:absolute; padding-right: ");
-        if (getJsp().getRequest().getHeader("user-agent").indexOf("MSIE") < 0) {
-            result.append(rows > 6 ? 35 : 15);
-        } else {
-            result.append(rows > 6 ? 20 : 0);
-        }
-        result.append("px;' >\n");
-        result.append("<a href='#' onclick=\"javascript:document.forms['printform'].submit();\" style='color: ButtonText; text-decoration: none; cursor: pointer; '>\n");
-        result.append("<img src='");
-        result.append(getResourceUri("list/print.png"));
-        result.append("' border='0' align='right'/>\n");
-        result.append("</a>");
+        list.getList().setBoxed(false);
+        result.append(CmsListExplorerColumn.getExplorerStyleDef());
+        result.append("<div style='height:150px; overflow: auto;'>\n");
+        result.append(list.getList().listHtml());
         result.append("</div>\n");
-
-        result.append("<div style='height:100px; overflow: auto;'>\n");
-
-        // sort the resulting hash map
-        List resourceList = new ArrayList(getValidator().keySet());
-        Collections.sort(resourceList);
-
-        // for every resource that will break a relation 
-        itBrokenRelations = resourceList.iterator();
-        int id = 0;
-        while (itBrokenRelations.hasNext()) {
-            String resName = (String)itBrokenRelations.next();
-            result.append(buildFoldableEntry(resName, id));
-            id++;
-        }
-
-        result.append("</div>\n");
-
+        result.append("<input type='hidden' name='result' value='");
+        result.append(list.getList().getTotalSize()).append("'>\n");
         return result.toString();
     }
 
@@ -408,6 +374,8 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         // set the action for the JSP switch 
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_DELETE);
+        } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
+            setAction(ACTION_LOCKS_CONFIRMED);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
             setAction(ACTION_WAIT);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
@@ -476,95 +444,6 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         checkLock(resource);
         // delete the resource
         getCms().deleteResource(resource, deleteOption);
-    }
-
-    /**
-     * Creates a foldable entry for the given resource and broken links.<p>
-     * 
-     * @param resourceName the current resource to delete that will break links
-     * @param id the html id attribute for the folding element
-     * 
-     * @return StringBuffer with HTML code of the form
-     */
-    private StringBuffer buildFoldableEntry(String resourceName, int id) {
-
-        StringBuffer result = new StringBuffer(256);
-
-        String idValue = "res" + id;
-
-        // add toggle symbol and link to details
-        result.append("<a href=\"javascript:toggleDetail('").append(idValue).append("');\">");
-        result.append("<img src=\"").append(getSkinUri()).append("commons/minus.png\" class=\"noborder\" id=\"ic-").append(
-            idValue).append("\"></a>");
-
-        result.append("<span class=\"textbold\" style='vertical-align:top;'>");
-
-        String resName = null;
-        CmsRelationDeleteValidator.InfoEntry infoEntry = getValidator().getInfoEntry(resourceName);
-        if (infoEntry.isSibling()) {
-            if (!infoEntry.isInOtherSite()) {
-                resName = key(Messages.GUI_DELETE_SIBLING_RELATION_1, new Object[] {infoEntry.getResourceName()});
-            } else {
-                String siblingName = key(
-                    Messages.GUI_DELETE_SIBLING_RELATION_1,
-                    new Object[] {infoEntry.getResourceName()});
-                resName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {infoEntry.getSiteName(), siblingName});
-            }
-        } else {
-            resName = CmsResource.getName(resourceName);
-        }
-        result.append(resName);
-        result.append("</span><br>\n");
-
-        result.append("<div id =\"").append(idValue).append("\" class=\"show\">");
-        result.append("<p style='padding-left: 25px; margin-top: -3px; margin-bottom: 3px;' >\n");
-
-        Iterator itRelations = infoEntry.getRelations().iterator();
-
-        // show all links that will get broken
-        while (itRelations.hasNext()) {
-            CmsRelation relation = (CmsRelation)itRelations.next();
-            String relationName = relation.getSourcePath();
-            if (relationName.startsWith(infoEntry.getSiteRoot())) {
-                // same site
-                relationName = relationName.substring(infoEntry.getSiteRoot().length());
-                relationName = CmsStringUtil.formatResourceName(relationName, 50);
-            } else {
-                // other site
-                String site = CmsSiteManager.getSiteRoot(relationName);
-                String siteName = site;
-                if (site != null) {
-                    relationName = relationName.substring(site.length());
-                    try {
-                        getCms().getRequestContext().saveSiteRoot();
-                        getCms().getRequestContext().setSiteRoot("/");
-                        siteName = getCms().readPropertyObject(site, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
-                            site);
-                    } catch (CmsException e) {
-                        siteName = site;
-                    } finally {
-                        getCms().getRequestContext().restoreSiteRoot();
-                    }
-                } else {
-                    siteName = "/";
-                }
-                relationName = CmsStringUtil.formatResourceName(relationName, 50);
-                relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {siteName, relationName});
-            }
-            result.append(relationName);
-            result.append("&nbsp;<span style='color: #666666;'>(");
-            result.append(relation.getType().getLocalizedName(getLocale()));
-            result.append(")</span>");
-            if (itRelations.hasNext()) {
-                result.append("<br>");
-            }
-            result.append("\n");
-        }
-
-        result.append("</p>");
-        result.append("</div>\n");
-
-        return result;
     }
 
     /**

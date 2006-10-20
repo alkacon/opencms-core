@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2006/09/15 14:27:10 $
- * Version: $Revision: 1.23.4.3 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.23.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23.4.3 $ 
+ * @version $Revision: 1.23.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -438,6 +438,8 @@ public class CmsChnav extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_CHNAV);
+        } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
+            setAction(ACTION_LOCKS_CONFIRMED);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {

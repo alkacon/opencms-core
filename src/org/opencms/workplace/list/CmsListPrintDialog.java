@@ -108,7 +108,6 @@ public class CmsListPrintDialog extends CmsDialog {
         html.append("\n\t\t\t</td>");
         html.append("\t\t\t<td class='uplevel'>\n\t\t\t\t");
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             "id-print",
             message.key(Messages.GUI_ACTION_PRINT_NAME_0),
@@ -134,6 +133,7 @@ public class CmsListPrintDialog extends CmsDialog {
 
         StringBuffer result = new StringBuffer(2048);
         result.append(htmlStart(null));
+        result.append(CmsListExplorerColumn.getExplorerStyleDef());
         result.append(bodyStart("dialog", null));
         result.append(dialogStart());
         result.append(dialogContentStart(getParamTitle()));

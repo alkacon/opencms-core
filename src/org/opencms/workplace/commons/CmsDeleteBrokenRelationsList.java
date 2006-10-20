@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeleteBrokenRelationsList.java,v $
- * Date   : $Date: 2006/10/04 16:01:51 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,134 +31,90 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationDeleteValidator;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsResourceUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsListDialog;
+import org.opencms.workplace.list.A_CmsListExplorerDialog;
+import org.opencms.workplace.list.A_CmsListIndependentJsAction;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListExplorerColumn;
+import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
-import org.opencms.workplace.list.CmsListOrderEnum;
-import org.opencms.workplace.tools.A_CmsHtmlIconButton;
-import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
-import org.opencms.workplace.tools.CmsToolMacroResolver;
+import org.opencms.workplace.list.I_CmsListAction;
+import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
-
 /**
  * Session list for broadcasting messages.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
+public class CmsDeleteBrokenRelationsList extends A_CmsListExplorerDialog {
 
-    /** The delimiter that is used in the resource list request parameter. */
-    public static final String DELIMITER_RESOURCES = "|";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_RESOURCE = "cr";
+    /** List column id constant. */
+    public static final String LIST_COLUMN_ROOT_PATH = "crp";
 
     /** list action id constant. */
     public static final String LIST_DETAIL_RELATIONS = "dr";
 
+    /** list action id constant. */
+    public static final String LIST_DETAIL_RELATIONS_HIDE = "drh";
+
+    /** list action id constant. */
+    public static final String LIST_DETAIL_RELATIONS_SHOW = "drs";
+
     /** list id constant. */
     public static final String LIST_ID = "dbr";
 
-    /** Request parameter name for the deletesiblings parameter. */
-    public static final String PARAM_DELETE_SIBLINGS = "deletesiblings";
-
-    /** Request parameter name for the resource list. */
-    public static final String PARAM_RESOURCELIST = "resourcelist";
-
-    /** The delete siblings parameter value. */
-    private String m_deleteSiblings;
+    /** The internal collector instance. */
+    private I_CmsListResourceCollector m_collector;
 
     /** The broken relations validator object. */
     private CmsRelationDeleteValidator m_validator;
-
-    /** The resourcelist parameter value. */
-    private String m_paramResourcelist;
-
-    /** The list of resource names for the multi operation. */
-    private List m_resourceList;
 
     /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsDeleteBrokenRelationsList(CmsJspActionElement jsp) {
+    public CmsDeleteBrokenRelationsList(CmsJspActionElement jsp, List resources, boolean includeSiblings) {
 
-        super(
-            jsp,
-            LIST_ID,
-            Messages.get().container(Messages.GUI_DELETE_BROKENRELATIONS_LIST_NAME_0),
-            LIST_COLUMN_RESOURCE,
-            CmsListOrderEnum.ORDER_ASCENDING,
-            LIST_COLUMN_RESOURCE);
-    }
+        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_DELETE_BROKENRELATIONS_LIST_NAME_0));
+        String relativeTo = CmsResource.getParentFolder((String)resources.get(0));
 
-    /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsDeleteBrokenRelationsList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+        m_validator = new CmsRelationDeleteValidator(getCms(), resources, includeSiblings);
+        List resourceList = new ArrayList(m_validator.keySet());
+        Collections.sort(resourceList);
 
-        this(new CmsJspActionElement(context, req, res));
-    }
+        m_collector = new CmsDeleteBrokenRelationsCollector(this, resourceList);
 
-    /**
-     * @see org.opencms.workplace.tools.CmsToolDialog#dialogTitle()
-     */
-    public String dialogTitle() {
+        // prevent paging
+        getList().setMaxItemsPerPage(Integer.MAX_VALUE);
 
-        // build title
-        StringBuffer html = new StringBuffer(512);
-        CmsMessages message = org.opencms.workplace.list.Messages.get().getBundle(getLocale());
-        html.append("<div class='screenTitle'>\n");
-        html.append("\t<table width='100%' cellspacing='0'>\n");
-        html.append("\t\t<tr>\n");
-        html.append("\t\t\t<td>\n");
-        html.append(getList().getName().key(getLocale()));
-        html.append("\n\t\t\t</td>");
-        html.append("\t\t\t<td class='uplevel'>\n\t\t\t\t");
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            getJsp(),
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            "id-print",
-            message.key(org.opencms.workplace.list.Messages.GUI_ACTION_PRINT_NAME_0),
-            message.key(org.opencms.workplace.list.Messages.GUI_ACTION_PRINT_HELP_0),
-            true,
-            "list/print.png",
-            null,
-            "print();"));
-        html.append("\n\t\t\t</td>\n");
-        html.append("\t\t</tr>\n");
-        html.append("\t</table>\n");
-        html.append("</div>\n");
-
-        return CmsToolMacroResolver.resolveMacros(html.toString(), this);
+        // set the right resource util parameters
+        CmsResourceUtil resUtil = getResourceUtil();
+        resUtil.setAbbrevLength(50);
+        resUtil.setRelativeTo(relativeTo);
+        resUtil.setSiteMode(CmsResourceUtil.SITE_MODE_MATCHING);
     }
 
     /**
@@ -178,109 +134,21 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
     }
 
     /**
-     * Generates the printable output for the given list.<p>
-     * 
-     * @return html code
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
-    public String generateHtml() {
+    public I_CmsListResourceCollector getCollector() {
 
-        StringBuffer result = new StringBuffer(2048);
-        result.append(htmlStart(null));
-        result.append(bodyStart("dialog", null));
-        result.append(dialogStart());
-        result.append(dialogContentStart(getParamTitle()));
-        result.append(getList().printableHtml());
-        result.append(dialogContentEnd());
-        result.append(dialogEnd());
-        result.append(bodyEnd());
-        result.append(htmlEnd());
-        return result.toString();
+        return m_collector;
     }
 
     /**
-     * Returns the broken relations validator object.<p>
-     * 
-     * @return a validator object
+     * Returns the validator.<p>
+     *
+     * @return the validator
      */
     public CmsRelationDeleteValidator getValidator() {
 
-        if (m_validator == null) {
-            m_validator = new CmsRelationDeleteValidator(getCms(), getResourceList(), Boolean.valueOf(
-                getParamDeleteSiblings()).booleanValue());
-        }
         return m_validator;
-    }
-
-    /**
-     * Returns the value of the boolean option to delete siblings.<p>
-     * 
-     * @return the value of the boolean option to delete siblings as a lower case string
-     */
-    public String getParamDeleteSiblings() {
-
-        return m_deleteSiblings;
-    }
-
-    /**
-     * Returns the value of the resourcelist parameter, or null if the parameter is not provided.<p>
-     * 
-     * This parameter selects the resources to perform operations on.<p>
-     *  
-     * @return the value of the resourcelist parameter or null, if the parameter is not provided
-     */
-    public String getParamResourcelist() {
-
-        if (CmsStringUtil.isNotEmpty(m_paramResourcelist) && !"null".equals(m_paramResourcelist)) {
-            return m_paramResourcelist;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the resources that are defined for the dialog operation.<p>
-     * 
-     * For single resource operations, the list contains one item: the resource name found 
-     * in the request parameter value of the "resource" parameter.<p>
-     * 
-     * @return the resources that are defined for the dialog operation
-     */
-    public List getResourceList() {
-
-        if (m_resourceList == null) {
-            // use lazy initializing
-            if (getParamResourcelist() != null) {
-                // found the resourcelist parameter
-                m_resourceList = CmsStringUtil.splitAsList(getParamResourcelist(), DELIMITER_RESOURCES, true);
-                Collections.sort(m_resourceList);
-            } else {
-                // this is a single resource operation, create list containing the resource name
-                m_resourceList = new ArrayList(1);
-                m_resourceList.add(getParamResource());
-            }
-        }
-        return m_resourceList;
-    }
-
-    /**
-     * Sets the value of the boolean option to delete siblings.<p>
-     * 
-     * @param value the value of the boolean option to delete siblings
-     */
-    public void setParamDeleteSiblings(String value) {
-
-        m_deleteSiblings = value;
-        m_validator = null;
-    }
-
-    /**
-     * Sets the value of the resourcelist parameter.<p>
-     * 
-     * @param paramResourcelist the value of the resourcelist parameter
-     */
-    public void setParamResourcelist(String paramResourcelist) {
-
-        m_paramResourcelist = paramResourcelist;
     }
 
     /**
@@ -293,12 +161,12 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
         Iterator itResourceNames = resourceNames.iterator();
         while (itResourceNames.hasNext()) {
             CmsListItem item = (CmsListItem)itResourceNames.next();
-            String resourceName = item.getId();
+            String resourceName = getResourceUtil(item).getResource().getRootPath();
 
             StringBuffer html = new StringBuffer(128);
             if (detailId.equals(LIST_DETAIL_RELATIONS)) {
                 // relations
-                CmsRelationDeleteValidator.InfoEntry infoEntry = getValidator().getInfoEntry(resourceName);
+                CmsRelationDeleteValidator.InfoEntry infoEntry = m_validator.getInfoEntry(resourceName);
                 Iterator itRelations = infoEntry.getRelations().iterator();
 
                 // show all links that will get broken
@@ -320,6 +188,7 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
                         }
                         relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {siteName, relationName});
                     }
+                    relationName = CmsStringUtil.formatResourceName(relationName, 50);
                     html.append(relationName);
                     html.append("&nbsp;<span style='color: #666666;'>(");
                     html.append(relation.getType().getLocalizedName(getLocale()));
@@ -337,51 +206,31 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getListItems()
      */
-    protected List getListItems() {
+    protected List getListItems() throws CmsException {
 
-        List ret = new ArrayList();
-        // get content
-        // sort the resulting hash map
-        List resourceList = new ArrayList(getValidator().keySet());
-        Collections.sort(resourceList);
-        Iterator itResources = resourceList.iterator();
-        while (itResources.hasNext()) {
-            String resourceName = (String)itResources.next();
-            CmsRelationDeleteValidator.InfoEntry infoEntry = getValidator().getInfoEntry(resourceName);
-            String resName = null;
-            if (infoEntry.isSibling()) {
-                if (!infoEntry.isInOtherSite()) {
-                    resName = key(Messages.GUI_DELETE_SIBLING_RELATION_1, new Object[] {infoEntry.getResourceName()});
-                } else {
-                    String siblingName = key(
-                        Messages.GUI_DELETE_SIBLING_RELATION_1,
-                        new Object[] {infoEntry.getResourceName()});
-                    resName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
-                        infoEntry.getSiteName(),
-                        siblingName});
-                }
-            } else {
-                resName = getCms().getRequestContext().removeSiteRoot(resourceName);
-            }
-
-            CmsListItem item = getList().newItem(resourceName);
-            item.set(LIST_COLUMN_RESOURCE, "<b>" + resName + "/<b>");
-            ret.add(item);
+        try {
+            getCms().getRequestContext().saveSiteRoot();
+            getCms().getRequestContext().setSiteRoot("");
+            return super.getListItems();
+        } finally {
+            getCms().getRequestContext().restoreSiteRoot();
         }
-        return ret;
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+    protected boolean isColumnVisible(int colFlag) {
 
-        super.initWorkplaceRequestValues(settings, request);
-        if (getParamDeleteSiblings() == null) {
-            setParamDeleteSiblings(Boolean.toString(getSettings().getUserSettings().getDialogDeleteFileMode() == CmsResource.DELETE_REMOVE_SIBLINGS));
-        }
+        boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
+        isVisible = isVisible || (colFlag == LIST_COLUMN_TYPEICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_LOCKICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_PROJSTATEICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_NAME.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_SITE.hashCode());
+        return isVisible;
     }
 
     /**
@@ -389,14 +238,24 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
      */
     protected void setColumns(CmsListMetadata metadata) {
 
-        // create column for resources
-        CmsListColumnDefinition resourcesCol = new CmsListColumnDefinition(LIST_COLUMN_RESOURCE);
-        resourcesCol.setName(Messages.get().container(Messages.GUI_DELETE_BROKENRELATIONS_LIST_COLS_RESOURCE_0));
-        resourcesCol.setHelpText(Messages.get().container(Messages.GUI_DELETE_BROKENRELATIONS_LIST_COLS_RESOURCE_HELP_0));
-        resourcesCol.setWidth("100%");
-        resourcesCol.setSorteable(false);
+        super.setColumns(metadata);
+        CmsListColumnDefinition rootPathCol = new CmsListExplorerColumn(LIST_COLUMN_ROOT_PATH);
+        rootPathCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+        rootPathCol.setVisible(false);
+        rootPathCol.setPrintable(true);
+        metadata.addColumn(rootPathCol, 4);
 
-        metadata.addColumn(resourcesCol);
+        Iterator it = metadata.getColumnDefinitions().iterator();
+        while (it.hasNext()) {
+            CmsListColumnDefinition colDefinition = (CmsListColumnDefinition)it.next();
+            colDefinition.setSorteable(false);
+            if (colDefinition.getId().equals(LIST_COLUMN_NAME)) {
+                colDefinition.setPrintable(false);
+                colDefinition.removeDefaultAction(LIST_DEFACTION_OPEN);
+                colDefinition.setWidth("60%");
+            }
+        }
     }
 
     /**
@@ -404,9 +263,108 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
+        /**
+         * Class to render a javascript driven detail action button.<p>
+         */
+        abstract class DetailsJsAction extends A_CmsListIndependentJsAction {
+
+            /**
+             * Default constructor.<p>
+             * 
+             * @param id the action id
+             */
+            public DetailsJsAction(String id) {
+
+                super(id);
+            }
+
+            /**
+             * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
+             */
+            public String buttonHtml(CmsWorkplace wp) {
+
+                StringBuffer html = new StringBuffer(1024);
+                html.append("\t<span id='");
+                html.append(getId());
+                html.append("' class=\"link");
+                html.append("\"");
+                html.append(" onClick=\"");
+                html.append(resolveOnClic(wp));
+                html.append("\"");
+                html.append(">");
+                html.append("<img src='");
+                html.append(CmsWorkplace.getSkinUri());
+                html.append(getIconPath());
+                html.append("'");
+                html.append(" alt='");
+                html.append(getName().key(wp.getLocale()));
+                html.append("'");
+                html.append(" title='");
+                html.append(getName().key(wp.getLocale()));
+                html.append("'");
+                html.append(">");
+                html.append("&nbsp;");
+                html.append("<a href='#'>");
+                html.append(getName().key(wp.getLocale()));
+                html.append("</a>");
+                html.append("</span>");
+                return html.toString();
+            }
+        }
+
+        I_CmsListAction hideAction = new DetailsJsAction(LIST_DETAIL_RELATIONS_HIDE) {
+
+            /**
+             * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
+             */
+            public String jsCode(CmsWorkplace wp) {
+
+                return "javascript:showBrokenLinks(false);";
+            }
+        };
+        hideAction.setIconPath(A_CmsListDialog.ICON_DETAILS_HIDE);
+        hideAction.setName(Messages.get().container(Messages.GUI_DELETE_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_NAME_0));
+        hideAction.setHelpText(Messages.get().container(
+            Messages.GUI_DELETE_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_HELP_0));
+        metadata.addIndependentAction(hideAction);
+
+        I_CmsListAction showAction = new DetailsJsAction(LIST_DETAIL_RELATIONS_SHOW) {
+
+            /**
+             * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
+             */
+            public String jsCode(CmsWorkplace wp) {
+
+                return "javascript:showBrokenLinks(true);";
+            }
+        };
+        showAction.setIconPath(A_CmsListDialog.ICON_DETAILS_SHOW);
+        showAction.setName(Messages.get().container(Messages.GUI_DELETE_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_NAME_0));
+        showAction.setHelpText(Messages.get().container(
+            Messages.GUI_DELETE_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_HELP_0));
+        metadata.addIndependentAction(showAction);
+
         // create list item detail
-        CmsListItemDetails relationsDetails = new CmsListItemDetails(LIST_DETAIL_RELATIONS);
-        relationsDetails.setAtColumn(LIST_COLUMN_RESOURCE);
+        CmsListItemDetails relationsDetails = new CmsListItemDetails(LIST_DETAIL_RELATIONS) {
+
+            /**
+             * @see org.opencms.workplace.list.CmsListItemDetails#getAction()
+             */
+            public I_CmsListAction getAction() {
+
+                return new CmsListIndependentAction("hide") {
+
+                    /**
+                     * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
+                     */
+                    public String buttonHtml(CmsWorkplace wp) {
+
+                        return "";
+                    }
+                };
+            }
+        };
+        relationsDetails.setAtColumn(LIST_COLUMN_ROOT_PATH);
         relationsDetails.setVisible(true);
         relationsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_DELETE_BROKENRELATIONS_LABEL_RELATIONS_0)));
@@ -428,6 +386,7 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListDialog {
      */
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // noop
+        // no LMAs, and remove default search action
+        metadata.setSearchAction(null);
     }
 }

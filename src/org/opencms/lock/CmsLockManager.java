@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2006/10/19 13:37:16 $
- * Version: $Revision: 1.37.4.8 $
+ * Date   : $Date: 2006/10/20 15:36:11 $
+ * Version: $Revision: 1.37.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.37.4.8 $ 
+ * @version $Revision: 1.37.4.9 $ 
  * 
  * @since 6.0.0 
  * 
@@ -76,6 +76,9 @@ public final class CmsLockManager {
     /** A map holding the exclusive CmsLocks. */
     private Map m_exclusiveLocks;
 
+    /** The flag to indicate if the lcoks should be written to the db. */
+    private boolean m_isDirty = false;
+
     /** Indicates if the workflow manager is enabled or not. */
     private boolean m_isWorkflowEnabled;
 
@@ -84,9 +87,6 @@ public final class CmsLockManager {
 
     /** The reference to the (optional) workflow manager. */
     private I_CmsWorkflowManager m_workflowManager;
-
-    /** The flag to indicate if the lcoks should be written to the db. */
-    private boolean m_isDirty = false;
 
     /**
      * Default constructor, creates a new lock manager.<p>
@@ -178,29 +178,6 @@ public final class CmsLockManager {
     }
 
     /**
-     * Counts the exclusive locked resources inside a folder.<p>
-     * 
-     * @param foldername the folder
-     * 
-     * @return the number of exclusive locked resources in the specified folder
-     */
-    public int countExclusiveLocksInFolder(String foldername) {
-
-        Iterator i = m_exclusiveLocks.values().iterator();
-        CmsLock lock = null;
-        int count = 0;
-
-        while (i.hasNext()) {
-            lock = (CmsLock)i.next();
-            if (lock.getResourceName().startsWith(foldername)) {
-                count++;
-            }
-        }
-
-        return count;
-    }
-
-    /**
      * Counts the exclusive locked resources in a project.<p>
      * 
      * @param project the project
@@ -219,8 +196,37 @@ public final class CmsLockManager {
                 count++;
             }
         }
-
         return count;
+    }
+
+    /**
+     * Returns all exclusive locked resources matching the given resource name and filter.<p>
+     * 
+     * @param resourceName the resource name
+     * @param filter the lock filter
+     * 
+     * @return a list of root paths
+     */
+    public List getLocks(String resourceName, CmsLockFilter filter) {
+
+        List locks = new ArrayList();
+        Iterator itLocks = m_exclusiveLocks.values().iterator();
+        while (itLocks.hasNext()) {
+            CmsLock lock = (CmsLock)itLocks.next();
+            if (filter.match(resourceName, lock)) {
+                locks.add(lock);
+            }
+        }
+        if (m_isWorkflowEnabled) {
+            Iterator itWfLocks = m_workflowLocks.values().iterator();
+            while (itWfLocks.hasNext()) {
+                CmsLock lock = (CmsLock)itWfLocks.next();
+                if (filter.match(resourceName, lock)) {
+                    locks.add(lock);
+                }
+            }
+        }
+        return locks;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2006/08/31 09:01:48 $
- * Version: $Revision: 1.44.4.2 $
+ * Date   : $Date: 2006/10/20 15:36:12 $
+ * Version: $Revision: 1.44.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.44.4.2 $ 
+ * @version $Revision: 1.44.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -231,7 +231,6 @@ public class CmsToolManager {
         }
         CmsTool adminTool = resolveAdminTool(getCurrentRoot(wp).getKey(), toolPath);
         String html = A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             "nav" + adminTool.getId(),
             adminTool.getHandler().getShortName(),
@@ -249,7 +248,6 @@ public class CmsToolManager {
             String link = linkForToolPath(wp.getJsp(), parent, adminTool.getHandler().getParameters(wp));
             String onClic = "openPage('" + link + "');";
             String buttonHtml = A_CmsHtmlIconButton.defaultButtonHtml(
-                wp.getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 id,
                 adminTool.getHandler().getName(),

@@ -1,4 +1,8 @@
-<%@ page import="org.opencms.workplace.commons.*" %><%	
+<%@ page import="
+	org.opencms.workplace.CmsDialog,
+	org.opencms.workplace.commons.CmsLock,
+	org.opencms.workplace.commons.Messages
+" %><%	
 
 	// initialize the workplace class
 	CmsLock wp = new CmsLock(pageContext, request, response);
@@ -7,7 +11,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsLock.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
@@ -15,8 +19,8 @@ case CmsLock.ACTION_CANCEL:
 break;
 
 
-case CmsLock.ACTION_CONFIRMED:
-case CmsLock.ACTION_WAIT:
+case CmsDialog.ACTION_CONFIRMED:
+case CmsDialog.ACTION_WAIT:
 //////////////////// ACTION: main locking action
 
 	wp.actionToggleLock();
@@ -27,16 +31,16 @@ break;
 case CmsLock.ACTION_SUBMIT_NOCONFIRMATION:
 //////////////////// ACTION: auto submits the form without user confirmation
 
-	wp.setParamAction(CmsLock.DIALOG_CONFIRMED);
+	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
 %>
 <%= wp.htmlStart() %>
 <%= wp.bodyStart(null) %>
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 </form>
 <script type="text/javascript">
-    submitAction('<%= wp.DIALOG_OK %>', null, 'main');
+    submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');
 	document.forms["main"].submit();
 </script>
 <%= wp.bodyEnd() %>
@@ -45,38 +49,48 @@ case CmsLock.ACTION_SUBMIT_NOCONFIRMATION:
 break;
 
 
-case CmsLock.ACTION_DEFAULT:
+case CmsDialog.ACTION_DEFAULT:
 default:
 //////////////////// ACTION: show confirmation dialog (default)
 
-	wp.setParamAction(CmsLock.DIALOG_CONFIRMED);
+	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
 
 %><%= wp.htmlStart("help.explorer.contextmenu.lock") %>
+<% if (CmsLock.getDialogAction(wp.getCms()) != CmsLock.TYPE_UNLOCK) { %>
+<%= wp.buildIncludeJs() %>
+<%= wp.buildDefaultConfirmationJS() %>
+<% } %>
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
-if (wp.isMultiOperation()) { %>
+if (wp.isMultiOperation()) { 
+    // include multi resource list  %>
 	<%@ include file="includes/multiresourcelist.txt" %><%
-} else { %>
+} else { 
+    // include resource info  %>
 	<%@ include file="includes/resourceinfo.txt" %><%
 } %>
 
 <%= wp.dialogSpacer() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
+<% if (CmsLock.getDialogAction(wp.getCms()) != CmsLock.TYPE_UNLOCK) { %>
 
-<%= wp.buildDialogText() %>
-
+<%= wp.buildLockContainer(wp.key(Messages.GUI_LOCK_RESOURCES_TITLE_0)) %>
+<% } %>
+<div id='conf-msg'></div>
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonsOkCancel() %>
-
+<%= wp.dialogButtons() %>
 </form>
 
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
+<% if (CmsLock.getDialogAction(wp.getCms()) != CmsLock.TYPE_UNLOCK) { %>
+<%= wp.buildLockRequest() %>
+<% } %>
 <%= wp.htmlEnd() %>
 <%
 } 
