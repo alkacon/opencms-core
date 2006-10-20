@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.24.4.3 $
+ * Date   : $Date: 2006/10/20 15:41:03 $
+ * Version: $Revision: 1.24.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.24.4.3 $ 
+ * @version $Revision: 1.24.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1092,7 +1092,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     /**
      * Generates a HTML table row with two columns.<p>
      * 
-     * The first column includes the given key as localized string, the second column
+     * The first column includes the given string, the second column
      * includes the value of the given property.<p>
      *  
      * @param column1 the string value for the first column
@@ -1102,14 +1102,14 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     public String previewRow(String column1, String column2) {
 
         StringBuffer previewRow = new StringBuffer();
-        previewRow.append("<tr align=\"left\">");
-        previewRow.append("<td><b>");
+        previewRow.append("<tr align=\"left\">\n");
+        previewRow.append("<td>\n<b>");
         previewRow.append(column1);
-        previewRow.append("</b></td>");
-        previewRow.append("<td>");
+        previewRow.append("</b>\n</td>\n");
+        previewRow.append("<td>\n");
         previewRow.append(column2);
-        previewRow.append("</td>");
-        previewRow.append("</tr>");
+        previewRow.append("</td>\n");
+        previewRow.append("</tr>\n");
 
         return previewRow.toString();
 
