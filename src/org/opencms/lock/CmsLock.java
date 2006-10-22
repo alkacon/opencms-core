@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2006/09/14 11:23:47 $
- * Version: $Revision: 1.28.8.4 $
+ * Date   : $Date: 2006/10/22 09:11:58 $
+ * Version: $Revision: 1.28.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.opencms.util.CmsUUID;
  * @author Thomas Weckert  
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.8.4 $ 
+ * @version $Revision: 1.28.8.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -283,13 +283,16 @@ public class CmsLock implements Cloneable {
     }
 
     /**
-     * Proves if this CmsLock is the Null CmsLock.<p>
+     * Returns <code>true</code> if this lock is the <code>NULL</code> lock which can 
+     * be obtained by {@link #getNullLock()}.<p>
      * 
-     * @return true if and only if this CmsLock is the Null CmsLock
+     * Only for the <code>NULL</code> lock, {@link #isUnlocked()} is <code>true</code>.<p>
+     * 
+     * @return <code>true</code> if this lock is the <code>NULL</code> lock
      */
     public boolean isNullLock() {
 
-        return this.equals(CmsLock.NULL_LOCK);
+        return isUnlocked();
     }
 
     /**
@@ -350,10 +353,12 @@ public class CmsLock implements Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if this lock is the <code>NULL</code> lock which can 
-     * be obtained by {@link #getNullLock()}.<p>
+     * Returns <code>true</code> if this lock is in fact unlocked.<p>
      * 
-     * @return <code>true</code> if this lock is the <code>NULL</code> lock
+     * Only if this is <code>true</code>, the result lock is equal to the <code>NULL</code> lock,
+     * which can be obtained by {@link #getNullLock()}.<p>
+     * 
+     * @return <code>true</code> if this lock is in fact unlocked
      */
     public boolean isUnlocked() {
 
@@ -380,13 +385,13 @@ public class CmsLock implements Cloneable {
         StringBuffer buf = new StringBuffer();
 
         buf.append("resource: ");
-        buf.append(this.getResourceName());
+        buf.append(getResourceName());
         buf.append(" type: ");
         buf.append(m_type.toString());
         buf.append(" project: ");
-        buf.append(this.getProjectId());
+        buf.append(getProjectId());
         buf.append(" user: ");
-        buf.append(this.getUserId());
+        buf.append(getUserId());
 
         return buf.toString();
     }
