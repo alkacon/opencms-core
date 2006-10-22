@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessages.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/10/22 09:10:54 $
+ * Version: $Revision: 1.7.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.i18n;
 
-
 import java.util.Locale;
 
 import junit.framework.TestCase;
@@ -41,11 +40,23 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.7.4.1 $
  * 
  * @since 6.0.0
  */
 public class TestCmsMessages extends TestCase {
+
+    /**
+     * Tests if message will be returned in the correct locale.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testLocale() throws Exception {
+
+        CmsMessages messages = new CmsMessages("org.opencms.i18n.messages", Locale.GERMANY);
+        String value = messages.key("LOG_LOCALE_MANAGER_FLUSH_CACHE_1", new Object[] {"TestParam"});
+        assertEquals("Locale manager leerte die Caches nachdem Event TestParam empfangen wurde.", value);
+    }
 
     /**
      * Tests parameter replacement in messages.<p>
