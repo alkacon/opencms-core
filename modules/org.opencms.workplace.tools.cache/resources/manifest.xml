@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.5.0</opencms_version>
-		<createdate>Wed, 12 Jul 2006 15:20:19 GMT</createdate>
+		<opencms_version>6.5.4</opencms_version>
+		<createdate>Mon, 23 Oct 2006 09:22:13 GMT</createdate>
 		<project>Offline</project>
 		<export_version>5</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the different internal caches.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.2</version>
+		<version>1.2.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -38,10 +38,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<uuidstructure>80f93a24-5f54-11db-962d-d3ee01eaa4cf</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
+			<datecreated>Thu, 19 Oct 2006 09:30:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -165,7 +165,7 @@
 			<destination>system/workplace/admin/flexcache</destination>
 			<type>folder</type>
 			<uuidstructure>e75b7722-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 Oct 2006 14:34:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -197,7 +197,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_CACHE_ADMIN_TOOL_NAME_0}:${key.GUI_CACHE_ADMIN_TOOL_SHORT_NAME_0}]]></value>
+					<value><![CDATA[${key.GUI_CACHE_ADMIN_TOOL_SHORT_NAME_0}:${key.GUI_CACHE_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -212,7 +212,7 @@
 			<type>jsp</type>
 			<uuidstructure>e75dc11c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>e75dc11b-11b7-11db-91cd-fdbae480bac9</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 19 Oct 2006 09:33:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
