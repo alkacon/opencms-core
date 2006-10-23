@@ -501,8 +501,8 @@
 			<source>system/workplace/admin/database/reports/htmlimport.jsp</source>
 			<destination>system/workplace/admin/database/reports/htmlimport.jsp</destination>
 			<type>jsp</type>
-			<uuidstructure>e141ba37-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>74972b17-d75b-11d9-be76-0d179596440c</uuidresource>
+			<uuidstructure>2939da57-62a3-11db-8367-090ef06f8da4</uuidstructure>
+			<uuidresource>2939da58-62a3-11db-8367-090ef06f8da4</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
