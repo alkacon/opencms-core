@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2006/10/20 10:36:20 $
- * Version: $Revision: 1.18.4.4 $
+ * Date   : $Date: 2006/10/23 13:52:03 $
+ * Version: $Revision: 1.18.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18.4.4 $ 
+ * @version $Revision: 1.18.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,12 +138,15 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** Key used to specifiy the validation value as macro value. */
     public static final String KEY_VALIDATION_VALUE = "validation.value";
 
+    /** Key used to specifiy the project id as macro value. */
+    public static final String KEY_PROJECT_ID = "projectid";
+
     /** Identified for "magic" parameter commands. */
     static final String[] VALUE_NAMES_ARRAY = {"uri", "filename", "folder", "default.encoding"};
     
     /** The "magic" commands wrapped in a List. */
-    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));
-    
+    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMacroResolver.class);
 
@@ -430,7 +433,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             if (macro.startsWith(CmsMacroResolver.KEY_REQUEST_PARAM)) {
                 // the key is a request parameter  
                 macro = macro.substring(CmsMacroResolver.KEY_REQUEST_PARAM.length());
-                return m_jspPageContext.getRequest().getParameter(macro);
+                String result = m_jspPageContext.getRequest().getParameter(macro);
+                if (result == null && macro.equals(KEY_PROJECT_ID)) {
+                    result = new Integer(m_cms.getRequestContext().currentProject().getId()).toString();
+                }
+                return result;
             }
 
             if (macro.startsWith(CmsMacroResolver.KEY_PAGE_CONTEXT)) {
