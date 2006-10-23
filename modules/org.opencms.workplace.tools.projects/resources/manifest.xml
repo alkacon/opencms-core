@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.5.0</opencms_version>
-		<createdate>Wed, 12 Jul 2006 15:21:10 GMT</createdate>
+		<opencms_version>6.5.4</opencms_version>
+		<createdate>Mon, 23 Oct 2006 09:04:03 GMT</createdate>
 		<project>Offline</project>
 		<export_version>5</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the tools for managing the OpenCms projects.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.4</version>
+		<version>1.2.5</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -38,10 +38,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<uuidstructure>80f93a24-5f54-11db-962d-d3ee01eaa4cf</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
+			<datecreated>Thu, 19 Oct 2006 09:30:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -212,7 +212,7 @@
 			<type>jsp</type>
 			<uuidstructure>d47116cb-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c55784d0-d8ce-11d9-a5d9-efaaea26ed93</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 19 Oct 2006 09:32:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -263,7 +263,7 @@
 			<type>jsp</type>
 			<uuidstructure>d47842c6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>cb5bbdbd-d8ce-11d9-a5d9-efaaea26ed93</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 23 Oct 2006 08:29:06 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -291,7 +291,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_EDITPROJECT_FILES_ADMIN_TOOL_NAME_0}:${key.GUI_EDITPROJECT_FILES_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+					<value><![CDATA[${key.GUI_EDITPROJECT_FILES_ADMIN_TOOL_NAVBARNAME_0}:${key.GUI_EDITPROJECT_FILES_ADMIN_TOOL_NAVBARNAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -310,19 +310,19 @@
 			<type>jsp</type>
 			<uuidstructure>d47f6ec0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>1cf72945-d9b8-11d9-b145-efaaea26ed93</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 19 Oct 2006 09:32:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.projects.CmsProjectsToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.projects.CmsProjectsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -361,7 +361,7 @@
 			<type>jsp</type>
 			<uuidstructure>d48b55ab-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>b26ef905-d8ce-11d9-a5d9-efaaea26ed93</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 19 Oct 2006 09:32:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -407,12 +407,58 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/admin/projects/project_overview.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>10760aa6-5f82-11db-8e8d-d3ee01eaa4cf</uuidstructure>
+			<uuidresource>cb5bbdbd-d8ce-11d9-a5d9-efaaea26ed93</uuidresource>
+			<datelastmodified>Mon, 23 Oct 2006 08:29:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.projects.CmsProjectsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[10.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_VIEWPROJECT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_VIEWPROJECT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/projects/icons/big/projects.png:tools/projects/icons/small/projects.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_VIEWPROJECT_ADMIN_TOOL_NAVBARNAME_0}:${key.GUI_VIEWPROJECT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Project Overview]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/project_overview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/projects/project_publish.jsp</source>
 			<destination>system/workplace/admin/projects/project_publish.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>d49010a6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a53051ac-d9b7-11d9-b145-efaaea26ed93</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 19 Oct 2006 09:32:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -459,19 +505,19 @@
 			<type>jsp</type>
 			<uuidstructure>d494f2b0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>ea6c2a69-d9b7-11d9-b145-efaaea26ed93</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 19 Oct 2006 09:32:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.projects.CmsProjectsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -510,7 +556,7 @@
 			<type>jsp</type>
 			<uuidstructure>d499adab-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a828f7b8-d8ce-11d9-a5d9-efaaea26ed93</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 19 Oct 2006 09:32:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -624,7 +670,12 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -638,7 +689,12 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -690,7 +746,12 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
