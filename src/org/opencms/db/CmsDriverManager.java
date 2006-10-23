@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/10/22 09:11:58 $
- * Version: $Revision: 1.570.2.28 $
+ * Date   : $Date: 2006/10/23 15:56:29 $
+ * Version: $Revision: 1.570.2.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1761,8 +1761,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
             writePropertyObjects(dbc, newResource, properties, false);
 
             // lock the created resource
-            lockResource(dbc, newResource, dbc.currentProject(), CmsLockType.EXCLUSIVE);
-
+            try {
+                // if it is locked by another user (copied or moved resource) this lock should be preserved and 
+                // the exception is OK: locks on created resources are a slave feature to original locks 
+                lockResource(dbc, newResource, dbc.currentProject(), CmsLockType.EXCLUSIVE);
+            } catch (CmsLockException cle) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.ERR_CREATE_RESOURCE_LOCK_1,
+                        new Object[] {dbc.removeSiteRoot(newResource.getRootPath())}));
+                }
+            }
             // delete all relations for the resource, the relations will be rebuild as soon as needed
             deleteRelationsForResource(dbc, newResource, CmsRelationFilter.TARGETS);
         } finally {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2006/10/19 13:37:07 $
- * Version: $Revision: 1.43.4.3 $
+ * Date   : $Date: 2006/10/23 15:56:30 $
+ * Version: $Revision: 1.43.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.3 $
+ * @version $Revision: 1.43.4.4 $
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.db.messages";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCEPT_TASK_1 = "ERR_ACCEPT_TASK_1";
@@ -146,9 +149,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_RELATION_3 = "ERR_CREATE_RELATION_3";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_RESOURCE_1 = "ERR_CREATE_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CREATE_RESOURCE_LOCK_1 = "ERR_CREATE_RESOURCE_LOCK_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_SIBLING_1 = "ERR_CREATE_SIBLING_1";
@@ -732,6 +738,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String INIT_USERS_GROUP_1 = "INIT_USERS_GROUP_1";
 
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_2 = "LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_2";
 
@@ -800,12 +809,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_PARENT_FOLDER_NOT_PUBLISHED_1 = "RPT_PARENT_FOLDER_NOT_PUBLISHED_1";
-
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.db.messages";
-
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>
