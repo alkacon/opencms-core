@@ -254,8 +254,8 @@
 			<source>system/workplace/admin/database/htmlimport.jsp</source>
 			<destination>system/workplace/admin/database/htmlimport.jsp</destination>
 			<type>jsp</type>
-			<uuidstructure>e1253159-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>c5389f45-d72e-11d9-b767-0d179596440c</uuidresource>
+			<uuidstructure>b36771de-629d-11db-8367-090ef06f8da4</uuidstructure>
+			<uuidresource>b36771df-629d-11db-8367-090ef06f8da4</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
