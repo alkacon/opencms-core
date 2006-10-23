@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsToolHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/10/23 13:45:17 $
+ * Version: $Revision: 1.5.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,13 @@ package org.opencms.workplace.tools.projects;
 
 import org.opencms.file.CmsObject;
 import org.opencms.security.CmsRole;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.administration.CmsAdminDialog;
+import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.tools.A_CmsToolHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Users management tool handler that hides the tool if the current user
@@ -41,18 +47,44 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.8.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsProjectsToolHandler extends A_CmsToolHandler {
+
+    private static final String PROJECT_ID = "projectid";
+    private static final String PROJECT_NAME = "projectname";
+    private static final String PROJECT_OVERVIEW_FILE = "/system/workplace/admin/projects/project_overview.jsp";
+
+    /**
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#getParameters(org.opencms.workplace.CmsWorkplace)
+     */
+    public Map getParameters(CmsWorkplace wp) {
+
+        if (wp.getCms().hasRole(CmsRole.PROJECT_MANAGER)) {
+            return super.getParameters(wp);
+        } else {
+            Map argMap = new HashMap();
+            argMap.put(PROJECT_ID, new Integer(wp.getCms().getRequestContext().currentProject().getId()).toString());
+            argMap.put(PROJECT_NAME, wp.getCms().getRequestContext().currentProject().getName());
+            if (wp instanceof CmsProjectFilesDialog) {
+                argMap.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, "false");
+            }
+
+            if (wp instanceof CmsAdminDialog) {
+                argMap.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, "true");
+            }
+            return argMap;
+        }
+    }
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
     public boolean isEnabled(CmsObject cms) {
 
-        return true;
+        return !cms.getRequestContext().currentProject().isOnlineProject();
     }
 
     /**
@@ -60,6 +92,14 @@ public class CmsProjectsToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.PROJECT_MANAGER);
+        if (cms.hasRole(CmsRole.PROJECT_MANAGER)) {
+            if (!getLink().equals(PROJECT_OVERVIEW_FILE)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return getLink().equals(PROJECT_OVERVIEW_FILE);
+        }
     }
 }
