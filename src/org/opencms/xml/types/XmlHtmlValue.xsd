@@ -37,5 +37,6 @@
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="A"/>
 		<xsd:enumeration value="IMG"/>
+		<xsd:enumeration value="OBJECT"/>
 	</xsd:restriction>
 </xsd:simpleType>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.46.4.1 $
+ * Date   : $Date: 2006/10/23 11:50:30 $
+ * Version: $Revision: 1.46.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.htmlparser.Attribute;
 import org.htmlparser.Tag;
 import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.LinkTag;
+import org.htmlparser.tags.ObjectTag;
 import org.htmlparser.util.ParserException;
 
 /**
@@ -56,7 +57,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46.4.1 $ 
+ * @version $Revision: 1.46.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -230,6 +231,8 @@ public class CmsLinkProcessor extends CmsHtmlParser {
             processLinkTag((LinkTag)tag);
         } else if (tag instanceof ImageTag) {
             processImageTag((ImageTag)tag);
+        } else if (tag instanceof ObjectTag) {
+            processObjectTag((ObjectTag)tag);
         }
         // append text content of the tag (may have been changed by above methods)
         super.visitTag(tag);
@@ -295,6 +298,52 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                             attrs.add(1, new Attribute(" "));
                             attrs.add(2, new Attribute("alt", value == null ? "" : value, '"'));
                         }
+                    }
+                    break;
+
+                default: // noop
+            }
+        }
+    }
+
+    /**
+     * Process an object tag.<p>
+     * 
+     * @param tag the tag to process
+     */
+    protected void processObjectTag(ObjectTag tag) {
+
+        if (tag.getAttribute("data") != null) {
+
+            CmsLink link;
+            switch (m_mode) {
+
+                case PROCESS_LINKS:
+                    // macros are replaced with links
+                    link = m_linkTable.getLink(CmsMacroResolver.stripMacro(tag.getObjectData()));
+                    if (link != null) {
+                        // link management check
+                        link.checkConsistency(m_cms);
+                        // set the real target
+                        tag.setObjectData(link.getLink(m_cms, m_processEditorLinks));
+                    }
+                    break;
+
+                case REPLACE_LINKS:
+                    // links are replaced with macros
+                    String targetUri = tag.getObjectData();
+                    if (CmsStringUtil.isNotEmpty(targetUri)) {
+                        String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                        if (internalUri != null) {
+                            // this is an internal link
+                            link = m_linkTable.addLink(CmsRelationType.valueOf(tag.getTagName()), internalUri, true);
+                            // link management check
+                            link.checkConsistency(m_cms);
+                        } else {
+                            // this is an external link
+                            link = m_linkTable.addLink(CmsRelationType.valueOf(tag.getTagName()), targetUri, false);
+                        }
+                        tag.setObjectData(CmsMacroResolver.formatMacro(link.getName()));
                     }
                     break;
 

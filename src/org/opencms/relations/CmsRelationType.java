@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2006/10/14 08:44:57 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/10/23 11:50:30 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import java.util.Locale;
  * <ul>
  *   <li>{@link #HYPERLINK}</li>
  *   <li>{@link #EMBEDDED_IMAGE}</li>
+ *   <li>{@link #EMBEDDED_OBJECT}</li>
  *   <li>{@link #XML_STRONG}</li>
  *   <li>{@link #XML_WEAK}</li>
  *   <li>{@link #JSP_STRONG}</li>
@@ -53,7 +54,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.3.0
  */
@@ -79,6 +80,9 @@ public final class CmsRelationType implements Serializable {
     /** Constant for the <code>&ltimg src=''&gt</code> tag in a html page/element. */
     public static final CmsRelationType EMBEDDED_IMAGE = new CmsRelationType("IMG", 2);
 
+    /** Constant for the <code>&ltembed src=''&gt</code> tag in a html page/element. */
+    public static final CmsRelationType EMBEDDED_OBJECT = new CmsRelationType("OBJECT", 7);
+
     /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'strong' links. */
     public static final CmsRelationType XML_STRONG = new CmsRelationType(PREFIX_XML + VALUE_STRONG, 3);
 
@@ -101,7 +105,8 @@ public final class CmsRelationType implements Serializable {
         XML_STRONG,
         XML_WEAK,
         JSP_STRONG,
-        JSP_WEAK};
+        JSP_WEAK,
+        EMBEDDED_OBJECT};
 
     /** Internal representation. */
     private final int m_mode;
@@ -278,6 +283,9 @@ public final class CmsRelationType implements Serializable {
                 break;
             case 6: // jsp weak
                 nameKey = Messages.GUI_RELATION_TYPE_JSP_WEAK_0;
+                break;
+            case 7: // embedded object
+                nameKey = Messages.GUI_RELATION_TYPE_EMBEDDED_OBJECT_0;
                 break;
             default:
                 return Messages.get().getBundle(locale).key(

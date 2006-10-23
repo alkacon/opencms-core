@@ -8,7 +8,7 @@
 <!ELEMENT link (target, uuid?, anchor?, query?)>	
    <!ATTLIST link name CDATA #REQUIRED>
    <!ATTLIST link internal (true|false) #REQUIRED>
-   <!ATTLIST link type (A|IMG) #REQUIRED>
+   <!ATTLIST link type (A|IMG|OBJECT) #REQUIRED>
 <!ELEMENT uuid (#PCDATA)>
 <!ELEMENT target (#PCDATA)>
 <!ELEMENT anchor (#PCDATA)>
