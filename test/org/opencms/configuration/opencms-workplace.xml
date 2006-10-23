@@ -668,6 +668,7 @@
 					<allowbrokenrelations>false</allowbrokenrelations>
  		  			<newfolder-editproperties>true</newfolder-editproperties>
  		  			<newfolder-createindexpage>true</newfolder-createindexpage>
+					<show-uploadtypedialog>true</show-uploadtypedialog>
 				</workplace-generaloptions>
 				<workplace-startupsettings>
 					<locale>en</locale>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/09/27 09:53:52 $
- * Version: $Revision: 1.40.4.8 $
+ * Date   : $Date: 2006/10/23 12:09:21 $
+ * Version: $Revision: 1.40.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.8 $
+ * @version $Revision: 1.40.4.9 $
  * 
  * @since 6.0.0
  */
@@ -318,6 +318,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the show messages node. */
     public static final String N_SHOWMESSAGES = "showmessages";
+
+    /** The name of the "create new folder with index page" node. */
+    public static final String N_SHOWUPLOADTYPEDIALOG = "show-uploadtypedialog";
 
     /** The node name of the size column node. */
     public static final String N_SIZE = "show-size";
@@ -861,8 +864,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_WORKPLACEGENERALOPTIONS
             + "/"
             + N_NEWFOLDEREDITPROPERTIES, "setNewFolderEditProperties", 0);
-        
-        
+
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
@@ -873,8 +875,18 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_WORKPLACEGENERALOPTIONS
             + "/"
             + N_NEWFOLDERCREATEINDEXPAGE, "setNewFolderCreateIndexPage", 0);
-        
-        
+
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACEGENERALOPTIONS
+            + "/"
+            + N_SHOWUPLOADTYPEDIALOG, "setShowUploadTypeDialog", 0);
+
         // add workplace preferences startupsettings rules 
         digester.addCallMethod("*/"
             + N_WORKPLACE
@@ -1409,12 +1421,15 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             String.valueOf(m_workplaceManager.getDefaultUserSettings().isAllowBrokenRelations()));
         // add the configuration for new folders
         // <newfolder-editproperties>
-            workplaceGeneraloptions.addElement(N_NEWFOLDEREDITPROPERTIES).setText(
-                m_workplaceManager.getDefaultUserSettings().getNewFolderEditProperties().toString());            
-        // <createIndexPageChecked>
-            workplaceGeneraloptions.addElement(N_NEWFOLDERCREATEINDEXPAGE).setText(
-                m_workplaceManager.getDefaultUserSettings().getNewFolderCreateIndexPage().toString());            
-        
+        workplaceGeneraloptions.addElement(N_NEWFOLDEREDITPROPERTIES).setText(
+            m_workplaceManager.getDefaultUserSettings().getNewFolderEditProperties().toString());
+        // <newfolder-createindexpage>
+        workplaceGeneraloptions.addElement(N_NEWFOLDERCREATEINDEXPAGE).setText(
+            m_workplaceManager.getDefaultUserSettings().getNewFolderCreateIndexPage().toString());
+        // <show-uploadtypedialog>
+        workplaceGeneraloptions.addElement(N_SHOWUPLOADTYPEDIALOG).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowUploadTypeDialog().toString());
+
         // add the <workplace-startupsettings> node
         Element workplaceStartupsettings = workplacePreferences.addElement(N_WORKPLACESTARTUPSETTINGS);
         // add the <locale> node

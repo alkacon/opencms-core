@@ -355,7 +355,8 @@
 									show-fileuploadbutton?,
 									allowbrokenrelations?, 
 									newfolder-editproperties?, 
-									newfolder-createindexpage?)>
+									newfolder-createindexpage?,
+									show-uploadtypedialog?)>
 <!--
 # The buttonstyle controls the appearence of the buttons on the workplace.
 # Possible values are [image|textimage|text].
@@ -398,6 +399,8 @@
 <!ELEMENT allowbrokenrelations (#PCDATA)>
 
 <!ELEMENT newfolder-createindexpage (#PCDATA)>
+
+<!ELEMENT show-uploadtypedialog (#PCDATA)>
 
 <!ELEMENT newfolder-editproperties (#PCDATA)>
 								

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2006/09/27 09:53:52 $
- * Version: $Revision: 1.17.4.4 $
+ * Date   : $Date: 2006/10/23 12:09:21 $
+ * Version: $Revision: 1.17.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.4 $
+ * @version $Revision: 1.17.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -621,7 +621,8 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      *      of <code>{@link Boolean#valueOf(String)}</code> 
      */
     public void setNewFolderCreateIndexPage(String booleanValue) {
-       setNewFolderCreateIndexPage(Boolean.valueOf(booleanValue));
+
+        setNewFolderCreateIndexPage(Boolean.valueOf(booleanValue));
     }
 
     /**
@@ -635,6 +636,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      *      of <code>{@link Boolean#valueOf(String)}</code> 
      */
     public void setNewFolderEditProperties(String booleanValue) {
+
         setNewFolderEditPropertes(Boolean.valueOf(booleanValue));
     }
 
@@ -777,7 +779,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         setDialogShowExportSettings(Boolean.valueOf(mode).booleanValue());
     }
-    
+
     /**
      * Controls whether to display a file upload icon or not.<p>
      * 
@@ -797,7 +799,22 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         setDialogShowLock(Boolean.valueOf(mode).booleanValue());
     }
-    
+
+    /**
+     * Digester support method for configuration if the resource type selection checkbox should 
+     * show up when uploading a new file in non-applet mode.<p>
+     * 
+     * The given <code>String</code> value is interpreted as a {@link Boolean} by the means 
+     * of <code>{@link Boolean#valueOf(String)}</code>. <p>
+     * 
+     * @param booleanValue a <code>String</code> that is interpred as a {@link Boolean} by the means 
+     *      of <code>{@link Boolean#valueOf(String)}</code> 
+     */
+    public void setShowUploadTypeDialog(String booleanValue) {
+
+        setShowUploadTypeDialog(Boolean.valueOf(booleanValue));
+    }
+
     /**
      * Sets the usage of the upload applet for the user user.<p>
      * 

@@ -14,6 +14,7 @@ case CmsNewResourceUpload.ACTION_APPLET:
 
 %><%= wp.htmlStart() %>
 <%= wp.bodyStart("dialog") %>
+<%@page import="org.opencms.main.OpenCms"%>
 <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;<br>&nbsp;</td></tr>
 <tr><td align="center" valign="middle">
@@ -58,6 +59,11 @@ case CmsNewResourceUpload.ACTION_SUBMITFORM:
 	}
 	if (wp.getAction() == CmsNewResourceUpload.ACTION_SHOWERROR) {
 		// in case of an upload error, interrupt here
+		break;
+	}
+	if(! OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowUploadTypeDialog().booleanValue()) {
+		wp.actionUpdateFile();
+		wp.actionCloseDialog();
 		break;
 	}
 

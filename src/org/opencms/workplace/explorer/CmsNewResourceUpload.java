@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/09/30 10:04:04 $
- * Version: $Revision: 1.22.4.4 $
+ * Date   : $Date: 2006/10/23 12:09:21 $
+ * Version: $Revision: 1.22.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.4 $ 
+ * @version $Revision: 1.22.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -210,9 +210,16 @@ public class CmsNewResourceUpload extends CmsNewResource {
         try {
             CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             I_CmsResourceType oldType = OpenCms.getResourceManager().getResourceType(res.getTypeId());
+            int newType = oldType.getTypeId();
             if (!oldType.getTypeName().equals(getParamNewResourceType())) {
-                // change the type of the uploaded resource
-                int newType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType()).getTypeId();
+
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamNewResourceType())) {
+                    // automatic resource type selection
+                    newType = OpenCms.getResourceManager().getDefaultTypeForName(res.getName()).getTypeId();
+                } else {
+                    // change the type of the uploaded resource
+                    newType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType()).getTypeId();
+                }
                 getCms().chtype(getParamResource(), newType);
             }
             if ((getParamNewResourceName() != null) && !getParamResource().endsWith(getParamNewResourceName())) {

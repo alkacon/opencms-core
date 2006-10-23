@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/09/27 09:53:52 $
- * Version: $Revision: 1.36.4.4 $
+ * Date   : $Date: 2006/10/23 12:09:21 $
+ * Version: $Revision: 1.36.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.4 $
+ * @version $Revision: 1.36.4.5 $
  * 
  * @since 6.0.0
  */
@@ -61,18 +61,17 @@ public class CmsUserSettings {
 
     /** Key for additional info city. */
     // Value must unfortunatly still be "USER_TOWN" or existing serialized user information will be lost
-    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN"; 
+    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN";
 
     /** Key for additional info of resources that were confirmemed by the user. */
-    public static final String ADDITIONAL_INFO_CONFIRMED_RESOURCES = "ADDITIONAL_INFO_CONFIRMED_RESOURCES"; 
+    public static final String ADDITIONAL_INFO_CONFIRMED_RESOURCES = "ADDITIONAL_INFO_CONFIRMED_RESOURCES";
 
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_COUNTRY = "USER_COUNTRY";
-    
+
     /** Key for additional info default group. */
     public static final String ADDITIONAL_INFO_DEFAULTGROUP = "USER_DEFAULTGROUP";
-    
-    
+
     /** Key for additional info explorer settings. */
     public static final String ADDITIONAL_INFO_EXPLORERSETTINGS = "USER_EXPLORERSETTINGS";
 
@@ -199,6 +198,9 @@ public class CmsUserSettings {
 
     private boolean m_showLock;
 
+    /** Controls if the resource type dialog for uploaded resources (not the applet) is shown or not. */
+    private Boolean m_showUploadTypeDialog;
+
     private String m_startFolder;
 
     private String m_startSite;
@@ -234,6 +236,7 @@ public class CmsUserSettings {
         m_publishButtonAppearance = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_ALWAYS;
         m_newFolderCreateIndexPage = Boolean.TRUE;
         m_newFolderEditProperties = Boolean.TRUE;
+        m_showUploadTypeDialog = Boolean.TRUE;
     }
 
     /**
@@ -433,25 +436,25 @@ public class CmsUserSettings {
 
     /**
      * Returns <code>{@link Boolean#TRUE}</code> if the "create index page" checkbox in the new folder 
-     * dialog should be initially be checked or not. <p>
+     * dialog should be initially be checked. <p>
      * 
      * @return <code>{@link Boolean#TRUE}</code> if the "create index page" checkbox in the new folder 
-     *      dialog should be initially be checked or not. 
+     *      dialog should be initially be checked. 
      */
     public Boolean getNewFolderCreateIndexPage() {
-    
+
         return m_newFolderCreateIndexPage;
     }
 
     /**
      * Returns <code>{@link Boolean#TRUE}</code> if the "edit properties" checkbox in the new folder 
-     * dialog should be initially be checked or not. <p>
+     * dialog should be initially be checked. <p>
      * 
      * @return <code>{@link Boolean#TRUE}</code> if the "edit properties" checkbox in the new folder 
-     *      dialog should be initially be checked or not. 
+     *      dialog should be initially be checked. 
      */
     public Boolean getNewFolderEditProperties() {
-    
+
         return m_newFolderEditProperties;
     }
 
@@ -508,6 +511,18 @@ public class CmsUserSettings {
     public boolean getShowFileUploadButton() {
 
         return m_showFileUploadButton;
+    }
+
+    /**
+     * Returns <code>{@link Boolean#TRUE}</code> if the resource type selection dialog should 
+     * be shown in the file upload process (non - applet version). <p>
+     * 
+     * @return <code>{@link Boolean#TRUE}</code> if the resource type selection dialog should 
+     *      be shown in the file upload process (non - applet version).
+     */
+    public Boolean getShowUploadTypeDialog() {
+
+        return m_showUploadTypeDialog;
     }
 
     /**
@@ -841,7 +856,7 @@ public class CmsUserSettings {
             }
             m_projectSettings.setProjectFilesMode(CmsProjectResourcesDisplayMode.ALL_CHANGES);
         }
-       
+
         try {
             save(null);
         } catch (CmsException e) {
@@ -1033,10 +1048,11 @@ public class CmsUserSettings {
         }
         // dialog permissions inheritation mode
         if (getDialogPermissionsInheritOnFolder() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogPermissionsInheritOnFolder()) {
-            m_user.setAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER, Boolean.valueOf(
-                getDialogPermissionsInheritOnFolder()));
+            m_user.setAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
+                    + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER,
+                Boolean.valueOf(getDialogPermissionsInheritOnFolder()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
@@ -1044,10 +1060,11 @@ public class CmsUserSettings {
         }
         // dialog expand inherited permissions mode
         if (getDialogExpandInheritedPermissions() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogExpandInheritedPermissions()) {
-            m_user.setAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSINHERITED, Boolean.valueOf(
-                getDialogExpandInheritedPermissions()));
+            m_user.setAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
+                    + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSINHERITED,
+                Boolean.valueOf(getDialogExpandInheritedPermissions()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
@@ -1313,7 +1330,7 @@ public class CmsUserSettings {
 
         m_locale = locale;
     }
-    
+
     /**
      * Sets if the "create index page" checkbox in the new folder 
      * dialog should be initially be checked or not. <p>
@@ -1322,9 +1339,9 @@ public class CmsUserSettings {
      *      dialog should be initially be checked or not.
      */
     public void setNewFolderCreateIndexPage(Boolean setting) {
+
         m_newFolderCreateIndexPage = setting;
     }
-   
 
     /**
      * Sets if the "edit properties" checkbox in the new folder 
@@ -1334,6 +1351,7 @@ public class CmsUserSettings {
      *      dialog should be initially be checked or not.
      */
     public void setNewFolderEditPropertes(Boolean setting) {
+
         m_newFolderEditProperties = setting;
     }
 
@@ -1532,6 +1550,18 @@ public class CmsUserSettings {
     public void setShowFileUploadButton(boolean flag) {
 
         m_showFileUploadButton = flag;
+    }
+
+    /**
+     * Sets if the resource type selection dialog should 
+     * be shown in the file upload process (non - applet version) or not. <p>
+     * 
+     * @param if the resource type selection dialog should 
+     *      be shown in the file upload process (non - applet version)
+     */
+    public void setShowUploadTypeDialog(Boolean showUploadTypeDialog) {
+
+        m_showUploadTypeDialog = showUploadTypeDialog;
     }
 
     /**
@@ -1760,7 +1790,6 @@ public class CmsUserSettings {
 
         return ((m_explorerSettings & CmsUserSettings.FILELIST_USER_LASTMODIFIED) > 0);
     }
-
 
     /**
      * Determines if the file state should be shown in explorer view.<p>
