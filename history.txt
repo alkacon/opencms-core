@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/23 12:09:21 $
- * Version: $Revision: 1.717.2.82 $
+ * Date   : $Date: 2006/10/23 13:18:51 $
+ * Version: $Revision: 1.717.2.83 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,8 @@ OpenCms 6.5.4 - xxxx, 2006
 ! Improved I/O performance when uploading zip files / building search index
 ! Allow changing of external links from within link gallery
 ! Allow skipping resource type dialog for file upload by <show-uploadtypedialog> in opencms-workplace.xml (boolean)
+! List of changed files is shown for users who do not have the project manager role. The list shown depends on the
+  actual selected project
 
 OpenCms 6.5.3 - October 10, 2006
 * Fixed issue #1247: Display issue for multiple select boxes and help texts in IE
