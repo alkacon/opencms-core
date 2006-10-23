@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2006/10/20 15:36:12 $
- * Version: $Revision: 1.44.4.3 $
+ * Date   : $Date: 2006/10/23 13:50:43 $
+ * Version: $Revision: 1.44.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.44.4.3 $ 
+ * @version $Revision: 1.44.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -233,7 +233,7 @@ public class CmsToolManager {
         String html = A_CmsHtmlIconButton.defaultButtonHtml(
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             "nav" + adminTool.getId(),
-            adminTool.getHandler().getShortName(),
+            adminTool.getHandler().getName(),
             null,
             false,
             null,

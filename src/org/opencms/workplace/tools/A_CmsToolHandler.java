@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.23.4.1 $
+ * Date   : $Date: 2006/10/23 13:47:50 $
+ * Version: $Revision: 1.23.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.23.4.1 $ 
+ * @version $Revision: 1.23.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,6 +79,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /** Property for the confirmation message arg.<p> */
     private static final String ARG_CONFIRMATION_NAME = "confirmation";
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsToolHandler.class);
 
     /** Confirmation message. */
     private String m_confirmationMessage;
@@ -115,9 +118,6 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /** Small icon path (16x16). */
     private String m_smallIconPath;
-
-    /** The static log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsToolHandler.class);
 
     /**
      * Returns the confirmation Message.<p>
@@ -391,8 +391,8 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         }
         String shortName = name;
         if (name.indexOf(VALUE_SEPARATOR) >= 0) {
-            shortName = name.substring(name.indexOf(VALUE_SEPARATOR) + 1);
-            name = name.substring(0, name.indexOf(VALUE_SEPARATOR));
+            shortName = name.substring(0, name.indexOf(VALUE_SEPARATOR));
+            name = name.substring(name.indexOf(VALUE_SEPARATOR) + 1);
         }
         setName(name);
         setShortName(shortName);
