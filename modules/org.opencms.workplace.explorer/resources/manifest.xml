@@ -1751,7 +1751,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/commons/locks.jsp</source>
 			<destination>system/workplace/commons/locks.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>b38cc59a-5ab1-11db-9c58-5bf59c6009b3</uuidstructure>
