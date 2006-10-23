@@ -1,10 +1,8 @@
 <%@ page import="org.opencms.jsp.*,java.net.*,org.opencms.workplace.*" %>
 
 <%
-
     // Create a JSP action element 
     CmsJspActionElement cms = new CmsJspActionElement(pageContext,request,response);
-
 
     // up to now, the possible styles are "new_admin", "workplace", "menu", "popup" and "onlinehelp"
     String uri = request.getRequestURL().toString();
@@ -35,6 +33,114 @@
                
     /* style definitions valid only for MENU-style */
 %>
+<% if (style == MENU || style == NEW_ADMIN || style == WORKPLACE) { %>
+/* ---------- links ------------ */
+.link p {
+  display: inline;
+  background: none;
+  background-color: transparent;
+  vertical-align: middle;
+  color: WindowText;
+  cursor: auto;
+  text-decoration: none;
+}
+.link,
+.link a {
+  display: inline;
+  background: none;
+  background-color: transparent;
+  vertical-align: middle;
+  cursor: hand;
+  cursor: pointer;
+  color: WindowText;
+  text-decoration: none;
+}
+
+.link:hover a,
+.link a:hover {
+  text-decoration: underline;
+  color: #000088;
+}
+
+.link:hover img,
+.link img:hover { 
+  text-decoration: none;
+}
+
+.linkdisabled {
+  color: GrayText;
+  text-decoration: none;
+  cursor: default;
+}
+
+.link img {
+  width: 20px;
+  height: 20px;
+  display: inline;
+  vertical-align: middle;
+  text-decoration: none;
+}
+
+/* ---------- list  --------- */
+.list {
+	border-collapse: collapse;
+}
+	 
+.list td {
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.list th { 
+  vertical-align: middle;
+  text-align: center;
+  background-color:ThreedFace; 
+  border-right: 1px solid ThreedDarkShadow; 
+  border-top: 1px solid ThreeDHighlight; 
+  border-bottom: 1px solid ThreedDarkShadow; 
+  border-left: 1px solid ThreeDHighlight; 
+} 
+
+.list th a:link, 
+.list th a:visited, 
+.list th a:active {
+  color: WindowText;
+  text-decoration: none;
+}
+
+.evenrowbg {
+	background-color: ButtonFace; 
+}
+
+.oddrowbg {
+	background-color: Window;
+}
+ 
+.misc {
+  text-align: right;
+}
+
+.main input {
+	margin-right: 7px;
+}
+
+.misc input {
+  text-align: left;
+}
+
+td.listdetailhead {
+	vertical-align: top;
+	font-size: 10px;
+}
+
+td.listdetailitem {
+	padding-left: 10px;
+	font-size: 10px;
+	color: ThreeDShadow;
+}
+
+<% } %>
 
 <% if(style == MENU || style == NEW_ADMIN) { %>
 body {
@@ -114,76 +220,6 @@ img {
 #loaderContainer td td {
 	padding-top: 0px;
 	text-align: left;
-}
-
-/* ---------- links ------------ */
-.link p {
-  display: inline;
-  background: none;
-  background-color: transparent;
-  vertical-align: middle;
-  color: WindowText;
-  cursor: auto;
-  text-decoration: none;
-}
-.link,
-.link a {
-  display: inline;
-  background: none;
-  background-color: transparent;
-  vertical-align: middle;
-  cursor: hand;
-  cursor: pointer;
-  color: WindowText;
-  text-decoration: none;
-}
-
-.link:hover a,
-.link a:hover {
-  text-decoration: underline;
-  color: #000088;
-}
-
-.link:hover img,
-.link img:hover { 
-  text-decoration: none;
-}
-
-.linkdisabled {
-  color: GrayText;
-  text-decoration: none;
-  cursor: default;
-}
-
-.link img {
-  width: 20px;
-  height: 20px;
-  display: inline;
-  vertical-align: middle;
-  text-decoration: none;
-}
-
-/* ---------- big icon buttons  --------- */
-.bigLink {
-  width: 128px;
-  height: 62px;
-  float: left;
-  text-align: center;
-  padding-top: 5px;
-  padding-bottom: 2px;
-  padding-right: 2px;
-  padding-left: 2px;
-}
-
-.bigLink .link img {
-  width: 32px;
-  height: 32px;
-  display: inline;
-  vertical-align: middle;
-  padding-bottom: 1px;
-  padding-right: 1px;
-  padding-left: 1px;
-  text-decoration: none;
 }
 
 <% } 
@@ -341,41 +377,6 @@ body, form {
   color: black;    
 }
  
-.list {
-	border-collapse: collapse;
-}
-	 
-.list td {
-  text-align: left;
-  vertical-align: middle;
-  white-space: nowrap;
-}
-
-.list th { 
-  vertical-align: middle;
-  text-align: center;
-  background-color:ThreedFace; 
-  border-right: 1px solid ThreedDarkShadow; 
-  border-top: 1px solid ThreeDHighlight; 
-  border-bottom: 1px solid ThreedDarkShadow; 
-  border-left: 1px solid ThreeDHighlight; 
-} 
-
-.list th a:link, 
-.list th a:visited, 
-.list th a:active {
-  color: WindowText;
-  text-decoration: none;
-}
-
-.evenrowbg {
-	background-color: ButtonFace; 
-}
-
-.oddrowbg {
-	background-color: Window;
-}
- 
 .pathbar {
    padding-top: 10px;
    padding-left: 10px;
@@ -413,18 +414,6 @@ hr {
   clear: both;
 }
 
-.misc {
-  text-align: right;
-}
-
-.main input {
-	margin-right: 7px;
-}
-
-.misc input {
-  text-align: left;
-}
-
 .toolsArea {
   padding: 8px 0 0 0;
 }
@@ -434,15 +423,27 @@ hr {
     width: 95%;
 }
 
-td.listdetailhead {
-	vertical-align: top;
-	font-size: 10px;
+/* ---------- big icon buttons  --------- */
+.bigLink {
+  width: 128px;
+  height: 62px;
+  float: left;
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 2px;
+  padding-right: 2px;
+  padding-left: 2px;
 }
 
-td.listdetailitem {
-	padding-left: 10px;
-	font-size: 10px;
-	color: ThreeDShadow;
+.bigLink .link img {
+  width: 32px;
+  height: 32px;
+  display: inline;
+  vertical-align: middle;
+  padding-bottom: 1px;
+  padding-right: 1px;
+  padding-left: 1px;
+  text-decoration: none;
 }
 
 <%
@@ -1348,4 +1349,4 @@ a.searchcategory:hover, a.searchcategory:active {
    this must ALWAYS stay at the end of the css! */
 body.dialog { voice-family: "\"}\""; voice-family: inherit; width: expression(document.documentElement.clientWidth - 20); }
 
-  <% } %> 
+<% } %> 
