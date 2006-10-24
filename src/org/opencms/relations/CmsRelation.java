@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelation.java,v $
- * Date   : $Date: 2006/10/13 08:38:29 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/10/24 07:17:52 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.3.0 
  */
@@ -208,6 +208,33 @@ public class CmsRelation {
                 cms.getRequestContext().saveSiteRoot();
                 cms.getRequestContext().setSiteRoot("");
                 return cms.readResource(getTargetPath(), filter);
+            } finally {
+                cms.getRequestContext().restoreSiteRoot();
+            }
+        }
+    }
+
+    /**
+     * Returns the source resource wenn possible to read with the given filter.<p>
+     * 
+     * @param cms the current user context
+     * @param filter the filter to use
+     * 
+     * @return the source resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource getSource(CmsObject cms, CmsResourceFilter filter) throws CmsException {
+
+        try {
+            // first look up by id
+            return cms.readResource(getSourceId(), filter);
+        } catch (CmsVfsResourceNotFoundException e) {
+            // then look up by name, but from the root site
+            try {
+                cms.getRequestContext().saveSiteRoot();
+                cms.getRequestContext().setSiteRoot("");
+                return cms.readResource(getSourcePath(), filter);
             } finally {
                 cms.getRequestContext().restoreSiteRoot();
             }
