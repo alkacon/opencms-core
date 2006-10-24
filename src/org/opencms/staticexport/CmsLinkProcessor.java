@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2006/10/23 11:50:30 $
- * Version: $Revision: 1.46.4.2 $
+ * Date   : $Date: 2006/10/24 10:16:10 $
+ * Version: $Revision: 1.46.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,11 +45,13 @@ import org.opencms.util.CmsStringUtil;
 import java.util.Vector;
 
 import org.htmlparser.Attribute;
+import org.htmlparser.Node;
 import org.htmlparser.Tag;
 import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.tags.ObjectTag;
 import org.htmlparser.util.ParserException;
+import org.htmlparser.util.SimpleNodeIterator;
 
 /**
  * Implements the HTML parser node visitor pattern to
@@ -57,7 +59,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46.4.2 $ 
+ * @version $Revision: 1.46.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,6 +70,12 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /** HTML start. */
     public static final String HTML_START = "<html><body>";
+
+    /** List of attributes that may contain links for the embed tag. */
+    private static final String[] EMBED_TAG_LINKED_ATTRIBS = new String[] {"src", "pluginurl", "pluginspage"};
+
+    /** List of attributes that may contain links for the object tag (codebase has to be first). */
+    private static final String[] OBJECT_TAG_LINKED_ATTRIBS = new String[] {"codebase", "data", "datasrc"};
 
     /** Processing mode "process links". */
     private static final int PROCESS_LINKS = 1;
@@ -233,9 +241,117 @@ public class CmsLinkProcessor extends CmsHtmlParser {
             processImageTag((ImageTag)tag);
         } else if (tag instanceof ObjectTag) {
             processObjectTag((ObjectTag)tag);
+        } else {
+            // there are no specialized tag classes for these tags :(
+            if ("EMBED".equals(tag.getTagName())) {
+                processEmbedTag(tag);
+            } else if ("AREA".equals(tag.getTagName())) {
+                processAreaTag(tag);
+            }
         }
         // append text content of the tag (may have been changed by above methods)
         super.visitTag(tag);
+    }
+
+    /**
+     * Process an area tag.<p>
+     * 
+     * @param tag the tag to process
+     */
+    protected void processAreaTag(Tag tag) {
+
+        if (tag.getAttribute("href") != null) {
+            // href attribute is required
+
+            CmsLink link;
+            switch (m_mode) {
+
+                case PROCESS_LINKS:
+                    // macros are replaced with links
+                    link = m_linkTable.getLink(CmsMacroResolver.stripMacro(tag.getAttribute("href")));
+                    if (link != null) {
+                        // link management check
+                        link.checkConsistency(m_cms);
+                        // set the real target
+                        tag.setAttribute("href", escapeLink(link.getLink(m_cms, m_processEditorLinks)));
+                    }
+                    break;
+
+                case REPLACE_LINKS:
+                    // links are replaced with macros
+                    String targetUri = tag.getAttribute("href");
+                    if (CmsStringUtil.isNotEmpty(targetUri)) {
+                        targetUri = targetUri.trim();
+                        String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                        if (internalUri != null) {
+                            // this is an internal link
+                            link = m_linkTable.addLink(CmsRelationType.HYPERLINK, internalUri, true);
+                            // link management check
+                            link.checkConsistency(m_cms);
+                            // now ensure the image has the "alt" attribute set
+                            setAltAttributeFromTitle(tag, internalUri);
+                        } else {
+                            // this is an external link
+                            link = m_linkTable.addLink(CmsRelationType.HYPERLINK, targetUri, false);
+                        }
+                        tag.setAttribute("href", CmsMacroResolver.formatMacro(link.getName()));
+
+                        setAltAttributeFromTitle(tag, internalUri);
+                    }
+                    break;
+
+                default: // noop
+            }
+        }
+    }
+
+    /**
+     * Process an embed tag.<p>
+     * 
+     * @param tag the tag to process
+     */
+    protected void processEmbedTag(Tag tag) {
+
+        for (int i = 0; i < EMBED_TAG_LINKED_ATTRIBS.length; i++) {
+            String attr = EMBED_TAG_LINKED_ATTRIBS[i];
+            if (tag.getAttribute(attr) != null) {
+
+                CmsLink link;
+                switch (m_mode) {
+
+                    case PROCESS_LINKS:
+                        // macros are replaced with links
+                        link = m_linkTable.getLink(CmsMacroResolver.stripMacro(tag.getAttribute(attr)));
+                        if (link != null) {
+                            // link management check
+                            link.checkConsistency(m_cms);
+                            // set the real target
+                            tag.setAttribute(attr, link.getLink(m_cms, m_processEditorLinks));
+                        }
+                        break;
+
+                    case REPLACE_LINKS:
+                        // links are replaced with macros
+                        String targetUri = tag.getAttribute(attr);
+                        if (CmsStringUtil.isNotEmpty(targetUri)) {
+                            String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                            if (internalUri != null) {
+                                // this is an internal link
+                                link = m_linkTable.addLink(CmsRelationType.EMBEDDED_OBJECT, internalUri, true);
+                                // link management check
+                                link.checkConsistency(m_cms);
+                            } else {
+                                // this is an external link
+                                link = m_linkTable.addLink(CmsRelationType.EMBEDDED_OBJECT, targetUri, false);
+                            }
+                            tag.setAttribute(attr, CmsMacroResolver.formatMacro(link.getName()));
+                        }
+                        break;
+
+                    default: // noop
+                }
+            }
+        }
     }
 
     /**
@@ -271,79 +387,13 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                             link = m_linkTable.addLink(CmsRelationType.valueOf(tag.getTagName()), internalUri, true);
                             // link management check
                             link.checkConsistency(m_cms);
+                            // now ensure the image has the "alt" attribute set
+                            setAltAttributeFromTitle(tag, internalUri);
                         } else {
                             // this is an external link
                             link = m_linkTable.addLink(CmsRelationType.valueOf(tag.getTagName()), targetUri, false);
                         }
                         tag.setImageURL(CmsMacroResolver.formatMacro(link.getName()));
-
-                        // now ensure the image has the "alt" attribute set
-                        boolean hasAltAttrib = (tag.getAttribute("alt") != null);
-                        if (!hasAltAttrib) {
-                            String value = null;
-                            if ((internalUri != null) && (m_rootCms != null)) {
-                                // internal image: try to read the alt text from the "Title" property
-                                try {
-                                    value = m_rootCms.readPropertyObject(
-                                        internalUri,
-                                        CmsPropertyDefinition.PROPERTY_TITLE,
-                                        false).getValue();
-                                } catch (CmsException e) {
-                                    // property can't be read, ignore
-                                }
-                            }
-                            // some editors add a "/" at the end of the tag, we must make sure to insert before that
-                            Vector attrs = tag.getAttributesEx();
-                            // first element is always the tag name
-                            attrs.add(1, new Attribute(" "));
-                            attrs.add(2, new Attribute("alt", value == null ? "" : value, '"'));
-                        }
-                    }
-                    break;
-
-                default: // noop
-            }
-        }
-    }
-
-    /**
-     * Process an object tag.<p>
-     * 
-     * @param tag the tag to process
-     */
-    protected void processObjectTag(ObjectTag tag) {
-
-        if (tag.getAttribute("data") != null) {
-
-            CmsLink link;
-            switch (m_mode) {
-
-                case PROCESS_LINKS:
-                    // macros are replaced with links
-                    link = m_linkTable.getLink(CmsMacroResolver.stripMacro(tag.getObjectData()));
-                    if (link != null) {
-                        // link management check
-                        link.checkConsistency(m_cms);
-                        // set the real target
-                        tag.setObjectData(link.getLink(m_cms, m_processEditorLinks));
-                    }
-                    break;
-
-                case REPLACE_LINKS:
-                    // links are replaced with macros
-                    String targetUri = tag.getObjectData();
-                    if (CmsStringUtil.isNotEmpty(targetUri)) {
-                        String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
-                        if (internalUri != null) {
-                            // this is an internal link
-                            link = m_linkTable.addLink(CmsRelationType.valueOf(tag.getTagName()), internalUri, true);
-                            // link management check
-                            link.checkConsistency(m_cms);
-                        } else {
-                            // this is an external link
-                            link = m_linkTable.addLink(CmsRelationType.valueOf(tag.getTagName()), targetUri, false);
-                        }
-                        tag.setObjectData(CmsMacroResolver.formatMacro(link.getName()));
                     }
                     break;
 
@@ -397,6 +447,150 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
                 default: // noop
             }
+        }
+    }
+
+    /**
+     * Process an object tag.<p>
+     * 
+     * @param tag the tag to process
+     */
+    protected void processObjectTag(ObjectTag tag) {
+
+        for (int i = 0; i < OBJECT_TAG_LINKED_ATTRIBS.length; i++) {
+            String attr = OBJECT_TAG_LINKED_ATTRIBS[i];
+            if (tag.getAttribute(attr) != null) {
+                CmsLink link;
+                switch (m_mode) {
+                    case PROCESS_LINKS:
+                        // macros are replaced with links
+                        link = m_linkTable.getLink(CmsMacroResolver.stripMacro(tag.getAttribute(attr)));
+                        if (link != null) {
+                            // link management check
+                            link.checkConsistency(m_cms);
+                            // set the real target
+                            tag.setAttribute(attr, link.getLink(m_cms, m_processEditorLinks));
+                        }
+                        break;
+                    case REPLACE_LINKS:
+                        // links are replaced with macros
+                        String targetUri = tag.getAttribute(attr);
+                        if (CmsStringUtil.isNotEmpty(targetUri)) {
+                            String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                            if (internalUri != null) {
+                                // this is an internal link
+                                link = m_linkTable.addLink(CmsRelationType.valueOf(tag.getTagName()), internalUri, true);
+                                // link management check
+                                link.checkConsistency(m_cms);
+                            } else {
+                                // this is an external link
+                                link = m_linkTable.addLink(CmsRelationType.valueOf(tag.getTagName()), targetUri, false);
+                            }
+                            tag.setAttribute(attr, CmsMacroResolver.formatMacro(link.getName()));
+                        }
+                        break;
+                    default: // noop
+                }
+                if (i == 0) {
+                    // if codebase is available, the other attributes are relative to it, so do not process them
+                    break;
+                }
+            }
+        }
+        SimpleNodeIterator itChildren = tag.children();
+        while (itChildren.hasMoreNodes()) {
+            Node node = itChildren.nextNode();
+            if (node instanceof Tag) {
+                Tag childTag = (Tag)node;
+                if ("PARAM".equals(childTag.getTagName())) {
+                    if (childTag.getAttribute("value") != null) {
+                        CmsLink link = null;
+                        switch (m_mode) {
+                            case PROCESS_LINKS:
+                                // macros are replaced with links
+                                link = m_linkTable.getLink(CmsMacroResolver.stripMacro(childTag.getAttribute("value")));
+                                if (link != null) {
+                                    // link management check
+                                    link.checkConsistency(m_cms);
+                                    // set the real target
+                                    String l = link.getLink(m_cms, m_processEditorLinks);
+                                    // HACK: to distinguish link params the link itself have to end with '&' or '?'
+                                    if (!l.endsWith("?") && !l.endsWith("&")) {
+                                        if (l.indexOf('?') > 0) {
+                                            l += "&";
+                                        } else {
+                                            l += "?";
+                                        }
+                                    }
+                                    childTag.setAttribute("value", l);
+                                }
+                                break;
+
+                            case REPLACE_LINKS:
+                                // links are replaced with macros
+                                String targetUri = childTag.getAttribute("value");
+                                if (CmsStringUtil.isNotEmpty(targetUri)) {
+                                    // HACK: to distinguish link params the link itself has to end with '&' or '?'
+                                    if (targetUri.endsWith("&") || targetUri.endsWith("?")) {
+                                        String internalUri = CmsLinkManager.getSitePath(
+                                            m_cms,
+                                            m_relativePath,
+                                            targetUri);
+                                        if (internalUri != null) {
+                                            // this is an internal link
+                                            link = m_linkTable.addLink(
+                                                CmsRelationType.valueOf(tag.getTagName()),
+                                                internalUri,
+                                                true);
+                                            // link management check
+                                            link.checkConsistency(m_cms);
+                                        } else {
+                                            link = m_linkTable.addLink(
+                                                CmsRelationType.valueOf(tag.getTagName()),
+                                                targetUri,
+                                                false);
+                                        }
+                                    }
+                                    if (link != null) {
+                                        childTag.setAttribute("value", CmsMacroResolver.formatMacro(link.getName()));
+                                    }
+                                }
+                                break;
+
+                            default: // noop
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Ensures that the given tag has the "alt" attribute set.<p>
+     * 
+     * if not set, it will be set from the title of the given resource.<p>
+     * 
+     * @param tag the tag to set the alt attribute for
+     * @param internalUri the internal uri to get the title from
+     */
+    protected void setAltAttributeFromTitle(Tag tag, String internalUri) {
+
+        boolean hasAltAttrib = (tag.getAttribute("alt") != null);
+        if (!hasAltAttrib) {
+            String value = null;
+            if ((internalUri != null) && (m_rootCms != null)) {
+                // internal image: try to read the alt text from the "Title" property
+                try {
+                    value = m_rootCms.readPropertyObject(internalUri, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                } catch (CmsException e) {
+                    // property can't be read, ignore
+                }
+            }
+            // some editors add a "/" at the end of the tag, we must make sure to insert before that
+            Vector attrs = tag.getAttributesEx();
+            // first element is always the tag name
+            attrs.add(1, new Attribute(" "));
+            attrs.add(2, new Attribute("alt", value == null ? "" : value, '"'));
         }
     }
 }
