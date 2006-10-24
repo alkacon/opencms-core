@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.18.4.4 $
+ * Date   : $Date: 2006/10/24 15:00:53 $
+ * Version: $Revision: 1.18.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.18.4.4 $ 
+ * @version $Revision: 1.18.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,6 +125,15 @@ public final class CmsRequestUtil {
     /** Identifier for x-forwarded-for (i.e. proxied) request headers. */
     public static final String HEADER_X_FORWARDED_FOR = "x-forwarded-for";
 
+    /** Assignment char between parameter name and values. */
+    public static final String PARAMETER_ASSIGNMENT = "=";
+
+    /** Delimiter char between parameters. */
+    public static final String PARAMETER_DELIMITER = "&";
+
+    /** Delimiter char between url and query. */
+    public static final String URL_DELIMITER = "?";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRequestUtil.class);
 
@@ -155,18 +164,18 @@ public final class CmsRequestUtil {
         if (CmsStringUtil.isEmpty(url)) {
             return null;
         }
-        int pos = url.indexOf('?');
+        int pos = url.indexOf(URL_DELIMITER);
         StringBuffer result = new StringBuffer(256);
         result.append(url);
         if (pos >= 0) {
             // url already has parameters
-            result.append('&');
+            result.append(PARAMETER_DELIMITER);
         } else {
             // url does not have parameters
-            result.append('?');
+            result.append(URL_DELIMITER);
         }
         result.append(paramName);
-        result.append('=');
+        result.append(PARAMETER_ASSIGNMENT);
         result.append(paramValue);
         return result.toString();
     }
@@ -195,15 +204,15 @@ public final class CmsRequestUtil {
         if ((params == null) || params.isEmpty()) {
             return url;
         }
-        int pos = url.indexOf('?');
+        int pos = url.indexOf(URL_DELIMITER);
         StringBuffer result = new StringBuffer(256);
         result.append(url);
         if (pos >= 0) {
             // url already has parameters
-            result.append('&');
+            result.append(PARAMETER_DELIMITER);
         } else {
             // url does not have parameters
-            result.append('?');
+            result.append(URL_DELIMITER);
         }
         // ensure all values are of type String[]
         Map newParams = createParameterMap(params);
@@ -219,14 +228,14 @@ public final class CmsRequestUtil {
                     strValue = CmsEncoder.encode(strValue);
                 }
                 result.append(key);
-                result.append('=');
+                result.append(PARAMETER_ASSIGNMENT);
                 result.append(strValue);
                 if ((j + 1) < values.length) {
-                    result.append('&');
+                    result.append(PARAMETER_DELIMITER);
                 }
             }
             if (i.hasNext()) {
-                result.append('&');
+                result.append(PARAMETER_DELIMITER);
             }
         }
         return result.toString();
@@ -280,18 +289,18 @@ public final class CmsRequestUtil {
             // empty query
             return new HashMap();
         }
-        if (query.charAt(0) == '?') {
+        if (query.charAt(0) == URL_DELIMITER.charAt(0)) {
             // remove leading '?' if required
             query = query.substring(1);
         }
         HashMap parameters = new HashMap();
         // cut along the different parameters
-        String[] params = CmsStringUtil.splitAsArray(query, '&');
+        String[] params = CmsStringUtil.splitAsArray(query, PARAMETER_DELIMITER);
         for (int i = 0; i < params.length; i++) {
             String key = null;
             String value = null;
             // get key and value, separated by a '=' 
-            int pos = params[i].indexOf('=');
+            int pos = params[i].indexOf(PARAMETER_ASSIGNMENT);
             if (pos > 0) {
                 key = params[i].substring(0, pos);
                 value = params[i].substring(pos + 1);
