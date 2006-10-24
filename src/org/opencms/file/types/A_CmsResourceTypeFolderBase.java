@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/10/09 16:43:58 $
- * Version: $Revision: 1.16.4.6 $
+ * Date   : $Date: 2006/10/24 11:27:52 $
+ * Version: $Revision: 1.16.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.6 $ 
+ * @version $Revision: 1.16.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -390,8 +390,18 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     public void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int mode)
     throws CmsException {
 
+        boolean recursive = (mode > CmsResource.UNDO_CONTENT);
+        if (mode == CmsResource.UNDO_MOVE_CONTENT) {
+            // undo move only?
+            String originalPath = securityManager.resourceOriginalPath(cms.getRequestContext(), resource);
+            if (originalPath.equals(resource.getRootPath())) {
+                // resource not moved
+                recursive = false;
+            }
+        }
+        
         List resources = null;
-        if (mode > CmsResource.UNDO_CONTENT) { // recursive?
+        if (recursive) { // recursive?
             // collect all resources in the folder (including deleted ones)
             resources = securityManager.readChildResources(
                 cms.getRequestContext(),
@@ -416,7 +426,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                     // undo changes for changed files
                     securityManager.undoChanges(cms.getRequestContext(), childResource, mode);
                 } else {
-                    // undo move?
+                    // undo move for new files? move with the folder
                     if (mode > CmsResource.UNDO_CONTENT_RECURSIVE) {
                         String newPath = cms.getRequestContext().removeSiteRoot(
                             securityManager.readResource(
