@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/10/23 12:09:21 $
- * Version: $Revision: 1.22.4.5 $
+ * Date   : $Date: 2006/10/24 15:45:27 $
+ * Version: $Revision: 1.22.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.5 $ 
+ * @version $Revision: 1.22.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,7 +213,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
             int newType = oldType.getTypeId();
             if (!oldType.getTypeName().equals(getParamNewResourceType())) {
 
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamNewResourceType())) {
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamNewResourceType())) {
                     // automatic resource type selection
                     newType = OpenCms.getResourceManager().getDefaultTypeForName(res.getName()).getTypeId();
                 } else {
