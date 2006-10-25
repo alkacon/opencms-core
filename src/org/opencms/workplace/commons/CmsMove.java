@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.20.4.2 $
+ * Date   : $Date: 2006/10/25 11:10:52 $
+ * Version: $Revision: 1.20.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20.4.2 $ 
+ * @version $Revision: 1.20.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -262,19 +262,17 @@ public class CmsMove extends CmsMultiDialog {
             target = "";
         }
 
-        boolean restoreSiteRoot = false;
+        String siteRootFolder = null;
         try {
             // check if a site root was added to the target name
             String sitePrefix = "";
             if (CmsSiteManager.getSiteRoot(target) != null) {
-                String siteRootFolder = getCms().getRequestContext().getSiteRoot();
+                siteRootFolder = getCms().getRequestContext().getSiteRoot();
                 if (siteRootFolder.endsWith("/")) {
                     siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);
                 }
                 sitePrefix = siteRootFolder;
-                getCms().getRequestContext().saveSiteRoot();
                 getCms().getRequestContext().setSiteRoot("/");
-                restoreSiteRoot = true;
             }
 
             Iterator i = getResourceList().iterator();
@@ -296,8 +294,8 @@ public class CmsMove extends CmsMultiDialog {
             // check if exceptions occured
             checkMultiOperationException(Messages.get(), Messages.ERR_MOVE_MULTI_0);
         } finally {
-            if (restoreSiteRoot) {
-                getCms().getRequestContext().restoreSiteRoot();
+            if (siteRootFolder != null) {
+                getCms().getRequestContext().setSiteRoot(siteRootFolder);
             }
         }
         return true;
