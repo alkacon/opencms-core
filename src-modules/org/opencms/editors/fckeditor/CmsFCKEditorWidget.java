@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2006/08/24 06:43:29 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/10/25 09:37:07 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,10 +53,12 @@ import java.util.Map;
 
 /**
  * Provides a widget that creates a rich input field using the "FCKeditor" component, for use on a widget dialog.<p>
+ * 
+ * For configuration options, have a look at the documentation of {@link CmsHtmlWidgetOption}.<p>
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.1.7
  */
@@ -104,31 +106,43 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
     public static boolean buildOpenCmsButtonRow(StringBuffer toolbar, String widgetOptionsString) {
 
         boolean buttonRendered = false;
-        
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(widgetOptionsString)) {
             // configuration String found, build buttons to show
-            List widgetOptions = CmsStringUtil.splitAsList(widgetOptionsString, CmsHtmlWidgetOption.OPTION_DELIMITER);
+            CmsHtmlWidgetOption option = new CmsHtmlWidgetOption(widgetOptionsString);
             StringBuffer custom = new StringBuffer(512);
 
             // show source button if configured
-            if (showButton(CmsHtmlWidgetOption.OPTION_SOURCE, widgetOptions)) {
+            if (option.showSourceEditor()) {
                 custom.append("\"Source\"");
                 buttonRendered = true;
             }
 
-            // show format block if configured
-            if (showButton(CmsHtmlWidgetOption.OPTION_FORMATSELECT, widgetOptions)) {
+            // show format selector if configured
+            boolean showFormatSelect = false;
+            if (option.showFormatSelect()) {
                 if (buttonRendered) {
                     custom.append(",\"-\",");
                 }
                 custom.append("\"FontFormat\"");
                 buttonRendered = true;
+                showFormatSelect = true;
+            }
+
+            // show style selector if configured
+            if (option.showStylesXml()) {
+                if (!showFormatSelect && buttonRendered) {
+                    custom.append(",\"-\",");
+                } else if (buttonRendered) {
+                    custom.append(",");
+                }
+                custom.append("\"Style\"");
+                buttonRendered = true;
             }
 
             // build the link and/or anchor buttons
             boolean showLink = false;
-            if (showButton(CmsHtmlWidgetOption.OPTION_LINK, widgetOptions)) {
+            if (option.showLinkDialog()) {
                 if (buttonRendered) {
                     custom.append(",");
                 }
@@ -136,7 +150,7 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
                 buttonRendered = true;
                 showLink = true;
             }
-            if (showButton(CmsHtmlWidgetOption.OPTION_ANCHOR, widgetOptions)) {
+            if (option.showAnchorDialog()) {
                 if (buttonRendered) {
                     custom.append(",");
                 }
@@ -172,7 +186,7 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
             for (int k = 0; k < galleries.size(); k++) {
                 A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
                 String galleryType = (String)typeMap.get(currGallery);
-                if (showButton(galleryType, widgetOptions)) {
+                if (option.getDisplayGalleries().contains(galleryType)) {
                     // gallery is shown, build row configuration String
                     if (galleryResult.length() > 0) {
                         galleryResult.append(", ");
@@ -187,9 +201,27 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
             if (showGallery) {
                 // show the galleries
                 if (buttonRendered) {
-                    custom.append(", \"-\",");
+                    custom.append("],[");
                 }
                 custom.append(galleryResult);
+                buttonRendered = true;
+            }
+
+            // show image button if configured
+            if (option.showImageDialog()) {
+                if (buttonRendered) {
+                    custom.append(",\"-\",");
+                }
+                custom.append("\"Image\"");
+                buttonRendered = true;
+            }
+
+            // show table button if configured
+            if (option.showTableDialog()) {
+                if (buttonRendered) {
+                    custom.append(",\"-\",");
+                }
+                custom.append("\"Table\"");
                 buttonRendered = true;
             }
 
@@ -286,9 +318,28 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
         result.append("\">");
 
         // generate the special configuration object for the current editor widget
-        result.append("<script type=\"text/javascript\">\n<!--\n");
+        result.append("<script type=\"text/javascript\">\n");
         result.append("var editor = new FCKeditor(\"ta_").append(id).append("\");\n");
         result.append("editor.BasePath = \"").append(CmsWorkplace.getSkinUri()).append("editors/fckeditor/\";\n");
+
+        // set CSS style sheet for current editor widget if configured
+        if (getHtmlWidgetOption().useCss()) {
+            result.append("editor.Config[\"EditorAreaCSS\"] = \"");
+            result.append(OpenCms.getLinkManager().substituteLink(cms, getHtmlWidgetOption().getCssPath()));
+            result.append("\";\n");
+            // set the css path to null (the created config String passed to JS will not include this path then)
+            getHtmlWidgetOption().setCssPath(null);
+        }
+
+        // set styles XML for current editor widget if configured
+        if (getHtmlWidgetOption().showStylesXml()) {
+            result.append("editor.Config[\"StylesXmlPath\"] = \"");
+            result.append(OpenCms.getLinkManager().substituteLink(cms, getHtmlWidgetOption().getStylesXmlPath()));
+            result.append("\";\n");
+            // set the styles XML path to a value that the JS will create the selector
+            getHtmlWidgetOption().setStylesXmlPath("true");
+        }
+
         result.append("editor.Width = \"100%\";\n");
         result.append("editor.Height = \"").append(getHtmlWidgetOption().getEditorHeight()).append("\";\n");
         result.append("editor.ToolbarSet = \"OpenCmsWidget\";\n");
@@ -306,7 +357,7 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
         result.append("\";\n");
         result.append("editorInstances[editorInstances.length] = editor;\n");
         result.append("contentFields[contentFields.length] = document.getElementById(\"").append(id).append("\");\n");
-        result.append("//-->\n</script>\n");
+        result.append("</script>\n");
 
         result.append("</td>");
 

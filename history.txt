@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/25 09:30:08 $
- * Version: $Revision: 1.717.2.85 $
+ * Date   : $Date: 2006/10/25 09:37:07 $
+ * Version: $Revision: 1.717.2.86 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,8 @@ Legend:
 - General comment
 
 OpenCms 6.5.4 - xxxx, 2006
+! Added some configuration options to the HTML Widget for structured contents: show buttons for table or image dialog, 
+  use a CSS in the editor area, show the style selector for individual styles (for FCKeditor widget)
 * Fixed error when appending html extension to new resource
 - Extended the Account Management: Details for set permissions in group list and extended list for users in group 
 ! Added link management to JSP files using the new 'link' macro
