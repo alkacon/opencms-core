@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/ajax.js,v $
- * Date   : $Date: 2006/10/19 10:54:52 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/25 13:15:26 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ function makeRequest(url, method) {
    updateContents('wait', eval(method));
    http_request.onreadystatechange = function() { updateContents(http_request, eval(method)); };
    http_request.open('POST', url, true);
-   http_request.send(null);
+   http_request.send('');
 }
 
 /**
