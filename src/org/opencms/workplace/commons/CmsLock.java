@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2006/10/24 10:53:06 $
- * Version: $Revision: 1.16.4.3 $
+ * Date   : $Date: 2006/10/25 09:57:06 $
+ * Version: $Revision: 1.16.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.3 $ 
+ * @version $Revision: 1.16.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -623,7 +623,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         boolean showConfirmation = getSettings().getUserSettings().getDialogShowLock();
         if (DIALOG_TYPE_LOCK.equals(getParamDialogtype())) {
             // in case of locking resources, check if there are locked sub resources in the selected folder(s)
-            showConfirmation = (getLockedResources().size() > 0);
+            showConfirmation = showConfirmation || (getLockedResources().size() > 0);
         }
         return showConfirmation;
     }
