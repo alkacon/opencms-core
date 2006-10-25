@@ -24,7 +24,6 @@
 		<dateinstalled/>
 		<dependencies>
 			<dependency name="org.opencms.frontend.templateone" version="2.0.0"/>
-			<dependency name="org.opencms.editors.htmlarea" version="1.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/" destination="WEB-INF/classes/"/>
