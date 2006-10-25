@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2006/10/22 09:10:54 $
- * Version: $Revision: 1.13.4.4 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.13.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.4.4 $
+ * @version $Revision: 1.13.4.5 $
  * 
  * @since 6.0.0
  */
@@ -82,8 +82,6 @@ public abstract class TestCmsMessageBundles extends TestCase {
      */
     public void testLocale_EN_MessagesBundles() throws Exception {
 
-        // the default locale MUST be ENGLISH (this call will also set the default locale to ENGLISH if required)
-        assertEquals(CmsLocaleManager.getDefaultLocale(), Locale.ENGLISH);
         messagesBundleConstantTest(Locale.ENGLISH);
     }
 
@@ -94,8 +92,6 @@ public abstract class TestCmsMessageBundles extends TestCase {
      */
     public void testLocale_DE_MessagesBundles() throws Exception {
 
-        // the default locale MUST be ENGLISH (this call will also set the default locale to ENGLISH if required)
-        assertEquals(CmsLocaleManager.getDefaultLocale(), Locale.ENGLISH);
         messagesBundleConstantTest(Locale.GERMAN);
     }
 
@@ -460,6 +456,9 @@ public abstract class TestCmsMessageBundles extends TestCase {
      */
     protected void messagesBundleConstantTest(Locale locale) throws Exception {
 
+        // the default locale MUST be ENGLISH (this call will also set the default locale to ENGLISH if required)
+        assertEquals(CmsLocaleManager.getDefaultLocale(), Locale.ENGLISH);
+        
         StringBuffer errors = new StringBuffer();
         I_CmsMessageBundle[] bundles = getTestMessageBundles();
         for (int i = 0; i < bundles.length; i++) {

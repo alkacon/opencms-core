@@ -21,6 +21,7 @@
     </dialoghandlers>
     <editorhandler class="org.opencms.workplace.editors.CmsEditorHandler"/>
     <editoraction class="org.opencms.workplace.editors.CmsEditorActionDefault"/>
+    <directeditprovider class="org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider" />   
     <exportpoints>
       <exportpoint uri="/system/workplace/resources/" destination="resources/"/>
     </exportpoints>

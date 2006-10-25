@@ -28,6 +28,7 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/editors/direct_edit.jsp"/>
+			<resource uri="/system/workplace/editors/direct_edit_include.txt"/>
 			<resource uri="/system/workplace/editors/editor.jsp"/>
 			<resource uri="/system/workplace/editors/editor_main.jsp"/>
 			<resource uri="/system/workplace/editors/configuration/"/>
@@ -853,11 +854,34 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Direct editing area]]></value>
+					<value><![CDATA[Direct edit include file for JSP based provider (before 6.2.3)]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/editors/direct_edit_include.txt</source>
+			<destination>system/workplace/editors/direct_edit_include.txt</destination>
+			<type>plain</type>
+			<uuidstructure>80a1427c-11b7-11db-91cd-fdbae480bfff</uuidstructure>
+			<uuidresource>60a57f49-f052-11d8-ba65-db38cc8f1fff</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Direct edit include file for default provider (since 6.2.3)]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<source>system/workplace/editors/editor.jsp</source>
 			<destination>system/workplace/editors/editor.jsp</destination>

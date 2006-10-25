@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/10/19 14:15:49 $
- * Version: $Revision: 1.34.4.6 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.34.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -68,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34.4.6 $ 
+ * @version $Revision: 1.34.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -785,7 +784,7 @@ public abstract class CmsEditor extends CmsEditorBase {
         // check if the temporary file is already present
         if (getCms().existsResource(temporaryFilename, CmsResourceFilter.ALL)) {
             // delete old temporary file
-            if (!getCms().getLock(temporaryFilename).equals(CmsLock.getNullLock())) {
+            if (!getCms().getLock(temporaryFilename).isUnlocked()) {
                 // steal lock
                 getCms().changeLock(temporaryFilename);
             } else {

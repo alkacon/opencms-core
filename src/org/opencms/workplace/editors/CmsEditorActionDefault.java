@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2006/08/21 15:59:20 $
- * Version: $Revision: 1.19.4.2 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.19.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,46 +31,27 @@
 
 package org.opencms.workplace.editors;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.I_CmsXmlDocument;
-import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19.4.2 $ 
+ * @version $Revision: 1.19.4.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditorActionDefault.class);
 
     /**
      * Default constructor needed for editor action handler implementation.<p>
@@ -143,76 +124,6 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             button = CmsWorkplace.VFS_PATH_RESOURCES + "buttons/publish_in.png";
         }
         return jsp.link(button);
-    }
-
-    /**
-     * @see org.opencms.workplace.editors.I_CmsEditorActionHandler#getEditMode(org.opencms.file.CmsObject, java.lang.String, java.lang.String, javax.servlet.ServletRequest)
-     */
-    public String getEditMode(CmsObject cmsObject, String filename, String element, ServletRequest req) {
-
-        try {
-
-            CmsResource resource = cmsObject.readResource(filename, CmsResourceFilter.ALL);
-            CmsLock lock = cmsObject.getLock(filename);
-            boolean locked = !(lock.isNullLock() || lock.isOwnedInProjectBy(
-                cmsObject.getRequestContext().currentUser(),
-                cmsObject.getRequestContext().currentProject()));
-
-            if (cmsObject.getRequestContext().currentProject().isOnlineProject()) {
-                // don't render direct edit button in online project
-                return null;
-            } else if (!OpenCms.getResourceManager().getResourceType(resource.getTypeId()).isDirectEditable()) {
-                // don't render direct edit button for non-editable resources 
-                return null;
-            } else if (CmsResource.getName(filename).startsWith(org.opencms.workplace.CmsWorkplace.TEMP_FILE_PREFIX)) {
-                // don't show direct edit button on temporary file
-                return DIRECT_EDIT_MODE_INACTIVE;
-            } else if (!cmsObject.isInsideCurrentProject(filename)) {
-                // don't show direct edit button on files not belonging to the current project
-                return DIRECT_EDIT_MODE_INACTIVE;
-            } else if (!cmsObject.hasPermissions(
-                resource,
-                CmsPermissionSet.ACCESS_WRITE,
-                false,
-                CmsResourceFilter.IGNORE_EXPIRATION)) {
-                // don't show direct edit button on files without write permissions
-                if (locked) {
-                    return DIRECT_EDIT_MODE_DISABLED;
-                } else {
-                    return DIRECT_EDIT_MODE_INACTIVE;
-                }
-            } else if (locked) {
-                return DIRECT_EDIT_MODE_DISABLED;
-            }
-
-            if ((element != null) && (resource.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId())) {
-                // check if the desired element is available (in case of xml page)
-                I_CmsXmlDocument document = CmsXmlPageFactory.unmarshal(cmsObject, filename, req);
-                List locales = document.getLocales();
-                Locale locale;
-                if ((locales == null) || (locales.size() == 0)) {
-                    locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename).get(0);
-                } else {
-                    locale = OpenCms.getLocaleManager().getBestMatchingLocale(
-                        null,
-                        OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename),
-                        locales);
-                }
-                if (!document.hasValue(element, locale) || !document.isEnabled(element, locale)) {
-                    return DIRECT_EDIT_MODE_INACTIVE;
-                }
-            }
-
-            // otherwise the resource is editable
-            return DIRECT_EDIT_MODE_ENABLED;
-
-        } catch (CmsException e) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(Messages.LOG_CALC_EDIT_MODE_FAILED_1, filename), e);
-            }
-            // something went wrong - so the resource seems not to be editable
-            return DIRECT_EDIT_MODE_INACTIVE;
-        }
     }
 
     /**

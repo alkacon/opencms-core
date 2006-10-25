@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.36.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.editors.I_CmsEditorActionHandler;
+import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -60,11 +60,12 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
- * Used to include another OpenCms managed resource in a JSP.<p>
+ * Implementation of the <code>&lt;cms:include/&gt;</code> tag,
+ * used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.36.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -219,17 +220,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         }
 
         // include direct edit "start" element (if enabled)
-        String directEditPermissions = null;
-        if (editable) {
-            directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
-                context,
-                I_CmsEditorActionHandler.DIRECT_EDIT_AREA_START,
-                target,
-                element,
-                null,
-                null,
-                null);
-        }
+        boolean directEditOpen = editable
+            && CmsJspTagEditable.startDirectEdit(context, new CmsDirectEditParams(target, element));
 
         // save old parameters from request
         Map oldParameterMap = req.getParameterMap();
@@ -257,15 +249,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         }
 
         // include direct edit "end" element (if required)
-        if (directEditPermissions != null) {
-            CmsJspTagEditable.includeDirectEditElement(
-                context,
-                I_CmsEditorActionHandler.DIRECT_EDIT_AREA_END,
-                target,
-                element,
-                null,
-                directEditPermissions,
-                null);
+        if (directEditOpen) {
+            CmsJspTagEditable.endDirectEdit(context);
         }
     }
 

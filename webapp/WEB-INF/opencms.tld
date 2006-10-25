@@ -335,11 +335,19 @@
         </description>
         <name>editable</name>
         <tag-class>org.opencms.jsp.CmsJspTagEditable</tag-class>
-        <body-content>empty</body-content>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>provider</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>        
         <attribute>
             <name>file</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
+        <attribute>
+            <name>mode</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>    
     </tag>
     
     <tag>

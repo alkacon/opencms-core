@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/10/19 14:15:49 $
- * Version: $Revision: 1.68.4.6 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.68.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetDialog;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.editors.directedit.CmsDirectEditButtonSelection;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
@@ -83,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68.4.6 $ 
+ * @version $Revision: 1.68.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,7 +133,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public static final String EDITOR_ACTION_ELEMENT_REMOVE = "removeelement";
 
     /** Indicates a new file should be created. */
-    public static final String EDITOR_ACTION_NEW = I_CmsEditorActionHandler.DIRECT_EDIT_OPTION_NEW;
+    public static final String EDITOR_ACTION_NEW = CmsDirectEditButtonSelection.VALUE_NEW;
 
     /** Indicates that the correction of the XML content structure was confirmed by the user. */
     public static final String EDITOR_CORRECTIONCONFIRMED = "correctconfirmed";

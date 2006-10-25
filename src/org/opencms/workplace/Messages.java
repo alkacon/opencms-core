@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.23.4.6 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.23.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.4.6 $ 
+ * @version $Revision: 1.23.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -302,6 +302,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DEFAULT_USER_SETTINGS_1 = "INIT_DEFAULT_USER_SETTINGS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DIRECT_EDIT_PROVIDER_1 = "INIT_DIRECT_EDIT_PROVIDER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_EDITOR_ACTION_CLASS_1 = "INIT_EDITOR_ACTION_CLASS_1";

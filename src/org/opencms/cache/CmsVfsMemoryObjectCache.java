@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  * 
  * @since 6.1.3
  */
@@ -125,9 +125,9 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
     }
 
     /**
-     * Get anobject from the cache.<p>
+     * Return an object from the cache.<p>
      * 
-     * @param cms the CmsObject
+     * @param cms the current users OpenCms context
      * @param rootPath the rootPath of the VFS resource to get the object for 
      * @return object form cache or null
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2006/10/18 13:12:33 $
- * Version: $Revision: 1.31.4.3 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.31.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,9 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.editors.I_CmsEditorActionHandler;
+import org.opencms.workplace.editors.directedit.CmsDirectEditButtonSelection;
+import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
+import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -61,11 +63,12 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
 
 /**
- * Used to access and display XML content item information from the VFS.<p>
+ *  Implementation of the <code>&lt;cms:contentload/&gt;</code> tag, 
+ *  used to access and display XML content item information from the VFS.<p>
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31.4.3 $ 
+ * @version $Revision: 1.31.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,17 +110,17 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
     /** The FlexController for the current request. */
     private CmsFlexController m_controller;
 
+    /** The "direct edit" button selection to use for the 2nd to the last element. */
+    private CmsDirectEditButtonSelection m_directEditFollowButtons;
+
     /** The link for creation of a new element, specified by the selected collector. */
-    private String m_directEditCreateLink;
+    private String m_directEditLinkForNew;
 
-    /** The "direct edit" options to use for the 2nd to the last element. */
-    private String m_directEditFollowOptions;
+    /** The editable mode. */
+    private CmsDirectEditMode m_directEditMode;
 
-    /** Indicates if the last element was ediable (including user permissions etc.). */
-    private String m_directEditPermissions;
-
-    /** The editable flag. */
-    private boolean m_editable;
+    /** Indicates if the last element was direct editable. */
+    private boolean m_directEditOpen;
 
     /** Indicates if this is the first content iteration loop. */
     private boolean m_isFirstLoop;
@@ -203,13 +206,49 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
         boolean editable)
     throws JspException {
 
+        this(
+            container,
+            context,
+            collectorName,
+            collectorParam,
+            pageIndex,
+            pageSize,
+            locale,
+            CmsDirectEditMode.valueOf(editable));
+    }
+
+    /**
+     * Constructor used when using <code>contentload</code> from scriptlet code.<p> 
+     * 
+     * @param container the parent content container (could be a preloader)
+     * @param context the JSP page context
+     * @param collectorName the collector name to use
+     * @param collectorParam the collector param to use
+     * @param pageIndex the display page index (may contain macros)
+     * @param pageSize the display page size (may contain macros)
+     * @param locale the locale to use 
+     * @param editMode indicates which "direct edit" mode is wanted
+     * 
+     * @throws JspException in case something goes wrong
+     */
+    public CmsJspTagContentLoad(
+        I_CmsXmlContentContainer container,
+        PageContext context,
+        String collectorName,
+        String collectorParam,
+        String pageIndex,
+        String pageSize,
+        Locale locale,
+        CmsDirectEditMode editMode)
+    throws JspException {
+
         setCollector(collectorName);
         setParam(collectorParam);
         setPageIndex(pageIndex);
         setPageSize(pageSize);
         m_locale = locale;
         m_contentLocale = locale;
-        m_editable = editable;
+        m_directEditMode = editMode;
         m_preload = false;
 
         setPageContext(context);
@@ -368,7 +407,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
      */
     public String getEditable() {
 
-        return String.valueOf(m_editable);
+        return m_directEditMode != null ? m_directEditMode.toString() : "";
     }
 
     /**
@@ -482,17 +521,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
         if (m_isFirstLoop) {
             m_isFirstLoop = false;
         } else {
-            if (m_directEditPermissions != null) {
+            if (m_directEditOpen) {
                 // last element was direct editable, close it
-                CmsJspTagEditable.includeDirectEditElement(
-                    pageContext,
-                    I_CmsEditorActionHandler.DIRECT_EDIT_AREA_END,
-                    m_resourceName,
-                    null,
-                    null,
-                    m_directEditPermissions,
-                    null);
-                m_directEditPermissions = null;
+                CmsJspTagEditable.endDirectEdit(pageContext);
+                m_directEditOpen = false;
             }
         }
 
@@ -513,36 +545,33 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             }
 
             // check "direct edit" support
-            if (m_editable && (m_resourceName != null)) {
+            if (m_directEditMode.isEnabled() && (m_resourceName != null)) {
 
                 // check options for first element
-                String directEditOptions;
-                if (m_directEditFollowOptions == null) {
+                CmsDirectEditButtonSelection directEditButtons;
+                if (m_directEditFollowButtons == null) {
                     // this is the first call, calculate the options
-                    if (m_directEditCreateLink == null) {
+                    if (m_directEditLinkForNew == null) {
                         // if create link is null, show only "edit" button for first element
-                        directEditOptions = CmsJspTagEditable.createEditOptions(true, false, false);
+                        directEditButtons = CmsDirectEditButtonSelection.EDIT;
                         // also show only the "edit" button for 2nd to last element
-                        m_directEditFollowOptions = directEditOptions;
+                        m_directEditFollowButtons = directEditButtons;
                     } else {
                         // if create link is not null, show "edit", "delete" and "new" button for first element
-                        directEditOptions = CmsJspTagEditable.createEditOptions(true, true, true);
+                        directEditButtons = CmsDirectEditButtonSelection.EDIT_DELETE_NEW;
                         // show "edit" and "delete" button for 2nd to last element
-                        m_directEditFollowOptions = CmsJspTagEditable.createEditOptions(true, true, false);
+                        m_directEditFollowButtons = CmsDirectEditButtonSelection.EDIT_DELETE;
                     }
                 } else {
                     // re-use pre calculated options
-                    directEditOptions = m_directEditFollowOptions;
+                    directEditButtons = m_directEditFollowButtons;
                 }
 
-                m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
-                    pageContext,
-                    I_CmsEditorActionHandler.DIRECT_EDIT_AREA_START,
+                m_directEditOpen = CmsJspTagEditable.startDirectEdit(pageContext, new CmsDirectEditParams(
                     m_resourceName,
-                    null,
-                    directEditOptions,
-                    null,
-                    m_directEditCreateLink);
+                    directEditButtons,
+                    m_directEditMode,
+                    m_directEditLinkForNew));
             }
 
         } else {
@@ -575,10 +604,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
         m_contentInfoBean = null;
         m_contentLocale = null;
         m_controller = null;
-        m_directEditCreateLink = null;
-        m_directEditFollowOptions = null;
-        m_directEditPermissions = null;
-        m_editable = false;
+        m_directEditLinkForNew = null;
+        m_directEditFollowButtons = null;
+        m_directEditOpen = false;
+        m_directEditMode = null;
         m_isFirstLoop = false;
         m_locale = null;
         m_pageIndex = null;
@@ -602,13 +631,13 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
     }
 
     /**
-     * Sets the editable flag.<p>
+     * Sets the editable mode.<p>
      * 
-     * @param editable the flag to set
+     * @param mode the mode to set
      */
-    public void setEditable(String editable) {
+    public void setEditable(String mode) {
 
-        m_editable = Boolean.valueOf(editable).booleanValue();
+        m_directEditMode = CmsDirectEditMode.valueOf(mode);
     }
 
     /**
@@ -791,7 +820,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
 
         if (m_preload) {
             // always deactivate direct edit for prelaod
-            m_editable = false;
+            m_directEditMode = CmsDirectEditMode.FALSE;
+        } else if (m_directEditMode == null) {
+            // direct edit mode must not be null
+            m_directEditMode = CmsDirectEditMode.FALSE;
         }
 
         // initialize OpenCms access objects
@@ -856,7 +888,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
                 String createParam = collector.getCreateParam(m_cms, m_collectorName, m_collectorParam);
                 if (createParam != null) {
                     // use "create link" only if collector supports it
-                    m_directEditCreateLink = CmsEncoder.encode(m_collectorName + "|" + createParam);
+                    m_directEditLinkForNew = CmsEncoder.encode(m_collectorName + "|" + createParam);
                 }
             }
 
@@ -885,8 +917,8 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
         }
 
         // reset the direct edit options (required becaue of re-used tags)
-        m_directEditPermissions = null;
-        m_directEditFollowOptions = null;
+        m_directEditOpen = false;
+        m_directEditFollowButtons = null;
 
         // the next loop is the first loop
         m_isFirstLoop = true;

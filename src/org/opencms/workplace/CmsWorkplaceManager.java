@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2006/08/25 13:51:20 $
- * Version: $Revision: 1.76.4.5 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.76.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,6 +64,8 @@ import org.opencms.workplace.editors.CmsEditorHandler;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 import org.opencms.workplace.editors.I_CmsEditorHandler;
+import org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider;
+import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -94,7 +96,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.5 $ 
+ * @version $Revision: 1.76.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,6 +131,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The configured dialog handlers. */
     private Map m_dialogHandler;
+
+    /** The configured direct edit provider. */
+    private I_CmsDirectEditProvider m_directEditProvider;
 
     /** The edit action handler. */
     private I_CmsEditorActionHandler m_editorAction;
@@ -433,6 +438,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public Object getDialogHandler(String key) {
 
         return m_dialogHandler.get(key);
+    }
+
+    /**
+     * Returns a new instance of the configured direct edit provider.<p>
+     * 
+     * @return a new instance of the configured direct edit provider
+     */
+    public I_CmsDirectEditProvider getDirectEditProvider() {
+
+        return m_directEditProvider.newInstance();
     }
 
     /**
@@ -762,6 +777,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             // set the workplace encoding
             m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
 
+            // configure direct edit provider with default if not available
+            if (m_directEditProvider == null) {
+                m_directEditProvider = new CmsDirectEditDefaultProvider();
+            }
+
             // throw away all currently configured module explorer types
             m_explorerTypeSettingsFromModules.clear();
             // now add the additional explorer types found in the modules
@@ -969,6 +989,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_DEFAULT_USER_SETTINGS_1,
                 m_defaultUserSettings));
+        }
+    }
+
+    /**
+     * Sets the direct edit provider.<p>
+     * 
+     * @param clazz the direct edit provider to set
+     */
+    public void setDirectEditProvider(I_CmsDirectEditProvider clazz) {
+
+        m_directEditProvider = clazz;
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_DIRECT_EDIT_PROVIDER_1,
+                m_directEditProvider.getClass().getName()));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Messages.java,v $
- * Date   : $Date: 2006/08/31 09:00:04 $
- * Version: $Revision: 1.11.4.4 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.11.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11.4.4 $ 
+ * @version $Revision: 1.11.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,6 +193,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_COLOR_TITLE_0 = "GUI_DIALOG_COLOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIRECTEDIT_TEXT_DELETE_0 = "GUI_DIRECTEDIT_TEXT_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIRECTEDIT_TEXT_EDIT_0 = "GUI_DIRECTEDIT_TEXT_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIRECTEDIT_TEXT_NEW_0 = "GUI_DIRECTEDIT_TEXT_NEW_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_BUTTON_DOWNLOADLIST_0 = "GUI_EDITOR_BUTTON_DOWNLOADLIST_0";
@@ -511,6 +520,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_XML_CONTENT_ITEM_1 = "LOG_CREATE_XML_CONTENT_ITEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DIRECT_EDIT_NO_HEADER_1 = "LOG_DIRECT_EDIT_NO_HEADER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_EDITOR_CONFIG_ERROR_1 = "LOG_EDITOR_CONFIG_ERROR_1";

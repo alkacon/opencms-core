@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/25 09:37:07 $
- * Version: $Revision: 1.717.2.86 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.717.2.87 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,9 @@ OpenCms 6.5.4 - xxxx, 2006
   actual selected project
 ! Link management support added to standard HTML tags 'area', 'object' & 'embed'
 * Fixed locks handling during move & undo changes operations
+- Optimized "direct edit" implementation for speed (not longer based on JSP includes by default)
+! Added option for manual placement of "direct edit" buttons, depending on the provider implementation
+! Implemented a text only "direct edit" button provider that supports manual placement
 
 OpenCms 6.5.3 - October 10, 2006
 * Fixed issue #1247: Display issue for multiple select boxes and help texts in IE

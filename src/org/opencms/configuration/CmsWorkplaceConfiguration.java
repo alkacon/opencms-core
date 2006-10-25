@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/10/23 12:09:21 $
- * Version: $Revision: 1.40.4.9 $
+ * Date   : $Date: 2006/10/25 16:53:42 $
+ * Version: $Revision: 1.40.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.9 $
+ * @version $Revision: 1.40.4.10 $
  * 
  * @since 6.0.0
  */
@@ -159,6 +159,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the dialogs preferences node. */
     public static final String N_DIALOGSPREFERENCES = "dialogs-preferences";
+
+    /** The node name of the direct edit provider node. */
+    public static final String N_DIRECTEDITPROVIDER = "directeditprovider";
 
     /** The node name of the directedit style node. */
     public static final String N_DIRECTEDITSTYLE = "directeditstyle";
@@ -610,6 +613,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add finish rule
         digester.addCallMethod("*/" + N_WORKPLACE, "initializeFinished");
 
+        // generic <param> parameter rules
+        digester.addCallMethod(
+            "*/" + I_CmsXmlConfiguration.N_PARAM,
+            I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD,
+            2);
+        digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 1);
+
         // creation of the import/export manager        
         digester.addObjectCreate("*/" + N_WORKPLACE, CmsWorkplaceManager.class);
         // import/export manager finished
@@ -738,6 +749,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add rules for editor action handler
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORACTION, A_CLASS, CmsConfigurationException.class);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORACTION, "setEditorAction");
+
+        // add rules for direct edit provider
+        digester.addObjectCreate(
+            "*/" + N_WORKPLACE + "/" + N_DIRECTEDITPROVIDER,
+            A_CLASS,
+            CmsConfigurationException.class);
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_DIRECTEDITPROVIDER,
+            I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
+        digester.addSetNext("*/" + N_WORKPLACE + "/" + N_DIRECTEDITPROVIDER, "setDirectEditProvider");
 
         // add rules for the workplace export points 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_EXPORTPOINTS + "/" + N_EXPORTPOINT, "addExportPoint", 2);
@@ -1292,6 +1313,23 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         workplaceElement.addElement(N_EDITORACTION).addAttribute(
             A_CLASS,
             m_workplaceManager.getEditorActionHandler().getClass().getName());
+
+        I_CmsConfigurationParameterHandler deProvider = m_workplaceManager.getDirectEditProvider();
+        Element deProviderNode = workplaceElement.addElement(N_DIRECTEDITPROVIDER).addAttribute(
+            A_CLASS,
+            deProvider.getClass().getName());
+        Map deProviderConfig = deProvider.getConfiguration();
+        if (deProviderConfig != null) {
+            Iterator it = deProviderConfig.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry)it.next();
+                String name = (String)entry.getKey();
+                String value = (String)entry.getValue();
+                Element paramNode = deProviderNode.addElement(N_PARAM);
+                paramNode.addAttribute(A_NAME, name);
+                paramNode.addText(value);
+            }
+        }
 
         // add <exportpoints> subnode
         Element resourceloadersElement = workplaceElement.addElement(N_EXPORTPOINTS);
