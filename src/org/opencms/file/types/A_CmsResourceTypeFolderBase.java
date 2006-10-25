@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/10/24 11:27:52 $
- * Version: $Revision: 1.16.4.7 $
+ * Date   : $Date: 2006/10/25 07:17:52 $
+ * Version: $Revision: 1.16.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -55,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.7 $ 
+ * @version $Revision: 1.16.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -414,11 +415,21 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         // handle the folder itself, undo move op
         super.undoChanges(cms, securityManager, resource, mode);
 
+        // the folder may have been moved back to its original position        
+        CmsResource undoneResource2 = securityManager.readResource(
+            cms.getRequestContext(),
+            resource.getStructureId(),
+            CmsResourceFilter.ALL);
+        boolean isMoved = !undoneResource2.getRootPath().equals(resource.getRootPath());
+        
         if ((mode > CmsResource.UNDO_CONTENT) && (resources != null)) { // recursive?
             // now walk through all sub-resources in the folder, and undo first
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
                 I_CmsResourceType type = getResourceType(childResource.getTypeId());
+                if (isMoved) {
+                    securityManager.lockResource(cms.getRequestContext(), childResource, cms.getRequestContext().currentProject(), CmsLockType.EXCLUSIVE);
+                }
                 if (childResource.isFolder()) {
                     // recurse into this method for subfolders
                     type.undoChanges(cms, securityManager, childResource, mode);

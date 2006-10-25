@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/10/20 10:36:20 $
- * Version: $Revision: 1.42.4.10 $
+ * Date   : $Date: 2006/10/25 07:17:52 $
+ * Version: $Revision: 1.42.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
-import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
@@ -69,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.10 $ 
+ * @version $Revision: 1.42.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -300,17 +299,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         String resourcename,
         byte[] content,
         List properties) throws CmsException {
-
-        // check if the resource already exists by name
-        if (cms.existsResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION)) {
-
-            int todo_v7;
-            // TODO: This should really be done in the securityManager#createResource() method!
-
-            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
-                resourcename));
-        }
 
         // initialize a macroresolver with the current user OpenCms context
         CmsMacroResolver resolver = getMacroResolver(cms, resourcename);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/10/23 15:56:29 $
- * Version: $Revision: 1.570.2.29 $
+ * Date   : $Date: 2006/10/25 07:17:52 $
+ * Version: $Revision: 1.570.2.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4220,7 +4220,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     source,
                     CmsDriverManager.UPDATE_STRUCTURE_STATE);
             }
-
+            // remove the no longer valid entry from the lock manager
+            unlockResource(dbc, source, true);
+            
             // flush all relevant caches
             clearAccessControlListCache();
             m_propertyCache.clear();
@@ -4236,9 +4238,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
             // destination
-            resources.add(readResource(dbc, destination, CmsResourceFilter.ALL));
+            CmsResource destRes = readResource(dbc, destination, CmsResourceFilter.ALL);
+            resources.add(destRes);
             resources.add(destinationFolder);
 
+            // add the destination resource to the lock dispatcher 
+            // (do not need to call unlockResource here, since it will be called later)
+            m_lockManager.addResource(this, dbc, destRes, dbc.currentUser(), dbc.currentProject(), CmsLockType.EXCLUSIVE);
+            
             // fire the events
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MOVED, Collections.singletonMap(
                 "resources",
@@ -6483,19 +6490,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the current database context
      * @param resource the resource to unlock
+     * @param force true, if a resource is forced to get unlocked, no matter by which user and in which project the resource is currently locked
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#unlockResource(String)
      * @see I_CmsResourceType#unlockResource(CmsObject, CmsSecurityManager, CmsResource)
      */
-    public void unlockResource(CmsDbContext dbc, CmsResource resource) throws CmsException {
+    public void unlockResource(CmsDbContext dbc, CmsResource resource, boolean force) throws CmsException {
 
         // update the resource cache
         clearResourceCache();
 
         // now update lock status
-        m_lockManager.removeResource(this, dbc, resource, false);
+        m_lockManager.removeResource(this, dbc, resource, force);
 
         // we must also clear the permission cache
         m_securityManager.clearPermissionCache();

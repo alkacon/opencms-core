@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.16.8.1 $
+ * Date   : $Date: 2006/10/25 07:17:52 $
+ * Version: $Revision: 1.16.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.file;
 import org.opencms.db.CmsVfsOnlineResourceAlreadyExistsException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsPermalinkResourceHandler;
@@ -53,7 +54,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16.8.1 $
+ * @version $Revision: 1.16.8.2 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
 
@@ -195,6 +196,9 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         cms.moveResource(source, destination);
 
+        // check lock
+        assertFalse(cms.getLockedResources("/folder1", CmsLockFilter.FILTER_ALL).contains(source));
+        
         // source resource must be gone
         try {
             cms.readResource(source, CmsResourceFilter.ALL);
@@ -242,6 +246,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         } catch (CmsException e) {
             // ok
         }
+        
+        // check lock
+        assertFalse(cms.getLockedResources("/folder1", CmsLockFilter.FILTER_ALL).contains(source));
 
         // project must be current project
         assertProject(cms, destination, cms.getRequestContext().currentProject());
@@ -310,7 +317,14 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         cms.lockResource(source);
         cms.moveResource(source, destination1);
+
+        // check lock
+        assertFalse(cms.getLockedResources("/sites/default/folder1", CmsLockFilter.FILTER_ALL).contains(source));
+
         cms.moveResource(destination1, destination2);
+
+        // check lock
+        assertFalse(cms.getLockedResources("/sites/default/folder1", CmsLockFilter.FILTER_ALL).contains(destination1));
 
         // source resource:
         try {
@@ -347,6 +361,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         resetMapping();
         cms.undoChanges(destination2, CmsResource.UNDO_MOVE_CONTENT);
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
+
+        // check lock
+        assertFalse(cms.getLockedResources("/", CmsLockFilter.FILTER_ALL).contains(destination2));
     }
 
     /**
@@ -366,9 +383,17 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         // move the resource 
         cms.lockResource(originalResource);
+        
         cms.moveResource(originalResource, intermediaryDestination);
+
+        // check lock
+        assertFalse(cms.getLockedResources("/xmlcontent", CmsLockFilter.FILTER_ALL).contains(originalResource));
+
         cms.moveResource(intermediaryDestination, finalDestination);
 
+        // check lock
+        assertFalse(cms.getLockedResources("/xmlcontent", CmsLockFilter.FILTER_ALL).contains(intermediaryDestination));
+        
         // try to overwrite by move
         try {
             cms.lockResource(copySource);
@@ -407,6 +432,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         } catch (CmsException e) {
             fail("creating a resource back to its original position is allowed.");
         }
+
+        // check lock
+        assertFalse(cms.getLockedResources("/xmlcontent", CmsLockFilter.FILTER_ALL).contains(finalDestination));
     }
 
     /**
@@ -434,6 +462,10 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         cms.lockResource(filename);
         cms.moveResource(filename, filename2);
+        
+        // check lock
+        assertFalse(cms.getLockedResources("/folder1", CmsLockFilter.FILTER_ALL).contains(filename));
+        
         cms.getRequestContext().setUri(uri);
         CmsResource res3 = new CmsPermalinkResourceHandler().initResource(null, cms, null, null);
 
@@ -460,6 +492,9 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         cms.lockResource(deletedFolder + source);
         cms.moveResource(deletedFolder + source, destination);
+
+        // check lock
+        assertFalse(cms.getLockedResources(deletedFolder, CmsLockFilter.FILTER_ALL).contains(deletedFolder + source));
 
         cms.lockResource(deletedFolder);
         cms.deleteResource(deletedFolder, CmsResource.DELETE_PRESERVE_SIBLINGS);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/10/20 15:36:12 $
- * Version: $Revision: 1.97.4.11 $
+ * Date   : $Date: 2006/10/25 07:17:52 $
+ * Version: $Revision: 1.97.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
+import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.i18n.CmsMessageContainer;
@@ -1118,6 +1119,12 @@ public final class CmsSecurityManager {
         byte[] content,
         List properties) throws CmsException {
 
+        if (existsResource(context, resourcename, CmsResourceFilter.IGNORE_EXPIRATION)) {
+            // check if the resource already exists by name
+            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
+                resourcename));
+        }
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsResource newResource = null;
         try {
@@ -4554,7 +4561,7 @@ public final class CmsSecurityManager {
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
-            m_driverManager.unlockResource(dbc, resource);
+            m_driverManager.unlockResource(dbc, resource, false);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_UNLOCK_RESOURCE_2,
