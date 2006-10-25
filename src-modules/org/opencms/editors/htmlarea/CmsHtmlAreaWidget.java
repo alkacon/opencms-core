@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/htmlarea/Attic/CmsHtmlAreaWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/10/25 09:55:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,6 +199,15 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
         // generate the special configuration object for the current editor widget
         result.append("<script type=\"text/javascript\">\n<!--\n");
         result.append("\tconfig = getHtmlAreaConfiguration();\n");
+
+        // set CSS style sheet for current editor widget if configured
+        if (getHtmlWidgetOption().useCss()) {
+            result.append("config.pageStyle = \"@import url(");
+            result.append(OpenCms.getLinkManager().substituteLink(cms, getHtmlWidgetOption().getCssPath()));
+            result.append(");\";\n");
+            getHtmlWidgetOption().setCssPath(null);
+        }
+
         result.append("\tconfigHtmlAreaToolbar(config);\n");
         // generate the special toolbar object
         result.append(buildOpenCmsButtonRow());
@@ -266,10 +275,11 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
         List galleries = new ArrayList(galleryMap.size());
         Map typeMap = new HashMap(galleryMap.size());
 
-        Iterator i = galleryMap.keySet().iterator();
+        Iterator i = galleryMap.entrySet().iterator();
         while (i.hasNext()) {
-            String key = (String)i.next();
-            A_CmsGallery currGallery = (A_CmsGallery)galleryMap.get(key);
+            Map.Entry entry = (Map.Entry)i.next();            
+            String key = (String)entry.getKey();
+            A_CmsGallery currGallery = (A_CmsGallery)entry.getValue();
             galleries.add(currGallery);
             // put the type name to the type Map
             typeMap.put(currGallery, key);
@@ -300,10 +310,21 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
             result.append(galleryResult);
         }
 
+        // show image button if configured
+        if (getHtmlWidgetOption().showImageDialog()) {
+            result.append(", \"separator\",\n\t\t\t\"insertimage\"\n");
+        }
+
+        // show table button if configured
+        if (getHtmlWidgetOption().showTableDialog()) {
+            result.append(", \"separator\",\n\t\t\t\"inserttable\"\n");
+        }
+
         // show source button
         if (getHtmlWidgetOption().showSourceEditor()) {
             result.append(", \"separator\",\n\t\t\t\"htmlmode\"\n");
         }
+
         result.append("\t\t]\n\t];");
         return result.toString();
     }

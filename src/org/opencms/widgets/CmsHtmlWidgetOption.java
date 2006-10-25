@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidgetOption.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/10/25 09:55:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,25 +41,33 @@ import java.util.List;
 /**
  * An option of a Html type widget.<p>
  * 
- * If options are passed from XML content schema definitions as widget configuration options,
- * the following syntax is used for defining the option values:<p>
+ * Options can be defined for each element of the type <code>OpenCmsHtml</code> using the widget <code>HtmlWidget</code>.
+ * They have to be placed in the annotation section of a XSD describing an xml content. The <code>configuration</code> attribute 
+ * in the <code>layout</code> node for the element must contain the activated options as a comma separated String value:<p>
  * 
- * <code>"height:400px,link,anchor,imagegallery,downloadgallery,formatselect,source"</code><p>
+ * <code><layout element="Text" widget="HtmlWidget" configuration="height:400px,link,anchor,imagegallery,downloadgallery,formatselect,source" /></code><p>
  * 
  * Available options are:
  * <ul>
- * <li><code>height:${editorheight}</code>: the editor height, where the height can be specified in px or %, e.g. <code>400px</code></li>
- * <li><code>link</code>: the link dialog button</li>
  * <li><code>anchor</code>: the anchor dialog button</li>
+ * <li><code>css:/vfs/path/to/cssfile.css</code>: the absolute path in the OpenCms VFS to the CSS style sheet 
+ *     to use to render the contents in the editor (availability depends on the integrated editor)</li>
  * <li><code>formatselect</code>: the format selector for selecting text format like paragraph or headings</li>
+ * <li><code>${gallerytype}</code>: Shows a gallery dialog button, e.g. <code>imagegallery</code> displays 
+ *     the image gallery button or <code>downloadgallery</code> displays the download gallery button</li>
+ * <li><code>height:${editorheight}</code>: the editor height, where the height can be specified in px or %, e.g. <code>400px</code></li>
+ * <li><code>image</code>: the image dialog button (availability depends on the integrated editor)</li>
+ * <li><code>link</code>: the link dialog button</li>
  * <li><code>source</code>: shows the source code toggle button(s)</li>
- * <li><code>${gallerytype}</code>: Shows a gallery dialog button, e.g. <code>imagegallery</code></li>
+ * <li><code>stylesxml:/vfs/path/to/stylefile.xml</code>: the absolute path in the OpenCms VFS to the user defined
+ *     styles that should be displayed in the style selector (availability depends on the integrated editor)</li>
+ * <li><code>table</code>: the table dialog button (availability depends on the integrated editor)</li>
  * </ul>
- * If an option key is not found in the configuration options, the corresponding button will be hidden in the editor.<p>
+ * If an option key is not found in the configuration options, the corresponding button will be hidden in the editor widget.<p>
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.1
  */
@@ -71,6 +79,9 @@ public class CmsHtmlWidgetOption {
     /** Option for the "anchor" dialog. */
     public static final String OPTION_ANCHOR = "anchor";
 
+    /** Option for the css style sheet VFS path to use in the widget area. */
+    public static final String OPTION_CSS = "css:";
+
     /** The delimiter to use in the configuration String. */
     public static final String OPTION_DELIMITER = ",";
 
@@ -80,18 +91,31 @@ public class CmsHtmlWidgetOption {
     /** Option for the "height" configuration. */
     public static final String OPTION_HEIGHT = "height:";
 
+    /** Option for the "image" dialog. */
+    public static final String OPTION_IMAGE = "image";
+
     /** Option for the "link" dialog. */
     public static final String OPTION_LINK = "link";
 
     /** Option for the "source" code mode. */
     public static final String OPTION_SOURCE = "source";
 
+    /** Option for the styles XML VFS path to use in the widget area. */
+    public static final String OPTION_STYLES = "stylesxml:";
+
+    /** Option for the "table" dialog. */
+    public static final String OPTION_TABLE = "table";
+
+    private String m_cssPath;
     private List m_displayGalleries;
     private String m_editorHeight;
     private boolean m_showAnchorDialog;
     private boolean m_showFormatSelect;
+    private boolean m_showImageDialog;
     private boolean m_showLinkDialog;
     private boolean m_showSourceEditor;
+    private boolean m_showTableDialog;
+    private String m_stylesXmlPath;
 
     /**
      * Creates a new empty html widget object object.<p>
@@ -125,7 +149,7 @@ public class CmsHtmlWidgetOption {
      */
     public static String createConfigurationString(CmsHtmlWidgetOption option) {
 
-        StringBuffer result = new StringBuffer(256);
+        StringBuffer result = new StringBuffer(512);
         boolean added = false;
         if (!option.getEditorHeight().equals(EDITOR_DEFAULTHEIGHT)) {
             // append the height configuration
@@ -165,6 +189,40 @@ public class CmsHtmlWidgetOption {
             result.append(OPTION_SOURCE);
             added = true;
         }
+        if (option.showTableDialog()) {
+            // append the table configuration
+            if (added) {
+                result.append(OPTION_DELIMITER);
+            }
+            result.append(OPTION_TABLE);
+            added = true;
+        }
+        if (option.showImageDialog()) {
+            // append the image configuration
+            if (added) {
+                result.append(OPTION_DELIMITER);
+            }
+            result.append(OPTION_IMAGE);
+            added = true;
+        }
+        if (option.useCss()) {
+            // append the CSS VFS path
+            if (added) {
+                result.append(OPTION_DELIMITER);
+            }
+            result.append(OPTION_CSS);
+            result.append(option.getCssPath());
+            added = true;
+        }
+        if (option.showStylesXml()) {
+            // append the styles XML VFS path
+            if (added) {
+                result.append(OPTION_DELIMITER);
+            }
+            result.append(OPTION_STYLES);
+            result.append(option.getStylesXmlPath());
+            added = true;
+        }
 
         boolean isFirst = true;
         for (int i = 0; i < option.getDisplayGalleries().size(); i++) {
@@ -178,6 +236,16 @@ public class CmsHtmlWidgetOption {
         }
 
         return result.toString();
+    }
+
+    /**
+     * Returns the css style sheet VFS path to use in the widget area.<p>
+     *
+     * @return the css style sheet VFS path to use in the widget area
+     */
+    public String getCssPath() {
+
+        return m_cssPath;
     }
 
     /**
@@ -198,6 +266,26 @@ public class CmsHtmlWidgetOption {
     public String getEditorHeight() {
 
         return m_editorHeight;
+    }
+
+    /**
+     * Returns the styles XML VFS path to use in the widget area.<p>
+     *
+     * @return the styles XML VFS path to use in the widget area
+     */
+    public String getStylesXmlPath() {
+
+        return m_stylesXmlPath;
+    }
+
+    /**
+     * Sets the css style sheet VFS path to use in the widget area.<p>
+     *
+     * @param cssPath the css style sheet VFS path to use in the widget area
+     */
+    public void setCssPath(String cssPath) {
+
+        m_cssPath = cssPath;
     }
 
     /**
@@ -241,6 +329,16 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Sets if the image dialog button should be available.<p>
+     *
+     * @param showImageDialog true if the image dialog button should be available, otherwise false
+     */
+    public void setShowImageDialog(boolean showImageDialog) {
+
+        m_showImageDialog = showImageDialog;
+    }
+
+    /**
      * Sets if the link dialog button should be available.<p>
      * 
      * @param showLinkDialog true if the link dialog button should be available, otherwise false
@@ -258,6 +356,26 @@ public class CmsHtmlWidgetOption {
     public void setShowSourceEditor(boolean showSourceEditor) {
 
         m_showSourceEditor = showSourceEditor;
+    }
+
+    /**
+     * Sets if the table dialog button should be available.<p>
+     *
+     * @param showTableDialog true if the table dialog button should be available, otherwise false
+     */
+    public void setShowTableDialog(boolean showTableDialog) {
+
+        m_showTableDialog = showTableDialog;
+    }
+
+    /**
+     * Sets the styles XML VFS path to use in the widget area.<p>
+     *
+     * @param stylesXmlPath the styles XML VFS path to use in the widget area
+     */
+    public void setStylesXmlPath(String stylesXmlPath) {
+
+        m_stylesXmlPath = stylesXmlPath;
     }
 
     /**
@@ -292,6 +410,16 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Returns true if the image dialog button should be available.<p>
+     *
+     * @return if the image dialog button should be available
+     */
+    public boolean showImageDialog() {
+
+        return m_showImageDialog;
+    }
+
+    /**
      * Returns true if the link dialog button should be available.<p>
      * 
      * @return if the link dialog button should be available
@@ -312,6 +440,36 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Returns true if the styles selector should be available.<p>
+     *
+     * @return if the styles selector should be available
+     */
+    public boolean showStylesXml() {
+
+        return CmsStringUtil.isNotEmpty(getStylesXmlPath());
+    }
+
+    /**
+     * Returns true if the table dialog button should be available.<p>
+     *
+     * @return if the table dialog button should be available
+     */
+    public boolean showTableDialog() {
+
+        return m_showTableDialog;
+    }
+
+    /**
+     * Returns true if the widget editor should use a defined CSS style sheet.<p>
+     * 
+     * @return if the widget editor should use a defined CSS style sheet
+     */
+    public boolean useCss() {
+
+        return CmsStringUtil.isNotEmpty(getCssPath());
+    }
+
+    /**
      * Parses the given configuration String.<p>
      * 
      * @param configuration the configuration String to parse
@@ -322,7 +480,7 @@ public class CmsHtmlWidgetOption {
             List options = CmsStringUtil.splitAsList(configuration, OPTION_DELIMITER, true);
             Iterator i = options.iterator();
             while (i.hasNext()) {
-                String option = ((String)i.next()).toLowerCase();
+                String option = (String)i.next();
                 if (OPTION_LINK.equals(option)) {
                     // show link dialog
                     setShowLinkDialog(true);
@@ -330,24 +488,37 @@ public class CmsHtmlWidgetOption {
                     // show anchor dialog
                     setShowAnchorDialog(true);
                 } else if (OPTION_SOURCE.equals(option)) {
-                    // show link dialog
+                    // show source button
                     setShowSourceEditor(true);
                 } else if (OPTION_FORMATSELECT.equals(option)) {
-                    // show link dialog
+                    // show format selector
                     setShowFormatSelect(true);
+                } else if (OPTION_IMAGE.equals(option)) {
+                    // show image dialog
+                    setShowImageDialog(true);
+                } else if (OPTION_TABLE.equals(option)) {
+                    // show table dialog
+                    setShowTableDialog(true);
                 } else if (option.startsWith(OPTION_HEIGHT)) {
                     // the editor height
                     option = option.substring(OPTION_HEIGHT.length());
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(option)) {
-                        setEditorHeight(option.trim());
+                        setEditorHeight(option);
                     }
+                } else if (option.startsWith(OPTION_CSS)) {
+                    // the editor CSS
+                    option = option.substring(OPTION_CSS.length());
+                    setCssPath(option);
+                } else if (option.startsWith(OPTION_STYLES)) {
+                    // the editor styles XML path
+                    option = option.substring(OPTION_STYLES.length());
+                    setStylesXmlPath(option);
                 } else {
                     // check if option describes a gallery
                     if (OpenCms.getWorkplaceManager().getGalleries().get(option) != null) {
                         // add the option to the displayed galleries
                         m_displayGalleries.add(option);
                     }
-
                 }
             }
         }

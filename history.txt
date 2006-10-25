@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/19 15:08:47 $
- * Version: $Revision: 1.783 $
+ * Date   : $Date: 2006/10/25 09:55:59 $
+ * Version: $Revision: 1.784 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,8 @@ Legend:
 - General comment
 
 OpenCms 6.2.3 -
+! Added some configuration options to the HTML Widget for structured contents: show buttons for table or image dialog, 
+  use a CSS in the editor area, show the style selector for individual styles (for FCKeditor widget)
 ! History list optionally shows project name and description
 ! Additional optional dbcp parameters for connection pooling and validation provided in opencms.properties
 ! New configuration option for initial checkbox state on new folder dialog in opencms-workplace.xml 
