@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResourceHandler.java,v $
- * Date   : $Date: 2006/08/19 13:40:39 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2006/10/25 15:48:07 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3.4.1 $
+ * @version $Revision: 1.3.4.2 $
  * 
  * @since 6.0.1 
  */
@@ -125,7 +125,7 @@ public class CmsBackupResourceHandler implements I_CmsResourceInit {
                             req.setAttribute(ATTRIBUTE_NAME, resource);
                         } catch (CmsException e) {
                             if (LOG.isErrorEnabled()) {
-                                LOG.error(Messages.get().container(Messages.ERR_BACKUPRESOURCE_2, uri, versionId));
+                                LOG.error(Messages.get().getBundle().key(Messages.ERR_BACKUPRESOURCE_2, uri, versionId));
                             }
                             throw new CmsResourceInitException(Messages.get().container(
                                 Messages.ERR_SHOWVERSION_2,
