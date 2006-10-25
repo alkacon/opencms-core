@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/24 10:16:10 $
- * Version: $Revision: 1.717.2.84 $
+ * Date   : $Date: 2006/10/25 09:30:08 $
+ * Version: $Revision: 1.717.2.85 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ OpenCms 6.5.4 - xxxx, 2006
 ! List of changed files is shown for users who do not have the project manager role. The list shown depends on the
   actual selected project
 ! Link management support added to standard HTML tags 'area', 'object' & 'embed'
+* Fixed locks handling during move & undo changes operations
 
 OpenCms 6.5.3 - October 10, 2006
 * Fixed issue #1247: Display issue for multiple select boxes and help texts in IE
