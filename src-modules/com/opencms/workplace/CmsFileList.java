@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2005/06/27 23:22:07 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2006/10/26 08:36:23 $
+* Version: $Revision: 1.3.8.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
+ * @version $Revision: 1.3.8.1 $ $Date: 2006/10/26 08:36:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -299,7 +299,7 @@ public class CmsFileList extends A_CmsWpElement {
      * @param res The resource displayed in this entry.
      * @param template The file list template.
      * @return String containing the name of the context menu.
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      *
      */
 
@@ -667,7 +667,7 @@ public class CmsFileList extends A_CmsWpElement {
      * @param type The resource type of the file entry.
      * @param config The configuration file.
      * @return String containing the complete name of the iconfile.
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     private String getIcon(CmsObject cms, I_CmsResourceType type, CmsXmlWpConfigFile config) throws CmsException {
         // check if this icon is in the cache already

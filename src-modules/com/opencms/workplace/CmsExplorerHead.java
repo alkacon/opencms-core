@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
-* Date   : $Date: 2006/07/26 15:05:11 $
-* Version: $Revision: 1.2.8.1 $
+* Date   : $Date: 2006/10/26 08:36:23 $
+* Version: $Revision: 1.2.8.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.2.8.1 $ $Date: 2006/07/26 15:05:11 $
+ * @version $Revision: 1.2.8.2 $ $Date: 2006/10/26 08:36:23 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -294,7 +294,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
      * @param lang The language file.
      * @param parameters User parameters.
      * @return Value that is set into the adress field.
-     * @throws CmsExeption if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {

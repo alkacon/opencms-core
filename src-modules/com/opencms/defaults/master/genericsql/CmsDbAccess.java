@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2006/07/26 15:05:11 $
-* Version: $Revision: 1.7.8.1 $
+* Date   : $Date: 2006/10/26 08:36:24 $
+* Version: $Revision: 1.7.8.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1079,7 +1079,7 @@ public class CmsDbAccess {
      * @param contentDefinitionClass the class of the cd to create new instances.
      * @param cms the CmsObject to get access to cms resources.
      * @param viewonly  decides, if only the ones that are visible should be returned
-     * @throws SqlException if nothing could be read from the resultset.
+     * @throws SQLException if nothing could be read from the resultset.
      */
     protected Vector createVectorOfCd(ResultSet res, Class contentDefinitionClass, CmsObject cms, boolean viewonly) throws SQLException {
         Constructor constructor;
@@ -1122,7 +1122,7 @@ public class CmsDbAccess {
      * @param datasets the vector with the datasets.
      * @param contentDefinitionClass the class of the cd to create new instances.
      * @param cms the CmsObject to get access to cms-ressources.
-     * @throws SqlException if nothing could be read from the resultset.
+     * @throws SQLException if nothing could be read from the resultset.
      */
     protected Vector createVectorOfCd(Vector datasets, Class contentDefinitionClass, CmsObject cms) throws SQLException {
         Constructor constructor;

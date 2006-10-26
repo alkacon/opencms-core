@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2006/07/26 15:05:11 $
-* Version: $Revision: 1.5.8.1 $
+* Date   : $Date: 2006/10/26 08:36:23 $
+* Version: $Revision: 1.5.8.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.5.8.1 $ $Date: 2006/07/26 15:05:11 $
+ * @version $Revision: 1.5.8.2 $ $Date: 2006/10/26 08:36:23 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -364,7 +364,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
      * @param lang The language file.
      * @param parameters User parameters.
      * @return Value that is set into the new file dialod.
-     * @throws CmsExeption if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
@@ -386,7 +386,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
      * @param values The links that are connected with each resource.
      * @param parameters Hashtable of parameters (not used yet).
      * @return The vectors names and values are filled with data for building the navigation.
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public Integer getNavPos(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
@@ -426,7 +426,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
      * @param cms The CmsObject.
      * @return Hashtable including three arrays of strings containing the filenames,
      * nicenames and navigation positions.
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     private Hashtable getNavData(CmsObject cms) throws CmsException {
         // I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);

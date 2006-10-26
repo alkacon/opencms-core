@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2006/07/26 15:05:11 $
-* Version: $Revision: 1.7.8.1 $
+* Date   : $Date: 2006/10/26 08:36:23 $
+* Version: $Revision: 1.7.8.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.7.8.1 $ $Date: 2006/07/26 15:05:11 $
+ * @version $Revision: 1.7.8.2 $ $Date: 2006/10/26 08:36:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -896,7 +896,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
      * @param lang The language file.
      * @param parameters User parameters.
      * @return Value that is pre-set into the title field.
-     * @throws CmsExeption if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     public String setBodyTitle(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
@@ -946,7 +946,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
      * @param lang The language file.
      * @param parameters User parameters.
      * @return Value that is pre-set into the title field.
-     * @throws CmsExeption if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     public String setTitle(CmsObject cms, CmsXmlLanguageFile lang,
