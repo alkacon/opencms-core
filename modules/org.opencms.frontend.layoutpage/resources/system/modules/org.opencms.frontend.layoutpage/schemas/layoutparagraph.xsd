@@ -16,6 +16,7 @@
 			<xsd:element name="Headline" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Text" type="OpenCmsHtml" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="Image" type="OpenCmsLayoutPageImage" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="Filelink" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
