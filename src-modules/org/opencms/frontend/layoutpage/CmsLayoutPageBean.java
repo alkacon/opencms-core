@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/layoutpage/CmsLayoutPageBean.java,v $
- * Date   : $Date: 2006/05/19 07:51:40 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/10/26 08:04:44 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.frontend.layoutpage;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsLocaleManager;
@@ -39,16 +40,21 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 /**
@@ -58,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.1.9 
  */
@@ -175,6 +181,18 @@ public class CmsLayoutPageBean {
     /** Name of the text node. */
     protected static final String NODE_TEXT = "Text";
 
+    /** Name of the file link node. */
+    protected static final String NODE_FILELINK = "Filelink";
+
+    /** Name of the file link node. */
+    protected static final String KEY_HEADLINE = "headline";
+
+    /** Name of the file link node. */
+    protected static final String KEY_TEXTVALUE = "textValue";
+
+    /** Name of the file link node. */
+    protected static final String KEY_IMGURI = "imgUri";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLayoutPageBean.class);
 
@@ -216,6 +234,9 @@ public class CmsLayoutPageBean {
 
     /** The VFS path to the html snippet files.  */
     private String m_pathLayoutElements;
+
+    /** The map to store the information of the .properties files for each integrated xml content type.*/
+    private Map m_typeMappings;
 
     /** The layout variant to show, e.g. "common", "print" or "accessibe". */
     private String m_variant;
@@ -302,6 +323,8 @@ public class CmsLayoutPageBean {
 
         StringBuffer result = new StringBuffer(16384);
         Locale locale = getCmsObject().getRequestContext().getLocale();
+        
+        m_typeMappings = new HashMap();
 
         // first calculate the column width
         calculateColumnWidth();
@@ -330,10 +353,10 @@ public class CmsLayoutPageBean {
 
         // determine localized image link title
         String imgLinkTitleLocalized = "";
+        CmsMessages messages = getCmsJspActionElement().getMessages(
+            "org/opencms/frontend/layoutpage/frontendmessages",
+            locale);
         if (showImgLinks) {
-            CmsMessages messages = getCmsJspActionElement().getMessages(
-                "org/opencms/frontend/layoutpage/frontendmessages",
-                locale);
             imgLinkTitleLocalized = messages.keyDefault("link.image.original", "");
         }
 
@@ -351,17 +374,86 @@ public class CmsLayoutPageBean {
             I_CmsXmlContentValue value = (I_CmsXmlContentValue)i.next();
             String xPath = value.getPath() + "/";
 
+            // check if a file has to be integrated
+            boolean hasFileLink = m_content.hasValue(xPath + NODE_FILELINK, locale);
+            
+            ExtendedProperties xmlElementsProperties = null;
+            CmsFile linkToFile = null;
+            CmsXmlContent xmlContentFileLink = null;
+            if (hasFileLink) {
+                try {
+                    // read the integrated file, get the xml content of it and recieve the properties for
+                    // the type of this resource
+                    linkToFile = getCmsObject().readFile(
+                        m_content.getStringValue(getCmsObject(), xPath + NODE_FILELINK, locale));
+                    xmlContentFileLink = CmsXmlContentFactory.unmarshal(getCmsObject(), linkToFile);
+                    xmlElementsProperties = getXmlElementsProperties(linkToFile);
+                } catch (Exception e) {
+                    // if reading of external file fails the external file will be ignored
+                    hasFileLink = false;
+                }
+            }
+            
             // get the optional headline
             String headline = "";
             if (m_content.hasValue(xPath + NODE_HEADLINE, locale)) {
                 headline = m_content.getStringValue(getCmsObject(), xPath + NODE_HEADLINE, locale);
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(headline)) {
+            }
+            // if headline is empty try to get it from the integrated xml content
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(headline)) {
+                if (hasFileLink) {
+                    String titleValue = this.getPropertiesValue(
+                        xmlElementsProperties,
+                        KEY_HEADLINE,
+                        xmlContentFileLink,
+                        locale);
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(titleValue)) {
+                        // if titleValue is not empty set the headline to this value and build a link
+                        // to the integrated file around it 
+                        headline = "<a title=\""
+                            + titleValue
+                            + "\" href=\""
+                            + m_jspActionElement.link(m_content.getStringValue(
+                                getCmsObject(),
+                                xPath + NODE_FILELINK,
+                                locale))
+                            + "\" target=\"_self\">"
+                            + titleValue
+                            + "</a>";
+                    } else {
+                        headline = "";
+                    }
+                } else {
                     headline = "";
                 }
             }
 
             // get the paragraph text value
             String textValue = m_content.getStringValue(getCmsObject(), xPath + NODE_TEXT, locale);
+            
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(textValue)) {
+                if (hasFileLink) {
+                    String text = getPropertiesValue(xmlElementsProperties, KEY_TEXTVALUE, xmlContentFileLink, locale);
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(text)) {
+                        // if text is not empty set textValue to it, trim the size and
+                        // append a link to the integrated file
+                        textValue = text;
+                        textValue = CmsStringUtil.trimToSize(textValue, 250);
+                        textValue += "<a href=\""
+                            + m_jspActionElement.link(m_content.getStringValue(
+                                getCmsObject(),
+                                xPath + NODE_FILELINK,
+                                locale))
+                            + "\" target=\"_self\">&gt; "
+                            + messages.keyDefault("link.more", "")
+                            + "</a>";
+                    } else {
+                        textValue = "";
+                    }
+                } else {
+                    textValue = "";
+                }
+            }
 
             // process optional image
             xPath += NODE_IMAGE + "/";
@@ -375,6 +467,24 @@ public class CmsLayoutPageBean {
             if (m_content.hasValue(xPath, locale)) {
                 // image node found, check VFS presence by reading image size property
                 String imgUri = m_content.getStringValue(getCmsObject(), xPath + NODE_IMAGE, locale);
+                
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(imgUri)) {
+                    if (hasFileLink) {
+                        String imgValue = getPropertiesValue(
+                            xmlElementsProperties,
+                            KEY_IMGURI,
+                            xmlContentFileLink,
+                            locale);
+                        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(imgValue)) {
+                            imgUri = imgValue;
+                        } else {
+                            imgUri = "";
+                        }
+                    } else {
+                        imgUri = "";
+                    }
+                }
+                
                 String imgSize = null;
                 try {
                     imgSize = getCmsObject().readPropertyObject(
@@ -962,6 +1072,82 @@ public class CmsLayoutPageBean {
             throw new CmsException(Messages.get().container(Messages.LOG_ERR_VFS_RESOURCE_1, fileName));
         }
         return new CmsMacroWrapperFreeMarker(getCmsObject(), fileName);
+    }
+    
+    /**
+     * Returns the String value of the xml content defined by the value(s) inside the given extended properties.<p>
+     * 
+     * @param xmlElements the instance of ExtendedProperties for the integrated resource type, e.g. news.
+     * @param key key is used to identify the value inside the given map.
+     * @param xmlContentFileLink the xml content of the integrated file.
+     * @param locale the locale object.
+     * @return the String value of the xml content defined by the value(s) inside the given map.
+     */
+    protected String getPropertiesValue(
+        ExtendedProperties xmlElements,
+        String key,
+        CmsXmlContent xmlContentFileLink,
+        Locale locale) {
+
+        Object value = xmlElements.get(key);
+        String result = "";
+        if (value != null) {
+            if (value instanceof String) {
+                // if value is a String object get the string value from the xml content
+                result = xmlContentFileLink.getStringValue(getCmsObject(), (String)value, locale);
+            } else if (value instanceof Vector) {
+                // if value is a vector iterate over it
+                Iterator it_title = ((Vector)value).iterator();
+                while (it_title.hasNext()) {
+                    String next = (String)it_title.next();
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(xmlContentFileLink.getStringValue(
+                        getCmsObject(),
+                        next,
+                        locale))
+                        && !xmlContentFileLink.getStringValue(getCmsObject(), next, locale).equals("(none)")) {
+                        if (result.length() > 1 && result.lastIndexOf(",") != result.length()) {
+                            // only append ',' if the result String is already in use
+                            result += ",";
+                        }
+                        // add the String value from the xml content for the given String of the vector
+                        result += xmlContentFileLink.getStringValue(getCmsObject(), next, locale);
+                    }
+                }
+            }
+        } else {
+            result = "";
+        }
+        return result;
+    }
+
+    /**
+     * Returns an instance of ExtendedProperties with key-values pairs which can be used to build e.g. the headline.<p>
+     * 
+     * @param linkToFile xml content file which is integrated inside the layout page
+     * @return an instance of ExtendedProperties with key-value pairs which define the elements to use inside
+     *         an integrated xml content, e.g. to build the headline
+     */
+    protected ExtendedProperties getXmlElementsProperties(CmsFile linkToFile) {
+
+        ExtendedProperties properties = new ExtendedProperties();
+        try {
+            // get the type name for the integrated file
+            // type name is used as key for m_typeMappings
+            String typeName = OpenCms.getResourceManager().getResourceType(linkToFile.getTypeId()).getTypeName();
+            if (m_typeMappings.get(typeName) == null) {
+                // get key/value from the .properties file and store it in properties and m_typeMappings
+                properties.load(new ByteArrayInputStream(
+                    getCmsObject().readFile(
+                        CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/mappings/" + typeName + ".properties").getContents()));
+                m_typeMappings.put(typeName, properties);
+            } else {
+                // if typeName is already used inside m_typeProperties get properties from this map
+                properties = (ExtendedProperties)m_typeMappings.get(typeName);
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        return properties;
     }
 
     /**
