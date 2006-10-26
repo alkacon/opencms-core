@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditJspIncludeProvider.java,v $
- * Date   : $Date: 2006/10/25 16:53:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/26 08:13:39 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.3
  */
@@ -216,6 +216,7 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider imp
      */
     public void init(CmsObject cms, CmsDirectEditMode mode, String fileName) {
 
+        m_cms = cms;
         m_fileName = fileName;
         if (CmsStringUtil.isEmpty(m_fileName)) {
             m_fileName = DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT;
@@ -271,7 +272,7 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider imp
     public boolean insertDirectEditStart(PageContext context, CmsDirectEditParams params) throws JspException {
 
         String result = null;
-        CmsDirectEditPermissions permissions = getResourceInfo(m_editTarget).getPermissions();
+        CmsDirectEditPermissions permissions = getResourceInfo(params.getResourceName()).getPermissions();
         if (permissions.getPermission() > 0) {
             // permission to direct edit is granted
             m_permissions = permissions.toString();

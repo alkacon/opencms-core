@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2006/10/25 16:53:42 $
- * Version: $Revision: 1.25.4.4 $
+ * Date   : $Date: 2006/10/26 08:13:39 $
+ * Version: $Revision: 1.25.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.editors.directedit.CmsDirectEditJspIncludeProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 
@@ -81,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.25.4.4 $ 
+ * @version $Revision: 1.25.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -148,7 +149,11 @@ public class CmsJspActionElement extends CmsJspBean {
     public void editable(boolean isEditable, String filename) throws JspException {
 
         if (isEditable) {
-            CmsJspTagEditable.editableTagAction(getJspContext(), null, CmsDirectEditMode.AUTO, filename);
+            CmsJspTagEditable.editableTagAction(
+                getJspContext(),
+                CmsDirectEditJspIncludeProvider.class.getName(),
+                CmsDirectEditMode.AUTO,
+                filename);
         }
     }
 

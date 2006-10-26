@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/A_CmsDirectEditProvider.java,v $
- * Date   : $Date: 2006/10/25 16:53:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/26 08:13:39 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.Messages;
 
 import java.io.IOException;
@@ -59,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.3 
  */
@@ -184,7 +185,10 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
     public void init(CmsObject cms, CmsDirectEditMode mode, String fileName) {
 
         m_cms = cms;
-        m_fileName = fileName != null ? fileName : INCLUDE_FILE_DEFAULT;
+        m_fileName = fileName;
+        if (CmsStringUtil.isEmpty(m_fileName)) {
+            m_fileName = INCLUDE_FILE_DEFAULT;
+        }
         m_mode = mode != null ? mode : CmsDirectEditMode.AUTO;
 
         m_rnd = new Random();
