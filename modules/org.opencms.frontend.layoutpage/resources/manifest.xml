@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>Contains the resource type "layoutpage" that helps creating pages following a set of predefined layout patterns.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.3</version>
+		<version>1.2.4</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -351,6 +351,32 @@
 			<datelastmodified>Fri, 12 May 2006 09:18:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 12 May 2006 09:18:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/mappings</destination>
+			<type>folder</type>
+			<uuidstructure>f9909008-64c4-11db-8fcc-d3ee01eaa4cf</uuidstructure>
+			<datelastmodified>Thu, 26 Oct 2006 07:38:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Oct 2006 07:38:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/mappings/news.properties</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/mappings/news.properties</destination>
+			<type>plain</type>
+			<uuidstructure>0cc73bba-64c5-11db-8fcc-d3ee01eaa4cf</uuidstructure>
+			<uuidresource>0cc73bbb-64c5-11db-8fcc-d3ee01eaa4cf</uuidresource>
+			<datelastmodified>Thu, 26 Oct 2006 07:40:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Oct 2006 07:39:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
