@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2006/10/26 08:36:53 $
- * Version: $Revision: 1.16.4.5 $
+ * Date   : $Date: 2006/10/26 11:21:19 $
+ * Version: $Revision: 1.16.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.5 $ 
+ * @version $Revision: 1.16.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -238,6 +238,17 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append("function setConfirmationMessage(locks, blockinglocks) {\n");
         html.append("\tvar confMsg = document.getElementById('conf-msg');\n");
         html.append("\tif (locks > -1) {\n");
+        if (!getSettings().getUserSettings().getDialogShowLock()) {
+            // auto commit if lock dialog disabled
+            html.append("\t\tif (blockinglocks == 0) {\n");
+            html.append("\t\t\tsubmitAction('");
+            html.append(CmsDialog.DIALOG_OK);
+            html.append("', null, 'main');\n");
+            html.append("\t\t\tdocument.forms['main'].submit();\n");
+            html.append("\t\t\treturn;\n");
+            html.append("\t\t}\n");
+        }
+        html.append("\t\t\tdocument.getElementById('lock-body-id').className = '';\n");
         html.append("\t\tif (locks > '0') {\n");
         html.append("\t\t\tconfMsg.innerHTML = '");
         html.append(getConfirmationMessage(false));
@@ -286,6 +297,9 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append("\tvar blockinglocks = -1;\n");
         html.append("\tvar elem = document.getElementById('locksreport');\n");
         html.append("\tif (state != 'ok') {\n");
+        html.append("\t\tif (state != 'wait') {\n");
+        html.append("\t\t\tdocument.getElementById('lock-body-id').className = '';\n");
+        html.append("\t\t}\n");
         html.append("\t\tvar img = state + '.png';\n");
         html.append("\t\tvar txt = msg;\n");
         html.append("\t\tif (state == 'fatal') {\n");
@@ -363,6 +377,18 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      */
     public String buildLockRequest() {
 
+        return buildLockRequest(0);
+    }
+
+    /**
+     * Returns the html code to build the lock request.<p>
+     * 
+     * @param hiddenTimeout the maximal number of millis the dialog will be hidden
+     * 
+     * @return html code
+     */
+    public String buildLockRequest(int hiddenTimeout) {
+
         StringBuffer html = new StringBuffer(512);
         html.append("<script type='text/javascript'><!--\n");
         html.append("makeRequest('");
@@ -376,6 +402,10 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append("=");
         html.append(getParamResource());
         html.append("', 'doReportUpdate');\n");
+        html.append("function showLockDialog() {\n");
+        html.append("\tdocument.getElementById('lock-body-id').className = '';\n");
+        html.append("}\n");
+        html.append("setTimeout('showLockDialog()', " + hiddenTimeout + ");\n");
         html.append("// -->\n");
         html.append("</script>\n");
         return html.toString();
@@ -732,7 +762,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         if (res.isFolder() && !resourceName.endsWith("/")) {
             resourceName += "/";
         }
-        org.opencms.lock.CmsLock lock = getCms().getLock(res); 
+        org.opencms.lock.CmsLock lock = getCms().getLock(res);
         // perform action depending on dialog uri
         switch (dialogAction) {
             case TYPE_LOCKCHANGE:

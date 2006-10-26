@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2006/10/26 08:36:53 $
- * Version: $Revision: 1.27.4.3 $
+ * Date   : $Date: 2006/10/26 11:21:19 $
+ * Version: $Revision: 1.27.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.27.4.3 $ 
+ * @version $Revision: 1.27.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -325,7 +325,7 @@ public class CmsPublishProject extends CmsReport {
             nonBlockingFilter = CmsLockFilter.FILTER_ALL.filterProject(Integer.parseInt(getParamProjectid()));
         }
         CmsLockFilter blockingFilter = CmsLockFilter.FILTER_INHERITED;
-        return buildLockDialog(nonBlockingFilter, blockingFilter);
+        return buildLockDialog(nonBlockingFilter, blockingFilter, 0);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.96.4.4 $
+ * Date   : $Date: 2006/10/26 11:21:19 $
+ * Version: $Revision: 1.96.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96.4.4 $ 
+ * @version $Revision: 1.96.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -387,6 +387,7 @@ public class CmsDialog extends CmsToolDialog {
         html.append("\tvar confMsg = document.getElementById('conf-msg');\n");
         html.append("\tif (locks > -1) {\n");
         html.append("\t\tif (blockinglocks > '0') {\n");
+        html.append("\t\t\tdocument.getElementById('lock-body-id').className = '';\n");
         html.append("\t\t\tdocument.getElementById('butClose').className = '';\n");
         html.append("\t\t\tdocument.getElementById('butContinue').className = 'hide';\n");
         html.append("\t\t\tconfMsg.innerHTML = '");
@@ -420,7 +421,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public String buildLockDialog() throws CmsException {
 
-        return buildLockDialog(null, null);
+        return buildLockDialog(null, null, 2000);
     }
     
     /**
@@ -428,12 +429,13 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param nonBlockingFilter the filter to get all non blocking locks
      * @param blockingFilter the filter to get all blocking locks
+     * @param hiddenTimeout the maximal number of millis the dialog will be hidden
      * 
      * @return html code
      * 
      * @throws CmsException if something goes wrong
      */
-    public String buildLockDialog(CmsLockFilter nonBlockingFilter, CmsLockFilter blockingFilter) throws CmsException {
+    public String buildLockDialog(CmsLockFilter nonBlockingFilter, CmsLockFilter blockingFilter, int hiddenTimeout) throws CmsException {
 
         setParamAction(CmsDialog.DIALOG_LOCKS_CONFIRMED);
         CmsLock lockwp = new CmsLock(getJsp());
@@ -445,6 +447,7 @@ public class CmsDialog extends CmsToolDialog {
         html.append(lockwp.buildIncludeJs());
         html.append(buildLockConfirmationMessageJS());
         html.append(bodyStart("dialog"));
+        html.append("<div id='lock-body-id' class='hide'>\n");
         html.append(dialogStart());
         html.append(dialogContentStart(getParamTitle()));
         html.append(buildLockHeaderBox());
@@ -465,8 +468,9 @@ public class CmsDialog extends CmsToolDialog {
         html.append(dialogLockButtons());
         html.append("</form>\n");
         html.append(dialogEnd());
+        html.append("</div>\n");
         html.append(bodyEnd());
-        html.append(lockwp.buildLockRequest());
+        html.append(lockwp.buildLockRequest(hiddenTimeout));
         html.append(htmlEnd());
         return html.toString();
     }

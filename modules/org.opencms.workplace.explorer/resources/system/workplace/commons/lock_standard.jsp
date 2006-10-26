@@ -61,7 +61,7 @@ default:
 <%= wp.buildDefaultConfirmationJS() %>
 <% } %>
 <%= wp.bodyStart("dialog") %>
-
+<div id='lock-body-id'>
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
 if (wp.isMultiOperation()) { 
@@ -87,6 +87,7 @@ if (wp.isMultiOperation()) {
 </form>
 
 <%= wp.dialogEnd() %>
+</div>
 <%= wp.bodyEnd() %>
 <% if (CmsLock.getDialogAction(wp.getCms()) != CmsLock.TYPE_UNLOCK) { %>
 <%= wp.buildLockRequest() %>
