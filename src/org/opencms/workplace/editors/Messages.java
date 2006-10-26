@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Messages.java,v $
- * Date   : $Date: 2006/09/22 15:17:03 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/10/26 12:25:34 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -195,6 +195,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DIALOG_COLOR_TITLE_0 = "GUI_DIALOG_COLOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIRECTEDIT_TEXT_DELETE_0 = "GUI_DIRECTEDIT_TEXT_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIRECTEDIT_TEXT_EDIT_0 = "GUI_DIRECTEDIT_TEXT_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIRECTEDIT_TEXT_NEW_0 = "GUI_DIRECTEDIT_TEXT_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_BUTTON_DOWNLOADLIST_0 = "GUI_EDITOR_BUTTON_DOWNLOADLIST_0";
 
     /** Message constant for key in the resource bundle. */
@@ -314,6 +323,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_TITLE_SIMPLETEXT_0 = "GUI_EDITOR_TITLE_SIMPLETEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_XMLCONTENT_CONFIRM_CORRECTION_0 = "GUI_EDITOR_XMLCONTENT_CONFIRM_CORRECTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_XMLCONTENT_ELEMENT_BUTTONS_0 = "GUI_EDITOR_XMLCONTENT_ELEMENT_BUTTONS_0";
@@ -481,9 +493,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_CHANGETD_0 = "GUI_TITLE_CHANGETD_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_CHANGETR_0 = "GUI_TITLE_CHANGETR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_EDIT_1 = "GUI_TITLE_EDIT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_EDITTABLE_0 = "GUI_TITLE_EDITTABLE_0";
@@ -505,6 +520,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_XML_CONTENT_ITEM_1 = "LOG_CREATE_XML_CONTENT_ITEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DIRECT_EDIT_NO_HEADER_1 = "LOG_DIRECT_EDIT_NO_HEADER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_EDITOR_CONFIG_ERROR_1 = "LOG_EDITOR_CONFIG_ERROR_1";

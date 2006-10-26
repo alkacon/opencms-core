@@ -3,24 +3,25 @@
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
 	org.opencms.jsp.*,
+    org.opencms.workplace.editors.directedit.*,
 	java.util.*
 "%><%
 
 // Create a JSP action element
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 String uri = cms.getRequestContext().getUri();
-CmsDialog wp = new CmsDialog(cms);
+CmsEditorBase wp = new CmsEditorBase(cms);
 
-String editTarget = request.getParameter(I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_TARGET);
-String editElement = request.getParameter(I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_ELEMENT);
-String editLocale = request.getParameter(I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_LOCALE);
-String editButtonStyleParam = request.getParameter(I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_BUTTONSTYLE);
-String editOptions = request.getParameter(I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_OPTIONS);
-String editNewLink = request.getParameter(I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_NEWLINK);
+String editTarget = request.getParameter(CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_TARGET);
+String editElement = request.getParameter(CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_ELEMENT);
+String editLocale = request.getParameter(CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_LOCALE);
+String editButtonStyleParam = request.getParameter(CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_BUTTONSTYLE);
+String editOptions = request.getParameter(CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_OPTIONS);
+String editNewLink = request.getParameter(CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_NEWLINK);
 
-String editAction = I_CmsEditorActionHandler.DIRECT_EDIT_OPTION_EDIT;
-String deleteAction = I_CmsEditorActionHandler.DIRECT_EDIT_OPTION_DELETE;
-String newAction = I_CmsEditorActionHandler.DIRECT_EDIT_OPTION_NEW;
+String editAction = CmsDirectEditButtonSelection.VALUE_EDIT;
+String deleteAction = CmsDirectEditButtonSelection.VALUE_DELETE;
+String newAction = CmsDirectEditButtonSelection.VALUE_NEW;
 
 boolean showEdit = true;
 boolean showDelete = false;

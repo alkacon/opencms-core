@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2006/10/26 12:25:35 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.editors.directedit.CmsDirectEditJspIncludeProvider;
+import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
+import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -79,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,29 +122,97 @@ public class CmsJspActionElement extends CmsJspBean {
      * Includes direct edit scriptlets, same as 
      * using the <code>&lt;cms:editable /&gt;</code> tag.<p>
      * 
+     * The configured default direct edit provider is used.<p>
+     * 
      * @param isEditable include scriptlets only if true
+     * 
      * @throws JspException if something goes wrong
      */
     public void editable(boolean isEditable) throws JspException {
 
         if (isEditable) {
-            CmsJspTagEditable.editableTagAction(getJspContext(), null, getRequest(), getResponse());
+            CmsJspTagEditable.editableTagAction(getJspContext(), null, CmsDirectEditMode.AUTO, null);
         }
     }
 
     /**
      * Includes direct edit scriptlets, same as
-     * using the <code>&lt;cms:editable file="***" /&gt;</code>tag.<p>
+     * using the <code>&lt;cms:editable file="..." /&gt;</code>tag.<p>
+     * 
+     * For backward compatibilty, this always uses the JSP include based direct edit provider<p>.
      * 
      * @param isEditable include scriptlets only if true
      * @param filename file with scriptlets
+     * 
      * @throws JspException if something goes wrong
      */
     public void editable(boolean isEditable, String filename) throws JspException {
 
         if (isEditable) {
-            CmsJspTagEditable.editableTagAction(getJspContext(), filename, getRequest(), getResponse());
+            CmsJspTagEditable.editableTagAction(
+                getJspContext(),
+                CmsDirectEditJspIncludeProvider.class.getName(),
+                CmsDirectEditMode.AUTO,
+                filename);
         }
+    }
+
+    /**
+     * Includes direct edit scriptlets, same as
+     * using the <code>&lt;cms:editable provider="..." mode="..." file="..." /&gt;</code>tag.<p>
+     * 
+     * @param provider the direct edit provider class name
+     * @param mode the direct edit mode to use
+     * @param filename file with scriptlets (may be <code>null</code>)
+     * 
+     * @throws JspException if something goes wrong
+     */
+    public void editable(String provider, String mode, String filename) throws JspException {
+
+        CmsJspTagEditable.editableTagAction(getJspContext(), provider, CmsDirectEditMode.valueOf(mode), filename);
+    }
+
+    /**
+     * Insert the end HTML for the direct edit buttons in manual mode (if required).<p>
+     * 
+     * Same as closing the <code>&lt;/cms:editable</code> tag after opening one in manual mode.<p>
+     * 
+     * @param needsClose result of {@link #editableManualOpen()} should be the value for this parameter
+     * 
+     * @throws JspException if something goes wrong
+     */
+    public void editableManualClose(boolean needsClose) throws JspException {
+
+        if (needsClose) {
+            CmsJspTagEditable.editableTagAction(getJspContext(), null, CmsDirectEditMode.MANUAL, null);
+        }
+    }
+
+    /**
+     * Insert the start HTML for the direct edit buttons in manual mode.<p>
+     * 
+     * Same as opening the <code>&lt;cms:editable mode="manual"&gt;</code> tag.<p>
+     * 
+     * @return <code>true</code> if HTML was inserted that needs to be closed
+     * 
+     * @throws JspException if something goes wrong
+     */
+    public boolean editableManualOpen() throws JspException {
+
+        boolean result = false;
+        if (!CmsFlexController.isCmsOnlineRequest(getJspContext().getRequest())) {
+            // all this does NOT apply to the "online" project
+            I_CmsDirectEditProvider eb = CmsJspTagEditable.getDirectEditProvider(getJspContext());
+            if ((eb != null)) {
+                // check if the provider support manual placement of buttons
+                if (eb.isManual(CmsDirectEditMode.MANUAL)) {
+                    // the provider supports manual placement of buttons
+                    result = true;
+                    CmsJspTagEditable.editableTagAction(getJspContext(), null, CmsDirectEditMode.MANUAL, null);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -416,10 +487,11 @@ public class CmsJspActionElement extends CmsJspBean {
             try {
                 HashMap modParameterMap = new HashMap(parameterMap.size());
                 // ensure parameters are always of type String[] not just String
-                Iterator i = parameterMap.keySet().iterator();
+                Iterator i = parameterMap.entrySet().iterator();
                 while (i.hasNext()) {
-                    String key = (String)i.next();
-                    Object value = parameterMap.get(key);
+                    Map.Entry entry = (Map.Entry)i.next();
+                    String key = (String)entry.getKey();
+                    Object value = entry.getValue();
                     if (value instanceof String[]) {
                         modParameterMap.put(key, value);
                     } else {

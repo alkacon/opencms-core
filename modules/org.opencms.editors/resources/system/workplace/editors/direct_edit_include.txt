@@ -1,0 +1,227 @@
+<style type="text/css">
+a.ocms_button,
+a.ocms_button:link,
+a.ocms_button:active,
+a.ocms_button:hover,
+a.ocms_button:visited {
+	color: ButtonText;
+	text-decoration: none;
+	cursor: pointer;
+}
+span.ocms_combobutton {
+	display: block;
+	font-family: Verdana, sans-serif;
+	font-size: 11px;
+	white-space: nowrap;
+	padding-top: 4px;
+	padding-left: 21px;
+	padding-right: 4px;
+	padding-bottom: 4px;
+	background-repeat: no-repeat;
+	background-color: ButtonFace;
+	background-position: 4px 0px;
+}
+span.ocms_norm {
+	display: block;
+	border: 1px solid ButtonFace;
+}
+span.ocms_over {
+	display: block;
+	border-top: 1px solid ButtonHighlight;
+	border-left: 1px solid ButtonHighlight;
+	border-bottom: 1px solid ButtonShadow;
+	border-right: 1px solid ButtonShadow;
+}
+span.ocms_push {
+	display: block;
+	border-top: 1px solid ButtonShadow;
+	border-left: 1px solid ButtonShadow;
+	border-bottom: 1px solid ButtonHighlight;
+	border-right: 1px solid ButtonHighlight;
+}
+span.ocms_disabled {
+	display: block;
+	border: 1px solid ButtonFace;
+	color: ButtonShadow;
+}
+a.ocms_txt,
+a.ocms_txt:link,
+a.ocms_txt:visited {
+	text-decoration: none;
+	font-family: Verdana, sans-serif;
+	font-size: 8px;
+    color: #003082;
+	cursor: pointer;
+}
+a.ocms_txt:active,
+a.ocms_txt:hover {
+	text-decoration: underline;
+	color: #B31B34;
+}
+span.ocms_txt_en {
+	padding: 1px; 
+	margin: 0; 
+	text-decoration: none;
+	font-family: Verdana, sans-serif;
+	font-size: 8px;
+    color: WindowText;
+}
+span.ocms_txt_dis {
+	padding: 1px; 
+	margin: 0; 
+	text-decoration: none;
+	font-family: Verdana, sans-serif;
+	font-size: 8px;
+	color: GrayText;
+}
+div.ocms_de_bt {
+	visibility: hidden; 
+	position: absolute; 
+	z-index: 100;
+}
+div.ocms_de_norm {
+	width: 100%;
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+div.ocms_de_over {
+	width: 100%;
+	padding-top: 0;
+	padding-bottom: 0;
+	background-color: InfoBackground;
+	border-top: 1px dotted ThreedDarkShadow;
+	border-bottom: 1px dotted ThreedDarkShadow;
+}
+td.ocms_de {
+	line-height: 12px;
+	background-color: ButtonFace;
+}
+form.ocms_nomargin {
+	visibility: hidden;
+	display: none;
+	position: absolute;
+	padding: 0; 
+	margin: 0; 
+}
+</style>
+
+<script type="text/javascript">
+<!--
+window.onresize = showButtonsOcms;
+document.onkeyup = keyUpOcms;
+
+var deButtonsOcms = new Array();
+var ocms_btTimeout;
+var visibleOcmsButtons = true;
+
+function activateOcms(id) {
+	var el = document.getElementById(id);
+	if (el.className == "ocms_de_norm") {
+		el.className = "ocms_de_over";
+	}
+	var bt = document.getElementById("bt_" + id);
+	if (bt != null) {
+		bt.style.backgroundImage = "url(%(skinUri)buttons/directedit_op.png)";
+	}
+
+}
+function deactivateOcms(id) {
+	var el = document.getElementById(id);
+	if (el.className == "ocms_de_over") {
+		el.className = "ocms_de_norm";
+	}
+	var bt = document.getElementById("bt_" + id);
+	if (bt != null) {
+		bt.style.backgroundImage = "url(%(skinUri)buttons/directedit_cl.png)";
+	}
+}
+function submitOcms(id, action, link) {
+	var form = document.getElementById("form_" + id);
+	if (form != null) {
+		if (action == "edit") {
+			form.submit();
+			return;
+		} else if (action == "delete") {
+			form.action = "%(deleteLink)";
+			form.closelink.value = "%(closeLink)";			
+			form.submit();
+			return;
+		} else if (action == "new") {	
+			form.editortitle.value = "%(titleForNew)";	
+			form.newlink.value = link;	
+			form.submit();
+			return;
+		}
+	}
+	alert("Unknown form action [" + id + "/" + action + "]");
+}
+function registerButtonOcms(id) {
+	deButtonsOcms[deButtonsOcms.length] = id; 
+	clearTimeout(ocms_btTimeout);
+	ocms_btTimeout = setTimeout("showButtonsOcms()", 400);
+}
+function showButtonsOcms() {	
+		
+	var visStyle = "visible";
+	if (!visibleOcmsButtons) {
+		visStyle = "hidden";
+	}
+		
+	for (var i = 0; i<deButtonsOcms.length; i++) {
+		var btid = deButtonsOcms[i];
+		var deDiv = document.getElementById(btid);
+		var deButton = document.getElementById("buttons_" + btid);
+		var deTable = document.getElementById("table_" + btid);
+		var x = findPosXOcms(deDiv);
+		var y = findPosYOcms(deDiv);
+		var w1 = deDiv.offsetWidth; // width of surrounding div
+		var w2 = deTable.offsetWidth; // width of button table
+		
+		x += (w1 - w2);		
+		deButton.style.left = x + "px";
+		deButton.style.top =  y + "px";				
+		deButton.style.visibility = visStyle;
+	}
+}
+function findPosXOcms(obj) {
+    var curleft = 0; 
+    if (obj.offsetParent) {
+        while (obj.offsetParent) {
+            curleft += obj.offsetLeft - obj.scrollLeft; 
+            obj = obj.offsetParent; 
+        } 
+    } else if (obj.x) {
+        curleft += obj.x; 
+    }
+    return curleft; 
+}
+function findPosYOcms(obj) {
+    var curtop = 0; 
+    if (obj.offsetParent) {
+        while (obj.offsetParent) { 
+            curtop += obj.offsetTop - obj.scrollTop; 
+            obj = obj.offsetParent; 
+        }
+    } else if (obj.y) {
+        curtop += obj.y;
+    }
+    return curtop;
+}
+function toggleVisibleOcms() {
+	if (visibleOcmsButtons) {
+		visibleOcmsButtons = false;
+	} else {
+		visibleOcmsButtons = true;
+	}
+	showButtonsOcms();
+}
+function keyUpOcms(evt) {
+	if (!evt) {
+		evt = window.event;
+	}
+	if ((evt.type == "keyup") && (evt.keyCode == 32) && evt.ctrlKey) {
+		toggleVisibleOcms();
+	}
+}
+//-->
+</script>

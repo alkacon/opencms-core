@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2006/03/27 14:52:35 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2006/10/26 12:25:34 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -220,6 +220,22 @@ public class CmsFlexController {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Checks if the provided request is running in OpenCms and the current users project is the online project.<p>
+     *
+     * @param req the current request
+     * 
+     * @return <code>true</code> if the request is running in OpenCms and the current users project is 
+     *      the online project, <code>false</code> otherwise
+     */
+    public static boolean isCmsOnlineRequest(ServletRequest req) {
+
+        if (req == null) {
+            return false;
+        }
+        return getController(req).getCmsObject().getRequestContext().currentProject().isOnlineProject();
     }
 
     /**
