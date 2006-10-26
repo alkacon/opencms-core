@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/26 08:07:02 $
- * Version: $Revision: 1.717.2.88 $
+ * Date   : $Date: 2006/10/26 10:04:36 $
+ * Version: $Revision: 1.717.2.89 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.5.4 - xxxx, 2006
+* Fixed error when searching in sites with uppercase letters in site path
 ! Added some configuration options to the HTML Widget for structured contents: show buttons for table or image dialog, 
   use a CSS in the editor area, show the style selector for individual styles (for FCKeditor widget)
 * Fixed error when appending html extension to new resource
