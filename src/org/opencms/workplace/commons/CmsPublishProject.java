@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2006/10/26 11:21:19 $
- * Version: $Revision: 1.27.4.4 $
+ * Date   : $Date: 2006/10/26 11:27:19 $
+ * Version: $Revision: 1.27.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.27.4.4 $ 
+ * @version $Revision: 1.27.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -455,8 +455,10 @@ public class CmsPublishProject extends CmsReport {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the publishing type: publish project or direct publish
+        // set to refresh the folder tree
+        setParamRefreshWorkplace("true");
 
+        // set the publishing type: publish project or direct publish
         if (CmsStringUtil.isNotEmpty(getParamResource()) || isMultiOperation()) {
             setParamDirectpublish(CmsStringUtil.TRUE);
         }
