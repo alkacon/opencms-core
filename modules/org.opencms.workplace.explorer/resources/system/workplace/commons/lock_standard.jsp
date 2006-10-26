@@ -71,21 +71,17 @@ if (wp.isMultiOperation()) {
     // include resource info  %>
 	<%@ include file="includes/resourceinfo.txt" %><%
 } %>
-
 <%= wp.dialogSpacer() %>
-
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 <% if (CmsLock.getDialogAction(wp.getCms()) != CmsLock.TYPE_UNLOCK) { %>
-
-<%= wp.buildLockContainer(wp.key(Messages.GUI_LOCK_RESOURCES_TITLE_0)) %>
+<%= wp.buildAjaxResultContainer(wp.key(Messages.GUI_LOCK_RESOURCES_TITLE_0)) %>
 <% } %>
 <div id='conf-msg'></div>
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtons() %>
 </form>
-
 <%= wp.dialogEnd() %>
 </div>
 <%= wp.bodyEnd() %>

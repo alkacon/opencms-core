@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.15.4.10 $
+ * Date   : $Date: 2006/10/26 15:17:03 $
+ * Version: $Revision: 1.15.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.10 $ 
+ * @version $Revision: 1.15.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -660,6 +660,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NOTIFICATION_SETTINGS_0 = "GUI_NOTIFICATION_SETTINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_OPERATION_BLOCKING_LOCKS_0 = "GUI_OPERATION_BLOCKING_LOCKS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_OPERATION_NO_LOCKS_0 = "GUI_OPERATION_NO_LOCKS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PERMISSION_0 = "GUI_PERMISSION_0";

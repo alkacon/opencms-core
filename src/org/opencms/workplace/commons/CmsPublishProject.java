@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2006/10/26 11:29:12 $
- * Version: $Revision: 1.27.4.6 $
+ * Date   : $Date: 2006/10/26 15:17:03 $
+ * Version: $Revision: 1.27.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.27.4.6 $ 
+ * @version $Revision: 1.27.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -289,10 +289,12 @@ public class CmsPublishProject extends CmsReport {
         html.append("\t\tdocument.getElementById('butClose').className = 'hide';\n");
         html.append("\t\tdocument.getElementById('butContinue').className = '';\n");
         html.append("\t\tif (locks > 0) {\n");
+        html.append("\t\t\tshowAjaxReportContent();\n");
         html.append("\t\t\tconfMsg.innerHTML = '");
         html.append(key(Messages.GUI_PUBLISH_UNLOCK_CONFIRMATION_0));
         html.append("';\n");
         html.append("\t\t} else {\n");
+        html.append("\t\tshowAjaxOk();\n");
         html.append("\t\t\tconfMsg.innerHTML = '");
         html.append(key(Messages.GUI_PUBLISH_NO_LOCKS_CONFIRMATION_0));
         html.append("';\n");

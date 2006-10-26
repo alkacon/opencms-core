@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2006/10/26 11:21:19 $
- * Version: $Revision: 1.16.4.6 $
+ * Date   : $Date: 2006/10/26 15:17:03 $
+ * Version: $Revision: 1.16.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.6 $ 
+ * @version $Revision: 1.16.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -248,12 +248,14 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
             html.append("\t\t\treturn;\n");
             html.append("\t\t}\n");
         }
-        html.append("\t\t\tdocument.getElementById('lock-body-id').className = '';\n");
+        html.append("\t\tdocument.getElementById('lock-body-id').className = '';\n");
         html.append("\t\tif (locks > '0') {\n");
+        html.append("\t\t\tshowAjaxReportContent();\n");
         html.append("\t\t\tconfMsg.innerHTML = '");
         html.append(getConfirmationMessage(false));
         html.append("';\n");
         html.append("\t\t} else {\n");
+        html.append("\t\t\tshowAjaxOk();\n");
         html.append("\t\t\tconfMsg.innerHTML = '");
         html.append(getConfirmationMessage(true));
         html.append("';\n");
@@ -290,12 +292,26 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append(CmsWorkplace.getSkinUri());
         html.append("admin/javascript/list.js'></script>\n");
         html.append("<script type='text/javascript'><!--\n");
+        html.append("function showAjaxOk() {\n");
+        html.append("\tdocument.getElementById('ajaxreport-img').src = '");
+        html.append(CmsWorkplace.getSkinUri());
+        html.append("commons/ok.png';\n");
+        html.append("\tdocument.getElementById('ajaxreport-txt').innerHTML = '");
+        html.append(key(Messages.GUI_OPERATION_NO_LOCKS_0));
+        html.append("';\n");
+        html.append("}\n");
+        html.append("var ajaxReportContent = '';");
+        html.append("function showAjaxReportContent() {\n");
+        html.append("\tif (ajaxReportContent != '') {\n");
+        html.append("\t\tdocument.getElementById('ajaxreport').innerHTML = ajaxReportContent;\n");
+        html.append("\t}\n");
+        html.append("}\n");
         html.append("function doReportUpdate(msg, state) {\n");
         html.append("\tvar img = state + '.png';\n");
         html.append("\tvar txt = '';\n");
         html.append("\tvar locks = -1;\n");
         html.append("\tvar blockinglocks = -1;\n");
-        html.append("\tvar elem = document.getElementById('locksreport');\n");
+        html.append("\tvar elem = document.getElementById('ajaxreport');\n");
         html.append("\tif (state != 'ok') {\n");
         html.append("\t\tif (state != 'wait') {\n");
         html.append("\t\t\tdocument.getElementById('lock-body-id').className = '';\n");
@@ -317,30 +333,17 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append(key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_ERROR_0));
         html.append("' + msg;\n");
         html.append("\t\t}\n");
+        html.append("\t\tdocument.getElementById('ajaxreport-img').src = '");
+        html.append(CmsWorkplace.getSkinUri());
+        html.append("commons/' + img;\n");
+        html.append("\t\tdocument.getElementById('ajaxreport-txt').innerHTML = txt;\n");
         html.append("\t} else {\n");
-        html.append("\t\telem.innerHTML = msg;\n");
-        html.append("\t\tif (document.forms['main'].locks.value == '0') {\n");
-        html.append("\tlocks = 0;\n");
-        html.append("\tblockinglocks = 0;\n");
-        html.append("\t\t\timg = state + '.png';\n");
-        html.append("\t\t\ttxt = '");
-        html.append(key(org.opencms.workplace.Messages.GUI_OPERATION_NO_LOCKS_0));
-        html.append("';\n");
-        html.append("\t\t}\n");
+        html.append("\t\telem.innerHTML = elem.innerHTML + msg.substring(0, 120);\n");
+        html.append("\t\tajaxReportContent = msg;\n");
         html.append("\t}\n");
         html.append("\tif (txt != '') {\n");
-        html.append("\t\tvar html = \"<table border='0' style='vertical-align:middle; height: 150px;'>\";\n");
-        html.append("\t\thtml += \"<tr><td width='40' align='center' valign='middle'><img src='");
-        html.append(CmsWorkplace.getSkinUri());
-        html.append("commons/\";\n");
-        html.append("\t\thtml += img;\n");
-        html.append("\t\thtml += \"' width='32' height='32' alt=''></td>\";\n");
-        html.append("\t\thtml += \"<td valign='middle'><span style='color: #000099; font-weight: bold;'>\";\n");
-        html.append("\t\thtml += txt;\n");
-        html.append("\t\thtml += \"</span><br></td></tr></table>\";\n");
-        html.append("\t\telem.innerHTML = html;\n");
         html.append("\t}\n");
-        html.append("\tif (state == 'ok' && locks != 0) {\n");
+        html.append("\tif (state == 'ok') {\n");
         html.append("\t\tlocks = document.forms['main'].locks.value;\n");
         html.append("\t\tblockinglocks = document.forms['main'].blockinglocks.value;\n");
         html.append("\t}\n");
@@ -348,25 +351,6 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append("}\n");
         html.append("// -->\n");
         html.append("</script>\n");
-        return html.toString();
-    }
-
-    /**
-     * Returns the html code to build the lock list container.<p>
-     * 
-     * @param title the title of the report box
-     * 
-     * @return html code
-     */
-    public String buildLockContainer(String title) {
-
-        StringBuffer html = new StringBuffer(512);
-        html.append(dialogBlockStart(title));
-        html.append(dialogWhiteBoxStart());
-        html.append("<div id='locksreport' ></div>\n");
-        html.append(dialogWhiteBoxEnd());
-        html.append(dialogBlockEnd());
-        html.append("&nbsp;<br>\n");
         return html.toString();
     }
 
@@ -427,17 +411,18 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
             getLockedResources(),
             CmsResource.getParentFolder((String)getResourceList().get(0)));
         list.actionDialog();
+        list.getList().setBoxed(false);
 
         StringBuffer result = new StringBuffer(512);
-        list.getList().setBoxed(false);
-        result.append(CmsListExplorerColumn.getExplorerStyleDef());
-        result.append("<div style='height:150px; overflow: auto;'>\n");
-        result.append(list.getList().listHtml());
-        result.append("</div>\n");
         result.append("<input type='hidden' name='locks' value='");
         result.append(getLockedResources().size()).append("'>\n");
         result.append("<input type='hidden' name='blockinglocks' value='");
         result.append(getBlockingLockedResources().size()).append("'>\n");
+        result.append(CmsStringUtil.padLeft("", 120 - result.length()));
+        result.append(CmsListExplorerColumn.getExplorerStyleDef());
+        result.append("<div style='height:150px; overflow: auto;'>\n");
+        result.append(list.getList().listHtml());
+        result.append("</div>\n");
         return result.toString();
     }
 

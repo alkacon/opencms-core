@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2006/10/26 11:21:19 $
- * Version: $Revision: 1.96.4.5 $
+ * Date   : $Date: 2006/10/26 15:17:03 $
+ * Version: $Revision: 1.96.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96.4.5 $ 
+ * @version $Revision: 1.96.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -365,6 +365,33 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
+     * Returns the html code to build the ajax report container.<p>
+     * 
+     * @param title the title of the report box
+     * 
+     * @return html code
+     */
+    public String buildAjaxResultContainer(String title) {
+
+        StringBuffer html = new StringBuffer(512);
+        html.append(dialogBlockStart(title));
+        html.append(dialogWhiteBoxStart());
+        html.append("<div id='ajaxreport' >");
+        html.append("<table border='0' style='vertical-align:middle; height: 150px;'>\n");
+        html.append("<tr><td width='40' align='center' valign='middle'><img src='");
+        html.append(CmsWorkplace.getSkinUri());
+        html.append("commons/wait.gif' id='ajaxreport-img' width='32' height='32' alt=''></td>\n");
+        html.append("<td valign='middle'><span id='ajaxreport-txt' style='color: #000099; font-weight: bold;'>\n");
+        html.append(key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0));
+        html.append("</span><br></td></tr></table>\n");
+        html.append("</div>\n");
+        html.append(dialogWhiteBoxEnd());
+        html.append(dialogBlockEnd());
+        html.append("&nbsp;<br>\n");
+        return html.toString();
+    }
+
+    /**
      * Override to display additional options in the lock dialog.<p>
      * 
      * @return html code to display additional options
@@ -387,11 +414,12 @@ public class CmsDialog extends CmsToolDialog {
         html.append("\tvar confMsg = document.getElementById('conf-msg');\n");
         html.append("\tif (locks > -1) {\n");
         html.append("\t\tif (blockinglocks > '0') {\n");
+        html.append("\t\t\tshowAjaxReportContent();\n");
         html.append("\t\t\tdocument.getElementById('lock-body-id').className = '';\n");
         html.append("\t\t\tdocument.getElementById('butClose').className = '';\n");
         html.append("\t\t\tdocument.getElementById('butContinue').className = 'hide';\n");
         html.append("\t\t\tconfMsg.innerHTML = '");
-        html.append(key(Messages.GUI_OPERATION_BLOCKING_LOCKS_0));
+        html.append(key(org.opencms.workplace.commons.Messages.GUI_OPERATION_BLOCKING_LOCKS_0));
         html.append("';\n");
         html.append("\t\t} else {\n");
         html.append("\t\t\tsubmitAction('");
@@ -423,7 +451,7 @@ public class CmsDialog extends CmsToolDialog {
 
         return buildLockDialog(null, null, 2000);
     }
-    
+
     /**
      * Returns the html code to build the lock dialog.<p>
      * 
@@ -435,7 +463,8 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    public String buildLockDialog(CmsLockFilter nonBlockingFilter, CmsLockFilter blockingFilter, int hiddenTimeout) throws CmsException {
+    public String buildLockDialog(CmsLockFilter nonBlockingFilter, CmsLockFilter blockingFilter, int hiddenTimeout)
+    throws CmsException {
 
         setParamAction(CmsDialog.DIALOG_LOCKS_CONFIRMED);
         CmsLock lockwp = new CmsLock(getJsp());
@@ -461,7 +490,7 @@ public class CmsDialog extends CmsToolDialog {
         html.append("<input type='hidden' name='");
         html.append(CmsDialog.PARAM_FRAMENAME);
         html.append("' value=''>\n");
-        html.append(lockwp.buildLockContainer(key(org.opencms.workplace.commons.Messages.GUI_LOCK_RESOURCES_TITLE_0)));
+        html.append(buildAjaxResultContainer(key(org.opencms.workplace.commons.Messages.GUI_LOCK_RESOURCES_TITLE_0)));
         html.append("<div id='conf-msg'></div>\n");
         html.append(buildLockAdditionalOptions());
         html.append(dialogContentEnd());
