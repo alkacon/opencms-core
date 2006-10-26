@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/10/26 10:22:11 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -88,6 +88,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         suite.setName(TestCmsSearch.class.getName());
 
         suite.addTest(new TestCmsSearch("testCmsSearchIndexer"));
+        suite.addTest(new TestCmsSearch("testCmsSearchUppercaseFolderName"));
         suite.addTest(new TestCmsSearch("testCmsSearchDocumentTypes"));
         suite.addTest(new TestCmsSearch("testCmsSearchXmlContent"));
         suite.addTest(new TestCmsSearch("testIndexGeneration"));
@@ -113,6 +114,46 @@ public class TestCmsSearch extends OpenCmsTestCase {
         return wrapper;
     }
 
+    /**
+     * Tests the CmsSearch with folder names with uppercase letters.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCmsSearchUppercaseFolderName() throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing search with uppercase folder names");
+
+        // create test folder
+        cms.createResource("/testUPPERCASE/", CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, null);
+        cms.unlockResource("/testUPPERCASE/");
+
+        // create master resource
+        importTestResource(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            "/testUPPERCASE/master.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            Collections.EMPTY_LIST);
+        
+        // publish the project and update the search index
+        I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
+        OpenCms.getSearchManager().rebuildIndex(INDEX_OFFLINE, report);
+        
+        // search for "pdf"
+        CmsSearch cmsSearchBean = new CmsSearch();
+        cmsSearchBean.init(cms);
+        cmsSearchBean.setIndex(INDEX_OFFLINE);
+        cmsSearchBean.setQuery("pdf");
+        
+        CmsSearchParameters parameters = cmsSearchBean.getParameters();
+        parameters.setSearchRoots("/testUPPERCASE/");
+        cmsSearchBean.setParameters(parameters);
+        
+        List results = cmsSearchBean.getSearchResult();
+        assertEquals(1, results.size());
+    }
+    
     /**
      * Tests searching in various document types.<p>
      * 

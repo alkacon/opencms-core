@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2006/10/26 10:22:11 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 6.0.0 
  */
@@ -652,12 +652,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // initially this was a simple PrefixQuery based on the DOC_PATH
             // however, internally Lucene rewrote that to literally hundreds of BooleanQuery parts
             // the following implementation will lead to just one Lucene PhraseQuery per directory and is thus much better    
+            // cw/261006 - paths elements should not contain uppercase letters, otherwise searcher does not find the appropriate results
             BooleanQuery pathQuery = new BooleanQuery();
             for (int i = 0; i < roots.length; i++) {
                 String[] paths = rootPathSplit(roots[i]);
                 PhraseQuery phrase = new PhraseQuery();
                 for (int j = 0; j < paths.length; j++) {
-                    Term term = new Term(I_CmsDocumentFactory.DOC_ROOT, paths[j]);
+                    Term term = new Term(I_CmsDocumentFactory.DOC_ROOT, paths[j].toLowerCase());
                     phrase.add(term);
                 }
                 pathQuery.add(phrase, BooleanClause.Occur.SHOULD);
