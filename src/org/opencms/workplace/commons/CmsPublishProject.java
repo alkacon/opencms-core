@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.27.4.2 $
+ * Date   : $Date: 2006/10/26 08:36:53 $
+ * Version: $Revision: 1.27.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.27.4.2 $ 
+ * @version $Revision: 1.27.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,39 +96,121 @@ public class CmsPublishProject extends CmsReport {
     private String m_paramSubresources;
 
     /**
-     * @see org.opencms.workplace.CmsMultiDialog#buildLockHeaderBox()
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
      */
-    public String buildLockHeaderBox() throws CmsException {
+    public CmsPublishProject(CmsJspActionElement jsp) {
 
-        if (Boolean.valueOf(getParamDirectpublish()).booleanValue()) {
-            return super.buildLockHeaderBox();
-        }
-        StringBuffer html = new StringBuffer(512);
-        // include resource info  
-        html.append(dialogBlockStart(null));
-        html.append(key(org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0));
-        html.append(": ");
-        html.append(getProjectname());
-        html.append(dialogBlockEnd());
-        return html.toString();
+        super(jsp);
     }
 
     /**
-     * Returns the html code to build the lock dialog.<p>
+     * Public constructor with JSP variables.<p>
      * 
-     * @return html code
-     * 
-     * @throws CmsException if something goes wrong
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
      */
-    public String buildLockDialog() throws CmsException {
+    public CmsPublishProject(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
-        CmsLockFilter nonBlockingFilter = CmsLockFilter.FILTER_NON_INHERITED;
-        nonBlockingFilter = nonBlockingFilter.filterIncludedUserId(getCms().getRequestContext().currentUser().getId());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamProjectid())) {
-            nonBlockingFilter = CmsLockFilter.FILTER_ALL.filterProject(Integer.parseInt(getParamProjectid()));
+        this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Performs the publish report, will be called by the JSP page.<p>
+     * 
+     * @throws JspException if problems including sub-elements occur
+     */
+    public void actionReport() throws JspException {
+
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
+        switch (getAction()) {
+            case ACTION_REPORT_END:
+                actionCloseDialog();
+                break;
+            case ACTION_REPORT_UPDATE:
+                setParamAction(REPORT_UPDATE);
+                getJsp().include(FILE_REPORT_OUTPUT);
+
+                break;
+            case ACTION_REPORT_BEGIN:
+            case ACTION_CONFIRMED:
+            default:
+                try {
+                    boolean directPublish = Boolean.valueOf(getParamDirectpublish()).booleanValue();
+                    boolean publishSubResources = Boolean.valueOf(getParamSubresources()).booleanValue();
+
+                    CmsPublishList publishList = null;
+                    if (directPublish) {
+                        // get the offline resource(s) in direct publish mode
+                        List publishResources = new ArrayList(getResourceList().size());
+                        Iterator i = getResourceList().iterator();
+                        while (i.hasNext()) {
+                            String resName = (String)i.next();
+                            try {
+                                CmsResource res = getCms().readResource(resName, CmsResourceFilter.ALL);
+                                publishResources.add(res);
+                                // check if the resource is locked                   
+                                CmsLock lock = getCms().getLock(resName);
+                                if (!lock.isNullLock()) {
+                                    // resource is locked, so unlock it
+                                    getCms().unlockResource(resName);
+                                } else {
+                                    // if resource is unlocked
+                                    if (res.isFolder() && publishSubResources) {
+                                        // force unlock all subresources
+                                        String folderName = resName;
+                                        if (!folderName.endsWith("/")) {
+                                            folderName += "/";
+                                        }
+                                        getCms().lockResource(folderName);
+                                        getCms().unlockResource(folderName);
+                                    }
+                                }
+                            } catch (CmsException e) {
+                                addMultiOperationException(e);
+                            }
+                        }
+
+                        // create publish list for direct publish
+                        publishList = getCms().getPublishList(
+                            publishResources,
+                            Boolean.valueOf(getParamPublishsiblings()).booleanValue(),
+                            publishSubResources);
+                        // check permissions
+                        getCms().checkPublishPermissions(publishList);
+
+                        // for error(s) unlocking resource(s), throw exception
+                        checkMultiOperationException(Messages.get(), Messages.ERR_PUBLISH_MULTI_UNLOCK_0);
+                    } else {
+                        if (getCms().getRequestContext().currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
+                            // set the flag that this is a temporary project
+                            setParamRefreshWorkplace(CmsStringUtil.TRUE);
+                        }
+                        // unlock all project resources
+                        getCms().unlockProject(Integer.parseInt(getParamProjectid()));
+                    }
+
+                    // start the link validation thread before publishing
+                    CmsRelationsValidatorThread thread = new CmsRelationsValidatorThread(
+                        getCms(),
+                        publishList,
+                        getSettings());
+                    setParamAction(REPORT_BEGIN);
+                    setParamThread(thread.getUUID().toString());
+
+                    // set the flag that another thread is following
+                    setParamThreadHasNext(CmsStringUtil.TRUE);
+                    // set the key name for the continue checkbox
+                    setParamReportContinueKey(Messages.GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0);
+                    getJsp().include(FILE_REPORT_OUTPUT);
+                } catch (Throwable e) {
+                    // error while unlocking resources, show error screen
+                    includeErrorpage(this, e);
+                }
         }
-        CmsLockFilter blockingFilter = CmsLockFilter.FILTER_INHERITED;
-        return buildLockDialog(nonBlockingFilter, blockingFilter);
     }
 
     /**
@@ -229,137 +311,39 @@ public class CmsPublishProject extends CmsReport {
     }
 
     /**
-     * Public constructor.<p>
+     * Returns the html code to build the lock dialog.<p>
      * 
-     * @param jsp an initialized JSP action element
-     */
-    public CmsPublishProject(CmsJspActionElement jsp) {
-
-        super(jsp);
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
+     * @return html code
      * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
+     * @throws CmsException if something goes wrong
      */
-    public CmsPublishProject(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public String buildLockDialog() throws CmsException {
 
-        this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * Returns the project name.<p>
-     * 
-     * @return the project name
-     */
-    private String getProjectname() {
-
-        int id = Integer.parseInt(getParamProjectid());
-        try {
-            return getCms().readProject(id).getName();
-        } catch (CmsException e) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_SET_PROJECT_NAME_FAILED_0), e);
+        CmsLockFilter nonBlockingFilter = CmsLockFilter.FILTER_NON_INHERITED;
+        nonBlockingFilter = nonBlockingFilter.filterIncludedUserId(getCms().getRequestContext().currentUser().getId());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamProjectid())) {
+            nonBlockingFilter = CmsLockFilter.FILTER_ALL.filterProject(Integer.parseInt(getParamProjectid()));
         }
-        return "-error-";
+        CmsLockFilter blockingFilter = CmsLockFilter.FILTER_INHERITED;
+        return buildLockDialog(nonBlockingFilter, blockingFilter);
     }
 
     /**
-     * Performs the publish report, will be called by the JSP page.<p>
-     * 
-     * @throws JspException if problems including sub-elements occur
+     * @see org.opencms.workplace.CmsMultiDialog#buildLockHeaderBox()
      */
-    public void actionReport() throws JspException {
+    public String buildLockHeaderBox() throws CmsException {
 
-        // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
-        switch (getAction()) {
-            case ACTION_REPORT_END:
-                actionCloseDialog();
-                break;
-            case ACTION_REPORT_UPDATE:
-                setParamAction(REPORT_UPDATE);
-                getJsp().include(FILE_REPORT_OUTPUT);
-
-                break;
-            case ACTION_REPORT_BEGIN:
-            case ACTION_CONFIRMED:
-            default:
-                try {
-                    boolean directPublish = Boolean.valueOf(getParamDirectpublish()).booleanValue();
-                    boolean publishSubResources = Boolean.valueOf(getParamSubresources()).booleanValue();
-
-                    CmsPublishList publishList = null;
-                    if (directPublish) {
-                        // get the offline resource(s) in direct publish mode
-                        List publishResources = new ArrayList(getResourceList().size());
-                        Iterator i = getResourceList().iterator();
-                        while (i.hasNext()) {
-                            String resName = (String)i.next();
-                            try {
-                                CmsResource res = getCms().readResource(resName, CmsResourceFilter.ALL);
-                                publishResources.add(res);
-                                // check if the resource is locked                   
-                                CmsLock lock = getCms().getLock(resName);
-                                if (!lock.isNullLock()) {
-                                    // resource is locked, so unlock it
-                                    getCms().unlockResource(resName);
-                                } else {
-                                    // if resource is unlocked
-                                    if (res.isFolder() && publishSubResources) {
-                                        // force unlock all subresources
-                                        String folderName = resName;
-                                        if (!folderName.endsWith("/")) {
-                                            folderName += "/";
-                                        }
-                                        getCms().lockResource(folderName);
-                                        getCms().unlockResource(folderName);
-                                    }
-                                }
-                            } catch (CmsException e) {
-                                addMultiOperationException(e);
-                            }
-                        }
-
-                        // create publish list for direct publish
-                        publishList = getCms().getPublishList(
-                            publishResources,
-                            Boolean.valueOf(getParamPublishsiblings()).booleanValue(),
-                            publishSubResources);
-                        // check permissions
-                        getCms().checkPublishPermissions(publishList);
-
-                        // for error(s) unlocking resource(s), throw exception
-                        checkMultiOperationException(Messages.get(), Messages.ERR_PUBLISH_MULTI_UNLOCK_0);
-                    } else {
-                        if (getCms().getRequestContext().currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
-                            // set the flag that this is a temporary project
-                            setParamRefreshWorkplace(CmsStringUtil.TRUE);
-                        }
-                        // unlock all project resources
-                        getCms().unlockProject(Integer.parseInt(getParamProjectid()));
-                    }
-
-                    // start the link validation thread before publishing
-                    CmsRelationsValidatorThread thread = new CmsRelationsValidatorThread(
-                        getCms(),
-                        publishList,
-                        getSettings());
-                    setParamAction(REPORT_BEGIN);
-                    setParamThread(thread.getUUID().toString());
-
-                    // set the flag that another thread is following
-                    setParamThreadHasNext(CmsStringUtil.TRUE);
-                    // set the key name for the continue checkbox
-                    setParamReportContinueKey(Messages.GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0);
-                    getJsp().include(FILE_REPORT_OUTPUT);
-                } catch (Throwable e) {
-                    // error while unlocking resources, show error screen
-                    includeErrorpage(this, e);
-                }
+        if (Boolean.valueOf(getParamDirectpublish()).booleanValue()) {
+            return super.buildLockHeaderBox();
         }
+        StringBuffer html = new StringBuffer(512);
+        // include resource info  
+        html.append(dialogBlockStart(null));
+        html.append(key(org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0));
+        html.append(": ");
+        html.append(getProjectname());
+        html.append(dialogBlockEnd());
+        return html.toString();
     }
 
     /**
@@ -542,6 +526,22 @@ public class CmsPublishProject extends CmsReport {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_SET_PROJECT_NAME_FAILED_0), e);
             }
         }
+    }
+
+    /**
+     * Returns the project name.<p>
+     * 
+     * @return the project name
+     */
+    private String getProjectname() {
+
+        int id = Integer.parseInt(getParamProjectid());
+        try {
+            return getCms().readProject(id).getName();
+        } catch (CmsException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_SET_PROJECT_NAME_FAILED_0), e);
+        }
+        return "-error-";
     }
 
     /**

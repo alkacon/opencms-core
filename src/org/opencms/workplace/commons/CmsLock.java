@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2006/10/25 09:57:06 $
- * Version: $Revision: 1.16.4.4 $
+ * Date   : $Date: 2006/10/26 08:36:53 $
+ * Version: $Revision: 1.16.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.4 $ 
+ * @version $Revision: 1.16.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -230,8 +230,6 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      * Returns the html code to build the dialogs default confirmation message js.<p>
      * 
      * @return html code
-     * 
-     * @throws CmsException if something goes wrong
      */
     public String buildDefaultConfirmationJS() {
 
@@ -264,8 +262,6 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      * Returns the html code to include the needed js code.<p>
      * 
      * @return html code
-     * 
-     * @throws CmsException if something goes wrong
      */
     public String buildIncludeJs() {
 
@@ -344,9 +340,9 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * Returns the html code to build the lock list container.<p>
      * 
-     * @return html code
+     * @param title the title of the report box
      * 
-     * @throws CmsException if something goes wrong
+     * @return html code
      */
     public String buildLockContainer(String title) {
 
@@ -364,8 +360,6 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      * Returns the html code to build the lock request.<p>
      * 
      * @return html code
-     * 
-     * @throws CmsException if something goes wrong
      */
     public String buildLockRequest() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsToolHandler.java,v $
- * Date   : $Date: 2006/10/23 13:45:17 $
- * Version: $Revision: 1.5.8.1 $
+ * Date   : $Date: 2006/10/26 08:36:53 $
+ * Version: $Revision: 1.5.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5.8.1 $ 
+ * @version $Revision: 1.5.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,11 +93,7 @@ public class CmsProjectsToolHandler extends A_CmsToolHandler {
     public boolean isVisible(CmsObject cms) {
 
         if (cms.hasRole(CmsRole.PROJECT_MANAGER)) {
-            if (!getLink().equals(PROJECT_OVERVIEW_FILE)) {
-                return true;
-            } else {
-                return false;
-            }
+            return !getLink().equals(PROJECT_OVERVIEW_FILE);
         } else {
             return getLink().equals(PROJECT_OVERVIEW_FILE);
         }

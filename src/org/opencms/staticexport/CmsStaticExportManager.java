@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/09/10 21:05:47 $
- * Version: $Revision: 1.121.4.8 $
+ * Date   : $Date: 2006/10/26 08:36:53 $
+ * Version: $Revision: 1.121.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.8 $ 
+ * @version $Revision: 1.121.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -377,6 +377,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 clearCaches(event);
                 break;
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+                if (data == null) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(Messages.get().getBundle().key(Messages.ERR_EMPTY_EVENT_DATA_0));
+                    }
+                    return;
+                }
                 // event data contains a list of the published resources
                 CmsUUID publishHistoryId = new CmsUUID((String)data.get(I_CmsEventListener.KEY_PUBLISHID));
                 if (LOG.isDebugEnabled()) {

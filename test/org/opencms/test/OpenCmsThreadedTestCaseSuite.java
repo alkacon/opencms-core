@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsThreadedTestCaseSuite.java,v $
- * Date   : $Date: 2006/08/10 15:00:49 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2006/10/26 08:36:53 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.lang.reflect.Method;
  *  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  * 
  * @since 6.5.0
  */
@@ -112,7 +112,7 @@ public class OpenCmsThreadedTestCaseSuite {
      * 
      * @return a list of {@link OpenCmsThreadedTestCase} instances that will be executed concurrently by this suite
      * 
-     * @throws Eception if something goes wrong
+     * @throws Exception if something goes wrong
      */
     private static OpenCmsThreadedTestCase[] initThreads(
         int count,

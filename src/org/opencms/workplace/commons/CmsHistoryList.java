@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2006/10/09 12:30:42 $
- * Version: $Revision: 1.5.4.6 $
+ * Date   : $Date: 2006/10/26 08:36:53 $
+ * Version: $Revision: 1.5.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.6 $ 
+ * @version $Revision: 1.5.4.7 $ 
  * 
  * @since 6.0.2 
  */
@@ -260,8 +260,10 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * Returns the link to a backup file.<p>
      * 
+     * @param cms the cms context
      * @param structureId the structure id of the file
      * @param versionId the version of the file
+     * 
      * @return the link to a backup file
      */
     public static String getBackupLink(CmsObject cms, CmsUUID structureId, String versionId) {

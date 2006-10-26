@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2006/10/20 15:51:08 $
- * Version: $Revision: 1.22.4.2 $
+ * Date   : $Date: 2006/10/26 08:36:53 $
+ * Version: $Revision: 1.22.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsNewResource;
 import org.opencms.workplace.explorer.CmsNewResourceUpload;
@@ -69,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.22.4.2 $ 
+ * @version $Revision: 1.22.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -356,7 +355,7 @@ public class CmsLinkGallery extends A_CmsGallery {
     }
 
     /**
-     * Changes the given pointer ressource if the current request has <code>{@link CmsDialog#PARAM_ACTION}</code> 
+     * Changes the given pointer ressource if the current request has <code>{@link org.opencms.workplace.CmsDialog#PARAM_ACTION}</code> 
      * set to <code>{@link A_CmsGallery#DIALOG_EDITPROPERTY}</code>.<p>
      * 
      * @param res the internal pointer resource to modify

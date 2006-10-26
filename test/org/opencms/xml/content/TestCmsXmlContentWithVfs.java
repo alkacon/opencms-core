@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2006/10/13 08:38:28 $
- * Version: $Revision: 1.43.4.7 $
+ * Date   : $Date: 2006/10/26 08:36:53 $
+ * Version: $Revision: 1.43.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,13 +36,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.TestLinkParseableResourceTypes;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelation;
@@ -57,7 +54,6 @@ import org.opencms.widgets.CmsHtmlWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
@@ -79,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.7 $
+ * @version $Revision: 1.43.4.8 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
