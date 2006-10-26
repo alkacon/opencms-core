@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/10/25 07:17:52 $
- * Version: $Revision: 1.570.2.30 $
+ * Date   : $Date: 2006/10/26 15:44:18 $
+ * Version: $Revision: 1.570.2.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -248,6 +248,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Cache key for all properties. */
     public static final String CACHE_ALL_PROPERTIES = "_CAP_";
 
+    /** 
+     * Values indicating changes of a resource, 
+     * ordered according to the scope of the change. 
+     */
+    /** Value to indicate a change in access control entries of a resource. */
+    public static final int CHANGED_ACCESSCONTROL = 1;
+
+    /** Value to indicate a content change. */
+    public static final int CHANGED_CONTENT = 16;
+
+    /** Value to indicate a change in the lastmodified settings of a resource. */
+    public static final int CHANGED_LASTMODIFIED = 4;
+
+    /** Value to indicate a change in the resource data. */
+    public static final int CHANGED_RESOURCE = 8;
+
+    /** Value to indicate a change in the availability timeframe. */
+    public static final int CHANGED_TIMEFRAME = 2;
+
     /** "driver.backup" string in the configuration-file. */
     public static final String CONFIGURATION_BACKUP = "driver.backup";
 
@@ -337,25 +356,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** Key to indicate update of structure state. */
     public static final int UPDATE_STRUCTURE_STATE = 2;
-
-    /** 
-     * Values indicating changes of a resource, 
-     * ordered according to the scope of the change. 
-     */
-    /** Value to indicate a change in access control entries of a resource. */
-    public static final int CHANGED_ACCESSCONTROL = 1;
-
-    /** Value to indicate a change in the availability timeframe. */
-    public static final int CHANGED_TIMEFRAME = 2;
-
-    /** Value to indicate a change in the lastmodified settings of a resource. */
-    public static final int CHANGED_LASTMODIFIED = 4;
-
-    /** Value to indicate a change in the resource data. */
-    public static final int CHANGED_RESOURCE = 8;
-
-    /** Value to indicate a content change. */
-    public static final int CHANGED_CONTENT = 16;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDriverManager.class);
@@ -1416,21 +1416,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         return propertyDefinition;
-    }
-
-    /**
-     * Creates the relation information.<p>
-     * 
-     * @param dbc the current db context
-     * @param relation the relation information to create 
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsSecurityManager#updateRelationsForResource(CmsRequestContext, CmsResource, List)
-     */
-    public void createRelation(CmsDbContext dbc, CmsRelation relation) throws CmsException {
-
-        m_vfsDriver.createRelation(dbc, dbc.currentProject().getId(), relation);
     }
 
     /**
@@ -4222,7 +4207,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             // remove the no longer valid entry from the lock manager
             unlockResource(dbc, source, true);
-            
+
             // flush all relevant caches
             clearAccessControlListCache();
             m_propertyCache.clear();
@@ -4244,8 +4229,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // add the destination resource to the lock dispatcher 
             // (do not need to call unlockResource here, since it will be called later)
-            m_lockManager.addResource(this, dbc, destRes, dbc.currentUser(), dbc.currentProject(), CmsLockType.EXCLUSIVE);
-            
+            m_lockManager.addResource(
+                this,
+                dbc,
+                destRes,
+                dbc.currentUser(),
+                dbc.currentProject(),
+                CmsLockType.EXCLUSIVE);
+
             // fire the events
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MOVED, Collections.singletonMap(
                 "resources",
@@ -6613,32 +6604,50 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param resource the resource to update the relations for
      * @param links the links to consider for updating
      * 
-     * @return the list of new relations
-     * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsSecurityManager#updateRelationsForResource(CmsRequestContext, CmsResource, List)
      */
-    public List updateRelationsForResource(CmsDbContext dbc, CmsResource resource, List links) throws CmsException {
+    public void updateRelationsForResource(CmsDbContext dbc, CmsResource resource, List links) throws CmsException {
 
-        List newRelations = new ArrayList();
-        // clean the relation information for this resource
-        deleteRelationsForResource(dbc, resource, CmsRelationFilter.TARGETS);
+        // get all siblings
+        List siblings;
+        if (resource.getSiblingCount() > 1) {
+            siblings = readSiblings(dbc, resource, CmsResourceFilter.IGNORE_EXPIRATION);
+        } else {
+            siblings = new ArrayList();
+            siblings.add(resource);
+        }
+        // create the relations in content for all siblings 
+        Iterator it = siblings.iterator();
+        while (it.hasNext()) {
+            CmsResource sibling = (CmsResource)it.next();
+            // clean the relation information for this sibling
+            deleteRelationsForResource(dbc, sibling, CmsRelationFilter.TARGETS);
+        }
+
         // build the links again only if needed
-        if (links != null) {
+        if (links != null && !links.isEmpty()) {
+            // the set of written relations
             Set writtenRelations = new HashSet();
+
             // create new relation information
             Iterator itLinks = links.iterator();
             while (itLinks.hasNext()) {
                 CmsLink link = (CmsLink)itLinks.next();
                 if (link.isInternal()) { // only update internal links
-                    CmsRelation relation;
+
+                    // get the target resource
+                    CmsResource target = null;
                     try {
-                        CmsResource target = readResource(dbc, link.getTarget(), CmsResourceFilter.ALL);
-                        relation = new CmsRelation(resource, target, link.getType());
+                        target = readResource(dbc, link.getTarget(), CmsResourceFilter.ALL);
                     } catch (Exception e) {
-                        // we still need the broken links
-                        relation = new CmsRelation(
+                        // ignore
+                    }
+                    CmsRelation originalRelation;
+                    if (target == null) {
+                        // if link is broken maintain name and default time window
+                        originalRelation = new CmsRelation(
                             resource.getStructureId(),
                             resource.getRootPath(),
                             CmsUUID.getNullUUID(),
@@ -6646,17 +6655,38 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             CmsResource.DATE_RELEASED_DEFAULT,
                             CmsResource.DATE_EXPIRED_DEFAULT,
                             link.getType());
+                    } else {
+                        originalRelation = new CmsRelation(resource, target, link.getType());
                     }
                     // do not write twice the same relation
-                    if (!writtenRelations.contains(relation)) {
-                        createRelation(dbc, relation);
-                        writtenRelations.add(relation);
-                        newRelations.add(relation);
+                    if (writtenRelations.contains(originalRelation)) {
+                        continue;
+                    }
+                    writtenRelations.add(originalRelation);
+
+                    // create the relations in content for all siblings 
+                    Iterator itSiblings = siblings.iterator();
+                    while (itSiblings.hasNext()) {
+                        CmsResource sibling = (CmsResource)itSiblings.next();
+                        CmsRelation relation;
+                        if (target == null) {
+                            // if link is broken maintain name and default time window
+                            relation = new CmsRelation(
+                                sibling.getStructureId(),
+                                sibling.getRootPath(),
+                                CmsUUID.getNullUUID(),
+                                link.getTarget(),
+                                CmsResource.DATE_RELEASED_DEFAULT,
+                                CmsResource.DATE_EXPIRED_DEFAULT,
+                                link.getType());
+                        } else {
+                            relation = new CmsRelation(sibling, target, link.getType());
+                        }
+                        m_vfsDriver.createRelation(dbc, dbc.currentProject().getId(), relation);
                     }
                 }
             }
         }
-        return newRelations;
     }
 
     /**
@@ -7677,7 +7707,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @return 0: none, 1: structure, 2: resource
      * 
-     * @throws CmsDataAccessException
+     * @throws CmsDataAccessException if something goes wrong
      */
     private int getUpdateState(CmsDbContext dbc, CmsResource resource, List properties) throws CmsDataAccessException {
 

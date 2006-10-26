@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeLinkParseable.java,v $
- * Date   : $Date: 2006/10/11 14:28:01 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/10/26 15:44:19 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.0 
  */
@@ -111,7 +111,12 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
     throws CmsException {
 
         super.deleteResource(cms, securityManager, resource, siblingMode);
-        securityManager.deleteRelationsForResource(cms.getRequestContext(), resource, CmsRelationFilter.TARGETS);
+        // delete relation of sibling too if needed
+        if (siblingMode == CmsResource.DELETE_PRESERVE_SIBLINGS) {
+            securityManager.deleteRelationsForResource(cms.getRequestContext(), resource, CmsRelationFilter.TARGETS);
+        } else {
+            deleteRelationsWithSiblings(cms, securityManager, resource);
+        }
     }
 
     /**

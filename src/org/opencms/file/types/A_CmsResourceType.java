@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/10/25 07:17:52 $
- * Version: $Revision: 1.42.4.11 $
+ * Date   : $Date: 2006/10/26 15:44:18 $
+ * Version: $Revision: 1.42.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.11 $ 
+ * @version $Revision: 1.42.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -746,9 +746,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         if (resource.isFile()) {
             CmsFile file = securityManager.writeFile(cms.getRequestContext(), resource);
-            // remove lost relation entries
+            // remove relation entries
             if (!(this instanceof I_CmsLinkParseable)) {
-                securityManager.deleteRelationsForResource(cms.getRequestContext(), resource, CmsRelationFilter.TARGETS);
+                deleteRelationsWithSiblings(cms, securityManager, resource);
             }
             return file;
         }
@@ -1013,8 +1013,33 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         String newResourceName) throws CmsException {
 
         // delete the links for the original resource
-        securityManager.deleteRelationsForResource(cms.getRequestContext(), oldResource, CmsRelationFilter.TARGETS);
+        deleteRelationsWithSiblings(cms, securityManager, oldResource);
         // create the relations for the new resource, only if type is link parseable!!
         createRelations(cms, securityManager, newResourceName);
+    }
+
+    /**
+     * Deletes all relations for the given resource and all its siblings.<p>
+     * 
+     * @param cms the cms context
+     * @param securityManager the security manager object
+     * @param resource the resource to delete the resource for
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void deleteRelationsWithSiblings(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource) throws CmsException {
+    
+        List siblings;
+        if (resource.getSiblingCount() > 1) {
+            siblings = securityManager.readSiblings(cms.getRequestContext(), resource, CmsResourceFilter.IGNORE_EXPIRATION);
+        } else {
+            siblings = new ArrayList();
+            siblings.add(resource);
+        }
+        Iterator it = siblings.iterator();
+        while (it.hasNext()) {
+            CmsResource sibling = (CmsResource)it.next();
+            securityManager.deleteRelationsForResource(cms.getRequestContext(), sibling, CmsRelationFilter.TARGETS);
+        }
     }
 }

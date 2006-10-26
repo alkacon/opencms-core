@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2006/08/25 12:56:55 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/10/26 15:44:19 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * Unit tests for the resource type configuration options.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -887,7 +887,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         relations = cms.getRelationsForResource(newLinkName, CmsRelationFilter.TARGETS);
         assertEquals(relations.size(), 1);
         relations = cms.getRelationsForResource(newLinkName, CmsRelationFilter.SOURCES);
-        assertEquals(relations.size(), 1);
+        assertEquals(relations.size(), 2);  // since the source file has a sibling!
 
         // check the online project
         project = cms.getRequestContext().currentProject();
@@ -927,7 +927,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         relations = cms.getRelationsForResource(newLinkName, CmsRelationFilter.TARGETS);
         assertEquals(relations.size(), 1);
         relations = cms.getRelationsForResource(newLinkName, CmsRelationFilter.SOURCES);
-        assertEquals(relations.size(), 1);
+        assertEquals(relations.size(), 2); // since the source file has a sibling!
 
         cms.lockResource(sourceName);
         cms.writeFile(file);

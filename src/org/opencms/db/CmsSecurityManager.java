@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/10/25 07:17:52 $
- * Version: $Revision: 1.97.4.12 $
+ * Date   : $Date: 2006/10/26 15:44:18 $
+ * Version: $Revision: 1.97.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,9 +61,7 @@ import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsMultiException;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
-import org.opencms.relations.CmsRelationType;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -352,7 +350,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_CHANGE_LOCK_OF_RESOURCE_2,
-                context.getSitePath(resource), 
+                context.getSitePath(resource),
                 " - " + e.getMessage()), e);
         } finally {
             dbc.clear();
@@ -1063,38 +1061,6 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
-    }
-
-    /**
-     * Creates a new relation of the given type between the given resources.<p>
-     * 
-     * @param context the current user context
-     * @param source the resource to create the relation for
-     * @param target the target resource for the relation
-     * @param type the relation type 
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsDriverManager#createRelation(CmsDbContext, CmsRelation)
-     */
-    public void createRelationForResource(
-        CmsRequestContext context,
-        CmsResource source,
-        CmsResource target,
-        CmsRelationType type) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            m_driverManager.createRelation(dbc, new CmsRelation(source, target, type));
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_CREATE_RELATION_3,
-                dbc.removeSiteRoot(source.getRootPath()),
-                dbc.removeSiteRoot(target.getRootPath()),
-                type), e);
-        } finally {
-            dbc.clear();
-        }
     }
 
     /**
@@ -2013,7 +1979,8 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getLockedResources(CmsRequestContext context, String foldername, CmsLockFilter filter) throws CmsException {
+    public List getLockedResources(CmsRequestContext context, String foldername, CmsLockFilter filter)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         // perform a test for read permissions on the folder
@@ -2122,7 +2089,7 @@ public final class CmsSecurityManager {
      * @param resource the resource to retrieve the relations for
      * @param filter the filter to match the relation 
      * 
-     * @return all {@link CmsRelation} objects for the given resource mathing the given filter
+     * @return all {@link org.opencms.relations.CmsRelation} objects for the given resource mathing the given filter
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -4581,17 +4548,14 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong 
      * 
-     * @return the list of new relations
-     * 
      * @see CmsDriverManager#updateRelationsForResource(CmsDbContext, CmsResource, List)
      */
-    public List updateRelationsForResource(CmsRequestContext context, CmsResource resource, List relations)
+    public void updateRelationsForResource(CmsRequestContext context, CmsResource resource, List relations)
     throws CmsException {
 
-        List newRelations = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            newRelations = m_driverManager.updateRelationsForResource(dbc, resource, relations);
+            m_driverManager.updateRelationsForResource(dbc, resource, relations);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_UPDATE_RELATIONS_1,
@@ -4599,7 +4563,6 @@ public final class CmsSecurityManager {
         } finally {
             dbc.clear();
         }
-        return newRelations;
     }
 
     /**
