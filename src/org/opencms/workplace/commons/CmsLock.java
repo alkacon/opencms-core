@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2006/10/26 15:17:03 $
- * Version: $Revision: 1.16.4.7 $
+ * Date   : $Date: 2006/10/26 15:59:18 $
+ * Version: $Revision: 1.16.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.7 $ 
+ * @version $Revision: 1.16.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -238,7 +238,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append("function setConfirmationMessage(locks, blockinglocks) {\n");
         html.append("\tvar confMsg = document.getElementById('conf-msg');\n");
         html.append("\tif (locks > -1) {\n");
-        if (!getSettings().getUserSettings().getDialogShowLock()) {
+        if (!getSettings().getUserSettings().getDialogShowLock() && (CmsLock.getDialogAction(getCms()) != CmsLock.TYPE_LOCKS)) {
             // auto commit if lock dialog disabled
             html.append("\t\tif (blockinglocks == 0) {\n");
             html.append("\t\t\tsubmitAction('");
