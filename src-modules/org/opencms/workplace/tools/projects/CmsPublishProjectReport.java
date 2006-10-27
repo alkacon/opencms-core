@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsPublishProjectReport.java,v $
- * Date   : $Date: 2006/10/10 07:50:10 $
- * Version: $Revision: 1.9.4.1 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.9.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.9.4.1 $ 
+ * @version $Revision: 1.9.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -159,7 +159,7 @@ public class CmsPublishProjectReport extends CmsReport {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListReport#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
@@ -208,6 +208,10 @@ public class CmsPublishProjectReport extends CmsReport {
 
     /**
      * Starts the link validation thread for the project.<p>
+     * 
+     * @param publishList the list of resources to publish
+     * 
+     * @throws JspException if something goes wrong
      */
     private void startValidationThread(CmsPublishList publishList) throws JspException {
 
@@ -222,7 +226,6 @@ public class CmsPublishProjectReport extends CmsReport {
             // set the key name for the continue checkbox
             setParamReportContinueKey(Messages.GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0);
         } catch (Throwable e) {
-
             // error while link validation, show error screen
             includeErrorpage(this, e);
         }

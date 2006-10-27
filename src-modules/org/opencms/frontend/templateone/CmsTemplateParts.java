@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.20.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -205,6 +205,9 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
      * @param layout the layout type of the template to get
+     * @param locale the locale to use
+     * @param project the project id
+     * 
      * @return a unique part key
      */
     private String generateKey(String target, String element, String layout, Locale locale, int project) {
@@ -234,6 +237,8 @@ public final class CmsTemplateParts implements I_CmsEventListener {
 
     /**
      * Initializes (also clears) the internal part cache map.<p>
+     * 
+     * @return the new created part cache map
      */
     private synchronized Map initPartsMap() {
 

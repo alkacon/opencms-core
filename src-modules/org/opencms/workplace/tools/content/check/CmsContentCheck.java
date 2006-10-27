@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheck.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.2 
  */
@@ -373,6 +373,8 @@ public class CmsContentCheck {
 
     /**
      * Initializes the CmsContent check and reads all available plugins.<p>
+     * 
+     * @throws CmsException if somehting goes wrong
      */
     private void init() throws CmsException {
 

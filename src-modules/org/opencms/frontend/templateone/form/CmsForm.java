@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.27.4.3 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.27.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Thomas Weckert 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.27.4.3 $ 
+ * @version $Revision: 1.27.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1010,7 +1010,6 @@ public class CmsForm {
     /**
      * Creates the checkbox field to activate the confirmation mail in the input form.<p>
      * 
-     * @param jsp the initialized CmsJspActionElement to access the OpenCms API
      * @param messages the localized messages
      * @param initial if true, field values are filled with values specified in the XML configuration, otherwise values are read from the request
      * @return the checkbox field to activate the confirmation mail in the input form

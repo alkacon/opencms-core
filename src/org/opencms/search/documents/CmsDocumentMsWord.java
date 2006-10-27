@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentMsWord.java,v $
- * Date   : $Date: 2006/10/14 08:44:57 $
- * Version: $Revision: 1.7.8.1 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.7.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.7.8.1 $ 
+ * @version $Revision: 1.7.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,7 +66,7 @@ public class CmsDocumentMsWord extends A_CmsVfsDocument {
     /**
      * Returns the raw text content of a given vfs resource containing MS Word data.<p>
      * 
-     * @see org.opencms.search.documents.A_CmsVfsDocument#createDocument(CmsObject, A_CmsIndexResource, org.opencms.search.CmsSearchIndex)
+     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, A_CmsIndexResource, CmsSearchIndex)
      */
     public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, CmsSearchIndex index)
     throws CmsIndexException, CmsException {

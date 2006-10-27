@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditBase.java,v $
- * Date   : $Date: 2006/03/27 14:52:53 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.12.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -265,7 +265,12 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
 
     /**
      * Creates all module folders that are selected in the input form.<p>
+     * 
      * @param module the module
+     * 
+     * @return the updated module
+     * 
+     * @throws CmsException if somehting goes wrong
      */
     private CmsModule createModuleFolders(CmsModule module) throws CmsException {
 

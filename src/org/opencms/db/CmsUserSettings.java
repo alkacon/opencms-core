@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/10/23 12:09:21 $
- * Version: $Revision: 1.36.4.5 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.36.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.5 $
+ * @version $Revision: 1.36.4.6 $
  * 
  * @since 6.0.0
  */
@@ -1335,7 +1335,7 @@ public class CmsUserSettings {
      * Sets if the "create index page" checkbox in the new folder 
      * dialog should be initially be checked or not. <p>
      * 
-     * @param controls if the "create index page" checkbox in the new folder 
+     * @param setting if the "create index page" checkbox in the new folder 
      *      dialog should be initially be checked or not.
      */
     public void setNewFolderCreateIndexPage(Boolean setting) {
@@ -1347,7 +1347,7 @@ public class CmsUserSettings {
      * Sets if the "edit properties" checkbox in the new folder 
      * dialog should be initially be checked or not. <p>
      * 
-     * @param controls if the "edit properties" checkbox in the new folder 
+     * @param setting if the "edit properties" checkbox in the new folder 
      *      dialog should be initially be checked or not.
      */
     public void setNewFolderEditPropertes(Boolean setting) {
@@ -1556,7 +1556,7 @@ public class CmsUserSettings {
      * Sets if the resource type selection dialog should 
      * be shown in the file upload process (non - applet version) or not. <p>
      * 
-     * @param if the resource type selection dialog should 
+     * @param showUploadTypeDialog if the resource type selection dialog should 
      *      be shown in the file upload process (non - applet version)
      */
     public void setShowUploadTypeDialog(Boolean showUploadTypeDialog) {

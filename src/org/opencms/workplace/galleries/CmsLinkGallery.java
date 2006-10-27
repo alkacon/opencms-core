@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2006/10/26 08:36:53 $
- * Version: $Revision: 1.22.4.3 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.22.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,17 +68,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.22.4.3 $ 
+ * @version $Revision: 1.22.4.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsLinkGallery extends A_CmsGallery {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLinkGallery.class);
-
-    /** The order value of the gallery for sorting the galleries. */
-    private static final Integer ORDER_GALLERY = new Integer(30);
 
     /**
      *  Request parameter name needed for the action: edit property value.<p>
@@ -104,10 +98,16 @@ public class CmsLinkGallery extends A_CmsGallery {
     /** Request parameter value for parameter  <code>{@link #PARAM_EDITPROPERTY}</code> for editing the title of a pointer. */
     public static final String VALUE_EDITPROPERTY_TITLE = "editpropertytitle";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLinkGallery.class);
+
+    /** The order value of the gallery for sorting the galleries. */
+    private static final Integer ORDER_GALLERY = new Integer(30);
+
     /** The property to edit on the previewed resource. */
     private String m_paramEditProperty;
 
-    /** The property value to edit for the property <code> m_paramEditProperty</code> on the previewed resource. */
+    /** The property value to edit for the property <code>{@link #m_paramEditProperty}</code> on the previewed resource. */
     private String m_paramEditPropertyValue;
 
     /**
@@ -235,49 +235,6 @@ public class CmsLinkGallery extends A_CmsGallery {
     }
 
     /**
-     * @see org.opencms.workplace.galleries.A_CmsGallery#buildGalleryItemListCustomEndCols(org.opencms.file.CmsResource, java.lang.String)
-     */
-    protected String buildGalleryItemListCustomEndCols(CmsResource res, String tdClass) {
-
-        StringBuffer result = new StringBuffer(64);
-        result.append("\t<td class=\"");
-        result.append(tdClass);
-        result.append("\">");
-        String linkTarget;
-        try {
-            CmsFile file = CmsFile.upgrade(res, getCms());
-            linkTarget = new String(file.getContents());
-        } catch (CmsException e) {
-            linkTarget = "";
-        }
-        result.append(linkTarget);
-        result.append("</td>\n");
-        return result.toString();
-    }
-
-    /**
-     * @see org.opencms.workplace.galleries.A_CmsGallery#buildGalleryItemListHeadline()
-     */
-    protected String buildGalleryItemListHeadline() {
-
-        StringBuffer headline = new StringBuffer(16);
-        headline.append("<tr>");
-        headline.append("<td class=\"headline\">&nbsp;</td>");
-        headline.append("<td class=\"headline\" width=\"25%\">");
-        headline.append(key(Messages.GUI_LABEL_NAME_0));
-        headline.append("</td>");
-        headline.append("<td class=\"headline\" width=\"45%\">");
-        headline.append(key(Messages.GUI_LABEL_TITLE_0));
-        headline.append("</td>");
-        headline.append("<td class=\"headline\" width=\"30%\">");
-        headline.append(key(Messages.GUI_INPUT_LINKTO_0));
-        headline.append("</td>");
-        headline.append("</tr>");
-
-        return headline.toString();
-    }
-
-    /**
      * Builds the html String for the preview frame.<p>
      * 
      * @return the html String for the preview frame
@@ -355,29 +312,6 @@ public class CmsLinkGallery extends A_CmsGallery {
     }
 
     /**
-     * Changes the given pointer ressource if the current request has <code>{@link org.opencms.workplace.CmsDialog#PARAM_ACTION}</code> 
-     * set to <code>{@link A_CmsGallery#DIALOG_EDITPROPERTY}</code>.<p>
-     * 
-     * @param res the internal pointer resource to modify
-     * 
-     * @throws CmsException if sth. goes wrong
-     */
-    private void changePointer(CmsResource res) throws CmsException {
-
-        // don't do anything if this is no edit property submit
-        if (DIALOG_EDITPROPERTY.equals(getParamAction())) {
-            if (hasWritePermissions()) {
-                if (VALUE_EDITPROPERTY_LINK.equals(m_paramEditProperty)) {
-                    writePointerLink(res);
-                } else if (VALUE_EDITPROPERTY_TITLE.equals(m_paramEditProperty)) {
-                    writeTitleProperty(res);
-                }
-            }
-        }
-
-    }
-
-    /**
      * Builds the javascript for submitting the property changes for the current pointer in the
      * preview frame.<p>
      * 
@@ -401,27 +335,6 @@ public class CmsLinkGallery extends A_CmsGallery {
         result.append("}\n");
 
         return result.toString();
-    }
-
-    /**
-     * @see org.opencms.workplace.galleries.A_CmsGallery#editPropertyButton()
-     */
-    private String editPropertyButton(String property) {
-
-        try {
-            if (hasWritePermissions()) {
-                return button(
-                    "javascript:submitAction('" + property + "');",
-                    null,
-                    "edit.png",
-                    Messages.GUI_INPUT_EDITPROPERTYINFO_0,
-                    0);
-            }
-        } catch (CmsException e) {
-            // error checking permissions
-            LOG.error(e);
-        }
-        return button(null, null, "edit_in.png", "", 0);
     }
 
     /**
@@ -450,55 +363,24 @@ public class CmsLinkGallery extends A_CmsGallery {
         return ORDER_GALLERY;
     }
 
+    /**
+     * Returns the property to edit on the previewed resource parameter value.<p>
+     * 
+     * @return the parameter value
+     */
     public String getParamEditProperty() {
 
         return m_paramEditProperty;
     }
 
+    /**
+     * Returns the property value to edit on the previewed resource parameter value.<p>
+     * 
+     * @return the parameter value
+     */
     public String getParamEditPropertyValue() {
 
         return m_paramEditPropertyValue;
-    }
-
-    /**
-     * Returns a list of hit items.<p>
-     * 
-     * Searches by the title property value, resource name and stored external link.<p> 
-     * 
-     * @param items a list of resource items
-     * @return a list of hit items
-     */
-    protected List getSearchHits(List items) {
-
-        String searchword = getParamSearchWord().toLowerCase();
-        List hitlist = new ArrayList();
-        if (items != null) {
-            Iterator i = items.iterator();
-            while (i.hasNext()) {
-                try {
-                    CmsResource res = (CmsResource)i.next();
-                    String resname = res.getName().toLowerCase();
-                    String restitle = getJsp().property(
-                        CmsPropertyDefinition.PROPERTY_TITLE,
-                        getCms().getSitePath(res),
-                        resname).toLowerCase();
-                    // get the link    
-                    CmsFile file = CmsFile.upgrade(res, getCms());
-                    String link = new String(file.getContents()).toLowerCase();
-
-                    if ((restitle.indexOf(searchword) != -1)
-                        || (resname.indexOf(searchword) != -1)
-                        || (link.indexOf(searchword) != -1)) {
-                        // add this resource to the hitlist
-                        hitlist.add(res);
-                    }
-                } catch (CmsException e) {
-                    // this should never happen, but in case it does, skip this resource
-                }
-            }
-        }
-
-        return hitlist;
     }
 
     /**
@@ -551,8 +433,8 @@ public class CmsLinkGallery extends A_CmsGallery {
      * id attribute set to <code>column1</code> preset with <code>column2</code>.<p>
      * 
      * @param column1 the string value for the first column
-     * 
      * @param column2 the string value for the second column 
+     * @param inputField if <code>true</code> the <tt>column1</tt> parameter is used as <tt>id</tt> attribute for the input field
      * 
      * @return a HTML table row with two columns
      */
@@ -562,7 +444,6 @@ public class CmsLinkGallery extends A_CmsGallery {
         if (inputField) {
             result = previewRow(column1, column2, column1);
         } else {
-
             StringBuffer previewRow = new StringBuffer();
             previewRow.append("<tr align=\"left\">\n");
             previewRow.append("<td>\n<b><nobr>");
@@ -582,41 +463,6 @@ public class CmsLinkGallery extends A_CmsGallery {
     }
 
     /**
-     * Generates a HTML table row with two columns that contain the name on the left side and an a text input or 
-     * plain text on the right side with the given <code>id attribute</code> value.<p>
-     * 
-     * The first column includes the given display String, the second column includes an input field with the 
-     * id attribute set to <code>column1</code> preset with <code>column2</code>.<p>
-     * 
-     * @param column1 the string value for the first column
-     * 
-     * @param column2 the string value for the input field in the 2nd column 
-     * 
-     * @param inputFieldId the <code>id attribute</code> valeu for the input field in the 2nd column
-     * 
-     * @return a HTML table row with two columns
-     */
-    private String previewRow(String column1, String column2, String inputFieldId) {
-
-        StringBuffer previewRow = new StringBuffer();
-        previewRow.append("<tr align=\"left\">\n");
-        previewRow.append("<td>\n<b><nobr>");
-        previewRow.append(column1);
-        previewRow.append("&nbsp;</nobr></b>\n</td>\n");
-        previewRow.append("<td>\n");
-        previewRow.append("<input id=\"").append(inputFieldId).append("\" name=\"").append(inputFieldId).append(
-            "\" value=\"").append(column2).append("\" size=\"50\"/>");
-        previewRow.append("</td>\n");
-        previewRow.append(this.editPropertyButton(inputFieldId));
-        // this is glue or the button would be stretched
-        previewRow.append("<td class=\"maxwidth\">&nbsp;</td>\n");
-        previewRow.append("</tr>\n");
-
-        return previewRow.toString();
-
-    }
-
-    /**
      * Sets the value of the request parameter <code>{@link #PARAM_EDITPROPERTY}</code>.<p>
      * 
      * @param paramEditProperty the value of the request parameter <code>{@link #PARAM_EDITPROPERTY}</code> to set
@@ -629,7 +475,7 @@ public class CmsLinkGallery extends A_CmsGallery {
     /**
      * Sets the value of the request parameter <code>{@link #PARAM_EDITPROPERTY_VALUE}</code>.<p>
      * 
-     * @param paramEditProperty the value of the request parameter <code>{@link #PARAM_EDITPROPERTY_VALUE}</code> to set
+     * @param paramEditPropertyValue the value of the request parameter <code>{@link #PARAM_EDITPROPERTY_VALUE}</code> to set
      */
     public void setParamEditPropertyValue(String paramEditPropertyValue) {
 
@@ -645,17 +491,87 @@ public class CmsLinkGallery extends A_CmsGallery {
     }
 
     /**
-     * Writes the current link into the pointer resource. <p>
-     * 
-     * @param res the pointer resource to change the link of 
-     * 
-     * @throws CmsException if sth. goes wrong
+     * @see org.opencms.workplace.galleries.A_CmsGallery#buildGalleryItemListCustomEndCols(org.opencms.file.CmsResource, java.lang.String)
      */
-    private void writePointerLink(CmsResource res) throws CmsException {
+    protected String buildGalleryItemListCustomEndCols(CmsResource res, String tdClass) {
 
-        CmsFile file = CmsFile.upgrade(res, getCms());
-        file.setContents(m_paramEditPropertyValue.getBytes());
-        getCms().writeFile(file);
+        StringBuffer result = new StringBuffer(64);
+        result.append("\t<td class=\"");
+        result.append(tdClass);
+        result.append("\">");
+        String linkTarget;
+        try {
+            CmsFile file = CmsFile.upgrade(res, getCms());
+            linkTarget = new String(file.getContents());
+        } catch (CmsException e) {
+            linkTarget = "";
+        }
+        result.append(linkTarget);
+        result.append("</td>\n");
+        return result.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.galleries.A_CmsGallery#buildGalleryItemListHeadline()
+     */
+    protected String buildGalleryItemListHeadline() {
+
+        StringBuffer headline = new StringBuffer(16);
+        headline.append("<tr>");
+        headline.append("<td class=\"headline\">&nbsp;</td>");
+        headline.append("<td class=\"headline\" width=\"25%\">");
+        headline.append(key(Messages.GUI_LABEL_NAME_0));
+        headline.append("</td>");
+        headline.append("<td class=\"headline\" width=\"45%\">");
+        headline.append(key(Messages.GUI_LABEL_TITLE_0));
+        headline.append("</td>");
+        headline.append("<td class=\"headline\" width=\"30%\">");
+        headline.append(key(Messages.GUI_INPUT_LINKTO_0));
+        headline.append("</td>");
+        headline.append("</tr>");
+
+        return headline.toString();
+    }
+
+    /**
+     * Returns a list of hit items.<p>
+     * 
+     * Searches by the title property value, resource name and stored external link.<p> 
+     * 
+     * @param items a list of resource items
+     * @return a list of hit items
+     */
+    protected List getSearchHits(List items) {
+
+        String searchword = getParamSearchWord().toLowerCase();
+        List hitlist = new ArrayList();
+        if (items != null) {
+            Iterator i = items.iterator();
+            while (i.hasNext()) {
+                try {
+                    CmsResource res = (CmsResource)i.next();
+                    String resname = res.getName().toLowerCase();
+                    String restitle = getJsp().property(
+                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        getCms().getSitePath(res),
+                        resname).toLowerCase();
+                    // get the link    
+                    CmsFile file = CmsFile.upgrade(res, getCms());
+                    String link = new String(file.getContents()).toLowerCase();
+
+                    if ((restitle.indexOf(searchword) != -1)
+                        || (resname.indexOf(searchword) != -1)
+                        || (link.indexOf(searchword) != -1)) {
+                        // add this resource to the hitlist
+                        hitlist.add(res);
+                    }
+                } catch (CmsException e) {
+                    // this should never happen, but in case it does, skip this resource
+                }
+            }
+        }
+
+        return hitlist;
     }
 
     /**
@@ -708,5 +624,106 @@ public class CmsLinkGallery extends A_CmsGallery {
             // writing the property failed, log error
             LOG.error(e);
         }
+    }
+
+    /**
+     * Changes the given pointer ressource if the current request has <code>{@link org.opencms.workplace.CmsDialog#PARAM_ACTION}</code> 
+     * set to <code>{@link A_CmsGallery#DIALOG_EDITPROPERTY}</code>.<p>
+     * 
+     * @param res the internal pointer resource to modify
+     * 
+     * @throws CmsException if sth. goes wrong
+     */
+    private void changePointer(CmsResource res) throws CmsException {
+
+        // don't do anything if this is no edit property submit
+        if (DIALOG_EDITPROPERTY.equals(getParamAction())) {
+            if (hasWritePermissions()) {
+                if (VALUE_EDITPROPERTY_LINK.equals(m_paramEditProperty)) {
+                    writePointerLink(res);
+                } else if (VALUE_EDITPROPERTY_TITLE.equals(m_paramEditProperty)) {
+                    writeTitleProperty(res);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Generates an edit property button for the gallery button bar.<p>
+     * 
+     * If the current resource is not 'editable' a disabled button will be returned.<p>
+     * 
+     * @param property the property to edit 
+     * 
+     * @return an edit property button for the gallery button bar
+     * 
+     * @see org.opencms.workplace.galleries.A_CmsGallery#editPropertyButton()
+     */
+    private String editPropertyButton(String property) {
+
+        try {
+            if (hasWritePermissions()) {
+                return button(
+                    "javascript:submitAction('" + property + "');",
+                    null,
+                    "edit.png",
+                    Messages.GUI_INPUT_EDITPROPERTYINFO_0,
+                    0);
+            }
+        } catch (CmsException e) {
+            // error checking permissions
+            LOG.error(e);
+        }
+        return button(null, null, "edit_in.png", "", 0);
+    }
+
+    /**
+     * Generates a HTML table row with two columns that contain the name on the left side and an a text input or 
+     * plain text on the right side with the given <code>id attribute</code> value.<p>
+     * 
+     * The first column includes the given display String, the second column includes an input field with the 
+     * id attribute set to <code>column1</code> preset with <code>column2</code>.<p>
+     * 
+     * @param column1 the string value for the first column
+     * 
+     * @param column2 the string value for the input field in the 2nd column 
+     * 
+     * @param inputFieldId the <code>id attribute</code> value for the input field in the 2nd column
+     * 
+     * @return a HTML table row with two columns
+     */
+    private String previewRow(String column1, String column2, String inputFieldId) {
+
+        StringBuffer previewRow = new StringBuffer();
+        previewRow.append("<tr align=\"left\">\n");
+        previewRow.append("<td>\n<b><nobr>");
+        previewRow.append(column1);
+        previewRow.append("&nbsp;</nobr></b>\n</td>\n");
+        previewRow.append("<td>\n");
+        previewRow.append("<input id=\"").append(inputFieldId).append("\" name=\"").append(inputFieldId).append(
+            "\" value=\"").append(column2).append("\" size=\"50\"/>");
+        previewRow.append("</td>\n");
+        previewRow.append(this.editPropertyButton(inputFieldId));
+        // this is glue or the button would be stretched
+        previewRow.append("<td class=\"maxwidth\">&nbsp;</td>\n");
+        previewRow.append("</tr>\n");
+
+        return previewRow.toString();
+
+    }
+
+    /**
+     * Writes the current link into the pointer resource. <p>
+     * 
+     * @param res the pointer resource to change the link of 
+     * 
+     * @throws CmsException if sth. goes wrong
+     */
+    private void writePointerLink(CmsResource res) throws CmsException {
+
+        CmsFile file = CmsFile.upgrade(res, getCms());
+        file.setContents(m_paramEditPropertyValue.getBytes());
+        getCms().writeFile(file);
     }
 }

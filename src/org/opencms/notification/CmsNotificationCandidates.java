@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsNotificationCandidates.java,v $
- * Date   : $Date: 2006/09/20 14:38:00 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -257,7 +257,7 @@ public class CmsNotificationCandidates {
      * notification any more.
      * removes all resources which do not occur in the candidate list.<p>
      * 
-     * @param resources the list of resources to remove from the set of confirmed resources
+     * @param contentNotifications the list of {@link CmsContentNotification} objects to remove from the set of confirmed resources
      * @return a new CmsConfirmedResources Object which all the resource removed
      */
     private Collection filterConfirmedResources(Collection contentNotifications) {

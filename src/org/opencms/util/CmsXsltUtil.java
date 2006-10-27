@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXsltUtil.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.2.2.2 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.2.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.xml.transform.stream.StreamSource;
  *
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.2.2.2 $ 
+ * @version $Revision: 1.2.2.3 $ 
  * 
  * @since 6.2.1
  */
@@ -219,7 +219,6 @@ public final class CmsXsltUtil {
      * @return a XML representation of the CSV data
      * 
      * @param csvData the csv data to convert
-     * @param colGroup the format definitions for the table columns, can be null
      * @param delimiter the delimiter to separate the values with
      * 
      * @throws IOException if there is an IO problem

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/10/09 15:56:45 $
- * Version: $Revision: 1.241.4.11 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.241.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.11 $
+ * @version $Revision: 1.241.4.12 $
  * 
  * @since 6.0.0 
  */
@@ -2177,6 +2177,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      * @param publishHistoryId the publish history id
      * @param backupTagId the backup tag id
      * 
+     * @return <code>true</code> if the resource has actually been moved
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
     protected boolean fixMovedResource(
@@ -2187,7 +2189,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         int backupTagId) throws CmsDataAccessException {
 
         CmsResource onlineResource;
-        // check if the file has been moved sine last publishing
+        // check if the file has been moved since last publishing
         try {
             onlineResource = m_driverManager.getVfsDriver().readResource(
                 dbc,

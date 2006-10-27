@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/10/24 07:17:52 $
- * Version: $Revision: 1.19.4.9 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.19.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.9 $ 
+ * @version $Revision: 1.19.4.10 $ 
  * 
  * @since 6.0.0 
  * 
@@ -569,7 +569,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     }
 
     /**
-     * @see org.opencms.staticexport.A_CmsOnDemandStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
+     * @see org.opencms.staticexport.A_CmsStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
      */
     protected List getRelatedFilesToPurge(String exportFileName, String vfsName) {
 

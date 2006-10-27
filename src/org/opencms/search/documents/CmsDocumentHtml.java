@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentHtml.java,v $
- * Date   : $Date: 2006/10/14 08:44:57 $
- * Version: $Revision: 1.8.8.1 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.8.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8.8.1 $ 
+ * @version $Revision: 1.8.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,19 +69,17 @@ public class CmsDocumentHtml extends A_CmsVfsDocument {
     /**
      * Returns the raw text content of a given vfs resource containing HTML data.<p>
      * 
-     * @see org.opencms.search.documents.A_CmsVfsDocument#createDocument(CmsObject, A_CmsIndexResource, CmsSearchIndex)
+     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, A_CmsIndexResource, CmsSearchIndex)
      */
     public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, CmsSearchIndex index)
     throws CmsIndexException, CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
         CmsFile file = readFile(cms, resource);
-
         try {
             String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
             CmsProperty encProp = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true);
             String encoding = encProp.getValue(OpenCms.getSystemInfo().getDefaultEncoding());
-
             return CmsExtractorHtml.getExtractor().extractText(file.getContents(), encoding);
         } catch (Exception e) {
             throw new CmsIndexException(

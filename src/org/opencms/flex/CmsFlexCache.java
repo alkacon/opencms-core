@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.52.4.2 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.52.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.52.4.2 $ 
+ * @version $Revision: 1.52.4.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -155,9 +155,16 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         /**
          * Ensures that all variations that referenced by this key are released
          * if the key is released.<p>
+         * 
+         * @param entry the entry to remove
+         *  
+         * @return
          */
         protected boolean removeLRU(LinkEntry entry) {
 
+            // TODO: check why this method always returns true!?
+            int todo;
+            
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)entry.getValue();
             if (v == null) {
                 return true;

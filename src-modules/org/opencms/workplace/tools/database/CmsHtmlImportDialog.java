@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImportDialog.java,v $
- * Date   : $Date: 2006/10/09 09:14:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  */
 public class CmsHtmlImportDialog extends CmsWidgetDialog {
@@ -216,6 +216,9 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
         return PAGES;
     }
 
+    /**
+     * Initializes this widget dialog's object.<p>
+     */
     protected void initHtmlImportObject() {
 
         Object o;

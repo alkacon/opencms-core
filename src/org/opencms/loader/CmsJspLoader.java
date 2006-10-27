@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/10/17 17:25:52 $
- * Version: $Revision: 1.100.4.6 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.100.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100.4.6 $ 
+ * @version $Revision: 1.100.4.7 $ 
  * 
  * @since 6.0.0 
  * 
@@ -609,8 +609,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @param controller the controller for the JSP integration
      * @param updatedFiles a Set containing all JSP pages that have been already updated
      * @param isHardInclude indicated if this page is actually a "hard" include with <code>&lt;%@ include file="..." &gt;</code>
+     * 
      * @return the modified JSP content
-     * @throws UnsupportedEncodingException
      */
     private byte[] parseJsp(
         byte[] byteContent,

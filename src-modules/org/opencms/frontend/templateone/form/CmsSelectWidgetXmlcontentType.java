@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -140,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.2 $
+ * @version $Revision: 1.2.4.3 $
  * 
  * @since 6.1.3
  * 
@@ -154,7 +154,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.2 $
+     * @version $Revision: 1.2.4.3 $
      * 
      * @since 6.1.6
      * 
@@ -253,7 +253,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.2 $
+     * @version $Revision: 1.2.4.3 $
      * 
      * @since 6.1.6
      * 
@@ -807,14 +807,13 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * File laoding and unmarshalling is only done if the given String contains xpath macros.
      * <p>
      * 
-     * @param cms to access values in the cmsobject.
+     * @param cms to access values in the cmsobject
+     * @param resource the resource pointing to an xmlcontent containing the macro values to resolve
+     * @param value the unresolved macro string
      * 
-     * @param content the resource pointing to an xmlcontent containing the macro values to resolve.
+     * @return a String with resolved xpath macros that have been read from the xmlcontent
      * 
-     * @param value the unresolved macro string.
-     * 
-     * @return a String with resolved xpath macros that have been read from the xmlcontent.
-     * 
+     * @throws CmsException if somehting goes wrong
      */
     private String resolveXpathMacros(CmsObject cms, CmsResource resource, String value) throws CmsException {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsContentNotification.java,v $
- * Date   : $Date: 2006/09/29 08:57:33 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -137,7 +137,6 @@ public class CmsContentNotification extends A_CmsNotification {
      * Creates the mail to be sent to the responsible user.<p>
      * 
      * @return the mail to be sent to the responsible user
-     * @throws CmsException if something goes wrong
      */
     protected String generateHtmlMsg() {
 
@@ -346,6 +345,9 @@ public class CmsContentNotification extends A_CmsNotification {
 
     /**
      * Returns a string representation of this resource info.<p>
+     * 
+     * @param notificationCause the notification cause 
+     * @param row the row number
      * 
      * @return a string representation of this resource info
      */

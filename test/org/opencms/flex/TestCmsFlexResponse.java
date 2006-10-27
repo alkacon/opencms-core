@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexResponse.java,v $
- * Date   : $Date: 2006/08/25 11:03:52 $
- * Version: $Revision: 1.1.8.1 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.1.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Jason Trump
  *  
- * @version $Revision: 1.1.8.1 $
+ * @version $Revision: 1.1.8.2 $
  * 
  * @since 6.0.1
  */
@@ -271,7 +271,11 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     }
 
     /** 
-     * Convenience method to create a mock HttpServletRequest backed by the given invocation handler.<p>
+     * Convenience method to create a mock {@link HttpServletRequest} backed by the given invocation handler.<p>
+     * 
+     * @param recorder the mock recorder
+     *  
+     * @return the new created request
      */
     private static HttpServletRequest createMockRequest(RecordingMock recorder) {
 
@@ -279,7 +283,11 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     }
 
     /** 
-     * Convenience method to create a mock HttpServletResponse backed by the given invocation handler.<p>
+     * Convenience method to create a mock {@link HttpServletResponse} backed by the given invocation handler.<p>
+     * 
+     * @param recorder the mock recorder
+     *  
+     * @return the new created response
      */
     private static HttpServletResponse createMockResponse(RecordingMock recorder) {
 

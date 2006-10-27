@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2006/09/22 12:33:52 $
- * Version: $Revision: 1.3.4.2 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.3.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.3.4.2 $
+ * @version $Revision: 1.3.4.3 $
  * 
  * @since 6.0.0
  */
@@ -348,8 +348,6 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * Note that a valid search (<code>{@link CmsSearch#getSearchResult()}</code> with 
      * correct settings and inited) has to be triggered before this call or an empty 
      * String will be returned. <p>
-     * 
-     * @param search the preconfigured search bean 
      * 
      * @return the hmtl for the category search results
      */

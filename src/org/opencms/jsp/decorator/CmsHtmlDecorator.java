@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2006/09/20 08:48:26 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2.4.3 $ 
+ * @version $Revision: 1.2.4.4 $ 
  * 
  * @since 6.1.3 
  */
@@ -362,8 +362,12 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
     /**
      * Checks if a word must be decoded.<p>
      * 
-     * The given word is compated to a negative list of words which must not be decoded.
+     * The given word is compared to a negative list of words which must not be decoded.<p>
+     * 
      * @param word the word to test
+     * @param wordList the list of words which must not be decoded
+     * @param count the count in the list
+     * 
      * @return true if the word must be decoded, false otherweise
      */
     private boolean mustDecode(String word, List wordList, int count) {

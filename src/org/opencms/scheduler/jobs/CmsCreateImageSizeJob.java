@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsCreateImageSizeJob.java,v $
- * Date   : $Date: 2006/08/21 15:59:20 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.Map;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.0.2 
  */
@@ -240,7 +240,7 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
      * Unlocks the given resource (if required).<p>
      * 
      * @param cms the OpenCms user context
-     * @param unlockFlag the previous lock status of the resource
+     * @param lock the lock of the resource
      * @param res the resource to lock
      * 
      * @throws CmsException in case something goes wrong

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlTagRemoveFactory.java,v $
- * Date   : $Date: 2006/07/20 13:48:31 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,47 +54,39 @@ import org.htmlparser.visitors.NodeVisitor;
 
 /**
  * 
- * A tag factory for htmlparser that is able to "remove tags".
- * <p>
+ * A tag factory for htmlparser that is able to "remove tags".<p>
  * 
  * Create an instance, add the {@link org.htmlparser.Tag} instances to remove and assign this
  * factory to the {@link org.htmlparser.Parser} before starting a visit. A demo usage is shown in
- * {@link org.opencms.workplace.tools.content.CmsTagReplaceParser}.
- * <p>
+ * {@link org.opencms.workplace.tools.content.CmsTagReplaceParser}.<p>
  * 
  * The tags are not actually removed: They are linked in the document object model tree of the HTML
  * that the parser generates. They just will not accept any {@link NodeVisitor} instances and
- * therefore be invisible in any output a visitor will generate from the visited tree.
- * <p>
+ * therefore be invisible in any output a visitor will generate from the visited tree.<p>
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.2 $
+ * @version $Revision: 1.2.4.3 $
  * 
  * @since 6.1.8
- * 
  */
 public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
 
     /**
      * 
-     * A Tag implementation that will not accept any {@link NodeVisitor} stopping by.
-     * <p>
+     * A Tag implementation that will not accept any {@link NodeVisitor} stopping by.<p>
      * 
      * When visiting the corresponding tree of tags, this tag will be there but the visitor will not
      * see it as it is not accepted. This allows "elimination" of this tag in the output the visitor
-     * generates from the document object model (e.g. HTML code again).
-     * <p>
+     * generates from the document object model (e.g. HTML code again).<p>
      * 
-     * Potential child tags will be visible to visitors (unless they are instances of this class).
-     * <p>
+     * Potential child tags will be visible to visitors (unless they are instances of this class).<p>
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.2 $
+     * @version $Revision: 1.2.4.3 $
      * 
      * @since 6.1.8
-     * 
      */
     private static final class CmsInvisibleTag implements Tag {
 
@@ -120,7 +112,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         }
 
         /**
-         * @see org.htmlparser.nodes.TagNode#accept(org.htmlparser.visitors.NodeVisitor)
+         * @see org.htmlparser.Tag#accept(org.htmlparser.visitors.NodeVisitor)
          */
         public void accept(NodeVisitor visitor) {
 

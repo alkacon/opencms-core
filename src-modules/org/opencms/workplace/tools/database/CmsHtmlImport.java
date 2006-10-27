@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2006/10/09 09:14:05 $
- * Version: $Revision: 1.12.4.7 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.12.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.12.4.7 $ 
+ * @version $Revision: 1.12.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -794,7 +794,6 @@ public class CmsHtmlImport {
      * Builds an index of all files to be imported and determines their new names in the OpenCms.<p>
      * 
      * @param startfolder the folder to start with
-     * @param report report to write ouput to
      * 
      * @throws Exception if something goes wrong
      */

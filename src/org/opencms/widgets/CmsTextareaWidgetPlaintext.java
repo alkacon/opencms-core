@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsTextareaWidgetPlaintext.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.3.0 
  */
@@ -67,7 +67,7 @@ public final class CmsTextareaWidgetPlaintext extends CmsTextareaWidget {
     }
 
     /**
-     * @see org.opencms.widgets.CmsInputWidget#newInstance()
+     * @see org.opencms.widgets.CmsTextareaWidget#newInstance()
      */
     public I_CmsWidget newInstance() {
 

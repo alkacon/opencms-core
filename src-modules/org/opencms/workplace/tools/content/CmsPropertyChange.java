@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyChange.java,v $
- * Date   : $Date: 2006/09/25 08:25:28 $
- * Version: $Revision: 1.14.2.2 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.14.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14.2.2 $ 
+ * @version $Revision: 1.14.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -459,7 +459,6 @@ public class CmsPropertyChange extends CmsDialog {
      * 
      * Returns a list with all sub resources that have been modified this way.<p>
      *
-     * @param context the current request context
      * @param resourceRootPath the resource on which property definition values are changed
      * @param propertyDefinition the name of the propertydefinition to change the value
      * @param newValue the new value of the propertydefinition

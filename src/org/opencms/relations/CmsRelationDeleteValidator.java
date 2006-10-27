@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationDeleteValidator.java,v $
- * Date   : $Date: 2006/10/20 15:36:12 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.3
  */
@@ -66,7 +66,7 @@ public class CmsRelationDeleteValidator {
      * 
      * @author Michael Moossen 
      * 
-     * @version $Revision: 1.1.2.2 $ 
+     * @version $Revision: 1.1.2.3 $ 
      * 
      * @since 6.5.3 
      */
@@ -226,7 +226,6 @@ public class CmsRelationDeleteValidator {
      * 
      * The values are {@link CmsRelation} objects.<p>
      * 
-     * @param cms the cms object
      * @param resourceNames a list of resource names to be deleted
      * @param includeSiblings if the siblings should also be deleted
      * 

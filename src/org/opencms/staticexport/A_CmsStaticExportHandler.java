@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2006/10/25 14:33:24 $
- * Version: $Revision: 1.3.4.8 $
+ * Date   : $Date: 2006/10/27 11:14:07 $
+ * Version: $Revision: 1.3.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3.4.8 $ 
+ * @version $Revision: 1.3.4.9 $ 
  * 
  * @since 6.1.7 
  * 
@@ -133,6 +133,8 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * so that the export is newly created after the next request to the resource.<p>
      * 
      * @param publishHistoryId id of the last published project
+     * 
+     * @return the list of {@link CmsPublishedResource} objects to export
      */
     public List scrubExportFolders(CmsUUID publishHistoryId) {
 
