@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/Messages.java,v $
- * Date   : $Date: 2006/09/29 11:46:47 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/10/27 08:59:13 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,12 +120,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NOTIFICATIONS_SENT_TO_0 = "LOG_NOTIFICATIONS_SENT_TO_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_PUBLISH_FAILED_2 = "LOG_PUBLISH_FAILED_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_PUBLISH_FINISHED_1 = "LOG_PUBLISH_FINISHED_1";
-    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.notification.messages";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/Messages.java,v $
- * Date   : $Date: 2006/10/05 12:04:31 $
- * Version: $Revision: 1.9.4.2 $
+ * Date   : $Date: 2006/10/27 08:59:13 $
+ * Version: $Revision: 1.9.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.9.4.2 $ 
+ * @version $Revision: 1.9.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +74,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECK_INTERNAL_LINK_HELP_0 = "GUI_CHECK_INTERNAL_LINK_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECK_INTERNAL_LINK_LIST_HELP_0 = "GUI_CHECK_INTERNAL_LINK_LIST_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECK_INTERNAL_LINK_LIST_NAME_0 = "GUI_CHECK_INTERNAL_LINK_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECK_INTERNAL_LINK_NAME_0 = "GUI_CHECK_INTERNAL_LINK_NAME_0";
