@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/09/21 09:34:47 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2006/10/27 13:39:29 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -5465,7 +5465,8 @@ public final class CmsSecurityManager {
         // checking the filter is less cost intensive then checking the cache,
         // this is why basic filter results are not cached
         String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(
-            String.valueOf(filter.requireVisible()),
+            filter.requireVisible() && checkLock ? "11" : (!filter.requireVisible() && checkLock ? "01"
+            : (filter.requireVisible() && !checkLock ? "10" : "00")),
             dbc,
             resource,
             requiredPermissions);
@@ -5497,15 +5498,13 @@ public final class CmsSecurityManager {
             }
         }
 
-        if (writeRequired) {
+        if (writeRequired && checkLock) {
             // check lock state only if required
             CmsLock lock = m_driverManager.getLock(dbc, resource);
             // if the resource is not locked by the current user, write and control 
             // access must cause a permission error that must not be cached
-            if (checkLock || !lock.isNullLock()) {
-                if (!dbc.currentUser().getId().equals(lock.getUserId())) {
-                    return PERM_NOTLOCKED;
-                }
+            if (lock.isNullLock() || !dbc.currentUser().getId().equals(lock.getUserId())) {
+                return PERM_NOTLOCKED;
             }
         }
 
