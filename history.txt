@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/26 12:26:32 $
- * Version: $Revision: 1.786 $
+ * Date   : $Date: 2006/10/27 08:35:38 $
+ * Version: $Revision: 1.787 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,9 +71,6 @@ OpenCms 6.2.3 -
 ! Improved I/O performance when uploading zip files / building search index
 ! Added option for manual placement of "direct edit" buttons, depending on the provider implementation
 ! Implemented a text only "direct edit" button provider that supports manual placement
-! Extended layout page with possibility of an external link to a xml content to integrated content(headline, text, image)
-  from that
-
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
