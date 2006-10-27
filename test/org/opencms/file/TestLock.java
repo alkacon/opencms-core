@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.20.4.1 $
+ * Date   : $Date: 2006/10/27 12:38:22 $
+ * Version: $Revision: 1.20.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.1 $
+ * @version $Revision: 1.20.4.2 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -79,7 +79,7 @@ public class TestLock extends OpenCmsTestCase {
         
         TestSuite suite = new TestSuite();
         suite.setName(TestLock.class.getName());
-             
+              
         suite.addTest(new TestLock("testLockWithDeletedNewFiles"));
         suite.addTest(new TestLock("testLockForFile"));
         suite.addTest(new TestLock("testLockForFolder"));

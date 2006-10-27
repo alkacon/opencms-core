@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.19.8.1 $
+ * Date   : $Date: 2006/10/27 12:38:22 $
+ * Version: $Revision: 1.19.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,8 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.19.8.1 $
+ * 
+ * @version $Revision: 1.19.8.2 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -768,15 +769,16 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         echo("Testing to overwrite invisible resource");
 
         // Creating paths
-        String file = "/test_index.html";
         String source = "index.html";
+        String target = "/test_index.html";
 
-        cms.createResource(file, CmsResourceTypePlain.getStaticTypeId());
+        cms.createResource(target, CmsResourceTypePlain.getStaticTypeId());
 
-        // remove read permission for test2
-        cms.chacc(file, I_CmsPrincipal.PRINCIPAL_USER, "test2", "-r+v+i");
-        cms.unlockResource(file);
-        storeResources(cms, file);
+        // remove read permission for user test2
+        cms.chacc(target, I_CmsPrincipal.PRINCIPAL_USER, "test2", "-r+v+i");
+        cms.unlockResource(target);
+        storeResources(cms, source);
+        storeResources(cms, target);
 
         // login as test2
         cms.loginUser("test2", "test2");
@@ -784,25 +786,32 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         // try to read the file
         try {
-            cms.readResource(file, CmsResourceFilter.ALL);
+            cms.readResource(target, CmsResourceFilter.ALL);
             fail("should fail to read the resource without permissions");
         } catch (CmsPermissionViolationException e) {
             // ok
         }
 
-        // try to overwrite
-        cms.lockResource(source);
+        // try to overwrite without locking
         try {
-            cms.lockResource(file);
-            cms.copyResource(source, file);
+            cms.copyResource(source, target);
+            fail("should fail to overwrite a resource without a lock on the target");
+        } catch (CmsLockException e) {
+            // ok
+        }
+        
+        // try to lock the target, this is not possible because of missing permissions
+        try {
+            cms.lockResource(target);
             fail("should fail to overwrite the resource without read permissions");
         } catch (CmsPermissionViolationException e) {
             // ok
         }
 
+        // now try to create a resource with the same name, must also fail
         try {
-            cms.createResource(file, CmsResourceTypeXmlPage.getStaticTypeId());
-            fail("should fail to overwrite the resource without read permissions");
+            cms.createResource(target, CmsResourceTypeXmlPage.getStaticTypeId());
+            fail("should fail to create a resource that already exists");
         } catch (CmsLockException e) {
             // ok
         }
@@ -811,6 +820,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
-        assertFilter(cms, file, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        // make sure nothing has been changed
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        assertFilter(cms, target, OpenCmsTestResourceFilter.FILTER_EQUAL);
     }
 }

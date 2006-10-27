@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/10/27 12:38:22 $
+ * Version: $Revision: 1.22.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.22.8.1 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -82,6 +82,7 @@ public class TestPermissions extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestPermissions.class.getName());
                 
+        suite.addTest(new TestPermissions("testLockStatusPermission"));
         suite.addTest(new TestPermissions("testPublishPermissions"));
         suite.addTest(new TestPermissions("testVisiblePermission"));
         suite.addTest(new TestPermissions("testVisiblePermissionForFolder"));
@@ -495,5 +496,46 @@ public class TestPermissions extends OpenCmsTestCase {
         if (! cms.hasPermissions(res, new CmsPermissionSet(CmsPermissionSet.PERMISSION_VIEW, 0), true, CmsResourceFilter.ONLY_VISIBLE)) {
             fail("Visible permission not detected");
         }
+    }
+    
+    /**
+     * Test the lock status permisssions.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testLockStatusPermission() throws Throwable {
+
+        CmsObject cms = getCmsObject();     
+        echo("Testing lock status permissions on a file");
+        
+        String resource = "/folder1/page1.html";
+        CmsResource res = cms.readResource(resource);
+        
+        // first lock resource as user "test1"
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.lockResource(resource);  
+        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));
+        
+        // now check resource as user "test2"
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL)); 
+        assertFalse(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL)); 
+        
+        // switch the lock to user "test2"
+        cms.changeLock(resource);
+        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));        
+        
+        // back to user "test1"
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL)); 
+        assertFalse(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL)); 
+        
+        // switch the lock to user "test1"
+        cms.changeLock(resource);
+        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));    
+        cms.unlockResource(resource);
     }  
 }
