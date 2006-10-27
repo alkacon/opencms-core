@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/10/19 14:59:15 $
- * Version: $Revision: 1.24.4.7 $
+ * Date   : $Date: 2006/10/27 10:49:48 $
+ * Version: $Revision: 1.24.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.7 $ 
+ * @version $Revision: 1.24.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -344,6 +344,10 @@ public final class CmsFileUtil {
                 // windows path like C:\home\
                 drive = path.substring(0, 2);
                 path = path.substring(2);
+            } else if ((path.length() > 1) && (path.charAt(0) == '/') && (path.charAt(1) == '/')) {
+                // windows path like \\home\ (network mapped drives)
+                drive = path.substring(0, 2);
+                path = path.substring(2);
             }
             if (path.charAt(0) == '/') {
                 // trick to resolve all ../ inside a path
@@ -351,12 +355,12 @@ public final class CmsFileUtil {
             }
             // resolve all '../' or './' elements in the path
             path = CmsLinkManager.getAbsoluteUri(path, "/");
+            // still some '//' elements might persist
+            path = CmsStringUtil.substitute(path, "//", "/");
             // re-append drive if required
             if (drive != null) {
                 path = drive.concat(path);
             }
-            // still some '//' elements might persist
-            path = CmsStringUtil.substitute(path, "//", "/");
             // switch '/' back to OS dependend File separator if required
             if (separatorChar != '/') {
                 path = path.replace('/', separatorChar);

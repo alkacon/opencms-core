@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/26 10:04:36 $
- * Version: $Revision: 1.717.2.89 $
+ * Date   : $Date: 2006/10/27 10:49:48 $
+ * Version: $Revision: 1.717.2.90 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ OpenCms 6.5.4 - xxxx, 2006
 * Fixed issue #1243: Workplace display messed up after multiple static export
 * Fixed issue #1250: Display issue of preview button in link gallery widget
 * Fixed issue #1252: Availability context menu entry not shown for pointer resources
+* Fixed issue #1255: OpenCms is not able to work on Windows mapped network drives
 * Fixed display of date values of xml elements in history comparison
 ! Improved I/O performance when uploading zip files / building search index
 ! Allow changing of external links from within link gallery
