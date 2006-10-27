@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/A_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2006/10/27 16:01:00 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/27 17:23:52 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,35 +37,26 @@ import org.opencms.util.CmsUUID;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Abstract class to grant the needed access to the session manager.<p>
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.4 
  */
 public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHandler {
 
-    /** The static log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsAuthorizationHandler.class);
-
     /**
-     * Registers the given user (cms object) with OpenCms.<p>
+     * Registers the current session with OpenCms.<p>
      * 
      * @param request the current request
      * @param cms the cms object to register
      */
-    protected void registerUser(HttpServletRequest request, CmsObject cms) {
+    protected void registerSession(HttpServletRequest request, CmsObject cms) {
         
         CmsSessionInfo sessionInfo = new CmsSessionInfo(cms.getRequestContext(), new CmsUUID(), request.getSession().getMaxInactiveInterval());
         OpenCmsCore.getInstance().getSessionManager().addSessionInfo(sessionInfo);
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Session-Informationen für Benutzer '" + cms.getRequestContext().currentUser().getName() + "' in OpenCms gesetzt.");
-        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2006/10/27 16:01:00 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/10/27 17:23:52 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.4 
  */
@@ -52,7 +52,8 @@ public interface I_CmsAuthorizationHandler {
     /**
      * Creates a new cms object from the given request object.<p>
      * 
-     * This method is called automatically by OpenCms everytime a new resource is requested.<p>
+     * This method is called by OpenCms everytime a resource is requested
+     * and the session can not automatically be authenticated.<p>
      * 
      * @param request the http request to authenticate
      * 
@@ -63,7 +64,7 @@ public interface I_CmsAuthorizationHandler {
     /**
      * Autheticates the current request with additional user information.<p>
      * 
-     * You should call this method by your own.<p>
+     * You have to call this method by your own.<p>
      * 
      * @param request the http request to authenticate
      * @param userName the user name to authenticate
