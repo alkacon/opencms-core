@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/08/31 08:56:44 $
- * Version: $Revision: 1.218.4.11 $
+ * Date   : $Date: 2006/10/27 16:01:00 $
+ * Version: $Revision: 1.218.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,9 +69,11 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.security.CmsDefaultAuthorizationHandler;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
@@ -107,7 +109,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
@@ -134,7 +135,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.11 $ 
+ * @version $Revision: 1.218.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -238,6 +239,9 @@ public final class OpenCmsCore {
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
+
+    /** The configured authorization handler. */
+    private I_CmsAuthorizationHandler m_authorizationHandler;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance 
@@ -1020,6 +1024,9 @@ public final class OpenCmsCore {
         // get the validation handler
         m_validationHandler = systemConfiguration.getValidationHandler();
 
+        // get the authorization handler
+        m_authorizationHandler = systemConfiguration.getAuthorizationHandler();
+        
         // get the login manager
         m_loginManager = systemConfiguration.getLoginManager();
 
@@ -1610,58 +1617,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Checks if the current request contains http basic authentication information in 
-     * the headers, if so tries to log in the user identified.<p>
-     *  
-     * @param cms the current cms context
-     * @param req the current http request
-     * @param res the current http response
-     * @throws IOException in case of errors reading from the streams
-     */
-    private void checkBasicAuthorization(CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws IOException {
-
-        // no user identified from the session and basic authentication is enabled
-        String auth = req.getHeader("Authorization");
-
-        // user is authenticated, check password
-        if (auth != null) {
-
-            // only do basic authentification
-            if (auth.toUpperCase().startsWith("BASIC ")) {
-
-                // get encoded user and password, following after "BASIC "
-                String base64Token = auth.substring(6);
-
-                // decode it, using base 64 decoder
-                String token = new String(Base64.decodeBase64(base64Token.getBytes()));
-                String username = null;
-                String password = null;
-                int pos = token.indexOf(":");
-                if (pos != -1) {
-                    username = token.substring(0, pos);
-                    password = token.substring(pos + 1);
-                }
-                // authentication in the DB
-                try {
-                    try {
-                        // try to login as a user first ...
-                        cms.loginUser(username, password);
-                    } catch (CmsException exc) {
-                        // login as user failed, try as webuser ...
-                        cms.loginWebUser(username, password);
-                    }
-                    // authentification was successful create a session
-                    req.getSession(true);
-                } catch (CmsException e) {
-                    // authentification failed, so display a login screen
-                    requestAuthorization(req, res);
-                }
-            }
-        }
-    }
-
-    /**
      * Generates a formated exception output.<p>
      * 
      * Because the exception could be thrown while accessing the system files,
@@ -1822,11 +1777,10 @@ public final class OpenCmsCore {
      * <ol>
      * <li>Session authentification: OpenCms stores information of all authentificated
      *      users in an internal storage based on the users session.</li>
-     * <li>HTTP authentification: If the session authentification fails, it is checked if the current
-     *      user is providing data for HTTP BASIC authentification. If this check is positive, the user 
-     *      is tried to log in with this data, and on success a session is generated.</li>
-     * <li>Default user: When both authentification methods fail, the user is
-     * set to the default (Guest) user.</li>
+     * <li>Authorization handler authentification: If the session authentification fails, 
+     *      the current configured authorization handler is called.</li>
+     * <li>Default user: When both authentification methods fail, the user is set to 
+     *      the default (Guest) user.</li>
      * </ol>
      *
      * @param req the current http request
@@ -1863,16 +1817,17 @@ public final class OpenCmsCore {
             }
             cms = initCmsObject(req, sessionInfo.getUser().getName(), siteroot, project);
         } else {
-            // no OpenCms user session info object found, login the user as guest user
-            cms = initCmsObject(
-                req,
-                OpenCms.getDefaultUsers().getUserGuest(),
-                site.getSiteRoot(),
-                CmsProject.ONLINE_PROJECT_ID);
-            // check if "basic" authentification data is provided
-            checkBasicAuthorization(cms, req, res);
+            cms = m_authorizationHandler.initCmsObject(req);
+            if (cms == null) {
+                // authentification failed, so display a login screen
+                requestAuthorization(req, res);
+                cms = initCmsObject(
+                    req,
+                    OpenCms.getDefaultUsers().getUserGuest(),
+                    site.getSiteRoot(),
+                    CmsProject.ONLINE_PROJECT_ID);
+            }
         }
-
         // return the initialized cms user context object
         return cms;
     }
@@ -1922,7 +1877,9 @@ public final class OpenCmsCore {
      * @param userName the name of the user to init
      * @param currentSite the users current site 
      * @param projectId the id of the users current project
+     * 
      * @return the initialized CmsObject
+     * 
      * @throws CmsException in case something goes wrong
      */
     private CmsObject initCmsObject(HttpServletRequest req, String userName, String currentSite, int projectId)

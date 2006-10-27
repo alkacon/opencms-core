@@ -30,7 +30,8 @@
 	http-authentication,
 	resultcache,
 	content-notification?,
-	workflow?)>
+	workflow?,
+	authorizationhandler?)>
 
 <!--
 # Version history settings.
@@ -456,3 +457,12 @@ Each job can have an optional list of parameters.
 
 <!ELEMENT workflowengine EMPTY>
 <!ATTLIST workflowengine class CDATA #REQUIRED>
+
+<!--
+# Authorization handler:
+# Provides methods for SSO.
+# See the JavaDoc of interface org.opencms.security.I_CmsAuthorizationHandler for more details.
+-->
+<!ELEMENT authorizationhandler EMPTY>
+<!ATTLIST authorizationhandler class CDATA #REQUIRED>
+

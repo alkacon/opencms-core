@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/08/31 08:56:53 $
- * Version: $Revision: 1.36.4.6 $
+ * Date   : $Date: 2006/10/27 16:01:00 $
+ * Version: $Revision: 1.36.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,8 +51,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.security.CmsDefaultAuthorizationHandler;
 import org.opencms.security.CmsDefaultValidationHandler;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
@@ -79,7 +81,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.6 $
+ * @version $Revision: 1.36.4.7 $
  * 
  * @since 6.0.0
  */
@@ -105,6 +107,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The node name for the alias node. */
     public static final String N_ALIAS = "alias";
+
+    /** The node name for the authorization handler. */
+    public static final String N_AUTHORIZATIONHANDLER = "authorizationhandler";
 
     /** The node name for the avgcachebytes node. */
     public static final String N_AVGCACHEBYTES = "avgcachebytes";
@@ -391,6 +396,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
 
+    /** The authorization handler. */
+    private I_CmsAuthorizationHandler m_authorizationHandler;
+
     /** The settings of the driver manager. */
     private CmsCacheSettings m_cacheSettings;
 
@@ -487,6 +495,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_runtimeProperties = new HashMap();
         m_eventManager = new CmsEventManager();
         m_validationHandler = new CmsDefaultValidationHandler();
+        m_authorizationHandler = new CmsDefaultAuthorizationHandler();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
         }
@@ -507,28 +516,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void addEventManager(String clazz) {
 
-        Object initClass;
         try {
-            initClass = Class.forName(clazz).newInstance();
-        } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.INIT_EVENTMANAGER_CLASS_INVALID_2,
-                clazz,
-                m_resourceInitHandlers.getClass().getName()), t);
-            return;
-        }
-        if (initClass instanceof CmsEventManager) {
-            m_eventManager = (CmsEventManager)initClass;
+            m_eventManager = (CmsEventManager)Class.forName(clazz).newInstance();
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EVENTMANAGER_CLASS_SUCCESS_1, initClass));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_EVENTMANAGER_CLASS_SUCCESS_1,
+                    m_eventManager));
             }
-        } else {
-            if (CmsLog.INIT.isErrorEnabled()) {
-                CmsLog.INIT.error(Messages.get().getBundle().key(
-                    Messages.INIT_EVENTMANAGER_CLASS_INVALID_2,
-                    initClass,
-                    m_resourceInitHandlers.getClass().getName()));
-            }
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(Messages.INIT_EVENTMANAGER_CLASS_INVALID_1, clazz), t);
+            return;
         }
     }
 
@@ -819,11 +816,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, "setPasswordHandler");
 
         // add validation handler creation rules
-        digester.addObjectCreate(
-            "*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER,
-            A_CLASS,
-            CmsDefaultValidationHandler.class);
-        digester.addSetNext("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, "setValidationHandler");
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, "setValidationHandler", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, 0, A_CLASS);
 
         // add login manager creation rules
         digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 2);
@@ -972,6 +966,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // add workflow engine rule
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_ENGINE, "setWorkflowEngine", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_ENGINE, 0, A_CLASS);
+
+        // add authorization handler creation rules
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, "setAuthorizationHandler", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, 0, A_CLASS);
     }
 
     /**
@@ -1075,9 +1073,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         eventManagerElement.addAttribute(A_CLASS, m_eventManager.getClass().getName());
 
         // version history
-        systemElement.addElement(N_VERSIONHISTORY).addAttribute(
-            A_ENABLED,
-            String.valueOf(m_versionHistoryEnabled)).addAttribute(
+        systemElement.addElement(N_VERSIONHISTORY).addAttribute(A_ENABLED, String.valueOf(m_versionHistoryEnabled)).addAttribute(
             A_COUNT,
             new Integer(m_versionHistoryMaxCount).toString());
 
@@ -1261,8 +1257,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             String.valueOf(m_cmsFlexCacheConfiguration.getAvgCacheBytes()));
         flexcacheElement.addElement(N_MAXENTRYBYTES).addText(
             String.valueOf(m_cmsFlexCacheConfiguration.getMaxEntryBytes()));
-        flexcacheElement.addElement(N_MAXKEYS).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.getMaxKeys()));
+        flexcacheElement.addElement(N_MAXKEYS).addText(String.valueOf(m_cmsFlexCacheConfiguration.getMaxKeys()));
 
         // create <http-authentication> node
         Element httpAuthenticationElement = systemElement.addElement(N_HTTP_AUTHENTICATION);
@@ -1307,8 +1302,24 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             }
         }
 
+        // authorization handler
+        if (m_authorizationHandler != null) {
+            Element authorizationHandlerElem = systemElement.addElement(N_AUTHORIZATIONHANDLER);
+            authorizationHandlerElem.addAttribute(A_CLASS, m_authorizationHandler.getClass().getName());
+        }
+
         // return the vfs node
         return systemElement;
+    }
+
+    /**
+     * Returns an instance of the configured authorization handler.<p>
+     * 
+     * @return an instance of the configured authorization handler
+     */
+    public I_CmsAuthorizationHandler getAuthorizationHandler() {
+
+        return m_authorizationHandler;
     }
 
     /**
@@ -1591,6 +1602,28 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Sets the authorization handler.<p>
+     * 
+     * @param authorizationHandlerClass the authorization handler class to set.
+     */
+    public void setAuthorizationHandler(String authorizationHandlerClass) {
+
+        try {
+            m_authorizationHandler = (I_CmsAuthorizationHandler)Class.forName(authorizationHandlerClass).newInstance();
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.INIT_AUTHORIZATION_HANDLER_CLASS_SUCCESS_1,
+                    authorizationHandlerClass));
+            }
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
+                m_authorizationHandler), t);
+            return;
+        }
+    }
+
+    /**
      * Sets the settings of the driver manager.<p>
      *
      * @param settings the settings of the driver manager
@@ -1857,13 +1890,22 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /**
      * Sets the validation handler.<p>
      * 
-     * @param validationHandler the validation handler to set.
+     * @param validationHandlerClass the validation handler class to set.
      */
-    public void setValidationHandler(I_CmsValidationHandler validationHandler) {
+    public void setValidationHandler(String validationHandlerClass) {
 
-        m_validationHandler = validationHandler;
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_VALIDATION_HANDLER_1, validationHandler));
+        try {
+            m_validationHandler = (I_CmsValidationHandler)Class.forName(validationHandlerClass).newInstance();
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.INIT_VALIDATION_HANDLER_CLASS_SUCCESS_1,
+                    validationHandlerClass));
+            }
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1,
+                validationHandlerClass), t);
+            return;
         }
     }
 

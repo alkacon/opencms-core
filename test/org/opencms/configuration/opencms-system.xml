@@ -147,5 +147,6 @@
 			<workflowmanager class="org.opencms.workflow.WorkflowTestManager"/>
 			<workflowengine class="org.opencms.workflow.WorkflowTestEngine"/>
 		</workflow>            
+		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
 	</system>
 </opencms>

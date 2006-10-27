@@ -87,5 +87,6 @@
             <notification-time>365</notification-time>
             <notification-project>Offline</notification-project>
         </content-notification>		
+		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
 	</system>
 </opencms>
