@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Messages.java,v $
- * Date   : $Date: 2006/04/21 15:10:41 $
- * Version: $Revision: 1.8.4.3 $
+ * Date   : $Date: 2006/10/27 08:55:16 $
+ * Version: $Revision: 1.8.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8.4.3 $ 
+ * @version $Revision: 1.8.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -341,6 +341,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_SETTINGS_EDITOR_LABEL_PROJECTFILES_BLOCK_0 = "GUI_SETTINGS_EDITOR_LABEL_PROJECTFILES_BLOCK_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_VIEWPROJECT_ADMIN_TOOL_NAVBARNAME_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_NAVBARNAME_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_VIEWPROJECT_ADMIN_TOOL_NAME_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_NAME_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_VIEWPROJECT_ADMIN_TOOL_HELP_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_HELP_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_VIEWPROJECT_ADMIN_TOOL_GROUP_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_GROUP_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.projects.messages";
