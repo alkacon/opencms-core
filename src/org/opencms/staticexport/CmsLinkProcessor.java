@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2006/10/24 15:00:53 $
- * Version: $Revision: 1.46.4.4 $
+ * Date   : $Date: 2006/10/27 09:26:56 $
+ * Version: $Revision: 1.46.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.staticexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
@@ -60,7 +61,7 @@ import org.htmlparser.util.SimpleNodeIterator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46.4.4 $ 
+ * @version $Revision: 1.46.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -327,7 +328,8 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                     link.checkConsistency(m_cms);
                     String l = link.getLink(m_cms, m_processEditorLinks);
                     if (TAG_PARAM.equals(tag.getTagName())) {
-                        // HACK: to distinguish link params the link itself have to end with '&' or '?'
+                        // HACK: to distinguish link params the link itself has to end with '&' or '?'
+                        // another solution should be a kind of macro...
                         if (!l.endsWith(CmsRequestUtil.URL_DELIMITER)
                             && !l.endsWith(CmsRequestUtil.PARAMETER_DELIMITER)) {
                             if (l.indexOf(CmsRequestUtil.URL_DELIMITER) > 0) {
@@ -338,7 +340,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                         }
                     }
                     // set the real target
-                    tag.setAttribute(attr, l);
+                    tag.setAttribute(attr, CmsEncoder.escapeXml(l));
                 }
                 break;
             case REPLACE_LINKS:
@@ -347,6 +349,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                 if (CmsStringUtil.isNotEmpty(targetUri)) {
                     String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
                     // HACK: to distinguish link params the link itself has to end with '&' or '?'
+                    // another solution should be a kind of macro...
                     if (!TAG_PARAM.equals(tag.getTagName())
                         || targetUri.endsWith(CmsRequestUtil.URL_DELIMITER)
                         || targetUri.endsWith(CmsRequestUtil.PARAMETER_DELIMITER)) {
