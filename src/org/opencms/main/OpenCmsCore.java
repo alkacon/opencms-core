@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/10/27 16:01:00 $
- * Version: $Revision: 1.218.4.12 $
+ * Date   : $Date: 2006/10/30 09:01:12 $
+ * Version: $Revision: 1.218.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,6 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
-import org.opencms.security.CmsDefaultAuthorizationHandler;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
@@ -135,7 +134,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.12 $ 
+ * @version $Revision: 1.218.4.13 $ 
  * 
  * @since 6.0.0 
  */
