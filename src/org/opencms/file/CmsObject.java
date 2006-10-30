@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/10/20 15:36:12 $
- * Version: $Revision: 1.146.4.11 $
+ * Date   : $Date: 2006/10/30 10:47:47 $
+ * Version: $Revision: 1.146.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.11 $
+ * @version $Revision: 1.146.4.12 $
  * 
  * @since 6.0.0 
  */
@@ -2898,6 +2898,12 @@ public final class CmsObject {
      */
     public List readResourcesWithProperty(String propertyDefinition) throws CmsException {
 
+        // TODO: change the semantic to get all files in the current site and not in the root site
+        //       to be consistent with the other readResourcesWithProperty methods.
+        //       replace call by #readResourcesWithProperty(String, String) to reduce the
+        //       number of methods in security/driver managers
+        int todo;
+        
         return m_securityManager.readResourcesWithProperty(m_context, "/", propertyDefinition);
     }
 
@@ -2916,6 +2922,11 @@ public final class CmsObject {
      */
     public List readResourcesWithProperty(String path, String propertyDefinition) throws CmsException {
 
+        // TODO: Read the resource first to check existence and permissions.
+        //       replace call by #readResourcesWithProperty(String, String, String) 
+        //       to reduce the number of methods in security/driver managers
+        int todo;
+                
         return m_securityManager.readResourcesWithProperty(m_context, addSiteRoot(path), propertyDefinition);
     }
 
@@ -2936,6 +2947,9 @@ public final class CmsObject {
      */
     public List readResourcesWithProperty(String path, String propertyDefinition, String value) throws CmsException {
 
+        // TODO: Read the resource first to check existence and permissions
+        int todo;
+                
         return m_securityManager.readResourcesWithProperty(m_context, addSiteRoot(path), propertyDefinition, value);
     }
 
