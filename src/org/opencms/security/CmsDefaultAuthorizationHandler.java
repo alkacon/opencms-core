@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultAuthorizationHandler.java,v $
- * Date   : $Date: 2006/10/27 17:23:52 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/10/30 08:43:14 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,17 +46,17 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.4 
  */
 public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
 
-	/** Basic authorization prefix constant. */
+    /** Basic authorization prefix constant. */
     public static final String AUTHORIZATION_BASIC_PREFIX = "BASIC ";
-	/** Authorization header constant. */
-	public static final String HEADER_AUTHORIZATION = "Authorization";
-	/** Credentials separator constant. */
+    /** Authorization header constant. */
+    public static final String HEADER_AUTHORIZATION = "Authorization";
+    /** Credentials separator constant. */
     public static final String SEPARATOR_CREDENTIALS = ":";
 
     /**
