@@ -122,7 +122,7 @@ function doReportUpdate(msg, state) {
    var confMsg = document.getElementById('conf-msg');
    var isCanDelete = <%= wp.isCanDelete() %>;
    okButton.disabled = !isCanDelete;
-   if (!isCanDelete && state == 'ok' && document.forms['main'].result.value != '0') {
+   if (!isCanDelete && state == 'ok' && txt == '') {
       confMsg.innerHTML = '<%= wp.key(Messages.GUI_DELETE_RELATIONS_NOT_ALLOWED_0) %>';
    } else if (isCanDelete || state == 'ok') {
       confMsg.innerHTML = cnfMsgTxt;
