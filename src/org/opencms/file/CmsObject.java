@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/10/30 10:47:47 $
- * Version: $Revision: 1.146.4.12 $
+ * Date   : $Date: 2006/10/31 12:12:34 $
+ * Version: $Revision: 1.146.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.12 $
+ * @version $Revision: 1.146.4.13 $
  * 
  * @since 6.0.0 
  */
@@ -635,6 +635,9 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void createSibling(String source, String destination, List properties) throws CmsException {
+
+        // TODO: this method could return the new created resource to be consistent with the createResource method
+        int todo;
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource.getTypeId()).createSibling(this, m_securityManager, resource, destination, properties);
@@ -1192,7 +1195,8 @@ public final class CmsObject {
      */
     public List getLockedResources(String foldername, CmsLockFilter filter) throws CmsException {
 
-        return m_securityManager.getLockedResources(m_context, addSiteRoot(foldername), filter);
+        CmsResource resource = readResource(foldername, CmsResourceFilter.ALL);
+        return m_securityManager.getLockedResources(m_context, resource, filter);
     }
 
     /**
@@ -2903,7 +2907,7 @@ public final class CmsObject {
         //       replace call by #readResourcesWithProperty(String, String) to reduce the
         //       number of methods in security/driver managers
         int todo;
-        
+
         return m_securityManager.readResourcesWithProperty(m_context, "/", propertyDefinition);
     }
 
@@ -2926,7 +2930,7 @@ public final class CmsObject {
         //       replace call by #readResourcesWithProperty(String, String, String) 
         //       to reduce the number of methods in security/driver managers
         int todo;
-                
+
         return m_securityManager.readResourcesWithProperty(m_context, addSiteRoot(path), propertyDefinition);
     }
 
@@ -2949,7 +2953,7 @@ public final class CmsObject {
 
         // TODO: Read the resource first to check existence and permissions
         int todo;
-                
+
         return m_securityManager.readResourcesWithProperty(m_context, addSiteRoot(path), propertyDefinition, value);
     }
 
@@ -3188,32 +3192,6 @@ public final class CmsObject {
             type,
             content,
             properties);
-    }
-
-    /**
-     * Returns the original path of given resource, that is the online path for the resource. 
-     * If it differs from the offline path, the resource has been moved.<p>
-     * 
-     * @param resourceName a site relative resource name
-     * 
-     * @return the online path
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public String resourceOriginalPath(String resourceName) throws CmsException {
-
-        // TODO: Do we really need a user acessible function for this? 
-        int todo_v7;
-
-        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
-        String result = m_context.removeSiteRoot(m_securityManager.resourceOriginalPath(m_context, resource));
-        // remove '/' if needed
-        if (result.charAt(result.length() - 1) == '/') {
-            if (resourceName.charAt(resourceName.length() - 1) != '/') {
-                result = result.substring(0, result.length() - 1);
-            }
-        }
-        return result;
     }
 
     /**

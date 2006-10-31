@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.16.4.2 $
+ * Date   : $Date: 2006/10/31 12:12:35 $
+ * Version: $Revision: 1.16.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
@@ -63,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.2 $ 
+ * @version $Revision: 1.16.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,6 +94,37 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /** The undo recursively flag parameter value. */
     private String m_paramRecursive;
+
+    /**
+     * Returns the original path of given resource, that is the online path for the resource. 
+     * If it differs from the offline path, the resource has been moved.<p>
+     * 
+     * @param cms the cms context 
+     * @param resourceName a site relative resource name
+     * 
+     * @return the online path, or <code>null</code> if resource has not been published
+     */
+    public static String resourceOriginalPath(CmsObject cms, String resourceName) {
+
+        CmsProject proj = cms.getRequestContext().currentProject();
+        try {
+            CmsResource resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
+            String result = cms.getSitePath(resource);
+            cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+            result = cms.getSitePath(cms.readResource(resource.getStructureId()));
+            // remove '/' if needed
+            if (result.charAt(result.length() - 1) == '/') {
+                if (resourceName.charAt(resourceName.length() - 1) != '/') {
+                    result = result.substring(0, result.length() - 1);
+                }
+            }
+            return result;
+        } catch (CmsException e) {
+            return null;
+        } finally {
+            cms.getRequestContext().setCurrentProject(proj);
+        }
+    }
 
     /**
      * Public constructor with JSP action element.<p>
@@ -137,8 +170,8 @@ public class CmsUndoChanges extends CmsMultiDialog {
             Iterator it = getResourceList().iterator();
             while (it.hasNext()) {
                 String res = (String)it.next();
-                String target = getCms().resourceOriginalPath(res);
-                if (!target.equals(res)) {
+                String target = resourceOriginalPath(getCms(), res);
+                if (target != null && !target.equals(res)) {
                     CmsResource resource = getCms().readResource(res, CmsResourceFilter.ALL);
                     if (resource.isFolder()) {
                         folderList.add(CmsResource.getParentFolder(target));
@@ -172,16 +205,10 @@ public class CmsUndoChanges extends CmsMultiDialog {
         Iterator i = getResourceList().iterator();
         while (i.hasNext()) {
             String resName = (String)i.next();
-            try {
-                if (!getCms().resourceOriginalPath(resName).equals(resName)) {
-                    // found a moved resource
-                    return true;
-                }
-            } catch (CmsException e) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }
+            String target = resourceOriginalPath(getCms(), resName);
+            if (target != null && !target.equals(resName)) {
+                // found a moved resource
+                return true;
             }
         }
         return false;
@@ -205,16 +232,9 @@ public class CmsUndoChanges extends CmsMultiDialog {
                 getLastModifiedUser()}));
             if (isMoved) {
                 result.append(dialogSpacer());
-                try {
-                    result.append(key(Messages.GUI_UNDO_MOVE_OPERATION_INFO_2, new Object[] {
-                        getFileName(),
-                        getCms().resourceOriginalPath(getParamResource())}));
-                } catch (CmsException e) {
-                    // should never happen
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
-                    }
-                }
+                result.append(key(Messages.GUI_UNDO_MOVE_OPERATION_INFO_2, new Object[] {
+                    getFileName(),
+                    resourceOriginalPath(getCms(), getParamResource())}));
             }
         }
         result.append(dialogSpacer());

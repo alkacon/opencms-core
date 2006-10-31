@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/10/27 12:38:22 $
- * Version: $Revision: 1.97.4.14 $
+ * Date   : $Date: 2006/10/31 12:12:34 $
+ * Version: $Revision: 1.97.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1972,24 +1972,26 @@ public final class CmsSecurityManager {
      * Returns all locked resources in a given folder.<p>
      *
      * @param context the current request context
-     * @param foldername the folder to search in
+     * @param resource the folder to search in
      * @param filter the lock filter
      * 
      * @return a list of locked resource paths (relative to current site)
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getLockedResources(CmsRequestContext context, String foldername, CmsLockFilter filter)
+    public List getLockedResources(CmsRequestContext context, CmsResource resource, CmsLockFilter filter)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // perform a test for read permissions on the folder
-        readResource(dbc, foldername, CmsResourceFilter.ALL);
         List result = null;
         try {
-            result = m_driverManager.getLockedResources(dbc, foldername, filter);
+            checkOfflineProject(dbc);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
+            result = m_driverManager.getLockedResources(dbc, resource, filter);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1, foldername), e);
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1,
+                context.getSitePath(resource)), e);
         } finally {
             dbc.clear();
         }
@@ -4219,7 +4221,7 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#resourceOriginalPath(String)
+     * @see org.opencms.workplace.commons.CmsUndoChanges#resourceOriginalPath(CmsObject, String)
      */
     public String resourceOriginalPath(CmsRequestContext context, CmsResource resource) throws CmsException {
 

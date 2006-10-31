@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/10/26 15:44:18 $
- * Version: $Revision: 1.570.2.31 $
+ * Date   : $Date: 2006/10/31 12:12:34 $
+ * Version: $Revision: 1.570.2.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2209,6 +2209,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // changed/new/deleted files in the specified project
         List modifiedFiles = readChangedResourcesInsideProject(dbc, projectId, 1);
 
+        // TODO: what about other folder based resource types, like microsites?
+        int todo;
+        
         // changed/new/deleted folders in the specified project
         List modifiedFolders = readChangedResourcesInsideProject(dbc, projectId, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
 
@@ -3300,14 +3303,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Returns all locked resources in a given folder.<p>
      *
      * @param dbc the current database context
-     * @param foldername the folder to search in
+     * @param resource the folder to search in
      * @param filter the lock filter
      * 
      * @return a list of locked resource paths (relative to current site)
      * 
      * @throws CmsLockException if the current project is locked
      */
-    public List getLockedResources(CmsDbContext dbc, String foldername, CmsLockFilter filter) throws CmsLockException {
+    public List getLockedResources(CmsDbContext dbc, CmsResource resource, CmsLockFilter filter)
+    throws CmsLockException {
 
         // check the security
         if (dbc.currentProject().getFlags() != CmsProject.PROJECT_STATE_UNLOCKED) {
@@ -3317,7 +3321,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         List lockedResources = new ArrayList();
         // get locked resources
-        Iterator it = m_lockManager.getLocks(foldername, filter).iterator();
+        Iterator it = m_lockManager.getLocks(resource.getRootPath(), filter).iterator();
         while (it.hasNext()) {
             CmsLock lock = (CmsLock)it.next();
             lockedResources.add(dbc.removeSiteRoot(lock.getResourceName()));
