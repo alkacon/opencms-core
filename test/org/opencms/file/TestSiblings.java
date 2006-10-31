@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.17.8.2 $
+ * Date   : $Date: 2006/10/31 08:52:09 $
+ * Version: $Revision: 1.17.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,13 @@ package org.opencms.file;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.file.types.TestLinkParseableResourceTypes;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -53,7 +58,8 @@ import junit.framework.TestSuite;
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.17.8.2 $
+ * 
+ * @version $Revision: 1.17.8.3 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -170,6 +176,7 @@ public class TestSiblings extends OpenCmsTestCase {
         suite.addTest(new TestSiblings("testSiblingIssueAfterImport"));
         suite.addTest(new TestSiblings("testDeleteAllSiblings"));
         suite.addTest(new TestSiblings("testSiblingStateIssue"));
+        suite.addTest(new TestSiblings("testSiblingsRelations"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -228,6 +235,87 @@ public class TestSiblings extends OpenCmsTestCase {
         if (sib3Resource != null) {
             fail("Sibling " + sib3Name + " has not been deleted!");
         }
+    }
+
+    /**
+     * Tests the link management features with siblings.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingsRelations() throws Throwable {
+
+        echo("Testing link management features with siblings");
+        CmsObject cms = getCmsObject();
+
+        String sib1Name = "/folder1/sib1.html";
+        String sib2Name = "/folder1/sib2.html";
+        String sib3Name = "/folder1/sib3.html";
+
+        String targetName = "/folder1/image2.gif";
+        CmsResource target = cms.readResource(targetName);
+
+        CmsResource sib1 = cms.createResource(sib1Name, CmsResourceTypeXmlPage.getStaticTypeId());
+        int sources = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size();
+        TestLinkValidation.setContent(cms, sib1Name, "<img src='" + targetName + "'>");
+        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources++;
+        List links = cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        CmsRelation relation = new CmsRelation(sib1, target, CmsRelationType.EMBEDDED_IMAGE);
+        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+
+        cms.createSibling(sib1Name, sib2Name, Collections.EMPTY_LIST);
+        CmsResource sib2 = cms.readResource(sib2Name);
+        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources++;
+        links = cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib2, target, CmsRelationType.EMBEDDED_IMAGE);
+        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+
+        cms.createSibling(sib1Name, sib3Name, Collections.EMPTY_LIST);
+        CmsResource sib3 = cms.readResource(sib3Name);
+        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources++;
+        links = cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib3, target, CmsRelationType.EMBEDDED_IMAGE);
+        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+
+        // remove the link
+        TestLinkValidation.setContent(cms, sib1Name, "<h1>hello world!</h1>");
+        assertEquals(sources - 3, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources -= 3;
+        assertTrue(cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS).isEmpty());
+        assertTrue(cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS).isEmpty());
+        assertTrue(cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS).isEmpty());
+
+        // add the link again
+        TestLinkValidation.setContent(cms, sib1Name, "<img src='" + targetName + "'>");
+        assertEquals(sources + 3, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources += 3;
+        links = cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib1, target, CmsRelationType.EMBEDDED_IMAGE);
+        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+        links = cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib2, target, CmsRelationType.EMBEDDED_IMAGE);
+        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+        links = cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib3, target, CmsRelationType.EMBEDDED_IMAGE);
+        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+
+        cms.deleteResource(sib3Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources--;
+        cms.deleteResource(sib2Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources--;
+        cms.deleteResource(sib1Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources--;
     }
 
     /**

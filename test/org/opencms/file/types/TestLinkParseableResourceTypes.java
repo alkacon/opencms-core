@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2006/10/26 15:44:19 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/10/31 08:52:09 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,10 +57,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Unit tests for the resource type configuration options.<p>
+ * Unit tests for the link parseable resource types.<p>
  * 
- * @author Alexander Kandzior 
- * @version $Revision: 1.1.2.3 $
+ * @author Michael Moossen
+ * 
+ * @version $Revision: 1.1.2.4 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
