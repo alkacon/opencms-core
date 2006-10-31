@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.17.4.12 $
+ * Date   : $Date: 2006/10/31 15:17:32 $
+ * Version: $Revision: 1.17.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.12 $ 
+ * @version $Revision: 1.17.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -188,7 +188,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
             }
             result.append("<input type=\"radio\" name=\"");
             result.append(PARAM_DELETE_SIBLINGS);
-            result.append("\" value=\"false\"");
+            result.append("radio\" value=\"false\"");
             if (defaultMode == CmsResource.DELETE_PRESERVE_SIBLINGS) {
                 result.append(" checked=\"checked\"");
             }
@@ -197,7 +197,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
             result.append("<br>");
             result.append("<input type=\"radio\" name=\"");
             result.append(PARAM_DELETE_SIBLINGS);
-            result.append("\" value=\"true\"");
+            result.append("radio\" value=\"true\"");
             if (defaultMode == CmsResource.DELETE_REMOVE_SIBLINGS) {
                 result.append(" checked=\"checked\"");
             }

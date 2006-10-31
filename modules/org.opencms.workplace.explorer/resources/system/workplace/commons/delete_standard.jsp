@@ -79,6 +79,7 @@ function showBrokenLinks(show){
 function reloadDialog(deleteSiblings) {
 
    document.forms["printform"].<%=CmsDelete.PARAM_DELETE_SIBLINGS%>.value=deleteSiblings;   
+   document.forms["main"].<%=CmsDelete.PARAM_DELETE_SIBLINGS%>.value=deleteSiblings;   
    makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-brokenrelations.jsp") %>?<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsDelete.PARAM_DELETE_SIBLINGS%>=' + deleteSiblings, 'doReportUpdate');
 }
 
