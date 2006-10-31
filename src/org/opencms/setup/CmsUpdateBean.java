@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.6.4.2 $
+ * Date   : $Date: 2006/10/31 12:13:18 $
+ * Version: $Revision: 1.6.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,12 @@ package org.opencms.setup;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsModuleConfiguration;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.lock.CmsLockFilter;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
@@ -44,6 +48,7 @@ import org.opencms.module.CmsModuleXmlHandler;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlException;
 
 import java.io.File;
@@ -67,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.2 $ 
+ * @version $Revision: 1.6.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -554,8 +559,10 @@ public class CmsUpdateBean extends CmsSetupBean {
         // 6) thus, the setup bean can do things with the Cms
 
         if ((m_cms != null) && (m_installModules != null)) {
-            Set utdModules = new HashSet(getUptodateModules());
             I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
+            unlockSystem(m_cms, report);
+
+            Set utdModules = new HashSet(getUptodateModules());
             for (int i = 0; i < m_installModules.size(); i++) {
                 String name = (String)m_installModules.get(i);
                 if (!utdModules.contains(name)) {
@@ -593,6 +600,59 @@ public class CmsUpdateBean extends CmsSetupBean {
     protected void setAdminGroup(String adminGroup) {
 
         m_adminGroup = adminGroup;
+    }
+
+    /**
+     * Removes all locks from the system folder.<p>
+     * 
+     * @param cms the cms object
+     * @param report the report to write the output to
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void unlockSystem(CmsObject cms, I_CmsReport report) throws CmsException {
+
+        CmsProject currentProj = cms.getRequestContext().currentProject();
+        try {
+            String unlockProjectName = Messages.get().getBundle().key(Messages.GUI_UNLOCK_PROJECT_NAME_0);
+            CmsProject unlockProject;
+            try {
+                // try to read a (leftover) unlock project
+                unlockProject = cms.readProject(unlockProjectName);
+            } catch (CmsException e) {
+                // create a Project to unlock the resources
+                unlockProject = cms.createProject(
+                    unlockProjectName,
+                    unlockProjectName,
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    CmsProject.PROJECT_TYPE_TEMPORARY);
+            }
+
+            cms.getRequestContext().saveSiteRoot();
+            cms.getRequestContext().setSiteRoot("");
+            cms.getRequestContext().setCurrentProject(unlockProject);
+            cms.copyResourceToProject(CmsWorkplace.VFS_PATH_SYSTEM);
+            List lockedResources = cms.getLockedResources(CmsWorkplace.VFS_PATH_SYSTEM, CmsLockFilter.FILTER_ALL);
+            if (!lockedResources.isEmpty()) {
+                report.println(Messages.get().container(Messages.RPT_LOCKED_RESOURCES_0), I_CmsReport.FORMAT_HEADLINE);
+                Iterator itLocks = lockedResources.iterator();
+                while (itLocks.hasNext()) {
+                    String lockedResource = (String)itLocks.next();
+                    report.println(Messages.get().container(Messages.RPT_LOCKED_RESOURCE_1, lockedResource));
+                }
+                cms.lockResource(CmsWorkplace.VFS_PATH_SYSTEM);
+                cms.unlockResource(CmsWorkplace.VFS_PATH_SYSTEM);
+                report.println(Messages.get().container(
+                    Messages.RPT_SUCCESSFUL_UNLOCKED_RESOURCES_1,
+                    new Integer(lockedResources.size())), I_CmsReport.FORMAT_HEADLINE);
+            }
+            cms.removeResourceFromProject(CmsWorkplace.VFS_PATH_SYSTEM);
+            cms.deleteProject(unlockProject.getId());
+        } finally {
+            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setCurrentProject(currentProj);
+        }
     }
 
     /**
