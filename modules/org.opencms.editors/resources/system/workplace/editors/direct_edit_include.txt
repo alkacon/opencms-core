@@ -93,9 +93,12 @@ div.ocms_de_over {
 	border-bottom: 1px dotted ThreedDarkShadow;
 }
 td.ocms_de {
-	line-height: 12px;
-	background-color: ButtonFace;
+	line-height: 12px !important;
+	background-color: ButtonFace !important;
+	padding:0px 0px 0px 0px !important;
+	margin:0 !important;
 }
+
 form.ocms_nomargin {
 	visibility: hidden;
 	display: none;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/10/27 13:39:29 $
- * Version: $Revision: 1.789 $
+ * Date   : $Date: 2006/10/31 10:03:55 $
+ * Version: $Revision: 1.790 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,6 +73,7 @@ OpenCms 6.2.3 -
 ! Added option for manual placement of "direct edit" buttons, depending on the provider implementation
 ! Implemented a text only "direct edit" button provider that supports manual placement
 * Fixed issue in CmsSecurityManager, hasPermissions() check with lock check set to "false" did not work
+- Modified inline css for direct edit buttons
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
