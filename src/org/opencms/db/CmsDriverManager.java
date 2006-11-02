@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/10/19 13:51:31 $
- * Version: $Revision: 1.576 $
+ * Date   : $Date: 2006/11/02 13:16:00 $
+ * Version: $Revision: 1.577 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -5672,7 +5672,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readResourcesWithProperty(CmsDbContext dbc, String path, String propertyDefinition) throws CmsException {
 
-        String cacheKey = getCacheKey(new String[] {path, propertyDefinition}, dbc.currentProject());
+        String cacheKey = getCacheKey(
+            new String[] {dbc.currentUser().getName(), path, propertyDefinition},
+            dbc.currentProject());
         List resourceList = (List)m_resourceListCache.get(cacheKey);
         if (resourceList == null) {
             // first read the property definition
@@ -5710,7 +5712,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List readResourcesWithProperty(CmsDbContext dbc, String path, String propertyDefinition, String value)
     throws CmsException {
 
-        String cacheKey = getCacheKey(new String[] {path, propertyDefinition, value}, dbc.currentProject());
+        String cacheKey = getCacheKey(
+            new String[] {dbc.currentUser().getName(), path, propertyDefinition, value},
+            dbc.currentProject());
         List resourceList = (List)m_resourceListCache.get(cacheKey);
         if (resourceList == null) {
             // first read the property definition
