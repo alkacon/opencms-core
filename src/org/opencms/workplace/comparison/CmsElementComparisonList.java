@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2006/10/17 14:43:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/11/03 11:14:02 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -421,23 +421,27 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
             // formatting DateTime
             if (((CmsXmlContentElementComparison)comparison).getType().equals(CmsXmlDateTimeValue.TYPE_NAME)) {
-                value1 = CmsDateUtil.getDateTime(
-                    new Date(Long.parseLong(value1)),
-                    DateFormat.SHORT,
-                    getCms().getRequestContext().getLocale());
+                if (CmsStringUtil.isNotEmpty(value1)) {
+                    value1 = CmsDateUtil.getDateTime(
+                        new Date(Long.parseLong(value1)),
+                        DateFormat.SHORT,
+                        getCms().getRequestContext().getLocale());
+                }
             }
             item.set(LIST_COLUMN_VERSION_1, value1);
-            
+
             String value2 = CmsStringUtil.escapeHtml(CmsStringUtil.substitute(CmsStringUtil.trimToSize(
                 comparison.getVersion2(),
                 CmsPropertyComparisonList.TRIM_AT_LENGTH), "\n", ""));
-            
+
             // formatting DateTime
             if (((CmsXmlContentElementComparison)comparison).getType().equals(CmsXmlDateTimeValue.TYPE_NAME)) {
-                value2 = CmsDateUtil.getDateTime(
-                    new Date(Long.parseLong(value2)),
-                    DateFormat.SHORT,
-                    getCms().getRequestContext().getLocale());
+                if (CmsStringUtil.isNotEmpty(value2)) {
+                    value2 = CmsDateUtil.getDateTime(
+                        new Date(Long.parseLong(value2)),
+                        DateFormat.SHORT,
+                        getCms().getRequestContext().getLocale());
+                }
             }
             item.set(LIST_COLUMN_VERSION_2, value2);
             result.add(item);
