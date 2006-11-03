@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2006/08/19 13:40:51 $
- * Version: $Revision: 1.15.8.1 $
+ * Date   : $Date: 2006/11/03 09:42:26 $
+ * Version: $Revision: 1.15.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,14 +34,20 @@ package org.opencms.main;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestServletRequest;
+import org.opencms.test.OpenCmsTestServletResponse;
 import org.opencms.util.CmsMacroResolver;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -51,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.15.8.1 $
+ * @version $Revision: 1.15.8.2 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
@@ -78,6 +84,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         suite.setName(TestOpenCmsSingleton.class.getName());
 
         suite.addTest(new TestOpenCmsSingleton("testInitCmsObject"));
+        suite.addTest(new TestOpenCmsSingleton("testInitResource"));
         suite.addTest(new TestOpenCmsSingleton("testLog"));
         suite.addTest(new TestOpenCmsSingleton("testEncoding"));
 
@@ -257,4 +264,33 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Test case for resource initialization.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testInitResource() throws Exception {
+
+        echo("Testing access to initResource method");
+        
+        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        
+        cms.loginUser("Admin", "admin");        
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.getRequestContext().setSiteRoot("/sites/default/");
+
+
+        HttpServletRequest req = new OpenCmsTestServletRequest();
+        HttpServletResponse res = new OpenCmsTestServletResponse();
+        
+        CmsResource resource = OpenCms.initResource(cms, "/folder1/subfolder12/", req, res);
+        assertEquals ("/sites/default/folder1/subfolder12/index.html", resource.getRootPath());
+        
+        CmsProperty defaultFileProperty = new CmsProperty("default-file", "page1.html", null);
+        cms.lockResource("/folder1/subfolder12/");
+        cms.writePropertyObject("/folder1/subfolder12/", defaultFileProperty);
+        
+        CmsResource resource2 = OpenCms.initResource(cms, "/folder1/subfolder12/", req, res);
+        assertEquals ("/sites/default/folder1/subfolder12/page1.html", resource2.getRootPath());        
+    }    
 }
