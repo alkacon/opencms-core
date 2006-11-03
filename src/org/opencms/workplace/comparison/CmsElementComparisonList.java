@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2006/11/03 11:22:02 $
- * Version: $Revision: 1.5.4.4 $
+ * Date   : $Date: 2006/11/03 16:31:16 $
+ * Version: $Revision: 1.5.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.5.4.4 $ 
+ * @version $Revision: 1.5.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -421,12 +421,14 @@ public class CmsElementComparisonList extends A_CmsListDialog {
                 CmsPropertyComparisonList.TRIM_AT_LENGTH), "\n", ""));
 
             // formatting DateTime
-            if (((CmsXmlContentElementComparison)comparison).getType().equals(CmsXmlDateTimeValue.TYPE_NAME)) {
-                if (CmsStringUtil.isNotEmpty(value1)) {
-                    value1 = CmsDateUtil.getDateTime(
-                        new Date(Long.parseLong(value1)),
-                        DateFormat.SHORT,
-                        getCms().getRequestContext().getLocale());
+            if (comparison instanceof CmsXmlContentElementComparison) {
+                if (((CmsXmlContentElementComparison)comparison).getType().equals(CmsXmlDateTimeValue.TYPE_NAME)) {
+                    if (CmsStringUtil.isNotEmpty(value1)) {
+                        value1 = CmsDateUtil.getDateTime(
+                            new Date(Long.parseLong(value1)),
+                            DateFormat.SHORT,
+                            getCms().getRequestContext().getLocale());
+                    }
                 }
             }
             item.set(LIST_COLUMN_VERSION_1, value1);
@@ -436,13 +438,15 @@ public class CmsElementComparisonList extends A_CmsListDialog {
                 CmsPropertyComparisonList.TRIM_AT_LENGTH), "\n", ""));
 
             // formatting DateTime
-            if (((CmsXmlContentElementComparison)comparison).getType().equals(CmsXmlDateTimeValue.TYPE_NAME)) {
-                if (CmsStringUtil.isNotEmpty(value2)) {
+            if (comparison instanceof CmsXmlContentElementComparison) {
+                if (((CmsXmlContentElementComparison)comparison).getType().equals(CmsXmlDateTimeValue.TYPE_NAME)) {
+                    if (CmsStringUtil.isNotEmpty(value2)) {
 
-                    value2 = CmsDateUtil.getDateTime(
-                        new Date(Long.parseLong(value2)),
-                        DateFormat.SHORT,
-                        getCms().getRequestContext().getLocale());
+                        value2 = CmsDateUtil.getDateTime(
+                            new Date(Long.parseLong(value2)),
+                            DateFormat.SHORT,
+                            getCms().getRequestContext().getLocale());
+                    }
                 }
             }
             item.set(LIST_COLUMN_VERSION_2, value2);
