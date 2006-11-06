@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsModuleMessageBundles.java,v $
- * Date   : $Date: 2006/10/05 12:26:31 $
- * Version: $Revision: 1.16.4.2 $
+ * Date   : $Date: 2006/11/06 15:22:41 $
+ * Version: $Revision: 1.16.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.i18n;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,7 +41,7 @@ import java.util.Locale;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.16.4.2 $
+ * @version $Revision: 1.16.4.3 $
  * 
  * @since 6.0.0
  */
@@ -60,9 +61,6 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
             org.opencms.frontend.templateone.form.Messages.get(),
             org.opencms.frontend.templateone.modules.Messages.get(),
             org.opencms.workplace.administration.Messages.get(),
-            org.opencms.workplace.demos.Messages.get(),
-            org.opencms.workplace.demos.list.Messages.get(),
-            org.opencms.workplace.demos.widget.Messages.get(),
             org.opencms.workplace.tools.accounts.Messages.get(),
             org.opencms.workplace.tools.cache.Messages.get(),
             org.opencms.workplace.tools.content.Messages.get(),
@@ -86,6 +84,10 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
      */
     protected List getNotLocalizedBundles(Locale locale) {
 
-        return null;
+        List bundles = new ArrayList();
+        bundles.add(org.opencms.workplace.demos.Messages.get());
+        bundles.add(org.opencms.workplace.demos.list.Messages.get());
+        bundles.add(org.opencms.workplace.demos.widget.Messages.get());
+        return bundles;
     }
 }
