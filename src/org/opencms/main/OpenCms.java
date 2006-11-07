@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2006/08/31 08:56:45 $
- * Version: $Revision: 1.58.4.4 $
+ * Date   : $Date: 2006/11/07 15:28:44 $
+ * Version: $Revision: 1.58.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsRole;
+import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSiteManager;
@@ -93,7 +94,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58.4.4 $ 
+ * @version $Revision: 1.58.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,6 +165,16 @@ public final class OpenCms {
     public static void fireCmsEvent(int type, Map data) {
 
         OpenCmsCore.getInstance().getEventManager().fireEvent(type, data);
+    }
+
+    /**
+     * Returns the configured authorization handler.<p>
+     *
+     * @return the configured authorization handler
+     */
+    public static I_CmsAuthorizationHandler getAuthorizationHandler() {
+
+        return OpenCmsCore.getInstance().getAuthorizationHandler();
     }
 
     /**
@@ -468,7 +479,7 @@ public final class OpenCms {
      * @return the workflow manage
      */
     public static I_CmsWorkflowManager getWorkflowManager() {
-        
+
         return OpenCmsCore.getInstance().getWorkflowManager();
     }
 

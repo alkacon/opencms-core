@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/10/30 09:01:12 $
- * Version: $Revision: 1.218.4.13 $
+ * Date   : $Date: 2006/11/07 15:28:44 $
+ * Version: $Revision: 1.218.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -134,7 +134,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.13 $ 
+ * @version $Revision: 1.218.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,6 +151,9 @@ public final class OpenCmsCore {
 
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
+
+    /** The configured authorization handler. */
+    private I_CmsAuthorizationHandler m_authorizationHandler;
 
     /** The configuration manager that contains the information from the XML configuration. */
     private CmsConfigurationManager m_configurationManager;
@@ -238,9 +241,6 @@ public final class OpenCmsCore {
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
-
-    /** The configured authorization handler. */
-    private I_CmsAuthorizationHandler m_authorizationHandler;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance 
@@ -375,6 +375,16 @@ public final class OpenCmsCore {
                 new Integer(m_instance.getRunLevel()),
                 errorCondition.key()));
         }
+    }
+
+    /**
+     * Returns the configured authorization handler.<p>
+     *
+     * @return the configured authorization handler
+     */
+    public I_CmsAuthorizationHandler getAuthorizationHandler() {
+
+        return m_authorizationHandler;
     }
 
     /**
@@ -1025,7 +1035,7 @@ public final class OpenCmsCore {
 
         // get the authorization handler
         m_authorizationHandler = systemConfiguration.getAuthorizationHandler();
-        
+
         // get the login manager
         m_loginManager = systemConfiguration.getLoginManager();
 
