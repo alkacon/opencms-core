@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.36.4.6 $
+ * Date   : $Date: 2006/11/07 16:17:40 $
+ * Version: $Revision: 1.36.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.6 $
+ * @version $Revision: 1.36.4.7 $
  * 
  * @since 6.0.0
  */
@@ -1433,7 +1433,7 @@ public class CmsUserSettings {
     }
 
     /**
-     * Sets if the workflow state should be shown in explorer view.<p>
+     * Sets if the file last modified date state should be shown in explorer view.<p>
      * 
      * @param show true if the file last modified date should be shown, otherwise false
      */

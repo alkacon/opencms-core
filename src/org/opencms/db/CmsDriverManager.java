@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/11/02 13:17:43 $
- * Version: $Revision: 1.570.2.33 $
+ * Date   : $Date: 2006/11/07 16:17:40 $
+ * Version: $Revision: 1.570.2.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -284,9 +284,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** "driver.vfs" string in the configuration-file. */
     public static final String CONFIGURATION_VFS = "driver.vfs";
-
-    /** "driver.workflow" string in the configuration-file. */
-    public static final String CONFIGURATION_WORKFLOW = "driver.workflow";
 
     /** The vfs path of the loast and found folder. */
     public static final String LOST_AND_FOUND_FOLDER = "/system/lost-found";

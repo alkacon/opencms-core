@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2006/10/23 15:56:30 $
- * Version: $Revision: 1.43.4.4 $
+ * Date   : $Date: 2006/11/07 16:17:40 $
+ * Version: $Revision: 1.43.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.4 $
+ * @version $Revision: 1.43.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -113,9 +113,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CLOSE_VFS_DRIVER_0 = "ERR_CLOSE_VFS_DRIVER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CLOSE_WORKFLOW_DRIVER_0 = "ERR_CLOSE_WORKFLOW_DRIVER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CONSTRAINT_DELETE_GROUP_DEFAULT_1 = "ERR_CONSTRAINT_DELETE_GROUP_DEFAULT_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.65.4.2 $
+ * Date   : $Date: 2006/11/07 16:17:40 $
+ * Version: $Revision: 1.65.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65.4.2 $
+ * @version $Revision: 1.65.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -77,7 +77,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     /** A map to cache queries with replaced search patterns. */
     protected Map m_cachedQueries;
 
-    /** The type ID of the driver (vfs, user, project, workflow or backup) from where this SQL manager is referenced. */
+    /** The type ID of the driver (vfs, user, project or backup) from where this SQL manager is referenced. */
     protected int m_driverType;
 
     /** The pool URL to get connections from the JDBC driver manager, including DBCP's pool URL prefix. */
