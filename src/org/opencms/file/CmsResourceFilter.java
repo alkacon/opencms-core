@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2006/09/20 14:38:00 $
- * Version: $Revision: 1.23.4.2 $
+ * Date   : $Date: 2006/11/08 09:28:48 $
+ * Version: $Revision: 1.23.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.file;
 
+import org.opencms.file.CmsResource.CmsResourceState;
+
 /**
  * Provides filters for resource result sets obtained from requests to the OpenCms VFS.<p>
  * 
@@ -45,7 +47,7 @@ package org.opencms.file;
  * @author Carsten Weinholz 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.23.4.2 $
+ * @version $Revision: 1.23.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -184,7 +186,7 @@ public final class CmsResourceFilter {
     private long m_releaseBefore;
 
     /** The required/excluded state for filtering resources. */
-    private int m_state;
+    private CmsResourceState m_state;
 
     /** The required/excluded type for filtering resources. */
     private int m_type;
@@ -195,7 +197,7 @@ public final class CmsResourceFilter {
     private CmsResourceFilter() {
 
         m_filterState = IGNORED;
-        m_state = -1;
+        m_state = null;
 
         m_filterType = IGNORED;
         m_type = -1;
@@ -253,7 +255,7 @@ public final class CmsResourceFilter {
      * @param state the resource state to exclude
      * @return a filter excluding the given resource state
      */
-    public CmsResourceFilter addExcludeState(int state) {
+    public CmsResourceFilter addExcludeState(CmsResourceState state) {
 
         CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
 
@@ -453,7 +455,7 @@ public final class CmsResourceFilter {
      * @param state the required resource state
      * @return a filter requiring the given resource state
      */
-    public CmsResourceFilter addRequireState(int state) {
+    public CmsResourceFilter addRequireState(CmsResourceState state) {
 
         CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
 
@@ -668,7 +670,7 @@ public final class CmsResourceFilter {
      * 
      * @return the state for this filter
      */
-    public int getState() {
+    public CmsResourceState getState() {
 
         return m_state;
     }
@@ -691,8 +693,8 @@ public final class CmsResourceFilter {
     public boolean includeDeleted() {
 
         return (m_filterState == IGNORED)
-            || ((m_filterState == REQUIRED) && (m_state == CmsResource.STATE_DELETED))
-            || ((m_filterState == EXCLUDED) && (m_state != CmsResource.STATE_DELETED));
+            || ((m_filterState == REQUIRED) && m_state.isDeleted())
+            || ((m_filterState == EXCLUDED) && !m_state.isDeleted());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/10/27 10:49:48 $
- * Version: $Revision: 1.24.4.8 $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.24.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.8 $ 
+ * @version $Revision: 1.24.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -200,6 +200,43 @@ public final class CmsFileUtil {
         return result.toString();
     }
 
+
+    /**
+     * Returns the extension of a resource.<p>
+     * 
+     * The extension of a file is the part of the name after the last dot.
+     * The extension of a folder is empty.<p>
+     * 
+     * Examples:<br> 
+     * <ul>
+     *   <li><code>/folder.test/</code> has an empty extension.
+     *   <li><code>/folder.test/config</code> has an empty extension.
+     *   <li><code>/index.html.pdf</code> has the extension <code>pdf</code>.
+     * </ul>
+     * 
+     * @param resourceName the resource to get the extension for
+     * 
+     * @return the extension of a resource
+     */
+    public static String getExtension(String resourceName) {
+    
+        // if the resource name indicates a folder
+        if (resourceName.endsWith("/")) {
+            // folders have no extensions
+            return "";
+        }
+        // get just the name of the resource
+        String name = CmsResource.getName(resourceName);
+        // get the position of the last dot
+        int pos = name.lastIndexOf('.');
+        // if no dot or if no chars after the dot
+        if ((pos < 0) || ((pos + 1) == name.length())) {
+            return "";
+        }
+        // return the extension
+        return name.substring(pos + 1);
+    }
+
     /**
      * Returns the extension of the given file name, that is the part behind the last '.' char,
      * converted to lower case letters.<p>
@@ -216,6 +253,9 @@ public final class CmsFileUtil {
      */
     public static String getFileExtension(String filename) {
 
+        // TODO: remove this method and replace it by #getExtension(String)
+        int todo;
+        
         int pos = filename.lastIndexOf('.');
         return (pos >= 0) ? filename.substring(pos).toLowerCase() : "";
     }

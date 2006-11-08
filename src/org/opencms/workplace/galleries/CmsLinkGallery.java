@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2006/10/31 16:10:58 $
- * Version: $Revision: 1.22.4.5 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.22.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.22.4.5 $ 
+ * @version $Revision: 1.22.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,7 +138,6 @@ public class CmsLinkGallery extends A_CmsGallery {
     public CmsLinkGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-        this.getParamResourcePath();
     }
 
     /**
@@ -611,15 +610,19 @@ public class CmsLinkGallery extends A_CmsGallery {
                 currentProperty.setStructureValue(null);
                 currentProperty.setResourceValue(currentPropertyValue);
             }
+            boolean locked = true;
             CmsLock lock = getCms().getLock(res);
             if (lock.isUnlocked()) {
                 // lock resource before operation
                 getCms().lockResource(resPath);
+                locked = false;
             }
             // write the property to the resource
             getCms().writePropertyObject(resPath, currentProperty);
-            // unlock the resource
-            getCms().unlockResource(resPath);
+            if (!locked) {
+                // unlock the resource
+                getCms().unlockResource(resPath);
+            }
         } catch (CmsException e) {
             // writing the property failed, log error
             LOG.error(e);
@@ -722,9 +725,21 @@ public class CmsLinkGallery extends A_CmsGallery {
      */
     private void writePointerLink(CmsResource res) throws CmsException {
 
+        String resPath = getCms().getSitePath(res);
+        boolean locked = true;
+        CmsLock lock = getCms().getLock(res);
+        if (lock.isUnlocked()) {
+            // lock resource before operation
+            getCms().lockResource(resPath);
+            locked = false;
+        }
         CmsFile file = CmsFile.upgrade(res, getCms());
         file.setContents(m_paramEditPropertyValue.getBytes());
         checkLock(getCms().getSitePath(res));
         getCms().writeFile(file);
+        if (!locked) {
+            // unlock the resource
+            getCms().unlockResource(resPath);
+        }
     }
 }

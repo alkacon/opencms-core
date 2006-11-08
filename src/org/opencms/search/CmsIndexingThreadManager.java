@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2006/10/14 08:44:57 $
- * Version: $Revision: 1.25.4.2 $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.25.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.25.4.2 $ 
+ * @version $Revision: 1.25.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,7 +130,7 @@ public class CmsIndexingThreadManager extends Thread {
 
         I_CmsDocumentFactory factory = OpenCms.getSearchManager().getDocumentFactory(res);
         if ((factory == null) || !index.getDocumenttypes(res.getRootPath()).contains(factory.getName())) {
-            // document type dos not match the ones configured for the index, skip document
+            // document type does not match the ones configured for the index, skip document
 
             m_fileCounter++;
             m_returnedCounter++;

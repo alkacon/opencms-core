@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2006/10/26 08:36:23 $
-* Version: $Revision: 1.5.8.2 $
+* Date   : $Date: 2006/11/08 09:28:51 $
+* Version: $Revision: 1.5.8.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.5.8.2 $ $Date: 2006/10/26 08:36:23 $
+ * @version $Revision: 1.5.8.3 $ $Date: 2006/11/08 09:28:51 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -482,7 +482,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                 CmsResource res = (CmsResource)en.next();
 
                 // check if the resource is not marked as deleted
-                if(res.getState() != CmsResource.STATE_DELETED) {
+                if(!res.getState().isDeleted()) {
                     String navpos = cms.readProperty(cms.getSitePath(res), CmsPropertyDefinition.PROPERTY_NAVPOS);
 
                     // check if there is a navpos for this file/folder

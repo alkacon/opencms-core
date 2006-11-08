@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2006/08/24 06:43:29 $
- * Version: $Revision: 1.63.4.3 $
+ * Date   : $Date: 2006/11/08 09:28:54 $
+ * Version: $Revision: 1.63.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.63.4.3 $ 
+ * @version $Revision: 1.63.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -388,7 +388,7 @@ public class CmsSynchronize {
 
         try {
             // if the resource is marked for deletion, do not export it!
-            if (res.getState() != CmsResource.STATE_DELETED) {
+            if (!res.getState().isDeleted()) {
                 // if its a file, create export the file to the FS
                 m_report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_1,
@@ -732,7 +732,7 @@ public class CmsSynchronize {
             CmsResource res = (CmsResource)resources.get(i);
             // test if the resource is marked as deleted. if so,
             // do nothing, the corrsponding file in the FS will be removed later
-            if (res.getState() != CmsResource.STATE_DELETED) {
+            if (!res.getState().isDeleted()) {
                 // do a recursion if the current resource is a folder
                 if (res.isFolder()) {
                     // first check if this folder must be synchronised
@@ -980,7 +980,7 @@ public class CmsSynchronize {
                 }
             } catch (IOException e) {
                 // ignore
-            }            
+            }
         }
     }
 

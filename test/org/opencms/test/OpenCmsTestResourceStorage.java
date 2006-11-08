@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2006/08/19 13:40:58 $
- * Version: $Revision: 1.19.8.1 $
+ * Date   : $Date: 2006/11/08 09:28:48 $
+ * Version: $Revision: 1.19.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.test;
 
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -42,7 +43,7 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.19.8.1 $
+ * @version $Revision: 1.19.8.2 $
  */
 public class OpenCmsTestResourceStorage {
 
@@ -148,16 +149,15 @@ public class OpenCmsTestResourceStorage {
      * @return precalculated resource state
      * @throws Exception in case something goes wrong
      */
-    public int getPreCalculatedState(String resourceName) throws Exception {
+    public CmsResourceState getPreCalculatedState(String resourceName) throws Exception {
 
         String mappedResourceName = mapResourcename(resourceName);
 
-        Integer state = null;
-        state = (Integer)m_precalcState.get(mappedResourceName);
+        CmsResourceState state = (CmsResourceState)m_precalcState.get(mappedResourceName);
         if (state == null) {
             throw new Exception("Not found in storage " + resourceName + " -> " + mappedResourceName);
         }
-        return state.intValue();
+        return state;
     }
 
     /**
@@ -237,27 +237,21 @@ public class OpenCmsTestResourceStorage {
      * @param res the resource 
      * @return new precalculated state
      */
-    private Integer preCalculateState(CmsResource res) {
+    private CmsResourceState preCalculateState(CmsResource res) {
 
-        int newState = CmsResource.STATE_UNCHANGED;
-        int state = res.getState();
-        switch (state) {
-            case CmsResource.STATE_UNCHANGED:
-                newState = CmsResource.STATE_CHANGED;
-                break;
-            case CmsResource.STATE_CHANGED:
-                newState = CmsResource.STATE_CHANGED;
-                break;
-            case CmsResource.STATE_NEW:
-                newState = CmsResource.STATE_NEW;
-                break;
-            case CmsResource.STATE_DELETED:
-                newState = CmsResource.STATE_DELETED;
-                break;
-            default:
-                newState = CmsResource.STATE_UNCHANGED;
-                break;
+        CmsResourceState newState = CmsResource.STATE_UNCHANGED;
+        CmsResourceState state = res.getState();
+        if (state.isUnchanged()) {
+            newState = CmsResource.STATE_CHANGED;
+        } else if (state.isChanged()) {
+            newState = CmsResource.STATE_CHANGED;
+        } else if (state.isNew()) {
+            newState = CmsResource.STATE_NEW;
+        } else if (state.isDeleted()) {
+            newState = CmsResource.STATE_DELETED;
+        } else {
+            newState = CmsResource.STATE_UNCHANGED;
         }
-        return new Integer(newState);
+        return newState;
     }
 }

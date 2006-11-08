@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.4.4.5 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.4.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.util.CmsResourceUtil;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.commons.CmsTouch;
 import org.opencms.workplace.explorer.CmsExplorer;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +51,7 @@ import java.util.Map;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4.4.5 $ 
+ * @version $Revision: 1.4.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -503,14 +504,20 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         CmsListColumnDefinition dateReleaseCol = new CmsListExplorerColumn(LIST_COLUMN_DATEREL);
         dateReleaseCol.setName(org.opencms.workplace.explorer.Messages.get().container(
             org.opencms.workplace.explorer.Messages.GUI_INPUT_DATERELEASED_0));
-        dateReleaseCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter(CmsResource.DATE_RELEASED_DEFAULT));
+        dateReleaseCol.setFormatter(new CmsListDateMacroFormatter(
+            Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_1),
+            new CmsMessageContainer(null, CmsTouch.DEFAULT_DATE_STRING),
+            CmsResource.DATE_RELEASED_DEFAULT));
         metadata.addColumn(dateReleaseCol);
 
         // position 14: date of expiration
         CmsListColumnDefinition dateExpirationCol = new CmsListExplorerColumn(LIST_COLUMN_DATEEXP);
         dateExpirationCol.setName(org.opencms.workplace.explorer.Messages.get().container(
             org.opencms.workplace.explorer.Messages.GUI_INPUT_DATEEXPIRED_0));
-        dateExpirationCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter(CmsResource.DATE_EXPIRED_DEFAULT));
+        dateExpirationCol.setFormatter(new CmsListDateMacroFormatter(
+            Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_1),
+            new CmsMessageContainer(null, CmsTouch.DEFAULT_DATE_STRING),
+            CmsResource.DATE_EXPIRED_DEFAULT));
         metadata.addColumn(dateExpirationCol);
 
         // position 15: state (changed, unchanged, new, deleted)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesCollector.java,v $
- * Date   : $Date: 2006/09/10 21:10:27 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2006/11/08 09:28:54 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,12 +34,13 @@ package org.opencms.workplace.tools.projects;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.util.CmsResourceUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.list.A_CmsListResourceCollector;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
+import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.CmsListItem;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2.4.3 $ 
+ * @version $Revision: 1.2.4.4 $ 
  * 
  * @since 6.1.0 
  */
@@ -80,7 +81,7 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
      * @param projectId the id of the project 
      * @param state the state of the resources to filter
      */
-    public CmsProjectFilesCollector(A_CmsListExplorerDialog wp, int projectId, int state) {
+    public CmsProjectFilesCollector(A_CmsListExplorerDialog wp, int projectId, CmsResourceState state) {
 
         super(wp);
         m_collectorParameter += SEP_PARAM + PARAM_STATE + SEP_KEYVAL + state;
@@ -110,9 +111,9 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
                 LOG.debug(e);
             }
         }
-        int state = CmsResource.STATE_KEEP;
+        CmsResourceState state = CmsResource.STATE_KEEP;
         try {
-            state = Integer.parseInt((String)params.get(PARAM_STATE));
+            state = CmsResourceState.valueOf(Integer.parseInt((String)params.get(PARAM_STATE)));
         } catch (Throwable e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(e);
@@ -140,7 +141,7 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.util.CmsResourceUtil)
+     * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.58.4.1 $
+ * Date   : $Date: 2006/11/08 09:28:53 $
+ * Version: $Revision: 1.58.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58.4.1 $ 
+ * @version $Revision: 1.58.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -926,7 +926,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             }
             sm = null;
 
-            for (Iterator i = OpenCms.getSqlManager().getDbPoolNames().iterator(); i.hasNext();) {
+            for (Iterator i = OpenCms.getSqlManager().getDbPoolUrls().iterator(); i.hasNext();) {
                 String poolname = (String)i.next();
                 try {
                     LOG.info(Messages.get().getBundle().key(

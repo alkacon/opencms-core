@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.8.4.1 $
+ * Date   : $Date: 2006/11/08 09:28:53 $
+ * Version: $Revision: 1.8.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
@@ -52,7 +53,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.4.1 $
+ * @version $Revision: 1.8.4.2 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -279,7 +280,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.addUserToGroup("testuser2", "Testgroup");
         CmsUser testUser2 = cms.readUser("testuser2");
 
-        int state = cms.readResource(resName).getState();
+        CmsResourceState state = cms.readResource(resName).getState();
         cms.deleteUser(testUser1.getId(), testUser2.getId());
 
         // check attributes

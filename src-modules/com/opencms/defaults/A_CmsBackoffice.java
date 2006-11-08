@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2005/06/27 23:22:23 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2006/11/08 09:28:51 $
+* Version: $Revision: 1.9.8.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.8.1 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -2782,13 +2782,13 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             }
 
             switch (state) {
-                case CmsResource.STATE_NEW :
+                case 2:
                     style = C_STYLE_NEW;
                     break;
-                case CmsResource.STATE_CHANGED :
+                case 1:
                     style = C_STYLE_CHANGED;
                     break;
-                case CmsResource.STATE_DELETED :
+                case 3:
                     style = C_STYLE_DELETED;
                     break;
                 default :
@@ -2848,9 +2848,9 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 }
             }
             if (lockedByUserId.isNullUUID()) {
-                if (state == CmsResource.STATE_UNCHANGED) {
+                if (state == CmsResource.STATE_UNCHANGED.getState()) {
                     template.setData("backofficecontextmenue", "backofficenolock");
-                } else if (state == CmsResource.STATE_DELETED) {
+                } else if (state == CmsResource.STATE_DELETED.getState()) {
                     template.setData("backofficecontextmenue", "backofficedeleted");
                 } else {
                     template.setData("backofficecontextmenue", "backofficenolockchanged");

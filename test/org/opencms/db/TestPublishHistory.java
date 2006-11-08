@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/db/TestPublishHistory.java,v $
- * Date   : $Date: 2006/10/09 15:52:32 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.db;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -53,12 +54,12 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventListener {
 
     /** Internal shared variable to test the right publish history. */
-    private static int m_test;
+    private static CmsResourceState m_test;
 
     /** Name of resource to test. */
     private static final String RESOURCENAME = "/folder1/testfile.txt";
@@ -123,60 +124,55 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
                         (String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
                     List publishedResources = cms.readPublishedResources(publishHistoryId);
                     CmsPublishedResource pubRes = null;
-                    switch (m_test) {
-                        case CmsResource.STATE_NEW:
-                            assertEquals(1, publishedResources.size());
-                            pubRes = (CmsPublishedResource)publishedResources.get(0);
+                    if (m_test.isNew()) {
+                        assertEquals(1, publishedResources.size());
+                        pubRes = (CmsPublishedResource)publishedResources.get(0);
+                        assertEquals("/sites/default" + RESOURCENAME, pubRes.getRootPath());
+                        assertEquals(CmsResource.STATE_NEW, pubRes.getState());
+                        assertFalse(pubRes.isMoved());
+                    } else if (m_test.isChanged()) {
+                        assertEquals(1, publishedResources.size());
+                        pubRes = (CmsPublishedResource)publishedResources.get(0);
+                        assertEquals("/sites/default" + RESOURCENAME, pubRes.getRootPath());
+                        assertEquals(CmsResource.STATE_CHANGED, pubRes.getState());
+                        assertFalse(pubRes.isMoved());
+                    } else if (m_test == CmsPublishedResource.STATE_MOVED_SOURCE) {
+                        assertEquals(2, publishedResources.size());
+                        pubRes = (CmsPublishedResource)publishedResources.get(0);
+                        boolean moved = false;
+                        if (pubRes.getRootPath().endsWith(RESOURCENAME)) {
                             assertEquals("/sites/default" + RESOURCENAME, pubRes.getRootPath());
-                            assertEquals(CmsResource.STATE_NEW, pubRes.getState());
-                            assertFalse(pubRes.isMoved());
-                            break;
-                        case CmsResource.STATE_CHANGED:
-                            assertEquals(1, publishedResources.size());
-                            pubRes = (CmsPublishedResource)publishedResources.get(0);
-                            assertEquals("/sites/default" + RESOURCENAME, pubRes.getRootPath());
-                            assertEquals(CmsResource.STATE_CHANGED, pubRes.getState());
-                            assertFalse(pubRes.isMoved());
-                            break;
-                        case CmsPublishedResource.STATE_MOVED:
-                            assertEquals(2, publishedResources.size());
-                            pubRes = (CmsPublishedResource)publishedResources.get(0);
-                            boolean moved = false;
-                            if (pubRes.getRootPath().endsWith(RESOURCENAME)) {
-                                assertEquals("/sites/default" + RESOURCENAME, pubRes.getRootPath());
-                                assertEquals(CmsResource.STATE_DELETED, pubRes.getState());
-                                assertTrue(pubRes.isMoved());
-                                moved = false;
-                            } else if (pubRes.getRootPath().endsWith(RESOURCENAME_MOVED)) {
-                                assertEquals("/sites/default" + RESOURCENAME_MOVED, pubRes.getRootPath());
-                                assertEquals(CmsResource.STATE_NEW, pubRes.getState());
-                                assertTrue(pubRes.isMoved());
-                                moved = true;
-                            } else {
-                                fail("unexpected publish resource " + pubRes.getRootPath());
-                            }
-                            pubRes = (CmsPublishedResource)publishedResources.get(1);
-                            if (moved && pubRes.getRootPath().endsWith(RESOURCENAME)) {
-                                assertEquals("/sites/default" + RESOURCENAME, pubRes.getRootPath());
-                                assertEquals(CmsResource.STATE_DELETED, pubRes.getState());
-                                assertTrue(pubRes.isMoved());
-                            } else if (!moved && pubRes.getRootPath().endsWith(RESOURCENAME_MOVED)) {
-                                assertEquals("/sites/default" + RESOURCENAME_MOVED, pubRes.getRootPath());
-                                assertEquals(CmsResource.STATE_NEW, pubRes.getState());
-                                assertTrue(pubRes.isMoved());
-                            } else {
-                                fail("unexpected publish resource " + pubRes.getRootPath());
-                            }
-                            break;
-                        case CmsResource.STATE_DELETED:
-                            assertEquals(1, publishedResources.size());
-                            pubRes = (CmsPublishedResource)publishedResources.get(0);
-                            assertEquals("/sites/default" + RESOURCENAME_MOVED, pubRes.getRootPath());
                             assertEquals(CmsResource.STATE_DELETED, pubRes.getState());
-                            assertFalse(pubRes.isMoved());
-                            break;
-                        default:
-                            fail("should never happen!");
+                            assertTrue(pubRes.isMoved());
+                            moved = false;
+                        } else if (pubRes.getRootPath().endsWith(RESOURCENAME_MOVED)) {
+                            assertEquals("/sites/default" + RESOURCENAME_MOVED, pubRes.getRootPath());
+                            assertEquals(CmsResource.STATE_NEW, pubRes.getState());
+                            assertTrue(pubRes.isMoved());
+                            moved = true;
+                        } else {
+                            fail("unexpected publish resource " + pubRes.getRootPath());
+                        }
+                        pubRes = (CmsPublishedResource)publishedResources.get(1);
+                        if (moved && pubRes.getRootPath().endsWith(RESOURCENAME)) {
+                            assertEquals("/sites/default" + RESOURCENAME, pubRes.getRootPath());
+                            assertEquals(CmsResource.STATE_DELETED, pubRes.getState());
+                            assertTrue(pubRes.isMoved());
+                        } else if (!moved && pubRes.getRootPath().endsWith(RESOURCENAME_MOVED)) {
+                            assertEquals("/sites/default" + RESOURCENAME_MOVED, pubRes.getRootPath());
+                            assertEquals(CmsResource.STATE_NEW, pubRes.getState());
+                            assertTrue(pubRes.isMoved());
+                        } else {
+                            fail("unexpected publish resource " + pubRes.getRootPath());
+                        }
+                    } else if (m_test.isDeleted()) {
+                        assertEquals(1, publishedResources.size());
+                        pubRes = (CmsPublishedResource)publishedResources.get(0);
+                        assertEquals("/sites/default" + RESOURCENAME_MOVED, pubRes.getRootPath());
+                        assertEquals(CmsResource.STATE_DELETED, pubRes.getState());
+                        assertFalse(pubRes.isMoved());
+                    } else {
+                        fail("should never happen!");
                     }
                 } catch (CmsException e) {
                     fail(e.getMessage());
@@ -236,7 +232,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
         echo("Testing publish history for a moved file");
 
         // set the test to new file
-        m_test = CmsPublishedResource.STATE_MOVED;
+        m_test = CmsPublishedResource.STATE_MOVED_SOURCE;
 
         cms.lockResource(RESOURCENAME);
         cms.moveResource(RESOURCENAME, RESOURCENAME_MOVED);

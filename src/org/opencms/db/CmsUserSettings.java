@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/11/07 16:17:40 $
- * Version: $Revision: 1.36.4.7 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.36.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
@@ -53,7 +55,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.7 $
+ * @version $Revision: 1.36.4.8 $
  * 
  * @since 6.0.0
  */
@@ -154,11 +156,11 @@ public class CmsUserSettings {
 
     private boolean m_dialogExpandUserPermissions;
 
-    private int m_dialogFileCopy;
+    private CmsResourceCopyMode m_dialogFileCopy;
 
-    private int m_dialogFileDelete;
+    private CmsResourceDeleteMode m_dialogFileDelete;
 
-    private int m_dialogFolderCopy;
+    private CmsResourceCopyMode m_dialogFolderCopy;
 
     private boolean m_dialogPermissionsInheritOnFolder;
 
@@ -279,7 +281,7 @@ public class CmsUserSettings {
      * 
      * @return the default copy mode when copying a file of the user
      */
-    public int getDialogCopyFileMode() {
+    public CmsResourceCopyMode getDialogCopyFileMode() {
 
         return m_dialogFileCopy;
     }
@@ -289,7 +291,7 @@ public class CmsUserSettings {
      * 
      * @return the default copy mode when copying a folder of the user
      */
-    public int getDialogCopyFolderMode() {
+    public CmsResourceCopyMode getDialogCopyFolderMode() {
 
         return m_dialogFolderCopy;
     }
@@ -299,7 +301,7 @@ public class CmsUserSettings {
      * 
      * @return the default setting for file deletion
      */
-    public int getDialogDeleteFileMode() {
+    public CmsResourceDeleteMode getDialogDeleteFileMode() {
 
         return m_dialogFileDelete;
     }
@@ -713,25 +715,25 @@ public class CmsUserSettings {
         }
         // dialog file copy mode
         try {
-            m_dialogFileCopy = ((Integer)m_user.getAdditionalInfo(PREFERENCES
+            m_dialogFileCopy = CmsResourceCopyMode.valueOf(((Integer)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_FILECOPY)).intValue();
+                + CmsWorkplaceConfiguration.N_FILECOPY)).intValue());
         } catch (Throwable t) {
             m_dialogFileCopy = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogCopyFileMode();
         }
         // dialog folder copy mode
         try {
-            m_dialogFolderCopy = ((Integer)m_user.getAdditionalInfo(PREFERENCES
+            m_dialogFolderCopy = CmsResourceCopyMode.valueOf(((Integer)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_FOLDERCOPY)).intValue();
+                + CmsWorkplaceConfiguration.N_FOLDERCOPY)).intValue());
         } catch (Throwable t) {
             m_dialogFolderCopy = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogCopyFolderMode();
         }
         // dialog file delete mode
         try {
-            m_dialogFileDelete = ((Integer)m_user.getAdditionalInfo(PREFERENCES
+            m_dialogFileDelete = CmsResourceDeleteMode.valueOf(((Integer)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_FILEDELETION)).intValue();
+                + CmsWorkplaceConfiguration.N_FILEDELETION)).intValue());
         } catch (Throwable t) {
             m_dialogFileDelete = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogDeleteFileMode();
         }
@@ -1000,7 +1002,7 @@ public class CmsUserSettings {
         if (getDialogCopyFileMode() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogCopyFileMode()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_FILECOPY, new Integer(getDialogCopyFileMode()));
+                + CmsWorkplaceConfiguration.N_FILECOPY, new Integer(getDialogCopyFileMode().getMode()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
@@ -1010,7 +1012,7 @@ public class CmsUserSettings {
         if (getDialogCopyFolderMode() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogCopyFolderMode()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_FOLDERCOPY, new Integer(getDialogCopyFolderMode()));
+                + CmsWorkplaceConfiguration.N_FOLDERCOPY, new Integer(getDialogCopyFolderMode().getMode()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
@@ -1020,7 +1022,7 @@ public class CmsUserSettings {
         if (getDialogDeleteFileMode() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogDeleteFileMode()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_FILEDELETION, new Integer(getDialogDeleteFileMode()));
+                + CmsWorkplaceConfiguration.N_FILEDELETION, new Integer(getDialogDeleteFileMode().getMode()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
@@ -1161,7 +1163,7 @@ public class CmsUserSettings {
      * 
      * @param mode the default copy mode when copying a file of the user
      */
-    public void setDialogCopyFileMode(int mode) {
+    public void setDialogCopyFileMode(CmsResourceCopyMode mode) {
 
         m_dialogFileCopy = mode;
     }
@@ -1171,7 +1173,7 @@ public class CmsUserSettings {
      * 
      * @param mode the default copy mode when copying a folder of the user
      */
-    public void setDialogCopyFolderMode(int mode) {
+    public void setDialogCopyFolderMode(CmsResourceCopyMode mode) {
 
         m_dialogFolderCopy = mode;
     }
@@ -1181,7 +1183,7 @@ public class CmsUserSettings {
      * 
      * @param mode the default setting for file deletion
      */
-    public void setDialogDeleteFileMode(int mode) {
+    public void setDialogDeleteFileMode(CmsResourceDeleteMode mode) {
 
         m_dialogFileDelete = mode;
     }

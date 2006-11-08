@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/10/23 13:45:53 $
- * Version: $Revision: 1.17.4.8 $
+ * Date   : $Date: 2006/11/08 09:28:53 $
+ * Version: $Revision: 1.17.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.projects;
 
 import org.opencms.db.CmsProjectResourcesDisplayMode;
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.8 $ 
+ * @version $Revision: 1.17.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,7 +145,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
         if (m_collector == null) {
             int projectId = new Integer(getProject().getId()).intValue();
-            int state = CmsResource.STATE_KEEP;
+            CmsResourceState state = CmsResource.STATE_KEEP;
             CmsHtmlList list = getList();
             if (list != null) {
                 if (getSettings().getCollector() != null) {

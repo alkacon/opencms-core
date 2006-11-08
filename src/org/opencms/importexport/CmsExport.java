@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2006/08/19 13:40:36 $
- * Version: $Revision: 1.84.4.1 $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.84.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.importexport;
 
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
@@ -91,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.1 $ 
+ * @version $Revision: 1.84.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -386,17 +387,15 @@ public class CmsExport {
             // walk through all files and export them
             for (int i = 0; i < subFiles.size(); i++) {
                 CmsResource file = (CmsResource)subFiles.get(i);
-                int state = file.getState();
+                CmsResourceState state = file.getState();
                 long age = file.getDateLastModified() < file.getDateCreated() ? file.getDateCreated()
                 : file.getDateLastModified();
 
                 if (getCms().getRequestContext().currentProject().isOnlineProject()
                     || (m_includeUnchanged)
-                    || (state == CmsResource.STATE_NEW)
-                    || (state == CmsResource.STATE_CHANGED)) {
-                    if ((state != CmsResource.STATE_DELETED)
-                        && (!file.getName().startsWith("~"))
-                        && (age >= m_contentAge)) {
+                    || state.isNew()
+                    || state.isChanged()) {
+                    if (!state.isDeleted() && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
                         String export = getCms().getSitePath(file);
                         if (checkExportResource(export)) {
                             exportFile(getCms().readFile(export, CmsResourceFilter.IGNORE_EXPIRATION));
@@ -564,15 +563,15 @@ public class CmsExport {
                     }
                     throw new CmsImportExportException(message, e);
                 }
-                int state = folder.getState();
+                CmsResourceState state = folder.getState();
                 long age = folder.getDateLastModified() < folder.getDateCreated() ? folder.getDateCreated()
                 : folder.getDateLastModified();
 
                 if (getCms().getRequestContext().currentProject().isOnlineProject()
                     || (m_includeUnchanged)
-                    || (state == CmsResource.STATE_NEW)
-                    || (state == CmsResource.STATE_CHANGED)) {
-                    if ((state != CmsResource.STATE_DELETED) && (age >= m_contentAge)) {
+                    || state.isNew()
+                    || state.isChanged()) {
+                    if (!state.isDeleted() && (age >= m_contentAge)) {
                         // check if this is a system-folder and if it should be included.
                         String export = getCms().getSitePath(folder);
                         if (checkExportResource(export)) {
@@ -796,7 +795,7 @@ public class CmsExport {
 
                 try {
                     CmsFile file = getCms().readFile(fileName, CmsResourceFilter.IGNORE_EXPIRATION);
-                    if ((file.getState() != CmsResource.STATE_DELETED) && (!file.getName().startsWith("~"))) {
+                    if (!file.getState().isDeleted() && (!file.getName().startsWith("~"))) {
                         if (checkExportResource(fileName)) {
                             if (m_recursive) {
                                 addParentFolders(fileName);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/10/31 15:17:32 $
- * Version: $Revision: 1.17.4.13 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.17.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.13 $ 
+ * @version $Revision: 1.17.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -180,7 +181,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         }
         if (isMultiOperation() || isFolder || (hasSiblings() && hasCorrectLockstate())) {
             // show only for multi resource operation or if resource has siblings and correct lock state
-            int defaultMode = Boolean.valueOf(getParamDeleteSiblings()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
+            CmsResourceDeleteMode defaultMode = Boolean.valueOf(getParamDeleteSiblings()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
             : CmsResource.DELETE_PRESERVE_SIBLINGS;
             if (!isMultiOperation() && !isFolder) {
                 result.append(key(Messages.GUI_DELETE_WARNING_SIBLINGS_0));
@@ -247,7 +248,8 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
         CmsDeleteBrokenRelationsList list = new CmsDeleteBrokenRelationsList(
             getJsp(),
-            getResourceList(), Boolean.valueOf(getParamDeleteSiblings()).booleanValue());
+            getResourceList(),
+            Boolean.valueOf(getParamDeleteSiblings()).booleanValue());
         list.actionDialog();
 
         StringBuffer result = new StringBuffer(512);
@@ -395,8 +397,6 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
      */
     protected boolean performDialogOperation() throws CmsException {
 
-        int deleteOption = -1;
-
         // check if the current resource is a folder for single operation
         boolean isFolder = isOperationOnFolder();
         // on folder deletion or multi operation display "please wait" screen, not for simple file deletion
@@ -406,7 +406,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         }
 
         // determine the correct delete option
-        deleteOption = Boolean.valueOf(getParamDeleteSiblings()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
+        CmsResourceDeleteMode deleteOption = Boolean.valueOf(getParamDeleteSiblings()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
         : CmsResource.DELETE_PRESERVE_SIBLINGS;
 
         Iterator i = getResourceList().iterator();
@@ -438,7 +438,8 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
      * @param deleteOption the delete option for sibling deletion
      * @throws CmsException if deleting the resource fails
      */
-    protected void performSingleDeleteOperation(String resource, int deleteOption) throws CmsException {
+    protected void performSingleDeleteOperation(String resource, CmsResourceDeleteMode deleteOption)
+    throws CmsException {
 
         // lock resource if autolock is enabled
         checkLock(resource);

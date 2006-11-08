@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2005/06/27 23:22:23 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2006/11/08 09:28:51 $
+* Version: $Revision: 1.4.8.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.4 $ $Date: 2005/06/27 23:22:23 $
+ * @version $Revision: 1.4.8.1 $ $Date: 2006/11/08 09:28:51 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -459,7 +459,7 @@ public class CmsXmlNav extends A_CmsNavBase {
             String pos = cms.readProperty(path, CmsPropertyDefinition.PROPERTY_NAVPOS);
             String text = cms.readProperty(path, CmsPropertyDefinition.PROPERTY_NAVTEXT);
             // Only list folders in the nav bar if they are not deleted!
-            if (currentResource.getState() != CmsResource.STATE_DELETED) {
+            if (!currentResource.getState().isDeleted()) {
                 // don't list the temporary folders in the nav bar!
                 if (pos != null && text != null && (!"".equals(pos)) && (!"".equals(text))
                      && ((!currentResource.getName().startsWith(CmsWorkplace.TEMP_FILE_PREFIX)) || path.equals(requestedUri))) {

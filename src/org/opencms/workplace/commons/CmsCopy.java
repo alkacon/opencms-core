@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.20.4.1 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.20.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20.4.1 $ 
+ * @version $Revision: 1.20.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,9 +217,9 @@ public class CmsCopy extends CmsMultiDialog {
 
         if (isMultiOperation() || isFolder) {
             // for multi resource operations or folders, show an additional option "preserve links"
-            int defaultMode = getSettings().getUserSettings().getDialogCopyFolderMode();
+            CmsResourceCopyMode defaultMode = getSettings().getUserSettings().getDialogCopyFolderMode();
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"");
-            retValue.append(CmsResource.COPY_AS_SIBLING);
+            retValue.append(CmsResource.COPY_AS_SIBLING.getMode());
             retValue.append("\"");
             if (defaultMode == CmsResource.COPY_AS_SIBLING) {
                 retValue.append(checkedAttr);
@@ -233,7 +234,7 @@ public class CmsCopy extends CmsMultiDialog {
             retValue.append(key(msgKey));
             retValue.append("<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"");
-            retValue.append(CmsResource.COPY_PRESERVE_SIBLING);
+            retValue.append(CmsResource.COPY_PRESERVE_SIBLING.getMode());
             retValue.append("\"");
             if (defaultMode == CmsResource.COPY_PRESERVE_SIBLING) {
                 retValue.append(checkedAttr);
@@ -242,7 +243,7 @@ public class CmsCopy extends CmsMultiDialog {
             retValue.append(key(Messages.GUI_COPY_ALL_NO_SIBLINGS_0));
             retValue.append("<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"");
-            retValue.append(CmsResource.COPY_AS_NEW);
+            retValue.append(CmsResource.COPY_AS_NEW.getMode());
             retValue.append("\"");
             if (defaultMode == CmsResource.COPY_AS_NEW) {
                 retValue.append(checkedAttr);
@@ -262,9 +263,9 @@ public class CmsCopy extends CmsMultiDialog {
             }
         } else {
             // for files, show copy option "copy as sibling" and "copy as new resource"
-            int defaultMode = getSettings().getUserSettings().getDialogCopyFileMode();
+            CmsResourceCopyMode defaultMode = getSettings().getUserSettings().getDialogCopyFileMode();
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"");
-            retValue.append(CmsResource.COPY_AS_SIBLING);
+            retValue.append(CmsResource.COPY_AS_SIBLING.getMode());
             retValue.append("\"");
             if (defaultMode == CmsResource.COPY_AS_SIBLING) {
                 retValue.append(checkedAttr);
@@ -273,7 +274,7 @@ public class CmsCopy extends CmsMultiDialog {
             retValue.append(key(Messages.GUI_CREATE_SIBLING_0));
             retValue.append("<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"");
-            retValue.append(CmsResource.COPY_AS_NEW);
+            retValue.append(CmsResource.COPY_AS_NEW.getMode());
             retValue.append("\"");
             if (defaultMode == CmsResource.COPY_AS_NEW) {
                 retValue.append(checkedAttr);
@@ -420,9 +421,9 @@ public class CmsCopy extends CmsMultiDialog {
         }
 
         // get the copy mode from request parameter value
-        int copyMode = CmsResource.COPY_PRESERVE_SIBLING;
+        CmsResourceCopyMode copyMode = CmsResource.COPY_PRESERVE_SIBLING;
         try {
-            copyMode = Integer.parseInt(getParamCopymode());
+            copyMode = CmsResourceCopyMode.valueOf(Integer.parseInt(getParamCopymode()));
         } catch (Exception e) {
             // can usually be ignored
             if (LOG.isInfoEnabled()) {
@@ -497,7 +498,7 @@ public class CmsCopy extends CmsMultiDialog {
         String source,
         String target,
         String sitePrefix,
-        int copyMode,
+        CmsResourceCopyMode copyMode,
         boolean overwrite) throws CmsException {
 
         // calculate the target name

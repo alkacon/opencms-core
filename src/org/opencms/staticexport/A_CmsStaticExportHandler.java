@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.3.4.9 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.3.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3.4.9 $ 
+ * @version $Revision: 1.3.4.10 $ 
  * 
  * @since 6.1.7 
  * 
@@ -171,7 +171,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         Iterator itPubRes = publishedResources.iterator();
         while (itPubRes.hasNext()) {
             CmsPublishedResource res = (CmsPublishedResource)itPubRes.next();
-            if (res.isUnChanged() || !res.isVfsResource()) {
+            if (res.getState().isUnchanged() || !res.isVfsResource()) {
                 // unchanged resources and non vfs resources don't need to be deleted
                 continue;
             }
@@ -194,7 +194,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                     && (!scrubedFolders.contains(CmsResource.getFolderPath(rfsName)))) {
 
                     if (res.isFolder()) {
-                        if (res.isDeleted()) {
+                        if (res.getState().isDeleted()) {
                             String exportFolderName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
                                 vfsName)
                                 + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
@@ -266,7 +266,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
     protected List addMovedLinkSources(CmsObject cms, List publishedResources) {
         
         Set pubResources = new HashSet(publishedResources.size());
-        // this is needed since the CmsPublishedResource#equals(Object) method just id compares and not paths
+        // this is needed since the CmsPublishedResource#equals(Object) method just compares ids and not paths
         // and with moved files you have 2 entries with the same id and different paths...
         Iterator itPubRes = publishedResources.iterator();
         while (itPubRes.hasNext()) {
@@ -280,8 +280,8 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
             Iterator itPrePubRes = new ArrayList(publishedResources).iterator();
             while (itPrePubRes.hasNext()) {
                 CmsPublishedResource res = (CmsPublishedResource)itPrePubRes.next();
-                if (res.isUnChanged() || !res.isVfsResource() || res.isDeleted() || !res.isMoved()) {
-                    // unchanged resources and non vfs resources don't need to be deleted
+                if (!res.isVfsResource() || res.getState() != CmsPublishedResource.STATE_MOVED_DESTINATION) {
+                    // handle only resources that are destination of move operations
                     continue;
                 }
                 List relations = null;

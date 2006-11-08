@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2006/10/26 08:36:53 $
- * Version: $Revision: 1.43.4.8 $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.43.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.8 $
+ * @version $Revision: 1.43.4.9 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -1411,7 +1411,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             properties);
 
         // copy the resource as a sibling to "de"
-        cms.copyResource(resourcenameEn, resourcenameDe, org.opencms.file.CmsResource.COPY_AS_SIBLING);
+        cms.copyResource(resourcenameEn, resourcenameDe, CmsResource.COPY_AS_SIBLING);
         // now lock the "DE" sibling
         cms.changeLock(resourcenameDe);
         // add the "DE" locale property to the german version

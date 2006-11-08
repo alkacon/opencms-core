@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2006/10/26 08:36:23 $
-* Version: $Revision: 1.7.8.2 $
+* Date   : $Date: 2006/11/08 09:28:51 $
+* Version: $Revision: 1.7.8.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.7.8.2 $ $Date: 2006/10/26 08:36:23 $
+ * @version $Revision: 1.7.8.3 $ $Date: 2006/11/08 09:28:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -107,7 +107,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         cms.getRequestContext().setCurrentProject(cms.readProject(tempProject));
         
         try {
-            cms.copyResource(cms.getSitePath(file), temporaryFilename, org.opencms.file.CmsResource.COPY_AS_NEW);
+            cms.copyResource(cms.getSitePath(file), temporaryFilename, CmsResource.COPY_AS_NEW);
             // cms.chmod(temporaryFilename, 91);
         } catch (CmsException e) {
             if ((e instanceof CmsVfsResourceAlreadyExistsException) || ((e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() != CmsLegacyException.C_SQL_ERROR))) {
@@ -717,7 +717,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             bodyTemplateFile.removeFromFileCache();
             // deleting the pagefile will delete the bodyfile too
             cms.getRequestContext().setCurrentProject(cms.readProject(tempProject));
-            cms.deleteResource(tempPageFilename, org.opencms.file.CmsResource.DELETE_PRESERVE_SIBLINGS);
+            cms.deleteResource(tempPageFilename, CmsResource.DELETE_PRESERVE_SIBLINGS);
             cms.getRequestContext().setCurrentProject(cms.readProject(curProject));
             try {
                 CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(CmsWorkplaceAction.getWorkplaceUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));

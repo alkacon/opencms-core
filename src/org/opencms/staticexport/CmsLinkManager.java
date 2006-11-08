@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/10/16 13:30:24 $
- * Version: $Revision: 1.60.4.5 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.60.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
-import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.main.CmsException;
@@ -44,6 +43,7 @@ import org.opencms.relations.CmsExternalLinksValidationResult;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.5 $ 
+ * @version $Revision: 1.60.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -396,9 +396,9 @@ public class CmsLinkManager {
             permalink = OpenCms.getLinkManager().substituteLink(cms, CmsPermalinkResourceHandler.PERMALINK_HANDLER);
             String id = cms.readResource(resourceName, CmsResourceFilter.ALL).getStructureId().toString();
             permalink += id;
-            String ext = CmsResource.getExtension(resourceName);
+            String ext = CmsFileUtil.getExtension(resourceName);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ext)) {
-                permalink += "." + CmsResource.getExtension(resourceName);
+                permalink += "." + ext;
             }
             String serverPrefix = CmsSiteManager.getCurrentSite(cms).getServerPrefix(
                 cms,

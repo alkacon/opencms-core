@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2006/10/26 08:36:24 $
-* Version: $Revision: 1.7.8.2 $
+* Date   : $Date: 2006/11/08 09:28:54 $
+* Version: $Revision: 1.7.8.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.defaults.master.genericsql;
 
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -246,7 +247,7 @@ public class CmsDbAccess {
 
         dataset.m_projectId = projectId;
         dataset.m_lockedInProject = projectId;
-        dataset.m_state = CmsResource.STATE_NEW;
+        dataset.m_state = CmsResource.STATE_NEW.getState();
         dataset.m_lockedBy = currentUserId;
         dataset.m_lastModifiedBy = currentUserId;
         dataset.m_dateCreated = currentTime;
@@ -302,7 +303,7 @@ public class CmsDbAccess {
         dataset.m_masterId = newMasterId;
         dataset.m_projectId = projectId;
         dataset.m_lockedInProject = projectId;
-        dataset.m_state = CmsResource.STATE_NEW;
+        dataset.m_state = CmsResource.STATE_NEW.getState();
         dataset.m_lockedBy = currentUserId;
         dataset.m_lastModifiedBy = currentUserId;
         dataset.m_dateCreated = currentTime;
@@ -399,9 +400,9 @@ public class CmsDbAccess {
         long currentTime = new java.util.Date().getTime();
         CmsUUID currentUserId = cms.getRequestContext().currentUser().getId();
         // updateing some values for updated dataset
-        if (dataset.m_state != CmsResource.STATE_NEW) {
+        if (dataset.m_state != CmsResource.STATE_NEW.getState()) {
             // if the state is not new then set the state to changed
-            dataset.m_state = CmsResource.STATE_CHANGED;
+            dataset.m_state = CmsResource.STATE_CHANGED.getState();
         }
         dataset.m_lastModifiedBy = currentUserId;
         dataset.m_dateLastModified = currentTime;
@@ -646,7 +647,7 @@ public class CmsDbAccess {
             throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
 
-        if (dataset.m_state == CmsResource.STATE_NEW) {
+        if (dataset.m_state == CmsResource.STATE_NEW.getState()) {
             // this is a new line in this project and can be deleted
             String statement_key = "delete_offline";
             PreparedStatement stmt = null;
@@ -670,7 +671,7 @@ public class CmsDbAccess {
             }
         } else {
             // set state to deleted and update the line
-            dataset.m_state = CmsResource.STATE_DELETED;
+            dataset.m_state = CmsResource.STATE_DELETED.getState();
             dataset.m_lockedBy = CmsUUID.getNullUUID();
             PreparedStatement stmt = null;
             Connection conn = null;
@@ -711,7 +712,7 @@ public class CmsDbAccess {
             throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         // set state to deleted and update the line
-        dataset.m_state = CmsResource.STATE_CHANGED;
+        dataset.m_state = CmsResource.STATE_CHANGED.getState();
         dataset.m_lockedBy = cms.getRequestContext().currentUser().getId();
         dataset.m_lockedInProject = cms.getRequestContext().currentProject().getId();
         PreparedStatement stmt = null;
@@ -761,8 +762,8 @@ public class CmsDbAccess {
             // no write access
             throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        if (dataset.m_state != CmsResource.STATE_NEW) {
-            dataset.m_state = CmsResource.STATE_CHANGED;
+        if (dataset.m_state != CmsResource.STATE_NEW.getState()) {
+            dataset.m_state = CmsResource.STATE_CHANGED.getState();
         }
         dataset.m_dateLastModified = System.currentTimeMillis();
         dataset.m_lastModifiedBy = cms.getRequestContext().currentUser().getId();
@@ -1530,8 +1531,8 @@ public class CmsDbAccess {
         dataset.m_mediaToUpdate = new Vector();
         dataset.m_mediaToDelete = new Vector();
         dataset.m_lastModifiedBy = cms.getRequestContext().currentUser().getId();
-        if (dataset.m_state != CmsResource.STATE_NEW) {
-            dataset.m_state = CmsResource.STATE_CHANGED;
+        if (dataset.m_state != CmsResource.STATE_NEW.getState()) {
+            dataset.m_state = CmsResource.STATE_CHANGED.getState();
         }
         // check if the group exists
         CmsUUID groupId = CmsUUID.getNullUUID();
@@ -1634,7 +1635,7 @@ public class CmsDbAccess {
             stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setInt(1, subId);
             stmt.setInt(2, projectId);
-            stmt.setInt(3, CmsResource.STATE_UNCHANGED);
+            stmt.setInt(3, CmsResource.STATE_UNCHANGED.getState());
             // gets all ressources that are changed int this project
             // and that belongs to this subId
             res = stmt.executeQuery();
@@ -1689,7 +1690,7 @@ public class CmsDbAccess {
         // delete the online data
         publishDeleteData(dataset.m_masterId, subId, "online");
 
-        if (state == CmsResource.STATE_DELETED) {
+        if (state == CmsResource.STATE_DELETED.getState()) {
             // delete the data from offline
             // the state was DELETED
             publishDeleteData(dataset.m_masterId, subId, "offline");
@@ -1705,7 +1706,7 @@ public class CmsDbAccess {
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "update_state_offline");
-            stmt.setInt(1, CmsResource.STATE_UNCHANGED);
+            stmt.setInt(1, CmsResource.STATE_UNCHANGED.getState());
             stmt.setString(2, CmsUUID.getNullUUID().toString());
             stmt.setString(3, dataset.m_masterId.toString());
             stmt.setInt(4, subId);
@@ -1735,7 +1736,7 @@ public class CmsDbAccess {
                 contentDefinitionName,
                 subId, 
                 false,
-                state, 
+                CmsResourceState.valueOf(state), 
                 1));
     }
 
@@ -1815,7 +1816,7 @@ public class CmsDbAccess {
             // correct the data in the dataset
             dataset.m_projectId = CmsProject.ONLINE_PROJECT_ID;
             dataset.m_lockedInProject = CmsProject.ONLINE_PROJECT_ID;
-            dataset.m_state = CmsResource.STATE_UNCHANGED;
+            dataset.m_state = CmsResource.STATE_UNCHANGED.getState();
             dataset.m_lockedBy = CmsUUID.getNullUUID();
             sqlFillValues(stmt, subId, dataset);
             stmt.executeUpdate();

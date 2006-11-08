@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2006/10/13 08:40:22 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/11/08 09:28:54 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 7.0.0
  */
@@ -167,7 +167,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                     try {
                         CmsResource target = relation.getTarget(cms, CmsResourceFilter.DEFAULT);
                         if (!relations.containsKey(target.getRootPath())
-                            && (target.getState() == CmsResource.STATE_NEW || target.getState() == CmsResource.STATE_CHANGED)) {
+                            && (target.getState().isNew() || target.getState().isChanged())) {
                             relations.put(target.getRootPath(), target);
                         }
                     } catch (CmsVfsResourceNotFoundException e) {
@@ -361,9 +361,8 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         if (state != null) {
             return state.getName(locale);
         } else {
-            throw new CmsException(Messages.get().container(
-                Messages.ERR_WORKFLOW_NOT_INITIALIZED_0));
-        }        
+            throw new CmsException(Messages.get().container(Messages.ERR_WORKFLOW_NOT_INITIALIZED_0));
+        }
     }
 
     /**
@@ -375,8 +374,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         if (type != null) {
             return type.getName(locale);
         } else {
-            throw new CmsException(Messages.get().container(
-                Messages.ERR_WORKFLOW_NOT_INITIALIZED_0));
+            throw new CmsException(Messages.get().container(Messages.ERR_WORKFLOW_NOT_INITIALIZED_0));
         }
     }
 
@@ -609,13 +607,13 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         I_CmsWorkflowAction action = null;
         if (accept) {
             // ensure that all workflow resources are unlocked
-            
+
             // TODO: Supply functionality by other means
             // why are all locks always removed here?
             //     ==> probably this implementation is never really used anyway (only for simple tests w/o forward)
             int todo_v7 = 0;
             OpenCms.getLockManager().removeResourcesInProject(wfProject.getId(), true, true);
-            
+
             action = m_workflowEngine.signal(wfProject, transition, message);
         } else {
             throw new CmsWorkflowException(Messages.get().container(
@@ -694,13 +692,17 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
 
         CmsProject offlineProject = m_cms.getRequestContext().currentProject();
         try {
-            // put the resource into the workflow project
+            // switch to the root site
+            m_cms.getRequestContext().saveSiteRoot();
+            m_cms.getRequestContext().setSiteRoot("");
+            // switch to the workflow project
             m_cms.getRequestContext().setCurrentProject(wfProject);
-            m_cms.getRequestContext().setSiteRoot("/");
 
-            m_cms.copyResourceToProject(m_cms.getSitePath(resource), wfProject);
+            // put the resource into the workflow project
+            m_cms.copyResourceToProject(m_cms.getSitePath(resource));
         } finally {
             m_cms.getRequestContext().setCurrentProject(offlineProject);
+            m_cms.getRequestContext().restoreSiteRoot();
         }
     }
 
@@ -751,11 +753,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
 
         List resourcesToPublish = new ArrayList();
         List assignedResources = getAssignedResources(wfProject);
-        
+
         for (Iterator i = assignedResources.iterator(); i.hasNext();) {
             String resourceName = (String)i.next();
             CmsResource resource = m_cms.readResource(resourceName);
-            if (resource.getState() != CmsResource.STATE_UNCHANGED) {
+            if (!resource.getState().isUnchanged()) {
                 resourcesToPublish.add(resource);
             }
         }
@@ -780,13 +782,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
             // In this case, check in publishProject for wfProject
             int todo_v7 = 0;
             OpenCms.getLockManager().removeResourcesInProject(wfProject.getId(), true, false);
-            
+
             m_cms.getRequestContext().setCurrentProject(wfProject);
             CmsPublishList pL = getPublishList(wfProject);
-            
-            m_cms.publishProject(
-                new CmsLogReport(m_cms.getRequestContext().getLocale(), this.getClass()),
-                pL);
+
+            m_cms.publishProject(new CmsLogReport(m_cms.getRequestContext().getLocale(), this.getClass()), pL);
 
             m_cms.deleteProject(wfProject.getId());
         } finally {
@@ -813,7 +813,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
             for (Iterator i = getAssignedResources(wfProject).iterator(); i.hasNext();) {
                 String resourceName = (String)i.next();
                 CmsResource resource = m_cms.readResource(resourceName);
-                if (resource.getState() != CmsResource.STATE_UNCHANGED) {
+                if (!resource.getState().isUnchanged()) {
                     m_cms.lockResource(resourceName);
                     m_cms.undoChanges(resourceName, CmsResource.UNDO_CONTENT);
                 }

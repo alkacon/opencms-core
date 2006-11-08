@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2006/08/19 13:40:36 $
- * Version: $Revision: 1.43.4.1 $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.43.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.43.4.1 $ 
+ * @version $Revision: 1.43.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -205,7 +205,7 @@ public class CmsImport {
                 boolean exists = true;
                 try {
                     CmsResource res = m_cms.readResource(m_importPath + destination);
-                    if (res.getState() == CmsResource.STATE_DELETED) {
+                    if (res.getState().isDeleted()) {
                         exists = false;
                     }
                 } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/10/25 07:17:52 $
- * Version: $Revision: 1.16.4.8 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.16.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,9 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.CmsVfsException;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
@@ -46,6 +48,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsMultiException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
@@ -56,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.8 $ 
+ * @version $Revision: 1.16.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,17 +114,17 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResourceCopyMode)
      */
     public void copyResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        int siblingMode) throws CmsIllegalArgumentException, CmsException {
+        CmsResourceCopyMode siblingMode) throws CmsIllegalArgumentException, CmsException {
 
         // first validate the destination name
-        destination = CmsResource.validateFoldername(destination);
+        destination = validateFoldername(destination);
 
         // collect all resources in the folder (but exclude deleted ones)
         List resources = securityManager.readChildResources(
@@ -158,7 +161,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         byte[] content,
         List properties) throws CmsException {
 
-        resourcename = CmsResource.validateFoldername(resourcename);
+        resourcename = validateFoldername(resourcename);
         return super.createResource(cms, securityManager, resourcename, content, properties);
     }
 
@@ -205,7 +208,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         }
 
         // first validate the destination name
-        dest = CmsResource.validateFoldername(dest);
+        dest = validateFoldername(dest);
 
         securityManager.moveResource(cms.getRequestContext(), resource, dest);
 
@@ -386,12 +389,12 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResourceUndoMode)
      */
-    public void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int mode)
+    public void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsResourceUndoMode mode)
     throws CmsException {
 
-        boolean recursive = (mode > CmsResource.UNDO_CONTENT);
+        boolean recursive = mode.isRecursive();
         if (mode == CmsResource.UNDO_MOVE_CONTENT) {
             // undo move only?
             String originalPath = securityManager.resourceOriginalPath(cms.getRequestContext(), resource);
@@ -422,7 +425,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             CmsResourceFilter.ALL);
         boolean isMoved = !undoneResource2.getRootPath().equals(resource.getRootPath());
         
-        if ((mode > CmsResource.UNDO_CONTENT) && (resources != null)) { // recursive?
+        if (recursive && (resources != null)) { // recursive?
             // now walk through all sub-resources in the folder, and undo first
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
@@ -433,12 +436,12 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                 if (childResource.isFolder()) {
                     // recurse into this method for subfolders
                     type.undoChanges(cms, securityManager, childResource, mode);
-                } else if (childResource.getState() != CmsResource.STATE_NEW) {
+                } else if (!childResource.getState().isNew()) {
                     // undo changes for changed files
                     securityManager.undoChanges(cms.getRequestContext(), childResource, mode);
                 } else {
                     // undo move for new files? move with the folder
-                    if (mode > CmsResource.UNDO_CONTENT_RECURSIVE) {
+                    if (mode.isUndoMove()) {
                         String newPath = cms.getRequestContext().removeSiteRoot(
                             securityManager.readResource(
                                 cms.getRequestContext(),
@@ -456,5 +459,31 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                 updateRelationForUndo(cms, securityManager, childResource);
             }
         }
+    }
+
+    /**
+     * Checks if there are at least one character in the folder name,
+     * also ensures that it starts and ends with a '/'.<p>
+     *
+     * @param resourcename folder name to check (complete path)
+     * 
+     * @return the validated folder name
+     * 
+     * @throws CmsIllegalArgumentException if the folder name is empty or <code>null</code>
+     */
+    private String validateFoldername(String resourcename) throws CmsIllegalArgumentException {
+    
+        if (CmsStringUtil.isEmpty(resourcename)) {
+            throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1,
+                resourcename));
+        }
+        if (!CmsResource.isFolder(resourcename)) {
+            resourcename = resourcename.concat("/");
+        }
+        if (resourcename.charAt(0) != '/') {
+            resourcename = "/".concat(resourcename);
+        }
+        return resourcename;
     }
 }

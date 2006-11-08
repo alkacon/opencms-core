@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2005/07/13 09:23:21 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2006/11/08 09:28:48 $
+* Version: $Revision: 1.6.8.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,8 +61,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.6 $
- * $Date: 2005/07/13 09:23:21 $
+ * $Revision: 1.6.8.1 $
+ * $Date: 2006/11/08 09:28:48 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -698,7 +698,7 @@ public abstract class CmsMasterContent
             publishedBoResource.getResourceId(),
             // sub ID
             publishedBoResource.getType(), // state
-            publishedBoResource.getState());
+            publishedBoResource.getState().getState());
         
     }    
 
@@ -965,7 +965,7 @@ public abstract class CmsMasterContent
 
             for (int i=0; i < subChannels.size(); i++) {
                 CmsResource resource = (CmsResource)subChannels.get(i);
-                if (resource.getState() != CmsResource.STATE_DELETED) {            
+                if (resource.getState().isDeleted()) {            
                     String folder = cms.getSitePath(resource);
                     Vector v = getAllSubChannelsOf(cms, folder);
                     if (v.size() == 0) {
@@ -1012,7 +1012,7 @@ public abstract class CmsMasterContent
             int offset = rootChannel.length()-1;
             for (int i=0; i < subChannels.size(); i++) {
                 CmsResource resource = (CmsResource)subChannels.get(i);
-                if (resource.getState() != CmsResource.STATE_DELETED) {
+                if (!resource.getState().isDeleted()) {
                     String folder = cms.getSitePath(resource);
                     Vector v = getAllSubChannelsOf(cms, folder);
                     if (v.size() == 0 && cms.hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW)) {

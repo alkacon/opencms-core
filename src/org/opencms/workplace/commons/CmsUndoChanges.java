@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2006/10/31 12:12:35 $
- * Version: $Revision: 1.16.4.3 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.16.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.3 $ 
+ * @version $Revision: 1.16.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -430,11 +431,12 @@ public class CmsUndoChanges extends CmsMultiDialog {
         boolean undoRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
         boolean undoMove = Boolean.valueOf(getParamMove()).booleanValue();
 
-        int mode = CmsResource.UNDO_CONTENT;
-        if (!undoMove) {
-            mode = undoRecursive ? CmsResource.UNDO_CONTENT_RECURSIVE : CmsResource.UNDO_CONTENT;
-        } else {
-            mode = undoRecursive ? CmsResource.UNDO_MOVE_CONTENT_RECURSIVE : CmsResource.UNDO_MOVE_CONTENT;
+        CmsResourceUndoMode mode = CmsResource.UNDO_CONTENT;
+        if (undoRecursive) {
+            mode = CmsResource.UNDO_CONTENT_RECURSIVE;
+        }
+        if (undoMove) {
+            mode = mode.includeMove();
         }
 
         Iterator i = getResourceList().iterator();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/10/24 15:45:27 $
- * Version: $Revision: 1.22.4.6 $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.22.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.6 $ 
+ * @version $Revision: 1.22.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,11 +165,11 @@ public class CmsNewResourceUpload extends CmsNewResource {
         if (getAction() == ACTION_CANCEL) {
             try {
                 CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-                if (res.getState() == CmsResource.STATE_NEW) {
+                if (res.getState().isNew()) {
                     // only delete new resource
                     getCms().deleteResource(getParamResource(), CmsResource.DELETE_PRESERVE_SIBLINGS);
                 }
-                if (res.getState() == CmsResource.STATE_CHANGED) {
+                if (res.getState().isChanged()) {
                     // resource is changed, restore content of resource from online project
                     CmsProject currentProject = getCms().getRequestContext().currentProject();
                     byte[] onlineContents = null;

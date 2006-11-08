@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2006/10/30 10:47:09 $
- * Version: $Revision: 1.114.4.7 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.114.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.util.CmsUUID;
@@ -53,7 +54,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.7 $
+ * @version $Revision: 1.114.4.8 $
  * 
  * @since 6.0.0 
  */
@@ -468,7 +469,7 @@ public interface I_CmsVfsDriver {
      * @return a list with all resources that where read
      * @throws CmsDataAccessException if somethong goes wrong
      */
-    List readResources(CmsDbContext dbc, int currentProject, int state, int mode) throws CmsDataAccessException;
+    List readResources(CmsDbContext dbc, int currentProject, CmsResourceState state, int mode) throws CmsDataAccessException;
 
     /**
      * Returns all resources associated to a given principal via an ACE.<p> 
@@ -504,29 +505,14 @@ public interface I_CmsVfsDriver {
     throws CmsDataAccessException;
 
     /**
-     * Reads all resources that have a value set for the specified property (definition), in the given path.<p>
-     * 
-     * Both individual and shared properties of a resource are checked.<p>
-     *
-     * @param dbc the current database context
-     * @param projectId the id of the project
-     * @param propertyDefinition the id of the property definition
-     * @param path the folder to get the resources with the property from
-     * 
-     * @return a list of all <code>{@link CmsResource}</code> objects 
-     *          that have a value set for the specified property.
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDefinition, String path)
-    throws CmsDataAccessException;
-
-    /**
      * Reads all resources that have a value (containing the specified value) 
      * set for the specified property (definition), in the given path.<p>
      * 
      * Both individual and shared properties of a resource are checked.<p>
      *
+     * If the <code>value</code> parameter is <code>null</code>, all resources having the
+     * given property set are returned.<p>
+     * 
      * @param dbc the current database context
      * @param projectId the id of the project
      * @param propertyDefinition the id of the property definition
@@ -556,7 +542,7 @@ public interface I_CmsVfsDriver {
      * @param parent the path to the resource used as root of the searched subtree or {@link CmsDriverManager#READ_IGNORE_PARENT}, 
      *               {@link CmsDriverManager#READMODE_EXCLUDE_TREE} means to read immidiate children only 
      * @param type the resource type of matching resources or {@link CmsDriverManager#READ_IGNORE_TYPE} (meaning inverted by {@link CmsDriverManager#READMODE_EXCLUDE_TYPE}
-     * @param state the state of matching resources or {@link CmsDriverManager#READ_IGNORE_STATE} (meaning inverted by {@link CmsDriverManager#READMODE_EXCLUDE_STATE}
+     * @param state the state of matching resources (meaning inverted by {@link CmsDriverManager#READMODE_EXCLUDE_STATE} or <code>null</code> to ignore
      * @param startTime the start of the time range for the last modification date of matching resources or READ_IGNORE_TIME 
      * @param endTime the end of the time range for the last modification date of matching resources or READ_IGNORE_TIME
      * @param releasedAfter the start of the time range for the release date of matching resources
@@ -581,7 +567,7 @@ public interface I_CmsVfsDriver {
         int projectId,
         String parent,
         int type,
-        int state,
+        CmsResourceState state,
         long startTime,
         long endTime,
         long releasedAfter,

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2006/07/26 15:05:11 $
-* Version: $Revision: 1.5.8.1 $
+* Date   : $Date: 2006/11/08 09:28:48 $
+* Version: $Revision: 1.5.8.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,8 +62,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.5.8.1 $
- * $Date: 2006/07/26 15:05:11 $
+ * $Revision: 1.5.8.2 $
+ * $Date: 2006/11/08 09:28:48 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -197,7 +197,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
                                      "", CmsResourceTypeFolder.RESOURCE_TYPE_ID, true, 0,
                                      m_cms.getRequestContext().currentProject().getId(),
-                                     1, System.currentTimeMillis(),
+                                     CmsResource.STATE_CHANGED, System.currentTimeMillis(),
                                      m_cms.getRequestContext().currentUser().getId(), System.currentTimeMillis(),
                                      m_cms.getRequestContext().currentUser().getId(), CmsResource.DATE_RELEASED_DEFAULT,
                                      CmsResource.DATE_EXPIRED_DEFAULT, 1, 0);
@@ -437,7 +437,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @return int with the state.
      */
     public int getState() {
-        return m_channel.getState();
+        return m_channel.getState().getState();
     }
 
     /**

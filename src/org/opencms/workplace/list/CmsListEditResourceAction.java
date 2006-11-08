@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListEditResourceAction.java,v $
- * Date   : $Date: 2006/08/21 15:59:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,15 +36,15 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
-import org.opencms.util.CmsResourceUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
  * Opens the selected resource in a new window.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */

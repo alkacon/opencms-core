@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestServletResponse.java,v $
- * Date   : $Date: 2006/11/03 09:42:26 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,30 +41,45 @@ import javax.servlet.http.HttpServletResponse;
  * Very incomple implementation of <code>HttpServletResponse</code> for testing.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class OpenCmsTestServletResponse implements HttpServletResponse {
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#addCookie(javax.servlet.http.Cookie)
+     */
     public void addCookie(Cookie arg0) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+     */
     public void addDateHeader(String arg0, long arg1) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
+     */
     public void addHeader(String arg0, String arg1) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
+     */
     public void addIntHeader(String arg0, int arg1) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
+     */
     public boolean containsHeader(String arg0) {
 
         throw new RuntimeException("Not implemented");
@@ -79,6 +94,9 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#encodeRedirectURL(java.lang.String)
+     */
     public String encodeRedirectURL(String arg0) {
 
         throw new RuntimeException("Not implemented");
@@ -93,101 +111,161 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#encodeURL(java.lang.String)
+     */
     public String encodeURL(String arg0) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#flushBuffer()
+     */
     public void flushBuffer() {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#getBufferSize()
+     */
     public int getBufferSize() {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#getCharacterEncoding()
+     */
     public String getCharacterEncoding() {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#getLocale()
+     */
     public Locale getLocale() {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#getOutputStream()
+     */
     public ServletOutputStream getOutputStream() {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#getWriter()
+     */
     public PrintWriter getWriter() {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#isCommitted()
+     */
     public boolean isCommitted() {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#reset()
+     */
     public void reset() {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#resetBuffer()
+     */
     public void resetBuffer() {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
+     */
     public void sendError(int arg0, String arg1) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#sendError(int)
+     */
     public void sendError(int arg0) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
+     */
     public void sendRedirect(String arg0) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#setBufferSize(int)
+     */
     public void setBufferSize(int arg0) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#setContentLength(int)
+     */
     public void setContentLength(int arg0) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
+     */
     public void setContentType(String arg0) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+     */
     public void setDateHeader(String arg0, long arg1) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
+     */
     public void setHeader(String arg0, String arg1) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     */
     public void setIntHeader(String arg0, int arg1) {
 
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#setLocale(java.util.Locale)
+     */
     public void setLocale(Locale arg0) {
 
         throw new RuntimeException("Not implemented");
@@ -202,6 +280,9 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletResponse#setStatus(int)
+     */
     public void setStatus(int arg0) {
 
         throw new RuntimeException("Not implemented");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2006/08/21 14:16:56 $
- * Version: $Revision: 1.76.4.2 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.76.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76.4.2 $
+ * @version $Revision: 1.76.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -478,19 +478,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     List readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException;
-
-    /**
-     * Reads all resources that build the "view" of a project.<p>
-     *
-     * @param dbc the current database context
-     * @param project the id of the project in which the resource will be used
-     * @param filter the filter for the resources to read
-     * 
-     * @return a List of resources
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    List readProjectView(CmsDbContext dbc, int project, String filter) throws CmsDataAccessException;
 
     /**
      * Reads the resources that were published during a publish process for a given publish history ID.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2006/10/26 08:36:53 $
- * Version: $Revision: 1.5.4.7 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.5.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsBackupResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -79,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.7 $ 
+ * @version $Revision: 1.5.4.8 $ 
  * 
  * @since 6.0.2 
  */
@@ -425,7 +424,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         CmsFile offlineFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
 
         // display offline version, if state is not unchanged
-        if (offlineFile.getState() != CmsResource.STATE_UNCHANGED) {
+        if (!offlineFile.getState().isUnchanged()) {
             CmsListItem item = getList().newItem("-1");
             //version
             item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(OFFLINE_PROJECT));

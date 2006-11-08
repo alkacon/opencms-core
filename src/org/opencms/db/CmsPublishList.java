@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.25.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.List;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.25.4.1 $
  * 
  * @since 6.0.0
  * 
@@ -289,7 +289,7 @@ public class CmsPublishList {
                 resource.getRootPath()));
         }
 
-        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
+        if (resource.getState().isUnchanged()) {
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1,
                 resource.getRootPath()));
@@ -335,13 +335,13 @@ public class CmsPublishList {
                 resource.getRootPath()));
         }
 
-        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
+        if (resource.getState().isUnchanged()) {
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1,
                 resource.getRootPath()));
         }
 
-        if (resource.getState() == CmsResource.STATE_DELETED) {
+        if (resource.getState().isDeleted()) {
             m_deletedFolderList.add(resource);
         } else {
             m_folderList.add(resource);

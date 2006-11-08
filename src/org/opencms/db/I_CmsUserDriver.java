@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.58.8.1 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.58.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,14 +49,14 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.58.8.1 $
+ * @version $Revision: 1.58.8.2 $
  * 
  * @since 6.0.0 
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
 
     /** TODO: Remove "Object reservedParam" from all methods, refactor to use special instance of dbc instead. */
-    int todo_v7 = 0;
+    int TODO_V7 = 0;
 
     /** The type ID to identify user driver implementations. */
     int DRIVER_TYPE_ID = 2;

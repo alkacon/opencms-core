@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2006/10/26 15:17:03 $
- * Version: $Revision: 1.23.4.8 $
+ * Date   : $Date: 2006/11/08 09:28:54 $
+ * Version: $Revision: 1.23.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace;
 
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
 
@@ -39,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.4.8 $ 
+ * @version $Revision: 1.23.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -431,7 +432,7 @@ public final class Messages extends A_CmsMessageBundle {
      * @param state  STATE_UNCHANGED, STATE_CHANGED, STATE_NEW or STATE_DELETED.
      * @return cconstanname as String
      */
-    public static String getStateKey(int state) {
+    public static String getStateKey(CmsResourceState state) {
 
         StringBuffer sb = new StringBuffer(STATE_PREFIX);
         sb.append(state);

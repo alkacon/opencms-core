@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2006/08/19 13:40:47 $
- * Version: $Revision: 1.21.4.1 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.21.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.21.4.1 $ 
+ * @version $Revision: 1.21.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -200,7 +200,7 @@ public class CmsDisplayResource extends CmsDialog {
             }
 
             if (resource != null) {
-                if (resource.getState() == CmsResource.STATE_DELETED) {
+                if (resource.getState().isDeleted()) {
                     // resource has been deleted in offline project
                     throw new CmsVfsResourceNotFoundException(Messages.get().container(
                         Messages.ERR_RESOURCE_DELETED_2,

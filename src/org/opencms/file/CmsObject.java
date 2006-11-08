@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/10/31 12:12:34 $
- * Version: $Revision: 1.146.4.13 $
+ * Date   : $Date: 2006/11/08 09:28:48 $
+ * Version: $Revision: 1.146.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,10 @@
 package org.opencms.file;
 
 import org.opencms.db.CmsPublishList;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResource.CmsResourceState;
+import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
@@ -55,6 +59,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,7 +90,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.13 $
+ * @version $Revision: 1.146.4.14 $
  * 
  * @since 6.0.0 
  */
@@ -405,7 +410,7 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
      * 
-     * @see #copyResource(String, String, int)
+     * @see #copyResource(String, String, CmsResourceCopyMode)
      */
     public void copyResource(String source, String destination) throws CmsException, CmsIllegalArgumentException {
 
@@ -422,9 +427,9 @@ public final class CmsObject {
      * during the copy operation.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.file.CmsResource#COPY_AS_NEW}</code></li>
-     * <li><code>{@link org.opencms.file.CmsResource#COPY_AS_SIBLING}</code></li>
-     * <li><code>{@link org.opencms.file.CmsResource#COPY_PRESERVE_SIBLING}</code></li>
+     * <li><code>{@link CmsResource#COPY_AS_NEW}</code></li>
+     * <li><code>{@link CmsResource#COPY_AS_SIBLING}</code></li>
+     * <li><code>{@link CmsResource#COPY_PRESERVE_SIBLING}</code></li>
      * </ul><p>
      * 
      * @param source the name of the resource to copy (full path)
@@ -434,7 +439,7 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
      */
-    public void copyResource(String source, String destination, int siblingMode)
+    public void copyResource(String source, String destination, CmsResourceCopyMode siblingMode)
     throws CmsException, CmsIllegalArgumentException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -457,22 +462,6 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource.getTypeId()).copyResourceToProject(this, m_securityManager, resource);
-    }
-
-    /**
-     * Copies a resource to another project.<p>
-     * 
-     * @param resourcename the name of the resource to copy to the project
-     * @param project the project 
-     * @throws CmsException if something goes wrong
-     */
-    public void copyResourceToProject(String resourcename, CmsProject project) throws CmsException {
-
-        // TODO: This should always be done automatically, never by the user - remove this method
-        int todo_v7;
-
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).copyResourceToProject(this, m_securityManager, resource, project);
     }
 
     /**
@@ -632,15 +621,19 @@ public final class CmsObject {
      * @param destination the name of the sibling to create with complete path
      * @param properties the individual properties for the new sibling
      * 
+     * @return the new created sibling
+     * 
      * @throws CmsException if something goes wrong
      */
-    public void createSibling(String source, String destination, List properties) throws CmsException {
-
-        // TODO: this method could return the new created resource to be consistent with the createResource method
-        int todo;
+    public CmsResource createSibling(String source, String destination, List properties) throws CmsException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).createSibling(this, m_securityManager, resource, destination, properties);
+        return getResourceType(resource.getTypeId()).createSibling(
+            this,
+            m_securityManager,
+            resource,
+            destination,
+            properties);
     }
 
     /**
@@ -786,8 +779,8 @@ public final class CmsObject {
      * during the delete operation.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.file.CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
-     * <li><code>{@link org.opencms.file.CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
+     * <li><code>{@link CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
+     * <li><code>{@link CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
      * </ul><p>
      * 
      * @param resourcename the name of the resource to delete (full path)
@@ -795,7 +788,7 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      */
-    public void deleteResource(String resourcename, int siblingMode) throws CmsException {
+    public void deleteResource(String resourcename, CmsResourceDeleteMode siblingMode) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource.getTypeId()).deleteResource(this, m_securityManager, resource, siblingMode);
@@ -1809,8 +1802,6 @@ public final class CmsObject {
      * @param resourcename the name of the resource to lock (full path)
      * 
      * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#lockResourceInWorkflow(String, CmsProject)
      */
     public void lockResource(String resourcename) throws CmsException {
 
@@ -1847,7 +1838,6 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#lockResource(String)
-     * @see CmsObject#lockResourceInWorkflow(String, CmsProject)
      */
     public void lockResourceTemporary(String resourcename) throws CmsException {
 
@@ -1995,6 +1985,67 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.moveToLostAndFound(m_context, resource, false);
+    }
+
+    /**
+     * Returns the resource to render, if the resource is a folder it tries 
+     * to get a file to render the folder through the default folder files, 
+     * if still no file can be found to render the folder <code>null</code> is retuned. 
+     * 
+     * @param resource the resource to narrow
+     * 
+     * @return the resource to render
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource narrowResource(CmsResource resource) throws CmsException {
+
+        // resource exists, lets check if we have a file or a folder
+        if (resource.isFolder()) {
+            // the resource is a folder, check if PROPERTY_DEFAULT_FILE is set on folder
+            try {
+                String defaultFileName = readPropertyObject(
+                    CmsResource.getFolderPath(getSitePath(resource)),
+                    CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
+                    false).getValue();
+                if (defaultFileName != null) {
+                    // property was set, so look up this file first
+                    String tmpResourceName = CmsResource.getFolderPath(getSitePath(resource)) + defaultFileName;
+                    resource = readResource(tmpResourceName);
+                    // no exception? so we have found the default file                         
+                    getRequestContext().setUri(tmpResourceName);
+                }
+            } catch (CmsSecurityException se) {
+                // permissions deny access to the resource
+                throw se;
+            } catch (CmsException e) {
+                // ignore all other exceptions and continue the lookup process
+            }
+            if (resource.isFolder()) {
+                // resource is (still) a folder, check default files specified in configuration
+                Iterator it = OpenCms.getDefaultFiles().iterator();
+                while (it.hasNext()) {
+                    String tmpResourceName = CmsResource.getFolderPath(getSitePath(resource)) + it.next().toString();
+                    try {
+                        resource = readResource(tmpResourceName);
+                        // no exception? So we have found the default file
+                        getRequestContext().setUri(tmpResourceName);
+                        // stop looking for default files   
+                        break;
+                    } catch (CmsSecurityException se) {
+                        // permissions deny access to the resource
+                        throw se;
+                    } catch (CmsException e) {
+                        // ignore all other exceptions and continue the lookup process
+                    }
+                }
+            }
+        }
+        if (resource.isFolder()) {
+            // we only want files as a result for further processing
+            resource = null;
+        }
+        return resource;
     }
 
     /**
@@ -2484,7 +2535,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readProjectView(int projectId, int state) throws CmsException {
+    public List readProjectView(int projectId, CmsResourceState state) throws CmsException {
 
         return m_securityManager.readProjectView(m_context, projectId, state);
     }
@@ -2902,13 +2953,7 @@ public final class CmsObject {
      */
     public List readResourcesWithProperty(String propertyDefinition) throws CmsException {
 
-        // TODO: change the semantic to get all files in the current site and not in the root site
-        //       to be consistent with the other readResourcesWithProperty methods.
-        //       replace call by #readResourcesWithProperty(String, String) to reduce the
-        //       number of methods in security/driver managers
-        int todo;
-
-        return m_securityManager.readResourcesWithProperty(m_context, "/", propertyDefinition);
+        return readResourcesWithProperty("/", propertyDefinition);
     }
 
     /**
@@ -2926,12 +2971,7 @@ public final class CmsObject {
      */
     public List readResourcesWithProperty(String path, String propertyDefinition) throws CmsException {
 
-        // TODO: Read the resource first to check existence and permissions.
-        //       replace call by #readResourcesWithProperty(String, String, String) 
-        //       to reduce the number of methods in security/driver managers
-        int todo;
-
-        return m_securityManager.readResourcesWithProperty(m_context, addSiteRoot(path), propertyDefinition);
+        return readResourcesWithProperty(path, propertyDefinition, null);
     }
 
     /**
@@ -2940,6 +2980,9 @@ public final class CmsObject {
      * 
      * Both individual and shared properties of a resource are checked.<p>
      *
+     * If the <code>value</code> parameter is <code>null</code>, all resources having the
+     * given property set are returned.<p>
+     * 
      * @param path the folder to get the resources with the property from
      * @param propertyDefinition the name of the property to check for
      * @param value the string to search in the value of the property
@@ -2951,10 +2994,8 @@ public final class CmsObject {
      */
     public List readResourcesWithProperty(String path, String propertyDefinition, String value) throws CmsException {
 
-        // TODO: Read the resource first to check existence and permissions
-        int todo;
-
-        return m_securityManager.readResourcesWithProperty(m_context, addSiteRoot(path), propertyDefinition, value);
+        CmsResource resource = readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
+        return m_securityManager.readResourcesWithProperty(m_context, resource, propertyDefinition, value);
     }
 
     /**
@@ -3329,34 +3370,6 @@ public final class CmsObject {
     }
 
     /**
-     * Sets the last modified project reference of a resource.<p>
-     * 
-     * @param resourcename the name of the resource
-     * @param projectLastModified the project to refer to
-     * @param additionalFlags additional flag to set
-     * @param recursive flag to indicate if all subresources should change their project references, too
-     * @throws CmsException if something goes wrong
-     */
-    public void setProjectLastModified(
-        String resourcename,
-        CmsProject projectLastModified,
-        int additionalFlags,
-        boolean recursive) throws CmsException {
-
-        // TODO: Remove this method - this should always be done automatically in the core!
-        int todo_v7;
-
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).setProjectLastModified(
-            this,
-            m_securityManager,
-            resource,
-            projectLastModified,
-            additionalFlags,
-            recursive);
-    }
-
-    /**
      * Changes the timestamp information of a resource.<p>
      * 
      * This method is used to set the "last modified" date
@@ -3405,7 +3418,7 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#undoChanges(String, int)
+     * @see CmsObject#undoChanges(String, CmsResourceUndoMode)
      */
     public void undeleteResource(String resourcename) throws CmsException {
 
@@ -3417,7 +3430,7 @@ public final class CmsObject {
      * online project to the current offline project.<p>
      * 
      * @param resourcename the name of the resource to undo the changes for (full path)
-     * @param mode the undo mode, one of the <code>{@link CmsResource}#UNDO_XXX</code> constants
+     * @param mode the undo mode, one of the <code>{@link CmsResourceUndoMode}#UNDO_XXX</code> constants
      *
      * @throws CmsException if something goes wrong
      * 
@@ -3426,10 +3439,7 @@ public final class CmsObject {
      * @see CmsResource#UNDO_MOVE_CONTENT
      * @see CmsResource#UNDO_MOVE_CONTENT_RECURSIVE
      */
-    public void undoChanges(String resourcename, int mode) throws CmsException {
-
-        // TODO: Exchange the int with a custom parameter class
-        int todo_v7;
+    public void undoChanges(String resourcename, CmsResourceUndoMode mode) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource.getTypeId()).undoChanges(this, m_securityManager, resource, mode);

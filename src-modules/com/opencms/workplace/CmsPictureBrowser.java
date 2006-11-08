@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2005/06/27 23:22:07 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2006/11/08 09:28:51 $
+* Version: $Revision: 1.4.8.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.4 $ $Date: 2005/06/27 23:22:07 $
+ * @version $Revision: 1.4.8.1 $ $Date: 2006/11/08 09:28:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -197,7 +197,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
         Vector filteredPics = new Vector();
         for(int i = 0;i < allPics.size();i++) {
             CmsFile file = (CmsFile)allPics.get(i);
-            if (file.getState() != CmsResource.STATE_DELETED) {
+            if (!file.getState().isDeleted()) {
                 String filename = file.getName();
                 String title = cms.readProperty(cms.getSitePath(file), CmsPropertyDefinition.PROPERTY_TITLE);
                 boolean filenameFilter = inFilter(filename, filter);

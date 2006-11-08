@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2006/08/21 14:16:56 $
- * Version: $Revision: 1.29.4.2 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.29.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -70,7 +73,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29.4.2 $ 
+ * @version $Revision: 1.29.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -215,15 +218,15 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#copyResource(String, String, int)
-     * @see CmsSecurityManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, int)
+     * @see CmsObject#copyResource(String, String, CmsResourceCopyMode)
+     * @see CmsSecurityManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, CmsResourceCopyMode)
      */
     void copyResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        int siblingMode) throws CmsException, CmsIllegalArgumentException;
+        CmsResourceCopyMode siblingMode) throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Copies a resource to the current project of the user.<p>
@@ -245,22 +248,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      */
     void copyResourceToProject(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
     throws CmsException, CmsIllegalArgumentException;
-
-    /**
-     * Copies a resource to another project.<p>
-     * 
-     * @param cms the initialized CmsObject
-     * @param securityManager the initialized OpenCms security manager
-     * @param resource the resource to apply this operation to
-     * @param project the project to copy the resource to
-     * @throws CmsException if something goes wrong
-     * @throws CmsIllegalArgumentException if the <code>resource</code> argument is null or of length 0
-     */
-    void copyResourceToProject(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        CmsProject project) throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Creates a new resource of the given resource type
@@ -297,12 +284,14 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param destination the name of the sibling to create with complete path
      * @param properties the individual properties for the new sibling
      * 
+     * @return the new created sibling
+     * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#createSibling(String, String, List)
      * @see CmsSecurityManager#createSibling(org.opencms.file.CmsRequestContext, CmsResource, String, List)
      */
-    void createSibling(
+    CmsResource createSibling(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
@@ -316,8 +305,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * during the delete operation.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.file.CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
-     * <li><code>{@link org.opencms.file.CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
+     * <li><code>{@link CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
+     * <li><code>{@link CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
      * </ul><p>
      * 
      * @param cms the initialized CmsObject
@@ -327,10 +316,10 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      *
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#deleteResource(String, int)
-     * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsObject#deleteResource(String, CmsResourceDeleteMode)
+     * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, CmsResourceDeleteMode)
      */
-    void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int siblingMode)
+    void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsResourceDeleteMode siblingMode)
     throws CmsException;
 
     /**
@@ -540,8 +529,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @see CmsObject#moveResource(String, String)
      * @see CmsObject#renameResource(String, String)
-     * @see CmsSecurityManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, int)
-     * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsSecurityManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, CmsResourceCopyMode)
+     * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, CmsResourceDeleteMode)
      */
     void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
     throws CmsException, CmsIllegalArgumentException;
@@ -676,29 +665,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         boolean recursive) throws CmsException;
 
     /**
-     * Changes the "last modified" project reference of a resource.<p>
-     * 
-     * @param cms the current cms context
-     * @param securityManager the initialized OpenCms security manager
-     * @param resource the resource to touch
-     * @param projectLastModified the new project reference of the resource
-     * @param additionalFlags additional Flags to set
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#setDateLastModified(String, long, boolean)
-     * @see CmsSecurityManager#setDateLastModified(org.opencms.file.CmsRequestContext, CmsResource, long)
-     */
-    void setProjectLastModified(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        CmsProject projectLastModified,
-        int additionalFlags,
-        boolean recursive) throws CmsException;
-
-    /**
      * Undos all changes in the resource by restoring the version from the 
      * online project to the current offline project.<p>
      * 
@@ -707,7 +673,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to undo the changes for
-     * @param mode the undo mode, one of the <code>{@link CmsResource}#UNDO_XXX</code> constants
+     * @param mode the undo mode, one of the <code>{@link CmsResourceUndoMode}#UNDO_XXX</code> constants
      *
      * @throws CmsException if something goes wrong
      * 
@@ -715,10 +681,10 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @see CmsResource#UNDO_CONTENT_RECURSIVE
      * @see CmsResource#UNDO_MOVE_CONTENT
      * @see CmsResource#UNDO_MOVE_CONTENT_RECURSIVE
-     * @see CmsObject#undoChanges(String, int)
-     * @see CmsSecurityManager#undoChanges(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsObject#undoChanges(String, CmsResourceUndoMode)
+     * @see CmsSecurityManager#undoChanges(org.opencms.file.CmsRequestContext, CmsResource, CmsResourceUndoMode)
      */
-    void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int mode)
+    void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsResourceUndoMode mode)
     throws CmsException;
 
     /**

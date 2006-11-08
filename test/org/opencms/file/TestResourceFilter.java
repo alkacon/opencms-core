@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestResourceFilter.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/11/08 09:28:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestResourceFilter extends OpenCmsTestCase {
 
@@ -136,7 +136,7 @@ public class TestResourceFilter extends OpenCmsTestCase {
 
         filterFolder = CmsResourceFilter.ALL.addRequireFolder().addExcludeState(CmsResource.STATE_DELETED);
 
-        echo("Testing if only folders pass the resource filter CmsResourceFilter.ALL.addRequireFolder().addExcludeState(CmsResource.STATE_DELETED)");
+        echo("Testing if only folders pass the resource filter CmsResourceFilter.ALL.addRequireFolder().addExcludeState(CmsResourceState.STATE_DELETED)");
         assertFilterFolderOnly(filterFolder);
     }
 }

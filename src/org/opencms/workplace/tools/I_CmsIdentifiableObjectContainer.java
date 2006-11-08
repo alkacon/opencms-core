@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/I_CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.6.4.1 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/I_CmsIdentifiableObjectContainer.java,v $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.util;
+package org.opencms.workplace.tools;
 
 import java.util.List;
 
@@ -38,14 +38,11 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6.4.1 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsIdentifiableObjectContainer {
-
-    /** TODO: This interface should really be in a workplace package! */
-    int todo = 0;
 
     /**
      * Appends the specified object to the end of this container. <p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Attic/CmsRelationsValidator.java,v $
- * Date   : $Date: 2006/10/04 15:58:33 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.3.0 
  */
@@ -146,7 +146,7 @@ public class CmsRelationsValidator {
                 try {
                     I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
                     if ((resourceType instanceof I_CmsLinkParseable)
-                        && (resource.getState() != CmsResource.STATE_DELETED)) {
+                        && !resource.getState().isDeleted()) {
                         // don't validate links on deleted resources
                         validatableResources.add(resource);
                     }

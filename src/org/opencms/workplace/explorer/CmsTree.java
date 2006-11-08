@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.23.4.1 $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.23.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23.4.1 $ 
+ * @version $Revision: 1.23.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -642,7 +643,7 @@ public class CmsTree extends CmsWorkplace {
      *
      * @return the output for a tree node
      */
-    private String getNode(String path, String title, int type, boolean folder, int state, boolean grey) {
+    private String getNode(String path, String title, int type, boolean folder, CmsResourceState state, boolean grey) {
 
         StringBuffer result = new StringBuffer(64);
         String parent = CmsResource.getParentFolder(path);

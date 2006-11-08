@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2006/10/09 15:52:32 $
- * Version: $Revision: 1.31.4.2 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.31.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -47,7 +48,7 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.31.4.2 $
+ * @version $Revision: 1.31.4.3 $
  * 
  * @since 6.0.0
  * 
@@ -55,8 +56,46 @@ import java.io.Serializable;
  */
 public class CmsPublishedResource implements Serializable, Comparable {
 
-    /** Additional state flag for moved resources. */
-    public static final int STATE_MOVED = 8;
+    /**
+     * Add new resource states under consideration of the move operation.<p>
+     */
+    public static class CmsPublishedResourceState extends CmsResourceState {
+
+        private static final long serialVersionUID = -2901049208546972463L;
+
+        /**
+         * protected constructor.<p>
+         * 
+         * @param state an integer representing the state 
+         * @param abbrev an abbreviation character
+         */
+        protected CmsPublishedResourceState(int state, char abbrev) {
+
+            super(state, abbrev);
+        }
+
+        /**
+         * Returns the corresponding resource state for this publish resource state.<p>
+         * 
+         * @return the corresponding resource state
+         */
+        public CmsResourceState getResourceState() {
+
+            if (this == STATE_MOVED_SOURCE) {
+                return CmsResource.STATE_DELETED;
+            } else if (this == STATE_MOVED_DESTINATION) {
+                return CmsResource.STATE_NEW;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    /** Additional state for moved resources, the (new) destination of the moved resource. */
+    public static final CmsPublishedResourceState STATE_MOVED_DESTINATION = new CmsPublishedResourceState(12, 'M');
+
+    /** Additional state for moved resources, the (deleted) source of the moved resource. */
+    public static final CmsPublishedResourceState STATE_MOVED_SOURCE = new CmsPublishedResourceState(11, ' ');
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1054065812825770479L;
@@ -74,7 +113,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
     private CmsUUID m_resourceId;
 
     /** The state of the resource *before* it was published.<p> */
-    private int m_resourceState;
+    private CmsResourceState m_resourceState;
 
     /** The type of the published resource.<p> */
     private int m_resourceType;
@@ -118,7 +157,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
      * @param state the resource state
      * @param backupTagId the backup tag id
      */
-    public CmsPublishedResource(CmsResource resource, int backupTagId, int state) {
+    public CmsPublishedResource(CmsResource resource, int backupTagId, CmsResourceState state) {
 
         this(
             resource.getStructureId(),
@@ -150,7 +189,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
         String rootPath,
         int resourceType,
         boolean isFolder,
-        int resourceState,
+        CmsResourceState resourceState,
         int siblingCount) {
 
         m_structureId = structureId;
@@ -161,8 +200,8 @@ public class CmsPublishedResource implements Serializable, Comparable {
         m_isFolder = isFolder;
         m_resourceState = resourceState;
         m_siblingCount = siblingCount;
-        if (m_resourceState >= STATE_MOVED) {
-            m_resourceState -= STATE_MOVED;
+        if (m_resourceState instanceof CmsPublishedResourceState) {
+            m_resourceState = ((CmsPublishedResourceState)m_resourceState).getResourceState();
             m_isMoved = true;
         }
     }
@@ -212,6 +251,25 @@ public class CmsPublishedResource implements Serializable, Comparable {
     }
 
     /**
+     * Returns the resource state including move operation information.<p>
+     * 
+     * @return the resource state including move operation information
+     */
+    public CmsResourceState getMovedState() {
+
+        if (!m_isMoved) {
+            return getState();
+        } else if (getState().isDeleted()) {
+            return STATE_MOVED_SOURCE;
+        } else if (getState().isNew()) {
+            return STATE_MOVED_DESTINATION;
+        } else {
+            // should never happen
+            return getState();
+        }
+    }
+
+    /**
      * Returns the resource ID of the published resource.<p>
      * 
      * @return the resource ID of the published resource
@@ -249,7 +307,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
      * 
      * @return the resource state of the published resource
      */
-    public int getState() {
+    public CmsResourceState getState() {
 
         return m_resourceState;
     }
@@ -283,26 +341,6 @@ public class CmsPublishedResource implements Serializable, Comparable {
     }
 
     /**
-     * Checks if the resource is changed.<p>
-     * 
-     * @return true if the resource is changed
-     */
-    public boolean isChanged() {
-
-        return getState() == CmsResource.STATE_CHANGED;
-    }
-
-    /**
-     * Checks if the resource is deleted.<p>
-     * 
-     * @return true if the resource is deleted
-     */
-    public boolean isDeleted() {
-
-        return getState() == CmsResource.STATE_DELETED;
-    }
-
-    /**
      * Determines if this resource is a file.<p>
      * 
      * @return true if this resource is a file, false otherwise
@@ -330,26 +368,6 @@ public class CmsPublishedResource implements Serializable, Comparable {
     public boolean isMoved() {
 
         return m_isMoved;
-    }
-
-    /**
-     * Checks if the resource is new.<p>
-     * 
-     * @return true if the resource is new
-     */
-    public boolean isNew() {
-
-        return getState() == CmsResource.STATE_NEW;
-    }
-
-    /**
-     * Checks if the resource is unchanged.<p>
-     * 
-     * @return true if the resource is unchanged
-     */
-    public boolean isUnChanged() {
-
-        return getState() == CmsResource.STATE_UNCHANGED;
     }
 
     /**

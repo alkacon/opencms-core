@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/09/20 14:38:00 $
- * Version: $Revision: 1.90.4.10 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.90.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.test;
 
 import org.opencms.db.CmsDbPool;
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -92,7 +93,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.10 $
+ * @version $Revision: 1.90.4.11 $
  * 
  * @since 6.0.0
  */
@@ -2003,7 +2004,7 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             // the current resource has a red flag if it's state is changed/new/deleted
-            hasRedFlag = (res.getState() != CmsResource.STATE_UNCHANGED);
+            hasRedFlag = !res.getState().isUnchanged();
             // and if it was modified in the current project
             hasRedFlag &= (res.getProjectLastModified() == cms.getRequestContext().currentProject().getId());
             // and if it was modified by the current user
@@ -2491,7 +2492,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource to compare
      * @param state the state
      */
-    public void assertState(CmsObject cms, String resourceName, int state) {
+    public void assertState(CmsObject cms, String resourceName, CmsResourceState state) {
 
         try {
             // get the actual resource from the vfs
@@ -2621,7 +2622,7 @@ public class OpenCmsTestCase extends TestCase {
      * @return precalculated resource state
      * @throws Exception in case something goes wrong
      */
-    public int getPreCalculatedState(String resourceName) throws Exception {
+    public CmsResourceState getPreCalculatedState(String resourceName) throws Exception {
 
         return m_currentResourceStrorage.getPreCalculatedState(resourceName);
     }

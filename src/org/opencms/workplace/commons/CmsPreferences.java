@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2006/09/18 13:01:37 $
- * Version: $Revision: 1.31.4.4 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.31.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -90,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.4 $
+ * @version $Revision: 1.31.4.5 $
  * 
  * @since 6.0.0
  */
@@ -409,8 +411,8 @@ public class CmsPreferences extends CmsTabDialog {
         options.add(key(Messages.GUI_PREF_COPY_AS_SIBLING_0));
         options.add(key(Messages.GUI_COPY_AS_NEW_0));
         List values = new ArrayList(2);
-        values.add(String.valueOf(CmsResource.COPY_AS_SIBLING));
-        values.add(String.valueOf(CmsResource.COPY_AS_NEW));
+        values.add(CmsResource.COPY_AS_SIBLING.toString());
+        values.add(CmsResource.COPY_AS_NEW.toString());
         int selectedIndex = values.indexOf(getParamTabDiCopyFileMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
@@ -428,9 +430,9 @@ public class CmsPreferences extends CmsTabDialog {
         options.add(key(Messages.GUI_PREF_PRESERVE_SIBLINGS_RESOURCES_0));
         options.add(key(Messages.GUI_PREF_COPY_AS_NEW_0));
         List values = new ArrayList(3);
-        values.add(String.valueOf(CmsResource.COPY_AS_SIBLING));
-        values.add(String.valueOf(CmsResource.COPY_PRESERVE_SIBLING));
-        values.add(String.valueOf(CmsResource.COPY_AS_NEW));
+        values.add(CmsResource.COPY_AS_SIBLING.toString());
+        values.add(CmsResource.COPY_PRESERVE_SIBLING.toString());
+        values.add(CmsResource.COPY_AS_NEW.toString());
         int selectedIndex = values.indexOf(getParamTabDiCopyFolderMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
@@ -1346,7 +1348,7 @@ public class CmsPreferences extends CmsTabDialog {
     public void setParamTabDiCopyFileMode(String value) {
 
         try {
-            m_userSettings.setDialogCopyFileMode(Integer.parseInt(value));
+            m_userSettings.setDialogCopyFileMode(CmsResourceCopyMode.valueOf(Integer.parseInt(value)));
         } catch (Throwable t) {
             // should usually never happen
         }
@@ -1360,7 +1362,7 @@ public class CmsPreferences extends CmsTabDialog {
     public void setParamTabDiCopyFolderMode(String value) {
 
         try {
-            m_userSettings.setDialogCopyFolderMode(Integer.parseInt(value));
+            m_userSettings.setDialogCopyFolderMode(CmsResourceCopyMode.valueOf(Integer.parseInt(value)));
         } catch (Throwable t) {
             // should usually never happen
         }
@@ -1374,7 +1376,7 @@ public class CmsPreferences extends CmsTabDialog {
     public void setParamTabDiDeleteFileMode(String value) {
 
         try {
-            m_userSettings.setDialogDeleteFileMode(Integer.parseInt(value));
+            m_userSettings.setDialogDeleteFileMode(CmsResourceDeleteMode.valueOf(Integer.parseInt(value)));
         } catch (Throwable t) {
             // should usually never happen
         }

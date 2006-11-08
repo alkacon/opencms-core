@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2006/10/09 16:43:13 $
- * Version: $Revision: 1.141.4.5 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.141.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -77,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.141.4.5 $
+ * @version $Revision: 1.141.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -165,7 +166,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             resourceType,
             resourceFlags,
             projectLastModified,
-            state,
+            CmsResourceState.valueOf(state),
             dateCreated,
             userCreated,
             userCreatedName,
@@ -1157,7 +1158,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     stmt.setString(5, resource.getUserCreated().toString());
                     stmt.setLong(6, resource.getDateLastModified());
                     stmt.setString(7, resource.getUserLastModified().toString());
-                    stmt.setInt(8, resource.getState());
+                    stmt.setInt(8, resource.getState().getState());
                     stmt.setInt(9, resource.getLength());
                     stmt.setInt(10, dbc.currentProject().getId());
                     stmt.setInt(11, resource.getSiblingCount());
@@ -1177,7 +1178,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setString(1, resource.getStructureId().toString());
             stmt.setString(2, resource.getResourceId().toString());
             stmt.setString(3, resource.getRootPath());
-            stmt.setInt(4, resource.getState());
+            stmt.setInt(4, resource.getState().getState());
             stmt.setLong(5, resource.getDateReleased());
             stmt.setLong(6, resource.getDateExpired());
             stmt.setInt(7, tagId);

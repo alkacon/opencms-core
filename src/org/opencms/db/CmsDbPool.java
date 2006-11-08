@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2006/10/04 15:12:36 $
- * Version: $Revision: 1.45.4.4 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.45.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.45.4.4 $
+ * @version $Revision: 1.45.4.5 $
  * 
  * @since 6.0.0
  */
@@ -335,10 +335,7 @@ public final class CmsDbPool {
      * 
      * @return a list of database pool names
      */
-    public static List getDbPoolNames(ExtendedProperties configuration) {
-
-        int todo = 0;
-        // TODO: name should be refactored to getDbPoolUrls
+    public static List getDbPoolUrls(ExtendedProperties configuration) {
 
         List dbPoolNames = new ArrayList();
         String[] driverPoolNames = configuration.getStringArray(CmsDriverManager.CONFIGURATION_DB + ".pools");
@@ -346,7 +343,6 @@ public final class CmsDbPool {
         for (int i = 0; i < driverPoolNames.length; i++) {
             dbPoolNames.add(getDbPoolName(configuration, driverPoolNames[i]));
         }
-
         return dbPoolNames;
     }
 

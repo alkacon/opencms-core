@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.22.4.5 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.22.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.workplace.list;
 
 import org.opencms.main.CmsIllegalStateException;
-import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
 
 import java.util.Iterator;
 import java.util.List;
@@ -45,7 +45,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22.4.5 $ 
+ * @version $Revision: 1.22.4.6 $ 
  * 
  * @since 6.0.0 
  */

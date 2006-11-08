@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/I_CmsWorkflowEngine.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/11/08 09:28:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.List;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.0.0
  */
@@ -77,10 +77,10 @@ public interface I_CmsWorkflowEngine {
      * TODO: This implementation is incomplete because it is not possible to signal from the engine to OpenCms
      * if OpenCms does not call a method in the engine first - this must be changed.
      */
-    int todo1 = 0;
+    int TODO1 = 0;
 
     /** TODO: Genereate new type "CmsWorkflowPackage" (or similar name) instead of using {@link CmsProject}. */
-    int todo2 = 0;
+    int TODO2 = 0;
 
     /**
      * Signalizes that the workflow should be aborted.<p>

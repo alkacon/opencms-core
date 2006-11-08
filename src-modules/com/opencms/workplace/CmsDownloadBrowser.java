@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2006/07/26 15:05:11 $
-* Version: $Revision: 1.4.8.1 $
+* Date   : $Date: 2006/11/08 09:28:51 $
+* Version: $Revision: 1.4.8.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.4.8.1 $ $Date: 2006/07/26 15:05:11 $
+ * @version $Revision: 1.4.8.2 $ $Date: 2006/11/08 09:28:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -292,7 +292,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
         Vector filteredFiles = new Vector();
         for(int i=0; i<allFiles.size(); i++) {
             CmsFile file = (CmsFile)allFiles.get(i);
-            if (file.getState() != CmsResource.STATE_DELETED) {
+            if (!file.getState().isDeleted()) {
                 String filename = file.getName();
                 String title = cms.readProperty(cms.getSitePath(file), CmsPropertyDefinition.PROPERTY_TITLE);
                 boolean filenameFilter = inFilter(filename, filter);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2006/10/26 08:36:23 $
-* Version: $Revision: 1.3.8.1 $
+* Date   : $Date: 2006/11/08 09:28:51 $
+* Version: $Revision: 1.3.8.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.3.8.1 $ $Date: 2006/10/26 08:36:23 $
+ * @version $Revision: 1.3.8.2 $ $Date: 2006/11/08 09:28:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -306,7 +306,7 @@ public class CmsFileList extends A_CmsWpElement {
     private String getContextMenue(CmsObject cms, CmsResource res,
             CmsXmlWpTemplateFile template) throws CmsException {
         String contextMenu = null;
-        if(res.getState() != CmsResource.STATE_DELETED) {
+        if(!res.getState().isDeleted()) {
 
             // test if the resource is in the project or if the online project is displayed
             if((cms.getRequestContext().currentProject().isOnlineProject())
@@ -447,7 +447,7 @@ public class CmsFileList extends A_CmsWpElement {
                     template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_ICON_VALUE, CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + config.getWpPicturePath() + icon);
 
                     // set the link, but only if the folder is not deleted
-                    if(res.getState() != CmsResource.STATE_DELETED) {
+                    if(!res.getState().isDeleted()) {
                         template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LINK_VALUE, cms.getSitePath(res));
                     }
                     else {
@@ -558,7 +558,7 @@ public class CmsFileList extends A_CmsWpElement {
                     template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_ICON_VALUE, config.getWpPicturePath() + icon);
 
                     // set the link, but only if the resource is not deleted
-                    if(res.getState() != CmsResource.STATE_DELETED) {
+                    if(!res.getState().isDeleted()) {
                         template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LINK_VALUE, servlets + cms.getSitePath(file));
                     }
                     else {
@@ -791,7 +791,7 @@ public class CmsFileList extends A_CmsWpElement {
         StringBuffer output = new StringBuffer();
         //if(file.inProject(cms.getRequestContext().currentProject())) {
         if (cms.isInsideCurrentProject(cms.getSitePath(file))) {
-            int state = file.getState();
+            int state = file.getState().getState();
             output.append(lang.getLanguageValue("explorer.state" + state));
         }
         else {
@@ -822,7 +822,7 @@ public class CmsFileList extends A_CmsWpElement {
                 output.append(C_STYLE_UNCHANGED);
             }
             else {
-                int style = file.getState();
+                int style = file.getState().getState();
                 switch(style) {
                 case 0:
                     output.append(C_STYLE_UNCHANGED);

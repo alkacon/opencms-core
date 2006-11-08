@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerColumn.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,15 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.util.CmsResourceUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
  * For adding text style to the columns in the explorer list.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,9 +67,9 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
         StringBuffer html = new StringBuffer(128);
         html.append("<table cellpadding='0' cellspacing='0' border='0'><tr><td class='");
         html.append(resUtil.getStyleClassName());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resUtil.getStyleRange())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resUtil.getTimeWindowLayoutStyle())) {
             html.append(" ' style='");
-            html.append(resUtil.getStyleRange());
+            html.append(resUtil.getTimeWindowLayoutStyle());
             html.append("'");
         }
         html.append("'>");

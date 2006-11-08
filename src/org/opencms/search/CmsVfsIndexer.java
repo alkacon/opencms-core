@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.34.4.1 $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.34.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.lucene.index.Term;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.4.1 $ 
+ * @version $Revision: 1.34.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,16 +151,16 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 // use utility method from CmsProject to check if published resource is "inside" this index source
                 if (CmsProject.isInsideProject(source.getResourcesNames(), resource.getRootPath())) {
                     // the resource is "inside" this index source
-                    if (resource.isNew()) {
+                    if (resource.getState().isNew()) {
                         // new resource just needs to be updated
                         if (isResourceInTimeWindow(resource)) {
                             // update only if resource is in time window
                             result.addResourceToUpdate(resource);
                         }
-                    } else if (resource.isDeleted()) {
+                    } else if (resource.getState().isDeleted()) {
                         // deleted resource just needs to be removed
                         result.addResourceToDelete(resource);
-                    } else if (resource.isChanged() || resource.isUnChanged()) {
+                    } else if (resource.getState().isChanged() || resource.getState().isUnchanged()) {
                         // changed (or unchaged) resource must be removed first, and then updated
                         // note: unchanged resources can be siblings that have been added from the online project,
                         //       these must be treated as if the resource had changed

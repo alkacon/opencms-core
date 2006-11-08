@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2006/07/26 15:05:11 $
-* Version: $Revision: 1.2.8.1 $
+* Date   : $Date: 2006/11/08 09:28:51 $
+* Version: $Revision: 1.2.8.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.2.8.1 $ $Date: 2006/07/26 15:05:11 $
+ * @version $Revision: 1.2.8.2 $ $Date: 2006/11/08 09:28:51 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault {
@@ -171,7 +171,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
 
     private boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
         //boolean access = false;
-        if(res.getState() == CmsResource.STATE_DELETED){
+        if(res.getState().isDeleted()){
             return false;
         }
         

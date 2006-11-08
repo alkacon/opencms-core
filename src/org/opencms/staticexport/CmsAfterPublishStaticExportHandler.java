@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.19.4.10 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.19.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.10 $ 
+ * @version $Revision: 1.19.4.11 $ 
  * 
  * @since 6.0.0 
  * 
@@ -348,7 +348,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                             I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
                             if (!loader.isStaticExportProcessable()) {
                                 // this resource must not be processed, so export it (if it's not marked as deleted)
-                                if (pupRes.getState() != CmsResource.STATE_DELETED) {
+                                if (!pupRes.getState().isDeleted()) {
                                     // mark the resource for export to the real file system                  
                                     resourcesToExport.add(exportData);
                                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/10/31 12:12:34 $
- * Version: $Revision: 1.97.4.15 $
+ * Date   : $Date: 2006/11/08 09:28:47 $
+ * Version: $Revision: 1.97.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,15 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
@@ -84,8 +88,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
@@ -381,62 +383,18 @@ public final class CmsSecurityManager {
         String newValue,
         boolean recursive) throws CmsException, CmsVfsException {
 
-        int todo = 0;
-        // check if this belongs here - should be in driver manager (?)
-
-        // collect the resources to look up
-        List resources = new ArrayList();
-        if (recursive) {
-            resources = readResourcesWithProperty(context, resource.getRootPath(), propertyDefinition);
-        } else {
-            resources.add(resource);
-        }
-
-        Pattern oldPattern;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        List result = null;
         try {
-            // compile regular expression pattern
-            oldPattern = Pattern.compile(oldValue);
-        } catch (PatternSyntaxException e) {
-            throw new CmsVfsException(Messages.get().container(
+            result = m_driverManager.changeResourcesInFolderWithProperty(dbc, resource, propertyDefinition, oldValue, newValue, recursive);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
                 Messages.ERR_CHANGE_RESOURCES_IN_FOLDER_WITH_PROP_4,
                 new Object[] {propertyDefinition, oldValue, newValue, context.getSitePath(resource)}), e);
+        } finally {
+            dbc.clear();
         }
-
-        List changedResources = new ArrayList(resources.size());
-        // create permission set and filter to check each resource
-        CmsPermissionSet perm = CmsPermissionSet.ACCESS_WRITE;
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-        for (int i = 0; i < resources.size(); i++) {
-            // loop through found resources and check property values
-            CmsResource res = (CmsResource)resources.get(i);
-            // check resource state and permissions
-            try {
-                checkPermissions(context, res, perm, true, filter);
-            } catch (Exception e) {
-                // resource is deleted or not writable for current user
-                continue;
-            }
-            CmsProperty property = readPropertyObject(context, res, propertyDefinition, false);
-            String structureValue = property.getStructureValue();
-            String resourceValue = property.getResourceValue();
-            boolean changed = false;
-            if ((structureValue != null) && oldPattern.matcher(structureValue).matches()) {
-                // change structure value
-                property.setStructureValue(newValue);
-                changed = true;
-            }
-            if ((resourceValue != null) && oldPattern.matcher(resourceValue).matches()) {
-                // change resource value
-                property.setResourceValue(newValue);
-                changed = true;
-            }
-            if (changed) {
-                // write property object if something has changed
-                writePropertyObject(context, res, property);
-                changedResources.add(res);
-            }
-        }
-        return changedResources;
+        return result;
     }
 
     /**
@@ -600,14 +558,14 @@ public final class CmsSecurityManager {
                 if ((parentFolder != null) && !parentFolders.contains(parentFolder)) {
                     // check each parent folder only once
                     CmsResource parent = readResource(dbc, parentFolder, CmsResourceFilter.ALL);
-                    if (parent.getState() == CmsResource.STATE_DELETED) {
+                    if (parent.getState().isDeleted()) {
                         // parent folder is deleted - direct publish not allowed
                         resourceIssues.addException(new CmsVfsException(Messages.get().container(
                             Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
                             dbc.getRequestContext().removeSiteRoot(res.getRootPath()),
                             parentFolder)));
                     }
-                    if (parent.getState() == CmsResource.STATE_NEW) {
+                    if (parent.getState().isNew()) {
                         // parent folder is new - direct publish not allowed
                         resourceIssues.addException(new CmsVfsException(Messages.get().container(
                             Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
@@ -835,10 +793,10 @@ public final class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if resource could not be copied 
      * 
-     * @see CmsObject#copyResource(String, String, int)
-     * @see org.opencms.file.types.I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, int)
+     * @see CmsObject#copyResource(String, String, CmsResourceCopyMode)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, CmsResourceCopyMode)
      */
-    public void copyResource(CmsRequestContext context, CmsResource source, String destination, int siblingMode)
+    public void copyResource(CmsRequestContext context, CmsResource source, String destination, CmsResourceCopyMode siblingMode)
     throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -887,44 +845,6 @@ public final class CmsSecurityManager {
                 Messages.ERR_COPY_RESOURCE_TO_PROJECT_2,
                 context.getSitePath(resource),
                 context.currentProject().getName()), e);
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
-     * Copies a resource to another project.<p>
-     * 
-     * @param context the current request context
-     * @param resource the resource to apply this operation to
-     * @param project the project to copy the resource to
-     * @throws CmsException if something goes wrong
-     * @throws CmsRoleViolationException if the current user does not have management access to the project.
-     * @see org.opencms.file.types.I_CmsResourceType#copyResourceToProject(CmsObject, CmsSecurityManager, CmsResource)
-     */
-    public void copyResourceToProject(CmsRequestContext context, CmsResource resource, CmsProject project)
-    throws CmsException, CmsRoleViolationException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            if (project.isOnlineProject()) {
-                throw new CmsVfsException(org.opencms.file.Messages.get().container(
-                    org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
-            }
-            checkManagerOfProjectRole(dbc, project);
-
-            if (project.getFlags() != CmsProject.PROJECT_STATE_UNLOCKED) {
-                throw new CmsLockException(org.opencms.lock.Messages.get().container(
-                    org.opencms.lock.Messages.ERR_RESOURCE_LOCKED_1,
-                    dbc.currentProject().getName()));
-            }
-
-            m_driverManager.copyResourceToProject(dbc, resource, project);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_COPY_RESOURCE_TO_PROJECT_2,
-                context.getSitePath(resource),
-                project.getName()), e);
         } finally {
             dbc.clear();
         }
@@ -1111,16 +1031,22 @@ public final class CmsSecurityManager {
      * @param source the resource to create a sibling for
      * @param destination the name of the sibling to create with complete path
      * @param properties the individual properties for the new sibling
+     * 
+     * @return the new created sibling
+     * 
      * @throws CmsException if something goes wrong
+     * 
      * @see org.opencms.file.types.I_CmsResourceType#createSibling(CmsObject, CmsSecurityManager, CmsResource, String, List)
      */
-    public void createSibling(CmsRequestContext context, CmsResource source, String destination, List properties)
+    public CmsResource createSibling(CmsRequestContext context, CmsResource source, String destination, List properties)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        
+        CmsResource sibling = null;
         try {
             checkOfflineProject(dbc);
-            m_driverManager.createSibling(dbc, source, destination, properties);
+            sibling = m_driverManager.createSibling(dbc, source, destination, properties);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_CREATE_SIBLING_1,
@@ -1128,6 +1054,7 @@ public final class CmsSecurityManager {
         } finally {
             dbc.clear();
         }
+        return sibling;
     }
 
     /**
@@ -1410,8 +1337,8 @@ public final class CmsSecurityManager {
      * during the delete operation.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.file.CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
-     * <li><code>{@link org.opencms.file.CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
+     * <li><code>{@link CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
+     * <li><code>{@link CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
      * </ul><p>
      * 
      * @param context the current request context
@@ -1419,9 +1346,9 @@ public final class CmsSecurityManager {
      * @param siblingMode indicates how to handle siblings of the deleted resource
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if the user does not have {@link CmsPermissionSet#ACCESS_WRITE} on the given resource. 
-     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, CmsResourceDeleteMode)
      */
-    public void deleteResource(CmsRequestContext context, CmsResource resource, int siblingMode)
+    public void deleteResource(CmsRequestContext context, CmsResource resource, CmsResourceDeleteMode siblingMode)
     throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -2670,8 +2597,6 @@ public final class CmsSecurityManager {
      * 
      * @see CmsObject#lockResource(String)
      * @see CmsObject#lockResourceTemporary(String)
-     * @see CmsObject#lockResourceInWorkflow(String, CmsProject)
-     * 
      * @see org.opencms.file.types.I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, CmsProject, CmsLockType)
      */
     public void lockResource(CmsRequestContext context, CmsResource resource, CmsProject project, CmsLockType type)
@@ -3440,9 +3365,9 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#readProjectView(int, int)
+     * @see CmsObject#readProjectView(int, CmsResourceState)
      */
-    public List readProjectView(CmsRequestContext context, int projectId, int state) throws CmsException {
+    public List readProjectView(CmsRequestContext context, int projectId, CmsResourceState state) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
@@ -3710,45 +3635,16 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads all resources that have a value set for the specified property (definition) in the given path.<p>
-     * 
-     * Both individual and shared properties of a resource are checked.<p>
-     *
-     * @param context the current request context
-     * @param path the folder to get the resources with the property from
-     * @param propertyDefinition the name of the property (definition) to check for
-     * 
-     * @return a list of all <code>{@link CmsResource}</code> objects 
-     *          that have a value set for the specified property.
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List readResourcesWithProperty(CmsRequestContext context, String path, String propertyDefinition)
-    throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
-        try {
-            result = m_driverManager.readResourcesWithProperty(dbc, path, propertyDefinition);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_RESOURCES_FOR_PROP_SET_2,
-                path,
-                propertyDefinition), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
      * Reads all resources that have a value (containing the specified value) set 
      * for the specified property (definition) in the given path.<p>
      * 
+     * If the <code>value</code> parameter is <code>null</code>, all resources having the
+     * given property set are returned.<p>
+     * 
      * Both individual and shared properties of a resource are checked.<p>
      *
      * @param context the current request context
-     * @param path the folder to get the resources with the property from
+     * @param folder the folder to get the resources with the property from
      * @param propertyDefinition the name of the property (definition) to check for
      * @param value the string to search in the value of the property
      * 
@@ -3759,18 +3655,18 @@ public final class CmsSecurityManager {
      */
     public List readResourcesWithProperty(
         CmsRequestContext context,
-        String path,
+        CmsResource folder,
         String propertyDefinition,
         String value) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.readResourcesWithProperty(dbc, path, propertyDefinition, value);
+            result = m_driverManager.readResourcesWithProperty(dbc, folder, propertyDefinition, value);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_RESOURCES_FOR_PROP_VALUE_3,
-                path,
+                context.removeSiteRoot(folder.getRootPath()),
                 propertyDefinition,
                 value), e);
         } finally {
@@ -4418,40 +4314,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Changes the "last modified" project reference of a resource.<p>
-     * 
-     * @param context the current request context
-     * @param resource the resource to touch
-     * @param projectLastModified the new project reference of the resource
-     * @param additionalFlags additional flags to set
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
-     * 
-     * @see CmsObject#setDateLastModified(String, long, boolean)
-     * @see org.opencms.file.types.I_CmsResourceType#setDateLastModified(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
-     */
-    public void setProjectLastModified(
-        CmsRequestContext context,
-        CmsResource resource,
-        CmsProject projectLastModified,
-        int additionalFlags) throws CmsException, CmsSecurityException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            checkOfflineProject(dbc);
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
-            m_driverManager.setProjectLastModified(dbc, resource, projectLastModified, additionalFlags);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_SET_PROJECT_LAST_MODIFIED_2,
-                new Object[] {projectLastModified.getName(), context.getSitePath(resource)}), e);
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
      * Undos all changes in the resource by restoring the version from the 
      * online project to the current offline project.<p>
      * 
@@ -4462,10 +4324,10 @@ public final class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
      * 
-     * @see CmsObject#undoChanges(String, int)
-     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see CmsObject#undoChanges(String, CmsResourceUndoMode)
+     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, CmsResourceUndoMode)
      */
-    public void undoChanges(CmsRequestContext context, CmsResource resource, int mode)
+    public void undoChanges(CmsRequestContext context, CmsResource resource, CmsResourceUndoMode mode)
     throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -5262,7 +5124,7 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    private void deleteResource(CmsDbContext dbc, CmsResource resource, int siblingMode) throws CmsException {
+    private void deleteResource(CmsDbContext dbc, CmsResource resource, CmsResourceDeleteMode siblingMode) throws CmsException {
 
         if (resource.isFolder()) {
             // collect all resources in the folder (but exclude deleted ones)
@@ -5359,8 +5221,6 @@ public final class CmsSecurityManager {
                 // ensure folder name end's with a /
                 destination = destination.concat("/");
             }
-            // validate the destination name
-            destination = CmsResource.validateFoldername(destination);
             // collect all resources in the folder (including everything)
             resources = m_driverManager.readChildResources(dbc, source, CmsResourceFilter.ALL, true, true, false);
         }

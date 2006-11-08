@@ -1,7 +1,7 @@
 /*
- * File   : $Source$
- * Date   : $Date$
- * Version: $Revision$
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,9 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.util;
+package org.opencms.workplace.explorer;
 
 import org.opencms.db.CmsDbUtil;
+import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -39,13 +40,24 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.commons.CmsTouch;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides {@link CmsResource} utility functions.<p>
@@ -55,7 +67,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision$ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,7 +76,7 @@ public final class CmsResourceUtil {
     /**
      * Util class for defining the site modes.<p>
      */
-    public static class CmsResourceUtilSiteMode {
+    private static class CmsResourceUtilSiteMode {
 
         // empty class
     }
@@ -78,8 +90,11 @@ public final class CmsResourceUtil {
     /** Constant that signalizes that all path operations will be based on the root path. */
     public static final CmsResourceUtilSiteMode SITE_MODE_ROOT = new CmsResourceUtilSiteMode();
 
-    /** Resource states abbreviations table. */
-    private static final char[] RESOURCE_STATE = new char[] {'U', 'C', 'N', 'D', '_'};
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceUtil.class);
+
+    /** The configured workflow manager, may be <code>null</code>. */
+    private static I_CmsWorkflowManager m_wfManager;
 
     /** The folder size display string constant. */
     private static final String SIZE_DIR = "-";
@@ -93,6 +108,9 @@ public final class CmsResourceUtil {
     /** The current resource lock. */
     private CmsLock m_lock;
 
+    /** The message bundle for formatting dates, depends on the request locale. */
+    private CmsMessages m_messages;
+
     /** Reference project resources cache. */
     private List m_projectResources;
 
@@ -101,10 +119,10 @@ public final class CmsResourceUtil {
 
     /** The 'relative to' path. */
     private String m_relativeTo;
-    
+
     /** The current request context. */
     private CmsRequestContext m_request;
-    
+
     /** The current resource. */
     private CmsResource m_resource;
 
@@ -114,19 +132,17 @@ public final class CmsResourceUtil {
     /** The current site mode. */
     private CmsResourceUtilSiteMode m_siteMode = SITE_MODE_CURRENT;
 
-    /** 
-     * TODO: Remove this class, maybe refactor to org.opencms.workplace.list package.
-     * TODO: Check if CmsResource should be extended by this class.
-     */
-    private int m_todo = 0;
+    /** Layoutstyle for resources after expire date. */
+    public static final int LAYOUTSTYLE_AFTEREXPIRE = 2;
+
+    /** Layoutstyle for resources before release date. */
+    public static final int LAYOUTSTYLE_BEFORERELEASE = 1;
+
+    /** Layoutstyle for resources after release date and before expire date. */
+    public static final int LAYOUTSTYLE_INRANGE = 0;
 
     /**
-     * TODO: This class does not support the new workflow lock logic.
-     */
-    private int m_todo_v7 = 0;
-
-    /**
-     * Creates a new {@link CmsRequestUtil} object.<p> 
+     * Creates a new {@link CmsResourceUtil} object.<p> 
      * 
      * @param cms the cms context
      */
@@ -136,7 +152,7 @@ public final class CmsResourceUtil {
     }
 
     /**
-     * Creates a new {@link CmsRequestUtil} object.<p> 
+     * Creates a new {@link CmsResourceUtil} object.<p> 
      * 
      * @param cms the cms context
      * @param resource the resource
@@ -148,7 +164,7 @@ public final class CmsResourceUtil {
     }
 
     /**
-     * Creates a new {@link CmsRequestUtil} object.<p> 
+     * Creates a new {@link CmsResourceUtil} object.<p> 
      * 
      * @param resource the resource
      */
@@ -157,19 +173,12 @@ public final class CmsResourceUtil {
         setResource(resource);
     }
 
-    /**
-     * Returns resource state abbreviation.<p>
-     * 
-     * @param state the resource state 
-     * 
-     * @return resource state abbreviation
-     */
-    public static char getStateAbbreviation(int state) {
-
-        if ((state >= 0) && (state <= 3)) {
-            return RESOURCE_STATE[state];
-        } else {
-            return RESOURCE_STATE[4];
+    static {
+        // initialize the workflow manager
+        try {
+            m_wfManager = OpenCms.getWorkflowManager();
+        } catch (CmsRuntimeException e) {
+            m_wfManager = null;
         }
     }
 
@@ -195,6 +204,36 @@ public final class CmsResourceUtil {
     public CmsObject getCms() {
 
         return m_cms;
+    }
+
+    /**
+     * Returns the formatted date of expiration.<p>
+     * 
+     * @return the formatted date of expiration
+     */
+    public String getDateExpired() {
+
+        long release = m_resource.getDateExpired();
+        if (release != CmsResource.DATE_RELEASED_DEFAULT) {
+            return getMessages().getDateTime(release);
+        } else {
+            return CmsTouch.DEFAULT_DATE_STRING;
+        }
+    }
+
+    /**
+     * Returns the formatted date of release.<p>
+     * 
+     * @return the formatted date of release
+     */
+    public String getDateReleased() {
+
+        long release = m_resource.getDateReleased();
+        if (release != CmsResource.DATE_RELEASED_DEFAULT) {
+            return getMessages().getDateTime(release);
+        } else {
+            return CmsTouch.DEFAULT_DATE_STRING;
+        }
     }
 
     /**
@@ -294,6 +333,34 @@ public final class CmsResourceUtil {
     }
 
     /**
+     * Returns an integer representation for the link type.<p>
+     * 
+     * <ul>
+     *   <li><code>0</code>: No sibling
+     *   <li><code>1</code>: Sibling
+     *   <li><code>2</code>: Labeled sibling
+     * </ul>
+     * 
+     * @return an integer representation for the link type
+     */
+    public int getLinkType() {
+
+        if (m_resource.getSiblingCount() > 1) {
+            // links are present
+            if (m_resource.isLabeled()) {
+                // there is at least one link in a marked site
+                return 2;
+            } else {
+                // common links are present
+                return 1;
+            }
+        } else {
+            // no links to the resource are in the VFS
+            return 0;
+        }
+    }
+
+    /**
      * Returns the the lock for the given resource.<p>
      * 
      * @return the lock the given resource
@@ -305,6 +372,7 @@ public final class CmsResourceUtil {
                 m_lock = getCms().getLock(m_resource);
             } catch (Throwable e) {
                 m_lock = CmsLock.getNullLock();
+                LOG.error(e);
             }
         }
         return m_lock;
@@ -336,17 +404,15 @@ public final class CmsResourceUtil {
     public int getLockedInProjectId() {
 
         int lockedInProject = CmsDbUtil.UNKNOWN_ID;
-        if (getLock().isNullLock() && (getResource().getState() != CmsResource.STATE_UNCHANGED)) {
+        if (getLock().isNullLock() && !getResource().getState().isUnchanged()) {
             // resource is unlocked and modified
             lockedInProject = getResource().getProjectLastModified();
-        } else {
-            if (getResource().getState() != CmsResource.STATE_UNCHANGED) {
-                // resource is locked and modified
-                lockedInProject = getProjectId();
-            } else {
-                // resource is locked and unchanged
-                lockedInProject = getLock().getProjectId();
-            }
+        } else if (!getResource().getState().isUnchanged()) {
+            // resource is locked and modified
+            lockedInProject = getProjectId();
+        } else if (!getLock().isNullLock()) {
+            // resource is locked and unchanged
+            lockedInProject = getLock().getProjectId();
         }
         return lockedInProject;
     }
@@ -366,7 +432,8 @@ public final class CmsResourceUtil {
             }
             return getCms().readProject(pId).getName();
         } catch (Throwable e) {
-            return e.getMessage();
+            LOG.error(e);
+            return "";
         }
     }
 
@@ -421,10 +488,15 @@ public final class CmsResourceUtil {
         try {
             permissions = getCms().getPermissions(getCms().getSitePath(getResource())).getPermissionString();
         } catch (Throwable e) {
+            getCms().getRequestContext().saveSiteRoot();
             try {
+                getCms().getRequestContext().setSiteRoot("/");
                 permissions = getCms().getPermissions(getResource().getRootPath()).getPermissionString();
             } catch (Throwable e1) {
                 permissions = e1.getMessage();
+                LOG.error(e1);
+            } finally {
+                getCms().getRequestContext().restoreSiteRoot();
             }
         }
         return permissions;
@@ -458,7 +530,7 @@ public final class CmsResourceUtil {
      */
     public Boolean getProjectState() {
 
-        if ((m_resource.getState() == CmsResource.STATE_UNCHANGED) || !isInsideProject()) {
+        if (m_resource.getState().isUnchanged() || !isInsideProject()) {
             return null;
         } else {
             return Boolean.valueOf(getLockedInProjectId() == getReferenceProject().getId());
@@ -595,12 +667,7 @@ public final class CmsResourceUtil {
      */
     public char getStateAbbreviation() {
 
-        int state = getResource().getState();
-        if ((state >= 0) && (state <= 3)) {
-            return RESOURCE_STATE[state];
-        } else {
-            return RESOURCE_STATE[4];
-        }
+        return getResource().getState().getAbbreviation();
     }
 
     /**
@@ -612,7 +679,7 @@ public final class CmsResourceUtil {
      */
     public String getStateName() {
 
-        int state = m_resource.getState();
+        CmsResourceState state = m_resource.getState();
         String name;
         if (m_request == null) {
             name = org.opencms.workplace.explorer.Messages.get().getBundle().key(
@@ -634,32 +701,17 @@ public final class CmsResourceUtil {
     public String getStyleClassName() {
 
         if (isInsideProject() && isEditable()) {
-            switch (m_resource.getState()) {
-                case CmsResource.STATE_CHANGED:
-                    return "fc";
-                case CmsResource.STATE_NEW:
-                    return "fn";
-                case CmsResource.STATE_DELETED:
-                    return "fd";
-                case CmsResource.STATE_UNCHANGED:
-                default:
-                    return "nf";
+            if (m_resource.getState().isChanged()) {
+                return "fc";
+            } else if (m_resource.getState().isNew()) {
+                return "fn";
+            } else if (m_resource.getState().isDeleted()) {
+                return "fd";
+            } else {
+                return "nf";
             }
         }
         return "fp";
-    }
-
-    /**
-     * Returns additional style sheets depending on publication constraints.<p>
-     * 
-     * That is, depending on {@link CmsResource#getDateReleased()} and 
-     * {@link CmsResource#getDateExpired()}.<p>
-     * 
-     * @return additional style sheets depending on publication constraints
-     */
-    public String getStyleRange() {
-
-        return isReleasedAndNotExpired() ? "" : "font-style:italic;";
     }
 
     /**
@@ -684,20 +736,73 @@ public final class CmsResourceUtil {
     }
 
     /**
+     * Returns additional style sheets depending on publication constraints.<p>
+     * 
+     * That is, depending on {@link CmsResource#getDateReleased()} and 
+     * {@link CmsResource#getDateExpired()}.<p>
+     * 
+     * @return additional style sheets depending on publication constraints
+     * 
+     * @see #getTimeWindowLayoutType()
+     */
+    public String getTimeWindowLayoutStyle() {
+
+        return getTimeWindowLayoutType() == CmsResourceUtil.LAYOUTSTYLE_INRANGE ? "" : "font-style:italic;";
+    }
+
+    /**
+     * Returns the layout style for the current time window state.<p>
+     * 
+     * <ul>
+     *   <li><code>{@link CmsResourceUtil#LAYOUTSTYLE_INRANGE}</code>: The time window is in range
+     *   <li><code>{@link CmsResourceUtil#LAYOUTSTYLE_BEFORERELEASE}</code>: The resource is not yet released
+     *   <li><code>{@link CmsResourceUtil#LAYOUTSTYLE_AFTEREXPIRE}</code>: The resource has already expired
+     * </ul>
+     * 
+     * @return the layout style for the current time window state
+     * 
+     * @see #getTimeWindowLayoutStyle()
+     */
+    public int getTimeWindowLayoutType() {
+
+        int layoutstyle = CmsResourceUtil.LAYOUTSTYLE_INRANGE;
+        if (!m_resource.isReleased(getCms().getRequestContext().getRequestTime())) {
+            layoutstyle = CmsResourceUtil.LAYOUTSTYLE_BEFORERELEASE;
+        } else if (m_resource.isExpired(getCms().getRequestContext().getRequestTime())) {
+            layoutstyle = CmsResourceUtil.LAYOUTSTYLE_AFTEREXPIRE;
+        }
+        return layoutstyle;
+    }
+
+    /**
      * Returns the title of a resource.<p>
      * 
      * @return the title for that resource
      */
     public String getTitle() {
 
-        String title;
+        String title = "";
         try {
             title = getCms().readPropertyObject(
                 getCms().getSitePath(m_resource),
                 CmsPropertyDefinition.PROPERTY_TITLE,
                 false).getValue();
         } catch (Throwable e) {
-            title = e.getMessage();
+            getCms().getRequestContext().saveSiteRoot();
+            try {
+                getCms().getRequestContext().setSiteRoot("/");
+                title = getCms().readPropertyObject(
+                    m_resource.getRootPath(),
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    false).getValue();
+            } catch (Exception e1) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
+                }
+            } finally {
+                getCms().getRequestContext().restoreSiteRoot();
+            }
         }
         if (title == null) {
             title = "";
@@ -716,7 +821,7 @@ public final class CmsResourceUtil {
         try {
             user = getCms().readUser(m_resource.getUserCreated()).getName();
         } catch (Throwable e) {
-            // ignore
+            LOG.error(e);
         }
         return user;
     }
@@ -732,9 +837,56 @@ public final class CmsResourceUtil {
         try {
             user = getCms().readUser(m_resource.getUserLastModified()).getName();
         } catch (Throwable e) {
-            // ignore
+            LOG.error(e);
         }
         return user;
+    }
+
+    /**
+     * Returns the workflow project information tooltip for the explorer view.<p>
+     * 
+     * @return the workflow project information tooltip
+     */
+    public String getWorkflowProjectInfo() {
+
+        CmsProject wfProject = getWorkflowProject();
+        if (wfProject == null) {
+            return "";
+        }
+        try {
+            String taskType;
+            taskType = m_wfManager.getTaskType(wfProject, getLocale());
+            return Messages.get().container(
+                Messages.GUI_TOOLTIP_TASK_INFO_5,
+                new Object[] {
+                    taskType,
+                    m_wfManager.getTaskDescription(wfProject),
+                    getWorkflowTaskState(),
+                    getMessages().getDateTime(m_wfManager.getTaskStartTime(wfProject)),
+                    m_wfManager.getTaskOwner(wfProject).getName()}).key();
+        } catch (Throwable exc) {
+            LOG.error(exc);
+            return "";
+        }
+    }
+
+    /**
+     * Returns the workflow task state.<p>
+     * 
+     * @return the workflow task state
+     */
+    public String getWorkflowTaskState() {
+
+        String taskState = "";
+        CmsProject wfProject = getWorkflowProject();
+        if (wfProject != null) {
+            try {
+                taskState = m_wfManager.getTaskState(wfProject, getLocale());
+            } catch (Exception e) {
+                LOG.error(e);
+            }
+        }
+        return taskState;
     }
 
     /**
@@ -767,14 +919,22 @@ public final class CmsResourceUtil {
      */
     public boolean isInsideProject() {
 
-        if (m_projectResources == null) {
-            try {
-                m_projectResources = getCms().readProjectResources(getReferenceProject());
-            } catch (Throwable e) {
-                return false;
-            }
+        if (m_wfManager == null) {
+            return CmsProject.isInsideProject(getProjectResources(), m_resource);
         }
-        return CmsProject.isInsideProject(m_projectResources, m_resource);
+        CmsProject wfProject = getWorkflowProject();
+        boolean isInsideProject = false;
+        if (wfProject != null) {
+            if (getWorkflowLock().isWorkflow()) {
+                isInsideProject = m_wfManager.isLockableInWorkflow(getCms(), getResource(), false);
+            } else {
+                isInsideProject = CmsProject.isInsideProject(getProjectResources(), getResource());
+                isInsideProject = isInsideProject && m_wfManager.isLockableInWorkflow(getCms(), getResource(), false);
+            }
+        } else {
+            isInsideProject = CmsProject.isInsideProject(getProjectResources(), getResource());
+        }
+        return isInsideProject;
     }
 
     /**
@@ -822,6 +982,7 @@ public final class CmsResourceUtil {
         m_request = cms.getRequestContext();
         m_referenceProject = null;
         m_projectResources = null;
+        m_messages = null;
     }
 
     /**
@@ -879,5 +1040,105 @@ public final class CmsResourceUtil {
     public void setSiteMode(CmsResourceUtilSiteMode siteMode) {
 
         m_siteMode = siteMode;
+    }
+
+    /**
+     * Returns the current locale, or the default locale if no locale is set.<p>
+     * 
+     * @return the current locale
+     */
+    private Locale getLocale() {
+
+        if (m_request != null) {
+            return m_request.getLocale();
+        } else {
+            return CmsLocaleManager.getDefaultLocale();
+        }
+    }
+
+    /**
+     * Returns the message bundle for formatting dates, depends on the request locale.<p>
+     * 
+     * @return the message bundle for formatting dates
+     */
+    private CmsMessages getMessages() {
+
+        if (m_messages == null) {
+            if (m_request != null) {
+                m_messages = Messages.get().getBundle(m_request.getLocale());
+            } else {
+                m_messages = Messages.get().getBundle();
+            }
+        }
+        return m_messages;
+    }
+
+    /**
+     * Returns the reference project resources.<p>
+     * 
+     * @return the reference project resources
+     */
+    private List getProjectResources() {
+
+        if (m_projectResources == null) {
+            try {
+                m_projectResources = getCms().readProjectResources(getReferenceProject());
+            } catch (Throwable e) {
+                LOG.error(e);
+                // use an empty list (all resources are "outside")
+                m_projectResources = new ArrayList();
+            }
+        }
+        return m_projectResources;
+    }
+
+    /**
+     * Returns the workflow lock, or {@link CmsLock#getNullLock()} if no workflow is found.<p>
+     * 
+     * @return the workflow lock
+     */
+    private CmsLock getWorkflowLock() {
+
+        if (m_wfManager == null) {
+            return CmsLock.getNullLock();
+        }
+        CmsLock lock;
+        try {
+            lock = getCms().getLockForWorkflow(getResource());
+        } catch (CmsException e) {
+            lock = CmsLock.getNullLock();
+            LOG.error(e);
+        }
+        return lock;
+    }
+
+    /**
+     * Returns the workflow project, or <code>null</code> if no workflow is found.<p>
+     * 
+     * @return the workflow project
+     */
+    private CmsProject getWorkflowProject() {
+
+        CmsLock lock = getWorkflowLock();
+        if (m_wfManager == null || lock.isNullLock()) {
+            return null;
+        }
+        CmsProject project;
+        try {
+            project = getCms().readProject(lock.getProjectId());
+        } catch (CmsException e) {
+            LOG.error(e);
+            return null;
+        }
+        if (project.getType() == CmsProject.PROJECT_TYPE_WORKFLOW) {
+            try {
+                return m_wfManager.getTask(getCms(), getCms().getSitePath(getResource()));
+            } catch (CmsException e) {
+                LOG.error(e);
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 }

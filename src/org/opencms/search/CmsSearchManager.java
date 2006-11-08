@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.55.4.2 $
+ * Date   : $Date: 2006/11/08 09:28:51 $
+ * Version: $Revision: 1.55.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.55.4.2 $ 
+ * @version $Revision: 1.55.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1060,11 +1060,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         Iterator itPubRes = publishedResources.iterator();
         while (itPubRes.hasNext()) {
             CmsPublishedResource res = (CmsPublishedResource)itPubRes.next();
-            if (res.isFolder() || res.isUnChanged() || !res.isVfsResource()) {
+            if (res.isFolder() || res.getState().isUnchanged() || !res.isVfsResource()) {
                 // folders, unchanged resources and non vfs resources don't need to be indexed after publish
                 continue;
             }
-            if (res.isDeleted() || res.isNew() || res.isChanged()) {
+            if (res.getState().isDeleted() || res.getState().isNew() || res.getState().isChanged()) {
                 if (updateResources.contains(res)) {
                     // resource may have been added as a sibling of another resource
                     // in this case we make sure to use the value from the publih list because of the "deleted" flag
@@ -1076,7 +1076,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     // resource not yet contained in the list
                     updateResources.add(res);
                     // check for the siblings (not for deleted resources, these are already gone)
-                    if (!res.isDeleted() && (res.getSiblingCount() > 1)) {
+                    if (!res.getState().isDeleted() && (res.getSiblingCount() > 1)) {
                         // this resource has siblings                    
                         try {
                             // read siblings from the online project

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2006/10/23 12:09:21 $
- * Version: $Revision: 1.17.4.5 $
+ * Date   : $Date: 2006/11/08 09:28:46 $
+ * Version: $Revision: 1.17.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.configuration;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsLog;
 
@@ -47,7 +49,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.5 $
+ * @version $Revision: 1.17.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -450,7 +452,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setDialogCopyFileMode(String mode) {
 
-        int copyMode = CmsResource.COPY_AS_NEW;
+        CmsResourceCopyMode copyMode = CmsResource.COPY_AS_NEW;
         if (mode.equalsIgnoreCase(COPYMODE_SIBLING)) {
             copyMode = CmsResource.COPY_AS_SIBLING;
         }
@@ -464,7 +466,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setDialogCopyFolderMode(String mode) {
 
-        int copyMode = CmsResource.COPY_AS_NEW;
+        CmsResourceCopyMode copyMode = CmsResource.COPY_AS_NEW;
         if (mode.equalsIgnoreCase(COPYMODE_SIBLING)) {
             copyMode = CmsResource.COPY_AS_SIBLING;
         } else if (mode.equalsIgnoreCase(COPYMODE_PRESERVE)) {
@@ -480,7 +482,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setDialogDeleteFileMode(String mode) {
 
-        int deleteMode = CmsResource.DELETE_PRESERVE_SIBLINGS;
+        CmsResourceDeleteMode deleteMode = CmsResource.DELETE_PRESERVE_SIBLINGS;
         if (mode.equalsIgnoreCase(DELETEMODE_DELETE)) {
             deleteMode = CmsResource.DELETE_REMOVE_SIBLINGS;
         }
