@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2006/11/08 09:28:48 $
- * Version: $Revision: 1.45.4.4 $
+ * Date   : $Date: 2006/11/08 15:48:07 $
+ * Version: $Revision: 1.45.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.4 $
+ * @version $Revision: 1.45.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -60,12 +60,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
         /** serializable version id. */
         private static final long serialVersionUID = 4296370336483884978L;
-
-        /** All copy modes. */
-        private static final List VALUES = Arrays.asList(new CmsResourceCopyMode[] {
-            CmsResource.COPY_AS_NEW,
-            CmsResource.COPY_AS_SIBLING,
-            CmsResource.COPY_PRESERVE_SIBLING});
 
         /** The copy mode integer representation. */
         private int m_mode;
@@ -89,7 +83,15 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
          */
         public static CmsResourceCopyMode valueOf(int mode) {
 
-            return (CmsResourceCopyMode)VALUES.get(mode - 1);
+            switch (mode) {
+                case 1:
+                    return CmsResource.COPY_AS_NEW;
+                case 2:
+                    return CmsResource.COPY_AS_SIBLING;
+                case 3:
+                default:
+                    return CmsResource.COPY_PRESERVE_SIBLING;
+            }
         }
 
         /**
@@ -119,11 +121,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         /** serializable version id. */
         private static final long serialVersionUID = 2010402524576925865L;
 
-        /** All delete modes. */
-        private static final List VALUES = Arrays.asList(new CmsResourceDeleteMode[] {
-            CmsResource.DELETE_PRESERVE_SIBLINGS,
-            CmsResource.DELETE_REMOVE_SIBLINGS});
-
         /** The delete mode integer representation. */
         private int m_mode;
 
@@ -146,7 +143,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
          */
         public static CmsResourceDeleteMode valueOf(int mode) {
 
-            return (CmsResourceDeleteMode)VALUES.get(mode - 1);
+            switch (mode) {
+                case 1:
+                    return CmsResource.DELETE_PRESERVE_SIBLINGS;
+                case 2:
+                default:
+                    return CmsResource.DELETE_REMOVE_SIBLINGS;
+            }
         }
 
         /**
@@ -176,14 +179,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         /** serializable version id. */
         private static final long serialVersionUID = -2704354453252295414L;
 
-        /** All states. */
-        private static final List VALUES = Arrays.asList(new CmsResourceState[] {
-            CmsResource.STATE_UNCHANGED,
-            CmsResource.STATE_CHANGED,
-            CmsResource.STATE_NEW,
-            CmsResource.STATE_DELETED,
-            CmsResource.STATE_KEEP});
-
         /** The state abbreviation character. */
         private char m_abbrev;
 
@@ -211,7 +206,19 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
          */
         public static CmsResourceState valueOf(int mode) {
 
-            return (CmsResourceState)VALUES.get(mode);
+            switch (mode) {
+                case 0:
+                    return CmsResource.STATE_UNCHANGED;
+                case 1:
+                    return CmsResource.STATE_CHANGED;
+                case 2:
+                    return CmsResource.STATE_NEW;
+                case 3:
+                    return CmsResource.STATE_DELETED;
+                case 99:
+                default:
+                    return CmsResource.STATE_KEEP;
+            }
         }
 
         /**
