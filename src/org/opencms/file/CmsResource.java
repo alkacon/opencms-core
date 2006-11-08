@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2006/11/08 15:48:07 $
- * Version: $Revision: 1.45.4.5 $
+ * Date   : $Date: 2006/11/08 15:54:54 $
+ * Version: $Revision: 1.45.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Base class for all OpenCms VFS resources like <code>{@link CmsFile}</code> or <code>{@link CmsFolder}</code>.<p>
@@ -47,7 +45,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.5 $
+ * @version $Revision: 1.45.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -308,13 +306,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         /** serializable version id. */
         private static final long serialVersionUID = 3521620626485212068L;
 
-        /** All undo changes modes. */
-        private static final List VALUES = Arrays.asList(new CmsResourceUndoMode[] {
-            CmsResource.UNDO_CONTENT,
-            CmsResource.UNDO_CONTENT_RECURSIVE,
-            CmsResource.UNDO_MOVE_CONTENT,
-            CmsResource.UNDO_MOVE_CONTENT_RECURSIVE});
-
         /** The undo changes mode integer representation. */
         private int m_mode;
 
@@ -337,7 +328,17 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
          */
         public static CmsResourceUndoMode valueOf(int mode) {
 
-            return (CmsResourceUndoMode)VALUES.get(mode - 1);
+            switch (mode) {
+                case 1:
+                    return CmsResource.UNDO_CONTENT;
+                case 2:
+                    return CmsResource.UNDO_CONTENT_RECURSIVE;
+                case 3:
+                    return CmsResource.UNDO_MOVE_CONTENT;
+                case 4:
+                default:
+                    return CmsResource.UNDO_MOVE_CONTENT_RECURSIVE;
+            }
         }
 
         /**
