@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2006/10/14 08:44:58 $
- * Version: $Revision: 1.46.4.5 $
+ * Date   : $Date: 2006/11/08 14:04:49 $
+ * Version: $Revision: 1.46.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46.4.5 $ 
+ * @version $Revision: 1.46.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -345,8 +345,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         relationType = (CmsRelationType)m_relations.get(RELATION_TYPE_PREFIX + xpath);
         if (relationType == null) {
             // no value found, try default xpath
-            String path = CmsXmlUtils.removeXpath(xpath);
+            String path = CmsXmlUtils.removeXpathIndex(xpath);
             // look up the default value again without indexes
+            relationType = (CmsRelationType)m_relations.get(RELATION_TYPE_PREFIX + path);
+        }
+        if (relationType == null) {
+            // no value found, try the last simple type path
+            String path = CmsXmlUtils.getLastXpathElement(xpath);
+            // look up the default value again for the last simple type
             relationType = (CmsRelationType)m_relations.get(RELATION_TYPE_PREFIX + path);
         }
         if (relationType == null) {
