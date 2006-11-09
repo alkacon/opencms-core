@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/11/09 11:17:58 $
- * Version: $Revision: 1.19.4.12 $
+ * Date   : $Date: 2006/11/09 16:03:38 $
+ * Version: $Revision: 1.19.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.12 $ 
+ * @version $Revision: 1.19.4.13 $ 
  * 
  * @since 6.0.0 
  * 
@@ -464,9 +464,6 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                 rfsName));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             if (vfsName == null) {
-                // this may happen if a link has been moved AFTER being stored in the link table
-                // but do not worry after the move operation the link has been written again to the link table
-                // so everything is ok
                 report.println(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_IGNORED_0), I_CmsReport.FORMAT_NOTE);
                 continue;
