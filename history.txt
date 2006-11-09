@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/11/08 09:47:43 $
- * Version: $Revision: 1.717.2.94 $
+ * Date   : $Date: 2006/11/09 08:35:06 $
+ * Version: $Revision: 1.717.2.95 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,10 +65,10 @@ OpenCms 6.5.4 - xxxx, 2006
   from that
 * Fixed issue in CmsSecurityManager, hasPermissions() check with lock check set to "false" did not work
 - Modified inline css for direct edit buttons
-- Integer resource state constants replaced by enumeration class org.opencms.db.CmsResourceState
-- Integer resource delete mode constants replaced by enumeration class org.opencms.file.CmsResourceDeleteMode
-- Integer resource copy mode constants replaced by enumeration class org.opencms.file.CmsResourceCopyMode
-- Integer resource undo changes mode constants replaced by enumeration class org.opencms.file.CmsResourceUndoMode
+- Integer resource state constants replaced by enumeration class org.opencms.file.CmsResource.CmsResourceState
+- Integer resource delete mode constants replaced by enumeration class org.opencms.file.CmsResource.CmsResourceDeleteMode
+- Integer resource copy mode constants replaced by enumeration class org.opencms.file.CmsResource.CmsResourceCopyMode
+- Integer resource undo changes mode constants replaced by enumeration class org.opencms.file.CmsResource.CmsResourceUndoMode
 - The CmsObject#createSibling method now returns the new created sibling to be consistent with the createResource method
 - The CmsObject#readResourcesWithProperty(String) method is now site dependent (as the others readResourcesWithProperty methods)
 - All CmsObject#readResourcesWithProperty methods now check read permissions for the given folder
