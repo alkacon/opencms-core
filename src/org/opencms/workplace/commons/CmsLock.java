@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2006/10/26 15:59:18 $
- * Version: $Revision: 1.16.4.8 $
+ * Date   : $Date: 2006/11/09 16:04:12 $
+ * Version: $Revision: 1.16.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.8 $ 
+ * @version $Revision: 1.16.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -754,7 +754,8 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
             case TYPE_LOCK:
                 if (lock.isNullLock()) {
                     getCms().lockResource(originalResourceName);
-                } else if (!lock.isExclusiveOwnedBy(getCms().getRequestContext().currentUser())) {
+                } else if (!lock.isExclusiveOwnedBy(getCms().getRequestContext().currentUser())
+                    || !lock.isInProject(getCms().getRequestContext().currentProject())) {
                     getCms().changeLock(resourceName);
                 }
                 break;
