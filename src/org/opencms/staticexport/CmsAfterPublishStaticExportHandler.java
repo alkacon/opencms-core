@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.19.4.11 $
+ * Date   : $Date: 2006/11/09 11:17:58 $
+ * Version: $Revision: 1.19.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,9 +53,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -70,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.11 $ 
+ * @version $Revision: 1.19.4.12 $ 
  * 
  * @since 6.0.0 
  * 
@@ -461,6 +463,14 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
                 rfsName));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+            if (vfsName == null) {
+                // this may happen if a link has been moved AFTER being stored in the link table
+                // but do not worry after the move operation the link has been written again to the link table
+                // so everything is ok
+                report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_IGNORED_0), I_CmsReport.FORMAT_NOTE);
+                continue;
+            }
 
             String exportUrlStr = manager.getExportUrl() + manager.getRfsPrefix(vfsName) + rfsName;
 
@@ -600,7 +610,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                 return getAllResources(cms);
             } else {
                 // after publish export
-                Set resourceSet = new HashSet();
+                Map resourceMap = new HashMap();                 
                 Iterator itPubRes = publishedResources.iterator();
                 while (itPubRes.hasNext()) {
                     CmsPublishedResource pubResource = (CmsPublishedResource)itPubRes.next();
@@ -611,11 +621,15 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         if ((vfsResource.getFlags() & CmsResource.FLAG_INTERNAL) != CmsResource.FLAG_INTERNAL) {
                             // add only if not internal
                             // additionally, add all siblings of the resource
-                            resourceSet.addAll(getSiblings(cms, pubResource));
+                            Iterator itSiblings = getSiblings(cms, pubResource).iterator();
+                            while (itSiblings.hasNext()) {
+                                CmsPublishedResource sibling = (CmsPublishedResource)itSiblings.next();
+                                resourceMap.put(sibling.getRootPath(), sibling);
+                            }
                         }
                     } else {
                         // the resource does not exist, so add them for deletion in the static export
-                        resourceSet.add(pubResource);
+                        resourceMap.put(pubResource.getRootPath(), pubResource);
                     }
 
                     boolean match = false;
@@ -624,7 +638,11 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         CmsStaticExportExportRule rule = (CmsStaticExportExportRule)itExportRules.next();
                         Set relatedResources = rule.getRelatedResources(cms, pubResource);
                         if (relatedResources != null) {
-                            resourceSet.addAll(relatedResources);
+                            Iterator itRelatedRes = relatedResources.iterator();
+                            while (itRelatedRes.hasNext()) {
+                                CmsPublishedResource relatedRes = (CmsPublishedResource)itRelatedRes.next();
+                                resourceMap.put(relatedRes.getRootPath(), relatedRes);
+                            }
                             match = true;
                         }
                     }
@@ -633,7 +651,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         return getAllResources(cms);
                     }
                 }
-                return new ArrayList(resourceSet);
+                return new ArrayList(resourceMap.values());
             }
         } finally {
             cms.getRequestContext().restoreSiteRoot();
