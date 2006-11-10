@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Messages.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
- * Version: $Revision: 1.10.4.1 $
+ * Date   : $Date: 2006/11/10 14:16:20 $
+ * Version: $Revision: 1.10.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10.4.1 $ 
+ * @version $Revision: 1.10.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -51,6 +51,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CONFIG_FROZEN_3 = "ERR_CONFIG_FROZEN_3";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COPY_LOCKED_SIBLINGS_1 = "ERR_COPY_LOCKED_SIBLINGS_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_RESTYPE_CONFIG_3 = "ERR_INVALID_RESTYPE_CONFIG_3";
 

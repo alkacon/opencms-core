@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.16.4.9 $
+ * Date   : $Date: 2006/11/10 14:16:20 $
+ * Version: $Revision: 1.16.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.CmsVfsException;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -50,6 +51,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -59,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.9 $ 
+ * @version $Revision: 1.16.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,14 +128,38 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         // first validate the destination name
         destination = validateFoldername(destination);
 
+        // if copying as siblings, deny operation if child sibling resources are already locked
+        // since we should not change the lock state of these siblings without request,
+        // but the copied folder should be locked by the current user and also all resources inside
+        if (!siblingMode.equals(CmsResource.COPY_AS_NEW)) {
+            List locked = cms.getLockedResources(cms.getSitePath(source), CmsLockFilter.FILTER_NON_INHERITED);
+            for (Iterator i = locked.iterator(); i.hasNext();) {
+                String lockedRes = (String)i.next();
+                if (siblingMode.equals(CmsResource.COPY_AS_SIBLING)) {
+                    throw new CmsVfsException(Messages.get().container(
+                        Messages.ERR_COPY_LOCKED_SIBLINGS_1,
+                        cms.getSitePath(source),
+                        destination));
+                } else {    // COPY_PRESERVE_SIBLING    
+                    List siblings = cms.readSiblings(lockedRes, CmsResourceFilter.ALL);
+                    if (siblings.size() > 1) {
+                        throw new CmsVfsException(Messages.get().container(
+                            Messages.ERR_COPY_LOCKED_SIBLINGS_1,
+                            cms.getSitePath(source),
+                            destination)); 
+                    }
+                }    
+            }    
+        }
+        
         // collect all resources in the folder (but exclude deleted ones)
         List resources = securityManager.readChildResources(
             cms.getRequestContext(),
             source,
             CmsResourceFilter.IGNORE_EXPIRATION,
             true,
-            true);
-
+            true);    
+        
         // handle the folder itself
         super.copyResource(cms, securityManager, source, destination, siblingMode);
 
