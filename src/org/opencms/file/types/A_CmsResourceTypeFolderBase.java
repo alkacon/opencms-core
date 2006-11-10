@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/11/10 14:16:20 $
- * Version: $Revision: 1.16.4.10 $
+ * Date   : $Date: 2006/11/10 17:01:26 $
+ * Version: $Revision: 1.16.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.10 $ 
+ * @version $Revision: 1.16.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,23 +132,30 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         // since we should not change the lock state of these siblings without request,
         // but the copied folder should be locked by the current user and also all resources inside
         if (!siblingMode.equals(CmsResource.COPY_AS_NEW)) {
-            List locked = cms.getLockedResources(cms.getSitePath(source), CmsLockFilter.FILTER_NON_INHERITED);
+            int todo = 0;
+            // does not work, since cms.getLockedResources only returns exclusive locks but not indirect locks
+            // List locked = cms.getLockedResources(cms.getSitePath(source), CmsLockFilter.FILTER_NON_INHERITED);
+            List locked = cms.getResourcesInFolder(cms.getSitePath(source), CmsResourceFilter.ALL);
             for (Iterator i = locked.iterator(); i.hasNext();) {
-                String lockedRes = (String)i.next();
-                if (siblingMode.equals(CmsResource.COPY_AS_SIBLING)) {
-                    throw new CmsVfsException(Messages.get().container(
-                        Messages.ERR_COPY_LOCKED_SIBLINGS_1,
-                        cms.getSitePath(source),
-                        destination));
-                } else {    // COPY_PRESERVE_SIBLING    
-                    List siblings = cms.readSiblings(lockedRes, CmsResourceFilter.ALL);
-                    if (siblings.size() > 1) {
+                // String lockedRes = (String)i.next();
+                CmsResource r = (CmsResource)i.next();
+                if (!cms.getLock(r).isUnlocked()) {
+                    String lockedRes = cms.getSitePath(r);
+                    if (siblingMode.equals(CmsResource.COPY_AS_SIBLING)) {
                         throw new CmsVfsException(Messages.get().container(
                             Messages.ERR_COPY_LOCKED_SIBLINGS_1,
                             cms.getSitePath(source),
-                            destination)); 
+                            destination));
+                    } else {    // COPY_PRESERVE_SIBLING    
+                        List siblings = cms.readSiblings(lockedRes, CmsResourceFilter.ALL);
+                        if (siblings.size() > 1) {
+                            throw new CmsVfsException(Messages.get().container(
+                                Messages.ERR_COPY_LOCKED_SIBLINGS_1,
+                                cms.getSitePath(source),
+                                destination)); 
+                        }
                     }
-                }    
+                }
             }    
         }
         
