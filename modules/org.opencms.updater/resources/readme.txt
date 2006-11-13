@@ -72,7 +72,7 @@ file for errors and exceptions after installation. There should be no exceptions
 caused by the upgrade if everything went as expected. Some exceptions may occur 
 in case you have an advanced OpenCms installation with many customized classes.
 
-The update wizard will also do a full rebuild of all your search indexes, and purge 
+The update wizard will also do a full rebuild of all your search indices, and purge 
 the JSP repository.
 
 The wizard will finish similar to the setup wizard. After the final confirmation,

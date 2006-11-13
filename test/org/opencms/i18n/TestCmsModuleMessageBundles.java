@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsModuleMessageBundles.java,v $
- * Date   : $Date: 2006/11/06 15:22:41 $
- * Version: $Revision: 1.16.4.3 $
+ * Date   : $Date: 2006/11/13 15:59:42 $
+ * Version: $Revision: 1.16.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Locale;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.16.4.3 $
+ * @version $Revision: 1.16.4.4 $
  * 
  * @since 6.0.0
  */
@@ -55,7 +55,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
         return new I_CmsMessageBundle[] {
             org.opencms.editors.fckeditor.Messages.get(),
             org.opencms.editors.htmlarea.Messages.get(),
-            org.opencms.frontend.layoutpage.Messages.get(),
+            org.opencms.frontend.layoutpage.Messages.get(), 
             org.opencms.frontend.photoalbum.Messages.get(),
             org.opencms.frontend.templateone.Messages.get(),
             org.opencms.frontend.templateone.form.Messages.get(),

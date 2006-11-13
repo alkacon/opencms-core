@@ -25,7 +25,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.frontend.photoalbum.workplace"/>
+			<resourcebundle name="org.opencms.frontend.photoalbum.messages"/>
 			<layouts>
 				<layout element="AlignTitle" widget="SelectorWidget" configuration="left:${key.photoalbum.text.align.left}|center:${key.photoalbum.text.align.center}|right:${key.photoalbum.text.align.right}" />
 				<layout element="Size" widget="SelectorWidget" configuration="300x225:300 x 225 ${key.photoalbum.thumbs.size.pixel}|400x300:400 x 300 ${key.photoalbum.thumbs.size.pixel}|600x450*:600 x 450 ${key.photoalbum.thumbs.size.pixel}|640x480:640 x 480 ${key.photoalbum.thumbs.size.pixel}|800x600:800 x 600 ${key.photoalbum.thumbs.size.pixel}|1000x750:1000 x 750 ${key.photoalbum.thumbs.size.pixel}" />

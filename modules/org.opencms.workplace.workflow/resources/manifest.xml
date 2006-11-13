@@ -18,7 +18,7 @@
 It includes classes and dialogs used by the generic workflow implementation.
 
 (c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>1.0.12</version>
+		<version>1.0.13</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -83,80 +83,6 @@ It includes classes and dialogs used by the generic workflow implementation.
 			<datelastmodified>Wed, 12 Jul 2006 10:36:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Jul 2006 10:36:46 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.workflow/classes</destination>
-			<type>folder</type>
-			<uuidstructure>f76593fd-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 10:36:46 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jul 2006 10:36:46 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.workflow/classes/org</destination>
-			<type>folder</type>
-			<uuidstructure>f76f09df-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 10:36:46 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jul 2006 10:36:46 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.workflow/classes/org/opencms</destination>
-			<type>folder</type>
-			<uuidstructure>f77a7b91-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 10:36:46 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jul 2006 10:36:46 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.workflow/classes/org/opencms/workplace</destination>
-			<type>folder</type>
-			<uuidstructure>2fb75646-3115-11db-b933-15ed7a6c85e9</uuidstructure>
-			<datelastmodified>Mon, 21 Aug 2006 13:01:40 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 21 Aug 2006 13:01:40 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.workflow/classes/org/opencms/workplace/workflow</destination>
-			<type>folder</type>
-			<uuidstructure>f78725c3-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 10:36:46 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jul 2006 10:36:46 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.workflow/classes/org/opencms/workplace/workflow/workplace.properties</source>
-			<destination>system/modules/org.opencms.workplace.workflow/classes/org/opencms/workplace/workflow/workplace.properties</destination>
-			<type>plain</type>
-			<uuidstructure>f7c16fb0-1e39-11db-8f9a-bf0f6fbae1f8</uuidstructure>
-			<uuidresource>8c4358d2-1193-11db-95a0-3456e31f840a</uuidresource>
-			<datelastmodified>Mon, 21 Aug 2006 13:01:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jul 2006 10:45:34 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

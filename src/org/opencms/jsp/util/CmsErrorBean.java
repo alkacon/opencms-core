@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsErrorBean.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.8.4.1 $
+ * Date   : $Date: 2006/11/13 15:59:42 $
+ * Version: $Revision: 1.8.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,12 @@
 
 package org.opencms.jsp.util;
 
+import java.util.Locale;
+import java.util.Properties;
+
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -41,15 +46,12 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.Locale;
-import java.util.Properties;
-
 /**
  * Class to display the error dialog.<p>
  *
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.8.4.1 $ 
+ * @version $Revision: 1.8.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,7 +96,14 @@ public class CmsErrorBean {
     public CmsErrorBean(CmsObject cms, Throwable throwable) {
 
         m_cms = cms;
-        m_locale = cms.getRequestContext().getLocale();
+        // get the settings for system users to display errors in correct language
+        CmsUser user = cms.getRequestContext().currentUser();
+        if (user.isSystemUser()) {
+        	CmsUserSettings settings = new CmsUserSettings(user);
+        	m_locale = settings.getLocale();
+        } else {
+        	m_locale = cms.getRequestContext().getLocale();
+        }
         m_throwable = throwable;
         m_messages = Messages.get().getBundle(m_locale);
     }

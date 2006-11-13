@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2006/10/25 16:53:42 $
- * Version: $Revision: 1.13.4.5 $
+ * Date   : $Date: 2006/11/13 15:59:42 $
+ * Version: $Revision: 1.13.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,11 +54,26 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.4.5 $
+ * @version $Revision: 1.13.4.6 $
  * 
  * @since 6.0.0
  */
 public abstract class TestCmsMessageBundles extends TestCase {
+
+    /** Prefix for the error messages in the bundles. */
+    private static final String KEY_PREFIX_ERR = "ERR_";
+
+    /** Prefix for the gui messages in the bundles. */
+    private static final String KEY_PREFIX_GUI = "GUI_";
+
+    /** Prefix for the initialization messages in the bundles. */
+    private static final String KEY_PREFIX_INIT = "INIT_";
+
+    /** Prefix for the log messages in the bundles. */
+    private static final String KEY_PREFIX_LOG = "LOG_";
+
+    /** Prefix for the report messages in the bundles. */
+    private static final String KEY_PREFIX_RPT = "RPT_";
 
     /** The source folder to copy the resource bundles from. */
     private static final String SOURCE_FOLDER_INFIX = "/resources/system/workplace/locales/";
@@ -76,16 +91,6 @@ public abstract class TestCmsMessageBundles extends TestCase {
     private Map m_excludedBundles = new HashMap();
 
     /**
-     * Checks all message bundles for the EN locale.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testLocale_EN_MessagesBundles() throws Exception {
-
-        messagesBundleConstantTest(Locale.ENGLISH);
-    }
-
-    /**
      * Checks all message bundles for the DE locale.<p>
      * 
      * @throws Exception if the test fails
@@ -93,6 +98,16 @@ public abstract class TestCmsMessageBundles extends TestCase {
     public void testLocale_DE_MessagesBundles() throws Exception {
 
         messagesBundleConstantTest(Locale.GERMAN);
+    }
+
+    /**
+     * Checks all message bundles for the EN locale.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testLocale_EN_MessagesBundles() throws Exception {
+
+        messagesBundleConstantTest(Locale.ENGLISH);
     }
 
     /**
@@ -176,7 +191,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
                     testKeyValue = true;
                 } else {
                     boolean isAdditionalKey = !key.toUpperCase().equals(key);
-                    testKeyValue = (isAdditionalKey || key.startsWith("GUI_") || key.startsWith("RPT_"));
+                    testKeyValue = (isAdditionalKey || key.startsWith(KEY_PREFIX_ERR) || key.startsWith(KEY_PREFIX_GUI) || key.startsWith(KEY_PREFIX_RPT));
                 }
                 if (testKeyValue && !isPresent) {
                     errorMessages.add("No message for '" + key + "' in bundle.");
@@ -191,10 +206,10 @@ public abstract class TestCmsMessageBundles extends TestCase {
                     errorMessages.add("Key '" + key + "' must be all upper case.");
                 }
                 if ((key.charAt(key.length() - 2) != '_')
-                    || (!key.startsWith("ERR_")
-                        && !key.startsWith("LOG_")
-                        && !key.startsWith("INIT_")
-                        && !key.startsWith("GUI_") && !key.startsWith("RPT_"))) {
+                    || (!key.startsWith(KEY_PREFIX_ERR)
+                        && !key.startsWith(KEY_PREFIX_GUI)
+                        && !key.startsWith(KEY_PREFIX_INIT)
+                        && !key.startsWith(KEY_PREFIX_LOG) && !key.startsWith(KEY_PREFIX_RPT))) {
                     errorMessages.add("Key '" + key + "' must have the form {ERR|LOG|INIT|GUI|RPT}_KEYNAME_{0-9}.");
                 }
                 int argCount = Integer.valueOf(key.substring(key.length() - 1)).intValue();
@@ -349,7 +364,9 @@ public abstract class TestCmsMessageBundles extends TestCase {
                     if (field.getType().equals(String.class)) {
                         // check all String fields
                         String key = field.getName();
-                        if (key.startsWith("GUI_") || key.startsWith("RPT_")) {
+                        if (key.startsWith(KEY_PREFIX_ERR)
+                            || key.startsWith(KEY_PREFIX_GUI)
+                            || key.startsWith(KEY_PREFIX_RPT)) {
                             exclude = false;
                             break;
                         }
@@ -398,9 +415,9 @@ public abstract class TestCmsMessageBundles extends TestCase {
             + "_"
             + locale.toString()
             + ".properties";
-        String target = TARGET_FOLDER + fileName;
+        String target = TARGET_FOLDER + fileName; 
         CmsFileUtil.copy(source, target);
-        return new CmsMessages(bundle.getBundleName() + "_" + locale.toString(), locale);
+        return new CmsMessages(bundle.getBundleName() + "_" + locale.toString(), locale); 
     }
 
     /**
@@ -415,20 +432,54 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
         if (Locale.ENGLISH.equals(locale)) {
             return bundle.getBundleName();
-        }
+        }   
         String fileName = CmsStringUtil.substitute(bundle.getBundleName(), ".", "/")
             + "_"
             + locale.toString()
-            + ".properties";
+            + ".properties"; 
         String source = SOURCE_FOLDER_PREFIX
             + locale.toString()
             + SOURCE_FOLDER_INFIX
             + locale.toString()
             + SOURCE_FOLDER_SUFFIX
-            + fileName;
+            + fileName; 
+        
+        // if file from the localized folder is not readable take the file from the original module
+        if(!new File(source).canRead()) {
+            source = getModuleMessagesBundleSourceName(bundle, locale);
+        } 
         return source;
     }
 
+    /**
+     * Returns the file name of the source message bundle from the module.<p>
+     * 
+     * @param bundle the resource bundle to get the file name for
+     * @param locale the locale to get the file name for
+     * 
+     * @return the file name of the source message bundle of the module
+     */
+    protected String getModuleMessagesBundleSourceName(I_CmsMessageBundle bundle, Locale locale) {
+ 
+        if (Locale.ENGLISH.equals(locale)) {
+            return bundle.getBundleName();
+        }
+        // substitute the last occuring "." of the bundle name with "/" to build the correct filename
+        String packageName = bundle.getBundleName().substring(0, bundle.getBundleName().lastIndexOf('.'));
+        packageName += "/";
+        String source = "modules/"
+            + packageName 
+            + "resources/system/modules/" 
+            + packageName 
+            + "classes/"
+            + CmsStringUtil.substitute(bundle.getBundleName(), ".", "/") 
+            + "_"
+            + locale.toString()
+            + ".properties";
+        return source;
+    }
+    
+    
     /**
      * Returns a list of bundles not to be localized.<p>
      * 
@@ -458,7 +509,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
         // the default locale MUST be ENGLISH (this call will also set the default locale to ENGLISH if required)
         assertEquals(CmsLocaleManager.getDefaultLocale(), Locale.ENGLISH);
-        
+
         StringBuffer errors = new StringBuffer();
         I_CmsMessageBundle[] bundles = getTestMessageBundles();
         for (int i = 0; i < bundles.length; i++) {

@@ -28,7 +28,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.frontend.photoalbum.workplace"/>
+			<resourcebundle name="org.opencms.frontend.photoalbum.messages"/>
 			<layouts>
 				<layout element="AlignTitle" widget="SelectorWidget" configuration="left:${key.photoalbum.text.align.left}|center:${key.photoalbum.text.align.center}|right:${key.photoalbum.text.align.right}" />
 				<layout element="Cols" widget="SelectorWidget" configuration="1|2|3*|4|5|6" />
