@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsModuleMessageBundles.java,v $
- * Date   : $Date: 2006/11/13 15:59:42 $
- * Version: $Revision: 1.16.4.4 $
+ * Date   : $Date: 2006/11/14 09:35:40 $
+ * Version: $Revision: 1.16.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,23 @@ import java.util.Locale;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.16.4.4 $
+ * @version $Revision: 1.16.4.5 $
  * 
  * @since 6.0.0
  */
 public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
+
+    /**
+     * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalizedBundles(Locale)
+     */
+    protected List getNotLocalizedBundles(Locale locale) {
+
+        List bundles = new ArrayList();
+        bundles.add(org.opencms.workplace.demos.Messages.get());
+        bundles.add(org.opencms.workplace.demos.list.Messages.get());
+        bundles.add(org.opencms.workplace.demos.widget.Messages.get());
+        return bundles;
+    }
 
     /**
      * @see org.opencms.i18n.TestCmsMessageBundles#getTestMessageBundles()
@@ -55,7 +67,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
         return new I_CmsMessageBundle[] {
             org.opencms.editors.fckeditor.Messages.get(),
             org.opencms.editors.htmlarea.Messages.get(),
-            org.opencms.frontend.layoutpage.Messages.get(), 
+            org.opencms.frontend.layoutpage.Messages.get(),
             org.opencms.frontend.photoalbum.Messages.get(),
             org.opencms.frontend.templateone.Messages.get(),
             org.opencms.frontend.templateone.form.Messages.get(),
@@ -77,17 +89,5 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
             org.opencms.workplace.tools.workplace.broadcast.Messages.get(),
             org.opencms.workplace.tools.workplace.rfsfile.Messages.get(),
             org.opencms.workplace.workflow.Messages.get()};
-    }
-
-    /**
-     * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalizedBundles(Locale)
-     */
-    protected List getNotLocalizedBundles(Locale locale) {
-
-        List bundles = new ArrayList();
-        bundles.add(org.opencms.workplace.demos.Messages.get());
-        bundles.add(org.opencms.workplace.demos.list.Messages.get());
-        bundles.add(org.opencms.workplace.demos.widget.Messages.get());
-        return bundles;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsErrorBean.java,v $
- * Date   : $Date: 2006/11/13 15:59:42 $
- * Version: $Revision: 1.8.4.2 $
+ * Date   : $Date: 2006/11/14 09:35:40 $
+ * Version: $Revision: 1.8.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.8.4.2 $ 
+ * @version $Revision: 1.8.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,10 +99,10 @@ public class CmsErrorBean {
         // get the settings for system users to display errors in correct language
         CmsUser user = cms.getRequestContext().currentUser();
         if (user.isSystemUser()) {
-        	CmsUserSettings settings = new CmsUserSettings(user);
-        	m_locale = settings.getLocale();
+            CmsUserSettings settings = new CmsUserSettings(user);
+            m_locale = settings.getLocale();
         } else {
-        	m_locale = cms.getRequestContext().getLocale();
+            m_locale = cms.getRequestContext().getLocale();
         }
         m_throwable = throwable;
         m_messages = Messages.get().getBundle(m_locale);

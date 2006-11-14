@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2006/11/13 15:59:42 $
- * Version: $Revision: 1.13.4.6 $
+ * Date   : $Date: 2006/11/14 09:35:40 $
+ * Version: $Revision: 1.13.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.4.6 $
+ * @version $Revision: 1.13.4.7 $
  * 
  * @since 6.0.0
  */
@@ -415,9 +415,9 @@ public abstract class TestCmsMessageBundles extends TestCase {
             + "_"
             + locale.toString()
             + ".properties";
-        String target = TARGET_FOLDER + fileName; 
+        String target = TARGET_FOLDER + fileName;
         CmsFileUtil.copy(source, target);
-        return new CmsMessages(bundle.getBundleName() + "_" + locale.toString(), locale); 
+        return new CmsMessages(bundle.getBundleName() + "_" + locale.toString(), locale);
     }
 
     /**
@@ -432,22 +432,22 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
         if (Locale.ENGLISH.equals(locale)) {
             return bundle.getBundleName();
-        }   
+        }
         String fileName = CmsStringUtil.substitute(bundle.getBundleName(), ".", "/")
             + "_"
             + locale.toString()
-            + ".properties"; 
+            + ".properties";
         String source = SOURCE_FOLDER_PREFIX
             + locale.toString()
             + SOURCE_FOLDER_INFIX
             + locale.toString()
             + SOURCE_FOLDER_SUFFIX
-            + fileName; 
-        
+            + fileName;
+
         // if file from the localized folder is not readable take the file from the original module
-        if(!new File(source).canRead()) {
+        if (!new File(source).canRead()) {
             source = getModuleMessagesBundleSourceName(bundle, locale);
-        } 
+        }
         return source;
     }
 
@@ -460,7 +460,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
      * @return the file name of the source message bundle of the module
      */
     protected String getModuleMessagesBundleSourceName(I_CmsMessageBundle bundle, Locale locale) {
- 
+
         if (Locale.ENGLISH.equals(locale)) {
             return bundle.getBundleName();
         }
@@ -468,18 +468,17 @@ public abstract class TestCmsMessageBundles extends TestCase {
         String packageName = bundle.getBundleName().substring(0, bundle.getBundleName().lastIndexOf('.'));
         packageName += "/";
         String source = "modules/"
-            + packageName 
-            + "resources/system/modules/" 
-            + packageName 
+            + packageName
+            + "resources/system/modules/"
+            + packageName
             + "classes/"
-            + CmsStringUtil.substitute(bundle.getBundleName(), ".", "/") 
+            + CmsStringUtil.substitute(bundle.getBundleName(), ".", "/")
             + "_"
             + locale.toString()
             + ".properties";
         return source;
     }
-    
-    
+
     /**
      * Returns a list of bundles not to be localized.<p>
      * 

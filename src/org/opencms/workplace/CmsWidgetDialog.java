@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2006/11/13 15:59:41 $
- * Version: $Revision: 1.60.4.4 $
+ * Date   : $Date: 2006/11/14 09:35:40 $
+ * Version: $Revision: 1.60.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.4 $ 
+ * @version $Revision: 1.60.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -957,9 +957,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 Throwable t = p.getError();
                 while (t != null) {
                     if (t instanceof I_CmsThrowable) {
-                    	result.append(((I_CmsThrowable)t).getLocalizedMessage(getLocale()));
+                        result.append(((I_CmsThrowable)t).getLocalizedMessage(getLocale()));
                     } else {
-                    	result.append(t.getLocalizedMessage());
+                        result.append(t.getLocalizedMessage());
                     }
                     t = t.getCause();
                     if (t != null) {
