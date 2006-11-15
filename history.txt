@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/11/09 08:35:06 $
- * Version: $Revision: 1.717.2.95 $
+ * Date   : $Date: 2006/11/15 16:14:08 $
+ * Version: $Revision: 1.717.2.96 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,6 +72,7 @@ OpenCms 6.5.4 - xxxx, 2006
 - The CmsObject#createSibling method now returns the new created sibling to be consistent with the createResource method
 - The CmsObject#readResourcesWithProperty(String) method is now site dependent (as the others readResourcesWithProperty methods)
 - All CmsObject#readResourcesWithProperty methods now check read permissions for the given folder
+! Added function to switch the user out of the account management view. 
 
 OpenCms 6.5.3 - October 10, 2006
 * Fixed issue #1247: Display issue for multiple select boxes and help texts in IE
