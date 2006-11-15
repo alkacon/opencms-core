@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>Contains the resource type "layoutpage" that helps creating pages following a set of predefined layout patterns.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.4</version>
+		<version>1.2.5</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -61,8 +61,8 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<uuidstructure>4dea53ce-64cc-11db-8713-bf6fa13020a5</uuidstructure>
+			<datelastmodified>Thu, 26 Oct 2006 10:26:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -363,6 +363,34 @@
 			<datelastmodified>Thu, 26 Oct 2006 07:38:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 26 Oct 2006 07:38:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/mappings/event.properties</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/mappings/event.properties</destination>
+			<type>plain</type>
+			<uuidstructure>3184d913-65b4-11db-aabc-bf6fa13020a5</uuidstructure>
+			<uuidresource>3184d914-65b4-11db-aabc-bf6fa13020a5</uuidresource>
+			<datelastmodified>Fri, 27 Oct 2006 12:11:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 27 Oct 2006 12:10:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/mappings/faq.properties</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/mappings/faq.properties</destination>
+			<type>plain</type>
+			<uuidstructure>60810bd6-65b4-11db-aabc-bf6fa13020a5</uuidstructure>
+			<uuidresource>60810bd7-65b4-11db-aabc-bf6fa13020a5</uuidresource>
+			<datelastmodified>Fri, 27 Oct 2006 12:13:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 27 Oct 2006 12:12:12 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
