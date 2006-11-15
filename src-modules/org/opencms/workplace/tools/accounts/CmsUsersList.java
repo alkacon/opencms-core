@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/11/15 16:01:15 $
+ * Version: $Revision: 1.15.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,24 @@ import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDateMacroFormatter;
+import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListItemActionIconComparator;
+import org.opencms.workplace.list.CmsListMetadata;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -49,14 +62,26 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.4.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsUsersList extends A_CmsUsersList {
 
+    /** list action id constant. */
+    public static final String LIST_ACTION_SWITCH = "as";
+
+    /** list action id constant. */
+    public static final String LIST_COLUMN_SWITCH = "cs";
+
     /** list id constant. */
     public static final String LIST_ID = "lsu";
+
+    /** a set of action id's to use for deletion. */
+    private static Set m_deleteActionIds = new HashSet();
+
+    /** a set of action id's to use for edition. */
+    private static Set m_editActionIds = new HashSet();
 
     /**
      * Public constructor.<p>
@@ -81,11 +106,41 @@ public class CmsUsersList extends A_CmsUsersList {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
+     */
+    public void executeListSingleActions() throws IOException, ServletException {
+
+        String userId = getSelectedItem().getId();
+        Map params = new HashMap();
+        params.put(A_CmsEditUserDialog.PARAM_USERID, userId);
+        // set action parameter to initial dialog call
+        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+        // only the switch action is forwarded here,
+        // other actions are execute in the super class
+        if (getParamListAction().equals(LIST_ACTION_SWITCH)) {
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/switch", params);
+        } else {
+            super.executeListSingleActions();
+        }
+        listSave();
+    }
+
+    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getGroupIcon()
      */
     protected String getGroupIcon() {
 
         return PATH_BUTTONS + "group.png";
+    }
+
+    /**
+     * Returns the path the switch user icon.<p>
+     * 
+     * @return the path to the switch user icon
+     */
+    protected String getSwitchIcon() {
+
+        return PATH_BUTTONS + "user_switch.png";
     }
 
     /**
@@ -102,6 +157,167 @@ public class CmsUsersList extends A_CmsUsersList {
     protected CmsUser readUser(String name) throws CmsException {
 
         return getCms().readUser(name, CmsUser.USER_TYPE_SYSTEMUSER);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setColumns(CmsListMetadata metadata) {
+
+        // create column for edit
+        CmsListColumnDefinition editCol = new CmsListColumnDefinition(LIST_COLUMN_EDIT);
+        editCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_EDIT_0));
+        editCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_EDIT_HELP_0));
+        editCol.setWidth("20");
+        editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        editCol.setSorteable(false);
+
+        // add edit action
+        setEditAction(editCol);
+        m_editActionIds.addAll(editCol.getDirectActionIds());
+        // add it to the list definition
+        metadata.addColumn(editCol);
+
+        // create column for group edition
+        CmsListColumnDefinition groupCol = new CmsListColumnDefinition(LIST_COLUMN_GROUPS);
+        groupCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_GROUPS_0));
+        groupCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_GROUPS_HELP_0));
+        groupCol.setWidth("20");
+        groupCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        groupCol.setSorteable(false);
+        // add groups action
+        CmsListDirectAction groupAction = new CmsListDirectAction(LIST_ACTION_GROUPS);
+        groupAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_GROUPS_NAME_0));
+        groupAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_GROUPS_HELP_0));
+        groupAction.setIconPath(getGroupIcon());
+        groupCol.addDirectAction(groupAction);
+        // add it to the list definition
+        metadata.addColumn(groupCol);
+
+        // create column for switch user
+        CmsListColumnDefinition switchCol = new CmsListColumnDefinition(LIST_COLUMN_SWITCH);
+        switchCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_SWITCH_0));
+        switchCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_SWITCH_HELP_0));
+        switchCol.setWidth("20");
+        switchCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        switchCol.setSorteable(false);
+        // add switch action
+        CmsListDirectAction switchAction = new CmsListDirectAction(LIST_ACTION_SWITCH);
+        switchAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_SWITCH_NAME_0));
+        switchAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_SWITCH_HELP_0));
+        switchAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_SWITCH_CONF_0));
+        switchAction.setIconPath(getSwitchIcon());
+        switchCol.addDirectAction(switchAction);
+        // add it to the list definition
+        metadata.addColumn(switchCol);
+
+        // create column for activation/deactivation
+        CmsListColumnDefinition actCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVATE);
+        actCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ACTIVATE_0));
+        actCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ACTIVATE_HELP_0));
+        actCol.setWidth("20");
+        actCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        actCol.setListItemComparator(new CmsListItemActionIconComparator());
+
+        // activate action
+        CmsListDirectAction actAction = new CmsListDirectAction(LIST_ACTION_ACTIVATE) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    String usrId = getItem().getId();
+                    try {
+                        return !getCms().readUser(new CmsUUID(usrId)).isEnabled();
+                    } catch (CmsException e) {
+                        return false;
+                    }
+                }
+                return super.isVisible();
+            }
+        };
+        actAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_NAME_0));
+        actAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0));
+        actAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_CONF_0));
+        actAction.setIconPath(ICON_INACTIVE);
+        actCol.addDirectAction(actAction);
+
+        // deactivate action
+        CmsListDirectAction deactAction = new CmsListDirectAction(LIST_ACTION_DEACTIVATE) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    String usrId = getItem().getId();
+                    try {
+                        return getCms().readUser(new CmsUUID(usrId)).isEnabled();
+                    } catch (CmsException e) {
+                        return false;
+                    }
+                }
+                return super.isVisible();
+            }
+        };
+        deactAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_NAME_0));
+        deactAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_HELP_0));
+        deactAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_CONF_0));
+        deactAction.setIconPath(ICON_ACTIVE);
+        actCol.addDirectAction(deactAction);
+
+        // add it to the list definition
+        metadata.addColumn(actCol);
+
+        // create column for deletion
+        CmsListColumnDefinition deleteCol = new CmsListColumnDefinition(LIST_COLUMN_DELETE);
+        deleteCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_DELETE_0));
+        deleteCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_DELETE_HELP_0));
+        deleteCol.setWidth("20");
+        deleteCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        deleteCol.setSorteable(false);
+        // add delete action
+        setDeleteAction(deleteCol);
+        m_deleteActionIds.addAll(deleteCol.getDirectActionIds());
+
+        // add it to the list definition
+        metadata.addColumn(deleteCol);
+
+        // create column for login
+        CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN);
+        loginCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LOGIN_0));
+        loginCol.setWidth("20%");
+
+        // create default edit action
+        CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_DEFACTION_EDIT);
+        defEditAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_EDIT_NAME_0));
+        defEditAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_EDIT_HELP_0));
+        loginCol.addDefaultAction(defEditAction);
+
+        // add it to the list definition
+        metadata.addColumn(loginCol);
+
+        // add column for name
+        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
+        nameCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_USERNAME_0));
+        nameCol.setWidth("30%");
+        metadata.addColumn(nameCol);
+
+        // add column for email
+        CmsListColumnDefinition emailCol = new CmsListColumnDefinition(LIST_COLUMN_EMAIL);
+        emailCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_EMAIL_0));
+        emailCol.setWidth("30%");
+        metadata.addColumn(emailCol);
+
+        // add column for last login date
+        CmsListColumnDefinition lastLoginCol = new CmsListColumnDefinition(LIST_COLUMN_LASTLOGIN);
+        lastLoginCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_0));
+        lastLoginCol.setWidth("20%");
+        lastLoginCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
+        metadata.addColumn(lastLoginCol);
     }
 
     /**
