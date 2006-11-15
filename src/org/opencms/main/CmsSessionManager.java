@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2006/10/03 07:00:16 $
- * Version: $Revision: 1.12.4.3 $
+ * Date   : $Date: 2006/11/15 15:55:34 $
+ * Version: $Revision: 1.12.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,16 @@
 
 package org.opencms.main;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -69,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.3 $ 
+ * @version $Revision: 1.12.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -434,6 +439,51 @@ public class CmsSessionManager {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SESSION_DESTROYED_1, event.getSession().getId()));
         }
+    }
+    
+    /**
+     * Switches the current user to the given user. The session info is rebuild as if the given user
+     * performs a login at the workplace.
+     * 
+     * @param cms the current CmsObject
+     * @param req the current request
+     * @param user the user to switch to
+     * @throws CmsException
+     */
+    public void switchUser(CmsObject cms, HttpServletRequest req, CmsUser user) throws CmsException {
+
+        // only user with ACCOUNT_MANAGER role are allowed to switch the user
+        cms.checkRole(CmsRole.ACCOUNT_MANAGER);
+        CmsSessionInfo info = getSessionInfo(req);
+        HttpSession session = req.getSession(false);
+        if (info == null || session == null) {
+            throw new CmsException(Messages.get().container(Messages.ERR_NO_SESSIONINFO_SESSION_0));
+        }
+        
+        // get the user settings for the given user and set the start project and the site root
+        CmsUserSettings settings = new CmsUserSettings(cms, user);
+        CmsProject userProject = cms.readProject(settings.getStartProject());       
+        String userSiteRoot = settings.getStartSite();
+        CmsRequestContext context = new CmsRequestContext(
+            user,
+            userProject,
+            null,
+            userSiteRoot,
+            null,
+            null,
+            null,
+            0,
+            null,
+            null);
+        // create a new CmsSessionInfo and store it inside the session map
+        CmsSessionInfo newInfo = new CmsSessionInfo(context, info.getSessionId(), info.getMaxInactiveInterval());
+        addSessionInfo(newInfo);
+        // set the site root and the current project to the user preferences
+        cms.getRequestContext().setSiteRoot(userSiteRoot);
+        cms.getRequestContext().setCurrentProject(userProject);
+        
+        // delete the stored workplace settings, so the session has to recieve them again
+        session.removeAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
     }
 
     /**
