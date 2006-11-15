@@ -74,3 +74,9 @@ FCKConfig.ImageBrowserURL = FCKConfig.BasePath + "filemanager/browser/default/br
 FCKConfig.ImageUploadURL = "<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp?Type=Image") %>";
 FCKConfig.ImageBrowserWindowWidth  = 700;
 FCKConfig.ImageBrowserWindowHeight = 500;
+
+FCKConfig.LinkUpload = false;
+FCKConfig.LinkBrowserURL = FCKConfig.BasePath + "filemanager/browser/default/browser.html?Connector=<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp") %>";
+FCKConfig.LinkUploadURL = "<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp") %>";
+FCKConfig.LinkBrowserWindowWidth  = 700;
+FCKConfig.LinkBrowserWindowHeight = 500;
