@@ -649,6 +649,7 @@
 				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
 				<widget class="org.opencms.widgets.CmsUserWidget" alias="UserWidget"/>
 				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
+				<widget class="org.opencms.widgets.CmsLocalizationWidget" alias="LocalizationWidget"/>
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
