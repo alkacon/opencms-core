@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2006/11/08 09:28:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/11/16 15:43:35 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -214,7 +214,7 @@ public final class CmsResourceUtil {
     public String getDateExpired() {
 
         long release = m_resource.getDateExpired();
-        if (release != CmsResource.DATE_RELEASED_DEFAULT) {
+        if (release != CmsResource.DATE_EXPIRED_DEFAULT) {
             return getMessages().getDateTime(release);
         } else {
             return CmsTouch.DEFAULT_DATE_STRING;
