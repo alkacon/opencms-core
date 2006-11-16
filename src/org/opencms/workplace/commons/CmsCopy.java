@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/11/16 13:40:28 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,7 +134,22 @@ public class CmsCopy extends CmsMultiDialog {
                 resource = getCms().readResource(source, CmsResourceFilter.ALL);
                 isFolder = resource.isFolder();
             } else {
-                resource = getCms().readResource(target, CmsResourceFilter.ALL);
+                String siteRootFolder = null;
+                try {
+                    // check if a site root was added to the target name
+                    if (CmsSiteManager.getSiteRoot(target) != null) {
+                        siteRootFolder = getCms().getRequestContext().getSiteRoot();
+                        if (siteRootFolder.endsWith("/")) {
+                            siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);
+                        }
+                        getCms().getRequestContext().setSiteRoot("/");
+                    }
+                    resource = getCms().readResource(target, CmsResourceFilter.ALL);
+                } finally {
+                    if (siteRootFolder != null) {
+                        getCms().getRequestContext().setSiteRoot(siteRootFolder);
+                    }
+                }
                 if (! resource.isFolder()) {
                     // no folder selected for multi operation, throw exception
                     throw new CmsVfsException(Messages.get().container(Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1, target));
