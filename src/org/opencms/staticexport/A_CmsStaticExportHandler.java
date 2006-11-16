@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.3.4.10 $
+ * Date   : $Date: 2006/11/16 13:01:55 $
+ * Version: $Revision: 1.3.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3.4.10 $ 
+ * @version $Revision: 1.3.4.11 $ 
  * 
  * @since 6.1.7 
  * 
@@ -280,7 +280,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
             Iterator itPrePubRes = new ArrayList(publishedResources).iterator();
             while (itPrePubRes.hasNext()) {
                 CmsPublishedResource res = (CmsPublishedResource)itPrePubRes.next();
-                if (!res.isVfsResource() || res.getState() != CmsPublishedResource.STATE_MOVED_DESTINATION) {
+                if (!res.isVfsResource() || res.getMovedState() != CmsPublishedResource.STATE_MOVED_DESTINATION) {
                     // handle only resources that are destination of move operations
                     continue;
                 }
