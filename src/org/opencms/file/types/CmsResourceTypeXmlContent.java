@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2006/09/28 07:53:12 $
- * Version: $Revision: 1.22.8.6 $
+ * Date   : $Date: 2006/11/16 14:50:47 $
+ * Version: $Revision: 1.22.8.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.8.6 $ 
+ * @version $Revision: 1.22.8.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,6 +163,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
      */
     public List parseLinks(CmsObject cms, CmsFile file) {
 
+        if (file.getLength() == 0) {
+            return Collections.EMPTY_LIST;
+        }
         CmsXmlContent xmlContent;
         long requestTime = cms.getRequestContext().getRequestTime();
         try {
