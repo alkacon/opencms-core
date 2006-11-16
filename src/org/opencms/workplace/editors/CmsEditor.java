@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/11/16 14:03:08 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2006/11/16 14:05:00 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -801,7 +801,8 @@ public abstract class CmsEditor extends CmsDialog {
             getCms().copyResource(getCms().getSitePath(file), temporaryFilename, CmsResource.COPY_AS_NEW);
             getCms().setDateLastModified(temporaryFilename, System.currentTimeMillis(), false);
             // set the temporary file flag
-            int flags = getCms().readResource(temporaryFilename, CmsResourceFilter.ALL).getFlags();
+            CmsResource tempFile = getCms().readResource(temporaryFilename, CmsResourceFilter.ALL);
+            int flags = tempFile.getFlags();
             if ((flags & CmsResource.FLAG_TEMPFILE) == 0) {
                 flags += CmsResource.FLAG_TEMPFILE;
             }
@@ -810,7 +811,7 @@ public abstract class CmsEditor extends CmsDialog {
             getCms().setDateReleased(temporaryFilename, CmsResource.DATE_RELEASED_DEFAULT, false);
             getCms().setDateExpired(temporaryFilename, CmsResource.DATE_EXPIRED_DEFAULT, false);
             // remove visibility permissions for users and projectmanagers on temporary file
-            if (getCms().hasPermissions(file, CmsPermissionSet.ACCESS_CONTROL)) {
+            if (getCms().hasPermissions(tempFile, CmsPermissionSet.ACCESS_CONTROL)) {
                 getCms().chacc(
                     temporaryFilename,
                     I_CmsPrincipal.PRINCIPAL_GROUP,
