@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlMessages.java,v $
- * Date   : $Date: 2006/11/15 14:01:54 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/11/16 10:39:51 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.4 
  */
@@ -261,7 +261,6 @@ public class CmsXmlMessages extends CmsMessages {
     /**
      * Initializes the content used for localizing the output.<p>
      * 
-     * @param cms the current users context
      * @param configurationFileName the absolute path including site root to the configuration file containing localized keys
      */
     protected void initLocalizationContent(String configurationFileName) {
