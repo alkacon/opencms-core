@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2006/08/31 08:56:44 $
- * Version: $Revision: 1.28.4.3 $
+ * Date   : $Date: 2006/11/16 09:38:56 $
+ * Version: $Revision: 1.28.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28.4.3 $ 
+ * @version $Revision: 1.28.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,6 +133,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_MODULE_1 = "ERR_UNKNOWN_MODULE_1";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_NO_SESSIONINFO_SESSION_0 = "ERR_NO_SESSIONINFO_SESSION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_AVAILABLE_METHODS_1 = "GUI_SHELL_AVAILABLE_METHODS_1";
