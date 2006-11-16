@@ -58,7 +58,6 @@
 			<resource uri="/system/workplace/commons/newresource_xmlpage.jsp"/>
 			<resource uri="/system/workplace/commons/opengallery.jsp"/>
 			<resource uri="/system/workplace/commons/preferences.jsp"/>
-			<resource uri="/system/workplace/commons/print-brokenrelations.jsp"/>
 			<resource uri="/system/workplace/commons/property.jsp"/>
 			<resource uri="/system/workplace/commons/property_advanced.jsp"/>
 			<resource uri="/system/workplace/commons/property_custom.jsp"/>
@@ -2021,29 +2020,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dialog - Preferences]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/commons/print-brokenrelations.jsp</source>
-			<destination>system/workplace/commons/print-brokenrelations.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>17887f46-4d2d-11db-bc4f-5bf59c6009b3</uuidstructure>
-			<uuidresource>17887f47-4d2d-11db-bc4f-5bf59c6009b3</uuidresource>
-			<datelastmodified>Tue, 26 Sep 2006 07:47:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 26 Sep 2006 07:03:20 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Delete Dialog - Print Broken Relations]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
