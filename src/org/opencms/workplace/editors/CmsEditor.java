@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/11/16 13:38:46 $
- * Version: $Revision: 1.34.4.8 $
+ * Date   : $Date: 2006/11/16 14:03:09 $
+ * Version: $Revision: 1.34.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34.4.8 $ 
+ * @version $Revision: 1.34.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -812,8 +812,7 @@ public abstract class CmsEditor extends CmsEditorBase {
             getCms().setDateReleased(temporaryFilename, CmsResource.DATE_RELEASED_DEFAULT, false);
             getCms().setDateExpired(temporaryFilename, CmsResource.DATE_EXPIRED_DEFAULT, false);
             // remove visibility permissions for users and projectmanagers on temporary file
-            CmsResource tempFile = getCms().readResource(temporaryFilename, CmsResourceFilter.ALL);
-            if (getCms().hasPermissions(tempFile, CmsPermissionSet.ACCESS_CONTROL)) {
+            if (getCms().hasPermissions(file, CmsPermissionSet.ACCESS_CONTROL)) {
                 getCms().chacc(
                     temporaryFilename,
                     I_CmsPrincipal.PRINCIPAL_GROUP,
