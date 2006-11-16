@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/10/19 14:16:40 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2006/11/16 13:35:28 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -809,16 +810,19 @@ public abstract class CmsEditor extends CmsDialog {
             getCms().setDateReleased(temporaryFilename, CmsResource.DATE_RELEASED_DEFAULT, false);
             getCms().setDateExpired(temporaryFilename, CmsResource.DATE_EXPIRED_DEFAULT, false);
             // remove visibility permissions for users and projectmanagers on temporary file
-            getCms().chacc(
-                temporaryFilename,
-                I_CmsPrincipal.PRINCIPAL_GROUP,
-                OpenCms.getDefaultUsers().getGroupUsers(),
-                "-v");
-            getCms().chacc(
-                temporaryFilename,
-                I_CmsPrincipal.PRINCIPAL_GROUP,
-                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
-                "-v");
+            CmsResource tempFile = getCms().readResource(temporaryFilename, CmsResourceFilter.ALL);
+            if (getCms().hasPermissions(tempFile, CmsPermissionSet.ACCESS_CONTROL)) {
+                getCms().chacc(
+                    temporaryFilename,
+                    I_CmsPrincipal.PRINCIPAL_GROUP,
+                    OpenCms.getDefaultUsers().getGroupUsers(),
+                    "-v");
+                getCms().chacc(
+                    temporaryFilename,
+                    I_CmsPrincipal.PRINCIPAL_GROUP,
+                    OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                    "-v");
+            }
         } catch (CmsException e) {
             switchToCurrentProject();
             throw e;
