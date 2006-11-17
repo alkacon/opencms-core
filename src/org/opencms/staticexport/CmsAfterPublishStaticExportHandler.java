@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/11/09 16:03:38 $
- * Version: $Revision: 1.19.4.13 $
+ * Date   : $Date: 2006/11/17 11:10:40 $
+ * Version: $Revision: 1.19.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.13 $ 
+ * @version $Revision: 1.19.4.14 $ 
  * 
  * @since 6.0.0 
  * 
@@ -454,18 +454,18 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                 String rfsBaseName = rfsName.substring(0, rfsName.lastIndexOf('_'));
                 vfsName = manager.getVfsNameInternal(cms, rfsBaseName);
             }
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                new Integer(count++),
-                new Integer(size)), I_CmsReport.FORMAT_NOTE);
-            report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                rfsName));
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-            if (vfsName == null) {
-                report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_IGNORED_0), I_CmsReport.FORMAT_NOTE);
+            if (vfsName != null) {
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    new Integer(count++),
+                    new Integer(size)), I_CmsReport.FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    rfsName));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+            } else {
+                // no valid resource found for rfs name (already deleted), skip it
                 continue;
             }
 
