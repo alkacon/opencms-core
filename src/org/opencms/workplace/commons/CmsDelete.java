@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.17.4.14 $
+ * Date   : $Date: 2006/11/17 15:00:04 $
+ * Version: $Revision: 1.17.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.14 $ 
+ * @version $Revision: 1.17.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -172,13 +172,15 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
         StringBuffer result = new StringBuffer(512);
         boolean isFolder = false;
-        if (!isMultiOperation()) {
-            try {
-                isFolder = getCms().readResource(getParamResource(), CmsResourceFilter.ALL).isFolder();
-            } catch (CmsException e) {
-                // ignore
-            }
-        }
+        int todo = 0;
+//      currently inactive, since its unclear if deletion of siblings is sound when deleting a folder
+//        if (!isMultiOperation()) {
+//            try {
+//                isFolder = getCms().readResource(getParamResource(), CmsResourceFilter.ALL).isFolder();
+//            } catch (CmsException e) {
+//                // ignore
+//            }
+//        }
         if (isMultiOperation() || isFolder || (hasSiblings() && hasCorrectLockstate())) {
             // show only for multi resource operation or if resource has siblings and correct lock state
             CmsResourceDeleteMode defaultMode = Boolean.valueOf(getParamDeleteSiblings()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
