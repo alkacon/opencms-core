@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.97.4.16 $
+ * Date   : $Date: 2006/11/17 13:23:28 $
+ * Version: $Revision: 1.97.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4393,11 +4393,12 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.unlockResource(dbc, resource, false);
-        } catch (Exception e) {
+        } catch (CmsException e) {
             dbc.report(null, Messages.get().container(
-                Messages.ERR_UNLOCK_RESOURCE_2,
+                Messages.ERR_UNLOCK_RESOURCE_3,
                 context.getSitePath(resource),
-                dbc.currentUser().getName()), e);
+                dbc.currentUser().getName(),
+                e.getLocalizedMessage(dbc.getRequestContext().getLocale())), e);
         } finally {
             dbc.clear();
         }
