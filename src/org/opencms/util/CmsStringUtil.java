@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/09/27 10:56:02 $
- * Version: $Revision: 1.39.4.4 $
+ * Date   : $Date: 2006/11/20 14:27:04 $
+ * Version: $Revision: 1.39.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.util;
 
-import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -58,7 +57,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.4.4 $ 
+ * @version $Revision: 1.39.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -406,8 +405,11 @@ public final class CmsStringUtil {
 
     /**
      * Formats a resource name that it is displayed with the maximum length and path information is adjusted.<p>
+     * In order to reduce the length of the displayed names, single folder names are removed/replaced with ... successively, 
+     * starting with the second! folder. The first folder is removed as last.
      * 
-     * Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns <code>/.../subfolder/index.html</code>.<p>
+     * Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns <code>/myfolder/.../index.html</code>.<p>
+     * 
      * @param name the resource name to format
      * @param maxLength the maximum length of the resource name (without leading <code>/...</code>)
      * @return the formatted resource name
@@ -417,28 +419,40 @@ public final class CmsStringUtil {
         if (name == null) {
             return null;
         }
+        
         if (name.length() <= maxLength) {
             return name;
         }
-
-        String result = CmsResource.getName(name);
-        name = CmsResource.getParentFolder(name);
-        while (name != null) {
-            String part = CmsResource.getName(name);
-
-            if ((part.length() + result.length()) <= maxLength) {
-                result = part + result;
-            } else {
-                result = "/" + result;
-                if (!part.equals("/")) {
-                    result = "/..." + result;
-                }
-                break;
-            }
-            name = CmsResource.getParentFolder(name);
+        
+        int total = name.length();
+        String[] names = CmsStringUtil.splitAsArray(name, "/");
+        if (name.endsWith("/")) {
+            names[names.length-1] = names[names.length-1] + "/";
         }
-
-        return result;
+        for (int i = 1; total > maxLength && i < names.length-1; i++) {
+            if (i > 1) {
+                names[i-1] = "";
+            }
+            names[i] = "...";
+            total = 0;
+            for (int j = 0; j < names.length; j++) {
+                int l = names[j].length();
+                total += l + ((l > 0) ? 1 : 0);
+            }
+        }
+        if (total > maxLength) {
+            names[0]=(names.length > 2) ? "" : (names.length > 1) ? "..." : names[0];
+        }
+        
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].length() > 0) {
+                result.append("/");
+                result.append(names[i]);
+            }
+        }    
+        
+        return result.toString();
     }
 
     /**
