@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/11/20 09:23:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,7 +59,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      * 
      * @author Michael Moossen  
      * 
-     * @version $Revision: 1.9 $
+     * @version $Revision: 1.10 $
      * 
      * @since 6.0.0
      */
@@ -112,7 +112,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     /** List of objects. */
     private final List m_objectList = new ArrayList();
 
-    /** Map of objects onlz used if uniqueIds flag set. */
+    /** Map of objects only used if uniqueIds flag set. */
     private final Map m_objectsById = new HashMap();
 
     /** Flag for managing absolute and relative ordering. */
