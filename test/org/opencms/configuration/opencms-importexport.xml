@@ -85,6 +85,7 @@
 			<testresource uri="/system/shared/page.dtd"/>
 			<resourcestorender>
 				<regex>/sites/.*</regex>
+				<regex>/system/workplace/commons/styles/.*</regex>
 				<regex>/system/galleries/.*</regex>
 				<regex>/system/modules/.*/resources/.*</regex>
                 <export-rules>
