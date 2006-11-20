@@ -1,11 +1,14 @@
 <%@ page import="
 	org.opencms.jsp.*,
 	org.opencms.workplace.editors.*, 
-	org.opencms.editors.fckeditor.*
+	org.opencms.editors.fckeditor.*, 
+	java.util.*
 "%><%
 
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 CmsFCKEditor wp = new CmsFCKEditor(cms);
+CmsEditorDisplayOptions options = wp.getEditorDisplayOptions();
+Properties displayOptions = options.getDisplayOptions(cms);
 
 if (wp.isHelpEnabled()) {
 	%>
@@ -55,7 +58,7 @@ function openOnlineHelp(wpUri) {
 
 %>
 var workplacePath="<%= cms.link("/system/workplace/") %>";
-var USE_LINKSTYLEINPUTS = false;
+var USE_LINKSTYLEINPUTS = <%= options.showElement("option.linkstyleinputs", displayOptions) %>;
 
 function execAction(form, action, target) {
 	form.content.value = encodeURIComponent(FCK.GetXHTML(false));
