@@ -1,7 +1,7 @@
 <%@ page import="
 	org.opencms.jsp.*,
 	org.opencms.workplace.editors.*, 
-	org.opencms.editors.fckeditor.*, 
+	org.opencms.editors.fckeditor.*,
 	java.util.*
 "%><%
 
@@ -170,6 +170,7 @@ function getSelectedLink() {
 		linkInformation["title"] = thelink.title;
 		if (USE_LINKSTYLEINPUTS) {
 			linkInformation["class"] = thelink.className;
+			linkInformation["style"] = "";
 		}	   
 	}
 	return linkInformation;
