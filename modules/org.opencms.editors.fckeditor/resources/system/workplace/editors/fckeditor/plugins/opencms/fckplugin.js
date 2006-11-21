@@ -169,8 +169,8 @@ function getSelectedLink() {
 		linkInformation["target"] = thelink.target;
 		linkInformation["title"] = thelink.title;
 		if (USE_LINKSTYLEINPUTS) {
-			linkInformation["class"] = thelink.className;
-			linkInformation["style"] = "";
+			linkInformation["class"] = thelink.getAttribute("class", 0);
+			linkInformation["style"] = thelink.style.cssText;
 		}	   
 	}
 	return linkInformation;
@@ -209,6 +209,12 @@ function createLink(linkInformation) {
 		} else {
 			a.removeAttribute("class");
 		}
+		if (linkInformation["style"] != "") {
+			a.style.cssText = linkInformation["style"];
+		} else {
+			a.removeAttribute("style");
+		}
+
 	}
 } 
  
