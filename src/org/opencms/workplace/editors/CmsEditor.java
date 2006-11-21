@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/11/16 14:05:01 $
- * Version: $Revision: 1.34.4.10 $
+ * Date   : $Date: 2006/11/21 14:16:12 $
+ * Version: $Revision: 1.34.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34.4.10 $ 
+ * @version $Revision: 1.34.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -748,14 +748,16 @@ public abstract class CmsEditor extends CmsEditorBase {
             getCloneCms().writeFile(orgFile);
         } else {
             // original file does not exist, remove visibility permission entries and copy temporary file
-            getCms().rmacc(
-                getParamTempfile(),
-                I_CmsPrincipal.PRINCIPAL_GROUP,
-                OpenCms.getDefaultUsers().getGroupUsers());
-            getCms().rmacc(
-                getParamTempfile(),
-                I_CmsPrincipal.PRINCIPAL_GROUP,
-                OpenCms.getDefaultUsers().getGroupProjectmanagers());
+            if (getCms().hasPermissions(tempFile, CmsPermissionSet.ACCESS_CONTROL)) {
+                getCms().rmacc(
+                    getParamTempfile(),
+                    I_CmsPrincipal.PRINCIPAL_GROUP,
+                    OpenCms.getDefaultUsers().getGroupUsers());
+                getCms().rmacc(
+                    getParamTempfile(),
+                    I_CmsPrincipal.PRINCIPAL_GROUP,
+                    OpenCms.getDefaultUsers().getGroupProjectmanagers());
+            }
             getCms().copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
         }
         // remove the temporary file flag
