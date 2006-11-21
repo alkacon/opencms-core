@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/11/20 09:34:25 $
- * Version: $Revision: 1.792 $
+ * Date   : $Date: 2006/11/21 09:25:00 $
+ * Version: $Revision: 1.793 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,6 +69,7 @@ OpenCms 6.2.3 -
 * Fixed issue #1252: Availability context menu entry not shown for pointer resources
 * Fixed issue #1255: OpenCms is not able to work on Windows mapped network drives
 * Fixed issue #1265: Copy of multiple items between sites fails
+* Fixed issue #1271: Validation rules aren't triggered at the right time when editing structured content
 * Fixed display of date values of xml elements in history comparison
 ! Improved I/O performance when uploading zip files / building search index
 ! Added option for manual placement of "direct edit" buttons, depending on the provider implementation

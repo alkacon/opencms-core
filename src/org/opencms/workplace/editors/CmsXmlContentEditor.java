@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/10/19 14:16:40 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2006/11/21 09:25:00 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetDialog;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.editors.directedit.CmsDirectEditButtonSelection;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
@@ -82,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.70 $ 
+ * @version $Revision: 1.71 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,7 +123,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public static final String EDITOR_ACTION_ELEMENT_REMOVE = "removeelement";
 
     /** Indicates a new file should be created. */
-    public static final String EDITOR_ACTION_NEW = I_CmsEditorActionHandler.DIRECT_EDIT_OPTION_NEW;
+    public static final String EDITOR_ACTION_NEW = CmsDirectEditButtonSelection.VALUE_NEW;
 
     /** Parameter name for the request parameter "elementindex". */
     public static final String PARAM_ELEMENTINDEX = "elementindex";
@@ -181,23 +182,26 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     public void actionChangeElementLanguage() {
 
-        if (!m_content.hasLocale(getElementLocale())) {
-            // create new element if selected language element is not present
-            try {
-                m_content.addLocale(getCms(), getElementLocale());
-            } catch (CmsXmlException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-        }
         // save eventually changed content of the editor
         Locale oldLocale = CmsLocaleManager.getLocale(getParamOldelementlanguage());
         try {
             setEditorValues(oldLocale);
             if (!getErrorHandler().hasErrors()) {
-                // no errors found in content, save to temporary file              
+                // no errors found in content
+                if (!m_content.hasLocale(getElementLocale())) {
+                    // create new element if selected language element is not present
+                    try {
+                        m_content.addLocale(getCms(), getElementLocale());
+                    } catch (CmsXmlException e) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                }
+                // save to temporary file              
                 writeContent();
+                // set default action to suppress error messages
+                setAction(ACTION_DEFAULT);
             } else {
                 // errors found, switch back to old language to show errors
                 setParamElementlanguage(getParamOldelementlanguage());
