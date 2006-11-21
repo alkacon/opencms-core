@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/10/25 16:53:42 $
- * Version: $Revision: 1.68.4.7 $
+ * Date   : $Date: 2006/11/21 09:25:40 $
+ * Version: $Revision: 1.68.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68.4.7 $ 
+ * @version $Revision: 1.68.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -195,24 +195,26 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     public void actionChangeElementLanguage() {
 
-        if (!m_content.hasLocale(getElementLocale())) {
-            // create new element if selected language element is not present
-            try {
-                m_content.addLocale(getCms(), getElementLocale());
-            } catch (CmsXmlException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-        }
-
         // save eventually changed content of the editor
         Locale oldLocale = CmsLocaleManager.getLocale(getParamOldelementlanguage());
         try {
             setEditorValues(oldLocale);
             if (!m_content.validate(getCms()).hasErrors(oldLocale)) {
-                // no errors found in content, save to temporary file              
+                // no errors found in content
+                if (!m_content.hasLocale(getElementLocale())) {
+                    // create new element if selected language element is not present
+                    try {
+                        m_content.addLocale(getCms(), getElementLocale());
+                    } catch (CmsXmlException e) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                }
+                //save to temporary file              
                 writeContent();
+                // set default action to suppress error messages
+                setAction(ACTION_DEFAULT);
             } else {
                 // errors found, switch back to old language to show errors
                 setParamElementlanguage(getParamOldelementlanguage());
