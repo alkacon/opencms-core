@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/11/21 09:25:00 $
- * Version: $Revision: 1.793 $
+ * Date   : $Date: 2006/11/23 16:59:38 $
+ * Version: $Revision: 1.794 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,6 +77,7 @@ OpenCms 6.2.3 -
 * Fixed issue in CmsSecurityManager, hasPermissions() check with lock check set to "false" did not work
 - Modified inline css for direct edit buttons
 ! Allow choice of stylesheet class for links in FCKeditor controlled by editor configuration "option.linkstyleinputs"
+! Performance improvement for log file viewer admin tool
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
