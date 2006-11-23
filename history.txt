@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/11/21 09:25:40 $
- * Version: $Revision: 1.717.2.99 $
+ * Date   : $Date: 2006/11/23 16:58:30 $
+ * Version: $Revision: 1.717.2.100 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,6 +76,7 @@ OpenCms 6.5.4 - xxxx, 2006
 - All CmsObject#readResourcesWithProperty methods now check read permissions for the given folder
 ! Added function to switch the user out of the account management view. 
 ! Allow choice of stylesheet class for links in FCKeditor controlled by editor configuration "option.linkstyleinputs"
+! Performance improvement for log file viewer admin tool
 
 OpenCms 6.5.3 - October 10, 2006
 * Fixed issue #1247: Display issue for multiple select boxes and help texts in IE
