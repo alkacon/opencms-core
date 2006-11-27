@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeleteBrokenRelationsList.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -212,12 +212,12 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListExplorerDialog {
      */
     protected List getListItems() throws CmsException {
 
+        String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
         try {
-            getCms().getRequestContext().saveSiteRoot();
             getCms().getRequestContext().setSiteRoot("");
             return super.getListItems();
         } finally {
-            getCms().getRequestContext().restoreSiteRoot();
+            getCms().getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.16.4.2 $
+ * Date   : $Date: 2006/11/27 16:03:04 $
+ * Version: $Revision: 1.16.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -222,8 +222,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             "packages/testImportExportBrokenLinks.zip");
 
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
-            cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/sites/default/");
 
             // create files 
@@ -273,7 +273,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             cms.unlockProject(cms.getRequestContext().currentProject().getId());
             cms.publishProject();
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
 
         try {

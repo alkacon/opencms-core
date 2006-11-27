@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.75.4.1 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.75.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.75.4.1 $ 
+ * @version $Revision: 1.75.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -208,9 +208,10 @@ public class CmsImportVersion3 extends A_CmsImport {
         List fileNodes, acentryNodes;
         Element currentElement, currentEntry;
         List properties = null;
+        String storedSiteRoot = null;
 
         if (m_importingChannelData) {
-            m_cms.getRequestContext().saveSiteRoot();
+            storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
             m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
         }
         // get list of unwanted properties
@@ -389,8 +390,8 @@ public class CmsImportVersion3 extends A_CmsImport {
 
             throw new CmsImportExportException(message, e);
         } finally {
-            if (m_importingChannelData) {
-                m_cms.getRequestContext().restoreSiteRoot();
+            if (storedSiteRoot != null) {
+                m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
 

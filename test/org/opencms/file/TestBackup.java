@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestBackup.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.7.8.2 $
+ * Date   : $Date: 2006/11/27 16:02:53 $
+ * Version: $Revision: 1.7.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * Unit tests for backup operation.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.7.8.2 $
+ * @version $Revision: 1.7.8.3 $
  */
 public class TestBackup extends OpenCmsTestCase {
 
@@ -108,10 +108,10 @@ public class TestBackup extends OpenCmsTestCase {
         CmsProject offlineProject = cms.getRequestContext().currentProject();
         int counter = 5;
 
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
 
             // switch to the default site in the offline project
-            cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/sites/default/");
             cms.getRequestContext().setCurrentProject(offlineProject);
 
@@ -155,7 +155,7 @@ public class TestBackup extends OpenCmsTestCase {
                 assertEquals(contentStr, restoredContent);
             }
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -180,10 +180,10 @@ public class TestBackup extends OpenCmsTestCase {
         int counterSibl = 6;
         int counterSibl2 = 7;
 
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
 
             // switch to the default site in the offline project
-            cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/sites/default/");
             cms.getRequestContext().setCurrentProject(offlineProject);
 
@@ -299,7 +299,7 @@ public class TestBackup extends OpenCmsTestCase {
             assertEquals("Sibling2Title7", prop.getValue());
 
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -323,10 +323,10 @@ public class TestBackup extends OpenCmsTestCase {
         int counterSibl = 6;
         long timeToDeleted = 0;
 
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
 
             // switch to the default site in the offline project
-            cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/sites/default/");
             cms.getRequestContext().setCurrentProject(offlineProject);
 
@@ -436,7 +436,7 @@ public class TestBackup extends OpenCmsTestCase {
             assertEquals("SiblingTitle3", prop.getValue());
 
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -454,10 +454,10 @@ public class TestBackup extends OpenCmsTestCase {
         CmsProject offlineProject = cms.getRequestContext().currentProject();
         int counter = 5;
 
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
 
             // switch to the default site in the offline project
-            cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/sites/default/");
             cms.getRequestContext().setCurrentProject(offlineProject);
 
@@ -499,7 +499,7 @@ public class TestBackup extends OpenCmsTestCase {
             assertEquals(backupResourcesForFile, backupResourcesForSibling);
             assertEquals(2 * counter + 1, backupResourcesForFile.size());
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 

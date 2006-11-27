@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2006/11/08 09:28:48 $
-* Version: $Revision: 1.6.8.1 $
+* Date   : $Date: 2006/11/27 16:02:34 $
+* Version: $Revision: 1.6.8.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,8 +61,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.6.8.1 $
- * $Date: 2006/11/08 09:28:48 $
+ * $Revision: 1.6.8.2 $
+ * $Date: 2006/11/27 16:02:34 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -1003,7 +1003,7 @@ public abstract class CmsMasterContent
     public Vector getAllSubChannelsOfRootChannel (CmsObject cms)
             throws CmsException {
         Vector allChannels = new Vector();
-        cms.getRequestContext().saveSiteRoot();
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {           
             String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();           
             cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);        
@@ -1025,7 +1025,7 @@ public abstract class CmsMasterContent
                 }
             }
         } finally {         
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
         return allChannels;
     }

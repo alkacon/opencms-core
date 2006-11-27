@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.24.4.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.24.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.2 $ 
+ * @version $Revision: 1.24.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -302,9 +302,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             if (content != null) {
                 return new InputSource(new ByteArrayInputStream(content));
             }
+            String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
             try {
                 // content not cached, read from VFS
-                m_cms.getRequestContext().saveSiteRoot();
                 m_cms.getRequestContext().setSiteRoot("/");
                 CmsFile file = m_cms.readFile(cacheSystemId);
                 content = file.getContents();
@@ -317,7 +317,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_ENTITY_RESOLVE_FAILED_1, systemId), t);
             } finally {
-                m_cms.getRequestContext().restoreSiteRoot();
+                m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         } else if (systemId.substring(0, systemId.lastIndexOf("/") + 1).equalsIgnoreCase(
             CmsConfigurationManager.DEFAULT_DTD_PREFIX)) {

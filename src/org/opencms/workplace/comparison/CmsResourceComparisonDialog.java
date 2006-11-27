@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2006/10/09 12:30:42 $
- * Version: $Revision: 1.4.4.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.4.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.4.4.2 $ 
+ * @version $Revision: 1.4.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -224,12 +224,12 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         if (CmsHistoryList.OFFLINE_PROJECT.equals(version)) {
             CmsResource resource = cms.readResource(id);
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
-                cms.getRequestContext().saveSiteRoot();
                 cms.getRequestContext().setSiteRoot("/");
                 return cms.readFile(resource.getRootPath(), CmsResourceFilter.ALL);
             } finally {
-                cms.getRequestContext().restoreSiteRoot();
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         } else {
             return cms.readBackupFile(id, tagId);

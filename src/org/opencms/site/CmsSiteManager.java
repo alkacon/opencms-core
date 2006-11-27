@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.51.4.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.51.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.51.4.2 $ 
+ * @version $Revision: 1.51.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,8 +144,7 @@ public final class CmsSiteManager implements Cloneable {
             }
         }
 
-        String currentRoot = cms.getRequestContext().getSiteRoot();
-        cms.getRequestContext().saveSiteRoot();
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
             // for all operations here we need no context
             cms.getRequestContext().setSiteRoot("/");
@@ -153,8 +152,8 @@ public final class CmsSiteManager implements Cloneable {
                 if (!siteroots.contains("/")) {
                     siteroots.add("/");
                 }
-                if (!siteroots.contains(currentRoot + "/")) {
-                    siteroots.add(currentRoot + "/");
+                if (!siteroots.contains(storedSiteRoot + "/")) {
+                    siteroots.add(storedSiteRoot + "/");
                 }
             }
             Collections.sort(siteroots);
@@ -183,7 +182,7 @@ public final class CmsSiteManager implements Cloneable {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_SITE_PROP_FAILED_0), t);
         } finally {
             // restore the user's current context 
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
         return result;
     }

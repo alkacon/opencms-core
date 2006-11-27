@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2006/11/08 09:28:54 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 7.0.0
  */
@@ -174,9 +174,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                         // ignore broken links
                     }
                 }
+                String storedSiteRoot = cms.getRequestContext().getSiteRoot();
                 try {
                     // change cms to root site
-                    cms.getRequestContext().saveSiteRoot();
                     cms.getRequestContext().setSiteRoot("/");
                     for (Iterator i = relations.values().iterator(); i.hasNext();) {
                         CmsResource r = (CmsResource)i.next();
@@ -198,7 +198,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                         }
                     }
                 } finally {
-                    cms.getRequestContext().restoreSiteRoot();
+                    cms.getRequestContext().setSiteRoot(storedSiteRoot);
                 }
             } else {
                 throw new CmsWorkflowException(Messages.get().container(
@@ -691,9 +691,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     public void addResourceToWorkflowProject(CmsProject wfProject, CmsResource resource) throws CmsException {
 
         CmsProject offlineProject = m_cms.getRequestContext().currentProject();
+        String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
         try {
             // switch to the root site
-            m_cms.getRequestContext().saveSiteRoot();
             m_cms.getRequestContext().setSiteRoot("");
             // switch to the workflow project
             m_cms.getRequestContext().setCurrentProject(wfProject);
@@ -702,7 +702,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
             m_cms.copyResourceToProject(m_cms.getSitePath(resource));
         } finally {
             m_cms.getRequestContext().setCurrentProject(offlineProject);
-            m_cms.getRequestContext().restoreSiteRoot();
+            m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/10/26 08:36:53 $
- * Version: $Revision: 1.121.4.9 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.121.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.9 $ 
+ * @version $Revision: 1.121.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -1505,13 +1505,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             return isSecureLink(cms, vfsName);
         }
 
-        // the site root of the cms object has to be changed so that the property can be read    
+        // the site root of the cms object has to be changed so that the property can be read   
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
-            cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot(siteRoot);
             return isSecureLink(cms, vfsName);
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -1943,7 +1943,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     private CmsStaticExportData getExportData(String rfsName, String vfsName, CmsObject cms) {
 
         CmsResource resource = null;
-        cms.getRequestContext().saveSiteRoot();
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
             cms.getRequestContext().setSiteRoot("/");
 
@@ -2025,7 +2025,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
             }
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 

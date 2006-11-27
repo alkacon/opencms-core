@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationDeleteValidator.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.3
  */
@@ -66,7 +66,7 @@ public class CmsRelationDeleteValidator {
      * 
      * @author Michael Moossen 
      * 
-     * @version $Revision: 1.1.2.3 $ 
+     * @version $Revision: 1.1.2.4 $ 
      * 
      * @since 6.5.3 
      */
@@ -162,15 +162,15 @@ public class CmsRelationDeleteValidator {
             siteRoot = CmsSiteManager.getSiteRoot(resName);
             String siteName = siteRoot;
             if (siteRoot != null) {
+                String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
                 try {
-                    m_cms.getRequestContext().saveSiteRoot();
                     m_cms.getRequestContext().setSiteRoot("/");
                     siteName = m_cms.readPropertyObject(siteRoot, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
                         siteRoot);
                 } catch (CmsException e) {
                     siteName = siteRoot;
                 } finally {
-                    m_cms.getRequestContext().restoreSiteRoot();
+                    m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
                 }
                 resName = resName.substring(siteRoot.length());
             } else {
@@ -236,15 +236,14 @@ public class CmsRelationDeleteValidator {
         Map brokenRelations = new HashMap();
         Set resources = new HashSet();
         // expand the folders to single resources
-        String site = m_cms.getRequestContext().getSiteRoot();
+        String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
         try {
-            m_cms.getRequestContext().saveSiteRoot();
             m_cms.getRequestContext().setSiteRoot("/");
             List resourceList = new ArrayList();
             Iterator itResources = resourceNames.iterator();
             while (itResources.hasNext()) {
                 // get the root path
-                String resName = m_cms.getRequestContext().addSiteRoot(site, (String)itResources.next());
+                String resName = m_cms.getRequestContext().addSiteRoot(storedSiteRoot, (String)itResources.next());
                 try {
                     CmsResource resource = m_cms.readResource(resName);
                     resourceList.add(resource);
@@ -319,7 +318,7 @@ public class CmsRelationDeleteValidator {
                 }
             }
         } finally {
-            m_cms.getRequestContext().restoreSiteRoot();
+            m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
         return brokenRelations;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/11/27 14:22:44 $
- * Version: $Revision: 1.6.4.5 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.6.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.5 $ 
+ * @version $Revision: 1.6.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -616,6 +616,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     protected void unlockSystem(CmsObject cms, I_CmsReport report) throws CmsException {
 
         CmsProject currentProj = cms.getRequestContext().currentProject();
+        String storedSiteRoot = null;
         try {
             String unlockProjectName = Messages.get().getBundle().key(Messages.GUI_UNLOCK_PROJECT_NAME_0);
             CmsProject unlockProject;
@@ -632,7 +633,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                     CmsProject.PROJECT_TYPE_TEMPORARY);
             }
 
-            cms.getRequestContext().saveSiteRoot();
+            storedSiteRoot = cms.getRequestContext().getSiteRoot();
             cms.getRequestContext().setSiteRoot("");
             cms.getRequestContext().setCurrentProject(unlockProject);
             cms.copyResourceToProject(CmsWorkplace.VFS_PATH_SYSTEM);
@@ -656,7 +657,9 @@ public class CmsUpdateBean extends CmsSetupBean {
             cms.removeResourceFromProject(CmsWorkplace.VFS_PATH_SYSTEM);
             cms.deleteProject(unlockProject.getId());
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            if (storedSiteRoot != null) {
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
+            }
             cms.getRequestContext().setCurrentProject(currentProj);
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsPermalinkResourceHandler.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.3 
  */
@@ -77,10 +77,9 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
             if (uri.startsWith(PERMALINK_HANDLER)) {
                 // get the id of the real resource
                 String id = uri.substring(PERMALINK_HANDLER.length());
-
+                String storedSiteRoot = cms.getRequestContext().getSiteRoot();
                 try {
                     // we now must switch to the root site to read the resource
-                    cms.getRequestContext().saveSiteRoot();
                     cms.getRequestContext().setSiteRoot("/");
 
                     // get rid of the file extension if needed
@@ -99,7 +98,7 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
                     throw new CmsResourceInitException(msg, e);
                 } finally {
                     // restore the siteroot
-                    cms.getRequestContext().restoreSiteRoot();
+                    cms.getRequestContext().setSiteRoot(storedSiteRoot);
                     // resource may be null in case of an error
                     if (resource != null) {
                         // modify the uri to the one of the real resource

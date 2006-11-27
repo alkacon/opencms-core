@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2006/11/16 13:41:53 $
- * Version: $Revision: 1.20.4.3 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.20.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20.4.3 $ 
+ * @version $Revision: 1.20.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -181,12 +181,11 @@ public class CmsCopy extends CmsMultiDialog {
                 && !(resource.isFolder())) {
                 // file copy but file already exists, now check target file type
                 int targetType = -1;
-                boolean restoreSiteRoot = false;
+                String storedSiteRoot = null;
                 try {
                     if (CmsSiteManager.getSiteRoot(getParamTarget()) != null) {
-                        getCms().getRequestContext().saveSiteRoot();
+                        storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                         getCms().getRequestContext().setSiteRoot("/");
-                        restoreSiteRoot = true;
                     }
                     CmsResource targetRes = getCms().readResource(getParamTarget());
                     targetType = targetRes.getTypeId();
@@ -196,8 +195,8 @@ public class CmsCopy extends CmsMultiDialog {
                         LOG.info(e2.getLocalizedMessage());
                     }
                 } finally {
-                    if (restoreSiteRoot) {
-                        getCms().getRequestContext().restoreSiteRoot();
+                    if (storedSiteRoot != null) {
+                        getCms().getRequestContext().setSiteRoot(storedSiteRoot);
                     }
                 }
                 if (resource.getTypeId() == targetType) {
@@ -456,7 +455,7 @@ public class CmsCopy extends CmsMultiDialog {
             target = "";
         }
 
-        boolean restoreSiteRoot = false;
+        String storedSiteRoot = null;
         try {
             // check if a site root was added to the target name
             String sitePrefix = "";
@@ -466,9 +465,8 @@ public class CmsCopy extends CmsMultiDialog {
                     siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);
                 }
                 sitePrefix = siteRootFolder;
-                getCms().getRequestContext().saveSiteRoot();
+                storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                 getCms().getRequestContext().setSiteRoot("/");
-                restoreSiteRoot = true;
             }
 
             Iterator i = getResourceList().iterator();
@@ -491,8 +489,8 @@ public class CmsCopy extends CmsMultiDialog {
             checkMultiOperationException(Messages.get(), Messages.ERR_COPY_MULTI_0);
         } finally {
             // restore the site root
-            if (restoreSiteRoot) {
-                getCms().getRequestContext().restoreSiteRoot();
+            if (storedSiteRoot != null) {
+                getCms().getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
         return true;

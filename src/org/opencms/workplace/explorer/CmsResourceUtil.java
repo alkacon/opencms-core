@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2006/11/16 15:43:35 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -488,7 +488,7 @@ public final class CmsResourceUtil {
         try {
             permissions = getCms().getPermissions(getCms().getSitePath(getResource())).getPermissionString();
         } catch (Throwable e) {
-            getCms().getRequestContext().saveSiteRoot();
+            String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
             try {
                 getCms().getRequestContext().setSiteRoot("/");
                 permissions = getCms().getPermissions(getResource().getRootPath()).getPermissionString();
@@ -496,7 +496,7 @@ public final class CmsResourceUtil {
                 permissions = e1.getMessage();
                 LOG.error(e1);
             } finally {
-                getCms().getRequestContext().restoreSiteRoot();
+                getCms().getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
         return permissions;
@@ -788,7 +788,7 @@ public final class CmsResourceUtil {
                 CmsPropertyDefinition.PROPERTY_TITLE,
                 false).getValue();
         } catch (Throwable e) {
-            getCms().getRequestContext().saveSiteRoot();
+            String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
             try {
                 getCms().getRequestContext().setSiteRoot("/");
                 title = getCms().readPropertyObject(
@@ -801,7 +801,7 @@ public final class CmsResourceUtil {
                     LOG.info(e);
                 }
             } finally {
-                getCms().getRequestContext().restoreSiteRoot();
+                getCms().getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
         if (title == null) {

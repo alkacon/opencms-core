@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.21.4.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.21.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.21.4.2 $ 
+ * @version $Revision: 1.21.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,8 +125,8 @@ public class CmsDisplayResource extends CmsDialog {
 
             // try to load the backup resource
             CmsBackupResource res = null;
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
-                cms.getRequestContext().saveSiteRoot();
                 cms.getRequestContext().setSiteRoot("/");
                 res = cms.readBackupFile(resource, Integer.parseInt(versionId));
             } catch (CmsException e) {
@@ -136,7 +136,7 @@ public class CmsDisplayResource extends CmsDialog {
                 }
                 return "".getBytes();
             } finally {
-                cms.getRequestContext().restoreSiteRoot();
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
             byte[] backupResourceContent = res.getContents();
             backupResourceContent = CmsEncoder.changeEncoding(

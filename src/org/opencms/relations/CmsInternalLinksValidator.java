@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsInternalLinksValidator.java,v $
- * Date   : $Date: 2006/10/14 08:44:57 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.3
  */
@@ -125,8 +125,8 @@ public class CmsInternalLinksValidator {
             m_notVisibleResourcesCount = 0;
             // remove not visible resources
             CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible();
+            String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
             try {
-                m_cms.getRequestContext().saveSiteRoot();
                 m_cms.getRequestContext().setSiteRoot("/");
                 Iterator itResources = resources.iterator();
                 while (itResources.hasNext()) {
@@ -139,7 +139,7 @@ public class CmsInternalLinksValidator {
                     }
                 }
             } finally {
-                m_cms.getRequestContext().restoreSiteRoot();
+                m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
         return m_resourcesWithBrokenLinks;

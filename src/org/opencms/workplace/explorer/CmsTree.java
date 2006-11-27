@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2006/11/08 09:28:51 $
- * Version: $Revision: 1.23.4.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.23.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23.4.2 $ 
+ * @version $Revision: 1.23.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -323,7 +323,7 @@ public class CmsTree extends CmsWorkplace {
         List resources = new ArrayList();
         CmsFolder folder = null;
         String oldSiteRoot = getCms().getRequestContext().getSiteRoot();
-        boolean restoreSiteRoot = false;
+        String storedSiteRoot = null;
 
         if (targetFolder != null) {
             // check if there is more than one folder to update (e.g. move operation)
@@ -345,13 +345,11 @@ public class CmsTree extends CmsWorkplace {
 
                 if ("channelselector".equals(getTreeType())) {
                     // change the site root for channel tree window
-                    restoreSiteRoot = true;
-                    getCms().getRequestContext().saveSiteRoot();
+                    storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                     getCms().getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
                 } else if (getSettings().getTreeSite(getTreeType()) != null) {
                     // change the site root for popup window with site selector
-                    restoreSiteRoot = true;
-                    getCms().getRequestContext().saveSiteRoot();
+                    storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                     if (newTree() && (currentTargetFolder == null)) {
                         currentTargetFolder = "/";
                     }
@@ -507,8 +505,8 @@ public class CmsTree extends CmsWorkplace {
 
             result.append("}\n");
         } finally {
-            if (restoreSiteRoot) {
-                getCms().getRequestContext().restoreSiteRoot();
+            if (storedSiteRoot != null) {
+                getCms().getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
         return result.toString();

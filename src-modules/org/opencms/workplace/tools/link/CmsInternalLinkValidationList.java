@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsInternalLinkValidationList.java,v $
- * Date   : $Date: 2006/10/05 12:04:31 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.3 
  */
@@ -173,8 +173,8 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
                         String siteRoot = CmsSiteManager.getSiteRoot(link);
                         String siteName = siteRoot;
                         if (siteRoot != null) {
+                            String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                             try {
-                                getCms().getRequestContext().saveSiteRoot();
                                 getCms().getRequestContext().setSiteRoot("/");
                                 siteName = getCms().readPropertyObject(
                                     siteRoot,
@@ -183,7 +183,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
                             } catch (CmsException e) {
                                 siteName = siteRoot;
                             } finally {
-                                getCms().getRequestContext().restoreSiteRoot();
+                                getCms().getRequestContext().setSiteRoot(storedSiteRoot);
                             }
                             link = link.substring(siteRoot.length());
                         } else {

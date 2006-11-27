@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2006/09/20 14:38:00 $
- * Version: $Revision: 1.83.4.3 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.83.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83.4.3 $ 
+ * @version $Revision: 1.83.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,9 +199,10 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void createDefaultProject(String name, String description) throws Exception {
 
-        m_cms.getRequestContext().saveSiteRoot();
-        m_cms.getRequestContext().setSiteRoot("/");
+        String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
         try {
+            m_cms.getRequestContext().setSiteRoot("/");
+            
             CmsProject project = m_cms.createProject(
                 name,
                 description,
@@ -211,7 +212,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             m_cms.getRequestContext().setCurrentProject(project);
             m_cms.copyResourceToProject("/");
         } finally {
-            m_cms.getRequestContext().restoreSiteRoot();
+            m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
         if (m_cms.hasRole(CmsRole.SEARCH_MANAGER)) {
             // re-initialize the search indexes after default project generation
@@ -789,9 +790,9 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void perf() throws Exception {
 
         int maxTests = 50000;
-        m_cms.getRequestContext().saveSiteRoot();
-        m_cms.getRequestContext().setSiteRoot("/");
+        String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
         try {
+            m_cms.getRequestContext().setSiteRoot("/");
             Random random = new Random();
             // create a resource filter to get the resources with
             List testResources = m_cms.readResources("/", CmsResourceFilter.ALL);
@@ -828,7 +829,7 @@ class CmsShellCommands implements I_CmsShellCommands {
                 + " ms");
 
         } finally {
-            m_cms.getRequestContext().restoreSiteRoot();
+            m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 

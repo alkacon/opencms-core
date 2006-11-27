@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/11/17 11:10:40 $
- * Version: $Revision: 1.19.4.14 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.19.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.14 $ 
+ * @version $Revision: 1.19.4.15 $ 
  * 
  * @since 6.0.0 
  * 
@@ -598,9 +598,9 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      */
     protected List getRelatedResources(CmsObject cms, List publishedResources) throws CmsException {
 
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
             // switch to root site
-            cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/");
             if (publishedResources == null) {
                 // full static export
@@ -651,7 +651,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                 return new ArrayList(resourceMap.values());
             }
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 

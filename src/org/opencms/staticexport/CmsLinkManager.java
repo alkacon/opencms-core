@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.60.4.6 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.60.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.6 $ 
+ * @version $Revision: 1.60.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -564,23 +564,26 @@ public class CmsLinkManager {
             // check if we have the absolute vfs name for the link target cached
             resultLink = exportManager.getCachedOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink);
             if (resultLink == null) {
-                cms.getRequestContext().saveSiteRoot();
-                cms.getRequestContext().setSiteRoot(targetSite.getSiteRoot());
-                // didn't find the link in the cache
-                if (exportManager.isExportLink(cms, vfsName)) {
-                    // export required, get export name for target link
-                    resultLink = exportManager.getRfsName(cms, vfsName, parameters);
-                    // now set the parameters to null, we do not need them anymore
-                    parameters = null;
-                } else {
-                    // no export required for the target link
-                    resultLink = exportManager.getVfsPrefix().concat(vfsName);
-                    // add cut off parameters if required
-                    if (parameters != null) {
-                        resultLink = resultLink.concat(parameters);
+                String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+                try {
+                    cms.getRequestContext().setSiteRoot(targetSite.getSiteRoot());
+                    // didn't find the link in the cache
+                    if (exportManager.isExportLink(cms, vfsName)) {
+                        // export required, get export name for target link
+                        resultLink = exportManager.getRfsName(cms, vfsName, parameters);
+                        // now set the parameters to null, we do not need them anymore
+                        parameters = null;
+                    } else {
+                        // no export required for the target link
+                        resultLink = exportManager.getVfsPrefix().concat(vfsName);
+                        // add cut off parameters if required
+                        if (parameters != null) {
+                            resultLink = resultLink.concat(parameters);
+                        }
                     }
+                } finally {
+                    cms.getRequestContext().setSiteRoot(storedSiteRoot);
                 }
-                cms.getRequestContext().restoreSiteRoot();
                 // cache the result
                 exportManager.cacheOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink, resultLink);
             }

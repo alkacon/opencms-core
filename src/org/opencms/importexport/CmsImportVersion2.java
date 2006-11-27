@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.113.4.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.113.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.113.4.2 $ 
+ * @version $Revision: 1.113.4.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -436,9 +436,10 @@ public class CmsImportVersion2 extends A_CmsImport {
         int resourceTypeId = CmsDbUtil.UNKNOWN_ID;
         List properties = null;
         boolean old_overwriteCollidingResources = false;
-
+        String storedSiteRoot = null;
+        
         if (m_importingChannelData) {
-            m_cms.getRequestContext().saveSiteRoot();
+            storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
             m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
         }
         try {
@@ -662,8 +663,8 @@ public class CmsImportVersion2 extends A_CmsImport {
 
             throw new CmsImportExportException(message, e);
         } finally {
-            if (m_importingChannelData) {
-                m_cms.getRequestContext().restoreSiteRoot();
+            if (storedSiteRoot != null) {
+                m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
 
             // set the flag to overwrite colliding resources back to its original value

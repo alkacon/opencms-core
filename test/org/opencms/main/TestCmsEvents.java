@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsEvents.java,v $
- * Date   : $Date: 2006/08/19 13:40:51 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2006/11/27 16:03:15 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3.4.1 $
+ * @version $Revision: 1.3.4.2 $
  */
 public class TestCmsEvents extends OpenCmsTestCase {
 
@@ -102,9 +102,9 @@ public class TestCmsEvents extends OpenCmsTestCase {
 
         String projectName = "PublishEventTest";
 
-        cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot("/");
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
+            cms.getRequestContext().setSiteRoot("/");
             CmsProject project = cms.createProject(
                 projectName,
                 "Unit test project for publish events",
@@ -114,7 +114,7 @@ public class TestCmsEvents extends OpenCmsTestCase {
             cms.getRequestContext().setCurrentProject(project);
             cms.copyResourceToProject("/sites/default/");
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
 
         // create and register the event listener

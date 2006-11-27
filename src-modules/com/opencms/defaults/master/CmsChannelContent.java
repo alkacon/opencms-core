@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2006/11/08 09:28:48 $
-* Version: $Revision: 1.5.8.2 $
+* Date   : $Date: 2006/11/27 16:02:34 $
+* Version: $Revision: 1.5.8.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,8 +62,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.5.8.2 $
- * $Date: 2006/11/08 09:28:48 $
+ * $Revision: 1.5.8.3 $
+ * $Date: 2006/11/27 16:02:34 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -210,9 +210,9 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @param cms the CmsObject to use.
      */
     public void delete(CmsObject cms) throws Exception {
-        cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try{
+            cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             cms.deleteResource(cms.getSitePath(m_channel), CmsResource.DELETE_PRESERVE_SIBLINGS);
         } catch (CmsException exc){
             throw exc;
@@ -222,7 +222,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
             }
             */
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -232,16 +232,16 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @param cms the CmsObject to use.
      */
     public void undelete(CmsObject cms) throws Exception {
-        cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try{
+            cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             cms.undeleteResource(cms.getSitePath(m_channel));
         } catch (CmsException exc){
             if (CmsLog.getLog(this).isErrorEnabled() ) {
                 CmsLog.getLog(this).error("Could not undelete channel " + cms.getSitePath(m_channel), exc);
             }
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -325,9 +325,10 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         CmsResource newChannel = null;
         CmsLock lock = null;
         // is this a new row or an existing row?
-        cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try{
+            cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
+            
             if((CmsDbUtil.UNKNOWN_ID+"").equals(m_channelId)) {
                 // this is a new row - call the create statement
                 // first set the new channelId
@@ -396,7 +397,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
             }
             */
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -720,9 +721,9 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @return true
      */
     public boolean isReadable() {
-        m_cms.getRequestContext().saveSiteRoot();
-        m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
+        String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
         try {
+            m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             return m_cms.hasPermissions(m_channel, CmsPermissionSet.ACCESS_READ); 
             // TODO: remove this later
             // m_cms.accessRead();
@@ -730,7 +731,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
             // there was a cms-exception - no read-access!
             return false;
         } finally {
-            m_cms.getRequestContext().restoreSiteRoot();
+            m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -739,16 +740,16 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @return true
      */
     public boolean isWriteable() {
-        m_cms.getRequestContext().saveSiteRoot();
-        m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
+        String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
         try {
+            m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             // return m_cms.accessWrite(cms.readPath(m_channel));
             return m_cms.hasPermissions(m_channel, CmsPermissionSet.ACCESS_WRITE);
         } catch(CmsException exc) {
             // there was a cms-exception - no write-access!
             return false;
         } finally {
-            m_cms.getRequestContext().restoreSiteRoot();
+            m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -889,9 +890,9 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      */
     public static Vector getChannelList(CmsObject cms) throws CmsException {
         Vector content = new Vector();
-        cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();        
         try {
+            cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             getAllResources(cms, "/", content);
         } catch(CmsException e) {
             // ignore the exception
@@ -899,7 +900,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
                 CmsLog.getLog(CmsChannelContent.class).warn("Error while reading subfolders of cos root", e);
             }
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
         return content;
     }

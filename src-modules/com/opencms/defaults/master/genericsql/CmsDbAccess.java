@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2006/11/08 09:28:54 $
-* Version: $Revision: 1.7.8.3 $
+* Date   : $Date: 2006/11/27 16:02:34 $
+* Version: $Revision: 1.7.8.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1298,15 +1298,18 @@ public class CmsDbAccess {
         // add new channel
         PreparedStatement stmt = null;
         Connection conn = null;
-        cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-           conn = m_sqlManager.getConnection();
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+        
+        try {
+            cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
+            
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "insert_channel_offline");
             for (int i = 0; i < channelToAdd.size(); i++) {
                 try {
                     stmt.setString(1, masterId.toString());
-
-
+    
+    
                     //int id=Integer.parseInt(cms.readProperty(channelToAdd.get(i) + "", I_CmsConstants.C_PROPERTY_CHANNELID));
                     //stmt.setInt(2, id);
                     CmsResource channel=cms.readFolder((String)channelToAdd.get(i));
@@ -1323,12 +1326,17 @@ public class CmsDbAccess {
                     }
                 }
             }
+        } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
-            
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
+        }
+        
         // delete unneeded channel
         stmt = null;
         conn = null;
         try {
+            cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
+            
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "delete_channel_offline");
             for (int i = 0; i < channelToDelete.size(); i++) {
@@ -1347,7 +1355,7 @@ public class CmsDbAccess {
             }
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 

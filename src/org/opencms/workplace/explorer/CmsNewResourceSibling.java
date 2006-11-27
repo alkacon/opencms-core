@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.15.4.1 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.15.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15.4.1 $ 
+ * @version $Revision: 1.15.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,7 +118,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
             }
 
             // create the sibling                        
-            boolean restoreSiteRoot = false;
+            String storedSiteRoot = null;
             try {
                 if (CmsSiteManager.getSiteRoot(targetName) != null) {
                     // add site root to new resource path
@@ -127,9 +127,8 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                         siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);
                     }
                     fullResourceName = siteRootFolder + fullResourceName;
-                    getCms().getRequestContext().saveSiteRoot();
+                    storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                     getCms().getRequestContext().setSiteRoot("/");
-                    restoreSiteRoot = true;
                 }
 
                 // check if the link target is a file or a folder
@@ -161,8 +160,8 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
 
             } finally {
                 // restore the site root
-                if (restoreSiteRoot) {
-                    getCms().getRequestContext().restoreSiteRoot();
+                if (storedSiteRoot != null) {
+                    getCms().getRequestContext().setSiteRoot(storedSiteRoot);
                 }
             }
 

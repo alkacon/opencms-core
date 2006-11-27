@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/CmsLayoutXmlContentHandler.java,v $
- * Date   : $Date: 2006/08/19 13:41:00 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Locale;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.1.7
  */
@@ -122,10 +122,10 @@ public class CmsLayoutXmlContentHandler extends CmsDefaultXmlContentHandler {
         // get root path of the file
         String rootPath = content.getFile().getRootPath();
         List siblings = null;
-
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+        
         try {
             // try / catch to ensure site root is always restored
-            cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/");
 
             // read all siblings of the file
@@ -187,7 +187,7 @@ public class CmsLayoutXmlContentHandler extends CmsDefaultXmlContentHandler {
 
         } finally {
             // restore the saved site root
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -210,11 +210,10 @@ public class CmsLayoutXmlContentHandler extends CmsDefaultXmlContentHandler {
 
         // get root path of the file 
         String rootPath = content.getFile().getRootPath();
-        String siteRoot = cms.getRequestContext().getSiteRoot();
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
 
         try {
             // try / catch to ensure site root is always restored
-            cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/");
 
             // read all siblings of the file
@@ -257,8 +256,8 @@ public class CmsLayoutXmlContentHandler extends CmsDefaultXmlContentHandler {
                     String folder = content.getStringValue(cms, layoutConfigPath + ELEMENT_VFSFOLDER, locale);
                     if (CmsStringUtil.isNotEmpty(folder)) {
                         // folder is set, eventually remove site root from path
-                        if ((folder.length() > 1) && folder.startsWith(siteRoot)) {
-                            folder = folder.substring(siteRoot.length());
+                        if ((folder.length() > 1) && folder.startsWith(storedSiteRoot)) {
+                            folder = folder.substring(storedSiteRoot.length());
                         }
                     } else {
                         // folder not set, remove property value
@@ -293,7 +292,7 @@ public class CmsLayoutXmlContentHandler extends CmsDefaultXmlContentHandler {
 
         } finally {
             // restore the saved site root
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 

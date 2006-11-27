@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResourceHandler.java,v $
- * Date   : $Date: 2006/10/25 15:48:07 $
- * Version: $Revision: 1.3.4.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.3.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3.4.2 $
+ * @version $Revision: 1.3.4.3 $
  * 
  * @since 6.0.1 
  */
@@ -111,9 +111,9 @@ public class CmsBackupResourceHandler implements I_CmsResourceInit {
                     // test if the current user is allowed to read backup versions of resources
                     // this can be done by trying to read the backup handler resource
                     if (cms.existsResource(BACKUP_HANDLER)) {
+                        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
                         try {
                             // we now must switch to the root site to read the backup resource
-                            cms.getRequestContext().saveSiteRoot();
                             cms.getRequestContext().setSiteRoot("/");
 
                             // extract the "real" resourcename
@@ -133,7 +133,7 @@ public class CmsBackupResourceHandler implements I_CmsResourceInit {
                                 versionId), e);
                         } finally {
                             // restore the siteroot and modify the uri to the one of the correct resource
-                            cms.getRequestContext().restoreSiteRoot();
+                            cms.getRequestContext().setSiteRoot(storedSiteRoot);
                             if (resource != null) {
                                 // resource may be null in case of an error
                                 cms.getRequestContext().setUri(cms.getSitePath(resource));

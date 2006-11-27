@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2006/08/25 13:16:57 $
- * Version: $Revision: 1.33.4.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.33.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33.4.2 $ 
+ * @version $Revision: 1.33.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -310,8 +310,8 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
             CmsProject importProject = null;
 
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
-                cms.getRequestContext().saveSiteRoot();
                 cms.getRequestContext().setSiteRoot("/");
 
                 try {
@@ -338,7 +338,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 // copy the root folder to the project
                 cms.copyResourceToProject("/");
             } finally {
-                cms.getRequestContext().restoreSiteRoot();
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
 
             report.print(Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);

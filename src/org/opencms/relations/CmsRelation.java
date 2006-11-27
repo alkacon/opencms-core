@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelation.java,v $
- * Date   : $Date: 2006/10/24 07:17:52 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.3.0 
  */
@@ -204,12 +204,12 @@ public class CmsRelation {
             return cms.readResource(getTargetId(), filter);
         } catch (CmsVfsResourceNotFoundException e) {
             // then look up by name, but from the root site
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
-                cms.getRequestContext().saveSiteRoot();
                 cms.getRequestContext().setSiteRoot("");
                 return cms.readResource(getTargetPath(), filter);
             } finally {
-                cms.getRequestContext().restoreSiteRoot();
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
     }
@@ -231,12 +231,12 @@ public class CmsRelation {
             return cms.readResource(getSourceId(), filter);
         } catch (CmsVfsResourceNotFoundException e) {
             // then look up by name, but from the root site
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
-                cms.getRequestContext().saveSiteRoot();
                 cms.getRequestContext().setSiteRoot("");
                 return cms.readResource(getSourcePath(), filter);
             } finally {
-                cms.getRequestContext().restoreSiteRoot();
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
     }

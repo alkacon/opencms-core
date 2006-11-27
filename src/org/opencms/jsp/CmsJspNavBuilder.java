@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2006/10/13 15:46:53 $
- * Version: $Revision: 1.23.8.2 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.23.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23.8.2 $ 
+ * @version $Revision: 1.23.8.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -87,13 +87,14 @@ public class CmsJspNavBuilder {
         ResourceTitleContainer(CmsObject cms, CmsResource res) {
 
             m_res = res;
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
-                cms.getRequestContext().saveSiteRoot();
                 cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
                 m_title = cms.readPropertyObject(res, org.opencms.file.CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                cms.getRequestContext().restoreSiteRoot();
             } catch (Exception e) {
                 m_title = "";
+            } finally {
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
 
@@ -162,7 +163,7 @@ public class CmsJspNavBuilder {
 
         // Now read all subchannels of this channel    
         List subChannels = new ArrayList();
-        cms.getRequestContext().saveSiteRoot();
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
             cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             subChannels = cms.getSubFolders(channel);
@@ -172,7 +173,7 @@ public class CmsJspNavBuilder {
                 LOG.error(e.getLocalizedMessage());
             }
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
 
         // Create an ArrayList out of the Vector        

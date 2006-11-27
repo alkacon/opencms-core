@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupsList.java,v $
- * Date   : $Date: 2006/10/11 10:40:24 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.ServletException;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3.4.1 $ 
+ * @version $Revision: 1.3.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -295,31 +295,34 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                     }
                 } else if (detailId.equals(LIST_DETAIL_SET_PERM)) {
                     // folder permissions
-                    getCms().getRequestContext().saveSiteRoot();
-                    getCms().getRequestContext().setSiteRoot("/");
-                    CmsGroup group = getCms().readGroup(groupName);
-                    Iterator itRes = getCms().getResourcesForPrincipal(group.getId(), null, false).iterator();
-                    while (itRes.hasNext()) {
-                        CmsResource resource = (CmsResource)itRes.next();
-                        html.append(resource.getRootPath());
-                        
-                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
-                        while (itAces.hasNext()) {
-                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
-                            if (ace.getPrincipal().equals(group.getId())) {
-                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
-                                    html.append(" (" + ace.getPermissions().getPermissionString() + ")");
+                    String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
+                    try {
+                        getCms().getRequestContext().setSiteRoot("/");
+                        CmsGroup group = getCms().readGroup(groupName);
+                        Iterator itRes = getCms().getResourcesForPrincipal(group.getId(), null, false).iterator();
+                        while (itRes.hasNext()) {
+                            CmsResource resource = (CmsResource)itRes.next();
+                            html.append(resource.getRootPath());
+                            
+                            Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                            while (itAces.hasNext()) {
+                                CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                                if (ace.getPrincipal().equals(group.getId())) {
+                                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
+                                        html.append(" (" + ace.getPermissions().getPermissionString() + ")");
+                                    }
+                                    break;
                                 }
-                                break;
                             }
+                            
+                            if (itRes.hasNext()) {
+                                html.append("<br>");
+                            }
+                            html.append("\n");
                         }
-                        
-                        if (itRes.hasNext()) {
-                            html.append("<br>");
-                        }
-                        html.append("\n");
+                    } finally {
+                        getCms().getRequestContext().setSiteRoot(storedSiteRoot);
                     }
-                    getCms().getRequestContext().restoreSiteRoot();
                 } else {
                     continue;
                 }

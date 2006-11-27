@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2005/06/27 23:22:07 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2006/11/27 16:02:34 $
+* Version: $Revision: 1.5.8.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
+ * @version $Revision: 1.5.8.1 $ $Date: 2006/11/27 16:02:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -344,19 +344,18 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                 // change the current project
                 reqCont.setCurrentProject(project);
                 // copy the resources to the current project
+                String storedSiteRoot = null;
                 try {
                     for(int i = 0;i < folders.size();i++) {
                         cms.copyResourceToProject((String)folders.elementAt(i));
                     }
                     //now copy the channels to the project
-                    cms.getRequestContext().saveSiteRoot();
+                    storedSiteRoot = cms.getRequestContext().getSiteRoot();
                     cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
                     for(int j = 0; j < channels.size(); j++){
                         cms.copyResourceToProject((String)channels.elementAt(j));
                     }
-                    cms.getRequestContext().restoreSiteRoot();
                 } catch(CmsException e) {
-                    cms.getRequestContext().restoreSiteRoot();
                     // if there are no projectresources in the project delete the project
                     List projectResources = cms.readProjectResources(project);
                     if(projectResources == null || projectResources == Collections.EMPTY_LIST || projectResources.size() == 0){
@@ -367,7 +366,11 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                         CmsLog.getLog(this).warn(e.getMessage(), e);
                     }
                     throw e;
-                }
+                } finally {
+                    if (storedSiteRoot != null) {
+                        cms.getRequestContext().setSiteRoot(storedSiteRoot);
+                    }
+                }        
                 // project ready; clear the session
                 session.removeValue(C_NEWNAME);
                 session.removeValue(C_NEWGROUP);

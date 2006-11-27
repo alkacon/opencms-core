@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2006/08/19 13:40:36 $
- * Version: $Revision: 1.84.4.1 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.84.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.1 $ 
+ * @version $Revision: 1.84.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -182,7 +182,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     translatedName));
             }
             // this resource must not be modified by an import if it already exists
-            m_cms.getRequestContext().saveSiteRoot();
+            String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
             try {
                 m_cms.getRequestContext().setSiteRoot("/");
                 m_cms.readResource(translatedName);
@@ -200,7 +200,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                         translatedName), e);
                 }
             } finally {
-                m_cms.getRequestContext().restoreSiteRoot();
+                m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
         return resourceNotImmutable;

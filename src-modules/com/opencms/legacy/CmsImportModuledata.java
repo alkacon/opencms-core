@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.18.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.18 $ $Date: 2006/03/27 14:53:03 $
+ * @version $Revision: 1.18.4.1 $ $Date: 2006/11/27 16:02:34 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -179,6 +179,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         m_report.println(
             Messages.get().container(Messages.RPT_IMPORT_VERSION_1, new Integer(m_importVersion)),
             I_CmsReport.FORMAT_NOTE);
+        String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
         try {
             // first import the channels
             m_report.println(
@@ -186,7 +187,6 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
                 I_CmsReport.FORMAT_HEADLINE);
             //importAllResources(null, null, null, null, null);
             // now find the correct import implementation    
-            m_cms.getRequestContext().saveSiteRoot();
             m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             Iterator i = m_importImplementations.iterator();
             while (i.hasNext()) {
@@ -203,7 +203,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
                     break;
                 }
             }
-            m_cms.getRequestContext().restoreSiteRoot();
+            m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
             m_report.println(
                 Messages.get().container(Messages.RPT_IMPORT_CHANNELS_END_0),
                 I_CmsReport.FORMAT_HEADLINE);
@@ -233,6 +233,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         } finally {
             // close the import file
             closeImportFile();
+            m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 

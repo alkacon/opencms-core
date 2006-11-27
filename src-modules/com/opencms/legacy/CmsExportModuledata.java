@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/11/27 16:02:34 $
+ * Version: $Revision: 1.13.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.13 $ $Date: 2006/03/27 14:53:03 $
+ * @version $Revision: 1.13.4.1 $ $Date: 2006/11/27 16:02:34 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -231,7 +231,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         setExportedChannelIds(new HashSet());
 
         // save the site root
-        getCms().getRequestContext().saveSiteRoot();
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
 
         // open the export file
         Element exportNode;
@@ -320,7 +320,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             throw new CmsImportExportException(message, ioe);
         } finally {
             // restore the site root
-            getCms().getRequestContext().restoreSiteRoot();
+            getCms().getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 

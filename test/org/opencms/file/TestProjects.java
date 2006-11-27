@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.16.4.1 $
+ * Date   : $Date: 2006/11/27 16:02:53 $
+ * Version: $Revision: 1.16.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.1 $
+ * @version $Revision: 1.16.4.2 $
  */
 public class TestProjects extends OpenCmsTestCase {
   
@@ -234,9 +234,10 @@ public class TestProjects extends OpenCmsTestCase {
         
         String projectName = "UnitTest1";
         
-        cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot("/");
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
+            cms.getRequestContext().setSiteRoot("/");
+            
             CmsProject project = cms.createProject(
                 projectName, 
                 "Unit test project 1", 
@@ -248,7 +249,7 @@ public class TestProjects extends OpenCmsTestCase {
             cms.copyResourceToProject("/sites/default/index.html");
             cms.copyResourceToProject("/sites/default/folder1/");
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
         
         CmsProject current = cms.readProject(projectName);        
@@ -281,9 +282,10 @@ public class TestProjects extends OpenCmsTestCase {
                 
         String projectName = "UnitTest4";
         
-        cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot("/");
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
+            cms.getRequestContext().setSiteRoot("/");
+            
             CmsProject project = cms.createProject(
                 projectName, 
                 "Unit test project 4", 
@@ -295,7 +297,7 @@ public class TestProjects extends OpenCmsTestCase {
             cms.copyResourceToProject("/sites/default/index.html");
             cms.copyResourceToProject("/sites/default/folder1/");
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
         
         CmsProject current = cms.readProject(projectName);        
