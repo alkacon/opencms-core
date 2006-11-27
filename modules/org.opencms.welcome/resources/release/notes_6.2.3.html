@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="en">
+    <element name="body">
+      <links>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
+        </link>
+        <link name="link1" type="A" internal="false">
+          <target><![CDATA[http://www.opencms.org/bugzilla/]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<h1>Release Notes for OpenCms 6.2.3</h1>
+<p>October&nbsp;20, 2006: This is the public release of OpenCms 6.2.3. OpenCms 6.2.3 is
+an&nbsp;upgrade release which adds some new, useful features to OpenCms&nbsp;and fixes several
+issues reported in OpenCms 6.2.2.</p>
+<p>
+<strong>Major new features (in OpenCms&nbsp;6.2)</strong>
+</p>
+<ul>
+<li>Multiple selections and operations in the Workplace Explorer</li>
+<li>Native image scaling and manipulation</li>
+<li>Visual ("diff" like) comparison of document versions</li>
+<li>Integration of the popular FCKeditor for WYSIWYG editing</li>
+<li>Added "move content up and down" function to the XML content editor</li>
+<li>Much improved search index administration interface</li>
+<li>More options for generating accessible website content</li>
+</ul>
+<p>
+<strong>New features in 6.2.3 compared to the 6.2.2 release</strong>
+</p>
+<ul>
+<li>History list optionally shows project name and description</li>
+<li>Additional optional dbcp parameters for connection pooling and validation provided in
+opencms.properties</li>
+<li>New configuration option for initial checkbox state on new folder dialog in
+opencms-workplace.xml</li>
+<li>Content tool for property change allows to set property values for resources that have an empty
+old value</li>
+<li>Added option to delete locales in XML content and page editor</li>
+<li>Temporary files are now invisible for members of the groups Users and Projectmanagers</li>
+<li>Static Export no longer creates a new session for each resource</li>
+<li>Updated simapi.jar to version 0.9.4</li>
+<li>Updated commons-httpclient.jar to version 3.0.1</li>
+<li>Updated the list of supported MIME-types</li>
+<li>MIME-types are now configured in opencms-vfs.xml instead of internal properties file</li>
+<li>Extended &lt;cms:parse&gt;/&lt;cms:decorate&gt; by attribute "noAutoCloseTags" for tag names
+that must not be auto-closed</li>
+<li>Refactored HTML generating methods for CmsCalendarWidget from CmsWorkplace into the widget
+class itself</li>
+<li>Extended the Account Management: Details for permissions in group list and extended list for
+users in group</li>
+<li>Updated FCKeditor module to FCKeditor version 2.3.2</li>
+<li>Added some configuration options to the HTML Widget for structured contents: show buttons for
+table or image dialog, use a CSS in the editor area, show the style selector for individual styles
+(for FCKeditor widget)</li>
+<li>Improved I/O performance when uploading zip files / building search index</li>
+<li>Optimized "direct edit" implementation for speed (not longer based on JSP includes by
+default)</li>
+<li>Added option for manual placement of "direct edit" buttons, depending on the provider
+implementation</li>
+<li>Implemented a text only "direct edit" button provider that supports manual placement</li>
+<li>Performance improvement for log file viewer admin tool</li>
+</ul>
+<p>
+<strong>Resolved Issues in 6.2.3 compared to the 6.2.2 release</strong>&nbsp;&nbsp;</p>
+<ul>
+<li>Fixed issue #1161: Nested contentload tags fail, sometimes silently</li>
+<li>Fixed issue #1171: CmsJspActionElement.img() doesn't work properly in Online project</li>
+<li>Fixed issue #1189: CmsSelectWidget should have a method to get the option from it's stored
+value</li>
+<li>Fixed issue #1198: Problem in "Search Management" when deleting all indexes</li>
+<li>Fixed issue #1201: Resources in export-points are not re-exported after publish</li>
+<li>Fixed issue #1203: File lock persists after closing browser window from content editor</li>
+<li>Fixed issue #1204: Deleting Web Users corrupts OpenCms installation</li>
+<li>Fixed issue #1212: Uploading 0-byte files fails</li>
+<li>Fixed issue #1217: Cms link with relative path on static export returns empty value when
+linking to current folder</li>
+<li>Fixed issue #1225: Typo in localized message bundle ERR_DIRECT_PUBLISH_PARENT_NEW_2</li>
+<li>Fixed issue #1227: Insufficient access rights on workplace css files if static export is
+disabled</li>
+<li>Fixed issue #1229: Synchronisation settings are lost when user changes workplace
+preferences</li>
+<li>Fixed issue #1236: Target attribute for explorer contextmenu entries does not work in all
+cases</li>
+<li>Fixed issue #1238: Form-Module produces wrong HTML-code</li>
+<li>Fixed issue #1239: Setup Wizard Generic Database error</li>
+<li>Fixed issue #1243: Workplace display messed up after multiple static export</li>
+<li>Fixed issue #1247: Display issue for multiple select boxes and help texts in IE</li>
+<li>Fixed issue #1250: Display issue of preview button in link gallery widget</li>
+<li>Fixed issue #1252: Availability context menu entry not shown for pointer resources Backward
+compatibility</li>
+<li>Fixed issue #1255: OpenCms is not able to work on Windows mapped network drives</li>
+<li>Fixed issue #1265: Copy of multiple items between sites fails</li>
+<li>Fixed issue #1271: Validation rules aren't triggered at the right time when editing structured content</li>
+<li>Creating a resource that would override an existing one now displays the 'right' error
+message</li>
+<li>Fixed issue in &lt;cms:img&gt; tag with static export of scaled images not really working</li>
+<li>Fixed javascript error in workplace search tool dialog for internet explorer</li>
+<li>Fixed issue with readResourcesWithProperty and getResourceInTimeRange not applying user
+permissions</li>
+<li>Workplace search tool generated invalid result links if current site is not root</li>
+<li>Modified calculation of inserted nav positions</li>
+<li>Fixed issue with upload applet always using the site root set in the user preferences</li>
+<li>Legacy element cache is cleared on clear cache event</li>
+<li>Modified handling of scrub export folder for static export on demand</li>
+<li>While publishing projects in Project Management there is now a link validation before
+publishing</li>
+<li>Fixed display of date values of xml elements in history comparison</li>
+<li>Fixed error when searching in sites with uppercase letters in site path</li>
+</ul>
+<p>We recommend everyone who uses an earlier version of OpenCms to update to this 6.2.3 release. In
+case you are using one of the previous versions (OpenCms 6.0.x, 6.2 beta, 6.2.0, 6.2.1 or 6.2.2),
+there have been several issues fixed in this 6.2.3 release. If you still use OpenCms 5.0.x, you
+should definitely consider an update since the 6.2 version is much more advanced and stable.</p>
+<p>OpenCms 6.2.3 should be highly backward compatible with all 6.0 versions. Certain minor API
+changes have been made, so some adjustments may have to be done for code that uses more advanced
+API functions. All Templates should be backward compatible without changes.</p>
+<p>To upgrade an existing OpenCms 6.0.x, 6.2 beta, 6.2.0, 6.2.1 or 6.2.2&nbsp;to the new 6.2.3
+final release, an easy to use upgrade wizard is provided.
+<br /></p>
+<h2>Compatibility with Java versions, Servlet containers and Databases</h2>
+<p>OpenCms 6.2 requires Java 1.4.x or Java 1.5.x. It won't work with Java 1.3.x. We have tested
+only with SUNs version of the JDK. However, OpenCms has no dependencies to sun.* packages so it
+should in theory run with all compliant JVMs.</p>
+<p>We have tested this release on the Tomcat servlet engine and to some extend on JBoss 4.0.
+OpenCms 6.2 works "out of the box" with Tomcat 5.0.x and Tomcat 5.5.x. Others have reported
+deploying 6.x versions successfully on other servlet containers like BEA Weblogic and SunONE.</p>
+<p>On the database side, we have tested with MySQL 4.0, MySQL 4.1, MySQL 5.0, Oracle 9.x and Oracle
+10.x. PostgresSQL support has been contributed thanks to Antonio Core and Ivan Codarin. maxDB
+support has been contributed thanks to Clovis Wichoski and Fabiano Rech. MS SQL server support has
+been contributed thanks to Andras Balogh. We still are looking for volunteers to support testing
+the stability of the PostgreSQL, maxDB and MS SQL server releases.
+<br /></p>
+<h2>Regarding version numbers and CVS build tags</h2>
+<p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS
+tag for the 6.2.3 release is "build_6_2_3". Development of the next OpenCms release is done in the
+"DEV_7_0" branch. Upcoming development version will use the version numbers 6.5.x for the next time
+and will be likewise tagged in the CVS.</p>
+<h2>How you can help</h2>
+<p>Contributions to the OpenCms core development are most welcome. Please contact the core
+development team on the 
+<a target="_self" href="%(link0)">opencms-dev</a> mailing list in
+case you are interested in supporting the development of OpenCms.</p>
+<p>Please use our Bugzilla to report bugs in this release: 
+<a target="extern" href="%(link1)">http://www.opencms.org/bugzilla/
+<br /></a></p>
+<p>Thank you for using OpenCms and have fun with OpenCms 6.2.3 :-)</p>]]></content>
+    </element>
+  </page>
+</pages>
