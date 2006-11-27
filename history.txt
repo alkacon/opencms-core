@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/11/27 11:46:58 $
- * Version: $Revision: 1.717.2.101 $
+ * Date   : $Date: 2006/11/27 11:56:51 $
+ * Version: $Revision: 1.717.2.102 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,9 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 6.5.5 - xxxxx, 2006
+
 
 OpenCms 6.5.4 - November 27, 2006
 * Fixed error when searching in sites with uppercase letters in site path
