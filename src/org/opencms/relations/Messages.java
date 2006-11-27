@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Messages.java,v $
- * Date   : $Date: 2006/10/23 11:50:30 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/11/27 12:41:59 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.3.0 
  */
@@ -105,6 +105,18 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_SEARCH_1 = "LOG_LINK_SEARCH_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LINK_VALIDATION_READBYID_FAILED_2 = "LOG_LINK_VALIDATION_READBYID_FAILED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LINK_VALIDATION_READBYPATH_FAILED_2 = "LOG_LINK_VALIDATION_READBYPATH_FAILED_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LINK_VALIDATION_RESOURCEDELETED_1 = "LOG_LINK_VALIDATION_RESOURCEDELETED_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LINK_VALIDATION_RESOURCENOTINLOOKUP_1 = "LOG_LINK_VALIDATION_RESOURCENOTINLOOKUP_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RETRIEVAL_RESOURCES_1 = "LOG_RETRIEVAL_RESOURCES_1";
 

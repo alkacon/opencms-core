@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Attic/CmsRelationsValidator.java,v $
- * Date   : $Date: 2006/11/08 09:28:51 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/11/27 12:41:59 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.3.0 
  */
@@ -271,6 +271,13 @@ public class CmsRelationsValidator {
                         relation.getTargetId(),
                         true).getRootPath();
                 } catch (CmsVfsResourceNotFoundException e) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_LINK_VALIDATION_READBYID_FAILED_2,
+                            relation.getTargetId().toString(),
+                            Integer.toString(projectId),
+                            e));    
+                    }    
                     m_driverManager.getVfsDriver().readResource(
                         new CmsDbContext(),
                         projectId,
@@ -282,12 +289,29 @@ public class CmsRelationsValidator {
                     CmsResource resource = (CmsResource)fileLookup.get(link);
                     if (resource.getState() == CmsResource.STATE_DELETED) {
                         isValidLink = false;
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().getBundle().key(
+                                Messages.LOG_LINK_VALIDATION_RESOURCEDELETED_1,
+                                link));    
+                        } 
                     }
                 }
             } catch (CmsException e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_LINK_VALIDATION_READBYPATH_FAILED_2,
+                        relation.getTargetPath(),
+                        Integer.toString(projectId),
+                        e));    
+                } 
                 // ... or if the linked resource is a resource that gets actually published
                 if (!fileLookup.containsKey(link)) {
                     isValidLink = false;
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_LINK_VALIDATION_RESOURCENOTINLOOKUP_1,
+                            link));    
+                    } 
                 }
             }
             if (!isValidLink) {
