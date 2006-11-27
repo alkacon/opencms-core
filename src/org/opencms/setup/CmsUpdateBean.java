@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/11/27 14:17:33 $
- * Version: $Revision: 1.6.4.4 $
+ * Date   : $Date: 2006/11/27 14:22:44 $
+ * Version: $Revision: 1.6.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.4 $ 
+ * @version $Revision: 1.6.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -644,8 +644,11 @@ public class CmsUpdateBean extends CmsSetupBean {
                     String lockedResource = (String)itLocks.next();
                     report.println(Messages.get().container(Messages.RPT_LOCKED_RESOURCE_1, lockedResource));
                 }
-                cms.lockResource(CmsWorkplace.VFS_PATH_SYSTEM);
-                cms.unlockResource(CmsWorkplace.VFS_PATH_SYSTEM);
+                // additionally unlock system folder if neccessary
+                if (!cms.getLock(CmsWorkplace.VFS_PATH_SYSTEM).isUnlocked()) {
+                    cms.changeLock(CmsWorkplace.VFS_PATH_SYSTEM);
+                    cms.unlockResource(CmsWorkplace.VFS_PATH_SYSTEM);
+                }
                 report.println(Messages.get().container(
                     Messages.RPT_SUCCESSFUL_UNLOCKED_RESOURCES_1,
                     new Integer(lockedResources.size())), I_CmsReport.FORMAT_HEADLINE);
