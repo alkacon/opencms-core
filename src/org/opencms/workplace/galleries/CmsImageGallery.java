@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/11/27 09:07:48 $
+ * Version: $Revision: 1.15.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,6 +173,16 @@ public class CmsImageGallery extends A_CmsGallery {
         }
 
         return html.toString();
+    }
+
+    /**
+     * Returns the default image scaling parameters for the gallery preview.<p>
+     * 
+     * @return the default image scaling parameters for the gallery preview
+     */
+    public CmsImageScaler getDefaultScaleParams() {
+
+        return m_defaultScaleParams;
     }
 
     /**
@@ -309,8 +319,7 @@ public class CmsImageGallery extends A_CmsGallery {
             result.append(key(Messages.GUI_BUTTON_PREVIEW_0));
             result.append("\">");
             result.append("<img src=\"");
-            result.append(getJsp().link(resPath));
-            result.append(m_defaultScaleParams.toRequestParam());
+            result.append(getJsp().link(resPath + m_defaultScaleParams.toRequestParam()));
             result.append("\" border=\"0\" width=\"");
             result.append(m_defaultScaleParams.getWidth());
             result.append("\" height=\"");
