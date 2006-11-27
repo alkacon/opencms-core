@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/10/31 12:13:18 $
- * Version: $Revision: 1.6.4.3 $
+ * Date   : $Date: 2006/11/27 14:17:33 $
+ * Version: $Revision: 1.6.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.3 $ 
+ * @version $Revision: 1.6.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,6 +99,9 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUpdateBean.class);
 
+    /** Static flag to indicate if all modules should be updated regardless of their version number. */ 
+    private static final boolean UPDATE_ALL_MODULES = false;
+    
     /** The used admin user name. */
     private String m_adminGroup = "_tmpUpdateGroup" + (System.currentTimeMillis() % 1000);
 
@@ -277,7 +280,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                 String name = (String)entry.getKey();
                 CmsModuleVersion instVer = (CmsModuleVersion)installedModules.get(name);
                 CmsModuleVersion availVer = ((CmsModule)entry.getValue()).getVersion();
-                boolean uptodate = ((instVer != null) && (instVer.compareTo(availVer) >= 0));
+                boolean uptodate = (!UPDATE_ALL_MODULES) && ((instVer != null) && (instVer.compareTo(availVer) >= 0));
                 if (uptodate) {
                     m_uptodateModules.add(name);
                 } else {
@@ -319,7 +322,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         for (int i = 0; itModules.hasNext(); i++) {
             String moduleName = (String)itModules.next();
             CmsModule module = (CmsModule)getAvailableModules().get(moduleName);
-            if (!uptodate.contains(moduleName)) {
+            if (UPDATE_ALL_MODULES || !uptodate.contains(moduleName)) {
                 html.append(htmlModule(module, i));
                 hasModules = true;
             } else {
