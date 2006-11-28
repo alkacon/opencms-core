@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.5.3</opencms_version>
+		<createdate>Wed, 27 Sep 2006 15:13:25 GMT</createdate>
+		<project>Offline</project>
+		<export_version>5</export_version>
+	</info>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>dac3ed1a-7ee7-11db-92dd-2992d7f2b3eb</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:06:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/test.txt</source>
+			<destination>system/test.txt</destination>
+			<type>plain</type>
+			<uuidstructure>dd3f264c-7ee7-11db-92dd-2992d7f2b3eb</uuidstructure>
+			<uuidresource>dd3f264d-7ee7-11db-92dd-2992d7f2b3eb</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:21:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+	<usergroupdata>
+		<groupdata>
+			<name>group1</name>
+			<description><![CDATA[group1]]></description>
+			<flags>4</flags>
+			<parentgroup/>
+		</groupdata>
+		<groupdata>
+			<name>group2</name>
+			<description><![CDATA[group2]]></description>
+			<flags>6</flags>
+			<parentgroup/>
+		</groupdata>
+		<groupdata>
+			<name>group3</name>
+			<description><![CDATA[group3]]></description>
+			<flags>6</flags>
+			<parentgroup/>
+		</groupdata>
+		<userdata>
+			<name>test1</name>
+			<password><![CDATA[V2hCZWk1MUE0VEtYZ05ZdW9pWmRpZz09]]></password>
+			<description><![CDATA[test1]]></description>
+			<firstname>test1</firstname>
+			<lastname>test1</lastname>
+			<email>test1</email>
+			<flags>0</flags>
+			<address><![CDATA[test1]]></address>
+			<type>0</type>
+			<userinfo>/~userinfo/test1.dat</userinfo>
+			<usergroups>
+				<groupname>
+					<name>Users</name>
+				</groupname>
+				<groupname>
+					<name>group1</name>
+				</groupname>
+			</usergroups>
+		</userdata>
+		<userdata>
+			<name>test2</name>
+			<password><![CDATA[clFJMGdwSUZ1UU14bHJxQmozcUhLdz09]]></password>
+			<description><![CDATA[test2]]></description>
+			<firstname>test2</firstname>
+			<lastname>test2</lastname>
+			<email>test2</email>
+			<flags>0</flags>
+			<address><![CDATA[test2]]></address>
+			<type>0</type>
+			<userinfo>/~userinfo/test2.dat</userinfo>
+			<usergroups>
+				<groupname>
+					<name>Users</name>
+				</groupname>
+				<groupname>
+					<name>group2</name>
+				</groupname>
+			</usergroups>
+		</userdata>
+	</usergroupdata>
+</export>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.6.4.6 $
+ * Date   : $Date: 2006/11/28 15:36:35 $
+ * Version: $Revision: 1.6.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.6 $ 
+ * @version $Revision: 1.6.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -637,6 +637,14 @@ public class CmsUpdateBean extends CmsSetupBean {
             cms.getRequestContext().setSiteRoot("");
             cms.getRequestContext().setCurrentProject(unlockProject);
             cms.copyResourceToProject(CmsWorkplace.VFS_PATH_SYSTEM);
+            
+            // first unlock system folder if neccessary
+            if (!cms.getLock(CmsWorkplace.VFS_PATH_SYSTEM).isUnlocked()) {
+                cms.changeLock(CmsWorkplace.VFS_PATH_SYSTEM);
+                cms.unlockResource(CmsWorkplace.VFS_PATH_SYSTEM);
+            }
+            
+            // afterwards, check resources inside
             List lockedResources = cms.getLockedResources(CmsWorkplace.VFS_PATH_SYSTEM, CmsLockFilter.FILTER_ALL);
             if (!lockedResources.isEmpty()) {
                 report.println(Messages.get().container(Messages.RPT_LOCKED_RESOURCES_0), I_CmsReport.FORMAT_HEADLINE);
@@ -644,11 +652,12 @@ public class CmsUpdateBean extends CmsSetupBean {
                 while (itLocks.hasNext()) {
                     String lockedResource = (String)itLocks.next();
                     report.println(Messages.get().container(Messages.RPT_LOCKED_RESOURCE_1, lockedResource));
-                }
-                // additionally unlock system folder if neccessary
-                if (!cms.getLock(CmsWorkplace.VFS_PATH_SYSTEM).isUnlocked()) {
-                    cms.changeLock(CmsWorkplace.VFS_PATH_SYSTEM);
-                    cms.unlockResource(CmsWorkplace.VFS_PATH_SYSTEM);
+                    try {
+                        cms.changeLock(lockedResource);
+                        cms.unlockResource(lockedResource);
+                    } catch (CmsException exc) {
+                        report.println(exc);
+                    }
                 }
                 report.println(Messages.get().container(
                     Messages.RPT_SUCCESSFUL_UNLOCKED_RESOURCES_1,
