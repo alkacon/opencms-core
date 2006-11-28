@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchSimilarity.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.6.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package org.opencms.search;
 
-import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.fields.CmsSearchField;
 
 import org.apache.lucene.search.DefaultSimilarity;
 
 /**
  * Reduces the importance of the <code>{@link #lengthNorm(String, int)}</code> factor 
- * for the <code>{@link I_CmsDocumentFactory#DOC_CONTENT}</code> field, while 
+ * for the <code>{@link CmsSearchField#FIELD_CONTENT}</code> field, while 
  * keeping the Lucene default for all other fields.<p>
  * 
  * This implementation was added since apparently the default length norm is heavily biased 
@@ -49,7 +49,7 @@ import org.apache.lucene.search.DefaultSimilarity;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,14 +71,14 @@ public class CmsSearchSimilarity extends DefaultSimilarity {
 
     /**
      * Special implementation for "length norm" to reduce the significance of this factor 
-     * for the <code>{@link I_CmsDocumentFactory#DOC_CONTENT}</code> field, while 
+     * for the <code>{@link CmsSearchField#FIELD_CONTENT}</code> field, while 
      * keeping the Lucene default for all other fields.<p>
      * 
      * @see org.apache.lucene.search.Similarity#lengthNorm(java.lang.String, int)
      */
     public float lengthNorm(String fieldName, int numTerms) {
 
-        if (fieldName.equals(I_CmsDocumentFactory.DOC_CONTENT)) {
+        if (fieldName.equals(CmsSearchField.FIELD_CONTENT)) {
             // special length norm for content
             return (float)(3.0 / (Math.log(1000 + numTerms) / LOG10));
         }

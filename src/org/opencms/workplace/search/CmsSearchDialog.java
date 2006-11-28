@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchDialog.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -29,11 +29,14 @@
 package org.opencms.workplace.search;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
-import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsMultiSelectWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsDialog;
@@ -45,6 +48,7 @@ import org.opencms.workplace.tools.CmsToolDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -57,11 +61,14 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.2.0 
  */
 public class CmsSearchDialog extends CmsWidgetDialog {
+
+    /** Localization key label infix for fields. */
+    public static final String LABEL_FIELD_INFIX = "field.";
 
     /** the dialog type. */
     private static final String DIALOG_TYPE = "search";
@@ -95,18 +102,38 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the list of searchable field names used in the workplace search index.<p> 
+     * 
+     * @return the list of searchable field names used in the workplace search index
+     */
+    public static List getFieldNames() {
+
+        int todo; // the index name must be made configurable        
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(CmsSearchResourcesCollector.INDEX_OFFLINE);
+
+        List result = new ArrayList();
+        Iterator i = index.getFieldConfiguration().getFields().iterator();
+        while (i.hasNext()) {
+            CmsSearchField field = (CmsSearchField)i.next();
+            if (field.isIndexed()) {
+                // only include indexed (ie. searchable) fields
+                result.add(field.getName());
+            }
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
     public void actionCommit() {
 
         List errors = new ArrayList();
         try {
-            m_search.validate();
             Map params = new HashMap();
             params.put(CmsSearchResultsList.PARAM_QUERY, m_search.getQuery());
             params.put(CmsSearchResultsList.PARAM_SORT_ORDER, m_search.getSortOrder());
-            params.put(CmsSearchResultsList.PARAM_FIELD_CONTENT, "" + m_search.getFieldContent());
-            params.put(CmsSearchResultsList.PARAM_FIELD_META, "" + m_search.getFieldMeta());
+            params.put(CmsSearchResultsList.PARAM_FIELDS, m_search.getFields());
             params.put(CmsDialog.PARAM_ACTION, A_CmsListDialog.LIST_SELECT_PAGE);
             params.put(A_CmsListDialog.PARAM_PAGE, "1");
             params.put(CmsToolDialog.PARAM_ROOT, "explorer");
@@ -141,7 +168,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
             result.append(createDialogRowsHtml(0, 1));
             result.append(createWidgetBlockEnd());
             result.append(createWidgetBlockStart(key(Messages.GUI_SEARCH_FIELDS_TITLE_0)));
-            result.append(createDialogRowsHtml(2, 3));
+            result.append(createDialogRowsHtml(2, 2));
             result.append(createWidgetBlockEnd());
         }
         // close widget table
@@ -158,8 +185,9 @@ public class CmsSearchDialog extends CmsWidgetDialog {
         initParams();
         addWidget(new CmsWidgetDialogParameter(m_search, "query", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_search, "sortOrder", PAGES[0], new CmsSelectWidget(getSortNamesConf())));
-        addWidget(new CmsWidgetDialogParameter(m_search, "fieldContent", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_search, "fieldMeta", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_search, "fields", PAGES[0], new CmsMultiSelectWidget(
+            getFieldList(),
+            true)));
     }
 
     /**
@@ -194,6 +222,28 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns a list of <code>{@link CmsSelectWidgetOption}</code> objects for field list selection.<p>
+     * 
+     * @return a list of <code>{@link CmsSelectWidgetOption}</code> objects
+     */
+    private List getFieldList() {
+
+        List retVal = new ArrayList();
+        try {
+            Iterator i = getFieldNames().iterator();
+            while (i.hasNext()) {
+                String fieldName = (String)i.next();
+                retVal.add(new CmsSelectWidgetOption(fieldName, false, key(A_CmsWidget.LABEL_PREFIX
+                    + LABEL_FIELD_INFIX
+                    + fieldName), key(A_CmsWidget.LABEL_PREFIX + fieldName + A_CmsWidget.HELP_POSTFIX)));
+            }
+        } catch (Exception e) {
+            // noop
+        }
+        return retVal;
+    }
+
+    /**
      * Creates the select widget configuration for the sort names.<p>
      * 
      * @return the select widget configuration for the sort names
@@ -204,10 +254,8 @@ public class CmsSearchDialog extends CmsWidgetDialog {
         try {
             String[] names = CmsSearchParameters.SORT_NAMES;
             for (int i = 0; i < names.length; i++) {
-                retVal.add(new CmsSelectWidgetOption(
-                    names[i],
-                    i != 0,
-                    key(A_CmsWidget.LABEL_PREFIX + names[i].toLowerCase())));
+                retVal.add(new CmsSelectWidgetOption(names[i], i != 0, key(A_CmsWidget.LABEL_PREFIX
+                    + names[i].toLowerCase())));
             }
         } catch (Exception e) {
             // noop
@@ -229,13 +277,9 @@ public class CmsSearchDialog extends CmsWidgetDialog {
             // this is not the initial call, get params from session
             o = getDialogObject();
         }
-
         if (!(o instanceof CmsSearchWorkplaceBean)) {
             // read params from config
             m_search = new CmsSearchWorkplaceBean();
-            m_search.setFieldContent(true);
-            m_search.setFieldMeta(true);
-            m_search.setSortOrder(CmsSearchParameters.SORT_NAMES[0]);
         } else {
             // reuse params stored in session
             m_search = (CmsSearchWorkplaceBean)o;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2006/10/14 08:44:57 $
- * Version: $Revision: 1.24.8.1 $
+ * Date   : $Date: 2006/11/28 16:20:44 $
+ * Version: $Revision: 1.24.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.search.documents;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsSearchIndex;
 
 import java.util.List;
@@ -57,62 +57,11 @@ import org.apache.lucene.document.Document;
  * @author Thomas Weckert 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.24.8.1 $ 
+ * @version $Revision: 1.24.8.2 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
-
-    /** Contains the (optional) category of the document. */
-    String DOC_CATEGORY = "category";
-
-    /** Search field for document content. */
-    String DOC_CONTENT = "content";
-
-    /** Search field for document creation date. */
-    String DOC_DATE_CREATED = "created";
-
-    /** Search field for document last update. */
-    String DOC_DATE_LASTMODIFIED = "lastmodified";
-
-    /** Search field for document description. */
-    String DOC_DESCRIPTION = "description";
-
-    /** Search field for document keywords. */
-    String DOC_KEYWORDS = "keywords";
-
-    /** Combines all document "meta" information, that is "title", "keywords" and "description". */
-    String DOC_META = "meta";
-
-    /** Contains the document root path in the VFS. */
-    String DOC_PATH = "path";
-
-    /** Contains the (optional) document priority, which can be used to boost the document in the result list. */
-    String DOC_PRIORITY = "priority";
-
-    /** Contains a special format of the document root path in the VFS for optimized searches. */
-    String DOC_ROOT = "root";
-
-    /** Contains the document title in an analyzed form used for searching in the title. */
-    String DOC_TITLE_INDEXED = "title";
-
-    /** Contains the document title as a keyword used for sorting and also for retrieving the title text. */
-    String DOC_TITLE_KEY = "title-key";
-
-    /** Contains the type of the document. */
-    String DOC_TYPE = "type";
-
-    /** Value for "high" search priority. */
-    String SEARCH_PRIORITY_HIGH_VALUE = "high";
-
-    /** Value for "low" search priority. */
-    String SEARCH_PRIORITY_LOW_VALUE = "low";
-
-    /** Value for "maximum" search priority. */
-    String SEARCH_PRIORITY_MAX_VALUE = "max";
-
-    /** Value for "normal" search priority. */
-    String SEARCH_PRIORITY_NORMAL_VALUE = "normal";
 
     /**
      * Creates the Lucene Document for the given index resource and the given search index.<p>
@@ -132,13 +81,22 @@ public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
      * 
      * @throws CmsException if something goes wrong
      */
-    Document createDocument(CmsObject cms, A_CmsIndexResource resource, CmsSearchIndex index) throws CmsException;
+    Document createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index) throws CmsException;
+
+    /**
+     * Returns the disk based cache used to store the raw extraction results.<p>
+     * 
+     * In case <code>null</code> is returned, then result caching is not supported for this factory.<p>
+     * 
+     * @return the disk based cache used to store the raw extraction results
+     */
+    CmsExtractionResultCache getCache();
 
     /**
      * Returns the list of accepted keys for the resource types that can be indexed using this document factory.<p>
      * 
      * The result List contains String objects. 
-     * This String is later matched against {@link A_CmsIndexResource#getDocumentKey(boolean)} to find
+     * This String is later matched against {@link A_CmsVfsDocument#getDocumentKey(int, String)} to find
      * the corrospondig {@link I_CmsDocumentFactory} for a resource to index.<p> 
      * 
      * The list of accepted resource types may contain a catch-all entry "*";
@@ -160,4 +118,27 @@ public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
      * @return the name of this document type factory
      */
     String getName();
+
+    /**
+     * Returns <code>true</code> if this document factory is locale depended.<p>
+     * 
+     * @return <code>true</code> if this document factory is locale depended
+     */
+    boolean isLocaleDependend();
+
+    /**
+     * Returns <code>true</code> if result caching is supported for this factory.<p>
+     * 
+     * @return <code>true</code> if result caching is supported for this factory
+     */
+    boolean isUsingCache();
+
+    /**
+     * Sets the disk based cache used to store the raw extraction results.<p>
+     * 
+     * This should only be used for factories where {@link #isUsingCache()} returns <code>true</code>.<p> 
+     * 
+     * @param cache the disk based cache used to store the raw extraction results
+     */
+    void setCache(CmsExtractionResultCache cache);
 }

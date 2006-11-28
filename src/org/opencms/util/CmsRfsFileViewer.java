@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2006/11/23 16:58:30 $
- * Version: $Revision: 1.17.4.4 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.17.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.17.4.4 $ 
+ * @version $Revision: 1.17.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -287,7 +287,7 @@ public class CmsRfsFileViewer implements Cloneable {
                 // to save reading too much (this optimizes to read the first windows, much later windows will be slower...)
                 reader = new LineNumberReader(new BufferedReader(new InputStreamReader(
                     new FileInputStream(m_filePath),
-                    m_fileEncoding)), (int)m_windowSize * 200);
+                    m_fileEncoding)), m_windowSize * 200);
                 int currentLine = 0;
                 // skip the lines to the current window:
                 while (startLine > currentLine) {

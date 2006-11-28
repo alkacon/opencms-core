@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResourcesCollector.java,v $
- * Date   : $Date: 2006/11/08 09:28:51 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,8 @@ import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
+import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.CmsListItem;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.1.0 
  */
@@ -69,11 +69,8 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     /** Name of the index used for search. */
     public static final String INDEX_OFFLINE = "Offline project (VFS)";
 
-    /** Content Parameter name constant. */
-    public static final String PARAM_CONTENT = "content";
-
     /** Meta Parameter name constant. */
-    public static final String PARAM_META = "meta";
+    public static final String PARAM_FIELDS = "fields";
 
     /** Query Parameter name constant. */
     public static final String PARAM_QUERY = "query";
@@ -96,23 +93,16 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
      * @param wp the workplace object
      * @param query the search query 
      * @param sort the sort by parameter
-     * @param content the search content flag
-     * @param meta the search meta info flag
+     * @param fields the comma separated list of fields to search
      */
-    public CmsSearchResourcesCollector(
-        A_CmsListExplorerDialog wp,
-        String query,
-        String sort,
-        String content,
-        String meta) {
+    public CmsSearchResourcesCollector(A_CmsListExplorerDialog wp, String query, String sort, String fields) {
 
         super(wp);
         m_collectorParameter += SEP_PARAM + PARAM_QUERY + SEP_KEYVAL + query;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sort)) {
             m_collectorParameter += SEP_PARAM + PARAM_SORT + SEP_KEYVAL + sort;
         }
-        m_collectorParameter += SEP_PARAM + PARAM_CONTENT + SEP_KEYVAL + content;
-        m_collectorParameter += SEP_PARAM + PARAM_META + SEP_KEYVAL + meta;
+        m_collectorParameter += SEP_PARAM + PARAM_FIELDS + SEP_KEYVAL + fields;
     }
 
     /**
@@ -204,6 +194,8 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
             m_searchBean = new CmsSearch();
             m_searchBean.init(getWp().getCms());
             m_searchBean.setParameters(getSearchParameters(params));
+            
+            int todo; // the index name must be made configurable        
             m_searchBean.setIndex(INDEX_OFFLINE);
             m_searchBean.setSearchRoot("/");
             m_searchBean.setMatchesPerPage(getWp().getList().getMaxItemsPerPage());
@@ -226,8 +218,8 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)params.get(PARAM_SORT))) {
             searchParams.setSortName((String)params.get(PARAM_SORT));
         }
-        searchParams.setSearchFieldContent(Boolean.valueOf((String)params.get(PARAM_CONTENT)).booleanValue());
-        searchParams.setSearchFieldMeta(Boolean.valueOf((String)params.get(PARAM_META)).booleanValue());
+        List fields = CmsStringUtil.splitAsList((String)params.get(PARAM_FIELDS), ',');
+        searchParams.setFields(fields);
         searchParams.setSearchPage(Integer.parseInt((String)params.get(PARAM_PAGE)));
         return searchParams;
     }

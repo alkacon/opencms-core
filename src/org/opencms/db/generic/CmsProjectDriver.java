@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.241.4.13 $
+ * Date   : $Date: 2006/11/28 16:20:46 $
+ * Version: $Revision: 1.241.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.13 $
+ * @version $Revision: 1.241.4.14 $
  * 
  * @since 6.0.0 
  */
@@ -164,28 +164,31 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setInt(8, flags);
             stmt.setInt(10, type);
 
-            long createTime = System.currentTimeMillis();
-            stmt.setLong(9, createTime);
-            stmt.executeUpdate();
-            try {
-                // this is an ungly hack, but for MySQL (and maybe other DBs as well)
-                // there is a UNIQUE INDEX constraint on the project name+createTime
-                // so theoretically if 2 projects with the same name are created very fast, this
-                // SQL restraint would be violated if we don't wait here
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                // continue
+            synchronized (this) {
+                long createTime = System.currentTimeMillis();
+                stmt.setLong(9, createTime);
+                stmt.executeUpdate();
+                try {
+                    // this is an ungly hack, but for MySQL (and maybe other DBs as well)
+                    // there is a UNIQUE INDEX constraint on the project name+createTime
+                    // so theoretically if 2 projects with the same name are created very fast, this
+                    // SQL restraint would be violated if we don't wait here
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    // continue
+                }
+                project = new CmsProject(
+                    id,
+                    name,
+                    description,
+                    owner.getId(),
+                    group.getId(),
+                    managergroup.getId(),
+                    flags,
+                    createTime,
+                    type);
             }
-            project = new CmsProject(
-                id,
-                name,
-                description,
-                owner.getId(),
-                group.getId(),
-                managergroup.getId(),
-                flags,
-                createTime,
-                type);
+
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -1764,7 +1767,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 resourceType = res.getInt("RESOURCE_TYPE");
                 siblingCount = res.getInt("SIBLING_COUNT");
                 backupTagId = res.getInt("PUBLISH_TAG");
-                
+
                 // compose the resource state
                 CmsResourceState state;
                 if (resourceState == CmsPublishedResource.STATE_MOVED_SOURCE.getState()) {
@@ -2064,42 +2067,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * Resets the state to UNCHANGED and the last-modified-in-project-ID to the current project for a specified resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the Cms resource
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected void internalResetResourceState(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
-
-        try {
-
-            // reset the resource state and the last-modified-in-project ID offline
-            if (!resource.getState().isUnchanged()) {
-                resource.setState(CmsResource.STATE_UNCHANGED);
-                m_driverManager.getVfsDriver().writeResourceState(
-                    dbc,
-                    dbc.currentProject(),
-                    resource,
-                    CmsDriverManager.UPDATE_ALL);
-            }
-
-            // important: the project id must be set to the current project because of siblings 
-            // that might have not been published, otherwise the siblings would belong to a non-valid 
-            // project (e.g. with id 0) and show a grey flag
-
-        } catch (CmsDataAccessException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_ERROR_RESETTING_RESOURCE_STATE_1,
-                    resource.getRootPath()), e);
-            }
-            throw e;
-        }
-    }
-
-    /**
      * Checks if the given resource (by id) is available in the online project,
      * if there exists a resource with a different path (a moved file), then the 
      * online entry is moved to the right (new) location before publishing.<p>
@@ -2168,6 +2135,42 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         }
         return offlineResource.getState().isDeleted() ? CmsResource.STATE_DELETED
         : CmsPublishedResource.STATE_MOVED_DESTINATION;
+    }
+
+    /**
+     * Resets the state to UNCHANGED and the last-modified-in-project-ID to the current project for a specified resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the Cms resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void internalResetResourceState(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
+
+        try {
+
+            // reset the resource state and the last-modified-in-project ID offline
+            if (!resource.getState().isUnchanged()) {
+                resource.setState(CmsResource.STATE_UNCHANGED);
+                m_driverManager.getVfsDriver().writeResourceState(
+                    dbc,
+                    dbc.currentProject(),
+                    resource,
+                    CmsDriverManager.UPDATE_ALL);
+            }
+
+            // important: the project id must be set to the current project because of siblings 
+            // that might have not been published, otherwise the siblings would belong to a non-valid 
+            // project (e.g. with id 0) and show a grey flag
+
+        } catch (CmsDataAccessException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_ERROR_RESETTING_RESOURCE_STATE_1,
+                    resource.getRootPath()), e);
+            }
+            throw e;
+        }
     }
 
     private void publishChangedFile(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/workflow/Attic/Messages.java,v $
- * Date   : $Date: 2006/11/13 15:59:43 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/11/28 16:20:46 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,13 +99,13 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_LIST_TOOL_NAME_0 = "GUI_WORKFLOW_LIST_TOOL_NAME_0";
 
-    /** Message constant for key in the resource bundle */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_WORKFLOW_INIT_0 = "GUI_EXPLORER_CONTEXT_WORKFLOW_INIT_0";
     
-    /** Message constant for key in the resource bundle */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_WORKFLOW_SIGNAL_0 = "GUI_EXPLORER_CONTEXT_WORKFLOW_SIGNAL_0";    
    
-    /** Message constant for key in the resource bundle */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_WORKFLOW_ABORT_0 = "GUI_EXPLORER_CONTEXT_WORKFLOW_ABORT_0";
     
     /** Name of the used resource bundle. */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2006/03/27 15:13:37 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.15.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,6 +66,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DOCTYPE_NO_RESOURCETYPE_DEF_0 = "ERR_DOCTYPE_NO_RESOURCETYPE_DEF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_FIELD_CONFIGURATION_UNKNOWN_2 = "ERR_FIELD_CONFIGURATION_UNKNOWN_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_FIELD_TYPE_UNKNOWN_1 = "ERR_FIELD_TYPE_UNKNOWN_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INDEX_LOCK_FAILED_1 = "ERR_INDEX_LOCK_FAILED_1";
@@ -218,7 +224,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_NO_INDEX_WITH_NAME_1 = "LOG_NO_INDEX_WITH_NAME_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_PARSE_EXCERPT_LENGTH_FAILED_1 = "LOG_PARSE_EXCERPT_LENGTH_FAILED_1";
+    public static final String LOG_PARSE_EXCERPT_LENGTH_FAILED_2 = "LOG_PARSE_EXCERPT_LENGTH_FAILED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PARSE_EXTRACTION_CACHE_AGE_FAILED_2 = "LOG_PARSE_EXTRACTION_CACHE_AGE_FAILED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PARSE_TIMEOUT_FAILED_2 = "LOG_PARSE_TIMEOUT_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_CATEGORY_FAILED_1 = "LOG_READ_CATEGORY_FAILED_1";
@@ -267,9 +279,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_THREADS_FINISHED_0 = "LOG_THREADS_FINISHED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_THREADS_LEFT_1 = "LOG_THREADS_LEFT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_UNABLE_TO_READ_RESOURCE_2 = "LOG_UNABLE_TO_READ_RESOURCE_2";

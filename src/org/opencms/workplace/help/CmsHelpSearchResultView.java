@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpSearchResultView.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.6.4.1 $
+ * Date   : $Date: 2006/11/28 16:20:46 $
+ * Version: $Revision: 1.6.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchResult;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6.4.1 $
+ * @version $Revision: 1.6.4.2 $
  * 
  * @since 6.0.0
  */
@@ -196,7 +197,7 @@ public class CmsHelpSearchResultView {
                         m_jsp.getRequestContext().removeSiteRoot(entry.getPath())).append("&").append(
                         CmsLocaleManager.PARAMETER_LOCALE).append("=").append(m_jsp.getRequestContext().getLocale()).toString()));
                     result.append("\">\n");
-                    result.append(entry.getTitle());
+                    result.append(entry.getField(CmsSearchField.FIELD_TITLE));
                     result.append("</a>");
                     result.append("&nbsp;(").append(entry.getScore()).append("&nbsp;%)\n");
                     result.append("<span class=\"searchExcerpt\">\n");

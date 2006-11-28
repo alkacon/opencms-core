@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2006/09/20 14:38:00 $
- * Version: $Revision: 1.36.4.4 $
+ * Date   : $Date: 2006/11/28 16:20:46 $
+ * Version: $Revision: 1.36.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.4 $ 
+ * @version $Revision: 1.36.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -535,7 +535,7 @@ public class CmsResourceManager {
      * the returned mime type is extended with a <code>; charset={encoding}</code> setting.<p> 
      * 
      * If no mime type for the given filename can be determined, the
-     * privided default is used.<p>
+     * provided default is used.<p>
      * 
      * @param filename the file name to check the mime type for
      * @param encoding the default encoding (charset) in case of mime types is of type "text"

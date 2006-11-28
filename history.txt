@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/11/27 11:56:51 $
- * Version: $Revision: 1.717.2.102 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.717.2.103 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,7 +20,10 @@ Legend:
 - General comment
 
 OpenCms 6.5.5 - xxxxx, 2006
-
+! The Lucene search index fields generated form the OpenCms content are now fully configurable
+! Text extraction results for the full text search are now cached and reused to speed up index generation
+- Simplified some of the search index API's
+- The deprecated legacy / comaptibility packages have been removed from the distribution
 
 OpenCms 6.5.4 - November 27, 2006
 * Fixed error when searching in sites with uppercase letters in site path

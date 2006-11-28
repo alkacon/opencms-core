@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchEditorWrapper.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,17 +52,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchEditorWrapper extends CmsDialog {
 
-    /** The fieldContent parameter value. */
-    private String m_paramFieldcontent;
-
-    /** The fieldMeta parameter value. */
-    private String m_paramFieldmeta;
+    /** The fields parameter value. */
+    private String m_paramFields;
 
     /** The query parameter value. */
     private String m_paramQuery;
@@ -108,8 +105,7 @@ public class CmsSearchEditorWrapper extends CmsDialog {
         params.put(CmsToolDialog.PARAM_PATH, getParamPath());
         params.put(CmsSearchResultsList.PARAM_QUERY, getParamQuery());
         params.put(CmsSearchResultsList.PARAM_SORT_ORDER, getParamSortorder());
-        params.put(CmsSearchResultsList.PARAM_FIELD_CONTENT, getParamFieldcontent());
-        params.put(CmsSearchResultsList.PARAM_FIELD_META, getParamFieldmeta());
+        params.put(CmsSearchResultsList.PARAM_FIELDS, getParamFields());
         uri = CmsRequestUtil.appendParameters(CmsToolManager.VIEW_JSPPAGE_LOCATION, params, true);
         uri = CmsRequestUtil.appendParameter(
             CmsWorkplace.VFS_PATH_VIEWS + "explorer/explorer_fs.jsp",
@@ -136,23 +132,13 @@ public class CmsSearchEditorWrapper extends CmsDialog {
     }
 
     /**
-     * Returns the fieldContent parameter value.<p>
+     * Returns the fields parameter value.<p>
      *
-     * @return the fieldContent parameter value
+     * @return the fields parameter value
      */
-    public String getParamFieldcontent() {
+    public String getParamFields() {
 
-        return m_paramFieldcontent;
-    }
-
-    /**
-     * Returns the fieldMeta parameter value.<p>
-     *
-     * @return the fieldMeta parameter value
-     */
-    public String getParamFieldmeta() {
-
-        return m_paramFieldmeta;
+        return m_paramFields;
     }
 
     /**
@@ -176,23 +162,13 @@ public class CmsSearchEditorWrapper extends CmsDialog {
     }
 
     /**
-     * Sets the fieldContent parameter value.<p>
+     * Sets the fields parameter value.<p>
      *
-     * @param paramFieldContent the fieldContent parameter value to set
+     * @param paramFields the fields parameter value to set
      */
-    public void setParamFieldcontent(String paramFieldContent) {
+    public void setParamFields(String paramFields) {
 
-        m_paramFieldcontent = paramFieldContent;
-    }
-
-    /**
-     * Sets the fieldMeta parameter value.<p>
-     *
-     * @param paramFieldMeta the fieldMeta parameter value to set
-     */
-    public void setParamFieldmeta(String paramFieldMeta) {
-
-        m_paramFieldmeta = paramFieldMeta;
+        m_paramFields = paramFields;
     }
 
     /**

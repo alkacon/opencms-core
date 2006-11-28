@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlContent.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.8.8.3 $
+ * Date   : $Date: 2006/11/28 16:20:44 $
+ * Version: $Revision: 1.8.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,19 +36,19 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -59,7 +59,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.8.8.3 $ 
+ * @version $Revision: 1.8.8.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,16 +78,13 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
     /**
      * Returns the raw text content of a given vfs resource of type <code>CmsResourceTypeXmlContent</code>.<p>
      * 
-     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, A_CmsIndexResource, CmsSearchIndex)
+     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, CmsSearchIndex index)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
-        CmsResource resource = (CmsResource)indexResource.getData();
-        String result = null;
-
         try {
-            CmsFile file = CmsFile.upgrade(resource, cms);
+            CmsFile file = readFile(cms, resource);
             String absolutePath = cms.getSitePath(file);
             A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
 
@@ -96,32 +93,31 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
                 locales = OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath);
             }
             Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(
-                CmsLocaleManager.getLocale(index.getLocale()),
+                index.getLocale(),
                 OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath),
                 locales);
 
             List elements = xmlContent.getNames(locale);
             StringBuffer content = new StringBuffer();
+            HashMap items = new HashMap();
             for (Iterator i = elements.iterator(); i.hasNext();) {
-                I_CmsXmlContentValue value = xmlContent.getValue((String)i.next(), locale);
-                String plainText = value.getPlainText(cms);
-                if (plainText != null) {
-                    content.append(plainText);
+                String xpath = (String)i.next();
+                I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
+                String extracted = value.getPlainText(cms);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
+                    items.put(xpath, extracted);
+                    content.append(extracted);
                     content.append('\n');
                 }
             }
 
-            result = content.toString();
-            // CmsHtmlExtractor extractor = new CmsHtmlExtractor();
-            //rawContent = extractor.extractText(content.toString(), page.getEncoding());
+            return new CmsExtractionResult(content.toString(), items);
 
         } catch (Exception e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
                 e);
         }
-
-        return new CmsExtractionResult(result);
     }
 
     /**
@@ -143,5 +139,21 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
         }
 
         return super.getDocumentKeys(resourceTypes, mimeTypes);
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#isLocaleDependend()
+     */
+    public boolean isLocaleDependend() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#isUsingCache()
+     */
+    public boolean isUsingCache() {
+
+        return true;
     }
 }

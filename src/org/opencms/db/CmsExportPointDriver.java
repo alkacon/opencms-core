@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPointDriver.java,v $
- * Date   : $Date: 2006/10/03 09:00:30 $
- * Version: $Revision: 1.19.4.1 $
+ * Date   : $Date: 2006/11/28 16:20:46 $
+ * Version: $Revision: 1.19.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19.4.1 $
+ * @version $Revision: 1.19.4.2 $
  * 
  * @since 6.0.0
  */
@@ -199,9 +199,11 @@ public class CmsExportPointDriver {
                 folder = file.getParentFile();
             }
             // make sure the parent folder exists
-            boolean success = folder.mkdirs();
-            if (!success) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_CREATE_FOLDER_FAILED_1, folder.getAbsolutePath()));
+            if (! folder.exists()) {
+                boolean success = folder.mkdirs();
+                if (!success) {
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_CREATE_FOLDER_FAILED_1, folder.getAbsolutePath()));
+                }
             }
             if (content != null) {
                 // now write the file to the real file system

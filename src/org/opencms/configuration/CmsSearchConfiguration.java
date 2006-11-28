@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.17.4.1 $
+ * Date   : $Date: 2006/11/28 16:20:46 $
+ * Version: $Revision: 1.17.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,10 @@ import org.opencms.search.CmsSearchDocumentType;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,11 +58,23 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.17.4.1 $
+ * @version $Revision: 1.17.4.2 $
  * 
  * @since 6.0.0
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+
+    /** The "boost" attribute. */
+    public static final String A_BOOST = "boost";
+
+    /** The "excerpt" attribute. */
+    public static final String A_EXCERPT = "excerpt";
+
+    /** The "index" attribute. */
+    public static final String A_INDEX = "index";
+
+    /** The "store" attribute. */
+    public static final String A_STORE = "store";
 
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-search.dtd";
@@ -73,10 +89,10 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
     public static final String N_ANALYZERS = "analyzers";
 
     /** Node name constant. */
-    public static final String N_CACHE = "cache";
+    public static final String N_CLASS = "class";
 
     /** Node name constant. */
-    public static final String N_CLASS = "class";
+    public static final String N_CONFIGURATION = "configuration";
 
     /** Node name constant. */
     public static final String N_DIRECTORY = "directory";
@@ -92,6 +108,21 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** Node name constant. */
     public static final String N_EXCERPT = "excerpt";
+
+    /** Node name constant. */
+    public static final String N_EXTRACTION_CACHE_MAX_AGE = "extractionCacheMaxAge";
+
+    /** Node name constant. */
+    public static final String N_FIELD = "field";
+
+    /** Node name constant. */
+    public static final String N_FIELDCONFIGURATION = "fieldconfiguration";
+
+    /** Node name constant. */
+    public static final String N_FIELDCONFIGURATIONS = "fieldconfigurations";
+
+    /** Node name constant. */
+    public static final String N_FIELDS = "fields";
 
     /** Node name constant. */
     public static final String N_HIGHLIGHTER = "highlighter";
@@ -113,6 +144,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** Node name constant. */
     public static final String N_LOCALE = "locale";
+
+    /** Node name constant. */
+    public static final String N_MAPPING = "mapping";
 
     /** Node name constant. */
     public static final String N_MIMETYPE = "mimetype";
@@ -183,9 +217,6 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         // search manager finished
         digester.addSetNext(XPATH_SEARCH, "setSearchManager");
 
-        // result cache size rule
-        digester.addCallMethod(XPATH_SEARCH + "/" + N_CACHE, "setResultCacheSize", 0);
-
         // directory rule
         digester.addCallMethod(XPATH_SEARCH + "/" + N_DIRECTORY, "setDirectory", 0);
 
@@ -194,6 +225,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // rule for the max. char. lenght of the search result excerpt
         digester.addCallMethod(XPATH_SEARCH + "/" + N_EXCERPT, "setMaxExcerptLength", 0);
+
+        // rule for the max. age of entries in the extraction cache
+        digester.addCallMethod(XPATH_SEARCH + "/" + N_EXTRACTION_CACHE_MAX_AGE, "setExtractionCacheMaxAge", 0);
 
         // rule for the highlighter to highlight the search terms in the excerpt of the search result
         digester.addCallMethod(XPATH_SEARCH + "/" + N_HIGHLIGHTER, "setHighlighter", 0);
@@ -222,6 +256,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod(xPath + "/" + N_REBUILD, "setRebuildMode", 0);
         digester.addCallMethod(xPath + "/" + N_PROJECT, "setProjectName", 0);
         digester.addCallMethod(xPath + "/" + N_LOCALE, "setLocale", 0);
+        digester.addCallMethod(xPath + "/" + N_CONFIGURATION, "setFieldConfigurationName", 0);
         digester.addCallMethod(xPath + "/" + N_SOURCES + "/" + N_SOURCE, "addSourceName", 0);
         digester.addSetNext(xPath, "addSearchIndex");
 
@@ -234,6 +269,37 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod(xPath + "/" + N_RESOURCES + "/" + N_RESOURCE, "addResourceName", 0);
         digester.addCallMethod(xPath + "/" + N_DOCUMENTTYPES_INDEXED + "/" + N_NAME, "addDocumentType", 0);
         digester.addSetNext(xPath, "addSearchIndexSource");
+
+        // field configuration rules
+        xPath = XPATH_SEARCH + "/" + N_FIELDCONFIGURATIONS + "/" + N_FIELDCONFIGURATION;
+        digester.addObjectCreate(xPath, CmsSearchFieldConfiguration.class);
+        digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
+        digester.addSetNext(xPath, "addFieldConfiguration");
+
+        xPath = xPath + "/" + N_FIELDS + "/" + N_FIELD;
+        digester.addObjectCreate(xPath, CmsSearchField.class);
+        digester.addCallMethod(xPath, "setName", 1);
+        digester.addCallParam(xPath, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallMethod(xPath, "setStored", 1);
+        digester.addCallParam(xPath, 0, A_STORE);
+        digester.addCallMethod(xPath, "setIndexed", 1);
+        digester.addCallParam(xPath, 0, A_INDEX);
+        digester.addCallMethod(xPath, "setBoost", 1);
+        digester.addCallParam(xPath, 0, A_BOOST);
+        digester.addCallMethod(xPath, "setInExcerpt", 1);
+        digester.addCallParam(xPath, 0, A_EXCERPT);
+        digester.addCallMethod(xPath, "setDefaultValue", 1);
+        digester.addCallParam(xPath, 0, A_DEFAULT);
+        digester.addSetNext(xPath, "addField");
+
+        xPath = xPath + "/" + N_MAPPING;
+        digester.addObjectCreate(xPath, CmsSearchFieldMapping.class);
+        digester.addCallMethod(xPath, "setDefaultValue", 1);
+        digester.addCallParam(xPath, 0, A_DEFAULT);
+        digester.addCallMethod(xPath, "setType", 1);
+        digester.addCallParam(xPath, 0, A_TYPE);
+        digester.addCallMethod(xPath, "setParam", 0);
+        digester.addSetNext(xPath, "addMapping");
 
         // generic <param> parameter rules
         digester.addCallMethod(
@@ -256,14 +322,15 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
             m_searchManager = OpenCms.getSearchManager();
         }
 
-        // add <cache> element
-        searchElement.addElement(N_CACHE).addText(m_searchManager.getResultCacheSize());
         // add <directory> element
         searchElement.addElement(N_DIRECTORY).addText(m_searchManager.getDirectory());
         // add <timeout> element
-        searchElement.addElement(N_TIMEOUT).addText(m_searchManager.getTimeout());
+        searchElement.addElement(N_TIMEOUT).addText(String.valueOf(m_searchManager.getTimeout()));
         // add <exerpt> element
         searchElement.addElement(N_EXCERPT).addText(String.valueOf(m_searchManager.getMaxExcerptLength()));
+        // add <extractionCacheMaxAge> element
+        searchElement.addElement(N_EXTRACTION_CACHE_MAX_AGE).addText(
+            String.valueOf(m_searchManager.getExtractionCacheMaxAge()));
         // add <highlighter> element
         searchElement.addElement(N_HIGHLIGHTER).addText(m_searchManager.getHighlighter().getClass().getName());
 
@@ -322,7 +389,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
                 analyzerElement.addElement(N_STEMMER).addText(searchAnalyzer.getStemmerAlgorithm());
             }
             // add <locale> element
-            analyzerElement.addElement(N_LOCALE).addText(searchAnalyzer.getLocale());
+            analyzerElement.addElement(N_LOCALE).addText(searchAnalyzer.getLocale().toString());
         }
         // </analyzers>
 
@@ -340,7 +407,12 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
             // add <project> element
             indexElement.addElement(N_PROJECT).addText(searchIndex.getProject());
             // add <locale> element
-            indexElement.addElement(N_LOCALE).addText(searchIndex.getLocale());
+            indexElement.addElement(N_LOCALE).addText(searchIndex.getLocale().toString());
+            // add <configuration> element
+            String fieldConfigurationName = searchIndex.getFieldConfigurationName();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fieldConfigurationName)) {
+                indexElement.addElement(N_CONFIGURATION).addText(fieldConfigurationName);
+            }
             // add <sources> element
             Element sourcesElement = indexElement.addElement(N_SOURCES);
             // iterate above sourcenames
@@ -407,6 +479,59 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         }
         // </indexsources>
 
+        // <fieldconfigurations>
+        Element configurationsElement = searchElement.addElement(N_FIELDCONFIGURATIONS);
+        Iterator configs = m_searchManager.getFieldConfigurations().iterator();
+        while (configs.hasNext()) {
+            CmsSearchFieldConfiguration config = (CmsSearchFieldConfiguration)configs.next();
+            Element configElement = configurationsElement.addElement(N_FIELDCONFIGURATION);
+            configElement.addElement(N_NAME).setText(config.getName());
+            Element fieldsElement = configElement.addElement(N_FIELDS);
+            Iterator fields = config.getFields().iterator();
+            while (fields.hasNext()) {
+                CmsSearchField field = (CmsSearchField)fields.next();
+                Element fieldElement = fieldsElement.addElement(N_FIELD);
+                fieldElement.addAttribute(A_NAME, field.getName());
+                fieldElement.addAttribute(A_STORE, String.valueOf(field.isStored()));
+                String index;
+                if (field.isIndexed()) {
+                    if (field.isTokenized()) {
+                        // index and tokenized
+                        index = CmsStringUtil.TRUE;
+                    } else {
+                        // indexed but not tokenized
+                        index = CmsSearchField.STR_UN_TOKENIZED;
+                    }
+                } else {
+                    // not indexed at all
+                    index = CmsStringUtil.FALSE;
+                }
+                fieldElement.addAttribute(A_INDEX, index);
+                if (field.getBoost() != CmsSearchField.BOOST_DEFAULT) {
+                    fieldElement.addAttribute(A_BOOST, String.valueOf(field.getBoost()));
+                }
+                if (field.isInExcerpt()) {
+                    fieldElement.addAttribute(A_EXCERPT, String.valueOf(true));
+                }
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDefaultValue())) {
+                    fieldElement.addAttribute(A_DEFAULT, field.getDefaultValue());
+                }
+                Iterator mappings = field.getMappings().iterator();
+                while (mappings.hasNext()) {
+                    CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)mappings.next();
+                    Element mappingElement = fieldElement.addElement(N_MAPPING);
+                    mappingElement.addAttribute(A_TYPE, mapping.getType().toString());
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mapping.getDefaultValue())) {
+                        mappingElement.addAttribute(A_DEFAULT, mapping.getDefaultValue());
+                    }
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mapping.getParam())) {
+                        mappingElement.setText(mapping.getParam());
+                    }
+                }
+            }
+        }
+        // </fieldconfigurations>
+
         return searchElement;
     }
 
@@ -450,5 +575,4 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SEARCH_MANAGER_FINISHED_0));
         }
     }
-
 }

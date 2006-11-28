@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchDocumentType.java,v $
- * Date   : $Date: 2005/07/03 09:41:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.10.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +69,26 @@ public class CmsSearchDocumentType implements Cloneable {
 
         m_resourceTypes = new ArrayList();
         m_mimeTypes = new ArrayList();
+    }
+
+    /**
+     * Adds a mimetype.<p>
+     * 
+     * @param mimeType a mimetype
+     */
+    public void addMimeType(String mimeType) {
+
+        m_mimeTypes.add(mimeType);
+    }
+
+    /**
+     * Adds the class name of a resource type.<p>
+     * 
+     * @param resourceType the class name of a resource type
+     */
+    public void addResourceType(String resourceType) {
+
+        m_resourceTypes.add(resourceType);
     }
 
     /**
@@ -149,26 +169,6 @@ public class CmsSearchDocumentType implements Cloneable {
     public void setResourceTypes(List resourceTypes) {
 
         m_resourceTypes = resourceTypes;
-    }
-
-    /**
-     * Adds the class name of a resource type.<p>
-     * 
-     * @param resourceType the class name of a resource type
-     */
-    public void addResourceType(String resourceType) {
-
-        m_resourceTypes.add(resourceType);
-    }
-
-    /**
-     * Adds a mimetype.<p>
-     * 
-     * @param mimeType a mimetype
-     */
-    public void addMimeType(String mimeType) {
-
-        m_mimeTypes.add(mimeType);
     }
 
 }

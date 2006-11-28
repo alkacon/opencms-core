@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsPowerPoint.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.8.4.1 $
+ * Date   : $Date: 2006/11/28 16:20:44 $
+ * Version: $Revision: 1.8.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.search.extractors;
 import org.opencms.i18n.CmsEncoder;
 
 import java.io.InputStream;
-import java.util.Map;
 
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
@@ -47,7 +46,7 @@ import org.apache.poi.util.LittleEndian;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8.4.1 $ 
+ * @version $Revision: 1.8.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,15 +84,12 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
         reader.read(in);
 
         // extract all information
-        Map metaInfo = extractMetaInformation();
-        String result = removeControlChars(m_buffer.toString());
-
-        // free some memory
+        String rawContent = removeControlChars(m_buffer.toString());
+        // free buffer memory
         m_buffer = new StringBuffer(4096);
-        cleanup();
 
-        // return the final result
-        return new CmsExtractionResult(result, metaInfo);
+        // combine the meta information with the content and create the result
+        return createExtractionResult(rawContent);
     }
 
     /**

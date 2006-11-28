@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsNameBasedDiskCache.java,v $
- * Date   : $Date: 2006/04/28 08:49:28 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,21 +38,21 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Implements a name based RFS file based disk cache, that handles parameter based versions of VFS files, 
- * providing a cache for the "online" and another for the "offline" project.<p>
+ * Implements a name based RFS file based disk cache, that handles parameter based versions of VFS files.<p>
  * 
  * This RFS cache operates on file names, plus a hashcode calculated from 
  * {@link org.opencms.file.CmsResource#getDateLastModified()}, {@link org.opencms.file.CmsResource#getDateCreated()} 
  * and {@link org.opencms.file.CmsResource#getLength()}. Optional parameters can be appended to this name, 
  * which will be added as a second hashcode. This way a file can have multiple versions based on different parameters.<p> 
  * 
- * This cache should be usable for resources from the online AND the offline project at the same time, 
+ * This cache is usable for resources from the online AND the offline project at the same time, 
  * because any change to a resource will result in a changed hashcode. This means a resource changed in the offline
- * project will have a new hashcode compared to the online project.<p>
+ * project will have a new hashcode compared to the online project. If the resource is identical in the online and 
+ * the offline project, the generated hashcodes will be the same.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  * 
  * @since 6.2.0
  */
@@ -79,7 +79,7 @@ public class CmsVfsNameBasedDiskCache {
      * 
      * @param rfsName the file RFS name to look up in the cache 
      * 
-     * @return the content of the requested file in the VFS disk cache, or <code>null</code> 
+     * @return the content of the requested file in the disk cache, or <code>null</code> 
      */
     public byte[] getCacheContent(String rfsName) {
 

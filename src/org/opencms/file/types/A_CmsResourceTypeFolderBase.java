@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/11/10 17:01:26 $
- * Version: $Revision: 1.16.4.11 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.16.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,11 +37,10 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.CmsVfsException;
-import org.opencms.lock.CmsLockFilter;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -61,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.11 $ 
+ * @version $Revision: 1.16.4.12 $ 
  * 
  * @since 6.0.0 
  */

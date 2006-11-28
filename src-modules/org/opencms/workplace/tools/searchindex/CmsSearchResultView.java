@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchResultView.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchResult;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWidgetDialog;
 
@@ -69,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.2 $
+ * @version $Revision: 1.2.4.3 $
  * 
  * @since 6.0.0
  */
@@ -195,7 +196,7 @@ public class CmsSearchResultView {
                     result.append(m_jsp.link(m_jsp.getRequestContext().removeSiteRoot(entry.getPath())));
                     result.append("', '_blank', 'width='+screen.availWidth+', height='+ screen.availHeight+', scrollbars=yes, menubar=yes, toolbar=yes')\"");
                     result.append("\">\n");
-                    name = entry.getTitle();
+                    name = entry.getField(CmsSearchField.FIELD_TITLE);
                     if (name == null) {
                         name = entry.getPath();
                     }
@@ -460,31 +461,35 @@ public class CmsSearchResultView {
                     result.append(it.next()).append("\" />\n");
                     count++;
                 }
-                result.append("  <input type=\"hidden\" name=\"");
-                result.append("searchfieldcontent.").append(0).append("\" value=\"");
-                result.append(search.getParameters().getSearchFieldContent()).append("\" />\n");
-
-                result.append("  <input type=\"hidden\" name=\"");
-                result.append("searchfieldmeta.").append(0).append("\" value=\"");
-                result.append(search.getParameters().getSearchFieldMeta()).append("\" />\n");
-
-                result.append("  <input type=\"hidden\" name=\"");
-                result.append("searchfieldtitle.").append(0).append("\" value=\"");
-                result.append(search.getParameters().getSearchFieldTitle()).append("\" />\n");
-
-                result.append("  <input type=\"hidden\" name=\"");
-                result.append("searchfieldkeywords.").append(0).append("\" value=\"");
-                result.append(search.getParameters().getSearchFieldKeywords()).append("\" />\n");
-
-                result.append("  <input type=\"hidden\" name=\"");
-                result.append("searchfielddescription.").append(0).append("\" value=\"");
-                result.append(search.getParameters().getSearchFieldDescription()).append("\" />\n");
-
-                result.append("  <input type=\"hidden\" name=\"");
-                result.append("sortfields.").append(0).append("\" value=\"");
-                result.append(search.getParameters().getSortName()).append("\" />\n");
-
-                search.getParameters().getSearchFieldContent();
+                
+                int todo;
+                // TODO: List of fields must not be hard-coded
+                
+//                result.append("  <input type=\"hidden\" name=\"");
+//                result.append("searchfieldcontent.").append(0).append("\" value=\"");
+//                result.append(search.getParameters().getSearchFieldContent()).append("\" />\n");
+//
+//                result.append("  <input type=\"hidden\" name=\"");
+//                result.append("searchfieldmeta.").append(0).append("\" value=\"");
+//                result.append(search.getParameters().getSearchFieldMeta()).append("\" />\n");
+//
+//                result.append("  <input type=\"hidden\" name=\"");
+//                result.append("searchfieldtitle.").append(0).append("\" value=\"");
+//                result.append(search.getParameters().getSearchFieldTitle()).append("\" />\n");
+//
+//                result.append("  <input type=\"hidden\" name=\"");
+//                result.append("searchfieldkeywords.").append(0).append("\" value=\"");
+//                result.append(search.getParameters().getSearchFieldKeywords()).append("\" />\n");
+//
+//                result.append("  <input type=\"hidden\" name=\"");
+//                result.append("searchfielddescription.").append(0).append("\" value=\"");
+//                result.append(search.getParameters().getSearchFieldDescription()).append("\" />\n");
+//
+//                result.append("  <input type=\"hidden\" name=\"");
+//                result.append("sortfields.").append(0).append("\" value=\"");
+//                result.append(search.getParameters().getSortName()).append("\" />\n");
+//                search.getParameters().getSearchFieldContent();
+                
                 result.append("</form>\n");
                 HTMLForm form = new HTMLForm(formname, result.toString());
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResultsList.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,11 +81,8 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /** list id constant. */
     public static final String LIST_ID = "lsr";
 
-    /** fieldContent parameter name. */
-    public static final String PARAM_FIELD_CONTENT = "fieldcontent";
-
-    /** fieldMeta parameter name. */
-    public static final String PARAM_FIELD_META = "fieldmeta";
+    /** The fields parameter name. */
+    public static final String PARAM_FIELDS = "fields";
 
     /** query parameter name. */
     public static final String PARAM_QUERY = "query";
@@ -99,11 +96,8 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;
 
-    /** fieldContent parameter value. */
-    private String m_paramFieldcontent;
-
-    /** fieldMeta parameter value. */
-    private String m_paramFieldmeta;
+    /** The comma separated list of fields to search parameter value. */
+    private String m_paramFields;
 
     /** query parameter value. */
     private String m_paramQuery;
@@ -160,8 +154,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
             params.put(CmsEditor.PARAM_BACKLINK, CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp");
             params.put(CmsSearchResultsList.PARAM_QUERY, getParamQuery());
             params.put(CmsSearchResultsList.PARAM_SORT_ORDER, getParamSortorder());
-            params.put(CmsSearchResultsList.PARAM_FIELD_CONTENT, getParamFieldcontent());
-            params.put(CmsSearchResultsList.PARAM_FIELD_META, getParamFieldmeta());
+            params.put(CmsSearchResultsList.PARAM_FIELDS, getParamFields());
             params.put(CmsDialog.PARAM_RESOURCE, getSelectedItem().get(LIST_COLUMN_NAME));
             getToolManager().jspForwardPage(this, "/system/workplace/explorer/search/edit.jsp", params);
         } else {
@@ -175,34 +168,19 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
-            m_collector = new CmsSearchResourcesCollector(
-                this,
-                getParamQuery(),
-                getParamSortorder(),
-                getParamFieldcontent(),
-                getParamFieldmeta());
+            m_collector = new CmsSearchResourcesCollector(this, getParamQuery(), getParamSortorder(), getParamFields());
         }
         return m_collector;
     }
 
     /**
-     * Returns the fieldContent parameter value.<p>
+     * Returns the fields parameter value.<p>
      *
-     * @return the fieldContent parameter value
+     * @return the fields parameter value
      */
-    public String getParamFieldcontent() {
+    public String getParamFields() {
 
-        return m_paramFieldcontent;
-    }
-
-    /**
-     * Returns the fieldMeta parameter value.<p>
-     *
-     * @return the fieldMeta parameter value
-     */
-    public String getParamFieldmeta() {
-
-        return m_paramFieldmeta;
+        return m_paramFields;
     }
 
     /**
@@ -226,23 +204,13 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     }
 
     /**
-     * Sets the fieldContent parameter value.<p>
+     * Sets the fields parameter value.<p>
      *
-     * @param paramFieldContent the fieldContent parameter value to set
+     * @param paramFields the fields parameter value to set
      */
-    public void setParamFieldcontent(String paramFieldContent) {
+    public void setParamFields(String paramFields) {
 
-        m_paramFieldcontent = paramFieldContent;
-    }
-
-    /**
-     * Sets the fieldMeta parameter value.<p>
-     *
-     * @param paramFieldMeta the fieldMeta parameter value to set
-     */
-    public void setParamFieldmeta(String paramFieldMeta) {
-
-        m_paramFieldmeta = paramFieldMeta;
+        m_paramFields = paramFields;
     }
 
     /**

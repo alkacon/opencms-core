@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsTermHighlighter.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/11/28 16:20:44 $
+ * Version: $Revision: 1.6.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,25 +31,39 @@
 
 package org.opencms.search.documents;
 
+import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.CmsSearchParameters;
+
+import java.io.IOException;
+
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.search.Query;
+
 /**
- * Highlights arbitrary terms. <p>
+ * Highlights arbitrary terms, used for generation of search excerpts.<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.8.1 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsTermHighlighter {
 
     /**
-     * Highlight an arbitrary term. For example, an HTML I_TermHighlighter could simply do:<p>
-     *
-     * <code>return "&lt;b&gt;" + term + "&lt;/b&gt;";</code><p>
-     *
-     * @param term term text to highlight
-     *
-     * @return highlighted term text
+     * Returns an excerpt of the given document related based on the given index and query.<p>
+     * 
+     * @param doc the content Lucene document to generate the excerpt for
+     * @param index the index that has been searched
+     * @param params the current search parameters
+     * @param query the search query
+     * @param analyzer the analyzer used 
+     * 
+     * @return an excerpt of the content
+     * 
+     * @throws IOException if something goes wrong
      */
-    String highlightTerm(String term);
+    String getExcerpt(Document doc, CmsSearchIndex index, CmsSearchParameters params, Query query, Analyzer analyzer)
+    throws IOException;
 }

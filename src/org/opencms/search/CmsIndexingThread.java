@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2006/10/14 08:44:58 $
- * Version: $Revision: 1.26.4.2 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.26.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
@@ -48,7 +49,7 @@ import org.apache.lucene.index.IndexWriter;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.26.4.2 $ 
+ * @version $Revision: 1.26.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,10 +71,7 @@ public class CmsIndexingThread extends Thread {
     private I_CmsReport m_report;
 
     /** The resource to index. */
-    private A_CmsIndexResource m_res;
-
-    /** The thread manager. */
-    private CmsIndexingThreadManager m_threadManager;
+    private CmsResource m_res;
 
     /** The index writer. */
     private IndexWriter m_writer;
@@ -87,16 +85,14 @@ public class CmsIndexingThread extends Thread {
      * @param factory the document factory to index the resource with
      * @param index the index
      * @param report the report to write out progress information
-     * @param threadManager the thread manager
      */
     public CmsIndexingThread(
         CmsObject cms,
         IndexWriter writer,
-        A_CmsIndexResource res,
+        CmsResource res,
         I_CmsDocumentFactory factory,
         CmsSearchIndex index,
-        I_CmsReport report,
-        CmsIndexingThreadManager threadManager) {
+        I_CmsReport report) {
 
         super("OpenCms: Indexing '" + res.getName() + "'");
 
@@ -106,7 +102,6 @@ public class CmsIndexingThread extends Thread {
         m_factory = factory;
         m_index = index;
         m_report = report;
-        m_threadManager = threadManager;
     }
 
     /**
@@ -143,8 +138,6 @@ public class CmsIndexingThread extends Thread {
             if (!isInterrupted()) {
                 // write the document to the index
                 m_writer.addDocument(doc);
-                // store the document in the thread manager cache
-                m_threadManager.addDocument(m_res, m_index.getLocale(), doc);
             }
 
             if ((m_report != null) && !isInterrupted()) {
@@ -170,7 +163,6 @@ public class CmsIndexingThread extends Thread {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                     I_CmsReport.FORMAT_OK);
-                m_threadManager.finished();
             } else {
                 if (m_report != null) {
                     m_report.println();
@@ -188,7 +180,5 @@ public class CmsIndexingThread extends Thread {
                 }
             }
         }
-
-        m_threadManager.finished();
     }
 }

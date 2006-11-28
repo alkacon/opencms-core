@@ -3,10 +3,10 @@
 
 <opencms>
 	<search>
-		<cache>8</cache>
 		<directory>index</directory>
 		<timeout>60000</timeout>	
 		<excerpt>1024</excerpt>	
+		<extractionCacheMaxAge>672.0</extractionCacheMaxAge>
 		<highlighter>org.opencms.search.documents.CmsTermHighlighterHtml</highlighter>
 		<documenttypes>		
 			<documenttype>
@@ -139,9 +139,8 @@
 				<locale>en</locale>
 			</analyzer>
 			<analyzer>
-				<class>org.apache.lucene.analysis.snowball.SnowballAnalyzer</class>
-				<stemmer>French</stemmer>
-				<locale>fr</locale>
+                <class>org.apache.lucene.analysis.fr.FrenchAnalyzer</class>
+                <locale>fr</locale>
 			</analyzer>
 			<analyzer>
 				<class>org.apache.lucene.analysis.snowball.SnowballAnalyzer</class>
@@ -163,7 +162,8 @@
 				<name>Offline project (VFS)</name>
 				<rebuild>manual</rebuild>
 				<project>Offline</project>
-				<locale>en</locale>			
+				<locale>en</locale>		
+				<configuration>standard</configuration>	
 				<sources>
 					<source>source1</source>
 				</sources>		
@@ -192,5 +192,40 @@
 				</documenttypes-indexed>				
 			</indexsource>
 		</indexsources>	
+		<fieldconfigurations>
+			<fieldconfiguration>
+				<name>standard</name>
+				<fields>
+					<field name="content" store="true" index="true" excerpt="true">
+						<mapping type="content" />
+					</field>	
+					<field name="title-key" store="true" index="untokenized" boost="0.0">
+						<mapping type="property">Title</mapping>
+					</field>	
+					<field name="title" store="false" index="true">
+						<mapping type="property">Title</mapping>
+					</field>	
+					<field name="keywords" store="true" index="true">
+						<mapping type="property">Keywords</mapping>
+					</field>	
+					<field name="description" store="true" index="true">
+						<mapping type="property">Description</mapping>
+					</field>						
+					<field name="meta" store="false" index="true">
+						<mapping type="property">Title</mapping>
+						<mapping type="property">Keywords</mapping>
+						<mapping type="property">Description</mapping>
+					</field>	
+					<field name="special" store="true" index="true">	
+						<mapping type="item">special</mapping>
+						<mapping type="item">Teaser[1]</mapping>
+						<mapping type="item">Teaser[2]</mapping>
+						<mapping type="item">Teaser[3]</mapping>
+						<mapping type="property">NavText</mapping>
+						<mapping type="property-search">search.special</mapping>
+					</field>	
+				</fields>
+			</fieldconfiguration>			
+		</fieldconfigurations>			
 	</search>
 </opencms>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestRtfExtraction.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.4.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.search.extractors;
 
 import java.io.InputStream;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -61,7 +62,12 @@ public class TestRtfExtraction extends TestCase {
         
         // extract the content
         I_CmsExtractionResult extractionResult = CmsExtractorRtf.getExtractor().extractText(in);
-        String result = extractionResult.getContent();          
+        Map items = extractionResult.getContentItems();
+        assertEquals(2, items.size());
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
+        String result = extractionResult.getContent();
+        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));       
         
         System.out.println("---------------------------------------------------------------");
         System.out.println("Extracted from RTF:");

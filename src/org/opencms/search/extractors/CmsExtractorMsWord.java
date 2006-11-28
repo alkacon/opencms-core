@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsWord.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.8.8.1 $
+ * Date   : $Date: 2006/11/28 16:20:44 $
+ * Version: $Revision: 1.8.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.search.extractors;
 
 import java.io.InputStream;
-import java.util.Map;
 
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 
@@ -43,7 +42,7 @@ import org.textmining.text.extraction.WordExtractor;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8.8.1 $ 
+ * @version $Revision: 1.8.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,19 +76,15 @@ public final class CmsExtractorMsWord extends A_CmsTextExtractorMsOfficeBase {
 
         // first extract the text using the text actraction libary
         WordExtractor wordExtractor = new WordExtractor();
-        String result = wordExtractor.extractText(getStreamCopy(in));
-        result = removeControlChars(result);
+        String rawContent = wordExtractor.extractText(getStreamCopy(in));
+        rawContent = removeControlChars(rawContent);
 
         // now extract the meta information using POI 
         POIFSReader reader = new POIFSReader();
         reader.registerListener(this);
         reader.read(getStreamCopy(in));
-        Map metaInfo = extractMetaInformation();
 
-        // free some memory
-        cleanup();
-
-        // return the final result
-        return new CmsExtractionResult(result, metaInfo);
+        // combine the meta information with the content and create the result
+        return createExtractionResult(rawContent);
     }
 }

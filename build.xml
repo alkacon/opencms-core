@@ -54,7 +54,8 @@
     <property name="opencms.inputlib.jaxen"     		location="${opencms.input.libs}/jaxen-1.1-beta-4.jar" />
     <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.5-20050925.jar" />
     <property name="opencms.inputlib.lucene.core"		location="${opencms.input.libs}/lucene-core-2.0.0.jar" />
-    <property name="opencms.inputlib.lucene.analyzers"	location="${opencms.input.libs}/lucene-analyzers-2.0.0.jar" />
+    <property name="opencms.inputlib.lucene.analyzers"  location="${opencms.input.libs}/lucene-analyzers-2.0.0.jar" />
+    <property name="opencms.inputlib.lucene.highlighter" location="${opencms.input.libs}/lucene-highlighter-2.0.0.jar" />
     <property name="opencms.inputlib.lucene.snowball"	location="${opencms.input.libs}/lucene-snowball-2.0.0.jar" />
 	<property name="opencms.inputlib.poi"				location="${opencms.input.libs}/poi-2.5.1-final-20040804.jar" />
     <property name="opencms.inputlib.pdfbox"			location="${opencms.input.libs}/PDFBox-0.7.2.jar" />
@@ -131,6 +132,7 @@
                 <available file="${opencms.inputlib.htmlparser}"/>
                 <available file="${opencms.inputlib.lucene.core}"/>
 				<available file="${opencms.inputlib.lucene.analyzers}"/>
+                <available file="${opencms.inputlib.lucene.highlighter}"/>
     			<available file="${opencms.inputlib.lucene.snowball}"/>
                 <available file="${opencms.inputlib.poi}"/>
                 <available file="${opencms.inputlib.pdfbox}"/> 
@@ -214,6 +216,7 @@ ${opencms.inputlib.log4j}
 ${opencms.inputlib.htmlparser}
 ${opencms.inputlib.lucene.core}
 ${opencms.inputlib.lucene.analyzers}
+${opencms.inputlib.lucene.highlighter}
 ${opencms.inputlib.lucene.snowball}
 ${opencms.inputlib.poi}
 ${opencms.inputlib.pdfbox}
@@ -277,7 +280,8 @@ ${opencms.inputlib.textextraction}
                        ${opencms.inputlib.htmlparser}:
                        ${opencms.inputlib.uuid}:
                        ${opencms.inputlib.lucene.core}:
-    				   ${opencms.inputlib.lucene.analyzers}:
+                       ${opencms.inputlib.lucene.analyzers}:
+                       ${opencms.inputlib.lucene.highlighter}:
     				   ${opencms.inputlib.lucene.snowball}:
                        ${opencms.inputlib.poi}:
                        ${opencms.inputlib.jstl}:
@@ -711,6 +715,7 @@ ${opencms.inputlib.textextraction}
                        ${opencms.inputlib.uuid}:
                        ${opencms.inputlib.lucene.core}:
     				   ${opencms.inputlib.lucene.analyzers}:
+                       ${opencms.inputlib.lucene.highlighter}:
 					   ${opencms.inputlib.lucene.snowball}:
                        ${opencms.inputlib.poi}:
        		           ${opencms.inputlib.jstl}:
@@ -775,6 +780,7 @@ ${opencms.inputlib.textextraction}
 				<pathelement location="${opencms.inputlib.uuid}"/>
 				<pathelement location="${opencms.inputlib.lucene.core}"/>
 				<pathelement location="${opencms.inputlib.lucene.analyzers}"/>
+                <pathelement location="${opencms.inputlib.lucene.highlighter}"/>
 				<pathelement location="${opencms.inputlib.lucene.snowball}"/>
 				<pathelement location="${opencms.inputlib.poi}"/>
 				<pathelement location="${opencms.inputlib.jaxen}"/>

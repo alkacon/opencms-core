@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchWorkplaceBean.java,v $
- * Date   : $Date: 2006/04/19 09:05:00 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,24 +33,24 @@ package org.opencms.workplace.search;
 
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
+import org.opencms.search.CmsSearchParameters;
 import org.opencms.util.CmsStringUtil;
+
+import java.util.Iterator;
 
 /**
  * Bean to handle search parameters in the workplace.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.3.0 
  */
 public class CmsSearchWorkplaceBean {
 
-    /** The field Content parameter value. */
-    private boolean m_fieldContent;
-
-    /** The field Meta parameter value. */
-    private boolean m_fieldMeta;
+    /** The comma separated list of fields to search parameter value. */
+    private String m_fields;
 
     /** The query. */
     private String m_query;
@@ -59,23 +59,31 @@ public class CmsSearchWorkplaceBean {
     private String m_sortOrder;
 
     /**
-     * Returns the field Content parameter value.<p>
-     *
-     * @return the field Content parameter value
+     * Default constructor.<p>
      */
-    public boolean getFieldContent() {
+    public CmsSearchWorkplaceBean() {
 
-        return m_fieldContent;
+        StringBuffer fields = new StringBuffer();
+        Iterator i = CmsSearchDialog.getFieldNames().iterator();
+        while (i.hasNext()) {
+            fields.append(i.next());
+            if (i.hasNext()) {
+                fields.append(',');
+            }
+        }
+
+        m_fields = fields.toString();
+        m_sortOrder = CmsSearchParameters.SORT_NAMES[0];
     }
 
     /**
-     * Returns the field Meta parameter value.<p>
+     * Returns the fields parameter value.<p>
      *
-     * @return the field Meta parameter value
+     * @return the fields parameter value
      */
-    public boolean getFieldMeta() {
+    public String getFields() {
 
-        return m_fieldMeta;
+        return m_fields;
     }
 
     /**
@@ -99,23 +107,16 @@ public class CmsSearchWorkplaceBean {
     }
 
     /**
-     * Sets the field Content parameter value.<p>
+     * Sets the fields parameter value.<p>
      *
-     * @param fieldContent the field Content parameter value to set
+     * @param fields the fields parameter value to set
      */
-    public void setFieldContent(boolean fieldContent) {
+    public void setFields(String fields) {
 
-        m_fieldContent = fieldContent;
-    }
-
-    /**
-     * Sets the field Meta parameter value.<p>
-     *
-     * @param fieldMeta the field Meta parameter value to set
-     */
-    public void setFieldMeta(boolean fieldMeta) {
-
-        m_fieldMeta = fieldMeta;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(fields)) {
+            throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_VALIDATE_SEARCH_PARAMS_0));
+        }
+        m_fields = fields;
     }
 
     /**
@@ -139,15 +140,5 @@ public class CmsSearchWorkplaceBean {
     public void setSortOrder(String sortOrder) {
 
         m_sortOrder = sortOrder;
-    }
-
-    /**
-     * Validates the state of the search parameter.<p>
-     */
-    public void validate() {
-
-        if (!getFieldMeta() && !getFieldContent()) {
-            throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_VALIDATE_SEARCH_PARAMS_0));
-        }
     }
 }

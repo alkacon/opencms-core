@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
- * Date   : $Date: 2006/11/20 14:27:31 $
- * Version: $Revision: 1.13.4.1 $
+ * Date   : $Date: 2006/11/28 16:20:46 $
+ * Version: $Revision: 1.13.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import junit.framework.TestCase;
  * @author Andreas Zahner 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.13.4.1 $
+ * @version $Revision: 1.13.4.2 $
  */
 public class TestCmsStringUtil extends TestCase {
 
@@ -237,7 +237,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("/.../averylongresourcename.jsp", CmsStringUtil.formatResourceName(test, 25));
         test = "/myfolder/subfolder/index.html";
         assertEquals("/.../index.html", CmsStringUtil.formatResourceName(test, 21));
-        assertEquals("/myfolder/.../index.html", CmsStringUtil.formatResourceName(test,25)); 
+        assertEquals("/myfolder/.../index.html", CmsStringUtil.formatResourceName(test, 25));
         test = "/myfolder/subfolder/subsubfolder/index.html";
         assertEquals("/myfolder/.../subsubfolder/index.html", CmsStringUtil.formatResourceName(test, 40));
         assertEquals("/myfolder/.../index.html", CmsStringUtil.formatResourceName(test, 36));
@@ -246,7 +246,6 @@ public class TestCmsStringUtil extends TestCase {
         test = "/demopages/search-demo/example-documents/";
         assertEquals("/demopages/.../example-documents/", CmsStringUtil.formatResourceName(test, 40));
         assertEquals("/demopages/search-demo/example-documents/", CmsStringUtil.formatResourceName(test, 41));
-
     }
 
     /**

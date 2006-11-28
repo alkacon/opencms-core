@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/A_CmsModeEnumeration.java,v $
- * Date   : $Date: 2006/11/14 14:34:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.Serializable;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.3 
  */
@@ -69,6 +69,9 @@ public abstract class A_CmsModeEnumeration implements Serializable {
      */
     public boolean equals(Object obj) {
 
+        if (obj == this) {
+            return true;
+        }
         if (obj instanceof A_CmsModeEnumeration) {
             if (obj.getClass().equals(this.getClass())) {
                 A_CmsModeEnumeration eObj = (A_CmsModeEnumeration)obj;

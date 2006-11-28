@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/11/28 16:20:46 $
+ * Version: $Revision: 1.21.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,13 +40,13 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.21.8.1 $
  * 
  * @since 6.0.0
  */
 public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandler {
 
-    /** The alias attribute. */
+    /** The "alias" attribute. */
     String A_ALIAS = "alias";
 
     /** The "class" attribute. */
@@ -54,6 +54,9 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
 
     /** The "count" attribute. */
     String A_COUNT = "count";
+
+    /** The "default" attribute. */
+    String A_DEFAULT = "default";
 
     /** The "destination" attribute. */
     String A_DESTINATION = "destination";

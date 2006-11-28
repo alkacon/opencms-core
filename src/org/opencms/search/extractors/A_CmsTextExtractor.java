@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractor.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.8.4.1 $
+ * Date   : $Date: 2006/11/28 16:20:44 $
+ * Version: $Revision: 1.8.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,13 +37,14 @@ import org.opencms.util.CmsStringUtil;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * Base utility class that allows extraction of the indexable "plain" text from a given document format.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8.4.1 $ 
+ * @version $Revision: 1.8.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,6 +111,24 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
 
         // now return a reader from the byte array
         return new ByteArrayInputStream(m_inputBuffer);
+    }
+
+    /**
+     * Combines a meta information item extracted from the document with the main content buffer and 
+     * also stores the individual information as item in the Map of content items.<p>
+     * 
+     * @param itemValue the value of the item to store
+     * @param itemKey the key in the Map of content items
+     * @param content a buffer where to append the content item
+     * @param contentItems the Map of individual content items
+     */
+    protected void combineContentItem(String itemValue, String itemKey, StringBuffer content, Map contentItems) {
+
+        if (CmsStringUtil.isNotEmpty(itemValue)) {
+            contentItems.put(itemKey, itemValue);
+            content.append('\n');
+            content.append(itemValue);
+        }
     }
 
     /**

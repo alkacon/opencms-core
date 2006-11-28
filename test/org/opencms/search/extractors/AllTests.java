@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/AllTests.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.5.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
  * Main test suite for the package <code>{@link org.opencms.search.extractors}</code>.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.5.8.1 $
  * 
  * @since 6.0
  */
@@ -70,6 +70,7 @@ public final class AllTests {
         suite.addTest(new TestSuite(TestMsWordExtraction.class));
         suite.addTest(new TestSuite(TestPdfExtraction.class));
         suite.addTest(new TestSuite(TestMsExcelExtraction.class));
+        suite.addTest(TestXmlDocumentExtraction.suite());
         //$JUnit-END$
         return suite;
     }

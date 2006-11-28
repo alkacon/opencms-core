@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2006/11/08 09:28:51 $
- * Version: $Revision: 1.25.4.3 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.25.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -39,11 +40,7 @@ import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
-import java.io.IOException;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 
 /**
@@ -52,11 +49,11 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.25.4.3 $ 
+ * @version $Revision: 1.25.4.4 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsIndexingThreadManager extends Thread {
+public class CmsIndexingThreadManager {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsIndexingThreadManager.class);
@@ -64,53 +61,29 @@ public class CmsIndexingThreadManager extends Thread {
     /** Number of threads abandoned. */
     private int m_abandonedCounter;
 
-    /** Cache for extracted documents. */
-    private Map m_documentCache;
+    /** The time the last error was written to the log. */
+    private long m_lastLogErrorTime;
 
-    /** Overall number of threads started. */
-    private int m_fileCounter;
-
-    /** The report. */
-    private I_CmsReport m_report;
+    /** The time the last warning was written to the log. */
+    private long m_lastLogWarnTime;
 
     /** Number of thread returned. */
     private int m_returnedCounter;
+
+    /** Overall number of threads started. */
+    private int m_startedCounter;
 
     /** Timeout for abandoning threads. */
     private long m_timeout;
 
     /**
      * Creates and starts a thread manager for indexing threads.<p>
-     * @param report the report to write out progress information
+     * 
      * @param timeout timeout after a thread is abandoned
-     * @param indexName the name of the index
-     * @param documentCache cache for storing indexed documents in (to avoid multiple text extraction)
      */
-    public CmsIndexingThreadManager(I_CmsReport report, long timeout, String indexName, Map documentCache) {
+    public CmsIndexingThreadManager(long timeout) {
 
-        super("OpenCms: Indexing thread manager for search index '" + indexName + "'");
-
-        m_report = report;
         m_timeout = timeout;
-        m_fileCounter = 0;
-        m_abandonedCounter = 0;
-        m_returnedCounter = 0;
-        m_documentCache = documentCache;
-        this.start();
-    }
-
-    /**
-     * Caches the generated Document for the index resource to avoid multiple text extraction.<p>
-     *  
-     * @param res the index resource to cache the Document for
-     * @param locale the locale to chache the Document fot
-     * @param doc the Document to cache
-     */
-    public synchronized void addDocument(A_CmsIndexResource res, String locale, Document doc) {
-
-        if (m_documentCache != null) {
-            m_documentCache.put(res.getId().toString().concat(locale), doc);
-        }
     }
 
     /**
@@ -125,17 +98,23 @@ public class CmsIndexingThreadManager extends Thread {
      * @param writer the write to write the index
      * @param res the resource
      * @param index the index
+     * @param report the report to write the indexing progess to
      */
-    public void createIndexingThread(CmsObject cms, IndexWriter writer, A_CmsIndexResource res, CmsSearchIndex index) {
+    public void createIndexingThread(
+        CmsObject cms,
+        IndexWriter writer,
+        CmsResource res,
+        CmsSearchIndex index,
+        I_CmsReport report) {
 
         I_CmsDocumentFactory factory = OpenCms.getSearchManager().getDocumentFactory(res);
         if ((factory == null) || !index.getDocumenttypes(res.getRootPath()).contains(factory.getName())) {
             // document type does not match the ones configured for the index, skip document
 
-            m_fileCounter++;
+            m_startedCounter++;
             m_returnedCounter++;
-            if (m_report != null) {
-                m_report.println(
+            if (report != null) {
+                report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
                     I_CmsReport.FORMAT_NOTE);
             }
@@ -147,78 +126,33 @@ public class CmsIndexingThreadManager extends Thread {
             return;
         }
 
-        int todo = 0;
-        // TODO: check caching options, add key for projects to distinguish between "online" and "offline"
-        // TODO: what about "concurrent" generation of the same file (if thread has started but not finished yet)
-        
-        Document cachedDoc = m_documentCache == null ? null
-        : (Document)m_documentCache.get(res.getId().toString().concat(index.getLocale()));
-        if (cachedDoc != null) {
-            // search document for the resource has already been cached, just re-use without extra Thread
-            m_fileCounter++;
-            m_returnedCounter++;
-            try {
-                writer.addDocument(cachedDoc);
-                if (m_report != null) {
-                    m_report.println(
-                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                        I_CmsReport.FORMAT_OK);
-                }
-            } catch (IOException e) {
-                if (m_report != null) {
-                    m_report.println();
-                    m_report.print(
-                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
-                        I_CmsReport.FORMAT_WARNING);
-                    m_report.println(e);
-
-                }
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.ERR_INDEX_RESOURCE_FAILED_2,
-                        res.getRootPath(),
-                        index.getName()), e);
-                }
-            }
-        } else {
-            // search document for the resource has not been found in cache, 
-            // extract the information from the resource in a separate Thread
-
-            CmsIndexingThread thread = new CmsIndexingThread(cms, writer, res, factory, index, m_report, this);
-
-            try {
-                m_fileCounter++;
-                thread.start();
-                thread.join(m_timeout);
-
-                if (thread.isAlive()) {
-
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_INDEXING_TIMEOUT_1, res.getRootPath()));
-                    }
-                    m_report.println();
-                    m_report.print(
-                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
-                        I_CmsReport.FORMAT_WARNING);
-                    m_report.println(
-                        Messages.get().container(Messages.RPT_SEARCH_INDEXING_TIMEOUT_1, res.getRootPath()),
-                        I_CmsReport.FORMAT_WARNING);
-
-                    m_abandonedCounter++;
-                    thread.interrupt();
-                }
-            } catch (InterruptedException exc) {
-                // noop
-            }
+        // extract the content from the resource in a separate Thread
+        CmsIndexingThread thread = new CmsIndexingThread(cms, writer, res, factory, index, report);
+        m_startedCounter++;
+        thread.start();
+        try {
+            thread.join(m_timeout);
+        } catch (InterruptedException e) {
+            // noop
         }
-    }
-
-    /**
-     * Signals the thread manager that a thread has finished its job and will exit immediately.<p>
-     */
-    public synchronized void finished() {
-
-        m_returnedCounter++;
+        if (thread.isAlive()) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_INDEXING_TIMEOUT_1, res.getRootPath()));
+            }
+            if (report != null) {
+                report.println();
+                report.print(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                    I_CmsReport.FORMAT_WARNING);
+                report.println(
+                    Messages.get().container(Messages.RPT_SEARCH_INDEXING_TIMEOUT_1, res.getRootPath()),
+                    I_CmsReport.FORMAT_WARNING);
+            }
+            m_abandonedCounter++;
+            thread.interrupt();
+        } else {
+            m_returnedCounter++;
+        }
     }
 
     /**
@@ -228,7 +162,7 @@ public class CmsIndexingThreadManager extends Thread {
      */
     public int getCounter() {
 
-        return m_fileCounter;
+        return m_startedCounter;
     }
 
     /**
@@ -238,7 +172,37 @@ public class CmsIndexingThreadManager extends Thread {
      */
     public boolean isRunning() {
 
-        return (m_returnedCounter + m_abandonedCounter < m_fileCounter);
+        if (m_lastLogErrorTime <= 0) {
+            m_lastLogErrorTime = System.currentTimeMillis();
+            m_lastLogWarnTime = m_lastLogErrorTime;
+        } else {
+            long currentTime = System.currentTimeMillis();
+            if ((currentTime - m_lastLogWarnTime) > 30000) {
+                // write warning to log after 30 seconds
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().getBundle().key(
+                        Messages.LOG_WAITING_ABANDONED_THREADS_2,
+                        new Integer(m_abandonedCounter),
+                        new Integer((m_startedCounter - m_returnedCounter))));
+                }
+                m_lastLogWarnTime = currentTime;
+            }
+            if ((currentTime - m_lastLogErrorTime) > 600000) {
+                // write error to log after 10 minutes
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_WAITING_ABANDONED_THREADS_2,
+                    new Integer(m_abandonedCounter),
+                    new Integer((m_startedCounter - m_returnedCounter))));
+                m_lastLogErrorTime = currentTime;
+            }
+        }
+
+        boolean result = (m_returnedCounter + m_abandonedCounter < m_startedCounter);
+        if (result && LOG.isInfoEnabled()) {
+            // write a note to the log that all threads have finished
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_THREADS_FINISHED_0));
+        }
+        return result;
     }
 
     /**
@@ -247,24 +211,26 @@ public class CmsIndexingThreadManager extends Thread {
      * The method reports the total number of threads started
      * (equals to the number of indexed files), the number of returned
      * threads (equals to the number of successfully indexed files),
-     * and the number of abandoned threads (hanging threads reaching the timeout). 
+     * and the number of abandoned threads (hanging threads reaching the timeout).
+     * 
+     * @param report the report to write the statistics to
      */
-    public void reportStatistics() {
+    public void reportStatistics(I_CmsReport report) {
 
-        CmsMessageContainer message = Messages.get().container(
-            Messages.RPT_SEARCH_INDEXING_STATS_4,
-            new Object[] {
-                new Integer(m_fileCounter),
-                new Integer(m_returnedCounter),
-                new Integer(m_abandonedCounter),
-                m_report.formatRuntime()});
+        if (report != null) {
+            CmsMessageContainer message = Messages.get().container(
+                Messages.RPT_SEARCH_INDEXING_STATS_4,
+                new Object[] {
+                    new Integer(m_startedCounter),
+                    new Integer(m_returnedCounter),
+                    new Integer(m_abandonedCounter),
+                    report.formatRuntime()});
 
-        if (m_report != null) {
-            m_report.println(message);
-        }
-        if (!(m_report instanceof CmsLogReport) && LOG.isInfoEnabled()) {
-            // only write to the log if report is not already a log report
-            LOG.info(message.key());
+            report.println(message);
+            if (!(report instanceof CmsLogReport) && LOG.isInfoEnabled()) {
+                // only write to the log if report is not already a log report
+                LOG.info(message.key());
+            }
         }
     }
 
@@ -282,14 +248,14 @@ public class CmsIndexingThreadManager extends Thread {
         try {
             // wait 30 seconds for the initial indexing
             Thread.sleep(30000);
-            while ((m_fileCounter > m_returnedCounter) && (max-- > 0)) {
+            while ((m_startedCounter > m_returnedCounter) && (max-- > 0)) {
                 Thread.sleep(30000);
                 // wait 30 seconds before we start checking for "dead" index threads
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_WAITING_ABANDONED_THREADS_2,
                         new Integer(m_abandonedCounter),
-                        new Integer((m_fileCounter - m_returnedCounter))));
+                        new Integer((m_startedCounter - m_returnedCounter))));
                 }
             }
         } catch (Exception exc) {
@@ -303,7 +269,7 @@ public class CmsIndexingThreadManager extends Thread {
         } else {
             LOG.error(Messages.get().getBundle().key(
                 Messages.LOG_THREADS_FINISHED_0,
-                new Integer(m_fileCounter - m_returnedCounter)));
+                new Integer(m_startedCounter - m_returnedCounter)));
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractionResult.java,v $
- * Date   : $Date: 2006/10/14 08:44:57 $
- * Version: $Revision: 1.5.8.1 $
+ * Date   : $Date: 2006/11/28 16:20:44 $
+ * Version: $Revision: 1.5.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.search.extractors;
 
-import java.util.Collections;
+import org.opencms.util.CmsStringUtil;
+
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -42,20 +45,17 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5.8.1 $ 
+ * @version $Revision: 1.5.8.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsExtractionResult implements I_CmsExtractionResult {
+public class CmsExtractionResult implements I_CmsExtractionResult, Serializable {
 
-    /** The extracted additional fields. */
-    private Map m_additionalFields;
+    /** UID rerquired for safe serialization. */
+    private static final long serialVersionUID = 1465447302192195154L;
 
-    /** The extracted content. */
-    private String m_content;
-
-    /** The extracted meta information. */
-    private Map m_metaInfo;
+    /** The extracted individual content items. */
+    private Map m_contentItems;
 
     /**
      * Creates a new extration result without meta information and without additional fields.<p>
@@ -64,48 +64,26 @@ public class CmsExtractionResult implements I_CmsExtractionResult {
      */
     public CmsExtractionResult(String content) {
 
-        this(content, null, null);
-    }
-
-    /**
-     * Creates a new extration result without additional fields.<p>
-     * 
-     * @param content the extracted content
-     * @param metaInfo the extracted documnet meta information
-     */
-    public CmsExtractionResult(String content, Map metaInfo) {
-
-        this(content, metaInfo, null);
+        this(content, null);
+        m_contentItems.put(ITEM_RAW, content);
     }
 
     /**
      * Creates a new extration result.<p>
      * 
      * @param content the extracted content
-     * @param metaInfo the extracted documnet meta information
-     * @param additionalFields the additional extracted fields
+     * @param contentItems the individual extracted content items
      */
-    public CmsExtractionResult(String content, Map metaInfo, Map additionalFields) {
+    public CmsExtractionResult(String content, Map contentItems) {
 
-        m_content = content;
-        m_metaInfo = metaInfo;
-        m_additionalFields = additionalFields;
-
-        if (m_metaInfo == null) {
-            m_metaInfo = Collections.EMPTY_MAP;
+        if (contentItems != null) {
+            m_contentItems = contentItems;
+        } else {
+            m_contentItems = new HashMap();
         }
-
-        if (m_additionalFields == null) {
-            m_additionalFields = Collections.EMPTY_MAP;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
+            m_contentItems.put(ITEM_CONTENT, content);
         }
-    }
-
-    /**
-     * @see org.opencms.search.extractors.I_CmsExtractionResult#getAdditionalFields()
-     */
-    public Map getAdditionalFields() {
-
-        return m_additionalFields;
     }
 
     /**
@@ -113,15 +91,15 @@ public class CmsExtractionResult implements I_CmsExtractionResult {
      */
     public String getContent() {
 
-        return m_content;
+        return (String)m_contentItems.get(ITEM_CONTENT);
     }
 
     /**
-     * @see org.opencms.search.extractors.I_CmsExtractionResult#getMetaInfo()
+     * @see org.opencms.search.extractors.I_CmsExtractionResult#getContentItems()
      */
-    public Map getMetaInfo() {
+    public Map getContentItems() {
 
-        return m_metaInfo;
+        return m_contentItems;
     }
 
     /**
@@ -129,10 +107,9 @@ public class CmsExtractionResult implements I_CmsExtractionResult {
      */
     public void release() {
 
-        if (!m_metaInfo.isEmpty()) {
-            m_metaInfo.clear();
+        if (!m_contentItems.isEmpty()) {
+            m_contentItems.clear();
         }
-        m_metaInfo = null;
-        m_content = null;
+        m_contentItems = null;
     }
 }

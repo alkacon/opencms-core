@@ -249,8 +249,8 @@ Each job can have an optional list of parameters.
 <!ELEMENT secure EMPTY>	
 <!ATTLIST secure
 	server CDATA #REQUIRED
-	exclusive (true|false) "false"
-	error (true|false) "false">
+	exclusive (true|false|TRUE|FALSE) "false"
+	error (true|false|TRUE|FALSE) "false">
 <!ELEMENT alias EMPTY>	
 <!ATTLIST alias
 	server CDATA #REQUIRED>	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2006/10/26 09:50:05 $
- * Version: $Revision: 1.16.4.1 $
+ * Date   : $Date: 2006/11/28 16:20:44 $
+ * Version: $Revision: 1.16.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,10 +38,13 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 
+import java.text.DateFormat;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +58,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.16.4.1 $
+ * @version $Revision: 1.16.4.2 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -432,30 +435,58 @@ public class TestCmsSearch extends OpenCmsTestCase {
         cmsSearchBean.setSearchRoot("/");
         cmsSearchBean.setQuery("+Alkacon +OpenCms");
         results = cmsSearchBean.getSearchResult();
-        printResults(results);
+        TestCmsSearch.printResults(results, cms);
         assertEquals(8, results.size());
         assertEquals("/sites/default" + folderName + "text.txt", ((CmsSearchResult)results.get(0)).getPath());        
 
         cmsSearchBean.setSearchRoot(folderName);
         cmsSearchBean.setQuery("+Alkacon +OpenCms");
         results = cmsSearchBean.getSearchResult();
-        printResults(results);
+        TestCmsSearch.printResults(results, cms);
         assertEquals(1, results.size());
         assertEquals("/sites/default" + folderName + "text.txt", ((CmsSearchResult)results.get(0)).getPath());        
     }
-    
+
     /**
-     * Prints the result form the search to System.out.<p>
+     * Prints the given list of search results to STDOUT.<p>
      * 
-     * @param results the result List to iterate
+     * @param searchResult the list to print
+     * @param cms the current OpenCms user context
      */
-    private void printResults(List results) {
+    protected static void printResults(List searchResult, CmsObject cms) {
         
-        Iterator i = results.iterator();
+        printResults(searchResult, cms, false);
+    }
+
+    /**
+     * Prints the given list of search results to STDOUT.<p>
+     * 
+     * @param searchResult the list to print
+     * @param cms the current OpenCms user context
+     * @param showExcerpt if <code>true</code>, the generated excerpt is also displayed
+     */
+    protected static void printResults(List searchResult, CmsObject cms, boolean showExcerpt) {
+        
+        Iterator i = searchResult.iterator();
         int count = 0;
         while (i.hasNext()) {
-            CmsSearchResult result = (CmsSearchResult)i.next();
-            System.out.println(++count + ": " + result.getPath() + " - " + result.getTitle());
+            CmsSearchResult res = (CmsSearchResult)i.next();
+            count++;
+            System.out.print(CmsStringUtil.padRight("" + count, 4));
+            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
+            String title = res.getField(CmsSearchField.FIELD_TITLE);
+            if (title == null) {
+                title = "";
+            } else {
+                title = title.trim();
+            }
+            System.out.print(CmsStringUtil.padRight(title, 40));
+            System.out.print(CmsStringUtil.padRight(""
+                + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN), 17));
+            System.out.println("score: " + res.getScore());
+            if (showExcerpt) {
+                System.out.println(res.getExcerpt());
+            }
         }
     }
 }

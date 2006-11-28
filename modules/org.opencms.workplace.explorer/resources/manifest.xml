@@ -439,7 +439,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[path:/search/results|params:query=${param.query}&sortorder=${param.sortorder}&fieldcontent=${param.fieldcontent}&fieldmeta=${param.fieldmeta}]]></value>
+					<value><![CDATA[path:/search/results|params:query=${param.query}&sortorder=${param.sortorder}&fields=${param.fields}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -629,6 +629,25 @@
 			<datelastmodified>Wed, 02 Aug 2006 09:05:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 02 Aug 2006 09:05:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/explorer/project_publish.png</source>
+			<destination>system/workplace/resources/explorer/project_publish.png</destination>
+			<type>image</type>
+			<uuidstructure>dbcdd0e6-763e-11db-a8f5-9362e1ae9c5d</uuidstructure>
+			<uuidresource>dbcdd0e7-763e-11db-a8f5-9362e1ae9c5d</uuidresource>
+			<datelastmodified>Mon, 13 Nov 2006 11:31:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Nov 2006 13:23:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

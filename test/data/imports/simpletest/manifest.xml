@@ -785,6 +785,10 @@
 					<name>Title</name>
 					<value><![CDATA[Image1]]></value>
 				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Not a picture of Cologne]]></value>
+				</property>				
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:116,h:32]]></value>
@@ -1833,6 +1837,10 @@
 					<name>Title</name>
 					<value><![CDATA[Xmlcontent]]></value>
 				</property>
+				<property>
+					<name>search.special</name>
+					<value><![CDATA[Cologne is a nice city]]></value>
+				</property>						
 			</properties>
 			<accesscontrol/>
 		</file>

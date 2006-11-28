@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.83.4.4 $
+ * Date   : $Date: 2006/11/28 16:20:46 $
+ * Version: $Revision: 1.83.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83.4.4 $ 
+ * @version $Revision: 1.83.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -202,7 +202,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
         try {
             m_cms.getRequestContext().setSiteRoot("/");
-            
+
             CmsProject project = m_cms.createProject(
                 name,
                 description,
@@ -942,7 +942,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
         try {
-            OpenCms.getSearchManager().rebuildAllIndexes(report, true);
+            OpenCms.getSearchManager().rebuildAllIndexes(report);
         } catch (CmsException e) {
             report.println(e);
         }

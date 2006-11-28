@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentMsWord.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.7.8.2 $
+ * Date   : $Date: 2006/11/28 16:20:44 $
+ * Version: $Revision: 1.7.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractorMsWord;
@@ -47,7 +46,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.7.8.2 $ 
+ * @version $Revision: 1.7.8.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,12 +65,11 @@ public class CmsDocumentMsWord extends A_CmsVfsDocument {
     /**
      * Returns the raw text content of a given vfs resource containing MS Word data.<p>
      * 
-     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, A_CmsIndexResource, CmsSearchIndex)
+     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, CmsSearchIndex index)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsIndexException, CmsException {
 
-        CmsResource resource = (CmsResource)indexResource.getData();
         CmsFile file = readFile(cms, resource);
 
         try {
@@ -81,5 +79,21 @@ public class CmsDocumentMsWord extends A_CmsVfsDocument {
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
                 e);
         }
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#isLocaleDependend()
+     */
+    public boolean isLocaleDependend() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#isUsingCache()
+     */
+    public boolean isUsingCache() {
+
+        return true;
     }
 }

@@ -7,15 +7,17 @@
 # In this node the global search options are configured.
 -->
 <!ELEMENT search (
-	cache,
+	cache?,
 	directory,
 	timeout,
 	excerpt,
+	extractionCacheMaxAge?,
 	highlighter,
 	documenttypes,
 	analyzers,
 	indexes,
-	indexsources
+	indexsources,
+	fieldconfigurations?
 )>
 
 <!--
@@ -24,7 +26,7 @@
 <!ELEMENT cache (#PCDATA)>
 
 <!--
-# The directory below WEB-INF/ wheree Lucene index files are stored.
+# The directory below WEB-INF/ where Lucene index files are stored.
 -->
 <!ELEMENT directory (#PCDATA)>
 
@@ -37,6 +39,11 @@
 # The max. char. length of the excerpt in the search results.
 -->
 <!ELEMENT excerpt (#PCDATA)>
+
+<!--
+# The max. age text extraction results should be kept in the extraction cache.
+-->
+<!ELEMENT extractionCacheMaxAge (#PCDATA)>
 
 <!--
 # A class implementing org.opencms.search.documents.I_TermHighlighter
@@ -98,6 +105,7 @@
 	rebuild,
 	project,
 	locale,
+	configuration?,
 	sources,
 	param*
 )>
@@ -117,6 +125,11 @@
 -->
 <!ELEMENT sources (source*)>
 <!ELEMENT source (#PCDATA)>
+
+<!--
+# The field configuration used in building the index.
+-->
+<!ELEMENT configuration (#PCDATA)>
 
 <!--
 # The same index sources as "sources" above but linked from global search configuration 
@@ -162,9 +175,50 @@
 <!ATTLIST param name CDATA #REQUIRED>
 
 <!--
+# The search field configuration list.
 #
-# Elements used by more than several elements:
-#
+# Since OpenCms 7 it is possible to generate Lucene indexes with an individual search field configuration.
+# This allows more fine-grained searches especially with xmlcontent or xmlpage resources.
+-->
+<!ELEMENT fieldconfigurations (fieldconfiguration*)>
+
+<!--
+# A field configuration, this can be used with many indexes by referencing the name.
+-->
+<!ELEMENT fieldconfiguration (
+	name,
+	fields
+)>
+
+<!--
+# A field configuration is made up as a list of fields.
+-->
+<!ELEMENT fields (field+) >
+
+<!--
+# A field is made up as a list of mappings, plus the attributes that describe how to create the field.
+-->
+<!ELEMENT field (mapping+) >
+<!ATTLIST field 
+	name CDATA #REQUIRED
+	store (true|false|TRUE|FALSE) #REQUIRED
+	index (true|false|TRUE|FALSE|tokenized|untokenized) #REQUIRED
+	excerpt (true|false|TRUE|FALSE) #IMPLIED
+	boost CDATA #IMPLIED
+	default CDATA #IMPLIED
+>
+
+<!--
+# Finally, the description of an individual mapping from a VFS resource piece of content to the current field.
+-->
+<!ELEMENT mapping (#PCDATA) >
+<!ATTLIST mapping 
+	type (content|property|property-search|item) #REQUIRED
+	default CDATA #IMPLIED
+>
+
+<!--
+# Defionitions used by several elements:
 -->
 
 <!--

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsExcel.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.8.8.1 $
+ * Date   : $Date: 2006/11/28 16:20:44 $
+ * Version: $Revision: 1.8.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.util.CmsStringUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -49,7 +48,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReader;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8.8.1 $ 
+ * @version $Revision: 1.8.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,17 +81,16 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractorMsOfficeBase {
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
         // first extract the table content
-        String result = extractTableContent(getStreamCopy(in));
-        result = removeControlChars(result);
+        String rawContent = extractTableContent(getStreamCopy(in));
+        rawContent = removeControlChars(rawContent);
 
         // now extract the meta information using POI 
         POIFSReader reader = new POIFSReader();
         reader.registerListener(this);
         reader.read(getStreamCopy(in));
-        Map metaInfo = extractMetaInformation();
 
-        // return the final result
-        return new CmsExtractionResult(result, metaInfo);
+        // combine the meta information with the content and create the result
+        return createExtractionResult(rawContent);
     }
 
     /**
@@ -169,5 +167,4 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractorMsOfficeBase {
 
         return result.toString();
     }
-
 }

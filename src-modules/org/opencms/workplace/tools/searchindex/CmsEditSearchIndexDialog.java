@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2006/10/17 09:08:49 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,7 +137,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
     private List getLocaleWidgetConfiguration() {
 
         List result = new LinkedList();
-        String locale = m_index.getLocale();
+        String locale = m_index.getLocale().toString();
         // find all different locales
         Iterator itAnalyzerLocales = m_searchManager.getAnalyzers().keySet().iterator();
         Set distinctLocales = new TreeSet();

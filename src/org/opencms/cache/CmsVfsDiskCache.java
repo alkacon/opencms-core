@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsDiskCache.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/11/28 16:20:45 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.IOException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.2.0
  */
@@ -76,7 +76,7 @@ public class CmsVfsDiskCache {
      * @return a reference to the File that was saved
      * @throws IOException in case of disk access errors
      */
-    protected static File saveFile(String rfsName, byte[] content) throws IOException {
+    public static File saveFile(String rfsName, byte[] content) throws IOException {
 
         File f = new File(rfsName);
         File p = f.getParentFile();
