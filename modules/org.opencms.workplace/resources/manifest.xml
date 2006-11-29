@@ -57,6 +57,7 @@
 			<resource uri="/system/workplace/resources/buttons/preview.png"/>
 			<resource uri="/system/workplace/resources/buttons/publish.png"/>
 			<resource uri="/system/workplace/resources/buttons/publish_in.png"/>
+			<resource uri="/system/workplace/resources/buttons/publish_queue.png"/>
 			<resource uri="/system/workplace/resources/buttons/reload.png"/>
 			<resource uri="/system/workplace/resources/buttons/search.png"/>
 			<resource uri="/system/workplace/resources/buttons/search_in.png"/>
@@ -2360,6 +2361,25 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/publish_queue.png</source>
+			<destination>system/workplace/resources/buttons/publish_queue.png</destination>
+			<type>image</type>
+			<uuidstructure>f3cc8824-6db4-11db-905e-bf6fa13020a5</uuidstructure>
+			<uuidresource>f3cc8825-6db4-11db-905e-bf6fa13020a5</uuidresource>
+			<datelastmodified>Fri, 10 Nov 2006 08:40:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Nov 2006 16:36:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

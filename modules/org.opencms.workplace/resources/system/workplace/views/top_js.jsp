@@ -55,7 +55,7 @@ this.langloading="<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_LABEL_L
 this.altlockedby="<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_LOCKEDBY_0) %>";
 this.altlockedin="<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_LOCKEDIN_0) %>";
 this.altbelongto="<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_ALTBELONGTO_0) %>";
-
+this.publishlock="<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_PUBLISH_TOOLTIP_0)%>";
 
 
 this.viewcfg=<%= wp.getExplorerSettings() %>;      

@@ -33,6 +33,11 @@
     function doReload() {
 		window.top.location.href = "<%= wp.getWorkplaceReloadUri() %>";
     }
+
+    function doShowPublishQueue(){
+		window.top.location.href = '<%= cms.link("/system/workplace/views/admin/admin-fs.jsp") %>';
+		loadBody();
+    }
     
     function openwin(url, name, w, h) {
         window.open(url, name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width='+w+',height='+h);
@@ -63,7 +68,9 @@
 	wp.getPublishButton() 
 
 
-%><%
+%>
+<%= wp.getPublishQueueButton() %>
+<%
 
 if (wp.showSiteSelector()) {
 
@@ -98,7 +105,7 @@ if (wp.showSiteSelector()) {
 </div>
 </form></td>
 
-<%= wp.buttonBarSeparator(5, 0) %>        
+<%= wp.buttonBarSeparator(5, 0) %>
 <%= wp.button("javascript:doReload()", null, "reload.png", org.opencms.workplace.Messages.GUI_BUTTON_RELOAD_0, buttonStyle) %>
 <%= wp.button("../commons/preferences.jsp", "body", "preferences.png",org.opencms.workplace.Messages.GUI_BUTTON_PREFERENCES_0 , buttonStyle) %>
 
