@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.22.8.1 $
+ * Date   : $Date: 2006/11/29 14:58:08 $
+ * Version: $Revision: 1.22.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior  
  * 
- * @version $Revision: 1.22.8.1 $ 
+ * @version $Revision: 1.22.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,8 +96,8 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
      */
     public void addError(Object obj) {
 
-        if (m_report != null) {
-            m_report.addError(obj);
+        if (getReport() != null) {
+            getReport().addError(obj);
         }
     }
 
@@ -119,8 +119,8 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
      */
     public List getErrors() {
 
-        if (m_report != null) {
-            return m_report.getErrors();
+        if (getReport() != null) {
+            return getReport().getErrors();
         } else {
             return null;
         }
@@ -164,8 +164,8 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
      */
     public boolean hasError() {
 
-        if (m_report != null) {
-            return (m_report.getErrors().size() > 0);
+        if (getReport() != null) {
+            return (getReport().getErrors().size() > 0);
         } else {
             return false;
         }
@@ -236,6 +236,6 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
      */
     protected void initOldHtmlReport(Locale locale) {
 
-        m_report = new CmsHtmlReport(locale, m_cms.getRequestContext().getSiteRoot(), true);
+        m_report = new CmsHtmlReport(locale, m_cms.getRequestContext().getSiteRoot(), true, false);
     }
 }

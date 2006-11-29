@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2006/09/29 08:57:33 $
- * Version: $Revision: 1.22.4.1 $
+ * Date   : $Date: 2006/11/29 14:58:08 $
+ * Version: $Revision: 1.22.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,16 +36,16 @@ import java.util.Locale;
 /**
  * Report class used for the shell.<p>
  * 
- * It stores nothing. It just prints everthing to <code>System.out</code><p>.
+ * It stores nothing. It just prints everthing to <code>{@link System#out}</code><p>.
  * 
- * @author Alexander Kandzior  
- * @author Jan Baudisch  
+ * @author Alexander Kandzior
+ * @author Jan Baudisch
  * 
- * @version $Revision: 1.22.4.1 $ 
+ * @version $Revision: 1.22.4.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsShellReport extends A_CmsReport {
+public class CmsShellReport extends CmsPrintStreamReport {
 
     /**
      * Constructs a new report using the provided locale for the output language.<p>
@@ -54,69 +54,6 @@ public class CmsShellReport extends A_CmsReport {
      */
     public CmsShellReport(Locale locale) {
 
-        init(locale, null);
-    }
-
-    /**
-     * @see org.opencms.report.I_CmsReport#getReportUpdate()
-     */
-    public synchronized String getReportUpdate() {
-
-        return "";
-    }
-
-    /**
-     * @see org.opencms.report.A_CmsReport#print(java.lang.String, int)
-     */
-    public synchronized void print(String value, int format) {
-
-        StringBuffer buf;
-        switch (format) {
-            case FORMAT_HEADLINE:
-                buf = new StringBuffer();
-                buf.append("------ ");
-                buf.append(value);
-                System.out.print(buf);
-                break;
-            case FORMAT_WARNING:
-                buf = new StringBuffer();
-                buf.append("!!! ");
-                buf.append(value);
-                System.out.print(buf);
-                addWarning(value);
-                break;
-            case FORMAT_ERROR:
-                buf = new StringBuffer();
-                buf.append("!!! ");
-                buf.append(value);
-                System.out.print(buf);
-                addError(value);
-                break;
-            case FORMAT_NOTE:
-            case FORMAT_OK:
-            case FORMAT_DEFAULT:
-            default:
-                System.out.print(value);
-        }
-    }
-
-    /**
-     * @see org.opencms.report.I_CmsReport#println()
-     */
-    public synchronized void println() {
-
-        System.out.println();
-    }
-
-    /**
-     * @see org.opencms.report.I_CmsReport#println(java.lang.Throwable)
-     */
-    public synchronized void println(Throwable t) {
-
-        StringBuffer buf = new StringBuffer();
-        buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
-        buf.append(t.getMessage());
-        this.println(new String(buf), FORMAT_ERROR);
-        t.printStackTrace(System.out);     
+        super(System.out, locale, false);
     }
 }
