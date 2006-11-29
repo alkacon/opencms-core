@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.570.2.36 $
+ * Date   : $Date: 2006/11/29 17:04:52 $
+ * Version: $Revision: 1.570.2.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2339,10 +2339,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource currentFile = (CmsResource)modifiedFiles.get(i);
             if (currentFile.getState().isChanged() || currentFile.getState().isDeleted()) {
                 CmsLock lock = getLock(dbc, currentFile);
-                if (lock.isWorkflow() && lock.isInProject(deleteProject)) {
-                    unlockResource(dbc, currentFile, true, true);
-                    lock = getLock(dbc, currentFile);
-                }
                 if (lock.isNullLock()) {
                     // lock the resource
                     lockResource(dbc, currentFile, CmsLockType.EXCLUSIVE);
@@ -4562,8 +4558,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Iterator itResources = allResources.iterator();
         while (itResources.hasNext()) {
             CmsResource resource = (CmsResource)itResources.next();
-            CmsLock lock = getLock(dbc, resource);
-            if (lock.isLockableBy(dbc.currentUser())) {
+            CmsLock lock = getLock(dbc, resource);            
+            if (!lock.isSystemLock() && lock.isLockableBy(dbc.currentUser())) {
                 if (lock.isNullLock()) {
                     lockResource(dbc, resource, CmsLockType.PUBLISH);
                 } else {
@@ -4574,24 +4570,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // lock this sibling, so during publishing 
                 // the siblings will be unlock when all siblings get published
                 lockResource(dbc, resource, CmsLockType.PUBLISH);
-            } else {
+            } else if (!lock.isWorkflow()) {
                 // this is needed to fix TestPublishIsssues#testPublishScenarioE
                 changeLock(dbc, resource, CmsLockType.PUBLISH);
-                lock = getLock(dbc, resource);
-                if (!lock.isPublish()) {
-                    if (report != null) {
-                        report.println(Messages.get().container(
+            }
+            // now check the lock state
+            lock = getLock(dbc, resource);
+            if (!lock.isPublish()) {
+                if (report != null) {
+                    report.println(Messages.get().container(
+                        Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
+                        dbc.removeSiteRoot(resource.getRootPath())), I_CmsReport.FORMAT_WARNING);
+                } else {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().getBundle().key(
                             Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
-                            dbc.removeSiteRoot(resource.getRootPath())), I_CmsReport.FORMAT_WARNING);
-                    } else {
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().getBundle().key(
-                                Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
-                                dbc.removeSiteRoot(resource.getRootPath())));
-                        }
+                            dbc.removeSiteRoot(resource.getRootPath())));
                     }
-                    publishList.remove(resource);
                 }
+                // remove files that could not be locked
+                publishList.remove(resource);
             }
         }
 

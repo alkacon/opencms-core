@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workflow/Attic/TestWorkflow.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/11/29 17:03:08 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -50,7 +51,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 7.0.0
  */
@@ -156,7 +157,7 @@ public class TestWorkflow extends OpenCmsTestCase {
         // check that the modified resource is published and unlocked, but still changed
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
         CmsProperty prop1 = cms.readPropertyObject(resource, "Title", false);
-        if (prop1.getValue().equals((newTitle))) {
+        if (!prop1.getValue().equals((newTitle))) {
             fail("Property not changed for " + resource);
         }
 
@@ -198,7 +199,10 @@ public class TestWorkflow extends OpenCmsTestCase {
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
 
         // add one or more resources to it
-        wfm.addResource(getCmsObject(), wfp, resource);
+        wfm.addResource(cms, wfp, resource);
+        // assert workflow lock
+        assertLock(cms, resource, CmsLockType.WORKFLOW);
+        
         cms.lockResource(folder);
         // try to undochanges on the folder
         try {
@@ -224,11 +228,11 @@ public class TestWorkflow extends OpenCmsTestCase {
         // try to direct publish the folder
         try {
             cms.unlockProject(cms.getRequestContext().currentProject().getId());
-            cms.publishResource(folder);
+            cms.publishResource(folder, false, new CmsShellReport(cms.getRequestContext().getLocale()));
             OpenCms.getPublishManager().waitWhileRunning();
-            fail("should not be allowed to publish a folder with resources locked in workflow");
         } catch (CmsLockException e) {
-            // ok
+            fail("it should be allowed to publish a folder with resources locked in workflow");
+            // but the resources locked in the workflow should not be published 
         }
 
         // initiate the workflow (0 - 4 eye review)

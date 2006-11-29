@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2006/11/29 15:04:15 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2006/11/29 17:03:08 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workflow.generic;
 
+import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
@@ -77,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 7.0.0
  */
@@ -836,6 +837,8 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         for (Iterator i = assignedResources.iterator(); i.hasNext();) {
             String resourceName = (String)i.next();
             CmsResource resource = m_cms.readResource(resourceName);
+            m_cms.unlockResource(resourceName);
+            m_securityManager.getLockManager().removeResource(new CmsDbContext(m_cms.getRequestContext()), resource, true, true);
             if (!resource.getState().isUnchanged()) {
                 resourcesToPublish.add(resource);
             }
@@ -846,6 +849,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         CmsPublishList pubList = m_cms.getPublishList(resourcesToPublish, false, false);
         m_cms.publishProject(new CmsHtmlReport(m_cms.getRequestContext().getLocale(), m_cms.getRequestContext().getSiteRoot()), pubList);
         OpenCms.getPublishManager().waitWhileRunning();
+
         m_cms.deleteProject(wfProject.getId());
     }
 
