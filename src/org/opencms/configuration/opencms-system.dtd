@@ -31,7 +31,8 @@
 	resultcache,
 	content-notification?,
 	workflow?,
-	authorizationhandler?)>
+	authorizationhandler?,
+	publishhistory?)>
 
 <!--
 # Version history settings.
@@ -466,3 +467,20 @@ Each job can have an optional list of parameters.
 <!ELEMENT authorizationhandler EMPTY>
 <!ATTLIST authorizationhandler class CDATA #REQUIRED>
 
+<!--
+# Publish history queue:
+# Provides the configuration parameters for the publish history.
+# See the package org.opencms.publish for more details.
+-->
+<!ELEMENT publishhistory (history-size, history-repository)>
+
+<!--
+# The size of the publish queue
+-->
+<!ELEMENT history-size (#PCDATA)>
+
+<!--
+# The size of the publish repository, 
+# can be relative to the WEB-INF folder or an absolute path.
+-->
+<!ELEMENT history-repository (#PCDATA)>

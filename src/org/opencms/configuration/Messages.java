@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2006/10/27 16:01:00 $
- * Version: $Revision: 1.14.4.5 $
+ * Date   : $Date: 2006/11/29 14:56:10 $
+ * Version: $Revision: 1.14.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.4.5 $
+ * @version $Revision: 1.14.4.6 $
  * 
  * @since 6.0.0
  */
@@ -190,6 +190,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_VFS_XML_CONTENT_FINISHED_0 = "INIT_VFS_XML_CONTENT_FINISHED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_WORKFLOW_ENGINE_INVALID_1 = "INIT_WORKFLOW_ENGINE_INVALID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_WORKFLOW_ENGINE_SUCCESS_1 = "INIT_WORKFLOW_ENGINE_SUCCESS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_WORKFLOW_MANAGER_INVALID_1 = "INIT_WORKFLOW_MANAGER_INVALID_1";
 
     /** Message constant for key in the resource bundle. */
@@ -242,6 +248,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_REQUEST_HANDLER_FAILURE_1 = "LOG_INIT_REQUEST_HANDLER_FAILURE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INIT_WORKFLOW_ENGINE_FAILURE_1 = "LOG_INIT_WORKFLOW_ENGINE_FAILURE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_WORKFLOW_MANAGER_FAILURE_1 = "LOG_INIT_WORKFLOW_MANAGER_FAILURE_1";

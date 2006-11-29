@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/10/27 16:01:00 $
- * Version: $Revision: 1.36.4.7 $
+ * Date   : $Date: 2006/11/29 14:56:10 $
+ * Version: $Revision: 1.36.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsEventManager;
 import org.opencms.main.CmsHttpAuthenticationSettings;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsRequestHandler;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
@@ -60,6 +59,8 @@ import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workflow.I_CmsWorkflowEngine;
 import org.opencms.workflow.I_CmsWorkflowManager;
 
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.7 $
+ * @version $Revision: 1.36.4.8 $
  * 
  * @since 6.0.0
  */
@@ -192,6 +193,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the group-users node. */
     public static final String N_GROUP_USERS = "group-users";
 
+    /** The node name for the publish "history-repository" value. */
+    public static final String N_HISTORYREPOSITORY = "history-repository";
+
+    /** The node name for the publish "history-size" value. */
+    public static final String N_HISTORYSIZE = "history-size";
+
     /** The node name for the http-authentication node. */
     public static final String N_HTTP_AUTHENTICATION = "http-authentication";
 
@@ -275,6 +282,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The node name for the context project name. */
     public static final String N_PROJECT = "project";
+
+    /** The node name for the "publishhistory" section. */
+    public static final String N_PUBLISHHISTORY = "publishhistory";
 
     /** The node name for the memory email receiver. */
     public static final String N_RECEIVER = "receiver";
@@ -445,6 +455,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The password handler. */
     private I_CmsPasswordHandler m_passwordHandler;
 
+    /** The configured publish history repository path. */
+    private String m_publishHistoryRepository;
+
+    /** The configured publish history repository size. */
+    private int m_publishHistorySize;
+
     /** A list of instanciated request handler classes. */
     private List m_requestHandlers;
 
@@ -475,11 +491,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The maximum number of entries in the version history (per resource). */
     private int m_versionHistoryMaxCount;
 
-    /** The workfloe engine. */
+    /** The configured workflow engine. */
     private String m_workflowEngine;
 
     /** The configured workflow manager. */
-    private I_CmsWorkflowManager m_workflowManager;
+    private String m_workflowManager;
 
     /**
      * Public constructor, will be called by configuration manager.<p> 
@@ -605,38 +621,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void addScheduleManager() {
 
         m_scheduleManager = new CmsScheduleManager(m_configuredJobs);
-    }
-
-    /**
-     * Generates the workflow manager.<p>
-     * 
-     * @param clazz the workflow manager class to use
-     */
-    public void addWorkflowManager(String clazz) {
-
-        // TODO: Name of classes must be written to configuration (system.xml) even if init fails
-        int todo_v7 = 0;
-
-        Object initClass;
-        try {
-            initClass = Class.forName(clazz).newInstance();
-        } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_INIT_WORKFLOW_MANAGER_FAILURE_1, clazz), t);
-            return;
-        }
-        if (initClass instanceof I_CmsWorkflowManager) {
-            m_workflowManager = (I_CmsWorkflowManager)initClass;
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKFLOW_MANAGER_SUCCESS_1, clazz));
-            }
-            if (m_workflowEngine != null) {
-                m_workflowManager.setEngine(m_workflowEngine);
-            }
-        } else {
-            if (CmsLog.INIT.isErrorEnabled()) {
-                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_WORKFLOW_MANAGER_INVALID_1, clazz));
-            }
-        }
     }
 
     /**
@@ -960,7 +944,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_CONTENT_NOTIFICATION + "/" + N_NOTIFICATION_PROJECT, 0);
 
         // add rule for workflow manager
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_MANAGER, "addWorkflowManager", 1);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_MANAGER, "setWorkflowManager", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_MANAGER, 0, A_CLASS);
 
         // add workflow engine rule
@@ -970,6 +954,20 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // add authorization handler creation rules
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, "setAuthorizationHandler", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, 0, A_CLASS);
+
+        // add rule for publish history size
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYSIZE,
+            "setPublishHistorySize",
+            1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYSIZE, 0);
+
+        // add rule for publish history repository
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYREPOSITORY,
+            "setPublishHistoryRepository",
+            1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYREPOSITORY, 0);
     }
 
     /**
@@ -992,11 +990,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             m_siteManager = OpenCms.getSiteManager();
             m_loginManager = OpenCms.getLoginManager();
             m_loginMessage = OpenCms.getLoginManager().getLoginMessage();
-            try {
-                m_workflowManager = OpenCms.getWorkflowManager();
-            } catch (CmsRuntimeException e) {
-                // ignore
-            }
         }
 
         // i18n nodes
@@ -1296,9 +1289,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // optional workflow nodes
         if (m_workflowManager != null) {
             Element workflowElement = systemElement.addElement(N_WORKFLOW);
-            workflowElement.addElement(N_WORKFLOW_MANAGER).addAttribute(A_CLASS, m_workflowManager.getClass().getName());
-            if (m_workflowManager.getEngine() != null) {
-                workflowElement.addElement(N_WORKFLOW_ENGINE).addAttribute(A_CLASS, m_workflowManager.getEngine());
+            workflowElement.addElement(N_WORKFLOW_MANAGER).addAttribute(A_CLASS, m_workflowManager);
+            if (m_workflowEngine != null) {
+                workflowElement.addElement(N_WORKFLOW_ENGINE).addAttribute(A_CLASS, m_workflowEngine);
             }
         }
 
@@ -1306,6 +1299,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (m_authorizationHandler != null) {
             Element authorizationHandlerElem = systemElement.addElement(N_AUTHORIZATIONHANDLER);
             authorizationHandlerElem.addAttribute(A_CLASS, m_authorizationHandler.getClass().getName());
+        }
+
+        // optional publish history nodes
+        if (m_publishHistoryRepository != null) {
+            Element pubHistElement = systemElement.addElement(N_PUBLISHHISTORY);
+            pubHistElement.addElement(N_HISTORYSIZE).setText(String.valueOf(m_publishHistorySize));
+            pubHistElement.addElement(N_HISTORYREPOSITORY).setText(m_publishHistoryRepository);
         }
 
         // return the vfs node
@@ -1479,6 +1479,26 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Returns the publish History Repository path.<p>
+     *
+     * @return the publish History Repository path
+     */
+    public String getPublishHistoryRepository() {
+
+        return m_publishHistoryRepository;
+    }
+
+    /**
+     * Returns the publish History Size.<p>
+     *
+     * @return the publish History Size
+     */
+    public int getPublishHistorySize() {
+
+        return m_publishHistorySize;
+    }
+
+    /**
      * Returns the list of instanciated request handler classes.<p>
      * 
      * @return the list of instanciated request handler classes
@@ -1578,7 +1598,61 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public I_CmsWorkflowManager getWorkflowManager() {
 
-        return m_workflowManager;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_workflowManager)) {
+            return null;
+        }
+        
+        Object initClass;
+        try {
+            initClass = Class.forName(m_workflowManager).newInstance();
+        } catch (Throwable t) {
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_INIT_WORKFLOW_MANAGER_FAILURE_1, m_workflowManager),
+                t);
+            return null;
+        }
+        if (initClass instanceof I_CmsWorkflowManager) {
+            I_CmsWorkflowManager wfManager = (I_CmsWorkflowManager)initClass;
+            if (m_workflowEngine != null) {
+                try {
+                    initClass = Class.forName(m_workflowEngine).newInstance();
+                } catch (Throwable t) {
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.LOG_INIT_WORKFLOW_ENGINE_FAILURE_1,
+                        m_workflowEngine), t);
+                    return wfManager;
+                }
+                if (initClass instanceof I_CmsWorkflowEngine) {
+                    I_CmsWorkflowEngine wfEngine = (I_CmsWorkflowEngine)initClass;
+                    if (CmsLog.INIT.isInfoEnabled()) {
+                        CmsLog.INIT.info(Messages.get().getBundle().key(
+                            Messages.INIT_WORKFLOW_ENGINE_SUCCESS_1,
+                            m_workflowEngine));
+                    }
+                    wfManager.setEngine(wfEngine);
+                } else {
+                    if (CmsLog.INIT.isErrorEnabled()) {
+                        CmsLog.INIT.error(Messages.get().getBundle().key(
+                            Messages.INIT_WORKFLOW_ENGINE_INVALID_1,
+                            m_workflowEngine));
+                    }
+                    return wfManager;
+                }
+            }
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_WORKFLOW_MANAGER_SUCCESS_1,
+                    m_workflowManager));
+            }
+            return wfManager;
+        } else {
+            if (CmsLog.INIT.isErrorEnabled()) {
+                CmsLog.INIT.error(Messages.get().getBundle().key(
+                    Messages.INIT_WORKFLOW_MANAGER_INVALID_1,
+                    m_workflowManager));
+            }
+        }
+        return null;
     }
 
     /**
@@ -1825,6 +1899,26 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Sets the publish History Repository path.<p>
+     *
+     * @param publishHistoryRepository the publish History Repository path to set
+     */
+    public void setPublishHistoryRepository(String publishHistoryRepository) {
+
+        m_publishHistoryRepository = publishHistoryRepository;
+    }
+
+    /**
+     * Sets the publish History Size.<p>
+     *
+     * @param publishHistorySize the publish History Size to set
+     */
+    public void setPublishHistorySize(String publishHistorySize) {
+
+        m_publishHistorySize = Integer.parseInt(publishHistorySize);
+    }
+
+    /**
      * Sets the runtime info factory.<p>
      * 
      * @param className the class name of the configured runtime info factory
@@ -1935,8 +2029,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void setWorkflowEngine(String engine) {
 
         m_workflowEngine = engine;
-        if (m_workflowManager != null) {
-            m_workflowManager.setEngine(engine);
-        }
+    }
+
+    /**
+     * Generates the workflow manager.<p>
+     * 
+     * @param clazz the workflow manager class to use
+     */
+    public void setWorkflowManager(String clazz) {
+
+        m_workflowManager = clazz;
     }
 }
