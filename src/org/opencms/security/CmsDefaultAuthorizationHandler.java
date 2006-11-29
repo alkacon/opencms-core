@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultAuthorizationHandler.java,v $
- * Date   : $Date: 2006/10/30 08:43:14 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/11/29 14:57:00 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.A_CmsAuthorizationHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -46,7 +45,7 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.4 
  */
@@ -68,12 +67,13 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
         CmsObject cms = checkBasicAuthorization(request);
         // basic authorization successfull?
         if (cms != null) {
-            // set the right site
-            setSite(request, cms);
-            // register the session into OpenCms
-            registerSession(request, cms);
-            // return successful logged in user
-            return cms;
+            try {
+                // register the session into OpenCms and       
+                // return successful logged in user
+                return registerSession(request, cms);
+            } catch (CmsException e) {
+                // ignore and threat the whole login process as failed
+            }
         }
         // failed
         return null;
@@ -86,13 +86,11 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
 
         // try to login with the given credentials
         CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        // this will throw an exception if login fails
         cms.loginUser(userName, pwd);
-        // set the right site
-        setSite(request, cms);
-        // register the session into OpenCms
-        registerSession(request, cms);
+        // register the session into OpenCms and       
         // return successful logged in user
-        return cms;
+        return registerSession(request, cms);
     }
 
     /**
@@ -106,27 +104,27 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
      */
     protected CmsObject checkBasicAuthorization(HttpServletRequest req) {
 
-        // no user identified from the session and basic authentication is enabled
-        String auth = req.getHeader(HEADER_AUTHORIZATION);
-        if (auth == null || !auth.toUpperCase().startsWith(AUTHORIZATION_BASIC_PREFIX)) {
-            // no authentification data is available
-            return null;
-        }
-        // get encoded user and password, following after "BASIC "
-        String base64Token = auth.substring(6);
-
-        // decode it, using base 64 decoder
-        String token = new String(Base64.decodeBase64(base64Token.getBytes()));
-        String username = null;
-        String password = null;
-        int pos = token.indexOf(SEPARATOR_CREDENTIALS);
-        if (pos != -1) {
-            username = token.substring(0, pos);
-            password = token.substring(pos + 1);
-        }
-        // authentication in the DB
         try {
             CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+            // no user identified from the session and basic authentication is enabled
+            String auth = req.getHeader(HEADER_AUTHORIZATION);
+            if (auth == null || !auth.toUpperCase().startsWith(AUTHORIZATION_BASIC_PREFIX)) {
+                // no authentification data is available
+                return cms;
+            }
+            // get encoded user and password, following after "BASIC "
+            String base64Token = auth.substring(6);
+
+            // decode it, using base 64 decoder
+            String token = new String(Base64.decodeBase64(base64Token.getBytes()));
+            String username = null;
+            String password = null;
+            int pos = token.indexOf(SEPARATOR_CREDENTIALS);
+            if (pos != -1) {
+                username = token.substring(0, pos);
+                password = token.substring(pos + 1);
+            }
+            // authentication in the DB
             try {
                 // try to login as a user first ...
                 cms.loginUser(username, password);
@@ -141,19 +139,5 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
             // authentification failed
             return null;
         }
-    }
-
-    /**
-     * Sets the site matching the given request.<p>
-     * 
-     * @param request the current request
-     * @param cms the cms context to set the site for
-     */
-    protected void setSite(HttpServletRequest request, CmsObject cms) {
-
-        // get the right site for the request
-        CmsSite site = OpenCms.getSiteManager().matchRequest(request);
-        // set the requested site root
-        cms.getRequestContext().setSiteRoot(site.getSiteRoot());
     }
 }

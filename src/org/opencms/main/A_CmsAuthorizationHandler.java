@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/A_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2006/10/27 17:23:52 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/11/29 14:57:00 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.4 
  */
@@ -53,10 +53,26 @@ public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHan
      * 
      * @param request the current request
      * @param cms the cms object to register
+     * 
+     * @return the updated cms context
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    protected void registerSession(HttpServletRequest request, CmsObject cms) {
+    protected CmsObject registerSession(HttpServletRequest request, CmsObject cms) throws CmsException {
+
+        // update the request context
+        cms = OpenCmsCore.getInstance().updateContext(request, cms);
+
+        // create the session info object
+        CmsSessionInfo sessionInfo = new CmsSessionInfo(
+            cms.getRequestContext(),
+            new CmsUUID(),
+            request.getSession().getMaxInactiveInterval());
         
-        CmsSessionInfo sessionInfo = new CmsSessionInfo(cms.getRequestContext(), new CmsUUID(), request.getSession().getMaxInactiveInterval());
+        // register the updated cms object in the session manager
         OpenCmsCore.getInstance().getSessionManager().addSessionInfo(sessionInfo);
+        
+        // return the updated cms object
+        return cms;
     }
 }
