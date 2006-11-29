@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2006/10/23 13:47:50 $
- * Version: $Revision: 1.23.4.2 $
+ * Date   : $Date: 2006/11/29 14:59:27 $
+ * Version: $Revision: 1.23.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.23.4.2 $ 
+ * @version $Revision: 1.23.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -435,8 +435,12 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
                         root.getUri().length(),
                         resourcePath.lastIndexOf(CmsToolManager.TOOLPATH_SEPARATOR));
             } else {
-                path = CmsToolManager.TOOLPATH_SEPARATOR
-                    + resourcePath.substring(root.getUri().length(), resourcePath.lastIndexOf('.'));
+                if (resourcePath.lastIndexOf('.') > -1) {
+                    path = CmsToolManager.TOOLPATH_SEPARATOR
+                        + resourcePath.substring(root.getUri().length(), resourcePath.lastIndexOf('.'));
+                } else {
+                    path = CmsToolManager.TOOLPATH_SEPARATOR + resourcePath.substring(root.getUri().length());
+                }
             }
         } catch (CmsException e) {
             // ignore
