@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.97.4.18 $
+ * Date   : $Date: 2006/11/29 17:04:32 $
+ * Version: $Revision: 1.97.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2738,23 +2738,8 @@ public final class CmsSecurityManager {
         CmsRequestContext context = cms.getRequestContext();
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-
             // check if the current user has the required publish permissions
             checkPublishPermissions(dbc, publishList);
-
-            // check that no resource is locked in a workflow or already been published
-            Iterator it = publishList.getFileList().iterator();
-            while (it.hasNext()) {
-                CmsResource subresource = (CmsResource)it.next();
-                checkSystemLocks(dbc, subresource);
-            }
-            if (publishList.isPublishSubResources()) {
-                Iterator itFolders = publishList.getFolderList().iterator();
-                while (itFolders.hasNext()) {
-                    CmsResource folder = (CmsResource)itFolders.next();
-                    checkSystemLocks(dbc, folder);
-                }
-            }
             m_driverManager.publishProject(cms, dbc, publishList, report);
         } finally {
             dbc.clear();
