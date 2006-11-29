@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.37.4.11 $
+ * Date   : $Date: 2006/11/29 17:03:54 $
+ * Version: $Revision: 1.37.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.11 $ 
+ * @version $Revision: 1.37.4.12 $ 
  * 
  * @since 6.0.0 
  * 
@@ -377,25 +377,25 @@ public final class CmsLockManager {
 
         String resourcename = resource.getRootPath();
         CmsLock lock = getLock(dbc, resource);
+        if (lock.isSystemLock()) {
+            lock = lock.getEditionLock();
+        }
 
         // check some abort conditions first
-        if (lock.isNullLock()) {
-            // the resource isn't locked
-            return lock;
-        }
+        if (!lock.isNullLock()) {
+            // the resource is locked by another user or in other project
+            if (!forceUnlock && (!lock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject()))) {
+                throw new CmsLockException(Messages.get().container(
+                    Messages.ERR_RESOURCE_UNLOCK_1,
+                    dbc.removeSiteRoot(resourcename)));
+            }
 
-        // the resource is locked by another user or in other project
-        if (!forceUnlock && (!lock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject()))) {
-            throw new CmsLockException(Messages.get().container(
-                Messages.ERR_RESOURCE_UNLOCK_1,
-                dbc.removeSiteRoot(resourcename)));
-        }
-
-        // sub-resources of a locked folder can't be unlocked
-        if (!forceUnlock && lock.isInherited()) {
-            throw new CmsLockException(Messages.get().container(
-                Messages.ERR_UNLOCK_LOCK_INHERITED_1,
-                dbc.removeSiteRoot(resourcename)));
+            // sub-resources of a locked folder can't be unlocked
+            if (!forceUnlock && lock.isInherited()) {
+                throw new CmsLockException(Messages.get().container(
+                    Messages.ERR_UNLOCK_LOCK_INHERITED_1,
+                    dbc.removeSiteRoot(resourcename)));
+            }
         }
 
         // remove the lock and clean-up stuff
@@ -433,7 +433,7 @@ public final class CmsLockManager {
         }
 
         // remove system locks only if explicit required
-        if (unlockSystemLock && lock.isSystemLock()) {
+        if (unlockSystemLock && getLock(dbc, resource).isSystemLock()) {
             return unlockResource(resourcename, true);
         }
         return lock;
@@ -689,17 +689,27 @@ public final class CmsLockManager {
      */
     private CmsLock internalSiblingLock(CmsLock exclusiveLock, String siblingName) {
 
-        CmsLockType type;
+        CmsLock sysLock = null;
         if (exclusiveLock.isSystemLock()) {
-            type = exclusiveLock.getType();
-        } else {
-            if (getParentLock(siblingName).isNullLock()) {
-                type = CmsLockType.SHARED_EXCLUSIVE;
-            } else {
+            sysLock = new CmsLock(
+                siblingName,
+                exclusiveLock.getUserId(),
+                exclusiveLock.getProject(),
+                exclusiveLock.getType());
+        }
+        if (sysLock == null || !exclusiveLock.getEditionLock().isNullLock()) {
+            CmsLockType type = CmsLockType.SHARED_EXCLUSIVE;
+            if (!getParentLock(siblingName).isNullLock()) {
                 type = CmsLockType.SHARED_INHERITED;
             }
+            CmsLock lock = new CmsLock(siblingName, exclusiveLock.getUserId(), exclusiveLock.getProject(), type);
+            if (sysLock == null) {
+                sysLock = lock;
+            } else {
+                sysLock.setChildLock(lock);
+            }
         }
-        return new CmsLock(siblingName, exclusiveLock.getUserId(), exclusiveLock.getProject(), type);
+        return sysLock;
     }
 
     /**
