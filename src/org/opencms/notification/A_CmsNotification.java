@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/A_CmsNotification.java,v $
- * Date   : $Date: 2006/10/04 07:35:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/11/29 16:31:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.3
  */
@@ -84,6 +84,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
      * Creates a new A_CmsNotification.<p>
      * 
      * @param cms the cms object to use
+     * @param receiver the cms user who should receive the message
      */
     public A_CmsNotification(CmsObject cms, CmsUser receiver) {
 
