@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.25.4.3 $
+ * Date   : $Date: 2006/11/29 15:00:26 $
+ * Version: $Revision: 1.25.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.25.4.3 $ 
+ * @version $Revision: 1.25.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -482,29 +482,27 @@ public class CmsListColumnDefinition {
             html.append(getWidth());
             html.append("px;'>\n");
         }
+        String sortArrow = "";
+        // sort order marker
+        if (isSorted) {
+            if (nextOrder == CmsListOrderEnum.ORDER_ASCENDING) {
+                sortArrow = "<img src='" + CmsWorkplace.getSkinUri() + ICON_UP + "' alt=''>&nbsp;";
+            } else {
+                sortArrow = "<img src='" + CmsWorkplace.getSkinUri() + ICON_DOWN + "' alt=''>&nbsp;";
+            }
+        }
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+            id,
             id,
             getName().key(locale),
             helpText,
             list.isPrintable() ? false : isSorteable(),
             null,
             null,
-            onClic));
-        // sort order marker
-        if (isSorted) {
-            if (nextOrder == CmsListOrderEnum.ORDER_ASCENDING) {
-                html.append("\t\t<img src='");
-                html.append(CmsWorkplace.getSkinUri());
-                html.append(ICON_UP);
-                html.append("' alt=''>\n");
-            } else {
-                html.append("\t\t<img src='");
-                html.append(CmsWorkplace.getSkinUri());
-                html.append(ICON_DOWN);
-                html.append("' alt=''>\n");
-            }
-        }
+            onClic,
+            false,
+            sortArrow));
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && (getWidth().indexOf('%') < 0)) {
             html.append("\t</div>\n");
         }

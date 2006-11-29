@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2006/10/20 15:36:12 $
- * Version: $Revision: 1.21.4.4 $
+ * Date   : $Date: 2006/11/29 15:00:06 $
+ * Version: $Revision: 1.21.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21.4.4 $ 
+ * @version $Revision: 1.21.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,7 +127,18 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String confirmationMessage,
         String onClick) {
 
-        return defaultButtonHtml(style, id, id, name, helpText, enabled, iconPath, confirmationMessage, onClick, false);
+        return defaultButtonHtml(
+            style,
+            id,
+            id,
+            name,
+            helpText,
+            enabled,
+            iconPath,
+            confirmationMessage,
+            onClick,
+            false,
+            null);
     }
 
     /**
@@ -143,6 +154,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * @param confirmationMessage the confirmation message
      * @param onClick the js code to execute, if empty no link is generated
      * @param singleHelp if set, no helptext is written, you have to use the defaultHelpHtml() method later
+     * @param rightHtml optional html code that should come direct after the button
      * 
      * @return html code
      */
@@ -156,7 +168,8 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String iconPath,
         String confirmationMessage,
         String onClick,
-        boolean singleHelp) {
+        boolean singleHelp,
+        String rightHtml) {
 
         StringBuffer html = new StringBuffer(1024);
         if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
@@ -250,8 +263,14 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
             if (enabled) {
                 html.append("</a>");
             }
+            if (style != CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT && name.length() > 1) {
+                html.append("&nbsp;");
+            }
         }
         html.append("</span>");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(rightHtml)) {
+            html.append(rightHtml);
+        }
         if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
             html.append("</div>\n");
         }
