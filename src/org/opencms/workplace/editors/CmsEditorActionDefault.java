@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2006/10/25 16:53:42 $
- * Version: $Revision: 1.19.4.3 $
+ * Date   : $Date: 2006/11/29 15:04:05 $
+ * Version: $Revision: 1.19.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19.4.3 $ 
+ * @version $Revision: 1.19.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,6 +131,11 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
      */
     public boolean isButtonActive(CmsJspActionElement jsp, String resourceName) {
 
-        return jsp.getCmsObject().hasPublishPermissions(resourceName);
+        try {
+            jsp.getCmsObject().getPublishList(jsp.getCmsObject().readResource(resourceName), false);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

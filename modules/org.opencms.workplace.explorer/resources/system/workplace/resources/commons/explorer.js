@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/10/22 13:55:30 $
- * Version: $Revision: 1.13.4.10 $
+ * Date   : $Date: 2006/11/29 15:04:13 $
+ * Version: $Revision: 1.13.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,8 +78,8 @@ function menuItem(name, link, target, rules){
 }
 
 
-//            1     2     3      4     5         6     7      8            9        10                11                   12           13              14            15           16           17        18        19                   20                 21                      22             23
-function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, workflowInfo){
+//            1     2     3      4     5         6     7      8            9        10                11                   12           13              14            15           16           17        18        19                   20                 21                      22             23           24
+function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState){
 	this.name = name;
 	this.path = path;
 	this.title = decodeURIComponent(title);
@@ -102,16 +102,17 @@ function file(name, path, title, type, linkType, size, state, layoutstyle, proje
 	this.lockedInProjectId = lockedInProjectId;
 	this.isInsideCurrentProject = (isInsideCurrentProject=='I') ? true : false;
 	this.workflowState = workflowState;
-	this.workflowInfo = workflowInfo;
+	this.sysLockInfo = sysLockInfo;
+	this.projectState = projectState;
 	this.isFolder = (size < 0) ? true : false;
 }
 
 
-function aF(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, workflowInfo){
+function aF(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState){
 	if(path == "") {
 		path=vr.actDirectory;
 	}
-	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, workflowInfo);
+	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState);
 }
 
 
@@ -837,6 +838,7 @@ function printList(wo) {
 	returnplace = returnplace.replace(/\&/g, "%26");
 	returnplace = returnplace.replace(/\=/g, "%3D");
 	returnplace = returnplace.replace(/\//g, "%2F");
+	
 	wo.open();
 	wo.writeln(temp);
 
@@ -847,26 +849,25 @@ function printList(wo) {
 	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"20\">&nbsp;</td>");
 	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"20\">&nbsp;</td>");
 
-	if (vi.check_name)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[0] + "&nbsp;</td>");
-	if (vi.check_title)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[1] + "&nbsp;</td>");
-	if (vi.check_type)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[2] + "&nbsp;</td>");
-	if (vi.check_size)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[3] + "&nbsp;</td>");
-	if (vi.check_workflow)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[4] + "&nbsp;</td>");
-	if (vi.check_permissions)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[5] + "&nbsp;</td>");
+	if (vi.check_name)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[0] + "&nbsp;</td>");
+	if (vi.check_title)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[1] + "&nbsp;</td>");
+	if (vi.check_type)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[2] + "&nbsp;</td>");
+	if (vi.check_size)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[3] + "&nbsp;</td>");
+	if (vi.check_workflow)				wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[4] + "&nbsp;</td>");
+	if (vi.check_permissions)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[5] + "&nbsp;</td>");
 	if (vi.check_dateLastModified)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[6] + "&nbsp;</td>");
 	if (vi.check_userWhoLastModified)	wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;"  + vr.descr[7] + "&nbsp;</td>");
-	if (vi.check_dateCreated)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[8] + "&nbsp;</td>");
+	if (vi.check_dateCreated)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[8] + "&nbsp;</td>");
 	if (vi.check_userWhoCreated)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;"  + vr.descr[9] + "&nbsp;</td>");
-	if (vi.check_dateReleased)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[10] + "&nbsp;</td>");
-	if (vi.check_dateExpired)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[11] + "&nbsp;</td>");
-	if (vi.check_state)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[12] + "&nbsp;</td>");
-	if (vi.check_lockedBy)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;"  + vr.descr[13] + "&nbsp;</td>");
+	if (vi.check_dateReleased)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[10] + "&nbsp;</td>");
+	if (vi.check_dateExpired)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[11] + "&nbsp;</td>");
+	if (vi.check_state)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[12] + "&nbsp;</td>");
+	if (vi.check_lockedBy)				wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;"  + vr.descr[13] + "&nbsp;</td>");
 
 
 	wo.writeln("</tr>");
 
 	for (var i = 0; i < vi.liste.length; i++) {
-
 		var vi_icon;
 		var vi_text;
 		var noaccess = false;
@@ -887,7 +888,6 @@ function printList(wo) {
 		}
 
 		ssclass = "class=\"";
-
 		if (!vi.liste[i].isInsideCurrentProject || noaccess) {
 			ssclass += "fp";
 		} else {
@@ -900,8 +900,6 @@ function printList(wo) {
 			if (vi.liste[i].state == 3)
 			ssclass += "fd";
 		}
-
-
 		ssclass += "\"";
 
 		if ((vi.liste[i].layoutstyle) == 1) ssclass += " style=\"font-style:italic;\"";
@@ -931,67 +929,59 @@ function printList(wo) {
 		}
 		wo.writeln("</td>");
 
-		if (vi.liste[i].isInsideCurrentProject) {
-			wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\">");
-			// the resource is in the current project, so display the lock and project state
+		wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\">");
+		// the resource is in the current project, so display the lock and project state
 
-			var lockIcon;
-
-			if (vi.liste[i].lockedBy != "") {
-				if ((vr.userName == vi.liste[i].lockedBy) && (vi.liste[i].lockedInProjectId == vr.actProject)) {
-					if (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2) {
-						lockIcon = vi.skinPath + 'explorer/lock_shared.gif';
-					} else {
-						lockIcon = vi.skinPath + 'explorer/lock_user.gif';
-					}
-					lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
-				  wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
-
-				} else if (vi.liste[i].lockType != 5){
-					lockIcon = vi.skinPath + 'explorer/lock_other.gif';
+		var lockIcon;
+		if (vi.liste[i].lockedBy != "") {
+			if ((vr.userName == vi.liste[i].lockedBy) && (vi.liste[i].lockedInProjectId == vr.actProject)) {
+				if (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2) {
+					lockIcon = vi.skinPath + 'explorer/lock_shared.gif';
+				} else {
+					lockIcon = vi.skinPath + 'explorer/lock_user.gif';
+				}
+				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
+			  	wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
+			} else {
+				lockIcon = vi.skinPath + 'explorer/lock_other.gif';
 				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
 				wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
 			}
-			}
-			wo.write("</td>");
+		}
+		wo.write("</td>");
 
-			wo.write("<td unselectable=\"on\" id=\"td2_" + i + "\">");
-			var projectIcon;
-			var projectAltText;
-			if (vi.liste[i].workflowInfo != "") {
-				projectIcon = vi.skinPath + 'explorer/project_myworkflow.png';
-				projectAltText = vi.liste[i].workflowInfo;	
-			} else if (vi.liste[i].state != 0) {
-				if (vi.liste[i].project == vr.actProject) {
-					projectIcon = vi.skinPath + 'explorer/project_this.png';
-					projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
-				} else if (vi.liste[i].lockType == 5) {
-					projectIcon = vi.skinPath + 'explorer/project_other.png';
-					projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;					
-				} else {
-					projectIcon = vi.skinPath + 'explorer/project_other.png';
-					projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
-				}			
-			} else {
-				projectIcon = vi.skinPath + 'explorer/project_none.gif';
-				projectAltText = "";
-			}
+		wo.write("<td unselectable=\"on\" id=\"td2_" + i + "\">");
+		var projectIcon;
+		var projectAltText;
 
-			wo.write("<img src=\"" + projectIcon + "\" alt=\"" + projectAltText + "\" title=\"" + projectAltText + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
-			wo.write("</td>\n");
-		} else if (vi.liste[i].workflowInfo != "") {
+        if (vi.liste[i].projectState == 5) {
+        	// locked for publish
+			projectIcon = vi.skinPath + 'explorer/project_publish.png';
+			projectAltText = vr.publishlock;
+		} else if (vi.liste[i].projectState == 4) {
+			// not lockable workflow
 			projectIcon = vi.skinPath + 'explorer/project_otherworkflow.png';
-			projectAltText = vi.liste[i].workflowInfo;
-			wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\"></td>\n");
-			wo.write("<td unselectable=\"on\" id=\"td2_" + i + "\">");
-			wo.write("<img src=\"" + projectIcon + "\" alt=\"" + projectAltText + "\" title=\"" + projectAltText + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
-			wo.write("</td>\n");							
+			projectAltText = vi.liste[i].sysLockInfo;	
+		} else if (vi.liste[i].projectState == 3) {
+			// lockable workflow
+			projectIcon = vi.skinPath + 'explorer/project_myworkflow.png';
+			projectAltText = vi.liste[i].sysLockInfo;	
+		} else if (vi.liste[i].projectState == 2) {
+			// locked in other project
+			projectIcon = vi.skinPath + 'explorer/project_other.png';
+			projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
+		} else if (vi.liste[i].projectState == 1) {
+			// locked in current project
+			projectIcon = vi.skinPath + 'explorer/project_this.png';
+			projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
 		} else {
-			// nothing to do here
-			wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\"></td>\n");
-			wo.write("<td unselectable=\"on\" id=\"td2_" + i + "\"></td>\n");
+			projectIcon = vi.skinPath + 'explorer/project_none.gif';
+			projectAltText = "";
 		}
 
+		wo.write("<img src=\"" + projectIcon + "\" alt=\"" + projectAltText + "\" title=\"" + projectAltText + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
+		wo.write("</td>\n");
+		
 		if (vi.check_name) {
 			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" " + ssclass + ">&nbsp;");
 			if (mode == "listview") {
@@ -1036,20 +1026,19 @@ function printList(wo) {
 			wo.writeln("</td>");
 		}
 		var ressize = (vi.liste[i].isFolder) ? "" : "" + vi.liste[i].size;
-		var lockedBy = (vi.liste[i].isInsideCurrentProject && vi.liste[i].lockType != 5) ? vi.liste[i].lockedBy : "";
-		if (vi.check_title)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].title + "&nbsp;</td>");
-		if (vi.check_type)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi_text + "</td>");
-		if (vi.check_size)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + ressize + "</td>");
-		if (vi.check_workflow)	wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].workflowState + "</td>");
-		if (vi.check_permissions)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].permissions + "</td>");
+		if (vi.check_title)					wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].title + "&nbsp;</td>");
+		if (vi.check_type)					wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi_text + "</td>");
+		if (vi.check_size)					wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + ressize + "</td>");
+		if (vi.check_workflow)				wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].workflowState + "</td>");
+		if (vi.check_permissions)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].permissions + "</td>");
 		if (vi.check_dateLastModified)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateLastModified + "</td>");
 		if (vi.check_userWhoLastModified)	wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].userWhoLastModified + "</td>");
-		if (vi.check_dateCreated)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateCreated + "</td>");
+		if (vi.check_dateCreated)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateCreated + "</td>");
 		if (vi.check_userWhoCreated)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].userWhoCreated + "</td>");
-		if (vi.check_dateReleased)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateReleased + "</td>");
-		if (vi.check_dateExpired)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateExpired + "</td>");
-		if (vi.check_state)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vr.stati[vi.liste[i].state] + "</td>");
-		if (vi.check_lockedBy)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + lockedBy + "</td>");
+		if (vi.check_dateReleased)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateReleased + "</td>");
+		if (vi.check_dateExpired)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateExpired + "</td>");
+		if (vi.check_state)					wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vr.stati[vi.liste[i].state] + "</td>");
+		if (vi.check_lockedBy)				wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].lockedBy + "</td>");
 
 		wo.writeln("</td></tr>");
 	}

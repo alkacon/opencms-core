@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2006/11/17 13:23:28 $
- * Version: $Revision: 1.43.4.6 $
+ * Date   : $Date: 2006/11/29 15:04:13 $
+ * Version: $Revision: 1.43.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.6 $
+ * @version $Revision: 1.43.4.7 $
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.db.messages";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCEPT_TASK_1 = "ERR_ACCEPT_TASK_1";
@@ -77,9 +74,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_USER_1 = "ERR_BAD_USER_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CHANGE_LAST_MODIFIED_RESOURCE_IN_PROJECT_1 = "ERR_CHANGE_LAST_MODIFIED_RESOURCE_IN_PROJECT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGE_LOCK_OF_RESOURCE_2 = "ERR_CHANGE_LOCK_OF_RESOURCE_2";
@@ -121,6 +115,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_COPY_ACE_2 = "ERR_COPY_ACE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_COPY_LOCKED_SIBLINGS_1 = "ERR_COPY_LOCKED_SIBLINGS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_RESOURCE_2 = "ERR_COPY_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
@@ -146,7 +143,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_RELATION_3 = "ERR_CREATE_RELATION_3";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_RESOURCE_1 = "ERR_CREATE_RESOURCE_1";
 
@@ -610,6 +607,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_USERNAME_PASSWORD_MISMATCH_1 = "ERR_USERNAME_PASSWORD_MISMATCH_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_VALIDATE_RELATIONS_0 = "ERR_VALIDATE_RELATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_VFS_FOLDERS_DONT_SUPPORT_SIBLINGS_0 = "ERR_VFS_FOLDERS_DONT_SUPPORT_SIBLINGS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -735,9 +735,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String INIT_USERS_GROUP_1 = "INIT_USERS_GROUP_1";
 
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
-
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_2 = "LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_2";
 
@@ -806,6 +803,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_PARENT_FOLDER_NOT_PUBLISHED_1 = "RPT_PARENT_FOLDER_NOT_PUBLISHED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_REMOVED_RESOURCE_1 = "RPT_PUBLISH_REMOVED_RESOURCE_1";
+
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.db.messages";
+
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2006/10/22 09:11:58 $
- * Version: $Revision: 1.28.8.5 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.28.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,10 @@ package org.opencms.lock;
 
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
+import org.opencms.workflow.I_CmsWorkflowManager;
 
 /**
  * Represents the lock state of a VFS resource.<p>
@@ -41,54 +44,21 @@ import org.opencms.util.CmsUUID;
  * The lock state is combination of how, by whom and in which project
  * a resource is currently locked.<p>
  * 
- * Using old-style methods on CmsResource objects to prove the lock
- * state of a resource may result to incorrect lock states. Use 
- * {@link org.opencms.file.CmsObject#getLock(String)} to obtain a
- * CmsLock object that represents the current lock state of a resource.
- * 
  * @author Thomas Weckert  
  * @author Andreas Zahner 
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.28.8.5 $ 
+ * @version $Revision: 1.28.8.6 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.file.CmsObject#getLock(org.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager
- * 
- * 
- * 
- * 
- * Workflow lock logic:
- * 
- * A lock has a user and a project setting.
- * 
- * If the lock project is a workflow project, the lock is a workflow lock.
- * 
- * If the user of the lock is NULL, then the resource is locked in the workflow, but no user has write accesss to it.
- * 
- * If the user of the lock is not null, then the resource is locked in the workflow by the given user.
- * 
- * 
- * If a resource is added in a worflow project, then the project is stored with the lock for a NULL user.
- * If this resource is locked again in another project (for editing), then the user for the lock is set.
- * 
- * Problem: Resource does NOT belong to the current project ==> lock may appear closed
- * Solution: Display logic is changed in this case anyway, handle display of locks accordingly (?)
- * 
- * A resource with a workflow lock that has a NULL user is always displayed unlocked, but with a workflow icon.
- * 
- * A resource with a workflow lock that has a user other then null is displayed locked for all other users with a workflow icon.
- * The project of the user stored in the workflow lock is ignored, so it will appear unlockedf in all projects.
- * This is correct, as the resource is part of the workflow project anyway (not of the project the user is in).
- * 
- * If a resource that is part of a workflow is unlocked by a user, the user id in the lock is set to NULL again.
- * The lock itself remains in the lock table with the changed user set to NULL. 
- * 
- * 
- * 
  */
 public class CmsLock implements Cloneable {
+
+    /** The configured workflow manager, may be <code>null</code>. */
+    private static I_CmsWorkflowManager m_wfManager;
 
     /** The shared null lock object. */
     private static final CmsLock NULL_LOCK = new CmsLock(
@@ -97,8 +67,8 @@ public class CmsLock implements Cloneable {
         new CmsProject(),
         CmsLockType.UNLOCKED);
 
-    /** Flag to indicate if the lock is a temporary lock. */
-    private int m_mode;
+    /** The child lock. */
+    private CmsLock m_childLock = NULL_LOCK;
 
     /** The project where the resource is locked. */
     private CmsProject m_project;
@@ -128,6 +98,15 @@ public class CmsLock implements Cloneable {
         m_type = type;
     }
 
+    static {
+        // initialize the workflow manager
+        try {
+            m_wfManager = OpenCms.getWorkflowManager();
+        } catch (CmsRuntimeException e) {
+            m_wfManager = null;
+        }
+    }
+
     /**
      * Returns the shared Null CmsLock.<p>
      * 
@@ -153,19 +132,23 @@ public class CmsLock implements Cloneable {
             CmsLock other = (CmsLock)obj;
             return other.m_resourceName.equals(m_resourceName)
                 && other.m_userId.equals(m_userId)
-                && other.m_project.equals(m_project);
+                && other.m_project.equals(m_project)
+                && other.m_type.equals(m_type);
         }
         return false;
     }
 
     /**
-     * Returns the mode of the lock to indicate if the lock is a temporary lock.<p>
+     * Returns the edition lock.<p>
      * 
-     * @return the temporary mode of the lock
+     * @return the edition lock
      */
-    public int getMode() {
+    public CmsLock getEditionLock() {
 
-        return m_mode;
+        if (isSystemLock()) {
+            return getChildLock();
+        }
+        return this;
     }
 
     /**
@@ -199,6 +182,19 @@ public class CmsLock implements Cloneable {
     }
 
     /**
+     * Returns the system lock.<p>
+     * 
+     * @return the system lock
+     */
+    public CmsLock getSystemLock() {
+
+        if (isSystemLock()) {
+            return this;
+        }
+        return NULL_LOCK;
+    }
+
+    /**
      * Returns the type about how the resource is locked.<p>
      * 
      * @return the type of the lock
@@ -223,7 +219,7 @@ public class CmsLock implements Cloneable {
      */
     public int hashCode() {
 
-        return getResourceName().hashCode();
+        return m_project.hashCode() + m_resourceName.hashCode() + m_userId.hashCode() + m_type.hashCode();
     }
 
     /**
@@ -233,7 +229,7 @@ public class CmsLock implements Cloneable {
      */
     public boolean isExclusive() {
 
-        return (m_type == CmsLockType.EXCLUSIVE) || (m_type == CmsLockType.TEMPORARY);
+        return m_type.isExclusive();
     }
 
     /**
@@ -257,7 +253,7 @@ public class CmsLock implements Cloneable {
      */
     public boolean isInherited() {
 
-        return (m_type == CmsLockType.INHERITED) || (m_type == CmsLockType.SHARED_INHERITED);
+        return m_type.isInherited();
     }
 
     /**
@@ -265,9 +261,9 @@ public class CmsLock implements Cloneable {
      * 
      * @return <code>true</code> if this is an directly inherited lock
      */
-    public boolean isInheritedDirectly() {
+    public boolean isDirectlyInherited() {
 
-        return m_type == CmsLockType.INHERITED;
+        return m_type.isDirectlyInherited();
     }
 
     /**
@@ -280,6 +276,37 @@ public class CmsLock implements Cloneable {
     public boolean isInProject(CmsProject project) {
 
         return m_project.equals(project);
+    }
+
+    /**
+     * Checks if a resource can be locked by a user.<p>
+     * 
+     * The resource is not lockable if it already has a lock of type {@link CmsLockType#PUBLISH}.<p>
+     * 
+     * The resource is lockable either
+     * - if it is currently unlocked
+     * - if it is a workflow lock and the user can lock the resource for edition, 
+     *       see {@link org.opencms.workflow.I_CmsWorkflowManager#isLockableInWorkflow(CmsUser, String, boolean)} 
+     * - if it is not a workflow lock and already has a lock of another type set and the user is the lock owner
+     * 
+     * This may change by the implementation of the workflow lock.
+     * 
+     * @param user the user to test lockeability for
+     * 
+     * @return <code>true</code> if this lock blocks any operation on the locked resource until it is unlocked
+     */
+    public boolean isLockableBy(CmsUser user) {
+
+        if (isPublish()) {
+            return false;
+        }
+        if (isUnlocked()) {
+            return true;
+        }
+        if (isWorkflow() && m_wfManager != null) {
+            return m_wfManager.isLockableInWorkflow(user, getResourceName(), false);
+        }
+        return isOwnedBy(user);
     }
 
     /**
@@ -329,7 +356,17 @@ public class CmsLock implements Cloneable {
      */
     public boolean isPersistent() {
 
-        return (m_type == CmsLockType.EXCLUSIVE) || (m_type == CmsLockType.WORKFLOW);
+        return m_type.isPersistent();
+    }
+
+    /**
+     * Returns <code>true</code> if this is a publish lock.<p>
+     * 
+     * @return <code>true</code> if this is a publish lock
+     */
+    public boolean isPublish() {
+
+        return m_type.isPublish();
     }
 
     /**
@@ -339,7 +376,17 @@ public class CmsLock implements Cloneable {
      */
     public boolean isShared() {
 
-        return (m_type == CmsLockType.SHARED_EXCLUSIVE) || (m_type == CmsLockType.SHARED_INHERITED);
+        return m_type.isShared();
+    }
+
+    /**
+     * Returns <code>true</code> if this is a system (2nd level) lock.<p>
+     * 
+     * @return <code>true</code> if this is a system (2nd level) lock
+     */
+    public boolean isSystemLock() {
+
+        return m_type.isSystem();
     }
 
     /**
@@ -349,7 +396,7 @@ public class CmsLock implements Cloneable {
      */
     public boolean isTemporary() {
 
-        return m_type == CmsLockType.TEMPORARY;
+        return m_type.isTemporary();
     }
 
     /**
@@ -362,7 +409,7 @@ public class CmsLock implements Cloneable {
      */
     public boolean isUnlocked() {
 
-        return m_type == CmsLockType.UNLOCKED;
+        return m_type.isUnlocked();
     }
 
     /**
@@ -372,7 +419,7 @@ public class CmsLock implements Cloneable {
      */
     public boolean isWorkflow() {
 
-        return m_type == CmsLockType.WORKFLOW;
+        return m_type.isWorkflow();
     }
 
     /**
@@ -384,15 +431,40 @@ public class CmsLock implements Cloneable {
 
         StringBuffer buf = new StringBuffer();
 
-        buf.append("resource: ");
+        buf.append("[CmsLock: resource: ");
         buf.append(getResourceName());
-        buf.append(" type: ");
-        buf.append(m_type.toString());
-        buf.append(" project: ");
+        buf.append(", type: ");
+        buf.append(getType());
+        buf.append(", project: ");
         buf.append(getProjectId());
-        buf.append(" user: ");
+        buf.append(", user: ");
         buf.append(getUserId());
+        if (getChildLock() != null) {
+            buf.append(", child lock: ");
+            buf.append(getChildLock());
+        }
+        buf.append("]");
 
         return buf.toString();
+    }
+
+    /**
+     * Returns the child Lock.<p>
+     *
+     * @return the child Lock
+     */
+    protected CmsLock getChildLock() {
+
+        return m_childLock;
+    }
+
+    /**
+     * Sets the child Lock.<p>
+     *
+     * @param childLock the child Lock to set
+     */
+    protected void setChildLock(CmsLock childLock) {
+
+        m_childLock = childLock;
     }
 }

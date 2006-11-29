@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2006/11/08 09:28:51 $
- * Version: $Revision: 1.32.4.9 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.32.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.9 $ 
+ * @version $Revision: 1.32.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -217,7 +217,7 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showUserWhoCreated = (preferences & CmsUserSettings.FILELIST_USER_CREATED) > 0;
         boolean showDateReleased = (preferences & CmsUserSettings.FILELIST_DATE_RELEASED) > 0;
         boolean showDateExpired = (preferences & CmsUserSettings.FILELIST_DATE_EXPIRED) > 0;
-        boolean showState = (preferences & CmsUserSettings.FILELIST_WORKFLOW_STATE) > 0;
+        boolean showWorkflowState = (preferences & CmsUserSettings.FILELIST_WORKFLOW_STATE) > 0;
 
         boolean fullPath = showVfsLinks || galleryView || listView;
 
@@ -250,7 +250,7 @@ public class CmsExplorer extends CmsWorkplace {
                 showUserWhoCreated,
                 showDateReleased,
                 showDateExpired,
-                showState));
+                showWorkflowState));
         }
 
         content.append(getInitializationFooter(numberOfPages, selectedPage));
@@ -270,7 +270,7 @@ public class CmsExplorer extends CmsWorkplace {
      * @param showUserWhoCreated if the user who created the resource should be shown
      * @param showDateReleased if the date of release should be shown 
      * @param showDateExpired if the date of expiration should be shown
-     * @param showState if the workflow state should be shown
+     * @param showWorkflowState if the workflow state should be shown
      * 
      * @return js code for intializing the explorer view
      * 
@@ -288,7 +288,7 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showUserWhoCreated,
         boolean showDateReleased,
         boolean showDateExpired,
-        boolean showState) {
+        boolean showWorkflowState) {
 
         CmsResource resource = resUtil.getResource();
         String path = getCms().getSitePath(resource);
@@ -437,14 +437,17 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("\",\"");
 
         // position 22: workflow project state
-        if (showState) {
+        if (showWorkflowState) {
             content.append(resUtil.getWorkflowTaskState());
         }
         content.append("\",\"");
 
-        // position 23: workflow project info, used as text for tool tip
-        content.append(resUtil.getWorkflowProjectInfo());
-        content.append("\"");
+        // position 23: system lock info, used as text for tool tip
+        content.append(resUtil.getSystemLockInfo(true));
+        content.append("\", ");
+
+        // position 24: project state
+        content.append(resUtil.getProjectState().getMode());
 
         // finish
         content.append(");\n");

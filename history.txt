@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.717.2.103 $
+ * Date   : $Date: 2006/11/29 15:04:15 $
+ * Version: $Revision: 1.717.2.104 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,10 +20,14 @@ Legend:
 - General comment
 
 OpenCms 6.5.5 - xxxxx, 2006
-! The Lucene search index fields generated form the OpenCms content are now fully configurable
+! The Lucene search index fields generated from the OpenCms content are now fully configurable
 ! Text extraction results for the full text search are now cached and reused to speed up index generation
 - Simplified some of the search index API's
-- The deprecated legacy / comaptibility packages have been removed from the distribution
+- The deprecated legacy / compatibility packages have been removed from the distribution
+! Redesigned publish process. With a publish job queue and publish locks.
+  The publish queue makes it possible to continue working without waiting for the publish job to finish and 
+  the publish locks prevent that a file that is waiting to be published can be modified before it really gets published.
+- Improved direct and project publish dialogs to fit the new publish process semantics
 
 OpenCms 6.5.4 - November 27, 2006
 * Fixed error when searching in sites with uppercase letters in site path

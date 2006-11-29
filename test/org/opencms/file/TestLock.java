@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2006/10/27 12:38:22 $
- * Version: $Revision: 1.20.4.2 $
+ * Date   : $Date: 2006/11/29 15:04:05 $
+ * Version: $Revision: 1.20.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -56,110 +56,74 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.2 $
+ * @version $Revision: 1.20.4.3 $
  */
 public class TestLock extends OpenCmsTestCase {
-  
+
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestLock(String arg0) {
+
         super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestLock.class.getName());
-              
+
         suite.addTest(new TestLock("testLockWithDeletedNewFiles"));
         suite.addTest(new TestLock("testLockForFile"));
         suite.addTest(new TestLock("testLockForFolder"));
         suite.addTest(new TestLock("testLockForFolderPrelockedShared"));
         suite.addTest(new TestLock("testLockForFolderPrelockedExclusive"));
-        suite.addTest(new TestLock("testLockSteal")); 
+        suite.addTest(new TestLock("testLockSteal"));
         suite.addTest(new TestLock("testLockRequired"));
         suite.addTest(new TestLock("testLockInherit"));
         suite.addTest(new TestLock("testLockForSiblings"));
         suite.addTest(new TestLock("testLockForBaseOperations"));
-      
-        
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms("simpletest", "/sites/default/");
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
-        return wrapper;
-    }     
-        
-    /**
-     * Tests lock status after a new file has been deleted in offline project.<p>
-     * 
-     * Issue description:
-     * User A creates a new file, but deletes it without ever publishing it.
-     * Now user B create a new file with the same name / path.
-     * The file was still in the lock manager but for user A, this generated 
-     * an error for user B.<p>
-     * 
-     * Solution:
-     * Remove new files that are deleted from the lock manager.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testLockWithDeletedNewFiles() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
-        echo("Testing lock status of a deleted new file");
-        
-        String source = "/folder1/newfile.html";
 
-        // create a new resource as default test user
-        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
-        // the source file must now have an exclusive lock
-        assertLock(cms, source, CmsLockType.EXCLUSIVE);        
-        // now delete the created resource
-        cms.deleteResource(source, CmsResource.DELETE_REMOVE_SIBLINGS);
-        
-        // now login as user "test2"
-        cms.loginUser("test2", "test2");
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));    
-                
-        // now create the resource again
-        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId()); 
-        
-        // the newly created resource must now be locked to user "test2"
-        assertLock(cms, source, CmsLockType.EXCLUSIVE);
-    }    
-    
+        return wrapper;
+    }
+
     /**
      * Tests lock status of a resource for basic operations.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testLockForBaseOperations() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
+
+        CmsObject cms = getCmsObject();
         echo("Testing lock state for basic operations");
-        
+
         String source = "/types/text.txt";
         String destination1 = "/types/text_new1.txt";
         String destination2 = "/types/text_new2.txt";
         storeResources(cms, source);
-        
+
         // copy source
         cms.copyResource(source, destination1, CmsResource.COPY_AS_NEW);
 
@@ -167,15 +131,15 @@ public class TestLock extends OpenCmsTestCase {
         // and source must still be unlocked
         assertLock(cms, source, CmsLockType.UNLOCKED);
         assertLock(cms, destination1, CmsLockType.EXCLUSIVE);
-        
+
         // copy source again
-        cms.lockResource(source);        
-        cms.copyResource(source, destination2, CmsResource.COPY_AS_NEW);  
-        
+        cms.lockResource(source);
+        cms.copyResource(source, destination2, CmsResource.COPY_AS_NEW);
+
         // both source and destination must be exlusive locked
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
         assertLock(cms, destination2, CmsLockType.EXCLUSIVE);
-                
+
         // now some move tests
         source = "/types/jsp.jsp";
         destination1 = "/types/jsp_new1.html";
@@ -183,26 +147,26 @@ public class TestLock extends OpenCmsTestCase {
         // lock resource
         cms.lockResource(source);
         cms.moveResource(source, destination1);
-        
+
         // since source was locked, destination must be shared exclusive
         assertLock(cms, destination1, CmsLockType.EXCLUSIVE);
-    }    
-    
+    }
+
     /**
      * Tests lock status of a file and its siblings.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testLockForFile() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
+
+        CmsObject cms = getCmsObject();
         echo("Testing locking of files");
-        
+
         String source = "/folder1/subfolder11/page1.html";
         String sibling1 = "/folder1/subfolder12/page1.html";
         String sibling2 = "/folder2/subfolder22/page1.html";
         storeResources(cms, source);
-        
+
         // lock source
         cms.lockResource(source);
 
@@ -211,37 +175,37 @@ public class TestLock extends OpenCmsTestCase {
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
         assertLock(cms, sibling1, CmsLockType.SHARED_EXCLUSIVE);
         assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
-        
+
         // now unlock the source
         cms.unlockResource(source);
-        
+
         // the source file and all sibling are unlocked now
         assertLock(cms, source, CmsLockType.UNLOCKED);
         assertLock(cms, sibling1, CmsLockType.UNLOCKED);
         assertLock(cms, sibling2, CmsLockType.UNLOCKED);
-    }    
-    
+    }
+
     /**
      * Tests lock status of a folder and its siblings.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testLockForFolder() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
+
+        CmsObject cms = getCmsObject();
         echo("Testing locking of folders");
-        
+
         String folder = "/folder1/subfolder12/";
         String sibling1 = "/folder1/subfolder12/page1.html";
         String sibling2 = "/folder2/subfolder22/page1.html";
         storeResources(cms, folder);
-        
+
         // lock folder
         cms.lockResource(folder);
 
         // the source folder must have an exclusive lock
         assertLock(cms, folder, CmsLockType.EXCLUSIVE);
-        
+
         // all resources in the folder must have an inherited lock        
         List resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         Iterator i = resources.iterator();
@@ -249,18 +213,18 @@ public class TestLock extends OpenCmsTestCase {
             CmsResource res = (CmsResource)i.next();
             assertLock(cms, cms.getSitePath(res), CmsLockType.INHERITED);
         }
-        
+
         // all siblings inside the folder must have an inherited lock
         assertLock(cms, sibling1, CmsLockType.INHERITED);
         // all siblings outside the folder must not locked
         assertLock(cms, sibling2, CmsLockType.UNLOCKED);
-        
+
         // now unlock the folder 
         cms.unlockResource(folder);
-        
+
         // the source folder must be unlocked
         assertLock(cms, folder, CmsLockType.UNLOCKED);
-        
+
         // all resources in the folder must be ulocked      
         resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         i = resources.iterator();
@@ -268,32 +232,31 @@ public class TestLock extends OpenCmsTestCase {
             CmsResource res = (CmsResource)i.next();
             assertLock(cms, cms.getSitePath(res), CmsLockType.UNLOCKED);
         }
-        
+
         // all siblings outside of the folder must not locked
         assertLock(cms, sibling1, CmsLockType.UNLOCKED);
         assertLock(cms, sibling2, CmsLockType.UNLOCKED);
-        
-    }    
-    
+
+    }
+
     /**
      * Tests lock status of a folder and its siblings.<p>
      * 
-     * In this test, the folder has some prelocked siblings with shared locks in it
+     * In this test, the folder has some prelocked siblings with exclusive locks in it
      *  
      * @throws Throwable if something goes wrong
      */
-    public void testLockForFolderPrelockedShared() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
-        echo("Testing locking of folders with shared prelocks");
-        
+    public void testLockForFolderPrelockedExclusive() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing locking of folders with exclusive prelocks");
+
         String folder = "/folder1/subfolder12/";
-        String source = "/folder1/subfolder11/page1.html";
-        String sibling1 = "/folder1/subfolder12/page1.html";
+        String source = "/folder1/subfolder12/page1.html";
+        String sibling1 = "/folder1/subfolder11/page1.html";
         String sibling2 = "/folder2/subfolder22/page1.html";
         storeResources(cms, folder);
-        
-   
+
         // lock source
         cms.lockResource(source);
 
@@ -302,10 +265,72 @@ public class TestLock extends OpenCmsTestCase {
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
         assertLock(cms, sibling1, CmsLockType.SHARED_EXCLUSIVE);
         assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
-        
+
         // lock folder
         cms.lockResource(folder);
-        
+
+        // all resources in the folder must have an inherited lock        
+        List resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
+        Iterator i = resources.iterator();
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            assertLock(cms, cms.getSitePath(res), CmsLockType.INHERITED);
+        }
+
+        // The siblings outside the folder are unlocked
+        assertLock(cms, sibling1, CmsLockType.UNLOCKED);
+        assertLock(cms, sibling2, CmsLockType.UNLOCKED);
+
+        // now unlock the folder
+        cms.unlockResource(folder);
+
+        // the source folder must be unlocked
+        assertLock(cms, folder, CmsLockType.UNLOCKED);
+
+        // all resources in the folder must be unlocked
+        resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
+        i = resources.iterator();
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            assertLock(cms, cms.getSitePath(res), CmsLockType.UNLOCKED);
+        }
+
+        // The siblings outside the folder keppt their previous lockstate
+        assertLock(cms, sibling1, CmsLockType.UNLOCKED);
+        assertLock(cms, sibling2, CmsLockType.UNLOCKED);
+
+    }
+
+    /**
+     * Tests lock status of a folder and its siblings.<p>
+     * 
+     * In this test, the folder has some prelocked siblings with shared locks in it
+     *  
+     * @throws Throwable if something goes wrong
+     */
+    public void testLockForFolderPrelockedShared() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing locking of folders with shared prelocks");
+
+        String folder = "/folder1/subfolder12/";
+        String source = "/folder1/subfolder11/page1.html";
+        String sibling1 = "/folder1/subfolder12/page1.html";
+        String sibling2 = "/folder2/subfolder22/page1.html";
+        storeResources(cms, folder);
+
+        // lock source
+        cms.lockResource(source);
+
+        // the source file must have an exclusive lock
+        // all siblings must have shared exclusive locks
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, sibling1, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
+
+        // lock folder
+        cms.lockResource(folder);
+
         // all resources in the folder must have an inherited or shared inherited lock        
         List resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         Iterator i = resources.iterator();
@@ -323,13 +348,13 @@ public class TestLock extends OpenCmsTestCase {
         // The siblings outside the folder keppt their previous lockstate
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
         assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
-        
+
         // now unlock the folder
         cms.unlockResource(folder);
-        
+
         // the source folder must be unlocked
         assertLock(cms, folder, CmsLockType.UNLOCKED);
-        
+
         // all resources in the folder must be unlocked, except those siblings that had a 
         // shared inherited lock, they must get a shared exclusive lock
         resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
@@ -339,110 +364,316 @@ public class TestLock extends OpenCmsTestCase {
             if (cms.getSitePath(res).equals(sibling1)) {
                 assertLock(cms, cms.getSitePath(res), CmsLockType.SHARED_EXCLUSIVE);
             } else {
-                assertLock(cms, cms.getSitePath(res),  CmsLockType.UNLOCKED);
+                assertLock(cms, cms.getSitePath(res), CmsLockType.UNLOCKED);
             }
         }
-        
+
         // The siblings outside the folder keppt their previous lockstate
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
         assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
-       
+
         // now unlock the source
         cms.unlockResource(source);
-        
+
         // the source file and all sibling are unlocked now
         assertLock(cms, source, CmsLockType.UNLOCKED);
         assertLock(cms, sibling1, CmsLockType.UNLOCKED);
-        assertLock(cms, sibling2, CmsLockType.UNLOCKED);        
-        
-    }    
-    
+        assertLock(cms, sibling2, CmsLockType.UNLOCKED);
+
+    }
+
     /**
-     * Tests lock status of a folder and its siblings.<p>
+     * Tests lock status of a resource during sibling creation.<p>
      * 
-     * In this test, the folder has some prelocked siblings with exclusive locks in it
-     *  
      * @throws Throwable if something goes wrong
      */
-    public void testLockForFolderPrelockedExclusive() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
-        echo("Testing locking of folders with exclusive prelocks");
-        
-        String folder = "/folder1/subfolder12/";
-        String source = "/folder1/subfolder12/page1.html";
-        String sibling1 = "/folder1/subfolder11/page1.html";
-        String sibling2 = "/folder2/subfolder22/page1.html";
-        storeResources(cms, folder);
-        
-   
-        // lock source
+    public void testLockForSiblings() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing lock state after sibling creation");
+
+        String source = "/folder2/index.html";
+        String destination1 = "/folder2/index_sib1.html";
+        String destination2 = "/folder2/index_sib2.html";
+        storeResources(cms, source);
+
+        // copy source
+        cms.copyResource(source, destination1, CmsResource.COPY_AS_SIBLING);
+
+        // since source was not locked, destination must be locked exclusive
+        // and source must be locked shared
+        assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, destination1, CmsLockType.EXCLUSIVE);
+
+        // copy source again
+        cms.copyResource(source, destination2, CmsResource.COPY_AS_SIBLING);
+
+        // since one sibling was already exclusive locked, 
+        // new sibling must be shared locked
+        assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, destination1, CmsLockType.EXCLUSIVE);
+        assertLock(cms, destination2, CmsLockType.SHARED_EXCLUSIVE);
+
+        // same stuff but in a different order 
+        source = "/folder2/page1.html";
+        destination1 = "/folder2/page1_sib1.html";
+        destination2 = "/folder2/page1_sib2.html";
+
+        // this time source is already locked
         cms.lockResource(source);
+        cms.createSibling(source, destination1, null);
 
-        // the source file must have an exclusive lock
-        // all siblings must have shared exclusive locks
+        // since source was locked, destination must be shared exclusive
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
-        assertLock(cms, sibling1, CmsLockType.SHARED_EXCLUSIVE);
-        assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
-        
-        // lock folder
+        assertLock(cms, destination1, CmsLockType.SHARED_EXCLUSIVE);
+
+        // create another sibling
+        cms.createSibling(destination1, destination2, null);
+        // since one sibling was already exclusive locked, 
+        // new sibling must be shared locked
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, destination1, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, destination2, CmsLockType.SHARED_EXCLUSIVE);
+
+        // now create a sibling (from a locked resource) over a (locked) deleted resource
+        source = "/folder2/image1.gif";
+        String destination = "/folder2/image2.gif";
+
+        cms.lockResource(source);
+        cms.lockResource(destination);
+        cms.deleteResource(destination, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // both resources should be exclusive locked
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, destination, CmsLockType.EXCLUSIVE);
+
+        // now copy a sibling over the deleted
+        cms.copyResource(source, destination, CmsResource.COPY_AS_SIBLING);
+
+        // now the destination should have a shared lock
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        assertLock(cms, destination, CmsLockType.SHARED_EXCLUSIVE);
+
+        // TODO: this test fails due to a lock logic problem in the CmsDriverManager#createResource method...
+        int todo;
+    }
+
+    /**
+     * Tests an inherited lock in a resource delete scenario.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testLockInherit() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing inherited lock delete scenario");
+
+        String source = "/folder1/index.html";
+        String folder = "/folder1/";
+        storeResources(cms, source);
+
+        // first delete the resource
+        cms.lockResource(source);
+        cms.deleteResource(source, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // now lock the folder
         cms.lockResource(folder);
-        
-        // all resources in the folder must have an inherited lock        
-        List resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
-        Iterator i = resources.iterator();
-        while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
-            assertLock(cms, cms.getSitePath(res), CmsLockType.INHERITED);
+
+        // make sure the deleted file has an inherited lock
+        assertLock(cms, source, CmsLockType.INHERITED);
+    }
+
+    /**
+     * Ensures that a lock is required for all write/control operations.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testLockRequired() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing if a lock is required for write/control operations");
+
+        String source = "/index.html";
+        storeResources(cms, source);
+        long timestamp = System.currentTimeMillis();
+
+        // make sure source is not locked
+        assertLock(cms, source, CmsLockType.UNLOCKED);
+
+        CmsFile file = cms.readFile(source);
+
+        boolean needLock;
+
+        needLock = false;
+        try {
+            cms.setDateLastModified(source, timestamp, false);
+        } catch (CmsLockException e) {
+            // must throw a security exception because resource is not locked
+            needLock = true;
+        }
+        if (!needLock) {
+            fail("Touch operation on resource permitted without a lock on the current user!");
         }
 
-        // The siblings outside the folder are unlocked
-        assertLock(cms, sibling1, CmsLockType.UNLOCKED);
-        assertLock(cms, sibling2, CmsLockType.UNLOCKED);
-       
-       
-        // now unlock the folder
-        cms.unlockResource(folder);
-        
-        // the source folder must be unlocked
-        assertLock(cms, folder, CmsLockType.UNLOCKED);
-        
-        // all resources in the folder must be unlocked
-        resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
-        i = resources.iterator();
-        while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
-            assertLock(cms, cms.getSitePath(res),  CmsLockType.UNLOCKED);
+        needLock = false;
+        try {
+            cms.deleteResource(source, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        } catch (CmsLockException e) {
+            // must throw a security exception because resource is not locked
+            needLock = true;
         }
-        
-        // The siblings outside the folder keppt their previous lockstate
-        assertLock(cms, sibling1, CmsLockType.UNLOCKED);
-        assertLock(cms, sibling2, CmsLockType.UNLOCKED);
+        if (!needLock) {
+            fail("Delete operation on resource permitted without a lock on the current user!");
+        }
 
-    }    
- 
+        needLock = false;
+        try {
+            cms.writeFile(file);
+        } catch (CmsLockException e) {
+            // must throw a security exception because resource is not locked
+            needLock = true;
+        }
+        if (!needLock) {
+            fail("Write operation on resource permitted without a lock on the current user!");
+        }
+
+        needLock = false;
+        try {
+            cms.moveResource(source, "index_dest.html");
+        } catch (CmsLockException e) {
+            // must throw a security exception because resource is not locked
+            needLock = true;
+        }
+        if (!needLock) {
+            fail("Move operation on resource permitted without a lock on the current user!");
+        }
+
+        needLock = false;
+        try {
+            cms.writePropertyObject(source, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "New title", null));
+        } catch (CmsLockException e) {
+            // must throw a security exception because resource is not locked
+            needLock = true;
+        }
+        if (!needLock) {
+            fail("Write property operation on resource permitted without a lock on the current user!");
+        }
+
+        needLock = false;
+        try {
+            List properties = new ArrayList();
+            properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "New title 2", null));
+            cms.writePropertyObjects(source, properties);
+        } catch (CmsLockException e) {
+            // must throw a security exception because resource is not locked
+            needLock = true;
+        }
+        if (!needLock) {
+            fail("Write property list operation on resource permitted without a lock on the current user!");
+        }
+
+        needLock = false;
+        try {
+            cms.chflags(source, 1234);
+        } catch (CmsLockException e) {
+            // must throw a security exception because resource is not locked
+            needLock = true;
+        }
+        if (!needLock) {
+            fail("Change flags operation on resource permitted without a lock on the current user!");
+        }
+
+        needLock = false;
+        try {
+            cms.chtype(source, CmsResourceTypePlain.getStaticTypeId());
+        } catch (CmsLockException e) {
+            // must throw a security exception because resource is not locked
+            needLock = true;
+        }
+        if (!needLock) {
+            fail("Change type operation on resource permitted without a lock on the current user!");
+        }
+
+        needLock = false;
+        try {
+            cms.replaceResource(source, CmsResourceTypePlain.getStaticTypeId(), "Kaputt".getBytes(), null);
+        } catch (CmsLockException e) {
+            // must throw a security exception because resource is not locked
+            needLock = true;
+        }
+        if (!needLock) {
+            fail("Replace operation on resource permitted without a lock on the current user!");
+        }
+
+        needLock = false;
+        try {
+            CmsPermissionSet permissions = new CmsPermissionSet(
+                CmsPermissionSet.PERMISSION_WRITE,
+                CmsPermissionSet.PERMISSION_READ);
+            cms.chacc(
+                source,
+                I_CmsPrincipal.PRINCIPAL_GROUP,
+                OpenCms.getDefaultUsers().getGroupAdministrators(),
+                permissions.getAllowedPermissions(),
+                permissions.getDeniedPermissions(),
+                CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
+        } catch (CmsLockException e) {
+            // must throw a security exception because resource is not locked
+            needLock = true;
+        }
+        if (!needLock) {
+            fail("Change permissions operation on resource permitted without a lock on the current user!");
+        }
+
+        needLock = false;
+        try {
+            cms.undeleteResource(source);
+        } catch (CmsLockException e) {
+            // must throw a security exception because resource is not locked
+            needLock = true;
+        }
+        if (!needLock) {
+            fail("Unlock operation on resource permitted without a lock on the current user!");
+        }
+
+        // make sure original resource is unchanged
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
+
+        // now perform a delete operation with lock
+        cms.lockResource(source);
+        cms.deleteResource(source, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // now undelete the resource
+        cms.lockResource(source);
+        cms.undeleteResource(source);
+        cms.unlockResource(source);
+
+        // make sure original resource is still unchanged
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
+    }
+
     /**
      * Tests to steal a lock.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testLockSteal() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
+
+        CmsObject cms = getCmsObject();
         echo("Testing stealing a lock");
-        
+
         String source = "/folder1/subfolder11/page1.html";
         String sibling1 = "/folder1/subfolder12/page1.html";
         String sibling2 = "/folder2/subfolder22/page1.html";
         storeResources(cms, source);
-        
+
         // get the offline project
         CmsProject offlineProject = cms.readProject("Offline");
-        
+
         // login as user "test1"
-        cms.loginUser("test1" , "test1");
+        cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(offlineProject);
-       
+
         // lock source
         cms.lockResource(source);
 
@@ -451,27 +682,33 @@ public class TestLock extends OpenCmsTestCase {
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
         assertLock(cms, sibling1, CmsLockType.SHARED_EXCLUSIVE);
         assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
- 
+
         // login as user "admin"
-        cms.loginUser("Admin" , "admin");
+        cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(offlineProject);
-        
+
         // steal lock from first sibling
         cms.changeLock(sibling1);
-        
+
         // the sibling1 file must have an exclusive lock
         // all siblings of it must have shared locks
         assertLock(cms, sibling1, CmsLockType.EXCLUSIVE);
         assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
         assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
-        
+
         // now revoke write permissions for user "test2"
-        cms.chacc(source, I_CmsPrincipal.PRINCIPAL_USER, "test2", 0, CmsPermissionSet.PERMISSION_WRITE, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
+        cms.chacc(
+            source,
+            I_CmsPrincipal.PRINCIPAL_USER,
+            "test2",
+            0,
+            CmsPermissionSet.PERMISSION_WRITE,
+            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
 
         // switch to user "test2"
-        cms.loginUser("test2" , "test2");
+        cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(offlineProject);
-                
+
         Exception error = null;
         try {
             // try to steal lock from the source
@@ -493,279 +730,66 @@ public class TestLock extends OpenCmsTestCase {
         } catch (CmsPermissionViolationException e) {
             error = e;
         }
-        assertNotNull(error);        
-        
+        assertNotNull(error);
+
         // login as user "Admin" again
-        cms.loginUser("Admin" , "admin");
+        cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(offlineProject);
-        
+
         // assert the locks are still there
         assertLock(cms, sibling1, CmsLockType.EXCLUSIVE);
         assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
         assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
-        
+
         // login as user "test1" again
-        cms.loginUser("test1" , "test1");
+        cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(offlineProject);
-        
+
         // steal lock from second sibling
         cms.changeLock(sibling2);
-        
+
         // assert the locks for siblings are there
         assertLock(cms, sibling2, CmsLockType.EXCLUSIVE);
         assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
         assertLock(cms, sibling1, CmsLockType.SHARED_EXCLUSIVE);
-    } 
-    
-    /**
-     * Tests lock status of a resource during sibling creation.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testLockForSiblings() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
-        echo("Testing lock state after sibling creation");
-        
-        String source = "/folder2/index.html";
-        String destination1 = "/folder2/index_sib1.html";
-        String destination2 = "/folder2/index_sib2.html";
-        storeResources(cms, source);
-        
-        // copy source
-        cms.copyResource(source, destination1, CmsResource.COPY_AS_SIBLING);
-
-        // since source was not locked, destination must be locked exclusive
-        // and source must be locked shared
-        assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
-        assertLock(cms, destination1, CmsLockType.EXCLUSIVE);
-        
-        // copy source again
-        cms.copyResource(source, destination2, CmsResource.COPY_AS_SIBLING);  
-        
-        // since one sibling was already exclusive locked, 
-        // new sibling must be shared locked
-        assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
-        assertLock(cms, destination1, CmsLockType.EXCLUSIVE);        
-        assertLock(cms, destination2, CmsLockType.SHARED_EXCLUSIVE);
-        
-        // same stuff but in a different order 
-        source = "/folder2/page1.html";
-        destination1 = "/folder2/page1_sib1.html";
-        destination2 = "/folder2/page1_sib2.html";
-        
-        // this time source is already locked
-        cms.lockResource(source);
-        cms.createSibling(source, destination1, null);
-        
-        // since source was locked, destination must be shared exclusive
-        assertLock(cms, source, CmsLockType.EXCLUSIVE);
-        assertLock(cms, destination1, CmsLockType.SHARED_EXCLUSIVE);    
-        
-        // create another sibling
-        cms.createSibling(destination1, destination2, null);    
-        // since one sibling was already exclusive locked, 
-        // new sibling must be shared locked
-        assertLock(cms, source, CmsLockType.EXCLUSIVE);
-        assertLock(cms, destination1, CmsLockType.SHARED_EXCLUSIVE);        
-        assertLock(cms, destination2, CmsLockType.SHARED_EXCLUSIVE);    
-    }    
-    
-    /**
-     * Tests an inherited lock in a resource delete scenario.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testLockInherit() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
-        echo("Testing inherited lock delete scenario");
-        
-        String source = "/folder1/index.html";
-        String folder = "/folder1/";
-        storeResources(cms, source);        
-
-        // first delete the resource
-        cms.lockResource(source);
-        cms.deleteResource(source, CmsResource.DELETE_PRESERVE_SIBLINGS);
-       
-        // now lock the folder
-        cms.lockResource(folder);
-        
-        // make sure the deleted file has an inherited lock
-        assertLock(cms, source, CmsLockType.INHERITED);
     }
-        
+
     /**
-     * Ensures that a lock is required for all write/control operations.<p>
+     * Tests lock status after a new file has been deleted in offline project.<p>
+     * 
+     * Issue description:
+     * User A creates a new file, but deletes it without ever publishing it.
+     * Now user B create a new file with the same name / path.
+     * The file was still in the lock manager but for user A, this generated 
+     * an error for user B.<p>
+     * 
+     * Solution:
+     * Remove new files that are deleted from the lock manager.<p>
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testLockRequired() throws Throwable {
+    public void testLockWithDeletedNewFiles() throws Throwable {
 
-        CmsObject cms = getCmsObject();     
-        echo("Testing if a lock is required for write/control operations");
-        
-        String source = "/index.html";
-        storeResources(cms, source);        
-        long timestamp = System.currentTimeMillis();
-        
-        // make sure source is not locked
-        assertLock(cms, source, CmsLockType.UNLOCKED);                
-        
-        CmsFile file = cms.readFile(source);
-                
-        boolean needLock;
-        
-        needLock = false;
-        try {
-            cms.setDateLastModified(source, timestamp, false);            
-        } catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        }        
-        if (! needLock) {
-            fail("Touch operation on resource permitted without a lock on the current user!");
-        }         
-        
-        needLock = false;
-        try {
-            cms.deleteResource(source, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        } catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        }        
-        if (! needLock) {
-            fail("Delete operation on resource permitted without a lock on the current user!");
-        } 
+        CmsObject cms = getCmsObject();
+        echo("Testing lock status of a deleted new file");
 
-        needLock = false;
-        try {
-            cms.writeFile(file);
-        }  catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        } 
-        if (! needLock) {
-            fail("Write operation on resource permitted without a lock on the current user!");
-        }   
+        String source = "/folder1/newfile.html";
 
-        needLock = false;
-        try {
-            cms.moveResource(source, "index_dest.html");
-        }  catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        } 
-        if (! needLock) {
-            fail("Move operation on resource permitted without a lock on the current user!");
-        } 
+        // create a new resource as default test user
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
+        // the source file must now have an exclusive lock
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+        // now delete the created resource
+        cms.deleteResource(source, CmsResource.DELETE_REMOVE_SIBLINGS);
 
-        needLock = false;
-        try {
-            cms.writePropertyObject(source, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "New title", null));
-        }  catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        } 
-        if (! needLock) {
-            fail("Write property operation on resource permitted without a lock on the current user!");
-        }       
-        
-        needLock = false;
-        try {
-            List properties = new ArrayList();
-            properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "New title 2", null));
-            cms.writePropertyObjects(source, properties);
-        }  catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        } 
-        if (! needLock) {
-            fail("Write property list operation on resource permitted without a lock on the current user!");
-        }           
+        // now login as user "test2"
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
-        needLock = false;
-        try {
-            cms.chflags(source, 1234);
-        }  catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        } 
-        if (! needLock) {
-            fail("Change flags operation on resource permitted without a lock on the current user!");
-        }        
+        // now create the resource again
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
 
-        needLock = false;
-        try {
-            cms.chtype(source, CmsResourceTypePlain.getStaticTypeId());
-        }  catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        } 
-        if (! needLock) {
-            fail("Change type operation on resource permitted without a lock on the current user!");
-        }  
-
-        needLock = false;
-        try {
-            cms.replaceResource(source, CmsResourceTypePlain.getStaticTypeId(), "Kaputt".getBytes(), null);
-        }  catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        } 
-        if (! needLock) {
-            fail("Replace operation on resource permitted without a lock on the current user!");
-        }     
-
-        needLock = false;
-        try {
-            cms.changeLastModifiedProjectId(source);
-        }  catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        } 
-        if (! needLock) {
-            fail("Change last modified in project operation on resource permitted without a lock on the current user!");
-        }           
-
-        needLock = false;
-        try {
-            CmsPermissionSet permissions = new CmsPermissionSet(CmsPermissionSet.PERMISSION_WRITE, CmsPermissionSet.PERMISSION_READ);
-            cms.chacc(source, I_CmsPrincipal.PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupAdministrators(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
-        }  catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        } 
-        if (! needLock) {
-            fail("Change permissions operation on resource permitted without a lock on the current user!");
-        }
-        
-        needLock = false;
-        try {
-            cms.undeleteResource(source);
-        }  catch (CmsLockException e) {
-            // must throw a security exception because resource is not locked
-            needLock = true;
-        } 
-        if (! needLock) {
-            fail("Unlock operation on resource permitted without a lock on the current user!");
-        }  
-        
-        // make sure original resource is unchanged
-        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
-        
-        // now perform a delete operation with lock
-        cms.lockResource(source);
-        cms.deleteResource(source, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        
-        // now undelete the resource
-        cms.lockResource(source);        
-        cms.undeleteResource(source);
-        cms.unlockResource(source);
-        
-        // make sure original resource is still unchanged
-        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);        
-    }      
+        // the newly created resource must now be locked to user "test2"
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+    }
 }
-

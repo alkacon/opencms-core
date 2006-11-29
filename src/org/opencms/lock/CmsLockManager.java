@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2006/10/27 12:38:22 $
- * Version: $Revision: 1.37.4.10 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.37.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,15 +35,11 @@ import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.OpenCms;
-import org.opencms.security.CmsRole;
-import org.opencms.security.I_CmsPrincipal;
-import org.opencms.workflow.I_CmsWorkflowManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,8 +59,9 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * @author Andreas Zahner  
+ * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.10 $ 
+ * @version $Revision: 1.37.4.11 $ 
  * 
  * @since 6.0.0 
  * 
@@ -73,40 +70,29 @@ import java.util.Map;
  */
 public final class CmsLockManager {
 
-    /** A map holding the exclusive CmsLocks. */
-    private Map m_exclusiveLocks;
+    /** The driver manager instance. */
+    private CmsDriverManager m_driverManager;
 
     /** The flag to indicate if the lcoks should be written to the db. */
     private boolean m_isDirty = false;
 
-    /** Indicates if the workflow manager is enabled or not. */
-    private boolean m_isWorkflowEnabled;
-
-    /** A map holding the workflow CmsLocks. */
-    private Map m_workflowLocks;
-
-    /** The reference to the (optional) workflow manager. */
-    private I_CmsWorkflowManager m_workflowManager;
+    /** A map holding all the {@link CmsLock}s. */
+    private Map m_locks;
 
     /**
      * Default constructor, creates a new lock manager.<p>
+     * 
+     * @param driverManager the driver manager instance 
      */
-    public CmsLockManager() {
+    public CmsLockManager(CmsDriverManager driverManager) {
 
-        m_exclusiveLocks = Collections.synchronizedMap(new HashMap());
-        try {
-            m_workflowManager = OpenCms.getWorkflowManager();
-            m_isWorkflowEnabled = true;
-            m_workflowLocks = Collections.synchronizedMap(new HashMap());
-        } catch (CmsRuntimeException e) {
-            m_isWorkflowEnabled = false;
-        }
+        m_locks = Collections.synchronizedMap(new HashMap());
+        m_driverManager = driverManager;
     }
 
     /**
      * Adds a resource to the lock manager.<p>
      * 
-     * @param driverManager the driver manager
      * @param dbc the current database context
      * @param resource the resource
      * @param user the user who locked the resource
@@ -116,62 +102,72 @@ public final class CmsLockManager {
      * @throws CmsLockException if the resource is locked
      * @throws CmsException if somethong goes wrong
      */
-    public void addResource(
-        CmsDriverManager driverManager,
-        CmsDbContext dbc,
-        CmsResource resource,
-        CmsUser user,
-        CmsProject project,
-        CmsLockType type) throws CmsLockException, CmsException {
+    public void addResource(CmsDbContext dbc, CmsResource resource, CmsUser user, CmsProject project, CmsLockType type)
+    throws CmsLockException, CmsException {
 
-        CmsLock lock = getLock(driverManager, dbc, resource);
-        String resourceName = resource.getRootPath();
-
-        if (!isLockableByUser(driverManager, dbc, lock, user)) {
-            CmsMessageContainer message = null;
-            if (lock.isWorkflow()) {
-                message = Messages.get().container(
-                    Messages.ERR_RESOURCE_LOCKED_INWORKFLOW_1,
-                    dbc.getRequestContext().getSitePath(resource));
-            } else if (lock.isInherited()) {
-                message = Messages.get().container(
-                    Messages.ERR_RESOURCE_LOCKED_INHERITED_1,
-                    dbc.getRequestContext().getSitePath(resource));
-            } else {
-                message = Messages.get().container(
-                    Messages.ERR_RESOURCE_LOCKED_BYOTHERUSER_1,
-                    dbc.getRequestContext().getSitePath(resource));                
-            }
-            
-            throw new CmsLockException(message);
-        }
-
-        if ((type == CmsLockType.EXCLUSIVE) || (type == CmsLockType.TEMPORARY)) {
-            if (lock.isNullLock() || (lock.getType() == CmsLockType.WORKFLOW)) {
-                // create a new exclusive lock unless the resource has already a shared lock due to a
-                // exclusive locked sibling
-                CmsLock newLock = new CmsLock(resourceName, user.getId(), project, type);
-                lockResource(driverManager, resourceName, newLock);
-            }
-        } else if (m_isWorkflowEnabled && (type == CmsLockType.WORKFLOW)) {
-            // create a new lock if the resource should be locked in a workflow
-            CmsLock newLock = new CmsLock(resourceName, user.getId(), project, type);
-            lockResource(driverManager, resourceName, newLock);
-        } else {
+        // check the type
+        if (!type.isSystem() && !type.isExclusive()) {
+            // invalid type
             throw new CmsLockException(Messages.get().container(Messages.ERR_INVALID_LOCK_TYPE_1, type.toString()));
         }
 
+        // get the current lock
+        CmsLock currentLock = getLock(dbc, resource);
+
+        // check lockability
+        if (!currentLock.isLockableBy(user)) {
+            // check type, owner and project for system locks
+            // this is required if publishing, or create a workflow for, several siblings
+            if (!currentLock.isSystemLock()
+                || currentLock.getType() != type
+                || !currentLock.isOwnedInProjectBy(user, project)) {
+                // display the right message
+                CmsMessageContainer message = null;
+                if (currentLock.isPublish()) {
+                    message = Messages.get().container(
+                        Messages.ERR_RESOURCE_LOCKED_FORPUBLISH_1,
+                        dbc.getRequestContext().getSitePath(resource));
+                } else if (currentLock.isWorkflow()) {
+                    message = Messages.get().container(
+                        Messages.ERR_RESOURCE_LOCKED_INWORKFLOW_1,
+                        dbc.getRequestContext().getSitePath(resource));
+                } else if (currentLock.isInherited()) {
+                    message = Messages.get().container(
+                        Messages.ERR_RESOURCE_LOCKED_INHERITED_1,
+                        dbc.getRequestContext().getSitePath(resource));
+                } else {
+                    message = Messages.get().container(
+                        Messages.ERR_RESOURCE_LOCKED_BYOTHERUSER_1,
+                        dbc.getRequestContext().getSitePath(resource));
+                }
+                throw new CmsLockException(message);
+            }
+        }
+
+        boolean needNewLock = true;
+        // prevent shared locks get compromised
+        if (type.isExclusive()) {
+            if (!currentLock.isUnlocked() && !currentLock.isSystemLock()) {
+                needNewLock = false;
+            }
+        }
+
+        CmsLock newLock = CmsLock.getNullLock();
+        if (needNewLock) {
+            // lock the resource
+            newLock = new CmsLock(resource.getRootPath(), user.getId(), project, type);
+            lockResource(newLock);
+        }
+
         // handle collisions with exclusive locked sub-resources in case of a folder
-        if (CmsResource.isFolder(resourceName)) {
-            Iterator i = m_exclusiveLocks.keySet().iterator();
-            String lockedPath = null;
-
-            while (i.hasNext()) {
-                lockedPath = (String)i.next();
-
+        if (resource.isFolder() && !newLock.isSystemLock()) {
+            String resourceName = resource.getRootPath();
+            Iterator itLocks = new ArrayList(m_locks.values()).iterator(); // prevent CMExceptions
+            while (itLocks.hasNext()) {
+                CmsLock lock = (CmsLock)itLocks.next();
+                String lockedPath = lock.getResourceName();
                 if (lockedPath.startsWith(resourceName) && !lockedPath.equals(resourceName)) {
-                    i.remove();
-                    unlockResource(driverManager, lockedPath, false);
+                    unlockResource(lockedPath, false);
                 }
             }
         }
@@ -186,13 +182,11 @@ public final class CmsLockManager {
      */
     public int countExclusiveLocksInProject(CmsProject project) {
 
-        Iterator i = m_exclusiveLocks.values().iterator();
-        CmsLock lock = null;
         int count = 0;
-
-        while (i.hasNext()) {
-            lock = (CmsLock)i.next();
-            if (lock.isInProject(project)) {
+        Iterator itLocks = m_locks.values().iterator();
+        while (itLocks.hasNext()) {
+            CmsLock lock = (CmsLock)itLocks.next();
+            if (lock.getEditionLock().isInProject(project)) {
                 count++;
             }
         }
@@ -200,188 +194,121 @@ public final class CmsLockManager {
     }
 
     /**
+     * Returns the lock state of the given resource.<p>
+     * 
+     * In case no lock is set, the <code>null lock</code> which can be obtained 
+     * by {@link CmsLock#getNullLock()} is returned.<p>
+     * 
+     * You should check the edition lock by calling{@link CmsLock#getEditionLock()},
+     * since you may get a system lock.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource
+     * 
+     * @return the lock state of the given resource 
+
+     * @throws CmsException if something goes wrong
+     */
+    public CmsLock getLock(CmsDbContext dbc, CmsResource resource) throws CmsException {
+
+        // resources are never locked in the online project
+        // and non-existent resources are never locked
+        if ((resource == null) || (dbc.currentProject().getId() == CmsProject.ONLINE_PROJECT_ID)) {
+            return CmsLock.getNullLock();
+        }
+
+        // check exclusive direct locks first
+        CmsLock lock = getDirectLock(resource.getRootPath());
+        if (lock.isNullLock()) {
+            // check if siblings are exclusively locked
+            List siblings = internalReadSiblings(dbc, resource);
+            lock = getSiblingsLock(siblings, resource.getRootPath());
+        }
+        if (lock.isNullLock()) {
+            // if there is no parent lock, this will be the null lock as well
+            lock = getParentLock(resource.getRootPath());
+        }
+        return lock;
+    }
+
+    /**
      * Returns all exclusive locked resources matching the given resource name and filter.<p>
      * 
+     * @param dbc the database context
      * @param resourceName the resource name
      * @param filter the lock filter
      * 
      * @return a list of root paths
+     * 
+     * @throws CmsException if somehting goes wrong 
      */
-    public List getLocks(String resourceName, CmsLockFilter filter) {
+    public List getLocks(CmsDbContext dbc, String resourceName, CmsLockFilter filter) throws CmsException {
 
         List locks = new ArrayList();
-        Iterator itLocks = m_exclusiveLocks.values().iterator();
+        Iterator itLocks = m_locks.values().iterator();
         while (itLocks.hasNext()) {
             CmsLock lock = (CmsLock)itLocks.next();
+            if (filter.isSharedExclusive()) {
+                CmsResource resource = m_driverManager.readResource(dbc, lock.getResourceName(), CmsResourceFilter.ALL);
+                if (resource.getSiblingCount() > 1) {
+                    Iterator itSiblings = internalReadSiblings(dbc, resource).iterator();
+                    while (itSiblings.hasNext()) {
+                        CmsResource sibling = (CmsResource)itSiblings.next();
+                        CmsLock siblingLock = internalSiblingLock(lock, sibling.getRootPath());
+                        if (filter.match(resourceName, siblingLock)) {
+                            locks.add(siblingLock);
+                        }
+                    }
+                }
+            }
             if (filter.match(resourceName, lock)) {
                 locks.add(lock);
-            }
-        }
-        if (m_isWorkflowEnabled) {
-            Iterator itWfLocks = m_workflowLocks.values().iterator();
-            while (itWfLocks.hasNext()) {
-                CmsLock lock = (CmsLock)itWfLocks.next();
-                if (filter.match(resourceName, lock)) {
-                    locks.add(lock);
-                }
             }
         }
         return locks;
     }
 
     /**
-     * Returns the lock state of the given resource.<p>
-     * 
-     * In case no lock is set, the <code>null lock</code> which can be obtained by {@link CmsLock#getNullLock()}
-     * is returned.<p> 
-     * 
-     * @param driverManager the driver manager
-     * @param dbc the current database context
-     * @param resource the resource
-     * 
-     * @return the lock state of the given resource 
-
-     * @throws CmsException if something goes wrong
-     */
-    public CmsLock getLock(CmsDriverManager driverManager, CmsDbContext dbc, CmsResource resource) throws CmsException {
-
-        // check some abort conditions first
-        if (resource == null) {
-            // non-existent resources are never locked
-            return CmsLock.getNullLock();
-        }
-        if (dbc.currentProject().getId() == CmsProject.ONLINE_PROJECT_ID) {
-            // resources are never locked in the online project
-            return CmsLock.getNullLock();
-        }
-
-        String resourcename = resource.getRootPath();
-        CmsLock lock = CmsLock.getNullLock();
-        CmsLock parentLock = getParentLock(resourcename);
-        List siblings = null;
-
-        // check exclusive direct locks first
-        lock = getDirectLock(resourcename, CmsLockType.EXCLUSIVE);
-
-        if (lock.isNullLock()) {
-            // check if siblings are exclusively locked
-            siblings = internalReadSiblings(driverManager, dbc, resource);
-            lock = getSiblingsLock(
-                siblings,
-                resourcename,
-                CmsLockType.EXCLUSIVE,
-                (parentLock.isNullLock()) ? CmsLockType.SHARED_EXCLUSIVE : CmsLockType.SHARED_INHERITED);
-        }
-
-        if (lock.isNullLock()) {
-            // if there is no parent lock, this will be the null lock as well
-            lock = parentLock;
-        }
-
-        if (m_isWorkflowEnabled) {
-            if (lock.isNullLock()) {
-                // check workflow locks
-                lock = getDirectLock(resourcename, CmsLockType.WORKFLOW);
-            }
-
-            if (lock.isNullLock()) {
-                // check indirekt workflow locks
-                lock = getSiblingsLock(siblings, resourcename, CmsLockType.WORKFLOW, CmsLockType.WORKFLOW);
-            }
-        }
-
-        return lock;
-    }
-
-    /**
-     * Returns the workflow lock for a resource.<p>
-     * 
-     * For this method, the semantic used by {@link #getLock(CmsDriverManager, CmsDbContext, CmsResource)} is changed.
-     * For the various possible lock types (i.e. exclusive, workflow, indirect, inherited)
-     * the direct/indirect workflow locks are looked up first.
-     * 
-     * In case no lock is set, the <code>null lock</code> which can be obtained by {@link CmsLock#getNullLock()}
-     * is returned.<p> 
-     * 
-     * @param driverManager the driver manager
-     * @param dbc the current database context
-     * @param resource the resource
-     * 
-     * @return the lock state of the given resource 
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsLock getLockForWorkflow(CmsDriverManager driverManager, CmsDbContext dbc, CmsResource resource)
-    throws CmsException {
-
-        // check some abort conditions first
-        if (resource == null) {
-            // non-existent resources are never locked
-            return CmsLock.getNullLock();
-        }
-        if (dbc.currentProject().getId() == CmsProject.ONLINE_PROJECT_ID) {
-            // resources are never locked in the online project
-            return CmsLock.getNullLock();
-        }
-        if (!m_isWorkflowEnabled) {
-            // workflow is not enabled
-            return CmsLock.getNullLock();
-        }
-
-        String resourcename = resource.getRootPath();
-        CmsLock parentLock = getParentLock(resourcename);
-
-        //  check workflow locks first
-        CmsLock lock = getDirectLock(resourcename, CmsLockType.WORKFLOW);
-
-        // check indirekt workflow locks
-        List siblings = null;
-        if (lock.isNullLock()) {
-            siblings = internalReadSiblings(driverManager, dbc, resource);
-            lock = getSiblingsLock(siblings, resourcename, CmsLockType.WORKFLOW, CmsLockType.WORKFLOW);
-        }
-
-        // check exclusive locks
-        if (lock.isNullLock()) {
-            lock = getDirectLock(resourcename, CmsLockType.EXCLUSIVE);
-        }
-
-        // check if siblings are exclusively locked
-        if (lock.isNullLock()) {
-            siblings = internalReadSiblings(driverManager, dbc, resource);
-            lock = getSiblingsLock(
-                siblings,
-                resourcename,
-                CmsLockType.EXCLUSIVE,
-                (parentLock.isNullLock()) ? CmsLockType.SHARED_EXCLUSIVE : CmsLockType.SHARED_INHERITED);
-        }
-
-        // check parent lock
-        if (lock.isNullLock()) {
-            lock = parentLock;
-        }
-
-        return lock;
-    }
-
-    /**
-     * Returns <code>true</code> if the given resource contains a resource that has a workflow lock.<p>
+     * Returns <code>true</code> if the given resource contains a resource that has a system lock.<p>
      * 
      * This check is required for certain operations on folders.<p> 
      * 
-     * @param resource the resource to check the workflow locks for
+     * @param dbc the database context
+     * @param resource the resource to check the system locks for
      * 
-     * @return <code>true</code> if the given resource contains a resource that has a workflow lock
+     * @return <code>true</code> if the given resource contains a resource that has a system lock
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    public boolean hasWorkflowLocks(CmsResource resource) {
+    public boolean hasSystemLocks(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        if (m_isWorkflowEnabled && (resource != null)) {
-            String rootPath = resource.getRootPath();
-            Iterator i = m_workflowLocks.keySet().iterator();
-            while (i.hasNext()) {
-                String lockPath = (String)i.next();
-                if (lockPath.startsWith(rootPath)) {
+        if (resource == null) {
+            return false;
+        }
+        Iterator itLocks = m_locks.values().iterator();
+        while (itLocks.hasNext()) {
+            CmsLock lock = (CmsLock)itLocks.next();
+            if (!lock.isSystemLock()) {
+                // only system locks matter here
+                continue;
+            }
+            if (lock.getResourceName().startsWith(resource.getRootPath())) {
+                if (lock.getResourceName().startsWith(resource.getRootPath())) {
                     return true;
+                }
+                CmsResource lockedResource = m_driverManager.readResource(
+                    dbc,
+                    lock.getResourceName(),
+                    CmsResourceFilter.ALL);
+                if (lockedResource.getSiblingCount() > 1) {
+                    Iterator itSiblings = internalReadSiblings(dbc, lockedResource).iterator();
+                    while (itSiblings.hasNext()) {
+                        CmsResource sibling = (CmsResource)itSiblings.next();
+                        CmsLock siblingLock = internalSiblingLock(lock, sibling.getRootPath());
+                        if (siblingLock.getResourceName().startsWith(resource.getRootPath())) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
@@ -389,163 +316,83 @@ public final class CmsLockManager {
     }
 
     /**
-     * Checks if a resource can be locked by a user.<p>
-     * 
-     * The resource is lockable either
-     * - if it is currently unlocked
-     * - if it already has a workflow lock set and the user is in the agent group
-     * - if it already has a lock of another type set and the user is the lock owner
-     * 
-     * @param driverManager the driver manager
-     * @param dbc the current database context 
-     * @param lock the current lock of the resource
-     * @param user the user who wants to lock the resource
-     * 
-     * @return <code>true</code> if the resource can be locked by the user
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public boolean isLockableByUser(CmsDriverManager driverManager, CmsDbContext dbc, CmsLock lock, CmsUser user)
-    throws CmsException {
-
-        boolean acceptLock = lock.isUnlocked();
-
-        if (!acceptLock) {
-            if (m_isWorkflowEnabled && lock.isWorkflow()) {
-                // check for workflow locks
-
-                if (driverManager.getSecurityManager().hasRole(dbc, user, CmsRole.VFS_MANAGER)) {
-                    // VFS managers may lock resources in a workflow anyway
-                    return true;
-                }
-                if (m_workflowManager != null) {
-                    // in case of a workflow lock, check if the user requesting a lock is
-                    // either the agent or in the provided agent group
-                    I_CmsPrincipal agent = OpenCms.getWorkflowManager().getTaskAgent(lock.getProject());
-                    if (agent.isGroup()) {
-                        acceptLock = driverManager.userInGroup(dbc, user.getName(), agent.getName());
-                    } else {
-                        acceptLock = (user.getId().equals(agent.getId()));
-                    }
-                    if (!acceptLock) {
-                        // alternatively, a member of the managers group may also lock the resource
-                        I_CmsPrincipal manager = m_workflowManager.getTaskManager(lock.getProject());
-                        if (manager.isGroup()) {
-                            acceptLock = driverManager.userInGroup(dbc, user.getName(), manager.getName());
-                        } else {
-                            acceptLock = (user.getId().equals(agent.getId()));
-                        }
-                    }
-                } else {
-                    // should never happen since workflow locks should exist only if a workflow manager is present
-                    acceptLock = false;
-                }
-            } else {
-                // in any other case, accept lock owner
-                acceptLock = lock.isOwnedBy(user);
-            }
-        }
-
-        return acceptLock;
-    }
-
-    /**
      * Reads the latest saved locks from the database and installs them to 
      * this lock manager.<p>
      * 
-     *  @param driverManager to get the needed driver for db access
      *  @param dbc the current database context
      *  
      *  @throws CmsException if something goes wrong
      */
-    public void readLocks(CmsDriverManager driverManager, CmsDbContext dbc) throws CmsException {
+    public void readLocks(CmsDbContext dbc) throws CmsException {
 
-        m_exclusiveLocks.clear();
-        if (m_isWorkflowEnabled) {
-            m_workflowLocks.clear();
-        }
-        List locks = driverManager.getProjectDriver().readLocks(dbc);
-        Iterator i = locks.iterator();
-        CmsLock lock;
-        while (i.hasNext()) {
-            lock = (CmsLock)i.next();
-            if (m_isWorkflowEnabled && lock.isWorkflow()) {
-                m_workflowLocks.put(lock.getResourceName(), lock);
-            } else {
-                m_exclusiveLocks.put(lock.getResourceName(), lock);
-            }
+        m_locks.clear();
+        List locks = m_driverManager.getProjectDriver().readLocks(dbc);
+        Iterator itLocks = locks.iterator();
+        while (itLocks.hasNext()) {
+            CmsLock lock = (CmsLock)itLocks.next();
+            internalLockResource(lock);
         }
     }
 
     /**
      * Removes a resource after it has been deleted by the driver manager.<p>
      * 
-     * @param driverManager the driver manager
      * @param dbc the current database context
      * @param resourceName the root path of the deleted resource
      * @throws CmsException if something goes wrong
      */
-    public void removeDeletedResource(CmsDriverManager driverManager, CmsDbContext dbc, String resourceName)
-    throws CmsException {
+    public void removeDeletedResource(CmsDbContext dbc, String resourceName) throws CmsException {
 
-        boolean resourceExists;
         try {
-            driverManager.getVfsDriver().readResource(dbc, dbc.currentProject().getId(), resourceName, false);
-            resourceExists = true;
-        } catch (CmsVfsResourceNotFoundException e) {
-            resourceExists = false;
-        }
-
-        if (resourceExists) {
+            m_driverManager.getVfsDriver().readResource(dbc, dbc.currentProject().getId(), resourceName, false);
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_REMOVING_UNDELETED_RESOURCE_1,
                 dbc.getRequestContext().removeSiteRoot(resourceName)));
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok, ignore
         }
-        unlockResource(driverManager, resourceName, false);
+        unlockResource(resourceName, true);
+        unlockResource(resourceName, false);
     }
 
     /**
      * Removes a resource from the lock manager.<p>
      * 
-     * The forceUnlock option should be used with caution. forceUnlock will remove the lock
-     * by ignoring any rules which may cause wrong lock states.<p>
+     * The forceUnlock option should be used with caution.<br>
+     * forceUnlock will remove the lock by ignoring any rules which may cause wrong lock states.<p>
      * 
-     * @param driverManager the driver manager
      * @param dbc the current database context
      * @param resource the resource
-     * @param forceUnlock true, if a resource is forced to get unlocked, no matter by which user and in which project the resource is currently locked
+     * @param forceUnlock <code>true</code>, if a resource is forced to get unlocked (only edition locks), 
+     *                    no matter by which user and in which project the resource is currently locked
+     * @param unlockSystemLock <code>true</code>, if you also want to remove system locks
      * 
-     * @return the previous CmsLock object of the resource, or null if the resource was unlocked
+     * @return the previous {@link CmsLock} object of the resource, 
+     *          or <code>{@link CmsLock#getNullLock()}</code> if the resource was unlocked
      *
      * @throws CmsException if something goes wrong
      */
-    public CmsLock removeResource(
-        CmsDriverManager driverManager,
-        CmsDbContext dbc,
-        CmsResource resource,
-        boolean forceUnlock) throws CmsException {
+    public CmsLock removeResource(CmsDbContext dbc, CmsResource resource, boolean forceUnlock, boolean unlockSystemLock)
+    throws CmsException {
 
         String resourcename = resource.getRootPath();
-        CmsLock lock = getLock(driverManager, dbc, resource);
-        CmsResource sibling = null;
+        CmsLock lock = getLock(dbc, resource);
 
         // check some abort conditions first
-
         if (lock.isNullLock()) {
             // the resource isn't locked
-            return null;
+            return lock;
         }
 
-        if (!forceUnlock
-            && (!lock.getUserId().equals(dbc.currentUser().getId()) || (!lock.isInProject(dbc.currentProject())))) {
-            // the resource is locked by another user
+        // the resource is locked by another user or in other project
+        if (!forceUnlock && (!lock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject()))) {
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_RESOURCE_UNLOCK_1,
                 dbc.removeSiteRoot(resourcename)));
         }
 
-        if (!forceUnlock && (lock.isInherited() || (getParentFolderLock(resourcename) != null))) {
-            // sub-resources of a locked folder can't be unlocked
+        // sub-resources of a locked folder can't be unlocked
+        if (!forceUnlock && lock.isInherited()) {
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_UNLOCK_LOCK_INHERITED_1,
                 dbc.removeSiteRoot(resourcename)));
@@ -556,39 +403,39 @@ public final class CmsLockManager {
             if (resource.isFolder()) {
                 // in case of a folder, remove any exclusive locks on sub-resources that probably have
                 // been upgraded from an inherited lock when the user edited a resource                
-                Iterator i = m_exclusiveLocks.keySet().iterator();
+                Iterator i = m_locks.keySet().iterator();
                 String lockedPath = null;
 
                 while (i.hasNext()) {
                     lockedPath = (String)i.next();
                     if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
                         // remove the exclusive locked sub-resource
-                        i.remove();
-                        unlockResource(driverManager, lockedPath, false);
+                        unlockResource(lockedPath, false);
                     }
                 }
             }
-            return unlockResource(driverManager, resourcename, false);
+            return unlockResource(resourcename, false);
         }
 
-        if (lock.getType() == CmsLockType.SHARED_EXCLUSIVE) {
+        if (lock.getType().isSharedExclusive()) {
             // when a resource with a shared lock gets unlocked, fetch all siblings of the resource 
             // to the same content record to identify the exclusive locked sibling
-            List siblings = internalReadSiblings(driverManager, dbc, resource);
-
+            List siblings = internalReadSiblings(dbc, resource);
             for (int i = 0; i < siblings.size(); i++) {
-                sibling = (CmsResource)siblings.get(i);
-
-                if (m_exclusiveLocks.containsKey(sibling.getRootPath())) {
+                CmsResource sibling = (CmsResource)siblings.get(i);
+                if (m_locks.containsKey(sibling.getRootPath())) {
                     // remove the exclusive locked sibling
-                    unlockResource(driverManager, sibling.getRootPath(), false);
+                    unlockResource(sibling.getRootPath(), false);
                     break;
                 }
             }
-
             return lock;
         }
 
+        // remove system locks only if explicit required
+        if (unlockSystemLock && lock.isSystemLock()) {
+            return unlockResource(resourcename, true);
+        }
         return lock;
     }
 
@@ -596,43 +443,26 @@ public final class CmsLockManager {
      * Removes all resources locked in a project.<p>
      * 
      * @param projectId the ID of the project where the resources have been locked
-     * @param forceUnlock if <code>true</code>, exclusive locks in other projects are removed for resources locked with a workflow lock
-     * @param keepWorkflowLocks if <code>true</code>, workflow locks are not removed
+     * @param forceUnlock if <code>true</code>, exclusive locks in other projects are removed for resources locked with a system lock
+     * @param removeWfLocks if <code>true</code>, workflow locks are removed
      */
-    public void removeResourcesInProject(int projectId, boolean forceUnlock, boolean keepWorkflowLocks) {
+    public void removeResourcesInProject(int projectId, boolean forceUnlock, boolean removeWfLocks) {
 
-        CmsLock currentLock = null;
-        Iterator i;
-
-        i = m_exclusiveLocks.keySet().iterator();
-        while (i.hasNext()) {
-            currentLock = (CmsLock)m_exclusiveLocks.get(i.next());
-
-            if (currentLock.getProjectId() == projectId) {
-                // iterators are fail-fast!
-                i.remove();
-                unlockResource(null, currentLock.getResourceName(), false);
-            }
-        }
-
-        if (m_isWorkflowEnabled) {
-            i = m_workflowLocks.keySet().iterator();
-            while (i.hasNext()) {
-                currentLock = (CmsLock)m_workflowLocks.get(i.next());
-
-                if (currentLock.getProjectId() == projectId) {
-                    // iterators are fail-fast!
-                    if (!keepWorkflowLocks) {
-                        i.remove();
-                        unlockResource(null, currentLock.getResourceName(), true);
+        Iterator itLocks = new ArrayList(m_locks.values()).iterator(); // prevent CME
+        while (itLocks.hasNext()) {
+            CmsLock currentLock = (CmsLock)itLocks.next();
+            if (currentLock.isSystemLock()) {
+                if (!currentLock.getChildLock().isNullLock()) {
+                    if (forceUnlock || (currentLock.getChildLock().getProjectId() == projectId)) {
+                        unlockResource(currentLock.getResourceName(), false);
                     }
                 }
-
-                if (forceUnlock) {
-                    currentLock = (CmsLock)m_exclusiveLocks.get(currentLock.getResourceName());
-                    if (currentLock != null) {
-                        unlockResource(null, currentLock.getResourceName(), false);
-                    }
+                if (removeWfLocks && currentLock.isWorkflow() && (currentLock.getProjectId() == projectId)) {
+                    unlockResource(currentLock.getResourceName(), true);
+                }
+            } else {
+                if (currentLock.getProjectId() == projectId) {
+                    unlockResource(currentLock.getResourceName(), false);
                 }
             }
         }
@@ -641,32 +471,17 @@ public final class CmsLockManager {
     /**
      * Removes all exclusive temporary locks of a user.<p>
      * 
-     * @param user the user whose locks are removed
+     * @param user the user whose locks has to be removed
      */
     public void removeTempLocks(CmsUser user) {
 
-        Iterator i = m_exclusiveLocks.keySet().iterator();
-        CmsLock currentLock = null;
-
-        while (i.hasNext()) {
-            currentLock = (CmsLock)m_exclusiveLocks.get(i.next());
-
-            if ((currentLock.getType() == CmsLockType.TEMPORARY) && currentLock.getUserId().equals(user.getId())) {
-                // iterators are fail-fast!
-                i.remove();
-                unlockResource(null, currentLock.getResourceName(), false);
+        Iterator itLocks = m_locks.values().iterator();
+        while (itLocks.hasNext()) {
+            CmsLock currentLock = (CmsLock)itLocks.next();
+            if (currentLock.isTemporary() && currentLock.isOwnedBy(user)) {
+                unlockResource(currentLock.getResourceName(), false);
             }
         }
-    }
-
-    /**
-     * Returns the number of exclusive locked resources.<p>
-     * 
-     * @return the number of exclusive locked resources
-     */
-    public int size() {
-
-        return m_exclusiveLocks.size();
     }
 
     /** 
@@ -674,21 +489,19 @@ public final class CmsLockManager {
      */
     public String toString() {
 
+        StringBuffer buf = new StringBuffer();
+
         // bring the list of locked resources into a human readable order first
-        List lockedResources = new ArrayList(m_exclusiveLocks.keySet());
+        List lockedResources = new ArrayList(m_locks.keySet());
         Collections.sort(lockedResources);
 
-        Iterator i = lockedResources.iterator();
-        StringBuffer buf = new StringBuffer();
-        String lockedPath = null;
-        CmsLock currentLock = null;
-
-        while (i.hasNext()) {
-            lockedPath = (String)i.next();
-            currentLock = (CmsLock)m_exclusiveLocks.get(lockedPath);
-            buf.append(currentLock.toString()).append("\n");
+        // iterate all locks
+        Iterator itLocks = lockedResources.iterator();
+        while (itLocks.hasNext()) {
+            String lockedPath = (String)itLocks.next();
+            CmsLock currentLock = (CmsLock)m_locks.get(lockedPath);
+            buf.append(currentLock).append("\n");
         }
-
         return buf.toString();
     }
 
@@ -698,20 +511,16 @@ public final class CmsLockManager {
      * 
      * This overwrites the locks previously stored in the underlying database table.<p>
      * 
-     *  @param driverManager to get the needed driver for db access
      *  @param dbc the current database context
      *  
      *  @throws CmsException if something goes wrong
      */
-    public void writeLocks(CmsDriverManager driverManager, CmsDbContext dbc) throws CmsException {
+    public void writeLocks(CmsDbContext dbc) throws CmsException {
 
         if (m_isDirty) {
             // write the locks only if really needed
-            List locks = new ArrayList(m_exclusiveLocks.values());
-            if (m_isWorkflowEnabled) {
-                locks.addAll(m_workflowLocks.values());
-            }
-            driverManager.getProjectDriver().writeLocks(dbc, locks);
+            List locks = new ArrayList(m_locks.values());
+            m_driverManager.getProjectDriver().writeLocks(dbc, locks);
             m_isDirty = false;
         }
     }
@@ -722,13 +531,9 @@ public final class CmsLockManager {
     protected void finalize() throws Throwable {
 
         try {
-            if (m_exclusiveLocks != null) {
-                m_exclusiveLocks.clear();
-                m_exclusiveLocks = null;
-            }
-            if (m_workflowLocks != null) {
-                m_workflowLocks.clear();
-                m_workflowLocks = null;
+            if (m_locks != null) {
+                m_locks.clear();
+                m_locks = null;
             }
         } catch (Throwable t) {
             // ignore
@@ -740,19 +545,12 @@ public final class CmsLockManager {
      * Returns the direct lock of a resource.<p>
      * 
      * @param resourcename the name of the resource
-     * @param type the lock type to check
+     * 
      * @return the direct lock of the resource or the null lock
      */
-    private CmsLock getDirectLock(String resourcename, CmsLockType type) {
+    private CmsLock getDirectLock(String resourcename) {
 
-        CmsLock directLock = null;
-
-        if (type == CmsLockType.EXCLUSIVE) {
-            directLock = (CmsLock)m_exclusiveLocks.get(resourcename);
-        } else if (m_isWorkflowEnabled && (type == CmsLockType.WORKFLOW)) {
-            directLock = (CmsLock)m_workflowLocks.get(resourcename);
-        }
-
+        CmsLock directLock = (CmsLock)m_locks.get(resourcename);
         if (directLock != null) {
             return directLock;
         } else {
@@ -761,26 +559,28 @@ public final class CmsLockManager {
     }
 
     /**
-     * Returns the lock of a possible locked parent folder of a resource.<p>
+     * Returns the lock of a possible locked parent folder of a resource, system locks are ignored.<p>
      * 
-     * @param resourcename the name of the resource
-     * @return the lock of a parent folder, or null if no parent folders are locked
+     * @param resourceName the name of the resource
+     * 
+     * @return the lock of a parent folder, or {@link CmsLock#getNullLock()} if no parent folders are locked by a non system lock
      */
-    private CmsLock getParentFolderLock(String resourcename) {
+    private CmsLock getParentFolderLock(String resourceName) {
 
-        String lockedPath = null;
-        List keys = new ArrayList(m_exclusiveLocks.keySet());
-
-        for (int i = 0; i < keys.size(); i++) {
-            lockedPath = (String)keys.get(i);
-
-            if (resourcename.startsWith(lockedPath) && !resourcename.equals(lockedPath) && lockedPath.endsWith("/")) {
-                return (CmsLock)m_exclusiveLocks.get(lockedPath);
+        Iterator itLocks = m_locks.keySet().iterator();
+        while (itLocks.hasNext()) {
+            String lockedPath = (String)itLocks.next();
+            if (lockedPath.endsWith("/") && resourceName.startsWith(lockedPath) && !resourceName.equals(lockedPath)) {
+                CmsLock lock = (CmsLock)m_locks.get(lockedPath);
+                // system locks does not get inherited
+                lock = lock.getEditionLock();
+                // check the lock
+                if (!lock.isUnlocked()) {
+                    return lock;
+                }
             }
-
         }
-
-        return null;
+        return CmsLock.getNullLock();
     }
 
     /**
@@ -792,14 +592,13 @@ public final class CmsLockManager {
     private CmsLock getParentLock(String resourcename) {
 
         CmsLock parentFolderLock = getParentFolderLock(resourcename);
-        if (parentFolderLock != null) {
+        if (!parentFolderLock.isNullLock()) {
             return new CmsLock(
                 resourcename,
                 parentFolderLock.getUserId(),
                 parentFolderLock.getProject(),
                 CmsLockType.INHERITED);
         }
-
         return CmsLock.getNullLock();
     }
 
@@ -808,27 +607,52 @@ public final class CmsLockManager {
      * 
      * @param siblings the list of siblings
      * @param resourcename the name of the resource
-     * @param type the lock type to check
-     * @param indirectType the indirect lock type to use
+     * 
      * @return the indirect lock of the resource or the null lock
      */
-    private CmsLock getSiblingsLock(List siblings, String resourcename, CmsLockType type, CmsLockType indirectType) {
-
-        CmsLock siblingLock = null;
+    private CmsLock getSiblingsLock(List siblings, String resourcename) {
 
         for (int i = 0; i < siblings.size(); i++) {
             CmsResource sibling = (CmsResource)siblings.get(i);
-            siblingLock = getDirectLock(sibling.getRootPath(), type);
-
-            if (!siblingLock.isNullLock()) {
-                // a sibling is already exclusive locked or locked in a workflow
-                return new CmsLock(resourcename, siblingLock.getUserId(), siblingLock.getProject(), indirectType);
+            CmsLock exclusiveLock = getDirectLock(sibling.getRootPath());
+            if (!exclusiveLock.isNullLock()) {
+                // a sibling is already locked 
+                return internalSiblingLock(exclusiveLock, resourcename);
             }
         }
-
         // no locked siblings found
         return CmsLock.getNullLock();
 
+    }
+
+    /**
+     * Finally set the given lock.<p>
+     * 
+     * @param lock the lock to set
+     * 
+     * @throws CmsLockException if the lock is not compatible with the current lock 
+     */
+    private void internalLockResource(CmsLock lock) throws CmsLockException {
+
+        CmsLock currentLock = (CmsLock)m_locks.get(lock.getResourceName());
+        if (currentLock != null) {
+            if (currentLock.equals(lock)) {
+                return;
+            }
+            if (currentLock.isSystemLock() && !lock.isSystemLock()) {
+                currentLock.setChildLock(lock);
+            } else if (!currentLock.isSystemLock() && lock.isSystemLock()) {
+                lock.setChildLock(currentLock);
+                m_locks.put(lock.getResourceName(), lock);
+            } else {
+                throw new CmsLockException(Messages.get().container(
+                    Messages.ERR_LOCK_ILLEGAL_STATE_2,
+                    currentLock,
+                    lock));
+            }
+        } else {
+            m_locks.put(lock.getResourceName(), lock);
+        }
     }
 
     /**
@@ -837,7 +661,6 @@ public final class CmsLockManager {
      * The result is a list of <code>{@link CmsResource}</code> objects. 
      * It does NOT contain the resource itself, only the siblings of the resource.<p>
      * 
-     * @param driverManager the driver manager
      * @param dbc the current database context
      * @param resource the resource to find all siblings from
      * 
@@ -847,66 +670,116 @@ public final class CmsLockManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    private List internalReadSiblings(CmsDriverManager driverManager, CmsDbContext dbc, CmsResource resource)
-    throws CmsException {
+    private List internalReadSiblings(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
         // reading siblings using the DriverManager methods while the lock state is checked would
         // result in an infinite loop, therefore we must access the VFS driver directly
-        List siblings = driverManager.getVfsDriver().readSiblings(dbc, dbc.currentProject(), resource, true);
+        List siblings = m_driverManager.getVfsDriver().readSiblings(dbc, dbc.currentProject(), resource, true);
         siblings.remove(resource);
         return siblings;
     }
 
     /**
-     * Sets the given lock to the resource.<p>
-     * @param driverManager the driver manager
-     * @param resourceName the name of the resource to lock
-     * @param lock the lock to set
+     * Returns a shared lock for the given excclusive lock and sibling.<p>
+     * 
+     * @param exclusiveLock the exclusive lock to use (has to be set on a sibling of siblingName)
+     * @param siblingName the siblings name
+     * 
+     * @return the shared lock
      */
-    private void lockResource(CmsDriverManager driverManager, String resourceName, CmsLock lock) {
+    private CmsLock internalSiblingLock(CmsLock exclusiveLock, String siblingName) {
+
+        CmsLockType type;
+        if (exclusiveLock.isSystemLock()) {
+            type = exclusiveLock.getType();
+        } else {
+            if (getParentLock(siblingName).isNullLock()) {
+                type = CmsLockType.SHARED_EXCLUSIVE;
+            } else {
+                type = CmsLockType.SHARED_INHERITED;
+            }
+        }
+        return new CmsLock(siblingName, exclusiveLock.getUserId(), exclusiveLock.getProject(), type);
+    }
+
+    /**
+     * Sets the given lock to the resource.<p>
+     * 
+     * @param lock the lock to set
+     * 
+     * @throws CmsLockException if the lock is not compatible with the current lock 
+     */
+    private void lockResource(CmsLock lock) throws CmsLockException {
 
         if (!m_isDirty) {
             // read the locks again fresh from DB before changing the state
             try {
-                readLocks(driverManager, new CmsDbContext());
+                readLocks(new CmsDbContext());
             } catch (CmsException e) {
                 // should never happen
                 e.printStackTrace();
             }
         }
         m_isDirty = true;
-        if (lock.getType() == CmsLockType.WORKFLOW) {
-            m_workflowLocks.put(resourceName, lock);
-        } else {
-            m_exclusiveLocks.put(resourceName, lock);
-        }
+        internalLockResource(lock);
     }
 
     /**
      * Unlocks the the resource with the given name.<p>
-     * @param driverManager the driver manager
+     * 
      * @param resourceName the name of the resource to unlock
-     * @param inWf <code>true</code> if a workflow lock should be removed, 
-     *              if not a exclusive lock will be removed
+     * @param systemLocks <code>true</code> if only system locks should be removed, 
+     *              if only exclusive locks should be removed
      * 
      * @return the removed lock object
      */
-    private CmsLock unlockResource(CmsDriverManager driverManager, String resourceName, boolean inWf) {
+    private CmsLock unlockResource(String resourceName, boolean systemLocks) {
 
-        if (!m_isDirty && (driverManager != null)) {
+        if (!m_isDirty) {
             // read the locks again fresh from DB before changing the state
             try {
-                readLocks(driverManager, new CmsDbContext());
+                readLocks(new CmsDbContext());
             } catch (CmsException e) {
                 // should never happen
                 e.printStackTrace();
             }
         }
         m_isDirty = true;
-        if (inWf) {
-            return (CmsLock)m_workflowLocks.remove(resourceName);
+
+        // get the current lock
+        CmsLock lock = (CmsLock)m_locks.get(resourceName);
+        if (lock == null) {
+            return CmsLock.getNullLock();
+        }
+
+        // check the lock type (system or user) to remove
+        if (systemLocks) {
+            if (lock.isSystemLock()) {
+                // if a system lock has to be removed
+                // user locks are removed too
+                m_locks.remove(resourceName);
+                return lock;
+            } else {
+                // if it is a edition lock, do nothing
+                return CmsLock.getNullLock();
+            }
         } else {
-            return (CmsLock)m_exclusiveLocks.remove(resourceName);
+            if (!lock.isSystemLock()) {
+                // if it is a edition lock juut remove it
+                m_locks.remove(resourceName);
+                return lock;
+            } else {
+                // if it is a system lock check the edition lock
+                if (!lock.getChildLock().isNullLock()) {
+                    // remove the edition lock
+                    CmsLock tmp = lock.getChildLock();
+                    lock.setChildLock(CmsLock.getNullLock());
+                    return tmp;
+                } else {
+                    // if there is no edition lock, do nothing
+                    return CmsLock.getNullLock();
+                }
+            }
         }
     }
 }

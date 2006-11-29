@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/11/17 13:23:28 $
- * Version: $Revision: 1.97.4.17 $
+ * Date   : $Date: 2006/11/29 15:04:13 $
+ * Version: $Revision: 1.97.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
@@ -65,6 +64,7 @@ import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsMultiException;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishEngine;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -154,6 +154,7 @@ public final class CmsSecurityManager {
      * 
      * @param configurationManager the configuation manager
      * @param runtimeInfoFactory the initialized OpenCms runtime info factory
+     * @param publishEngine the publish engine
      * 
      * @return a new instance of the OpenCms security manager
      * 
@@ -161,7 +162,8 @@ public final class CmsSecurityManager {
      */
     public static CmsSecurityManager newInstance(
         CmsConfigurationManager configurationManager,
-        I_CmsDbContextFactory runtimeInfoFactory) throws CmsInitException {
+        I_CmsDbContextFactory runtimeInfoFactory,
+        CmsPublishEngine publishEngine) throws CmsInitException {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
             // OpenCms is already initialized
@@ -170,7 +172,7 @@ public final class CmsSecurityManager {
         }
 
         CmsSecurityManager securityManager = new CmsSecurityManager();
-        securityManager.init(configurationManager, runtimeInfoFactory);
+        securityManager.init(configurationManager, runtimeInfoFactory, publishEngine);
 
         return securityManager;
     }
@@ -310,32 +312,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Changes the project id of the resource to the current project, indicating that 
-     * the resource was last modified in this project.<p>
-     * 
-     * @param context the current request context
-     * @param resource theresource to apply this operation to
-     * @throws CmsException if something goes wrong
-     * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(CmsObject, CmsSecurityManager, CmsResource)
-     */
-    public void changeLastModifiedProjectId(CmsRequestContext context, CmsResource resource) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            checkOfflineProject(dbc);
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
-            m_driverManager.changeLastModifiedProjectId(dbc, resource);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_CHANGE_LAST_MODIFIED_RESOURCE_IN_PROJECT_1,
-                context.getSitePath(resource)), e);
-        } finally {
-            dbc.clear();
-        }
-
-    }
-
-    /**
      * Changes the lock of a resource to the current user, that is "steals" the lock from another user.<p>
      * 
      * @param context the current request context
@@ -348,7 +324,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         checkOfflineProject(dbc);
         try {
-            m_driverManager.changeLock(dbc, resource);
+            m_driverManager.changeLock(dbc, resource, CmsLockType.EXCLUSIVE);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_CHANGE_LOCK_OF_RESOURCE_2,
@@ -386,7 +362,13 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.changeResourcesInFolderWithProperty(dbc, resource, propertyDefinition, oldValue, newValue, recursive);
+            result = m_driverManager.changeResourcesInFolderWithProperty(
+                dbc,
+                resource,
+                propertyDefinition,
+                oldValue,
+                newValue,
+                recursive);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_CHANGE_RESOURCES_IN_FOLDER_WITH_PROP_4,
@@ -409,7 +391,6 @@ public final class CmsSecurityManager {
     public void changeUserType(CmsRequestContext context, CmsUUID userId, int userType) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-
         try {
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             m_driverManager.changeUserType(dbc, userId, userType);
@@ -433,7 +414,6 @@ public final class CmsSecurityManager {
     public void changeUserType(CmsRequestContext context, String username, int userType) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-
         try {
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             m_driverManager.changeUserType(dbc, username, userType);
@@ -521,7 +501,7 @@ public final class CmsSecurityManager {
      * @param dbc the current OpenCms users database context
      * @param publishList the publish list to check (contains the information about the resources / project to publish)
      * 
-     * @throws CmsException if the user does not have the required permissions becasue of project lock state
+     * @throws CmsException if the user does not have the required permissions because of project lock state
      * @throws CmsMultiException if issues occur like a direct publish is attempted on a resource 
      *         whose parent folder is new or deleted in the offline project, 
      *         or if the current user has no management access to the current project
@@ -604,30 +584,6 @@ public final class CmsSecurityManager {
             }
         }
         // no issues have been found , permissions are granted
-    }
-
-    /**
-     * Checks if the current user has the permissions to publish the given publish list 
-     * (which contains the information about the resources / project to publish).<p>
-     * 
-     * @param context the current request context
-     * @param publishList the publish list to check (contains the information about the resources / project to publish)
-     * 
-     * @throws CmsException if the user does not have the required permissions becasue of project lock state
-     * @throws CmsMultiException if issues occur like a direct publish is attempted on a resource 
-     *         whose parent folder is new or deleted in the offline project, 
-     *         or if the current user has no management access to the current project
-     */
-    public void checkPublishPermissions(CmsRequestContext context, CmsPublishList publishList)
-    throws CmsException, CmsMultiException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            // check the access permissions
-            checkPublishPermissions(dbc, publishList);
-        } finally {
-            dbc.clear();
-        }
     }
 
     /**
@@ -796,14 +752,47 @@ public final class CmsSecurityManager {
      * @see CmsObject#copyResource(String, String, CmsResourceCopyMode)
      * @see org.opencms.file.types.I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, CmsResourceCopyMode)
      */
-    public void copyResource(CmsRequestContext context, CmsResource source, String destination, CmsResourceCopyMode siblingMode)
-    throws CmsException, CmsSecurityException {
+    public void copyResource(
+        CmsRequestContext context,
+        CmsResource source,
+        String destination,
+        CmsResourceCopyMode siblingMode) throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsRequestContext rc = context;
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, source, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
+
+            // if copying as siblings, deny operation if child sibling resources are already locked
+            // since we should not change the lock state of these siblings without request,
+            // but the copied folder should be locked by the current user and also all resources inside
+            if (!siblingMode.equals(CmsResource.COPY_AS_NEW)) {
+                CmsLockFilter filter = CmsLockFilter.FILTER_NON_INHERITED.filterSharedExclusive();
+                filter = filter.filterNotLockableByUser(dbc.currentUser());
+                Iterator itLocks = getLockedResources(context, source, filter).iterator();
+                if (itLocks.hasNext()) {
+                    if (siblingMode.equals(CmsResource.COPY_AS_SIBLING)) {
+                        throw new CmsVfsException(Messages.get().container(
+                            Messages.ERR_COPY_LOCKED_SIBLINGS_1,
+                            dbc.removeSiteRoot(source.getRootPath()),
+                            destination));
+                    } else {
+                        while (itLocks.hasNext()) {
+                            String resName = (String)itLocks.next();
+                            CmsResource resource = readResource(context, resName, CmsResourceFilter.ALL);
+                            // COPY_PRESERVE_SIBLING
+                            if (resource.getSiblingCount() > 1) {
+                                throw new CmsVfsException(Messages.get().container(
+                                    Messages.ERR_COPY_LOCKED_SIBLINGS_1,
+                                    dbc.removeSiteRoot(source.getRootPath()),
+                                    destination));
+                            }
+                        }
+                    }
+                }
+            }
+
             // target permissions will be checked later
             m_driverManager.copyResource(dbc, source, destination, siblingMode);
         } catch (Exception e) {
@@ -1042,7 +1031,7 @@ public final class CmsSecurityManager {
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        
+
         CmsResource sibling = null;
         try {
             checkOfflineProject(dbc);
@@ -1355,8 +1344,7 @@ public final class CmsSecurityManager {
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
-            checkWorkflowLocks(dbc, resource);
-
+            checkSystemLocks(dbc, resource);
             deleteResource(dbc, resource, siblingMode);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_RESOURCE_1, context.getSitePath(resource)), e);
@@ -1551,9 +1539,9 @@ public final class CmsSecurityManager {
     public CmsPublishList fillPublishList(CmsRequestContext context, CmsPublishList publishList) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsPublishList result = null;
         try {
-            result = m_driverManager.fillPublishList(dbc, publishList);
+            m_driverManager.fillPublishList(dbc, publishList);
+            checkPublishPermissions(dbc, publishList);
         } catch (Exception e) {
             if (publishList.isDirectPublish()) {
                 dbc.report(null, Messages.get().container(
@@ -1567,7 +1555,7 @@ public final class CmsSecurityManager {
         } finally {
             dbc.clear();
         }
-        return result;
+        return publishList;
     }
 
     /**
@@ -1825,30 +1813,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns the groups of a user.<p>
-     * 
-     * @param context the current request context
-     * @param username the name of the user
-     * 
-     * @return a list of <code>{@link CmsGroup}</code> objects
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public List getGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
-        try {
-            result = m_driverManager.getGroupsOfUser(dbc, username);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_GET_GROUPS_OF_USER_1, username), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
      * Returns the groups of a Cms user filtered by the specified IP address.<p>
      * 
      * @param context the current request context
@@ -1919,29 +1883,6 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1,
                 context.getSitePath(resource)), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Returns the workflow lock state of a resource.<p>
-     * 
-     * @param context the current request context
-     * @param resource the resource to return the workflow lock state for
-     * 
-     * @return the lock state of the resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsLock getLockForWorkflow(CmsRequestContext context, CmsResource resource) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsLock result = null;
-        try {
-            result = m_driverManager.getLockForWorkflow(dbc, resource);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_GET_LOCK_1, context.getSitePath(resource)), e);
         } finally {
             dbc.clear();
         }
@@ -2031,7 +1972,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // check the access permissions
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_VIEW, true, CmsResourceFilter.ALL);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ALL);
             result = m_driverManager.getRelationsForResource(dbc, resource, filter);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -2295,7 +2236,6 @@ public final class CmsSecurityManager {
             // any exception: return false
             return false;
         }
-
         return role.hasRole(groups);
     }
 
@@ -2485,11 +2425,14 @@ public final class CmsSecurityManager {
      * 
      * @param configurationManager the configurationManager
      * @param dbContextFactory the initialized OpenCms runtime info factory
+     * @param publishEngine the publish engine
      * 
      * @throws CmsInitException if the initialization fails
      */
-    public void init(CmsConfigurationManager configurationManager, I_CmsDbContextFactory dbContextFactory)
-    throws CmsInitException {
+    public void init(
+        CmsConfigurationManager configurationManager,
+        I_CmsDbContextFactory dbContextFactory,
+        CmsPublishEngine publishEngine) throws CmsInitException {
 
         if (dbContextFactory == null) {
             throw new CmsInitException(org.opencms.main.Messages.get().container(
@@ -2517,11 +2460,11 @@ public final class CmsSecurityManager {
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_permissionCache", lruMap);
         }
 
-        // create a new lock manager
-        m_lockManager = new CmsLockManager();
-
         // create the driver manager
-        m_driverManager = CmsDriverManager.newInstance(configurationManager, this, m_lockManager, dbContextFactory);
+        m_driverManager = CmsDriverManager.newInstance(configurationManager, this, dbContextFactory, publishEngine);
+
+        // create a new lock manager
+        m_lockManager = m_driverManager.getLockManager();
 
         try {
             // now read the persistent locks
@@ -2586,27 +2529,26 @@ public final class CmsSecurityManager {
      * <li><code>{@link org.opencms.lock.CmsLockType#EXCLUSIVE}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#WORKFLOW}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLockType#PUBLISH}</code></li>
      * </ul><p>
      * 
      * @param context the current request context
      * @param resource the resource to lock
-     * @param project the project for locking the resource
      * @param type type of the lock
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#lockResource(String)
      * @see CmsObject#lockResourceTemporary(String)
-     * @see org.opencms.file.types.I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, CmsProject, CmsLockType)
+     * @see org.opencms.file.types.I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, CmsLockType)
      */
-    public void lockResource(CmsRequestContext context, CmsResource resource, CmsProject project, CmsLockType type)
-    throws CmsException {
+    public void lockResource(CmsRequestContext context, CmsResource resource, CmsLockType type) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
-            m_driverManager.lockResource(dbc, resource, project, type);
+            m_driverManager.lockResource(dbc, resource, type);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_LOCK_RESOURCE_2,
@@ -2718,7 +2660,7 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             checkPermissions(dbc, source, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
             checkPermissions(dbc, source, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
-            checkWorkflowLocks(dbc, source);
+            checkSystemLocks(dbc, source);
 
             // no permissions are checked for subresources in case of moving a folder
             moveResource(dbc, source, destination);
@@ -2800,17 +2742,17 @@ public final class CmsSecurityManager {
             // check if the current user has the required publish permissions
             checkPublishPermissions(dbc, publishList);
 
-            // check that no resource is locked in a workflow
+            // check that no resource is locked in a workflow or already been published
             Iterator it = publishList.getFileList().iterator();
             while (it.hasNext()) {
                 CmsResource subresource = (CmsResource)it.next();
-                checkWorkflowLocks(dbc, subresource);
+                checkSystemLocks(dbc, subresource);
             }
             if (publishList.isPublishSubResources()) {
                 Iterator itFolders = publishList.getFolderList().iterator();
                 while (itFolders.hasNext()) {
                     CmsResource folder = (CmsResource)itFolders.next();
-                    checkWorkflowLocks(dbc, folder);
+                    checkSystemLocks(dbc, folder);
                 }
             }
             m_driverManager.publishProject(cms, dbc, publishList, report);
@@ -3032,6 +2974,51 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_CHILD_RESOURCES_1,
                 context.getSitePath(resource)), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns the default file for the given folder.<p>
+     * 
+     * If the given resource is a file, then this file is returned.<p>
+     * 
+     * Otherwise, in case of a folder:<br> 
+     * <ol>
+     *   <li>the {@link CmsPropertyDefinition#PROPERTY_DEFAULT_FILE} is checked, and
+     *   <li>if still no file could be found, the configured default files in the 
+     *       <code>opencms-vfs.xml</code> configuration are iterated until a match is 
+     *       found, and
+     *   <li>if still no file could be found, <code>null</code> is retuned
+     * </ol>
+     * 
+     * @param context the request context
+     * @param resource the folder to get the default file for
+     * 
+     * @return the default file for the given folder
+     * 
+     * @throws CmsSecurityException if the user has no permissions to read the resulting file
+     * 
+     * @see CmsObject#readDefaultFile(String)
+     * @see CmsDriverManager#readDefaultFile(CmsDbContext, CmsResource)
+     */
+    public CmsResource readDefaultFile(CmsRequestContext context, CmsResource resource) throws CmsSecurityException {
+
+        CmsResource result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.readDefaultFile(dbc, resource);
+            if (result != null) {
+                // check if the user has read access to the resource
+                checkPermissions(dbc, result, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.DEFAULT);
+            }
+        } catch (CmsSecurityException se) {
+            // permissions deny access to the resource
+            throw se;
+        } catch (CmsException e) {
+            // ignore all other exceptions
         } finally {
             dbc.clear();
         }
@@ -4334,7 +4321,7 @@ public final class CmsSecurityManager {
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
-            checkWorkflowLocks(dbc, resource);
+            checkSystemLocks(dbc, resource);
 
             m_driverManager.undoChanges(dbc, resource, mode);
         } catch (Exception e) {
@@ -4351,18 +4338,20 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param projectId the id of the project to be published
+     * @param removeWfLocks if the workflow lock should be removed too
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#PROJECT_MANAGER} for the current project. 
      */
-    public void unlockProject(CmsRequestContext context, int projectId) throws CmsException, CmsRoleViolationException {
+    public void unlockProject(CmsRequestContext context, int projectId, boolean removeWfLocks)
+    throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsProject project = m_driverManager.readProject(dbc, projectId);
 
         try {
             checkManagerOfProjectRole(dbc, project);
-            m_driverManager.unlockProject(project);
+            m_driverManager.unlockProject(project, removeWfLocks);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_UNLOCK_PROJECT_2,
@@ -4392,7 +4381,7 @@ public final class CmsSecurityManager {
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
-            m_driverManager.unlockResource(dbc, resource, false);
+            m_driverManager.unlockResource(dbc, resource, false, false);
         } catch (CmsException e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_UNLOCK_RESOURCE_3,
@@ -4475,18 +4464,29 @@ public final class CmsSecurityManager {
     /**
      * Validates the relations for the given resources.<p>
      * 
-     * @param cms the current user's Cms object
+     * @param context the current request context
      * @param resources the resources to validate during publishing 
      *              or <code>null</code> for all in current project
      * @param report a report to write the messages to
      * 
-     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names
+     * @return a map with lists of invalid links 
+     *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
+     *          keyed by resource names
      * 
      * @throws Exception if something goes wrong
      */
-    public Map validateRelations(CmsObject cms, List resources, I_CmsReport report) throws Exception {
+    public Map validateRelations(CmsRequestContext context, List resources, I_CmsReport report) throws Exception {
 
-        return m_driverManager.validateRelations(cms, resources, report);
+        Map result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.validateRelations(dbc, resources, report);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_VALIDATE_RELATIONS_0), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
     }
 
     /**
@@ -4881,16 +4881,16 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Checks if the given resource contains a resource that has a workflow lock.<p>
+     * Checks if the given resource contains a resource that has a system lock.<p>
      * 
      * @param dbc the current database context
      * @param resource the resource to check
      * 
-     * @throws CmsLockException in case there is a workflow lock contained in the given resouce
+     * @throws CmsException in case there is a system lock contained in the given resouce
      */
-    protected void checkWorkflowLocks(CmsDbContext dbc, CmsResource resource) throws CmsLockException {
+    protected void checkSystemLocks(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        if (m_lockManager.hasWorkflowLocks(resource)) {
+        if (m_lockManager.hasSystemLocks(dbc, resource)) {
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_RESOURCE_LOCKED_IN_WORKFLOW_1,
                 dbc.removeSiteRoot(resource.getRootPath())));
@@ -4991,7 +4991,7 @@ public final class CmsSecurityManager {
             CmsLock lock = m_driverManager.getLock(dbc, resource);
             // if the resource is not locked by the current user, write and control 
             // access must cause a permission error that must not be cached
-            if (lock.isUnlocked() || !m_lockManager.isLockableByUser(m_driverManager, dbc, lock, dbc.currentUser())) {
+            if (lock.isUnlocked() || !lock.isLockableBy(dbc.currentUser())) {
                 return PERM_NOTLOCKED;
             }
         }
@@ -5125,7 +5125,8 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    private void deleteResource(CmsDbContext dbc, CmsResource resource, CmsResourceDeleteMode siblingMode) throws CmsException {
+    private void deleteResource(CmsDbContext dbc, CmsResource resource, CmsResourceDeleteMode siblingMode)
+    throws CmsException {
 
         if (resource.isFolder()) {
             // collect all resources in the folder (but exclude deleted ones)
@@ -5233,7 +5234,7 @@ public final class CmsSecurityManager {
         CmsResource destinationResource = m_driverManager.readResource(dbc, destination, CmsResourceFilter.ALL);
         try {
             // the destination must always get a new lock
-            m_driverManager.lockResource(dbc, destinationResource, dbc.currentProject(), CmsLockType.EXCLUSIVE);
+            m_driverManager.lockResource(dbc, destinationResource, CmsLockType.EXCLUSIVE);
         } catch (Exception e) {
             // could happen with workflow (and harder with shared) locks on single files
             if (LOG.isWarnEnabled()) {

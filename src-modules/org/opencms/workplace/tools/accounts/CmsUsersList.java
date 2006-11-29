@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2006/11/15 16:01:15 $
- * Version: $Revision: 1.15.4.1 $
+ * Date   : $Date: 2006/11/29 15:04:15 $
+ * Version: $Revision: 1.15.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15.4.1 $ 
+ * @version $Revision: 1.15.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,14 +110,15 @@ public class CmsUsersList extends A_CmsUsersList {
      */
     public void executeListSingleActions() throws IOException, ServletException {
 
-        String userId = getSelectedItem().getId();
-        Map params = new HashMap();
-        params.put(A_CmsEditUserDialog.PARAM_USERID, userId);
-        // set action parameter to initial dialog call
-        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
         // only the switch action is forwarded here,
         // other actions are execute in the super class
         if (getParamListAction().equals(LIST_ACTION_SWITCH)) {
+            String userId = getSelectedItem().getId();
+            Map params = new HashMap();
+            params.put(A_CmsEditUserDialog.PARAM_USERID, userId);
+            // set action parameter to initial dialog call
+            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+            // forward
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/switch", params);
         } else {
             super.executeListSingleActions();

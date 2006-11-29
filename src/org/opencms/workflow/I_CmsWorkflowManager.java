@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/I_CmsWorkflowManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/11/29 15:04:15 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workflow;
 
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -50,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.0 
  */
@@ -105,13 +106,6 @@ public interface I_CmsWorkflowManager {
      * @throws CmsException if the agents cannot be retrieved
      */
     I_CmsPrincipal getAgent(I_CmsWorkflowType type) throws CmsException;
-
-    /**
-     * Returns the class name of the engine connector currently used.<p>
-     * 
-     * @return the class name of the engine connector
-     */
-    String getEngine();
 
     /**
      * Returns the log for the given workflow project.<p>
@@ -330,8 +324,9 @@ public interface I_CmsWorkflowManager {
      * Initializes the workflow manager with the OpenCms system configuration.<p>
      * 
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
+     * @param securityManager the security manager instance
      */
-    void initialize(CmsObject cms);
+    void initialize(CmsObject cms, CmsSecurityManager securityManager);
 
     /**
      * Checks if a resource assigned to a task is editable.<p>
@@ -347,16 +342,18 @@ public interface I_CmsWorkflowManager {
     boolean isEditableInWorkflow(CmsObject cms, CmsResource resource);
 
     /**
-     * Checks if a resource assigned to a task is lockable for the current user.<p>
+     * Checks if a resource assigned to a task is lockable for the given user.<p>
+     * 
      * Returns <code>true</code> if the resource is assigned to a workflow task,
      * and if the user is a manager for this task or optionally an agent.
      * 
-     * @param cms the cms object
-     * @param resource the resource
+     * @param user the user to check lockability for
+     * @param rootPath the name of the resource to check (root path)
      * @param managersOnly <code>true</code> if agents are not allowed
+     * 
      * @return if a resource assigned to a task is lockable for the current user
      */
-    boolean isLockableInWorkflow(CmsObject cms, CmsResource resource, boolean managersOnly);
+    boolean isLockableInWorkflow(CmsUser user, String rootPath, boolean managersOnly);
 
     /**
      * Publishes the resources in the workflow project assigned to a task.<p>
@@ -364,6 +361,7 @@ public interface I_CmsWorkflowManager {
      * @param cms the cms object
      * @param wfProject the workflow project assigned to the task
      * @param message the additional message
+     * 
      * @throws CmsException if publishing fails
      */
     void publishTask(CmsObject cms, CmsProject wfProject, String message) throws CmsException;
@@ -373,7 +371,7 @@ public interface I_CmsWorkflowManager {
      * 
      * @param engine the workflow engine connector
      */
-    void setEngine(String engine);
+    void setEngine(I_CmsWorkflowEngine engine);
 
     /**
      * Signalizes a transition in the workflow.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/Messages.java,v $
- * Date   : $Date: 2006/08/22 11:09:54 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/11/29 15:04:15 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,15 +152,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_VIEW_ROOT_NAME_0 = "GUI_WORKFLOW_VIEW_ROOT_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKFLOW_ENGINE_INVALID_1 = "INIT_WORKFLOW_ENGINE_INVALID_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKFLOW_ENGINE_SUCCESS_1 = "INIT_WORKFLOW_ENGINE_SUCCESS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_INIT_WORKFLOW_ENGINE_FAILURE_1 = "LOG_INIT_WORKFLOW_ENGINE_FAILURE_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workflow.generic.messages";

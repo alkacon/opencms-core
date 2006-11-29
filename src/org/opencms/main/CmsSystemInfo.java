@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2006/09/14 11:36:11 $
- * Version: $Revision: 1.48.4.5 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.48.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Properties;
 /**
  * Provides access to system wide "read only" information.<p>
  * 
- * Regarding the naming conventions used, this comes straight from the Servlet Sepc v2.4:<p>
+ * Regarding the naming conventions used, this comes straight from the Servlet Spec v2.4:<p>
  *   
  * <i>SRV.3.1 Introduction to the ServletContext Interface<br>
  * [...] A ServletContext is rooted at a known path within a web server. For example
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.48.4.5 $ 
+ * @version $Revision: 1.48.4.6 $ 
  * 
  * @since 6.0.0 
  */

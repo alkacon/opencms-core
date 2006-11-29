@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2006/11/07 15:28:44 $
- * Version: $Revision: 1.58.4.5 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.58.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsResourceManager;
-import org.opencms.lock.CmsLockManager;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsRole;
@@ -94,7 +94,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58.4.5 $ 
+ * @version $Revision: 1.58.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -252,16 +252,6 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the lock manager used for the locking mechanism.<p>
-     * 
-     * @return the lock manager used for the locking mechanism
-     */
-    public static CmsLockManager getLockManager() {
-
-        return OpenCmsCore.getInstance().getLockManager();
-    }
-
-    /**
      * Returns the log for the selected object.<p>
      * 
      * If the provided object is a String, this String will
@@ -314,6 +304,16 @@ public final class OpenCms {
     public static I_CmsPasswordHandler getPasswordHandler() {
 
         return OpenCmsCore.getInstance().getPasswordHandler();
+    }
+
+    /**
+     * Returns the core publish manager class.<p>
+     * 
+     * @return the publish manager instance
+     */
+    public static CmsPublishManager getPublishManager() {
+
+        return OpenCmsCore.getInstance().getPublishManager();
     }
 
     /**

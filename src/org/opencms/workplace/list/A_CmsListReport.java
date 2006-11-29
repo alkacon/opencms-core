@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListReport.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/11/29 15:04:12 $
+ * Version: $Revision: 1.8.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,8 +96,6 @@ public abstract class A_CmsListReport extends CmsReport {
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
             case ACTION_REPORT_END:
-                actionCloseDialog();
-                break;
             case ACTION_CANCEL:
                 actionCloseDialog();
                 break;
@@ -109,10 +107,10 @@ public abstract class A_CmsListReport extends CmsReport {
             case ACTION_CONFIRMED:
             case ACTION_DEFAULT:
             default:
-                I_CmsReportThread m_thread = initializeThread();
-                m_thread.start();
+                I_CmsReportThread thread = initializeThread();
+                thread.start();
                 setParamAction(REPORT_BEGIN);
-                setParamThread(m_thread.getUUID().toString());
+                setParamThread(thread.getUUID().toString());
                 getJsp().include(FILE_REPORT_OUTPUT);
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.90.4.11 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.90.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.test;
 
 import org.opencms.db.CmsDbPool;
-import org.opencms.file.CmsResource.CmsResourceState;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -93,7 +93,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.11 $
+ * @version $Revision: 1.90.4.12 $
  * 
  * @since 6.0.0
  */
@@ -713,6 +713,7 @@ public class OpenCmsTestCase extends TestCase {
                 script = new File(getTestDataPath("scripts/script_publish.txt"));
                 stream = new FileInputStream(script);
                 m_shell.start(stream);
+                OpenCms.getPublishManager().waitWhileRunning();
             } else {
                 cms.unlockProject(cms.readProject("_setupProject").getId());
             }
@@ -1904,41 +1905,11 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource to validate
      * @param lockType the type of the lock
      * 
-     * @see CmsLockType#EXCLUSIVE
-     * @see CmsLockType#INHERITED
-     * @see CmsLockType#SHARED_EXCLUSIVE
-     * @see CmsLockType#SHARED_INHERITED
-     * @see CmsLockType#UNLOCKED
+     * @see CmsLockType
      */
     public void assertLock(CmsObject cms, String resourceName, CmsLockType lockType) {
 
-        try {
-            // get the actual resource from the VFS
-            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
-            CmsLock lock = cms.getLock(res);
-
-            if (lockType == CmsLockType.UNLOCKED) {
-                if (!lock.isNullLock()) {
-                    fail("[Lock " + resourceName + " must be unlocked]");
-                }
-            } else if (lock.isNullLock()
-                || (lock.getType() != lockType)
-                || !lock.isOwnedBy(cms.getRequestContext().currentUser())) {
-                fail("[Lock "
-                    + resourceName
-                    + " requires a lock of type "
-                    + lockType
-                    + " for user "
-                    + cms.getRequestContext().currentUser().getId()
-                    + " but has a lock of type "
-                    + lock.getType()
-                    + " for user "
-                    + lock.getUserId()
-                    + "]");
-            }
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
-        }
+        assertLock(cms, resourceName, lockType, cms.getRequestContext().currentUser());
     }
 
     /**
@@ -1949,21 +1920,27 @@ public class OpenCmsTestCase extends TestCase {
      * @param lockType the type of the lock
      * @param user the user to check the lock with
      * 
-     * @see CmsLockType#EXCLUSIVE
-     * @see CmsLockType#INHERITED
-     * @see CmsLockType#SHARED_EXCLUSIVE
-     * @see CmsLockType#SHARED_INHERITED
-     * @see CmsLockType#UNLOCKED
-     * @see CmsLockType#WORKFLOW
+     * @see CmsLockType
      */
     public void assertLock(CmsObject cms, String resourceName, CmsLockType lockType, CmsUser user) {
 
         try {
             // get the actual resource from the VFS
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
-            CmsLock lock = cms.getLock(res);
+            CmsLock lock;
+            if (lockType.isSystem()) {
+                lock = cms.getSystemLock(res);
+            } else {
+                lock = cms.getLock(res);
+                // for unlock check system lock also
+                if (lockType.isUnlocked()) {
+                    if (!cms.getSystemLock(res).isNullLock()) {
+                        fail("[Lock " + resourceName + " must be unlocked]");
+                    }
+                }
+            }
 
-            if (lockType == CmsLockType.UNLOCKED) {
+            if (lockType.isUnlocked()) {
                 if (!lock.isNullLock()) {
                     fail("[Lock " + resourceName + " must be unlocked]");
                 }

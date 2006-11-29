@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/db/TestPublishHistory.java,v $
- * Date   : $Date: 2006/11/08 09:28:51 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/11/29 15:04:13 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.db;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -54,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventListener {
 
@@ -143,11 +142,13 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
                         if (pubRes.getRootPath().endsWith(RESOURCENAME)) {
                             assertEquals("/sites/default" + RESOURCENAME, pubRes.getRootPath());
                             assertEquals(CmsResource.STATE_DELETED, pubRes.getState());
+                            assertEquals(CmsPublishedResource.STATE_MOVED_SOURCE, pubRes.getMovedState());
                             assertTrue(pubRes.isMoved());
                             moved = false;
                         } else if (pubRes.getRootPath().endsWith(RESOURCENAME_MOVED)) {
                             assertEquals("/sites/default" + RESOURCENAME_MOVED, pubRes.getRootPath());
                             assertEquals(CmsResource.STATE_NEW, pubRes.getState());
+                            assertEquals(CmsPublishedResource.STATE_MOVED_DESTINATION, pubRes.getMovedState());
                             assertTrue(pubRes.isMoved());
                             moved = true;
                         } else {
@@ -200,6 +201,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
         cms.setDateLastModified(RESOURCENAME, System.currentTimeMillis(), false);
         cms.unlockResource(RESOURCENAME);
         cms.publishResource(RESOURCENAME);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
@@ -219,6 +221,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
         cms.deleteResource(RESOURCENAME_MOVED, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(RESOURCENAME_MOVED);
         cms.publishResource(RESOURCENAME_MOVED);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
@@ -238,6 +241,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
         cms.moveResource(RESOURCENAME, RESOURCENAME_MOVED);
         cms.unlockResource(RESOURCENAME_MOVED);
         cms.publishResource(RESOURCENAME_MOVED);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
@@ -259,5 +263,6 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
         cms.createResource(RESOURCENAME, CmsResourceTypePlain.getStaticTypeId());
         cms.unlockResource(RESOURCENAME);
         cms.publishResource(RESOURCENAME);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 }

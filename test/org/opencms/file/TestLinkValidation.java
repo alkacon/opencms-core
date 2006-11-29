@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2006/10/05 14:34:00 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/11/29 15:04:06 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,9 @@ package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -57,9 +60,14 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
+
+    private static final int MODE_XMLCONTENT_BOTH = 1;
+    private static final int MODE_XMLCONTENT_FILEREF_ONLY = 3;
+    private static final int MODE_XMLCONTENT_HTML_ONLY = 2;
+    private static final int MODE_XMLPAGE = 0;
 
     /**
      * Default JUnit constructor.<p>
@@ -164,7 +172,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
 
         echo("Testing link validation for xml contents with html and file references");
 
-        testLinkValidation(1);
+        testLinkValidation(MODE_XMLCONTENT_BOTH);
     }
 
     /**
@@ -176,7 +184,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
 
         echo("Testing link validation for xml contents with only file references");
 
-        testLinkValidation(3);
+        testLinkValidation(MODE_XMLCONTENT_FILEREF_ONLY);
     }
 
     /**
@@ -188,7 +196,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
 
         echo("Testing link validation for xml contents with only html");
 
-        testLinkValidation(2);
+        testLinkValidation(MODE_XMLCONTENT_HTML_ONLY);
     }
 
     /**
@@ -200,7 +208,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
 
         echo("Testing link validation for xml pages");
 
-        testLinkValidation(0);
+        testLinkValidation(MODE_XMLPAGE);
     }
 
     /**
@@ -218,6 +226,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         cms.deleteResource(resName, CmsResource.DELETE_REMOVE_SIBLINGS);
         cms.unlockResource(resName);
         cms.publishResource(resName, true, report);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
@@ -238,6 +247,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         cms.restoreResourceBackup(resName, backup.getTagId());
         cms.unlockResource(resName);
         cms.publishResource(resName, true, report);
+        OpenCms.getPublishManager().waitWhileRunning();
         cms.lockResource(resName);
     }
 
@@ -320,7 +330,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         String filename1, filename2, filename3, filename4, filename5, filename6, filename7, filename8;
         switch (mode) {
-            case 1:
+            case MODE_XMLCONTENT_BOTH:
                 filename1 = "/xmlcontent1.html";
                 filename2 = "/xmlcontent2.html";
                 filename3 = "/xmlcontent3.html";
@@ -330,7 +340,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
                 filename7 = "/xmlcontent7.html";
                 filename8 = "/xmlcontent8.html";
                 break;
-            case 2:
+            case MODE_XMLCONTENT_HTML_ONLY:
                 filename1 = "/xmlcontent1html.html";
                 filename2 = "/xmlcontent2html.html";
                 filename3 = "/xmlcontent3html.html";
@@ -340,7 +350,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
                 filename7 = "/xmlcontent7html.html";
                 filename8 = "/xmlcontent8html.html";
                 break;
-            case 3:
+            case MODE_XMLCONTENT_FILEREF_ONLY:
                 filename1 = "/xmlcontent1ref.html";
                 filename2 = "/xmlcontent2ref.html";
                 filename3 = "/xmlcontent3ref.html";
@@ -364,7 +374,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
 
         // create files
         int type;
-        if (mode > 0) {
+        if (mode > MODE_XMLPAGE) {
             type = 12; // article
         } else {
             type = CmsResourceTypeXmlPage.getStaticTypeId();
@@ -382,30 +392,35 @@ public class TestLinkValidation extends OpenCmsTestCase {
         String content4 = "<a href='" + filename2 + "'>file2</a>";
         String content5 = "<a href='" + filename6 + "'>file6</a>";
         String content6 = "<a href='" + filename5 + "'>file5</a>";
+        CmsRelationType relType1 = null;
         switch (mode) {
-            case 1:
+            case MODE_XMLCONTENT_BOTH:
                 setXmlContent(cms, filename1, content1, filename2);
                 setXmlContent(cms, filename4, content4, filename2);
                 setXmlContent(cms, filename5, content5, filename6);
                 setXmlContent(cms, filename6, content6, filename5);
+                relType1 = CmsRelationType.HYPERLINK;
                 break;
-            case 2:
+            case MODE_XMLCONTENT_HTML_ONLY:
                 setXmlContentHtml(cms, filename1, content1);
                 setXmlContentHtml(cms, filename4, content4);
                 setXmlContentHtml(cms, filename5, content5);
                 setXmlContentHtml(cms, filename6, content6);
+                relType1 = CmsRelationType.HYPERLINK;
                 break;
-            case 3:
+            case MODE_XMLCONTENT_FILEREF_ONLY:
                 setXmlContentFileRef(cms, filename1, filename2, filename3);
                 setXmlContentFileRef(cms, filename4, filename2, null);
                 setXmlContentFileRef(cms, filename5, filename6, null);
                 setXmlContentFileRef(cms, filename6, filename5, null);
+                relType1 = CmsRelationType.XML_WEAK;
                 break;
             default:
                 setContent(cms, filename1, content1);
                 setContent(cms, filename4, content4);
                 setContent(cms, filename5, content5);
                 setContent(cms, filename6, content6);
+                relType1 = CmsRelationType.HYPERLINK;
                 break;
 
         }
@@ -417,9 +432,12 @@ public class TestLinkValidation extends OpenCmsTestCase {
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename1)));
         List brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename1));
-        assertEquals(brokenLinks.size(), 2);
-        assertTrue(brokenLinks.contains(cms.getRequestContext().addSiteRoot(filename2)));
-        assertTrue(brokenLinks.contains(cms.getRequestContext().addSiteRoot(filename3)));
+        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 3 : 2));
+        assertTrue(brokenLinks.contains(new CmsRelation(res1, res2, relType1)));
+        assertTrue(brokenLinks.contains(new CmsRelation(res1, res3, relType1)));
+        if (mode == MODE_XMLCONTENT_BOTH) {
+            assertTrue(brokenLinks.contains(new CmsRelation(res1, res2, CmsRelationType.XML_WEAK)));
+        }
 
         validation = cms.validateRelations(Collections.singletonList(res2), report);
         assertTrue(validation.isEmpty());
@@ -431,22 +449,30 @@ public class TestLinkValidation extends OpenCmsTestCase {
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename4)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename4));
-        assertEquals(brokenLinks.size(), 1);
-        assertTrue(brokenLinks.contains(cms.getRequestContext().addSiteRoot(filename2)));
+        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 2 : 1));
+        assertTrue(brokenLinks.contains(new CmsRelation(res4, res2, relType1)));
+        if (mode == MODE_XMLCONTENT_BOTH) {
+            assertTrue(brokenLinks.contains(new CmsRelation(res4, res2, CmsRelationType.XML_WEAK)));
+        }
 
         validation = cms.validateRelations(Collections.singletonList(res5), report);
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename5)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename5));
-        assertEquals(brokenLinks.size(), 1);
-        assertTrue(brokenLinks.contains(cms.getRequestContext().addSiteRoot(filename6)));
-
+        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 2 : 1));
+        assertTrue(brokenLinks.contains(new CmsRelation(res5, res6, relType1)));
+        if (mode == MODE_XMLCONTENT_BOTH) {
+            assertTrue(brokenLinks.contains(new CmsRelation(res5, res6, CmsRelationType.XML_WEAK)));
+        }
         validation = cms.validateRelations(Collections.singletonList(res6), report);
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename6)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename6));
-        assertEquals(brokenLinks.size(), 1);
-        assertTrue(brokenLinks.contains(cms.getRequestContext().addSiteRoot(filename5)));
+        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 2 : 1));
+        assertTrue(brokenLinks.contains(new CmsRelation(res6, res5, relType1)));
+        if (mode == MODE_XMLCONTENT_BOTH) {
+            assertTrue(brokenLinks.contains(new CmsRelation(res6, res5, CmsRelationType.XML_WEAK)));
+        }
 
         validation = cms.validateRelations(Collections.singletonList(res7), report);
         assertTrue(validation.isEmpty());
@@ -478,6 +504,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         // publish
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject(report);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // check links after deletion
         touchResources(cms, resAll);
@@ -490,18 +517,25 @@ public class TestLinkValidation extends OpenCmsTestCase {
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename1)));
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename4)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename1));
-        assertEquals(brokenLinks.size(), 1);
-        assertTrue(brokenLinks.contains(cms.getRequestContext().addSiteRoot(filename2)));
+        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 2 : 1));
+        assertTrue(brokenLinks.contains(new CmsRelation(res1, res2, relType1)));
+        if (mode == MODE_XMLCONTENT_BOTH) {
+            assertTrue(brokenLinks.contains(new CmsRelation(res1, res2, CmsRelationType.XML_WEAK)));
+        }
+        
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename4));
-        assertEquals(brokenLinks.size(), 1);
-        assertTrue(brokenLinks.contains(cms.getRequestContext().addSiteRoot(filename2)));
+        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 2 : 1));
+        assertTrue(brokenLinks.contains(new CmsRelation(res4, res2, relType1)));
+        if (mode == MODE_XMLCONTENT_BOTH) {
+            assertTrue(brokenLinks.contains(new CmsRelation(res4, res2, CmsRelationType.XML_WEAK)));
+        }
 
         validation = validateAfterDelete(cms, Collections.singletonList(res3), resAll, report);
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename1)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename1));
         assertEquals(brokenLinks.size(), 1);
-        assertTrue(brokenLinks.contains(cms.getRequestContext().addSiteRoot(filename3)));
+        assertTrue(brokenLinks.contains(new CmsRelation(res1, res3, relType1)));
 
         validation = validateAfterDelete(cms, Collections.singletonList(res4), resAll, report);
         assertTrue(validation.isEmpty());
@@ -510,15 +544,21 @@ public class TestLinkValidation extends OpenCmsTestCase {
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename6)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename6));
-        assertEquals(brokenLinks.size(), 1);
-        assertTrue(brokenLinks.contains(cms.getRequestContext().addSiteRoot(filename5)));
+        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 2 : 1));
+        assertTrue(brokenLinks.contains(new CmsRelation(res6, res5, relType1)));
+        if (mode == MODE_XMLCONTENT_BOTH) {
+            assertTrue(brokenLinks.contains(new CmsRelation(res6, res5, CmsRelationType.XML_WEAK)));
+        }
 
         validation = validateAfterDelete(cms, Collections.singletonList(res6), resAll, report);
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename5)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename5));
-        assertEquals(brokenLinks.size(), 1);
-        assertTrue(brokenLinks.contains(cms.getRequestContext().addSiteRoot(filename6)));
+        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 2 : 1));
+        assertTrue(brokenLinks.contains(new CmsRelation(res5, res6, relType1)));
+        if (mode == MODE_XMLCONTENT_BOTH) {
+            assertTrue(brokenLinks.contains(new CmsRelation(res5, res6, CmsRelationType.XML_WEAK)));
+        }
 
         validation = validateAfterDelete(cms, Collections.singletonList(res7), resAll, report);
         assertTrue(validation.isEmpty());
@@ -638,8 +678,11 @@ public class TestLinkValidation extends OpenCmsTestCase {
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename7)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename7));
-        assertEquals(brokenLinks.size(), 1);
-        assertTrue(brokenLinks.contains(cms.getRequestContext().addSiteRoot(filename8)));
+        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 2 : 1));
+        assertTrue(brokenLinks.contains(new CmsRelation(res7, res8, relType1)));
+        if (mode == MODE_XMLCONTENT_BOTH) {
+            assertTrue(brokenLinks.contains(new CmsRelation(res7, res8, CmsRelationType.XML_WEAK)));
+        }
 
         // Publishing after creating a new file8 and creating a link 
         // from file7 to file8 must generate no errors
@@ -648,7 +691,6 @@ public class TestLinkValidation extends OpenCmsTestCase {
         res78.add(res8);
         validation = cms.validateRelations(res78, report);
         assertTrue(validation.isEmpty());
-
     }
 
     /**

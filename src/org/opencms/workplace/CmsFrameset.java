@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2006/08/24 12:47:42 $
- * Version: $Revision: 1.86.4.4 $
+ * Date   : $Date: 2006/11/29 15:04:10 $
+ * Version: $Revision: 1.86.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,17 +72,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.86.4.4 $ 
+ * @version $Revision: 1.86.4.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsFrameset extends CmsWorkplace {
-
-    /** The names of the supported frames. */
-    static final String[] FRAMES = {"top", "head", "body", "foot"};
-
-    /** The names of the supported frames in a list. */
-    public static final List FRAMES_LIST = Collections.unmodifiableList(Arrays.asList(FRAMES));
 
     /** Path to the JSP workplace frame loader file. */
     public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp";
@@ -95,6 +89,12 @@ public class CmsFrameset extends CmsWorkplace {
 
     /** The request parameter for the workplace view selection. */
     public static final String PARAM_WP_VIEW = "wpView";
+
+    /** The names of the supported frames. */
+    private static final String[] FRAMES = {"top", "head", "body", "foot"};
+
+    /** The names of the supported frames in a list. */
+    public static final List FRAMES_LIST = Collections.unmodifiableList(Arrays.asList(FRAMES));
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFrameset.class);
@@ -280,6 +280,22 @@ public class CmsFrameset extends CmsWorkplace {
         } else {
             return (button(null, null, "publish_in.png", Messages.GUI_BUTTON_PUBLISH_0, buttonStyle));
         }
+    }
+
+    /**
+     * Returns the html for the "publish queue" button.<p>
+     * 
+     * @return the html for the "publish queue" button
+     */
+    public String getPublishQueueButton() {
+
+        int buttonStyle = getSettings().getUserSettings().getWorkplaceButtonStyle();
+        return button(
+            getJsp().link("/system/workplace/views/admin/admin-fs.jsp?path=/publishqueue"),
+            "body",
+            "publish_queue.png",
+            Messages.GUI_BUTTON_PUBLISHQUEUE_0,
+            buttonStyle);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2006/11/15 15:55:34 $
- * Version: $Revision: 1.12.4.4 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.12.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.4 $ 
+ * @version $Revision: 1.12.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -433,14 +433,14 @@ public class CmsSessionManager {
 
         if ((user != null) && (getSessionInfos(user.getId()).size() == 0)) {
             // remove the temporary locks of this user from memory
-            OpenCms.getLockManager().removeTempLocks(user);
+            OpenCmsCore.getInstance().getLockManager().removeTempLocks(user);
         }
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SESSION_DESTROYED_1, event.getSession().getId()));
         }
     }
-    
+
     /**
      * Switches the current user to the given user. The session info is rebuild as if the given user
      * performs a login at the workplace.
@@ -459,10 +459,10 @@ public class CmsSessionManager {
         if (info == null || session == null) {
             throw new CmsException(Messages.get().container(Messages.ERR_NO_SESSIONINFO_SESSION_0));
         }
-        
+
         // get the user settings for the given user and set the start project and the site root
         CmsUserSettings settings = new CmsUserSettings(cms, user);
-        CmsProject userProject = cms.readProject(settings.getStartProject());       
+        CmsProject userProject = cms.readProject(settings.getStartProject());
         String userSiteRoot = settings.getStartSite();
         CmsRequestContext context = new CmsRequestContext(
             user,
@@ -481,7 +481,7 @@ public class CmsSessionManager {
         // set the site root and the current project to the user preferences
         cms.getRequestContext().setSiteRoot(userSiteRoot);
         cms.getRequestContext().setCurrentProject(userProject);
-        
+
         // delete the stored workplace settings, so the session has to recieve them again
         session.removeAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
     }

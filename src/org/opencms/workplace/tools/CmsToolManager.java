@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.44.4.6 $
+ * Date   : $Date: 2006/11/29 15:04:16 $
+ * Version: $Revision: 1.44.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.44.4.6 $ 
+ * @version $Revision: 1.44.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -476,24 +476,11 @@ public class CmsToolManager {
      */
     public void jspForwardPage(CmsWorkplace wp, String pagePath, Map params) throws IOException, ServletException {
 
-        Map newParams = new HashMap();
-        // add query parameters to the parameter map if required
+        Map newParams = createToolParams(wp, pagePath, params);
         if (pagePath.indexOf("?") > 0) {
-            String query = pagePath.substring(pagePath.indexOf("?"));
             pagePath = pagePath.substring(0, pagePath.indexOf("?"));
-            Map reqParameters = CmsRequestUtil.createParameterMap(query);
-            newParams.putAll(reqParameters);
-        }
-        if (params != null) {
-            newParams.putAll(params);
         }
 
-        // put close link if not set
-        if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
-            Map argMap = resolveAdminTool(getCurrentRoot(wp).getKey(), getCurrentToolPath(wp)).getHandler().getParameters(
-                wp);
-            newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
-        }
         wp.setForwarded(true);
         // forward to the requested page uri
         CmsRequestUtil.forwardRequest(
@@ -502,7 +489,7 @@ public class CmsToolManager {
             wp.getJsp().getRequest(),
             wp.getJsp().getResponse());
     }
-
+    
     /**
      * Redirects to the given tool with the given parameters.<p>
      * 
@@ -656,6 +643,37 @@ public class CmsToolManager {
             }
         }
         registerHandlerList(cms, toolRoot, 1, handlers);
+    }
+
+    /**
+     * Creates a parameter map from the given url and additional parameters.<p>
+     * 
+     * @param wp the workplace context
+     * @param url the url to create the parameter map for (extracting query params)
+     * @param params additional parameter map
+     * 
+     * @return the new parameter map
+     */
+    private Map createToolParams(CmsWorkplace wp, String url, Map params) {
+        
+        Map newParams = new HashMap();
+        // add query parameters to the parameter map if required
+        if (url.indexOf("?") > 0) {
+            String query = url.substring(url.indexOf("?"));
+            Map reqParameters = CmsRequestUtil.createParameterMap(query);
+            newParams.putAll(reqParameters);
+        }
+        if (params != null) {
+            newParams.putAll(params);
+        }
+
+        // put close link if not set
+        if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
+            Map argMap = resolveAdminTool(getCurrentRoot(wp).getKey(), getCurrentToolPath(wp)).getHandler().getParameters(
+                wp);
+            newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
+        }
+        return newParams;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2006/11/29 15:04:15 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workflow.generic;
 
 import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -40,13 +41,14 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.report.CmsLogReport;
+import org.opencms.report.CmsHtmlReport;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
@@ -75,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 7.0.0
  */
@@ -83,9 +85,6 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
 
     /** The admin cms object. */
     protected static CmsObject m_cms;
-
-    /** The class name of the workflow engine connector. */
-    protected static String m_engineClazz;
 
     /** The workflow manager singleton. */
     protected static I_CmsWorkflowManager m_instance;
@@ -111,6 +110,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     /** The relation filter to use. */
     private CmsRelationFilter m_relationFilter;
 
+    /** The security manager instance. */
+    private CmsSecurityManager m_securityManager;
+
     /**
      * Constructor to create an uninitialized workflow manager.<p>
      */
@@ -124,6 +126,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public void abortTask(CmsObject cms, CmsProject wfProject, String message) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         // ensure that only administrators and workflow project managers are allowed to abort a task
         boolean accept = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
         I_CmsPrincipal manager = getTaskManager(wfProject);
@@ -145,8 +152,12 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public void addResource(CmsObject cms, CmsProject wfProject, CmsResource resource) throws CmsException {
 
-        CmsLock lock = cms.getLockForWorkflow(resource);
-
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
+        CmsLock lock = cms.getLock(resource);
         if (lock.isNullLock() || (lock.isExclusiveOwnedBy(cms.getRequestContext().currentUser()))) {
 
             // ensure that only workflow managers, workflow project managers and agents are allowed to add a resource
@@ -174,9 +185,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                         // ignore broken links
                     }
                 }
-                String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+                String oldSite = cms.getRequestContext().getSiteRoot();
                 try {
-                    // change cms to root site
+                    // change cms to root site                    
                     cms.getRequestContext().setSiteRoot("/");
                     for (Iterator i = relations.values().iterator(); i.hasNext();) {
                         CmsResource r = (CmsResource)i.next();
@@ -187,8 +198,6 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                                 cms.unlockResource(cms.getSitePath(r));
                             }
                             addResourceToWorkflowProject(wfProject, r);
-                            // lock the resource and set its flags and project reference appropriately
-                            cms.lockResourceInWorkflow(cms.getSitePath(r), wfProject);
                         } else {
                             // the resource is locked and cannot be added to the workflow project
                             throw new CmsWorkflowException(Messages.get().container(
@@ -198,7 +207,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                         }
                     }
                 } finally {
-                    cms.getRequestContext().setSiteRoot(storedSiteRoot);
+                    cms.getRequestContext().setSiteRoot(oldSite);
                 }
             } else {
                 throw new CmsWorkflowException(Messages.get().container(
@@ -219,6 +228,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public void addResource(CmsObject cms, CmsProject wfProject, String resourcePath) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         CmsResource resource = cms.readResource(resourcePath);
         addResource(cms, wfProject, resource);
     }
@@ -245,18 +259,15 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#getEngine()
-     */
-    public String getEngine() {
-
-        return m_engineClazz;
-    }
-
-    /**
      * @see org.opencms.workflow.I_CmsWorkflowManager#getLog(org.opencms.file.CmsProject)
      */
     public List getLog(CmsProject wfProject) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         throw new CmsException(Messages.get().container(Messages.ERR_NOT_IMPLEMENTED_1, "getLog"));
     }
 
@@ -275,9 +286,15 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     public CmsProject getTask(CmsObject cms, String resourcename) throws CmsException {
 
         CmsResource resource = cms.readResource(resourcename, CmsResourceFilter.ALL);
-        CmsLock lock = cms.getLockForWorkflow(resource);
+        CmsLock lock = cms.getSystemLock(resource);
         if (lock.isWorkflow()) {
-            return cms.readProject(lock.getProjectId());
+            CmsProject wfProject = cms.readProject(lock.getProjectId());
+            if (!wfProject.isWorkflowProject()) {
+                throw new CmsWorkflowException(Messages.get().container(
+                    Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                    wfProject.getName()));
+            }
+            return wfProject;
         } else {
             throw new CmsWorkflowException(Messages.get().container(
                 Messages.ERR_NOT_IN_WORKFLOW_PROJECT_1,
@@ -290,6 +307,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public I_CmsPrincipal getTaskAgent(CmsProject wfProject) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         Principal agent = m_workflowEngine.getAgent(wfProject);
         return CmsPrincipal.readPrefixedPrincipal(m_cms, I_CmsPrincipal.PRINCIPAL_GROUP + " " + agent.getName());
     }
@@ -297,8 +319,13 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     /**
      * @see org.opencms.workflow.I_CmsWorkflowManager#getTaskDescription(org.opencms.file.CmsProject)
      */
-    public String getTaskDescription(CmsProject wfProject) {
+    public String getTaskDescription(CmsProject wfProject) throws CmsWorkflowException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         return wfProject.getDescription();
     }
 
@@ -307,6 +334,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public I_CmsPrincipal getTaskManager(CmsProject wfProject) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         Principal agent = m_workflowEngine.getManager(wfProject);
         return CmsPrincipal.readPrefixedPrincipal(m_cms, I_CmsPrincipal.PRINCIPAL_GROUP + " " + agent.getName());
     }
@@ -316,6 +348,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public I_CmsPrincipal getTaskOwner(CmsProject wfProject) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         CmsUUID ownerId = wfProject.getOwnerId();
         return CmsPrincipal.readPrincipal(m_cms, ownerId);
     }
@@ -349,6 +386,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public long getTaskStartTime(CmsProject wfProject) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         return m_workflowEngine.getStartTime(wfProject);
     }
 
@@ -357,6 +399,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public String getTaskState(CmsProject wfProject, Locale locale) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         I_CmsWorkflowState state = m_workflowEngine.getState(wfProject);
         if (state != null) {
             return state.getName(locale);
@@ -370,6 +417,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public String getTaskType(CmsProject wfProject, Locale locale) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         I_CmsWorkflowType type = m_workflowEngine.getType(wfProject);
         if (type != null) {
             return type.getName(locale);
@@ -391,6 +443,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public List getTransitions(CmsProject wfProject) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         return m_workflowEngine.getTransitions(wfProject);
     }
 
@@ -448,6 +505,12 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     public I_CmsWorkflowAction init(CmsObject cms, CmsProject wfProject, I_CmsWorkflowType type, String message)
     throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
+
         I_CmsWorkflowAction action = null;
 
         // ensure that only workflow managers, workflow project managers and agents are allowed to init a workflow
@@ -494,29 +557,15 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#initialize(org.opencms.file.CmsObject)
+     * @see org.opencms.workflow.I_CmsWorkflowManager#initialize(org.opencms.file.CmsObject, CmsSecurityManager)
      */
-    public void initialize(CmsObject cms) {
+    public void initialize(CmsObject cms, CmsSecurityManager securityManager) {
 
         m_cms = cms;
+        m_securityManager = securityManager;
 
-        Object initClass;
-        try {
-            initClass = Class.forName(m_engineClazz).newInstance();
-        } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_INIT_WORKFLOW_ENGINE_FAILURE_1, m_engineClazz), t);
-            return;
-        }
-        if (initClass instanceof I_CmsWorkflowEngine) {
-            m_workflowEngine = (I_CmsWorkflowEngine)initClass;
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKFLOW_ENGINE_SUCCESS_1, m_engineClazz));
-            }
-        } else {
-            if (CmsLog.INIT.isErrorEnabled()) {
-                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_WORKFLOW_ENGINE_INVALID_1, m_engineClazz));
-            }
-        }
+        // switch to the root site
+        m_cms.getRequestContext().setSiteRoot("");
     }
 
     /**
@@ -528,35 +577,43 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#isLockableInWorkflow(org.opencms.file.CmsObject, org.opencms.file.CmsResource, boolean)
+     * @see org.opencms.workflow.I_CmsWorkflowManager#isLockableInWorkflow(CmsUser, String, boolean)
      */
-    public boolean isLockableInWorkflow(CmsObject cms, CmsResource resource, boolean managersOnly) {
+    public boolean isLockableInWorkflow(CmsUser user, String rootPath, boolean managersOnly) {
 
         boolean isLockable = false;
-
         try {
-            CmsLock lock = cms.getLockForWorkflow(resource);
-            if (!lock.isNullLock()) {
-                CmsProject project = cms.readProject(lock.getProjectId());
-
-                if (project.getType() == CmsProject.PROJECT_TYPE_WORKFLOW) {
-                    isLockable = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
-                    if (!isLockable && !managersOnly) {
-                        I_CmsPrincipal agents = getTaskAgent(project);
-                        isLockable = cms.userInGroup(cms.getRequestContext().currentUser().getName(), agents.getName());
+            CmsLock lock = m_cms.getSystemLock(m_cms.readResource(rootPath, CmsResourceFilter.ALL));
+            if (lock.isWorkflow()) {
+                List groupsOfUser = m_cms.getGroupsOfUser(user.getName());
+                if (CmsRole.VFS_MANAGER.hasRole(groupsOfUser)) {
+                    // VFS managers may lock resources in a workflow anyway
+                    return true;
+                }
+                CmsProject project = lock.getProject();
+                isLockable =CmsRole.WORKFLOW_MANAGER.hasRole(groupsOfUser);
+                if (!isLockable && !managersOnly) {
+                    I_CmsPrincipal agents = getTaskAgent(project);
+                    if (agents.isGroup()) {
+                        isLockable = m_cms.userInGroup(user.getName(), agents.getName());
+                    } else {
+                        isLockable = (user.getId().equals(agents.getId()));
                     }
-                    if (!isLockable) {
-                        I_CmsPrincipal managers = getTaskManager(project);
-                        isLockable = cms.userInGroup(
-                            cms.getRequestContext().currentUser().getName(),
+                }
+                if (!isLockable) {
+                    I_CmsPrincipal managers = getTaskManager(project);
+                    if (managers.isGroup()) {
+                        isLockable = m_cms.userInGroup(
+                            user.getName(),
                             managers.getName());
+                    } else {
+                        isLockable = (user.getId().equals(managers.getId()));
                     }
                 }
             }
         } catch (CmsException exc) {
             LOG.error(exc);
         }
-
         return isLockable;
     }
 
@@ -565,6 +622,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public void publishTask(CmsObject cms, CmsProject wfProject, String message) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         // ensure that only workflow managers and workflow project managers are allowed to publish a task
         boolean accept = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
         I_CmsPrincipal manager = getTaskManager(wfProject);
@@ -581,11 +643,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#setEngine(java.lang.String)
+     * @see org.opencms.workflow.I_CmsWorkflowManager#setEngine(I_CmsWorkflowEngine)
      */
-    public void setEngine(String engineClazz) {
+    public void setEngine(I_CmsWorkflowEngine wfEngine) {
 
-        m_engineClazz = engineClazz;
+        m_workflowEngine = wfEngine;
     }
 
     /**
@@ -597,6 +659,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         I_CmsWorkflowTransition transition,
         String message) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         // ensure that only workflow managers, workflow project managers and agents are allowed to send a signal
         boolean accept = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
         I_CmsPrincipal agent = getTaskAgent(wfProject);
@@ -607,13 +674,8 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         I_CmsWorkflowAction action = null;
         if (accept) {
             // ensure that all workflow resources are unlocked
-
-            // TODO: Supply functionality by other means
-            // why are all locks always removed here?
-            //     ==> probably this implementation is never really used anyway (only for simple tests w/o forward)
-            int todo_v7 = 0;
-            OpenCms.getLockManager().removeResourcesInProject(wfProject.getId(), true, true);
-
+            m_securityManager.unlockProject(m_cms.getRequestContext(), wfProject.getId(), false);
+            // signal
             action = m_workflowEngine.signal(wfProject, transition, message);
         } else {
             throw new CmsWorkflowException(Messages.get().container(
@@ -641,6 +703,11 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public void undoTask(CmsObject cms, CmsProject wfProject, String message) throws CmsException {
 
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
         // ensure that only workflow managers and workflow project managers are allowed to undo a task
         boolean accept = cms.hasRole(CmsRole.WORKFLOW_MANAGER);
         I_CmsPrincipal manager = getTaskManager(wfProject);
@@ -669,13 +736,14 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public void abortWorkflowProject(CmsProject wfProject) throws CmsException {
 
-        // TODO: Supply functionality by other means
-        // In this case, extend deleteProject by special logic
-        int todo_v7 = 0;
-
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
+        }
+        m_cms.getRequestContext().setCurrentProject(wfProject);
         // remove all locks
-        OpenCms.getLockManager().removeResourcesInProject(wfProject.getId(), false, false);
-
+        m_securityManager.unlockProject(m_cms.getRequestContext(), wfProject.getId(), true);
         // delete the project
         m_cms.deleteProject(wfProject.getId());
     }
@@ -685,25 +753,24 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      * 
      * @param wfProject the workflow project
      * @param resource the resource to add
-     * @throws CmsException if the resource cannot be added 
      * 
+     * @throws CmsException if the resource cannot be added 
      */
     public void addResourceToWorkflowProject(CmsProject wfProject, CmsResource resource) throws CmsException {
 
-        CmsProject offlineProject = m_cms.getRequestContext().currentProject();
-        String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
-        try {
-            // switch to the root site
-            m_cms.getRequestContext().setSiteRoot("");
-            // switch to the workflow project
-            m_cms.getRequestContext().setCurrentProject(wfProject);
-
-            // put the resource into the workflow project
-            m_cms.copyResourceToProject(m_cms.getSitePath(resource));
-        } finally {
-            m_cms.getRequestContext().setCurrentProject(offlineProject);
-            m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
         }
+        // switch to the workflow project
+        m_cms.getRequestContext().setCurrentProject(wfProject);
+
+        // put the resource into the workflow project
+        m_securityManager.copyResourceToProject(m_cms.getRequestContext(), resource);
+
+        // lock the resource and set its flags and project reference appropriately
+        m_securityManager.lockResource(m_cms.getRequestContext(), resource, CmsLockType.WORKFLOW);
     }
 
     /**
@@ -712,7 +779,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      * @param user the current user
      * @param name the project name
      * @param description the project description
+     * 
      * @return a new empty workflow project
+     * 
      * @throws CmsException if the project creation fails
      */
     public CmsProject createWorkflowProject(CmsUser user, String name, String description) throws CmsException {
@@ -734,35 +803,14 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      * Returns all resources assigned to a workflow project.<p>
      * 
      * @param wfProject the workflow project
+     * 
      * @return all resources assigned to the workflow project as <code>String</code>
+     * 
      * @throws CmsException if something goes wrong
      */
     protected List getAssignedResources(CmsProject wfProject) throws CmsException {
 
         return m_cms.readProjectResources(wfProject);
-    }
-
-    /**
-     * Returns a list of resources to publish for a workflow project.<p>
-     * 
-     * @param wfProject the workflow project
-     * @return a list of resources to publish for the workflow project
-     * @throws CmsException if something goes wrong
-     */
-    protected CmsPublishList getPublishList(CmsProject wfProject) throws CmsException {
-
-        List resourcesToPublish = new ArrayList();
-        List assignedResources = getAssignedResources(wfProject);
-
-        for (Iterator i = assignedResources.iterator(); i.hasNext();) {
-            String resourceName = (String)i.next();
-            CmsResource resource = m_cms.readResource(resourceName);
-            if (!resource.getState().isUnchanged()) {
-                resourcesToPublish.add(resource);
-            }
-        }
-
-        return m_cms.getPublishList(resourcesToPublish, false, true);
     }
 
     /**
@@ -772,26 +820,33 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      * Afterwards, the workflow project is deleted.
      * 
      * @param wfProject the workflow project
+     * 
      * @throws CmsException if publishing the resources in the project fails
      */
     public void publishWorkflowProject(CmsProject wfProject) throws CmsException {
 
-        CmsProject offlineProject = m_cms.getRequestContext().currentProject();
-        try {
-            // TODO: Supply functionality by other means
-            // In this case, check in publishProject for wfProject
-            int todo_v7 = 0;
-            OpenCms.getLockManager().removeResourcesInProject(wfProject.getId(), true, false);
-
-            m_cms.getRequestContext().setCurrentProject(wfProject);
-            CmsPublishList pL = getPublishList(wfProject);
-
-            m_cms.publishProject(new CmsLogReport(m_cms.getRequestContext().getLocale(), this.getClass()), pL);
-
-            m_cms.deleteProject(wfProject.getId());
-        } finally {
-            m_cms.getRequestContext().setCurrentProject(offlineProject);
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
         }
+        m_cms.getRequestContext().setCurrentProject(wfProject);
+        List resourcesToPublish = new ArrayList();
+        List assignedResources = getAssignedResources(wfProject);
+        for (Iterator i = assignedResources.iterator(); i.hasNext();) {
+            String resourceName = (String)i.next();
+            CmsResource resource = m_cms.readResource(resourceName);
+            if (!resource.getState().isUnchanged()) {
+                resourcesToPublish.add(resource);
+            }
+        }
+        // check this
+        m_cms.getRequestContext().setCurrentProject(m_cms.readProject("Offline"));
+        
+        CmsPublishList pubList = m_cms.getPublishList(resourcesToPublish, false, false);
+        m_cms.publishProject(new CmsHtmlReport(m_cms.getRequestContext().getLocale(), m_cms.getRequestContext().getSiteRoot()), pubList);
+        OpenCms.getPublishManager().waitWhileRunning();
+        m_cms.deleteProject(wfProject.getId());
     }
 
     /**
@@ -801,30 +856,33 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      * Afterwards, the workflow project is deleted.
      * 
      * @param wfProject the workflow project
+     * 
      * @throws CmsException if undoing the changes of resources in the project fails
      */
     public void undoWorkflowProject(CmsProject wfProject) throws CmsException {
 
-        CmsProject offlineProject = m_cms.getRequestContext().currentProject();
-        try {
-            m_cms.getRequestContext().setCurrentProject(wfProject);
-
-            m_cms.unlockProject(wfProject.getId()); // remove workflow locks
-            for (Iterator i = getAssignedResources(wfProject).iterator(); i.hasNext();) {
-                String resourceName = (String)i.next();
-                CmsResource resource = m_cms.readResource(resourceName);
-                if (!resource.getState().isUnchanged()) {
-                    m_cms.lockResource(resourceName);
-                    m_cms.undoChanges(resourceName, CmsResource.UNDO_CONTENT);
-                }
-            }
-
-            m_cms.unlockProject(wfProject.getId());
-            m_cms.deleteProject(wfProject.getId());
-        } finally {
-            // TODO: if something went wrong the workflow locks should be restored
-            m_cms.getRequestContext().setCurrentProject(offlineProject);
+        if (!wfProject.isWorkflowProject()) {
+            throw new CmsWorkflowException(Messages.get().container(
+                Messages.ERR_NON_WORKFLOW_PROJECT_1,
+                wfProject.getName()));
         }
+        m_cms.getRequestContext().setCurrentProject(wfProject);
+        // remove workflow locks
+        m_securityManager.unlockProject(m_cms.getRequestContext(), wfProject.getId(), true);
+        // iterate the workflow resources
+        for (Iterator i = getAssignedResources(wfProject).iterator(); i.hasNext();) {
+            String resourceName = (String)i.next();
+            CmsResource resource = m_cms.readResource(resourceName);
+            // undo changes if needed
+            if (!resource.getState().isUnchanged()) {
+                m_cms.lockResource(resourceName);
+                m_cms.undoChanges(resourceName, CmsResource.UNDO_CONTENT);
+            }
+        }
+        // unlock again
+        m_cms.unlockProject(wfProject.getId());
+        // delete project
+        m_cms.deleteProject(wfProject.getId());
     }
 
     /**

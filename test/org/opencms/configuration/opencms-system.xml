@@ -146,7 +146,11 @@
 		<workflow>
 			<workflowmanager class="org.opencms.workflow.WorkflowTestManager"/>
 			<workflowengine class="org.opencms.workflow.WorkflowTestEngine"/>
-		</workflow>            
+		</workflow>
 		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
+		<publishhistory>
+			<history-size>100</history-size>
+			<history-repository>logs/publish</history-repository>
+		</publishhistory>
 	</system>
 </opencms>

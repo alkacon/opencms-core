@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2006/09/20 14:38:00 $
- * Version: $Revision: 1.16.8.2 $
+ * Date   : $Date: 2006/11/29 15:04:05 $
+ * Version: $Revision: 1.16.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.8.2 $
+ * @version $Revision: 1.16.8.3 $
  */
 public class TestCopy extends OpenCmsTestCase {
 
@@ -76,7 +76,6 @@ public class TestCopy extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCopy.class.getName());
 
-        // suite.addTest(new TestCopy("testCopyFileUserCreatedIssue"));
         suite.addTest(new TestCopy("testCopySingleResourceAsNew"));
         suite.addTest(new TestCopy("testCopyFolderDateIssue"));
         suite.addTest(new TestCopy("testCopyFolderAsNew"));

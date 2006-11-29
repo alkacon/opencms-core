@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.29.4.3 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.29.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
@@ -73,7 +72,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29.4.3 $ 
+ * @version $Revision: 1.29.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,27 +109,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param mapping the file extension mapped to the resource type
      */
     void addMappingType(String mapping);
-
-    /**
-     * Changes the project id of the resource to the current project, indicating that 
-     * the resource was last modified in this project.<p>
-     * 
-     * This information is used while publishing. Only resources inside the 
-     * project folders that are new/modified/changed <i>and</i> that "belong" 
-     * to the project (i.e. have the id of the project set) are published
-     * with the project.<p>
-     * 
-     * @param cms the initialized CmsObject
-     * @param securityManager the initialized OpenCms security manager
-     * @param resource the resource to apply this operation to
-     * 
-     * @throws CmsException if something goes wrong  
-     * 
-     * @see CmsObject#changeLastModifiedProjectId(String)
-     * @see CmsSecurityManager#changeLastModifiedProjectId(org.opencms.file.CmsRequestContext, CmsResource)   
-     */
-    void changeLastModifiedProjectId(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
-    throws CmsException;
 
     /**
      * Changes the lock of a resource to the current user,
@@ -489,25 +467,22 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * <ul>
      * <li><code>{@link org.opencms.lock.CmsLockType#EXCLUSIVE}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLockType#WORKFLOW}</code></li>
      * </ul><p>
      * 
      * @param cms the initialized CmsObject
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to lock
-     * @param project the project to lock the resource to
      * @param type type of the lock
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#lockResource(String)
-     * @see CmsSecurityManager#lockResource(org.opencms.file.CmsRequestContext, CmsResource, CmsProject, CmsLockType)
+     * @see CmsSecurityManager#lockResource(org.opencms.file.CmsRequestContext, CmsResource, CmsLockType)
      */
     void lockResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsProject project,
         CmsLockType type) throws CmsException;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestConfigurationOptions.java,v $
- * Date   : $Date: 2005/06/27 23:22:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.6.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -49,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit tests for the resource type configuration options.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.8.1 $
  */
 public class TestConfigurationOptions extends OpenCmsTestCase {
 
@@ -175,6 +176,7 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
     }

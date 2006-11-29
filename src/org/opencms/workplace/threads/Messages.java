@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Messages.java,v $
- * Date   : $Date: 2006/09/01 10:29:39 $
- * Version: $Revision: 1.9.4.1 $
+ * Date   : $Date: 2006/11/29 15:04:13 $
+ * Version: $Revision: 1.9.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.9.4.1 $ 
+ * @version $Revision: 1.9.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,9 +68,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_POINTER_VALIDATION_THREAD_NAME_0 = "GUI_POINTER_VALIDATION_THREAD_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_TRHEAD_NAME_0 = "GUI_PUBLISH_TRHEAD_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_RELATION_DELETION_VALIDATOR_THREAD_NAME_1 = "GUI_RELATION_DELETION_VALIDATOR_THREAD_NAME_1";
 
     /** Message constant for key in the resource bundle. */
@@ -98,9 +95,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PROJECT_DELETE_FAILED_1 = "LOG_PROJECT_DELETE_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_PUBLISH_PROJECT_FAILED_0 = "LOG_PUBLISH_PROJECT_FAILED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_REPLACE_THREAD_CONSTRUCTED_0 = "LOG_REPLACE_THREAD_CONSTRUCTED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -111,21 +105,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_REPLACE_THREAD_START_IMPORT_0 = "LOG_REPLACE_THREAD_START_IMPORT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_PUBLISH_PROJECT_BEGIN_0 = "RPT_PUBLISH_PROJECT_BEGIN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_PUBLISH_PROJECT_END_0 = "RPT_PUBLISH_PROJECT_END_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_PUBLISH_RESOURCE_BEGIN_0 = "RPT_PUBLISH_RESOURCE_BEGIN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_PUBLISH_RESOURCE_END_0 = "RPT_PUBLISH_RESOURCE_END_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_PUBLISH_RESOURCE_SWITCH_PROJECT_1 = "RPT_PUBLISH_RESOURCE_SWITCH_PROJECT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_RELATIONS_DELETION_BEGIN_0 = "RPT_RELATIONS_DELETION_BEGIN_0";

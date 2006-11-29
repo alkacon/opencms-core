@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsPermalinkResourceHandler.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.main;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.util.CmsUUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.3 
  */
@@ -89,7 +88,7 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
                     }
 
                     // read the resource
-                    resource = cms.narrowResource(cms.readResource(new CmsUUID(id)));
+                    resource = cms.readDefaultFile(id);
                 } catch (Throwable e) {
                     CmsMessageContainer msg = Messages.get().container(Messages.ERR_PERMALINK_1, id);
                     if (LOG.isErrorEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename2.java,v $
- * Date   : $Date: 2006/10/25 07:17:52 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/11/29 15:04:05 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.test.OpenCmsTestCase;
@@ -57,7 +58,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  */
 public class TestMoveRename2 extends OpenCmsTestCase {
 
@@ -165,6 +166,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.createResource(folder + newFile, CmsResourceTypePlain.getStaticTypeId());
 
@@ -241,6 +243,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         cms.unlockResource(filename);
         cms.publishResource(filename);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.lockResource(filename);
         String newName = cms.moveToLostAndFound(filename);
@@ -284,6 +287,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         cms.setDateLastModified("/", System.currentTimeMillis(), true);
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.lockResource(deletedFile);
         cms.deleteResource(deletedFile, CmsResource.DELETE_PRESERVE_SIBLINGS);
@@ -339,10 +343,12 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         // publish the deleted folder
         cms.unlockResource(folderDest);
         cms.publishResource(folderDest);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // publish the moved file
         cms.unlockResource(destination);
         cms.publishResource(destination);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
@@ -435,6 +441,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
@@ -494,5 +501,6 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 }

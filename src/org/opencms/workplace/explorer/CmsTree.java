@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.23.4.3 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.23.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.workplace.explorer;
 
-import org.opencms.file.CmsResource.CmsResourceState;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23.4.3 $ 
+ * @version $Revision: 1.23.4.4 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.42.4.13 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.42.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
@@ -71,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.13 $ 
+ * @version $Revision: 1.42.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,15 +215,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             m_mappings = new ArrayList();
         }
         m_mappings.add(mapping);
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource)
-     */
-    public void changeLastModifiedProjectId(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
-    throws CmsException {
-
-        securityManager.changeLastModifiedProjectId(cms.getRequestContext(), resource);
     }
 
     /**
@@ -553,16 +543,15 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsProject, org.opencms.lock.CmsLockType)
+     * @see org.opencms.file.types.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.lock.CmsLockType)
      */
     public void lockResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsProject project,
         CmsLockType type) throws CmsException {
 
-        securityManager.lockResource(cms.getRequestContext(), resource, project, type);
+        securityManager.lockResource(cms.getRequestContext(), resource, type);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.25.4.1 $
+ * Date   : $Date: 2006/11/29 15:04:13 $
+ * Version: $Revision: 1.25.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.List;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25.4.1 $
+ * @version $Revision: 1.25.4.2 $
  * 
  * @since 6.0.0
  * 
@@ -252,6 +252,16 @@ public class CmsPublishList {
     public boolean isPublishSubResources() {
 
         return m_publishSubResources;
+    }
+
+    /**
+     * Returns the number of all resources to be published.<p>
+     * 
+     * @return the number of all resources to be published
+     */
+    public int size() {
+
+        return m_folderList.size() + m_fileList.size() + m_deletedFolderList.size();
     }
 
     /**

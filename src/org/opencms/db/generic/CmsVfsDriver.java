@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.258.4.9 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.258.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsVfsOnlineResourceAlreadyExistsException;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
@@ -52,7 +53,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.9 $
+ * @version $Revision: 1.258.4.10 $
  * 
  * @since 6.0.0 
  */
@@ -1975,6 +1975,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     throws CmsDataAccessException {
 
         // TODO: removeFileContent param not used
+        int todo;
+        
         PreparedStatement stmt = null;
         Connection conn = null;
         int siblingCount = 0;
@@ -3030,6 +3032,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             // source or target path filter
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter.getPath())) {
                 if ((filter.getStructureId() != null) && !filter.getStructureId().isNullUUID()) {
+                    // if path and id, then 'OR' condition is used
                     conditions.append(OR_CONDITION);
                 }
                 String queryPath = filter.getPath();

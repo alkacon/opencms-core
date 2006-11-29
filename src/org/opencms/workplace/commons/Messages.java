@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/10/26 15:17:03 $
- * Version: $Revision: 1.15.4.11 $
+ * Date   : $Date: 2006/11/29 15:04:07 $
+ * Version: $Revision: 1.15.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,12 +40,12 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.11 $ 
+ * @version $Revision: 1.15.4.12 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_AVAILABILITY_BAD_TIMEWINDOW_0 = "ERR_AVAILABILITY_BAD_TIMEWINDOW_0";
 
@@ -134,7 +134,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PERMISSION_SELECT_TYPE_0 = "ERR_PERMISSION_SELECT_TYPE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_PUBLISH_MULTI_UNLOCK_0 = "ERR_PUBLISH_MULTI_UNLOCK_0";
+    public static final String ERR_PUBLISH_LIST_CREATION_0 = "ERR_PUBLISH_LIST_CREATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REDIRECT_XMLPAGE_DIALOG_1 = "ERR_REDIRECT_XMLPAGE_DIALOG_1";
@@ -950,13 +950,40 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PUBLISH_ALLSIBLINGS_0 = "GUI_PUBLISH_ALLSIBLINGS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_HELP_0 = "GUI_PUBLISH_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_NAME_0 = "GUI_PUBLISH_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_BROKENRELATIONS_DETAIL_RELATION_SOURCES_0 = "GUI_PUBLISH_BROKENRELATIONS_DETAIL_RELATION_SOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_BROKENRELATIONS_DETAIL_RELATION_TARGETS_0 = "GUI_PUBLISH_BROKENRELATIONS_DETAIL_RELATION_TARGETS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_HELP_0 = "GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_NAME_0 = "GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_BROKENRELATIONS_LIST_NAME_0 = "GUI_PUBLISH_BROKENRELATIONS_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_CONFIRMATION_0 = "GUI_PUBLISH_CONFIRMATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0 = "GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_LIST_EMPTY_0 = "GUI_PUBLISH_LIST_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_MULTI_2 = "GUI_PUBLISH_MULTI_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_MULTI_CONFIRMATION_0 = "GUI_PUBLISH_MULTI_CONFIRMATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_MULTI_SUBRESOURCES_0 = "GUI_PUBLISH_MULTI_SUBRESOURCES_0";
@@ -971,10 +998,28 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PUBLISH_PROJECT_CONFIRMATION_1 = "GUI_PUBLISH_PROJECT_CONFIRMATION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_RELATIONS_NOT_ALLOWED_0 = "GUI_PUBLISH_RELATIONS_NOT_ALLOWED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_RELATIONS_NOT_BROKEN_0 = "GUI_PUBLISH_RELATIONS_NOT_BROKEN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_RELATIONS_TITLE_0 = "GUI_PUBLISH_RELATIONS_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_RELEASE_LOCKS_1 = "GUI_PUBLISH_RELEASE_LOCKS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_RESOURCE_1 = "GUI_PUBLISH_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_RESOURCES_LIST_NAME_0 = "GUI_PUBLISH_RESOURCES_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_RESOURCES_TITLE_0 = "GUI_PUBLISH_RESOURCES_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_SITE_RELATION_2 = "GUI_PUBLISH_SITE_RELATION_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_SUBRESOURCES_0 = "GUI_PUBLISH_SUBRESOURCES_0";

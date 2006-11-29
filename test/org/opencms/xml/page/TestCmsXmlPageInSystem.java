@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.22.4.1 $
+ * Date   : $Date: 2006/11/29 15:04:15 $
+ * Version: $Revision: 1.22.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -59,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.4.1 $
+ * @version $Revision: 1.22.4.2 $
  * 
  * @since 6.0.0
  */
@@ -280,6 +281,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         cms.deleteResource(destination, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(destination);
         cms.publishResource(destination);
+        OpenCms.getPublishManager().waitWhileRunning();
         CmsResource newRes = cms.createResource(
             destination,
             CmsResourceTypeXmlPage.getStaticTypeId(),
@@ -351,6 +353,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
         cms.unlockResource(resourcename);
         cms.publishResource(resourcename);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.lockResource(resourcename);
 

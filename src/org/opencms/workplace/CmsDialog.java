@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2006/10/26 15:17:03 $
- * Version: $Revision: 1.96.4.6 $
+ * Date   : $Date: 2006/11/29 15:04:10 $
+ * Version: $Revision: 1.96.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96.4.6 $ 
+ * @version $Revision: 1.96.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1286,6 +1286,46 @@ public class CmsDialog extends CmsToolDialog {
             }
         }
         return "+++ resource parameter not found +++";
+    }
+
+    /**
+     * Checks if the current resource has lock state exclusive or inherited.<p>
+     * 
+     * This is used to determine whether the dialog shows the option to delete all
+     * siblings of the resource or not.
+     * 
+     * @return true if lock state is exclusive or inherited, otherwise false
+     */
+    public boolean hasCorrectLockstate() {
+
+        org.opencms.lock.CmsLock lock = null;
+        try {
+            // get the lock state for the current resource
+            lock = getCms().getLock(getParamResource());
+        } catch (CmsException e) {
+            // error getting lock state, log the error and return false
+            LOG.error(e.getLocalizedMessage(getLocale()), e);
+            return false;
+        }
+        // check if autolock feature is enabled
+        boolean autoLockFeature = lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources();
+        return autoLockFeature || lock.isExclusive() || lock.isInherited();
+    }
+
+    /**
+     * Checks if this resource has siblings.<p>
+     * 
+     * @return true if this resource has siblings
+     */
+    public boolean hasSiblings() {
+
+        try {
+            return getCms().readResource(getParamResource(), CmsResourceFilter.ALL).getSiblingCount() > 1;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(getLocale()), e);
+            return false;
+        }
+
     }
 
     /**

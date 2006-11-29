@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,10 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.threads;
+package org.opencms.publish;
 
-import org.opencms.db.CmsPublishList;
-import org.opencms.file.CmsObject;
+import org.opencms.db.CmsDbContext;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -41,7 +40,6 @@ import org.opencms.main.CmsSessionManager;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
-import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.Iterator;
 import java.util.List;
@@ -51,55 +49,51 @@ import org.apache.commons.logging.Log;
 /**
  * Publishes a resource or the users current project.<p>
  * 
- * @author Alexander Kandzior 
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
- * @since 6.0.0 
+ * @since 6.5.5 
  */
-public class CmsPublishThread extends A_CmsReportThread {
+final class CmsPublishThread extends A_CmsReportThread {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishThread.class);
 
-    /** The CmsObject used to start this thread. */
-    private CmsObject m_cms;
+    /** The publish engine instance. */
+    private final CmsPublishEngine m_publishEngine;
 
-    /** The list of resources to publish. */
-    private CmsPublishList m_publishList;
+    /** The publish job to start this thread for. */
+    private final CmsPublishJobInfoBean m_publishJob;
 
-    /** The workplace settings of the current user. */
-    private CmsWorkplaceSettings m_settings;
+    /** The report to use during the publish process. */
+    private I_CmsReport m_report;
 
     /** Flag for updating the user info. */
-    private boolean m_updateSessionInfo;
+    private final boolean m_updateSessionInfo;
 
     /**
-     * Creates a Thread that publishes the Cms resources contained in the specified Cms publish 
-     * list.<p>
+     * Creates a thread that start a new publish job with the given information.<p>
      * 
-     * @param cms the current OpenCms context object
-     * @param publishList a Cms publish list
-     * @param settings the workplace settings of the current user
+     * @param publishEngine the publish engine instance
+     * @param publishJob the publish job to process
+     * 
      * @see org.opencms.file.CmsObject#getPublishList(org.opencms.file.CmsResource, boolean)
      * @see org.opencms.file.CmsObject#getPublishList()
      */
-    public CmsPublishThread(CmsObject cms, CmsPublishList publishList, CmsWorkplaceSettings settings) {
+    protected CmsPublishThread(CmsPublishEngine publishEngine, CmsPublishJobInfoBean publishJob) {
 
-        super(cms, Messages.get().getBundle().key(Messages.GUI_PUBLISH_TRHEAD_NAME_0));
-        m_cms = cms;
-        m_publishList = publishList;
-        m_settings = settings;
+        super(publishJob.getCmsObject(), Messages.get().getBundle().key(Messages.GUI_PUBLISH_TRHEAD_NAME_0));
+        m_publishJob = publishJob;
+        m_publishEngine = publishEngine;
 
-        // if the project to publish is a temporary project, we have to update the
-        // user info after publishing
-        if (m_cms.getRequestContext().currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
+        // if the project to publish is a temporary project
+        if (getCms().getRequestContext().currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
+            // we have to update the user info after publishing
             m_updateSessionInfo = true;
         } else {
             m_updateSessionInfo = false;
         }
-
-        initHtmlReport(cms.getRequestContext().getLocale());
     }
 
     /**
@@ -116,20 +110,56 @@ public class CmsPublishThread extends A_CmsReportThread {
     public void run() {
 
         try {
-            getReport().println(
-                Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0),
-                I_CmsReport.FORMAT_HEADLINE);
-            getCms().publishProject(getReport(), m_publishList);
-            if (m_updateSessionInfo) {
-                updateSessionInfo();
+            // signalize that the thread has been started
+            m_publishEngine.publishThreadStarted();
+
+            // set the report
+            m_report = m_publishJob.getPublishReport();
+
+            // start
+            m_report.println(Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
+
+            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext(getCms().getRequestContext());
+            try {
+                m_publishEngine.getDriverManager().publishJob(getCms(), dbc, m_publishJob.getPublishList(), m_report);
+            } catch (Throwable e) {
+                // catch every thing including runtime exceptions
+                m_report.println(e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_PUBLISH_PROJECT_FAILED_0), e);
+            } finally {
+                dbc.clear();
+                if (m_updateSessionInfo) {
+                    updateSessionInfo();
+                }
+                m_report.println(
+                    Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_END_0),
+                    I_CmsReport.FORMAT_HEADLINE);
             }
-            getReport().println(
-                Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_END_0),
-                I_CmsReport.FORMAT_HEADLINE);
-        } catch (Exception e) {
-            getReport().println(e);
+        } catch (Throwable e) {
+            // catch every thing including runtime exceptions
             LOG.error(Messages.get().getBundle().key(Messages.LOG_PUBLISH_PROJECT_FAILED_0), e);
+        } finally {
+            // signalize that the thread has been finished
+            m_publishEngine.publishThreadFinished();
         }
+    }
+
+    /**
+     * Returns the publish job for this thread.<p>
+     * 
+     * @return the publish job for this thread
+     */
+    protected CmsPublishJobInfoBean getPublishJob() {
+
+        return m_publishJob;
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReportThread#getReport()
+     */
+    protected I_CmsReport getReport() {
+
+        return m_report;
     }
 
     /**
@@ -142,7 +172,6 @@ public class CmsPublishThread extends A_CmsReportThread {
 
         // get the session menager
         CmsSessionManager sessionManager = OpenCms.getSessionManager();
-
         // get all sessions
         List userSessions = sessionManager.getSessionInfos();
         Iterator i = userSessions.iterator();
@@ -152,16 +181,14 @@ public class CmsPublishThread extends A_CmsReportThread {
             // if so, set it to the online project
             int projectId = sessionInfo.getProject();
             try {
-                m_cms.readProject(projectId);
+                getCms().readProject(projectId);
             } catch (CmsException e) {
                 // the project does not longer exist, update the project information with the online project
                 sessionInfo.setProject(CmsProject.ONLINE_PROJECT_ID);
-                // update the workplace settings as well
-                m_settings.setProject(CmsProject.ONLINE_PROJECT_ID);
                 getReport().println(
                     Messages.get().container(
                         Messages.RPT_PUBLISH_RESOURCE_SWITCH_PROJECT_1,
-                        m_cms.getRequestContext().currentProject().getName()),
+                        getCms().getRequestContext().currentProject().getName()),
                     I_CmsReport.FORMAT_DEFAULT);
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.33.4.3 $
+ * Date   : $Date: 2006/11/29 15:04:15 $
+ * Version: $Revision: 1.33.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33.4.3 $ 
+ * @version $Revision: 1.33.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -359,6 +359,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             // now unlock and publish the project
             cms.unlockProject(importProject.getId());
             cms.publishProject(report);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0), I_CmsReport.FORMAT_HEADLINE);
             report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_END_0), I_CmsReport.FORMAT_HEADLINE);

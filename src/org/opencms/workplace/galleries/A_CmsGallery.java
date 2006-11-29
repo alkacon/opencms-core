@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.24.4.5 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.24.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.workplace.galleries;
 
-import org.opencms.file.CmsResource.CmsResourceState;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.24.4.5 $ 
+ * @version $Revision: 1.24.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -1122,15 +1122,17 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public String publishButton() {
 
-        if (getCms().hasPublishPermissions(getParamResourcePath())) {
+        try {
+            getCms().getPublishList(getCms().readResource(getParamResourcePath()), false);
             return button(
                 "javascript:publishResource(\'" + getParamResourcePath() + "\');",
                 null,
                 "publish.png",
                 Messages.GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0,
                 0);
+        } catch (Exception e) {
+            return button(null, null, "publish_in.png", "", 0);
         }
-        return button(null, null, "publish_in.png", "", 0);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesCollector.java,v $
- * Date   : $Date: 2006/11/08 09:28:54 $
- * Version: $Revision: 1.2.4.4 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.2.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
 
 package org.opencms.workplace.tools.projects;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.workplace.CmsWorkplace;
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2.4.4 $ 
+ * @version $Revision: 1.2.4.5 $ 
  * 
  * @since 6.1.0 
  */

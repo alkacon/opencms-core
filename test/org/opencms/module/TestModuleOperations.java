@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2006/03/27 14:53:04 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/11/29 15:04:15 $
+ * Version: $Revision: 1.22.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.22.4.1 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -152,6 +152,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
         // publish the current project
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
         assertEquals(true, TestModuleActionImpl.m_publishProject);
         assertTrue(TestModuleActionImpl.m_cmsEvent == I_CmsEventListener.EVENT_PUBLISH_PROJECT);
 
@@ -191,6 +192,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
         // publish the current project 
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
         // since module was uninstalled, no update on action class must have happend
         assertEquals(false, TestModuleActionImpl.m_publishProject);
         assertTrue(TestModuleActionImpl.m_cmsEvent == -1);
@@ -407,6 +409,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
         // publish the current project
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**

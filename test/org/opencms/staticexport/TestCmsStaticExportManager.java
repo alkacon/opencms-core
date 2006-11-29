@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsStaticExportManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/11/29 15:04:13 $
+ * Version: $Revision: 1.11.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.11.4.1 $
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.11.4.1 $
  * 
  * @since 6.0.0
  */
@@ -149,6 +149,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.unlockResource(folder);
         // publish the changes
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
 
@@ -188,6 +189,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.unlockResource(vfsName);
         // publish the changes
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(cms.getRequestContext().getSiteRoot() +  folder);
         String expected;
@@ -206,6 +208,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.unlockResource(folder);
         // publish the changes
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         expected = rfsPrefix + "/myfolder/jsp.jsp.html";
         checkLinkWithoutParameters(cms, vfsName, expected);
@@ -219,6 +222,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.unlockResource(vfsName);
         // publish the changes
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         expected = rfsPrefix + "/myfolder/jsp.jsp.txt";
         checkLinkWithoutParameters(cms, vfsName, expected);
@@ -238,6 +242,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.unlockResource(vfsName);
         // publish the changes
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         expected = rfsPrefix + cms.getRequestContext().getSiteRoot() + vfsName + ".pdf";
         checkLinkWithoutParameters(cms, vfsName, expected);

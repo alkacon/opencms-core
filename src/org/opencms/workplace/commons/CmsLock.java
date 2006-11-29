@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2006/11/09 16:04:12 $
- * Version: $Revision: 1.16.4.9 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.16.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.9 $ 
+ * @version $Revision: 1.16.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,7 +134,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     private CmsLockFilter m_blockingFilter;
 
     /** the nunmber of blocking locked resources. */
-    private int m_blockingLocks;
+    private int m_blockingLocks = -1;
 
     /** The list of locked resources.  */
     private List m_lockedResources;
@@ -449,7 +449,8 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
         if (m_blockingFilter == null) {
             m_blockingFilter = CmsLockFilter.FILTER_ALL;
-            m_blockingFilter = m_blockingFilter.filterExcludedUserId(getCms().getRequestContext().currentUser().getId());
+            m_blockingFilter = m_blockingFilter.filterNotLockableByUser(getCms().getRequestContext().currentUser());
+            m_blockingFilter = m_blockingFilter.filterSharedExclusive();
         }
         return m_blockingFilter;
     }
@@ -461,7 +462,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      */
     public int getBlockingLocks() {
 
-        if (m_lockedResources == null) {
+        if (m_blockingLocks == -1) {
             // to initialize the blocking locks flag
             getLockedResources();
         }
@@ -557,10 +558,8 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
                 }
             }
             m_lockedResources = new ArrayList(lockedResources);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamProjectid())) {
-                // collect strangers locked resources
-                m_lockedResources.addAll(getBlockingLockedResources());
-            }
+            // collect strangers locked resources
+            m_lockedResources.addAll(getBlockingLockedResources());
             Collections.sort(m_lockedResources);
         }
         return m_lockedResources;
@@ -575,7 +574,8 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
         if (m_nonBlockingFilter == null) {
             m_nonBlockingFilter = CmsLockFilter.FILTER_ALL;
-            m_nonBlockingFilter = m_nonBlockingFilter.filterIncludedUserId(getCms().getRequestContext().currentUser().getId());
+            m_nonBlockingFilter = m_nonBlockingFilter.filterLockableByUser(getCms().getRequestContext().currentUser());
+            m_nonBlockingFilter = m_nonBlockingFilter.filterSharedExclusive();
         }
         return m_nonBlockingFilter;
     }
@@ -598,6 +598,10 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     public void setBlockingFilter(CmsLockFilter blockingFilter) {
 
         m_blockingFilter = blockingFilter;
+        // reset blocking locks count
+        m_blockingLocks = -1;
+        // reset locked resources
+        m_lockedResources = null;
     }
 
     /**
@@ -608,6 +612,8 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     public void setNonBlockingFilter(CmsLockFilter nonBlockingFilter) {
 
         m_nonBlockingFilter = nonBlockingFilter;
+        // reset locked resources
+        m_lockedResources = null;
     }
 
     /**
@@ -775,7 +781,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      * 
      * @return the locked Resources
      */
-    private Set getBlockingLockedResources() {
+    public Set getBlockingLockedResources() {
 
         Set blockingResources = new HashSet();
         Iterator i = getResourceList().iterator();

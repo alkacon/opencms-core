@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/11/28 16:20:46 $
- * Version: $Revision: 1.241.4.14 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.241.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.db.CmsResourceState;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.file.CmsDataAccessException;
@@ -52,7 +53,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.14 $
+ * @version $Revision: 1.241.4.15 $
  * 
  * @since 6.0.0 
  */
@@ -1258,6 +1258,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         Messages.ERR_ERROR_PUBLISHING_FOLDER_1,
                         currentFolder.getRootPath()), t);
                 }
+                m_driverManager.unlockResource(dbc, currentFolder, true, true);
             }
 
             if (n > 0) {
@@ -1312,6 +1313,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         currentResource.getRootPath()), t);
                 }
 
+                m_driverManager.unlockResource(dbc, currentResource, true, true);
                 // set back all vars. inside the while loop!
                 currentResource = null;
             }
@@ -1363,6 +1365,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         Messages.ERR_ERROR_PUBLISHING_DELETED_FOLDER_1,
                         currentFolder.getRootPath()), t);
                 }
+                m_driverManager.unlockResource(dbc, currentFolder, true, true);
             }
 
             if (n > 0) {
@@ -1427,7 +1430,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     project = null;
                 }
                 if (project != null) {
-                    lock = new CmsLock(resourcePath, new CmsUUID(userId), project, CmsLockType.getType(lockType));
+                    lock = new CmsLock(resourcePath, new CmsUUID(userId), project, CmsLockType.valueOf(lockType));
                     locks.add(lock);
                     count++;
                 }
@@ -1901,29 +1904,39 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         Connection conn = null;
         PreparedStatement stmt = null;
-        int count = 0;
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCE_LOCKS_DELETEALL");
-            count = stmt.executeUpdate();
+            int deleted = stmt.executeUpdate();
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_CLEAR_LOCKS_1, new Integer(count)));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_CLEAR_LOCKS_1, new Integer(deleted)));
             }
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCE_LOCK_WRITE");
             if (LOG.isDebugEnabled()) {
                 LOG.debug("SQL :" + m_sqlManager.readQuery("C_RESOURCE_LOCK_WRITE"));
             }
             Iterator i = locks.iterator();
-            CmsLock lock;
-            count = 0;
+            int count = 0;
             while (i.hasNext()) {
-                lock = (CmsLock)i.next();
-                if (lock.isPersistent()) {
-                    // only persist locks that should be written to the DB
-                    stmt.setString(1, lock.getResourceName());
-                    stmt.setString(2, lock.getUserId().toString());
-                    stmt.setInt(3, lock.getProjectId());
-                    stmt.setInt(4, lock.getType().hashCode());
+                CmsLock lock = (CmsLock)i.next();
+                // only persist locks that should be written to the DB
+                CmsLock sysLock = lock.getSystemLock();
+                if (sysLock.isPersistent()) {
+                    // persist edition lock
+                    stmt.setString(1, sysLock.getResourceName());
+                    stmt.setString(2, sysLock.getUserId().toString());
+                    stmt.setInt(3, sysLock.getProjectId());
+                    stmt.setInt(4, sysLock.getType().hashCode());
+                    stmt.executeUpdate();
+                    count++;
+                }
+                CmsLock editLock = lock.getEditionLock();
+                if (editLock.isPersistent()) {
+                    // persist edition lock
+                    stmt.setString(1, editLock.getResourceName());
+                    stmt.setString(2, editLock.getUserId().toString());
+                    stmt.setInt(3, editLock.getProjectId());
+                    stmt.setInt(4, editLock.getType().hashCode());
                     stmt.executeUpdate();
                     count++;
                 }

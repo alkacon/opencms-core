@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelation.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2006/11/29 15:04:10 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.3.0 
  */
@@ -136,13 +136,10 @@ public class CmsRelation {
         if (obj instanceof CmsRelation) {
             CmsRelation other = (CmsRelation)obj;
             return (m_type == other.m_type)
-                // we don't really need the following (optimization for speed) 
                 // && (m_dateBegin == other.m_dateBegin)
                 // && (m_dateEnd == other.m_dateEnd)
-                // && m_sourcePath.equals(other.m_sourcePath)
-                // && m_targetPath.equals(other.m_targetPath)
-                && m_sourceId.equals(other.m_sourceId)
-                && m_targetId.equals(other.m_targetId);
+                && (m_sourcePath.equals(other.m_sourcePath) || m_sourceId.equals(other.m_sourceId))
+                && (m_targetPath.equals(other.m_targetPath) || m_targetId.equals(other.m_targetId));
         }
         return false;
     }

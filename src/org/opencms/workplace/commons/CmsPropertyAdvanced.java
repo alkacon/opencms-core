@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.28.4.5 $
+ * Date   : $Date: 2006/11/29 15:04:07 $
+ * Version: $Revision: 1.28.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28.4.5 $ 
+ * @version $Revision: 1.28.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -837,8 +837,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
                 if (!lock.isNullLock()) {
                     // determine if resource is editable...
-                    if (!lock.isShared() && lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
-                        // lock is not shared and belongs to the current user
+                    if (lock.isExclusiveOwnedBy(getCms().getRequestContext().currentUser())) {
+                        // lock is exclusive and belongs to the current user
                         if (lock.isInProject(getCms().getRequestContext().currentProject())
                             || Boolean.valueOf(getParamUsetempfileproject()).booleanValue()) {
                             // resource is locked in the current project or the tempfileproject is used
@@ -852,7 +852,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                         try {
                             List lockedResources = getCms().getLockedResources(
                                 resourceName,
-                                CmsLockFilter.FILTER_ALL.filterExcludedUserId(getCms().getRequestContext().currentUser().getId()));
+                                CmsLockFilter.FILTER_ALL.filterNotOwnedByUserId(getCms().getRequestContext().currentUser().getId()));
                             if (!lockedResources.isEmpty()) {
                                 m_isEditable = Boolean.FALSE;
                                 return m_isEditable.booleanValue();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2006/10/25 07:17:52 $
- * Version: $Revision: 1.16.8.2 $
+ * Date   : $Date: 2006/11/29 15:04:07 $
+ * Version: $Revision: 1.16.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsPermalinkResourceHandler;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
@@ -54,7 +55,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16.8.2 $
+ * @version $Revision: 1.16.8.3 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
 
@@ -263,6 +264,7 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
@@ -501,6 +503,7 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         cms.unlockResource(deletedFolder);
         cms.publishResource(deletedFolder);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         try {
             // undoing the changes to a deleted folder must cause an exception
@@ -512,5 +515,6 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         cms.unlockResource(destination);
         cms.publishResource(destination);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 }

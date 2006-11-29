@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestVersioning.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/11/29 15:04:05 $
+ * Version: $Revision: 1.6.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.4.1 $
  */
 public class TestVersioning extends OpenCmsTestCase {
   
@@ -114,6 +114,7 @@ public class TestVersioning extends OpenCmsTestCase {
             cms.setDateReleased(source, System.currentTimeMillis(), false);
             cms.unlockResource(source);
             cms.publishResource(source);
+            OpenCms.getPublishManager().waitWhileRunning();
         }
     }        
 }

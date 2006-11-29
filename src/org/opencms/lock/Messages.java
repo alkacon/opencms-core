@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Messages.java,v $
- * Date   : $Date: 2006/10/19 13:37:16 $
- * Version: $Revision: 1.8.8.2 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.8.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.8.8.2 $ 
+ * @version $Revision: 1.8.8.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,6 +47,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_LOCK_TYPE_1 = "ERR_INVALID_LOCK_TYPE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_ILLEGAL_STATE_2 = "ERR_LOCK_ILLEGAL_STATE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_LOCKS_0 = "ERR_READ_LOCKS_0";
@@ -59,16 +62,19 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_LOCKED_1 = "ERR_RESOURCE_LOCKED_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_LOCKED_BYOTHERUSER_1 = "ERR_RESOURCE_LOCKED_BYOTHERUSER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_RESOURCE_LOCKED_INWORKFLOW_1 = "ERR_RESOURCE_LOCKED_INWORKFLOW_1";
-    
+    public static final String ERR_RESOURCE_LOCKED_FORPUBLISH_1 = "ERR_RESOURCE_LOCKED_FORPUBLISH_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_LOCKED_INHERITED_1 = "ERR_RESOURCE_LOCKED_INHERITED_1";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_LOCKED_INWORKFLOW_1 = "ERR_RESOURCE_LOCKED_INWORKFLOW_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_UNLOCK_1 = "ERR_RESOURCE_UNLOCK_1";
 

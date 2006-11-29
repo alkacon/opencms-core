@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.22.4.6 $
+ * Date   : $Date: 2006/11/29 15:04:12 $
+ * Version: $Revision: 1.22.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22.4.6 $ 
+ * @version $Revision: 1.22.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -447,7 +447,7 @@ public class CmsListMetadata {
             html.append("\t\t");
             html.append(detailAction.buttonHtml());
             if (itDetails.hasNext()) {
-                html.append("&nbsp;&nbsp;");
+                html.append("&nbsp;");
             }
             html.append("\n");
         }
@@ -455,7 +455,7 @@ public class CmsListMetadata {
         while (itActions.hasNext()) {
             I_CmsListAction indepAction = (I_CmsListAction)itActions.next();
             html.append("\t\t");
-            html.append("&nbsp;&nbsp;");
+            html.append("&nbsp;");
             html.append(indepAction.buttonHtml());
             html.append("\n");
         }

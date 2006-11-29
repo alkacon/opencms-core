@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2006/11/08 09:28:53 $
- * Version: $Revision: 1.8.4.2 $
+ * Date   : $Date: 2006/11/29 15:04:07 $
+ * Version: $Revision: 1.8.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.file;
 
-import org.opencms.file.CmsResource.CmsResourceState;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.4.2 $
+ * @version $Revision: 1.8.4.3 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -132,6 +132,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.chacc(resName, I_CmsPrincipal.PRINCIPAL_GROUP, testGroup.getName(), "+r+v+i");
         cms.unlockResource(resName);
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // create a 2nd test group
         cms.createGroup("testgroup2", "A test group 2", 0, null);
@@ -194,6 +195,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.unlockResource(folder);
         // publish
         cms.publishResource(folder);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // lock the whole folder as test2
         cms.loginUser("test2", "test2");
@@ -253,6 +255,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.chacc("/", I_CmsPrincipal.PRINCIPAL_USER, testUser1.getName(), "+r+w+v+i+c");
         cms.unlockResource("/");
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.loginUser(testUser1.getName(), "test1");
         CmsProject offline = cms.readProject("Offline");
@@ -268,6 +271,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(offline);
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         String resName2 = "/folder1/subfolder11/subsubfolder111/text.txt";
         cms.lockResource(resName2);
@@ -275,6 +279,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.chacc(resName2, I_CmsPrincipal.PRINCIPAL_GROUP, testGroup.getName(), "+r+v+i");
         cms.unlockResource(resName2);
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.createUser("testuser2", "test2", "A test user 2", null);
         cms.addUserToGroup("testuser2", "Testgroup");
@@ -328,6 +333,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.deleteResource(resName, CmsResource.DELETE_REMOVE_SIBLINGS);
         cms.unlockResource(resName);
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
         cms.deleteUser(testUser2.getId());
         cms.deleteGroup(testGroup.getName());
     }

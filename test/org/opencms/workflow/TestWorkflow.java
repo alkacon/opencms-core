@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workflow/Attic/TestWorkflow.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/11/29 15:04:13 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workflow;
 
 import org.opencms.file.CmsObject;
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.0.0
  */
@@ -93,42 +93,40 @@ public class TestWorkflow extends OpenCmsTestCase {
 
                 removeOpenCms();
             }
-
         };
-
         return wrapper;
     }
-    
+
     /**
      * Tests a complete workflow sequence.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testWorkflow() throws Throwable {
-     
+
         String resource = "/index.html";
         String newTitle = "This is the changed title";
         String owner, agent, state;
 
         CmsObject cms = getCmsObject();
         I_CmsWorkflowManager wfm = OpenCms.getWorkflowManager();
-        
+
         // create a workflow project
         CmsProject wfp = wfm.createTask(cms, "Task description");
-        
+
         // modify a resource
         cms.lockResource(resource);
         cms.writePropertyObject(resource, new CmsProperty("Title", newTitle, null));
         cms.unlockResource(resource);
-        
+
         // add one or more resources to it
         wfm.addResource(getCmsObject(), wfp, resource);
         assertProject(cms, resource, wfp);
-        
+
         // initiate the workflow (0 - 4 eye review)
         I_CmsWorkflowType wfType = (I_CmsWorkflowType)wfm.getWorkflowTypes().get(0);
         wfm.init(getCmsObject(), wfp, wfType, "This is the initial message.");
-        
+
         // read workflow data
         owner = wfm.getTaskOwner(wfp).getName();
         agent = wfm.getTaskAgent(wfp).getName();
@@ -140,11 +138,11 @@ public class TestWorkflow extends OpenCmsTestCase {
         echo("State: " + state);
 
         assertProject(cms, resource, wfp);
-        
+
         // now select a transition (0 - Publish)
         I_CmsWorkflowTransition transition = (I_CmsWorkflowTransition)wfm.getTransitions(wfp).get(0);
-        wfm.signal(cms, wfp, transition, "This is the transition message."); 
-        
+        wfm.signal(cms, wfp, transition, "This is the transition message.");
+
         // read workflow data
         owner = wfm.getTaskOwner(wfp).getName();
         agent = wfm.getTaskAgent(wfp).getName();
@@ -154,21 +152,21 @@ public class TestWorkflow extends OpenCmsTestCase {
         echo("Owner: " + owner);
         echo("Agent: " + agent);
         echo("State: " + state);
-        
+
         // check that the modified resource is published and unlocked, but still changed
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
         CmsProperty prop1 = cms.readPropertyObject(resource, "Title", false);
-        if (!prop1.getValue().equals((newTitle))) {
+        if (prop1.getValue().equals((newTitle))) {
             fail("Property not changed for " + resource);
         }
-        
+
         // check if the file in the offline project is unchanged
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         assertState(cms, resource, CmsResource.STATE_UNCHANGED);
-        
+
         // check if the file in the offline project is unlocked
-        assertLock(cms, resource, CmsLockType.UNLOCKED); 
-    }    
+        assertLock(cms, resource, CmsLockType.UNLOCKED);
+    }
 
     /**
      * Tests a complete workflow sequence trying to do some 'dangerous' folder operations.<p>
@@ -176,7 +174,7 @@ public class TestWorkflow extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public void testWorkflowWithFolderOperations() throws Throwable {
-     
+
         String oldFolder = "/folder1";
         String folder = "/newfolder1";
         String resource = "/index.html";
@@ -184,21 +182,21 @@ public class TestWorkflow extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         echo("Tests a complete workflow sequence trying to do some 'dangerous' folder operations");
-        
+
         // first move the folder
         cms.lockResource(oldFolder);
         cms.moveResource(oldFolder, folder);
-        
+
         I_CmsWorkflowManager wfm = OpenCms.getWorkflowManager();
-        
+
         // create a workflow project
         CmsProject wfp = wfm.createTask(cms, "Task description");
-        
+
         // modify a resource
         cms.lockResource(resource);
         cms.writePropertyObject(resource, new CmsProperty("Title", resource, null));
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        
+
         // add one or more resources to it
         wfm.addResource(getCmsObject(), wfp, resource);
         cms.lockResource(folder);
@@ -222,20 +220,21 @@ public class TestWorkflow extends OpenCmsTestCase {
             fail("should not be allowed to move a folder with resources locked in workflow");
         } catch (CmsLockException e) {
             // ok
-        }        
+        }
         // try to direct publish the folder
         try {
             cms.unlockProject(cms.getRequestContext().currentProject().getId());
             cms.publishResource(folder);
+            OpenCms.getPublishManager().waitWhileRunning();
             fail("should not be allowed to publish a folder with resources locked in workflow");
         } catch (CmsLockException e) {
             // ok
         }
-        
+
         // initiate the workflow (0 - 4 eye review)
         I_CmsWorkflowType wfType = (I_CmsWorkflowType)wfm.getWorkflowTypes().get(0);
         wfm.init(getCmsObject(), wfp, wfType, "This is the initial message.");
-        
+
         // read workflow data
         owner = wfm.getTaskOwner(wfp).getName();
         agent = wfm.getTaskAgent(wfp).getName();
@@ -245,11 +244,11 @@ public class TestWorkflow extends OpenCmsTestCase {
         echo("Owner: " + owner);
         echo("Agent: " + agent);
         echo("State: " + state);
-        
+
         // now select a transition (0 - Publish)
         I_CmsWorkflowTransition transition = (I_CmsWorkflowTransition)wfm.getTransitions(wfp).get(0);
-        wfm.signal(cms, wfp, transition, "This is the transition message."); 
-        
+        wfm.signal(cms, wfp, transition, "This is the transition message.");
+
         // read workflow data
         owner = wfm.getTaskOwner(wfp).getName();
         agent = wfm.getTaskAgent(wfp).getName();
@@ -259,21 +258,21 @@ public class TestWorkflow extends OpenCmsTestCase {
         echo("Owner: " + owner);
         echo("Agent: " + agent);
         echo("State: " + state);
-        
+
         // check that the modified resource is published and unlocked, but still changed
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
         CmsProperty prop1 = cms.readPropertyObject(resource, "Title", false);
         if (!prop1.getValue().equals((resource))) {
             fail("Property not changed for " + resource);
         }
-        
+
         // check if the file in the offline project is unchanged
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         assertState(cms, resource, CmsResource.STATE_UNCHANGED);
-        
+
         // check if the file in the offline project is unlocked
-        assertLock(cms, resource, CmsLockType.UNLOCKED); 
-    }    
+        assertLock(cms, resource, CmsLockType.UNLOCKED);
+    }
 
     /**
      * Tests a complete workflow sequence trying to do some 'dangerous' file operations.<p>
@@ -281,33 +280,34 @@ public class TestWorkflow extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public void testWorkflowWithFileOperations() throws Throwable {
-     
+
         String resource = "/index.html";
         String attachment = "/folder1/image2.gif";
         String owner, agent, state;
 
         CmsObject cms = getCmsObject();
         echo("Tests a complete workflow sequence trying to do some 'dangerous' file operations");
-        
+
         // first touch the attachment
         cms.lockResource(attachment);
         cms.setDateLastModified(attachment, System.currentTimeMillis(), false);
         cms.unlockResource(attachment);
-        
+
         I_CmsWorkflowManager wfm = OpenCms.getWorkflowManager();
-        
+
         // create a workflow project
         CmsProject wfp = wfm.createTask(cms, "Task description");
-        
+
         // modify a resource
         cms.lockResource(resource);
         cms.writePropertyObject(resource, new CmsProperty("Title", resource, null));
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        
+
         // add one or more resources to it
         wfm.addResource(getCmsObject(), wfp, resource);
-        
+
         cms.lockResource(attachment);
+        assertLock(cms, attachment, CmsLockType.WORKFLOW);
         // try to undochanges on the attachment
         try {
             cms.undoChanges(attachment, CmsResource.UNDO_MOVE_CONTENT_RECURSIVE);
@@ -328,22 +328,23 @@ public class TestWorkflow extends OpenCmsTestCase {
             fail("should not be allowed to move a resource locked in workflow");
         } catch (CmsLockException e) {
             // ok
-        }        
+        }
         // try to direct publish the attachment
         try {
             cms.unlockResource(attachment);
             cms.publishResource(attachment);
+            OpenCms.getPublishManager().waitWhileRunning();
             if (!cms.getPublishList(cms.readResource(attachment), false).getFileList().isEmpty()) {
                 fail("should not be allowed to publish a resource locked in workflow");
             }
         } catch (CmsLockException e) {
             // ok
         }
-        
+
         // initiate the workflow (0 - 4 eye review)
         I_CmsWorkflowType wfType = (I_CmsWorkflowType)wfm.getWorkflowTypes().get(0);
         wfm.init(getCmsObject(), wfp, wfType, "This is the initial message.");
-        
+
         // read workflow data
         owner = wfm.getTaskOwner(wfp).getName();
         agent = wfm.getTaskAgent(wfp).getName();
@@ -353,11 +354,11 @@ public class TestWorkflow extends OpenCmsTestCase {
         echo("Owner: " + owner);
         echo("Agent: " + agent);
         echo("State: " + state);
-        
+
         // now select a transition (0 - Publish)
         I_CmsWorkflowTransition transition = (I_CmsWorkflowTransition)wfm.getTransitions(wfp).get(0);
-        wfm.signal(cms, wfp, transition, "This is the transition message."); 
-        
+        wfm.signal(cms, wfp, transition, "This is the transition message.");
+
         // read workflow data
         owner = wfm.getTaskOwner(wfp).getName();
         agent = wfm.getTaskAgent(wfp).getName();
@@ -367,19 +368,19 @@ public class TestWorkflow extends OpenCmsTestCase {
         echo("Owner: " + owner);
         echo("Agent: " + agent);
         echo("State: " + state);
-        
+
         // check that the modified resource is published and unlocked, but still changed
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
         CmsProperty prop1 = cms.readPropertyObject(resource, "Title", false);
         if (!prop1.getValue().equals((resource))) {
             fail("Property not changed for " + resource);
         }
-        
+
         // check if the file in the offline project is unchanged
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         assertState(cms, resource, CmsResource.STATE_UNCHANGED);
-        
+
         // check if the file in the offline project is unlocked
-        assertLock(cms, resource, CmsLockType.UNLOCKED); 
-    }    
+        assertLock(cms, resource, CmsLockType.UNLOCKED);
+    }
 }

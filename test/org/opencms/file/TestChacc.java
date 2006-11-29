@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2006/09/20 14:38:00 $
- * Version: $Revision: 1.15.8.1 $
+ * Date   : $Date: 2006/11/29 15:04:06 $
+ * Version: $Revision: 1.15.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
@@ -50,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.15.8.1 $
+ * @version $Revision: 1.15.8.2 $
  */
 public class TestChacc extends OpenCmsTestCase {
   
@@ -292,6 +293,7 @@ public class TestChacc extends OpenCmsTestCase {
         cms.chacc(resName, I_CmsPrincipal.PRINCIPAL_GROUP, testGroup.getName(), "+r+v+i");
         cms.unlockResource(resName);
         cms.publishProject(); 
+        OpenCms.getPublishManager().waitWhileRunning();
         
         CmsPermissionSet permissions = new CmsPermissionSet(CmsPermissionSet.PERMISSION_READ
             | CmsPermissionSet.PERMISSION_VIEW
@@ -322,6 +324,7 @@ public class TestChacc extends OpenCmsTestCase {
         cms.rmacc(resName, I_CmsPrincipal.PRINCIPAL_USER, testUser.getName());
         cms.unlockResource(resName);
         cms.publishProject();         
+        OpenCms.getPublishManager().waitWhileRunning();
         
         cms.loginUser("testuser", "test");        
         cms.getRequestContext().setCurrentProject(offline);
@@ -333,6 +336,7 @@ public class TestChacc extends OpenCmsTestCase {
         cms.rmacc(resName, I_CmsPrincipal.PRINCIPAL_GROUP, testGroup.getName());
         cms.unlockResource(resName);
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
         
         // re-check permissions of test user after removing ACE
         cms.loginUser("testuser", "test");     

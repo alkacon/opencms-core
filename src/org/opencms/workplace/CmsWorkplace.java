@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/09/18 13:01:37 $
- * Version: $Revision: 1.156.4.10 $
+ * Date   : $Date: 2006/11/29 15:04:10 $
+ * Version: $Revision: 1.156.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.10 $ 
+ * @version $Revision: 1.156.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -394,7 +394,6 @@ public abstract class CmsWorkplace {
     public static String getStyleUri(CmsJspActionElement jsp, String filename) {
 
         if (m_styleUri == null) {
-
             CmsProject project = jsp.getCmsObject().getRequestContext().currentProject();
             try {
                 jsp.getCmsObject().getRequestContext().setCurrentProject(
@@ -991,22 +990,24 @@ public abstract class CmsWorkplace {
     public void checkLock(String resource, CmsLockType type) throws CmsException {
 
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
-        CmsLock lock = getCms().getLock(res);
+        CmsLock lock = getCms().getSystemLock(res);
+        boolean lockable = lock.isLockableBy(getCms().getRequestContext().currentUser());
+        lockable = lockable && getCms().getLock(res).isLockableBy(getCms().getRequestContext().currentUser());
+        
         if (OpenCms.getWorkplaceManager().autoLockResources()) {
             // autolock is enabled, check the lock state of the resource
-            if (lock.isUnlocked() || lock.isWorkflow()) {
-                // resource is not locked or locked in a workflow only, lock it automatically
+            if (lockable) {
+                // resource is lockable, so lock it automatically
                 if (type == CmsLockType.TEMPORARY) {
                     getCms().lockResourceTemporary(resource);
                 } else {
                     getCms().lockResource(resource);
                 }
-            } else if (!lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
+            } else {
                 throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
             }
         } else {
-            if (lock.isNullLock()
-                || (!lock.isNullLock() && !lock.isOwnedBy(getCms().getRequestContext().currentUser()))) {
+            if (!lockable) {
                 throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
             }
         }

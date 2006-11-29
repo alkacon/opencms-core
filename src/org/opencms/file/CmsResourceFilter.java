@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2006/11/08 09:28:48 $
- * Version: $Revision: 1.23.4.3 $
+ * Date   : $Date: 2006/11/29 15:04:10 $
+ * Version: $Revision: 1.23.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,8 @@
 
 package org.opencms.file;
 
-import org.opencms.file.CmsResource.CmsResourceState;
+import org.opencms.db.CmsResourceState;
+
 
 /**
  * Provides filters for resource result sets obtained from requests to the OpenCms VFS.<p>
@@ -47,7 +48,7 @@ import org.opencms.file.CmsResource.CmsResourceState;
  * @author Carsten Weinholz 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.23.4.3 $
+ * @version $Revision: 1.23.4.4 $
  * 
  * @since 6.0.0 
  */

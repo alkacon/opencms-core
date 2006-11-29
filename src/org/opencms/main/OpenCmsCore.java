@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.218.4.15 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.218.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,6 +67,8 @@ import org.opencms.lock.CmsLockManager;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
+import org.opencms.publish.CmsPublishEngine;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsRole;
@@ -134,7 +136,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.15 $ 
+ * @version $Revision: 1.218.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,6 +192,12 @@ public final class OpenCmsCore {
 
     /** The password handler used to digest and validate passwords. */
     private I_CmsPasswordHandler m_passwordHandler;
+
+    /** The publish engine. */
+    private CmsPublishEngine m_publishEngine;
+
+    /** The publish manager instance. */
+    private CmsPublishManager m_publishManager;
 
     /** The configured request handlers that handle "special" requests, for example in the static export on demand. */
     private Map m_requestHandlers;
@@ -319,6 +327,16 @@ public final class OpenCmsCore {
     public I_CmsAuthorizationHandler getAuthorizationHandler() {
 
         return m_authorizationHandler;
+    }
+
+    /**
+     * Returns the publish manager instance.<p>
+     * 
+     * @return the publish manager instance
+     */
+    public CmsPublishManager getPublishManager() {
+
+        return m_publishManager;
     }
 
     /**
@@ -976,10 +994,28 @@ public final class OpenCmsCore {
         // get the workflow manager, this is needed before the security manager is initialized because of the locks
         m_workflowManager = systemConfiguration.getWorkflowManager();
 
+        // default publish engine parameters
+        int pubHistorySize = 100;
+        String pubHistoryRepository = CmsPublishEngine.DEFAULT_REPORT_PATH;
+        // try to get the publish engine params from the configuration
+        if (systemConfiguration.getPublishHistoryRepository() != null) {
+            pubHistorySize = systemConfiguration.getPublishHistorySize();
+            pubHistoryRepository = systemConfiguration.getPublishHistoryRepository();
+        }
+
+        // initialize the publish engine
+        m_publishEngine = new CmsPublishEngine(
+            systemConfiguration.getRuntimeInfoFactory(),
+            pubHistoryRepository,
+            pubHistorySize);
+        // initialize the publish manager
+        m_publishManager = new CmsPublishManager(m_publishEngine);
+
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(
             m_configurationManager,
-            systemConfiguration.getRuntimeInfoFactory());
+            systemConfiguration.getRuntimeInfoFactory(),
+            m_publishEngine);
 
         // initialize the Thread store
         m_threadStore = new CmsThreadStore(m_securityManager);
@@ -1030,7 +1066,7 @@ public final class OpenCmsCore {
 
             // initialize the workflow manager
             if (m_workflowManager != null) {
-                m_workflowManager.initialize(initCmsObject(adminCms));
+                m_workflowManager.initialize(initCmsObject(adminCms), m_securityManager);
             }
 
         } catch (CmsException e) {
@@ -1201,7 +1237,7 @@ public final class OpenCmsCore {
 
         try {
             // try to read the requested resource
-            resource = cms.narrowResource(cms.readResource(resourceName));
+            resource = cms.readDefaultFile(resourceName);
         } catch (CmsException e) {
             // file or folder with given name does not exist, store exception
             tmpException = e;
@@ -1209,6 +1245,8 @@ public final class OpenCmsCore {
         }
 
         if (resource != null) {
+            // set the request uri to the right file
+            cms.getRequestContext().setUri(cms.getSitePath(resource));
             // test if this file is only available for internal access operations
             if ((resource.getFlags() & CmsResource.FLAG_INTERNAL) > 0) {
                 throw new CmsException(Messages.get().container(
@@ -1379,6 +1417,9 @@ public final class OpenCmsCore {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
                 }
 
+                // the first thing we have to do is to wait until the current publish process is finished
+                m_publishEngine.shutDown();
+
                 try {
                     if (m_staticExportManager != null) {
                         m_staticExportManager.shutDown();
@@ -1446,6 +1487,37 @@ public final class OpenCmsCore {
             }
             m_instance = null;
         }
+    }
+
+    /**
+     * This method updates the request context information.<p>
+     * 
+     * The update information is:<br>
+     * <ul>
+     *   <li>Requested Url</li>
+     *   <li>Locale</li>
+     *   <li>Encoding</li>
+     *   <li>Remote Address</li>
+     *   <li>Request Time</li>
+     * </ul>
+     * 
+     * @param request the current request
+     * @param cms the cms object to update the request context for
+     * 
+     * @return a new updated cms context
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsObject updateContext(HttpServletRequest request, CmsObject cms) throws CmsException {
+
+        // get the right site for the request
+        CmsSite site = OpenCms.getSiteManager().matchRequest(request);
+
+        return initCmsObject(
+            request,
+            cms.getRequestContext().currentUser().getName(),
+            site.getSiteRoot(),
+            cms.getRequestContext().currentProject().getId());
     }
 
     /**
@@ -1708,8 +1780,7 @@ public final class OpenCmsCore {
             m_resourceManager.getFileTranslator());
 
         // now initialize and return the CmsObject
-        CmsObject cms = new CmsObject(m_securityManager, context);
-        return cms;
+        return new CmsObject(m_securityManager, context);
     }
 
     /**
@@ -1815,16 +1886,16 @@ public final class OpenCmsCore {
     /**
      * Inits a CmsObject with the given users information.<p>
      * 
-     * @param req the current http request (or null)
+     * @param request the current http request (or null)
      * @param userName the name of the user to init
-     * @param currentSite the users current site 
+     * @param siteRoot the users current site 
      * @param projectId the id of the users current project
      * 
      * @return the initialized CmsObject
      * 
      * @throws CmsException in case something goes wrong
      */
-    private CmsObject initCmsObject(HttpServletRequest req, String userName, String currentSite, int projectId)
+    private CmsObject initCmsObject(HttpServletRequest request, String userName, String siteRoot, int projectId)
     throws CmsException {
 
         CmsUser user = m_securityManager.readUser(userName);
@@ -1841,21 +1912,21 @@ public final class OpenCmsCore {
         Long requestTimeAttr = null;
         String remoteAddr;
 
-        if (req != null) {
+        if (request != null) {
             // get path info from request
-            requestedResource = req.getPathInfo();
+            requestedResource = request.getPathInfo();
 
             // check for special header for remote address
-            remoteAddr = req.getHeader(CmsRequestUtil.HEADER_X_FORWARDED_FOR);
+            remoteAddr = request.getHeader(CmsRequestUtil.HEADER_X_FORWARDED_FOR);
             if (remoteAddr == null) {
                 // if header is not available, use default remote address
-                remoteAddr = req.getRemoteAddr();
+                remoteAddr = request.getRemoteAddr();
             }
 
             // check for special "time warp" browsing
-            if (!CmsProject.isOnlineProject(projectId)) {
+            if (!CmsProject.isOnlineProject(project.getId())) {
                 // this feature is not available in the "online" project
-                HttpSession session = req.getSession(false);
+                HttpSession session = request.getSession(false);
                 if (session != null) {
                     // no new session must be created here
                     requestTimeAttr = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
@@ -1888,9 +1959,9 @@ public final class OpenCmsCore {
                 // add site root only if resource name does not start with "/system"
                 resourceName = requestedResource;
             } else {
-                resourceName = currentSite.concat(requestedResource);
+                resourceName = siteRoot.concat(requestedResource);
             }
-            i18nInfo = m_localeManager.getI18nInfo(req, user, project, resourceName);
+            i18nInfo = m_localeManager.getI18nInfo(request, user, project, resourceName);
         } else {
             // locale manager not initialized, this will be true _only_ during system startup
             // the values set does not matter, no locale information form VFS is used on system startup
@@ -1906,7 +1977,7 @@ public final class OpenCmsCore {
             user,
             project,
             requestedResource,
-            currentSite,
+            siteRoot,
             i18nInfo.getLocale(),
             i18nInfo.getEncoding(),
             remoteAddr,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestExportFile.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/11/29 15:04:13 $
+ * Version: $Revision: 1.14.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.14.8.1 $
  * 
  * @since 6.0.0
  */
@@ -114,6 +114,7 @@ public class TestExportFile extends OpenCmsTestCase {
         
         // now publish (and export) the resource
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
         
         // now read the exported file in the file system and check its content
         File f = new File(getTestDataPath("export/sites/default" + resourcename));

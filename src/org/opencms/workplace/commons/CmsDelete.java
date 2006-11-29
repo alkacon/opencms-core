@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/11/17 15:00:04 $
- * Version: $Revision: 1.17.4.15 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.17.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,13 +35,12 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsRelationDeleteValidator;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialogSelector;
 import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -73,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.15 $ 
+ * @version $Revision: 1.17.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,17 +84,14 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /** The dialog type. */
     public static final String DIALOG_TYPE = "delete";
 
+    /** The log object for this class. */
+    public static final Log LOG = CmsLog.getLog(CmsDelete.class);
+
     /** Request parameter name for the deletesiblings parameter. */
     public static final String PARAM_DELETE_SIBLINGS = "deletesiblings";
 
     /** The delete dialog URI. */
     public static final String URI_DELETE_DIALOG = PATH_DIALOGS + "delete_standard.jsp";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDelete.class);
-
-    /** The broken relations validator object. */
-    private CmsRelationDeleteValidator m_validator;
 
     /** The delete siblings parameter value. */
     private String m_deleteSiblings;
@@ -164,54 +160,6 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Returns the html for the "delete siblings" options when deleting a a resource with siblings.<p>
-     * 
-     * @return the html for the "delete siblings" options
-     */
-    public String buildDeleteSiblings() {
-
-        StringBuffer result = new StringBuffer(512);
-        boolean isFolder = false;
-        int todo = 0;
-//      currently inactive, since its unclear if deletion of siblings is sound when deleting a folder
-//        if (!isMultiOperation()) {
-//            try {
-//                isFolder = getCms().readResource(getParamResource(), CmsResourceFilter.ALL).isFolder();
-//            } catch (CmsException e) {
-//                // ignore
-//            }
-//        }
-        if (isMultiOperation() || isFolder || (hasSiblings() && hasCorrectLockstate())) {
-            // show only for multi resource operation or if resource has siblings and correct lock state
-            CmsResourceDeleteMode defaultMode = Boolean.valueOf(getParamDeleteSiblings()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
-            : CmsResource.DELETE_PRESERVE_SIBLINGS;
-            if (!isMultiOperation() && !isFolder) {
-                result.append(key(Messages.GUI_DELETE_WARNING_SIBLINGS_0));
-                result.append("<p>");
-            }
-            result.append("<input type=\"radio\" name=\"");
-            result.append(PARAM_DELETE_SIBLINGS);
-            result.append("radio\" value=\"false\"");
-            if (defaultMode == CmsResource.DELETE_PRESERVE_SIBLINGS) {
-                result.append(" checked=\"checked\"");
-            }
-            result.append(" onclick='reloadDialog(false);'>&nbsp;");
-            result.append(key(Messages.GUI_DELETE_PRESERVE_SIBLINGS_0));
-            result.append("<br>");
-            result.append("<input type=\"radio\" name=\"");
-            result.append(PARAM_DELETE_SIBLINGS);
-            result.append("radio\" value=\"true\"");
-            if (defaultMode == CmsResource.DELETE_REMOVE_SIBLINGS) {
-                result.append(" checked=\"checked\"");
-            }
-            result.append(" onclick='reloadDialog(true);'>&nbsp;");
-            result.append(key(Messages.GUI_DELETE_ALL_SIBLINGS_0));
-            result.append("<p>");
-        }
-        return result.toString();
-    }
-
-    /**
      * Returns the html for the confirmation message.<p>
      * 
      * @return the html for the confirmation message
@@ -238,6 +186,44 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
+     * Returns the html for the "delete siblings" options when deleting a a resource with siblings.<p>
+     * 
+     * @return the html for the "delete siblings" options
+     */
+    public String buildDeleteSiblings() {
+
+        StringBuffer result = new StringBuffer(512);
+        if (isMultiOperation() || (hasSiblings() && hasCorrectLockstate())) {
+            // show only for multi resource operation or if resource has siblings and correct lock state
+            CmsResourceDeleteMode defaultMode = Boolean.valueOf(getParamDeleteSiblings()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
+            : CmsResource.DELETE_PRESERVE_SIBLINGS;
+            if (!isMultiOperation()) {
+                result.append(key(Messages.GUI_DELETE_WARNING_SIBLINGS_0));
+                result.append("<p>");
+            }
+            result.append("<input type=\"radio\" name=\"");
+            result.append(PARAM_DELETE_SIBLINGS);
+            result.append("radio\" value=\"false\"");
+            if (defaultMode == CmsResource.DELETE_PRESERVE_SIBLINGS) {
+                result.append(" checked=\"checked\"");
+            }
+            result.append(" onclick='reloadDialog(false);'>&nbsp;");
+            result.append(key(Messages.GUI_DELETE_PRESERVE_SIBLINGS_0));
+            result.append("<br>");
+            result.append("<input type=\"radio\" name=\"");
+            result.append(PARAM_DELETE_SIBLINGS);
+            result.append("radio\" value=\"true\"");
+            if (defaultMode == CmsResource.DELETE_REMOVE_SIBLINGS) {
+                result.append(" checked=\"checked\"");
+            }
+            result.append(" onclick='reloadDialog(true);'>&nbsp;");
+            result.append(key(Messages.GUI_DELETE_ALL_SIBLINGS_0));
+            result.append("<p>");
+        }
+        return result.toString();
+    }
+
+    /**
      * Returns html code for the possible broken relations.<p>
      * 
      * @return html code for the possible broken relations
@@ -256,27 +242,13 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
         StringBuffer result = new StringBuffer(512);
         list.getList().setBoxed(false);
+        result.append("<input type='hidden' name='result' value='");
+        result.append(list.getList().getTotalSize()).append("'>\n");
         result.append(CmsListExplorerColumn.getExplorerStyleDef());
         result.append("<div style='height:150px; overflow: auto;'>\n");
         result.append(list.getList().listHtml());
         result.append("</div>\n");
-        result.append("<input type='hidden' name='result' value='");
-        result.append(list.getList().getTotalSize()).append("'>\n");
         return result.toString();
-    }
-
-    /**
-     * Returns the broken relations validator object.<p>
-     * 
-     * @return a validator object
-     */
-    public CmsRelationDeleteValidator getValidator() {
-
-        if (m_validator == null) {
-            m_validator = new CmsRelationDeleteValidator(getCms(), getResourceList(), Boolean.valueOf(
-                getParamDeleteSiblings()).booleanValue());
-        }
-        return m_validator;
     }
 
     /**
@@ -306,43 +278,16 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Checks if the current resource has lock state exclusive or inherited.<p>
+     * Returns <code>true</code> if the current user is allowed 
+     * to delete the selected resources.<p>
      * 
-     * This is used to determine whether the dialog shows the option to delete all
-     * siblings of the resource or not.
-     * 
-     * @return true if lock state is exclusive or inherited, otherwise false
+     * @return <code>true</code> if the current user is allowed 
+     *          to delete the selected resources
      */
-    public boolean hasCorrectLockstate() {
+    public boolean isCanDelete() {
 
-        CmsLock lock = null;
-        try {
-            // get the lock state for the current resource
-            lock = getCms().getLock(getParamResource());
-        } catch (CmsException e) {
-            // error getting lock state, log the error and return false
-            LOG.error(e.getLocalizedMessage(), e);
-            return false;
-        }
-        // check if autolock feature is enabled
-        boolean autoLockFeature = lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources();
-        return autoLockFeature || lock.isExclusive() || lock.isInherited();
-    }
-
-    /**
-     * Checks if this resource has siblings.<p>
-     * 
-     * @return true if this resource has siblings
-     */
-    public boolean hasSiblings() {
-
-        try {
-            return getCms().readResource(getParamResource(), CmsResourceFilter.ALL).getSiblingCount() > 1;
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            return false;
-        }
-
+        return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
+            || getCms().hasRole(CmsRole.VFS_MANAGER);
     }
 
     /**
@@ -353,7 +298,6 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     public void setParamDeleteSiblings(String value) {
 
         m_deleteSiblings = value;
-        m_validator = null;
     }
 
     /**
@@ -364,7 +308,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        if (getParamDeleteSiblings() == null) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamDeleteSiblings())) {
             setParamDeleteSiblings(Boolean.toString(getSettings().getUserSettings().getDialogDeleteFileMode() == CmsResource.DELETE_REMOVE_SIBLINGS));
         }
         // check the required permissions to delete the resource       
@@ -447,19 +391,6 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         checkLock(resource);
         // delete the resource
         getCms().deleteResource(resource, deleteOption);
-    }
-
-    /**
-     * Returns <code>true</code> if the current user is allowed 
-     * to delete the selected resources.<p>
-     * 
-     * @return <code>true</code> if the current user is allowed 
-     *          to delete the selected resources
-     */
-    public boolean isCanDelete() {
-
-        return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
-            || getCms().hasRole(CmsRole.VFS_MANAGER);
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2006/10/04 15:54:09 $
- * Version: $Revision: 1.29.4.5 $
+ * Date   : $Date: 2006/11/29 15:04:10 $
+ * Version: $Revision: 1.29.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29.4.5 $
+ * @version $Revision: 1.29.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -394,7 +394,7 @@ public final class CmsRequestContext {
         
         // TODO: since the site root does not includes the trailing slash,
         // having a multisite configuration, where one site path is prefix of other,
-        // like: /sites/test and /sites/testA, will result in a mix up of the site 
+        // like: /sites/test and /sites/testA, will result into a mix up of the site 
         // resources in the whole system (sibling view, project view, and more).
         int todoV7;
         
@@ -405,6 +405,18 @@ public final class CmsRequestContext {
      * Restores the saved site root.<p>
      *
      * @throws RuntimeException in case there is no site root saved
+     * 
+     * @deprecated store the current site root locally before switching
+     *             to another site, and set it back again at the end, like:
+     * <pre>
+     *             String storedSite = context.getSiteRoot();
+     *             try {
+     *                  context.setSiteRoot("");
+     *                  // do something with the context
+     *             } finally {
+     *                  context.setSiteRoot(storedSite);
+     *             }
+     * </pre>
      */
     public void restoreSiteRoot() throws RuntimeException {
 
@@ -419,6 +431,18 @@ public final class CmsRequestContext {
      * Saves the current site root.<p>
      *
      * @throws RuntimeException in case there is already a site root saved
+     * 
+     * @deprecated store the current site root locally before switching
+     *             to another site, and set it back again at the end, like:
+     * <pre>
+     *             String storedSite = context.getSiteRoot();
+     *             try {
+     *                  context.setSiteRoot("");
+     *                  // do something with the context
+     *             } finally {
+     *                  context.setSiteRoot(storedSite);
+     *             }
+     * </pre>
      */
     public void saveSiteRoot() throws RuntimeException {
 

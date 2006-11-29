@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.23.4.2 $
+ * Date   : $Date: 2006/11/29 15:04:05 $
+ * Version: $Revision: 1.23.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -51,7 +52,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.23.4.2 $
+ * @version $Revision: 1.23.4.3 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -526,6 +527,7 @@ public class TestProperty extends OpenCmsTestCase {
         cms.writePropertyObject(typesUri, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "myfolder", null));       
         // publish the changes
         cms.publishProject(); 
+        OpenCms.getPublishManager().waitWhileRunning();
         
         List result = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
         assertTrue(result.contains(res));
@@ -572,6 +574,7 @@ public class TestProperty extends OpenCmsTestCase {
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();    
+        OpenCms.getPublishManager().waitWhileRunning();
         
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);                
     }   
@@ -602,6 +605,7 @@ public class TestProperty extends OpenCmsTestCase {
         cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
         cms.unlockProject(offline.getId());
         cms.publishResource(source);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // now create the shared property on the source
         cms.lockResource(source);
@@ -609,12 +613,14 @@ public class TestProperty extends OpenCmsTestCase {
         cms.writePropertyObject(source, descProperty);
         cms.unlockProject(offline.getId());
         cms.publishResource(source);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // now move the resource to a new name and publish again, ensure the property is still there
         cms.lockResource(source);
         cms.moveResource(source, dest);
         cms.unlockProject(offline.getId());
         cms.publishResource(dest, true, new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getPublishManager().waitWhileRunning();
 
         CmsProperty resultProperty = cms.readPropertyObject(dest, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         assertEquals("A shared value", descProperty.getResourceValue());

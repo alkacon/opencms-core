@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2006/10/31 08:52:09 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -211,6 +211,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         cms.unlockResource(sourceName);
         cms.publishResource(sourceName);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
@@ -254,6 +255,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         cms.unlockResource(sourceName);
         cms.publishResource(sourceName);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
@@ -299,6 +301,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         cms.unlockResource(copyName);
         cms.publishResource(copyName);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
@@ -344,6 +347,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         cms.unlockResource(createdName);
         cms.publishResource(createdName);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
@@ -390,6 +394,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         cms.unlockResource(siblingName);
         cms.publishResource(siblingName);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
@@ -691,6 +696,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         cms.unlockResource(movedName);
         cms.publishResource(movedName);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
@@ -738,6 +744,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         cms.unlockResource(replacedName);
         cms.publishResource(replacedName);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
@@ -785,6 +792,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         cms.unlockResource(replacedName);
         cms.publishResource(replacedName);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
@@ -860,6 +868,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         cms.unlockResource(sourceName);
         cms.publishResource(sourceName);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
@@ -907,6 +916,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         cms.unlockResource(sourceName);
         cms.publishResource(sourceName);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
@@ -956,6 +966,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         cms.unlockResource(sourceName);
         cms.publishResource(sourceName);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 

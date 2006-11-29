@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
- * Date   : $Date: 2006/11/08 09:28:48 $
- * Version: $Revision: 1.18.8.1 $
+ * Date   : $Date: 2006/11/29 15:04:10 $
+ * Version: $Revision: 1.18.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -49,7 +50,7 @@ import java.io.Serializable;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18.8.1 $
+ * @version $Revision: 1.18.8.2 $
  * 
  * @since 6.0.0 
  */

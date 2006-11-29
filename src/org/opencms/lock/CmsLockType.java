@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockType.java,v $
- * Date   : $Date: 2006/08/31 08:55:32 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,21 @@
 
 package org.opencms.lock;
 
+import org.opencms.util.A_CmsModeEnumeration;
+
 /**
  * Indicates the different possible lock types.<p>
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.0.0
  */
-public final class CmsLockType {
+public final class CmsLockType extends A_CmsModeEnumeration {
+
+    /** serializable version id. */
+    private static final long serialVersionUID = 5333767594124738789L;
 
     /** 
      * A lock that allows the user to edit the resource's structure record, 
@@ -50,10 +55,11 @@ public final class CmsLockType {
      */
     public static final CmsLockType EXCLUSIVE = new CmsLockType(4);
 
-    /**
-     * A lock that is inherited from a locked parent folder.
-     */
+    /** A lock that is inherited from a locked parent folder. */
     public static final CmsLockType INHERITED = new CmsLockType(3);
+
+    /** A lock that indicates that the resource is waiting to be published in the publish queue. */
+    public static final CmsLockType PUBLISH = new CmsLockType(7);
 
     /**
      * A lock that allows the user to edit the resource’s structure record only, 
@@ -82,26 +88,11 @@ public final class CmsLockType {
      */
     public static final CmsLockType TEMPORARY = new CmsLockType(6);
 
-    /**
-     * Type of the NULL lock obtained by {@link CmsLock#getNullLock()}.<p>
-     */
+    /** Type of the NULL lock obtained by {@link CmsLock#getNullLock()}. */
     public static final CmsLockType UNLOCKED = new CmsLockType(0);
 
-    /**
-     * A lock that indicates that the resource is assigned to a task in a workflow.<p>
-     */
+    /** A lock that indicates that the resource is assigned to a task in a workflow. */
     public static final CmsLockType WORKFLOW = new CmsLockType(5);
-
-    /** Indicates the lock type. */
-    private int m_type;
-
-    /**
-     * Hides the public constructor.<p> 
-     */
-    private CmsLockType() {
-
-        // hide public constructor
-    }
 
     /**
      * Creates a new lock type with the given name.<p>
@@ -110,7 +101,7 @@ public final class CmsLockType {
      */
     private CmsLockType(int type) {
 
-        m_type = type;
+        super(type);
     }
 
     /**
@@ -122,7 +113,7 @@ public final class CmsLockType {
      * 
      * @return the lock type for the given type value
      */
-    public static CmsLockType getType(int type) {
+    public static CmsLockType valueOf(int type) {
 
         switch (type) {
             case 1:
@@ -137,27 +128,134 @@ public final class CmsLockType {
                 return WORKFLOW;
             case 6:
                 return TEMPORARY;
+            case 7:
+                return PUBLISH;
             default:
                 return UNLOCKED;
         }
     }
 
     /**
-     * Use the <code>==</code> if possibe since all instances are constants anyway.<p> 
+     * Returns <code>true</code> if this is an exclusive (or temporary exclusive) lock.<p>
      * 
-     * @see java.lang.Object#equals(java.lang.Object)
+     * @return <code>true</code> if this is an exclusive (or temporary exclusive) lock
      */
-    public boolean equals(Object obj) {
+    public boolean isExclusive() {
 
-        return obj == this;
+        return (this == CmsLockType.EXCLUSIVE) || (this == CmsLockType.TEMPORARY);
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * Returns <code>true</code> if this is an inherited lock, which may either be directly or shared inherited.<p>
+     * 
+     * @return <code>true</code> if this is an inherited lock, which may either be directly or shared inherited
      */
-    public int hashCode() {
+    public boolean isInherited() {
 
-        return m_type;
+        return (isDirectlyInherited() || isSharedInherited());
+    }
+
+    /**
+     * Returns <code>true</code> if this is an directly inherited lock.<p>
+     * 
+     * @return <code>true</code> if this is an directly inherited lock
+     */
+    public boolean isDirectlyInherited() {
+
+        return (this == CmsLockType.INHERITED);
+    }
+
+    /**
+     * Returns <code>true</code> if this is a persistent lock that should be saved when the systems shuts down.<p>
+     * 
+     * @return <code>true</code> if this is a persistent lock that should be saved when the systems shuts down
+     */
+    public boolean isPersistent() {
+
+        return (this == CmsLockType.EXCLUSIVE) || (this == CmsLockType.WORKFLOW);
+    }
+
+    /**
+     * Returns <code>true</code> if this is a publish lock.<p>
+     * 
+     * @return <code>true</code> if this is a publish lock
+     */
+    public boolean isPublish() {
+
+        return (this == CmsLockType.PUBLISH);
+    }
+
+    /**
+     * Returns <code>true</code> if this is a shared lock.<p>
+     * 
+     * @return <code>true</code> if this is a shared lock
+     */
+    public boolean isShared() {
+
+        return (isSharedExclusive() || isSharedInherited());
+    }
+
+    /**
+     * Returns <code>true</code> if this is an shared exclusive lock.<p>
+     * 
+     * @return <code>true</code> if this is an shared exclusive lock
+     */
+    public boolean isSharedExclusive() {
+
+        return (this == CmsLockType.SHARED_EXCLUSIVE);
+    }
+
+    /**
+     * Returns <code>true</code> if this is an shared inherited lock.<p>
+     * 
+     * @return <code>true</code> if this is an shared inherited lock
+     */
+    public boolean isSharedInherited() {
+
+        return (this == CmsLockType.SHARED_INHERITED);
+    }
+
+    /**
+     * Returns <code>true</code> if this is a system (2nd level) lock.<p>
+     * 
+     * @return <code>true</code> if this is a system (2nd level) lock
+     */
+    public boolean isSystem() {
+
+        return (isWorkflow() || isPublish());
+    }
+
+    /**
+     * Returns <code>true</code> if this is a temporary lock.<p>
+     * 
+     * @return <code>true</code> if this is a temporary lock
+     */
+    public boolean isTemporary() {
+
+        return (this == CmsLockType.TEMPORARY);
+    }
+    
+    /**
+     * Returns <code>true</code> if this lock is in fact unlocked.<p>
+     * 
+     * Only if this is <code>true</code>, the result lock is equal to the <code>NULL</code> lock,
+     * which can be obtained by {@link CmsLock#getNullLock()}.<p>
+     * 
+     * @return <code>true</code> if this lock is in fact unlocked
+     */
+    public boolean isUnlocked() {
+
+        return (this == CmsLockType.UNLOCKED);
+    }
+
+    /**
+     * Returns <code>true</code> if this is a workflow lock.<p>
+     * 
+     * @return <code>true</code> if this is a workflow lock
+     */
+    public boolean isWorkflow() {
+
+        return (this == CmsLockType.WORKFLOW);
     }
 
     /**
@@ -165,7 +263,7 @@ public final class CmsLockType {
      */
     public String toString() {
 
-        switch (m_type) {
+        switch (getMode()) {
             case 1:
                 return "shared inherited";
             case 2:
@@ -178,6 +276,8 @@ public final class CmsLockType {
                 return "workflow";
             case 6:
                 return "temporary exclusive";
+            case 7:
+                return "publish";
             default:
                 return "unlocked";
         }

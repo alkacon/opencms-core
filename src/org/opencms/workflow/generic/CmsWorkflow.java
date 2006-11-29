@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsWorkflow.java,v $
- * Date   : $Date: 2006/08/31 08:59:05 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/11/29 15:04:15 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH
  * All Rights Reserved.
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.0.0
  */
@@ -259,10 +259,10 @@ public class CmsWorkflow extends CmsMultiDialog {
         I_CmsWorkflowManager wfManager = OpenCms.getWorkflowManager();
         List options = new ArrayList();
         List values = new ArrayList();
-        
+
         try {
             CmsResource resource = cms.readResource(filename);
-            CmsLock lock = cms.getLockForWorkflow(resource);
+            CmsLock lock = cms.getSystemLock(resource);
             if (lock.isWorkflow()) {
                 CmsProject wfProject = cms.readProject(lock.getProjectId());
                 for (Iterator i = wfManager.getTransitions(wfProject).iterator(); i.hasNext();) {
@@ -275,7 +275,7 @@ public class CmsWorkflow extends CmsMultiDialog {
             // should usually never happen
             LOG.error(e.getLocalizedMessage());
         }
-        
+
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(attributes)) {
             attributes = " " + attributes;
         } else {
@@ -296,19 +296,19 @@ public class CmsWorkflow extends CmsMultiDialog {
      * @param filename name of the resource
      * @return if the resource is currently locked in a workflow
      */
-    public static boolean isInWorkflow (CmsObject cms, String filename) {
-        
+    public static boolean isInWorkflow(CmsObject cms, String filename) {
+
         CmsLock lock = null;
         try {
             CmsResource resource = cms.readResource(filename);
-            lock = cms.getLockForWorkflow(resource);
+            lock = cms.getSystemLock(resource);
         } catch (CmsException exc) {
             // noop
         }
-        
+
         return lock != null && lock.isWorkflow();
     }
-    
+
     /**
      * Determines if the resource should be locked, unlocked or if the lock should be stolen.<p>
      * 
@@ -372,12 +372,12 @@ public class CmsWorkflow extends CmsMultiDialog {
      * @throws CmsException if the current file is not locked in a workflow
      */
     public void checkInWorkflow() throws CmsException {
-        
+
         if (!isInWorkflow(getCms(), getParamResource())) {
-            throw new CmsException (Messages.get().container(Messages.ERR_NOT_IN_WORKFLOW_PROJECT_1, getParamResource()));
+            throw new CmsException(Messages.get().container(Messages.ERR_NOT_IN_WORKFLOW_PROJECT_1, getParamResource()));
         }
     }
-    
+
     /**
      * Checks if the current file is not locked in a workflow.<p>
      * If it is locked, an exception is thrown.
@@ -385,12 +385,14 @@ public class CmsWorkflow extends CmsMultiDialog {
      * @throws CmsException if the current file is already locked in a workflow
      */
     public void checkNotInWorkflow() throws CmsException {
-        
+
         if (isInWorkflow(getCms(), getParamResource())) {
-            throw new CmsException (Messages.get().container(Messages.ERR_ALREADY_IN_WORKFLOW_PROJECT_1, getParamResource()));
+            throw new CmsException(Messages.get().container(
+                Messages.ERR_ALREADY_IN_WORKFLOW_PROJECT_1,
+                getParamResource()));
         }
-    }    
-            
+    }
+
     /**
      * Returns the dialog uri depending on the name of .<p>
      * 

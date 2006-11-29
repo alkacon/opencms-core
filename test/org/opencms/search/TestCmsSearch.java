@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2006/11/28 16:20:44 $
- * Version: $Revision: 1.16.4.2 $
+ * Date   : $Date: 2006/11/29 15:04:15 $
+ * Version: $Revision: 1.16.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.16.4.2 $
+ * @version $Revision: 1.16.4.3 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -426,6 +426,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         cms.copyResource("/types/", folderName);
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
         
         CmsSearch cmsSearchBean = new CmsSearch();
         cmsSearchBean.init(cms);

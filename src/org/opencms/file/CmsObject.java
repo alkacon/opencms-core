@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/11/08 09:28:48 $
- * Version: $Revision: 1.146.4.14 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.146.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.file;
 
-import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
-import org.opencms.file.CmsResource.CmsResourceState;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
+import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
@@ -59,7 +59,6 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -90,7 +89,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.14 $
+ * @version $Revision: 1.146.4.15 $
  * 
  * @since 6.0.0 
  */
@@ -240,25 +239,6 @@ public final class CmsObject {
     }
 
     /**
-     * Changes the project id of the resource to the current project, indicating that 
-     * the resource was last modified in this project.<p>
-     * 
-     * This information is used while publishing. Only resources inside the 
-     * project folders that are new/modified/changed <i>and</i> that "belong" 
-     * to the project (i.e. have the id of the project set) are published
-     * with the project.<p>
-     * 
-     * @param resourcename the name of the resource to change the project id for (full path)
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void changeLastModifiedProjectId(String resourcename) throws CmsException {
-
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).changeLastModifiedProjectId(this, m_securityManager, resource);
-    }
-
-    /**
      * Changes the lock of a resource to the current user,
      * that is "steals" the lock from another user.<p>
      * 
@@ -329,19 +309,6 @@ public final class CmsObject {
     public void changeUserType(String username, int userType) throws CmsException {
 
         m_securityManager.changeUserType(m_context, username, userType);
-    }
-
-    /**
-     * Checks if the given base publish list can be published by the current user.<p>
-     * 
-     * @param publishList the base publish list to check
-     * 
-     * @throws CmsException in case the publish permissions are not granted
-     */
-    public void checkPublishPermissions(CmsPublishList publishList) throws CmsException {
-
-        // now perform the permission test
-        m_securityManager.checkPublishPermissions(m_context, publishList);
     }
 
     /**
@@ -1129,7 +1096,7 @@ public final class CmsObject {
      */
     public List getGroupsOfUser(String username) throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(m_context, username);
+        return getGroupsOfUser(username, m_context.getRemoteAddress());
     }
 
     /**
@@ -1148,17 +1115,19 @@ public final class CmsObject {
     }
 
     /**
-     * Returns the lock state for a specified resource.<p>
+     * Returns the edition lock state for a specified resource.<p>
      * 
-     * @param resource the resource to return the lock state for
+     * This can be of all types for them {@link CmsLockType#isSystem()} is <code>false</code>.<p> 
      * 
-     * @return the lock state for the specified resource
+     * @param resource the resource to return the edition lock state for
+     * 
+     * @return the edition lock state for the specified resource
      * 
      * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsResource resource) throws CmsException {
 
-        return m_securityManager.getLock(m_context, resource);
+        return m_securityManager.getLock(m_context, resource).getEditionLock();
     }
 
     /**
@@ -1190,20 +1159,6 @@ public final class CmsObject {
 
         CmsResource resource = readResource(foldername, CmsResourceFilter.ALL);
         return m_securityManager.getLockedResources(m_context, resource, filter);
-    }
-
-    /**
-     * Returns the workflow lock state for a specified resource.<p>
-     * 
-     * @param resource the resource to return the workflow lock state for
-     * 
-     * @return the workflow lock state for the specified resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsLock getLockForWorkflow(CmsResource resource) throws CmsException {
-
-        return m_securityManager.getLockForWorkflow(m_context, resource);
     }
 
     /**
@@ -1332,7 +1287,7 @@ public final class CmsObject {
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published for a direct publish of a List of resources.<p>
      * 
-     * @param directPublishResources the resources which will be directly published
+     * @param directPublishResources the {@link CmsResource} objects which will be directly published
      * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
      *                      published resources should also get published.
      * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
@@ -1530,6 +1485,23 @@ public final class CmsObject {
     }
 
     /**
+     * Returns the system lock state for a specified resource.<p>
+     * 
+     * This can only be of type {@link CmsLockType#UNLOCKED}, or
+     * all types for them {@link CmsLockType#isSystem()} is <code>true</code>.<p>  
+     * 
+     * @param resource the resource to return the system lock state for
+     * 
+     * @return the system lock state for the specified resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsLock getSystemLock(CmsResource resource) throws CmsException {
+
+        return m_securityManager.getLock(m_context, resource).getSystemLock();
+    }
+
+    /**
      * Returns all users.<p>
      *
      * @return a list of all <code>{@link CmsUser}</code> objects
@@ -1617,34 +1589,6 @@ public final class CmsObject {
             requiredPermissions,
             checkLock,
             filter);
-    }
-
-    /**
-     * Checks if the given resource or the current project can be published by the current user 
-     * using his current OpenCms context.<p>
-     * 
-     * If the resource parameter is <code>null</code>, then the current project is checked,
-     * otherwise the resource is checked for direct publish permissions.<p>
-     * 
-     * @param resourcename the direct publish resource name (optional, if null only the current project is checked)
-     * 
-     * @return <code>true</code>, if the current user can direct publish the given resource in his current context
-     */
-    public boolean hasPublishPermissions(String resourcename) {
-
-        CmsResource resource = null;
-        if (resourcename != null) {
-            // resource name is optional
-            try {
-                resource = readResource(resourcename, CmsResourceFilter.ALL);
-                checkPublishPermissions(new CmsPublishList(Collections.singletonList(resource), false));
-            } catch (CmsException e) {
-                // if any exception (e.g. security) occurs the result is false
-                return false;
-            }
-        }
-        // no exception means permissions are granted
-        return true;
     }
 
     /**
@@ -1805,26 +1749,7 @@ public final class CmsObject {
      */
     public void lockResource(String resourcename) throws CmsException {
 
-        lockResource(resourcename, getRequestContext().currentProject(), CmsLockType.EXCLUSIVE);
-    }
-
-    /**
-     * Locks a resource in a workflow.<p>
-     *
-     * @param resourcename the name of the resource to lock (full path)
-     * @param wfProject the workflow project to lock the resource in
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#lockResource(String)
-     */
-    public void lockResourceInWorkflow(String resourcename, CmsProject wfProject) throws CmsException {
-
-        // TODO: Workflow should use special type instead of project
-        // This should also be a method of the workflow manager
-        int todo_v7 = 0;
-
-        lockResource(resourcename, wfProject, CmsLockType.WORKFLOW);
+        lockResource(resourcename, CmsLockType.EXCLUSIVE);
     }
 
     /**
@@ -1841,7 +1766,7 @@ public final class CmsObject {
      */
     public void lockResourceTemporary(String resourcename) throws CmsException {
 
-        lockResource(resourcename, getRequestContext().currentProject(), CmsLockType.TEMPORARY);
+        lockResource(resourcename, CmsLockType.TEMPORARY);
     }
 
     /**
@@ -1985,67 +1910,6 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.moveToLostAndFound(m_context, resource, false);
-    }
-
-    /**
-     * Returns the resource to render, if the resource is a folder it tries 
-     * to get a file to render the folder through the default folder files, 
-     * if still no file can be found to render the folder <code>null</code> is retuned. 
-     * 
-     * @param resource the resource to narrow
-     * 
-     * @return the resource to render
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource narrowResource(CmsResource resource) throws CmsException {
-
-        // resource exists, lets check if we have a file or a folder
-        if (resource.isFolder()) {
-            // the resource is a folder, check if PROPERTY_DEFAULT_FILE is set on folder
-            try {
-                String defaultFileName = readPropertyObject(
-                    CmsResource.getFolderPath(getSitePath(resource)),
-                    CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
-                    false).getValue();
-                if (defaultFileName != null) {
-                    // property was set, so look up this file first
-                    String tmpResourceName = CmsResource.getFolderPath(getSitePath(resource)) + defaultFileName;
-                    resource = readResource(tmpResourceName);
-                    // no exception? so we have found the default file                         
-                    getRequestContext().setUri(tmpResourceName);
-                }
-            } catch (CmsSecurityException se) {
-                // permissions deny access to the resource
-                throw se;
-            } catch (CmsException e) {
-                // ignore all other exceptions and continue the lookup process
-            }
-            if (resource.isFolder()) {
-                // resource is (still) a folder, check default files specified in configuration
-                Iterator it = OpenCms.getDefaultFiles().iterator();
-                while (it.hasNext()) {
-                    String tmpResourceName = CmsResource.getFolderPath(getSitePath(resource)) + it.next().toString();
-                    try {
-                        resource = readResource(tmpResourceName);
-                        // no exception? So we have found the default file
-                        getRequestContext().setUri(tmpResourceName);
-                        // stop looking for default files   
-                        break;
-                    } catch (CmsSecurityException se) {
-                        // permissions deny access to the resource
-                        throw se;
-                    } catch (CmsException e) {
-                        // ignore all other exceptions and continue the lookup process
-                    }
-                }
-            }
-        }
-        if (resource.isFolder()) {
-            // we only want files as a result for further processing
-            resource = null;
-        }
-        return resource;
     }
 
     /**
@@ -2283,6 +2147,40 @@ public final class CmsObject {
     public List readBackupPropertyObjects(CmsBackupResource resource) throws CmsException {
 
         return m_securityManager.readBackupPropertyObjects(m_context, resource);
+    }
+
+    /**
+     * Returns the default file for the given folder.<p>
+     * 
+     * If the given resource name or id identifies a file, then this file is returned.<p>
+     * 
+     * Otherwise, in case of a folder:<br> 
+     * <ol>
+     *   <li>the {@link CmsPropertyDefinition#PROPERTY_DEFAULT_FILE} is checked, and
+     *   <li>if still no file could be found, the configured default files in the 
+     *       <code>opencms-vfs.xml</code> configuration are iterated until a match is 
+     *       found, and
+     *   <li>if still no file could be found, <code>null</code> is retuned
+     * </ol>
+     * 
+     * @param resourceNameOrID the name or id of the folder to read the default file for
+     * 
+     * @return the default file for the given folder
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has no permissions to read the resulting file
+     * 
+     * @see CmsSecurityManager#readDefaultFile(CmsRequestContext, CmsResource)
+     */
+    public CmsResource readDefaultFile(String resourceNameOrID) throws CmsException, CmsSecurityException {
+
+        CmsResource resource;
+        try {
+            resource = readResource(new CmsUUID(resourceNameOrID));
+        } catch (Exception e) {
+            resource = readResource(resourceNameOrID);
+        }
+        return m_securityManager.readDefaultFile(m_context, resource);
     }
 
     /**
@@ -3454,7 +3352,7 @@ public final class CmsObject {
      */
     public void unlockProject(int id) throws CmsException {
 
-        m_securityManager.unlockProject(m_context, id);
+        m_securityManager.unlockProject(m_context, id, false);
     }
 
     /**
@@ -3509,13 +3407,15 @@ public final class CmsObject {
      *              or <code>null</code> for all in current project
      * @param report a report to write the messages to
      * 
-     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names
+     * @return a map with lists of invalid links 
+     *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
+     *          keyed by resource names
      * 
      * @throws Exception if something goes wrong
      */
     public Map validateRelations(List resources, I_CmsReport report) throws Exception {
 
-        return m_securityManager.validateRelations(this, resources, report);
+        return m_securityManager.validateRelations(m_context, resources, report);
     }
 
     /**
@@ -3823,18 +3723,16 @@ public final class CmsObject {
      * <ul>
      * <li><code>{@link org.opencms.lock.CmsLockType#EXCLUSIVE}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLockType#WORKFLOW}</code></li>
      * </ul><p>
      * 
      * @param resourcename the name of the resource to lock (full path)
-     * @param project the project to lock the resource in
      * @param type type of the lock
      * 
      * @throws CmsException if something goes wrong
      */
-    private void lockResource(String resourcename, CmsProject project, CmsLockType type) throws CmsException {
+    private void lockResource(String resourcename, CmsLockType type) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).lockResource(this, m_securityManager, resource, project, type);
+        getResourceType(resource.getTypeId()).lockResource(this, m_securityManager, resource, type);
     }
 }

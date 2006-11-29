@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2006/11/27 16:03:04 $
- * Version: $Revision: 1.16.4.3 $
+ * Date   : $Date: 2006/11/29 15:04:15 $
+ * Version: $Revision: 1.16.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -148,6 +148,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             storeResources(cms, filename1);
 
@@ -176,6 +177,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             assertFilter(cms, cms.readResource(filename1), OpenCmsTestResourceFilter.FILTER_REPLACERESOURCE);
 
@@ -191,6 +193,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             assertFilter(cms, cms.readResource(filename1), OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
         } finally {
@@ -248,6 +251,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the files
             cms.unlockProject(cms.getRequestContext().currentProject().getId());
             cms.publishProject();
+            OpenCms.getPublishManager().waitWhileRunning();
 
             // export the files
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
@@ -272,6 +276,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the deleted files
             cms.unlockProject(cms.getRequestContext().currentProject().getId());
             cms.publishProject();
+            OpenCms.getPublishManager().waitWhileRunning();
         } finally {
             cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
@@ -362,6 +367,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         // publish the files
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // export the files
         CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
@@ -386,6 +392,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         // publish the deleted files
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setSiteRoot("/");
         try {
@@ -499,6 +506,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the dummy plain text file
             cms.unlockResource(filename);
             cms.publishResource(filename);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             storeResources(cms, filename);
 
@@ -522,6 +530,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the deleted dummy plain text file
             cms.unlockResource(filename);
             cms.publishResource(filename);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             // re-import the exported dummy plain text file
             OpenCms.getImportExportManager().importData(
@@ -533,6 +542,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename);
             cms.publishResource(filename);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             assertFilter(cms, cms.readResource(filename), OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
         } finally {
@@ -572,6 +582,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             storeResources(cms, filename1);
 
@@ -596,6 +607,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename2);
             cms.publishResource(filename2);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             assertFalse(cms.existsResource(filename1));
             assertTrue(cms.existsResource(filename2));
@@ -618,6 +630,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             assertFalse(cms.existsResource(filename2));
             assertFilter(cms, cms.readResource(filename1), OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
@@ -658,6 +671,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             // save the file state for later comparison
             storeResources(cms, filename1);
@@ -683,6 +697,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the deleted file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             assertFalse(cms.existsResource(filename1));
 
@@ -692,6 +707,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the new file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             cms.readResource(filename1); // check resource by name
             try {
@@ -711,6 +727,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the imported file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             // read the imported file
             CmsResource resAfter = cms.readResource(filename1);
@@ -755,6 +772,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the files
             cms.unlockProject(cms.getRequestContext().currentProject().getId());
             cms.publishProject();
+            OpenCms.getPublishManager().waitWhileRunning();
 
             storeResources(cms, filename1);
 
@@ -778,6 +796,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             assertFalse(cms.existsResource(filename1));
 
@@ -787,6 +806,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             cms.readResource(filename1); // check resource by name
             try {
@@ -806,6 +826,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             // read file
             CmsResource resAfter = cms.readResource(filename1);
@@ -972,6 +993,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         cms.unlockResource("/sites/default");
         cms.unlockResource("/system");
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // reset the translation rules
         OpenCms.getResourceManager().setTranslators(
@@ -1158,6 +1180,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the files
             cms.unlockProject(cms.getRequestContext().currentProject().getId());
             cms.publishProject();
+            OpenCms.getPublishManager().waitWhileRunning();
 
             storeResources(cms, filename1);
 
@@ -1181,6 +1204,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             assertFalse(cms.existsResource(filename1));
 
@@ -1207,6 +1231,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // publish the file
             cms.unlockResource(filename1);
             cms.publishResource(filename1);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             assertFilter(cms, cms.readResource(filename1), OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT_SIBLING);
         } finally {

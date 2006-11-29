@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsPublishProjectReport.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.9.4.2 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.9.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,11 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.report.CmsHtmlReport;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.Messages;
-import org.opencms.workplace.threads.CmsPublishThread;
 import org.opencms.workplace.threads.CmsRelationsValidatorThread;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.9.4.2 $ 
+ * @version $Revision: 1.9.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,17 +193,14 @@ public class CmsPublishProjectReport extends CmsReport {
 
         // create a publish thread from the current publish list
         CmsPublishList publishList = getSettings().getPublishList();
-        CmsPublishThread thread = new CmsPublishThread(getCms(), publishList, getSettings());
-
-        // set the new thread id and flag that no thread is following
-        setParamThread(thread.getUUID().toString());
+        try {
+            getCms().publishProject(new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot()), publishList);
+        } catch (CmsException e) {
+            throw new CmsRuntimeException(e.getMessageContainer());
+        }
+        setParamAction(REPORT_END);
+        setAction(ACTION_REPORT_END);
         setParamThreadHasNext(CmsStringUtil.FALSE);
-
-        setParamAction(REPORT_UPDATE);
-        setAction(ACTION_REPORT_UPDATE);
-
-        // start the publish thread
-        thread.start();
     }
 
     /**

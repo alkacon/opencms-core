@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceProjStateAction.java,v $
- * Date   : $Date: 2006/08/19 13:40:40 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/11/29 15:04:12 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,14 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
  * Displays an icon action for the project state.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,16 +80,18 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
     public CmsMessageContainer getName() {
 
         if (super.getName() == null) {
-            if (getResourceUtil().getProjectState() == null) {
+            if (getResourceUtil().getProjectState() == CmsResourceUtil.STATE_UNLOCKED) {
                 return EMPTY_MESSAGE;
-            } else if (getResourceUtil().getProjectState().booleanValue()) {
+            } else if (getResourceUtil().getProjectState() == CmsResourceUtil.STATE_LOCKED_IN_CURRENT_PROJECT) {
                 return Messages.get().container(
                     Messages.GUI_EXPLORER_LIST_ACTION_INPROJECT_NAME_1,
                     getResourceUtil().getReferenceProject().getName());
-            } else {
+            } else if (getResourceUtil().getProjectState() == CmsResourceUtil.STATE_LOCKED_IN_OTHER_PROJECT) {
                 return Messages.get().container(
                     Messages.GUI_EXPLORER_LIST_ACTION_INPROJECT_NAME_1,
                     getResourceUtil().getLockedInProjectName());
+            } else {
+                return new CmsMessageContainer(null, getResourceUtil().getSystemLockInfo(false));
             }
         }
         return super.getName();

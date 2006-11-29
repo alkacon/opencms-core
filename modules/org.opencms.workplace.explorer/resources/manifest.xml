@@ -66,6 +66,8 @@
 			<resource uri="/system/workplace/commons/renameimages.jsp"/>
 			<resource uri="/system/workplace/commons/replace.jsp"/>
 			<resource uri="/system/workplace/commons/report-brokenrelations.jsp"/>
+			<resource uri="/system/workplace/commons/report-potentialbrokenrelations.jsp"/>
+			<resource uri="/system/workplace/commons/report-publishresources.jsp"/>
 			<resource uri="/system/workplace/commons/report-locks.jsp"/>
 			<resource uri="/system/workplace/commons/secure.jsp"/>
 			<resource uri="/system/workplace/commons/synchronize.jsp"/>
@@ -2136,11 +2138,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/commons/publishresource.jsp</source>
+			<source>system/workplace/commons/publishproject.jsp</source>
 			<destination>system/workplace/commons/publishresource.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>c89d497c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>69b7b0c3-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<uuidresource>69ae13cf-f052-11d8-ba65-db38cc8f19d7</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2246,6 +2248,52 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Lock Dialog - Locked Resources Dialog]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/report-potentialbrokenrelations.jsp</source>
+			<destination>system/workplace/commons/report-potentialbrokenrelations.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f7557dda-7885-11db-8fc4-9362e1ae9c5d</uuidstructure>
+			<uuidresource>f7557ddb-7885-11db-8fc4-9362e1ae9c5d</uuidresource>
+			<datelastmodified>Mon, 20 Nov 2006 16:22:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Nov 2006 10:57:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Publish Dialog - Broken Relations Report]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/report-publishresources.jsp</source>
+			<destination>system/workplace/commons/report-publishresources.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>cf56ee5e-7ba6-11db-b363-9362e1ae9c5d</uuidstructure>
+			<uuidresource>cf56ee5f-7ba6-11db-b363-9362e1ae9c5d</uuidresource>
+			<datelastmodified>Fri, 24 Nov 2006 10:30:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Nov 2006 10:30:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Publish Dialog - Broken Relations Report]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

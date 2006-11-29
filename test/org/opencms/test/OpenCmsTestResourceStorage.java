@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2006/11/08 09:28:48 $
- * Version: $Revision: 1.19.8.2 $
+ * Date   : $Date: 2006/11/29 15:04:09 $
+ * Version: $Revision: 1.19.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.test;
 
-import org.opencms.file.CmsResource.CmsResourceState;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -43,7 +43,7 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.19.8.2 $
+ * @version $Revision: 1.19.8.3 $
  */
 public class OpenCmsTestResourceStorage {
 

@@ -29,10 +29,10 @@ case CmsDialog.ACTION_WAIT:
 	break;
 
 case CmsDialog.ACTION_LOCKS_CONFIRMED:
-	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
+
 //////////////////// ACTION: show delete dialog (default)
 
-	wp.setParamAction("delete");
+	wp.setParamAction(CmsDelete.DIALOG_TYPE);
 
 %><%= wp.htmlStart("help.explorer.contextmenu.delete") %>
 <script type='text/javascript' src='<%=CmsWorkplace.getSkinUri()%>commons/ajax.js'></script>
@@ -78,7 +78,6 @@ function showBrokenLinks(show){
 
 function reloadDialog(deleteSiblings) {
 
-   document.forms["printform"].<%=CmsDelete.PARAM_DELETE_SIBLINGS%>.value=deleteSiblings;   
    document.forms["main"].<%=CmsDelete.PARAM_DELETE_SIBLINGS%>.value=deleteSiblings;   
    makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-brokenrelations.jsp") %>?<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsDelete.PARAM_DELETE_SIBLINGS%>=' + deleteSiblings, 'doReportUpdate');
 }
@@ -147,10 +146,6 @@ if (wp.isMultiOperation()) {
 } %>
 
 <%= wp.dialogSpacer() %>
-
-<form name="printform" action="<%= wp.getJsp().link("/system/workplace/commons/print-brokenrelations.jsp") %>" method="post" class="nomargin" target="print-brokenrelations" >
-<%= wp.paramsAsHidden(Collections.singleton(CmsDialog.PARAM_ACTION)) %>
-</form>
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>

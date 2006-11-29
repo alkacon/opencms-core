@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2006/09/10 21:14:06 $
- * Version: $Revision: 1.21.4.4 $
+ * Date   : $Date: 2006/11/29 15:04:06 $
+ * Version: $Revision: 1.21.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.4.4 $
+ * @version $Revision: 1.21.4.5 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -134,6 +134,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         // publish the project (this did cause an exception because of primary key violation!)
         CmsUUID publishId = cms.publishResource("/folder1/", true, new CmsShellReport(
             cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // read the published resources from the history
         List publishedResources = cms.readPublishedResources(publishId);
@@ -324,6 +325,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         // unlock the project
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // ensure the file was published - state must be "unchanged" 
         assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
@@ -367,6 +369,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         // now publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // check if the setup was created as planned
         cmsFile = cms.readFile(resourceA);
@@ -422,6 +425,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         cms.unlockResource("/folder1/");
         cms.publishResource("/folder1/");
+        OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, "/folder1/", CmsResource.STATE_UNCHANGED);
         assertState(cms, "/folder1/index.html", CmsResource.STATE_UNCHANGED);
@@ -435,6 +439,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         cms.unlockResource("/folder_a/");
         cms.publishResource("/folder_a/");
+        OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, "/folder_a/", CmsResource.STATE_UNCHANGED);
         assertState(cms, "/folder_a/file_a.txt", CmsResource.STATE_UNCHANGED);
@@ -470,6 +475,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         // direct publish the new folder
         cms.unlockResource("/folder2/folder1/");
         cms.publishResource("/folder2/folder1/");
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // check the state of all resources
         Iterator itResources = cms.readResources("/folder2/folder1/", CmsResourceFilter.ALL, true).iterator();
@@ -507,6 +513,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         // publish
         cms.unlockResource("/test");
         cms.publishResource("/test");
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // lock sibling 
         cms.lockResource("/folder1/subfolder12/subsubfolder121/image1.gif");
@@ -526,6 +533,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         // publish
         cms.publishResource("/test");
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
@@ -554,6 +562,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, "shared");
         cms.lockResource(sibA);
@@ -564,6 +573,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         
         cms.unlockResource(sibA);
         cms.publishResource(sibA, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
         
         assertState(cms, sibA, CmsResource.STATE_UNCHANGED);
         assertState(cms, sibB, CmsResource.STATE_UNCHANGED);
@@ -595,6 +605,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         CmsFile file = cms.readFile(sib1);
         file.setContents("abc".getBytes());
@@ -606,6 +617,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         
         cms.unlockResource(sib1);
         cms.publishResource(sib1, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
         
         assertState(cms, sib1, CmsResource.STATE_UNCHANGED);
         assertState(cms, sib2, CmsResource.STATE_UNCHANGED);
@@ -638,6 +650,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
 
         CmsProperty propX = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "individual X", null);
         cms.lockResource(sibX);
@@ -655,11 +668,13 @@ public class TestPublishIssues extends OpenCmsTestCase {
         
         cms.unlockResource(sibX);
         cms.publishResource(sibX, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
         
         assertState(cms, sibX, CmsResource.STATE_UNCHANGED);
         assertState(cms, sibY, CmsResource.STATE_CHANGED);
 
         cms.publishResource(sibY, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, sibX, CmsResource.STATE_UNCHANGED);
         assertState(cms, sibY, CmsResource.STATE_UNCHANGED);

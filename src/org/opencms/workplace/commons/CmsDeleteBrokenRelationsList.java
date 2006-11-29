@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeleteBrokenRelationsList.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/11/29 15:04:08 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationDeleteValidator;
+import org.opencms.relations.CmsRelationValidatorInfoEntry;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -60,13 +61,13 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Session list for broadcasting messages.<p>
+ * List for resources with links that could get broken after deletion.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
- * @since 6.0.0 
+ * @since 6.5.4 
  */
 public class CmsDeleteBrokenRelationsList extends A_CmsListExplorerDialog {
 
@@ -96,7 +97,7 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListExplorerDialog {
      * 
      * @param jsp an initialized JSP action element
      * @param resources the list of resources to check
-     * @param includeSiblings is siblings should included
+     * @param includeSiblings if siblings should included
      */
     public CmsDeleteBrokenRelationsList(CmsJspActionElement jsp, List resources, boolean includeSiblings) {
 
@@ -168,7 +169,7 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListExplorerDialog {
             StringBuffer html = new StringBuffer(128);
             if (detailId.equals(LIST_DETAIL_RELATIONS)) {
                 // relations
-                CmsRelationDeleteValidator.InfoEntry infoEntry = m_validator.getInfoEntry(resourceName);
+                CmsRelationValidatorInfoEntry infoEntry = m_validator.getInfoEntry(resourceName);
                 Iterator itRelations = infoEntry.getRelations().iterator();
 
                 // show all links that will get broken

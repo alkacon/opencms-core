@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsMultiDialog.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.2.4.4 $
+ * Date   : $Date: 2006/11/29 15:04:10 $
+ * Version: $Revision: 1.2.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.2.4.4 $ 
+ * @version $Revision: 1.2.4.5 $ 
  * 
  * @since 6.2.0 
  */
@@ -308,6 +308,16 @@ public abstract class CmsMultiDialog extends CmsDialog {
     public void setParamResourcelist(String paramResourcelist) {
 
         m_paramResourcelist = paramResourcelist;
+        m_resourceList = null;
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsDialog#setParamResource(java.lang.String)
+     */
+    public void setParamResource(String value) {
+    
+        super.setParamResource(value);
+        m_resourceList = null;
     }
 
     /**
@@ -362,6 +372,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
      * Performs the dialog operation for the selected resources.<p>
      * 
      * @return true, if the operation was successful, otherwise false
+     * 
      * @throws CmsException if operation was not successful
      */
     protected abstract boolean performDialogOperation() throws CmsException;

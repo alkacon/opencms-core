@@ -32,6 +32,7 @@
 			<digest-type>MD5</digest-type>
 			<param name="compatibility.convert.digestencoding">false</param>
 		</passwordhandler>
+		<validationhandler class="org.opencms.security.CmsDefaultValidationHandler" />
 		<sites>
 			<workplace-server>http://localhost:8080</workplace-server>
 			<default-uri>/sites/default/</default-uri>
@@ -88,5 +89,9 @@
             <notification-project>Offline</notification-project>
         </content-notification>		
 		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
+		<publishhistory>
+			<history-size>100</history-size>
+			<history-repository>logs/publish</history-repository>
+		</publishhistory>
 	</system>
 </opencms>
