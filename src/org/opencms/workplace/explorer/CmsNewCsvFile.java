@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2006/03/31 15:25:51 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2006/11/30 10:13:19 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,18 +61,20 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 
 /**
- * The new resource upload dialog handles the upload of cvs files. They are converted in a first step to xml
- * and in a second step transformed via a xsl stylesheet.<p>
+ * The new resource upload dialog handles the upload of CSV (Comma Separated Values) files.<p>
+ * 
+ * CSV files are converted in a first step to xml
+ * and in a second step transformed using a xsl stylesheet.<p>
  * 
  * The following files use this class:
  * <ul>
- * <li>/commons/newcvsfile_upload.jsp
+ * <li>/commons/newcsvfile_upload.jsp
  * </ul>
  * <p>
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
