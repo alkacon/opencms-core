@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/11/29 17:04:52 $
- * Version: $Revision: 1.570.2.37 $
+ * Date   : $Date: 2006/11/30 09:20:34 $
+ * Version: $Revision: 1.570.2.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1582,7 +1582,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         currentResourceById.getRootPath(),
                         currentResourceById.getStructureId()));
                 }
-                // lock the resource by id
+                // lock the resource by id, will throw an exception if not lockable
                 lockResource(dbc, currentResourceById, CmsLockType.EXCLUSIVE);
 
                 // deleted resources were not moved to L&F
@@ -1636,7 +1636,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     }
                 }
                 if (!overwrite) {
-                    // lock the resource
+                    // lock the resource, will throw an exception if not lockable
                     lockResource(dbc, currentResourceByName, CmsLockType.EXCLUSIVE);
                     // trigger createResource instead of writeResource
                     currentResourceByName = null;
@@ -1772,6 +1772,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             if (overwrittenResource == null) {
+                CmsLock lock = getLock(dbc, newResource);
+                if ((lock.isWorkflow() && lock.getEditionLock().isExclusive()) || lock.isExclusive()) {
+                    unlockResource(dbc, newResource, true, false);
+                }
                 // resource does not exist.
                 newResource = m_vfsDriver.createResource(dbc, dbc.currentProject(), newResource, content);
 

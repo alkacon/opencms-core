@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2006/11/29 15:04:05 $
- * Version: $Revision: 1.20.4.3 $
+ * Date   : $Date: 2006/11/30 09:20:34 $
+ * Version: $Revision: 1.20.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.3 $
+ * @version $Revision: 1.20.4.4 $
  */
 public class TestLock extends OpenCmsTestCase {
 
@@ -453,9 +453,6 @@ public class TestLock extends OpenCmsTestCase {
         // now the destination should have a shared lock
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
         assertLock(cms, destination, CmsLockType.SHARED_EXCLUSIVE);
-
-        // TODO: this test fails due to a lock logic problem in the CmsDriverManager#createResource method...
-        int todo;
     }
 
     /**
