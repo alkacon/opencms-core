@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/11/23 16:59:38 $
- * Version: $Revision: 1.794 $
+ * Date   : $Date: 2006/11/30 10:10:31 $
+ * Version: $Revision: 1.795 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.2.3 -
+OpenCms 6.2.3 - November 30, 2006
 * Fixed error when searching in sites with uppercase letters in site path
 ! Added some configuration options to the HTML Widget for structured contents: show buttons for table or image dialog, 
   use a CSS in the editor area, show the style selector for individual styles (for FCKeditor widget)
@@ -78,6 +78,7 @@ OpenCms 6.2.3 -
 - Modified inline css for direct edit buttons
 ! Allow choice of stylesheet class for links in FCKeditor controlled by editor configuration "option.linkstyleinputs"
 ! Performance improvement for log file viewer admin tool
+! Extented Html Import: Added possibility to leave images and downloads at original location
 
 OpenCms 6.2.2 - July 21, 2006
 ! Added configurable validation handler for user and group name
