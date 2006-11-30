@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.100.4.7 $
+ * Date   : $Date: 2006/11/30 14:17:20 $
+ * Version: $Revision: 1.100.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100.4.7 $ 
+ * @version $Revision: 1.100.4.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -1072,7 +1072,17 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         if (!f.exists()) {
             // file does not exist in real FS
             mustUpdate = true;
-        } else if (f.lastModified() <= resource.getDateLastModified()) {            
+            // make sure the parent folder exists
+            File folder = f.getParentFile();
+            if (!folder.exists()) {
+                boolean success = folder.mkdirs();
+                if (!success) {
+                    LOG.error(org.opencms.db.Messages.get().getBundle().key(
+                        org.opencms.db.Messages.LOG_CREATE_FOLDER_FAILED_1,
+                        folder.getAbsolutePath()));
+                }
+            }
+        } else if (f.lastModified() <= resource.getDateLastModified()) {
             // file in real FS is older then file in VFS
             mustUpdate = true;
         } else if (controller.getCurrentRequest().isDoRecompile()) {
@@ -1119,9 +1129,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                             Boolean.valueOf(f.exists()),
                             Boolean.valueOf(f.isFile()),
                             Boolean.valueOf(f.canWrite())}));
-                }                
+                }
                 // write the parsed JSP content to the real FS
-                synchronized (this) {                                       
+                synchronized (this) {
                     // this must be done only one file at a time
                     FileOutputStream fs = new FileOutputStream(f);
                     fs.write(contents);
