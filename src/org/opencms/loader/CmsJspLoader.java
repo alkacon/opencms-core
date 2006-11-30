@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/03/27 14:52:37 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2006/11/30 14:13:53 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100 $ 
+ * @version $Revision: 1.101 $ 
  * 
  * @since 6.0.0 
  * 
@@ -1051,6 +1051,17 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         if (!f.exists()) {
             // file does not exist in real FS
             mustUpdate = true;
+            
+            // make sure the parent folder exists
+            File folder = f.getParentFile();
+            if (!folder.exists()) {
+                boolean success = folder.mkdirs();
+                if (!success) {
+                    LOG.error(org.opencms.db.Messages.get().getBundle().key(
+                    		org.opencms.db.Messages.LOG_CREATE_FOLDER_FAILED_1, 
+                    		folder.getAbsolutePath()));
+                }
+            }
         } else if (f.lastModified() <= resource.getDateLastModified()) {
             // file in real FS is older then file in VFS
             mustUpdate = true;
