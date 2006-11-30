@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/11/30 10:10:31 $
- * Version: $Revision: 1.795 $
+ * Date   : $Date: 2006/11/30 10:11:52 $
+ * Version: $Revision: 1.796 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  */
 
 History of changes for the OpenCms project.
