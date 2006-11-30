@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/11/30 09:20:34 $
- * Version: $Revision: 1.570.2.38 $
+ * Date   : $Date: 2006/11/30 09:32:46 $
+ * Version: $Revision: 1.570.2.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,6 +97,7 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -2924,15 +2925,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
             List publishFiles = publishList.getFileList();
             int size = publishFiles.size();
 
+            // Improved: first calculate closure of all siblings, then filter and add them
+            Set siblingsClosure = new HashSet(publishFiles);
             for (int i = 0; i < size; i++) {
-                CmsResource currentFile = (CmsResource)publishFiles.get(i);
+                CmsResource currentFile = (CmsResource)publishFiles.get(i);    
                 if (currentFile.getSiblingCount() > 1) {
-                    publishList.addFiles(filterSiblings(dbc, currentFile, publishList, readSiblings(
-                        dbc,
-                        currentFile,
-                        CmsResourceFilter.ALL_MODIFIED)));
+                    siblingsClosure.addAll(readSiblings(
+                      dbc,
+                      currentFile,
+                      CmsResourceFilter.ALL_MODIFIED));
                 }
             }
+            publishList.addFiles(filterSiblings(dbc, publishList, siblingsClosure));
         }
 
         publishList.initialize();
@@ -4562,7 +4566,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Iterator itResources = allResources.iterator();
         while (itResources.hasNext()) {
             CmsResource resource = (CmsResource)itResources.next();
-            CmsLock lock = getLock(dbc, resource);            
+            CmsLock lock = getLock(dbc, resource);
             if (!lock.isSystemLock() && lock.isLockableBy(dbc.currentUser())) {
                 if (lock.isNullLock()) {
                     lockResource(dbc, resource, CmsLockType.PUBLISH);
@@ -4579,23 +4583,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 changeLock(dbc, resource, CmsLockType.PUBLISH);
             }
             // now check the lock state
-            lock = getLock(dbc, resource);
-            if (!lock.isPublish()) {
-                if (report != null) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
-                        dbc.removeSiteRoot(resource.getRootPath())), I_CmsReport.FORMAT_WARNING);
-                } else {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
+                lock = getLock(dbc, resource);
+                if (!lock.isPublish()) {
+                    if (report != null) {
+                        report.println(Messages.get().container(
                             Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
-                            dbc.removeSiteRoot(resource.getRootPath())));
+                            dbc.removeSiteRoot(resource.getRootPath())), I_CmsReport.FORMAT_WARNING);
+                    } else {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().getBundle().key(
+                                Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
+                                dbc.removeSiteRoot(resource.getRootPath())));
+                        }
                     }
-                }
                 // remove files that could not be locked
-                publishList.remove(resource);
+                    publishList.remove(resource);
+                }
             }
-        }
 
         // enqueue the publish job
         m_publishEngine.enqueuePublishJob(cms, publishList, report);
@@ -7494,11 +7498,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /**
      * Returns a filtered list of sibling resources for publishing.<p>
      * 
-     * Contains all other siblings of the given resources, which are not locked
+     * Contains all siblings of the given resources, which are not locked
      * and which have a parent folder that is already published or will be published, too.<p>
      * 
-     * @param dbc the current database context
-     * @param currentResource the resource to lookup siblings 
+     * @param dbc the current database context 
      * @param publishList the unfinished publish list
      * @param resourceList the list of siblings to filter
      * 
@@ -7506,25 +7509,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private List filterSiblings(
         CmsDbContext dbc,
-        CmsResource currentResource,
         CmsPublishList publishList,
-        List resourceList) {
+        Collection resourceList) {
 
         List result = new ArrayList();
 
-        // local folder list for adding new publishing subfolders
-        // this solves the {@link org.opencms.file.TestPublishIssues#testPublishScenarioD} problem.
-        List newFolderList = new ArrayList(publishList == null ? resourceList : publishList.getFolderList());
+        // removed internal extendendable folder list, since iterated (sibling) resources are files in any case, never folders
 
-        for (int i = 0; i < resourceList.size(); i++) {
-            CmsResource res = (CmsResource)resourceList.get(i);
+        for (Iterator i = resourceList.iterator(); i.hasNext();) {
+            CmsResource res = (CmsResource)i.next();
             try {
-                if (res.getStructureId().equals(currentResource.getStructureId())) {
-                    // don't add if sibling is equal to current resource
-                    // note: it's also required to check for sibling duplicates in the 
-                    // publish list itself
-                    continue;
-                }
                 CmsLock lock = getLock(dbc, res);
                 if (!lock.isLockableBy(dbc.currentUser()) || lock.isWorkflow()) {
                     // checks if there is a shared lock and if the resource is deleted
@@ -7539,12 +7533,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         continue;
                     }
                 }
-                if (!"/".equals(res.getRootPath()) && !checkParentResource(dbc, newFolderList, res)) {
+                if (!"/".equals(res.getRootPath()) && !checkParentResource(dbc, publishList.getFolderList(), res)) {
                     // don't add resources that have no parent in the online project
                     continue;
-                }
-                if (res.isFolder()) {
-                    newFolderList.add(res);
                 }
                 result.add(res);
             } catch (Exception e) {
