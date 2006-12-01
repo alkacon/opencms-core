@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/11/20 14:27:04 $
- * Version: $Revision: 1.39.4.5 $
+ * Date   : $Date: 2006/12/01 14:22:57 $
+ * Version: $Revision: 1.39.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.4.5 $ 
+ * @version $Revision: 1.39.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -419,19 +419,19 @@ public final class CmsStringUtil {
         if (name == null) {
             return null;
         }
-        
+
         if (name.length() <= maxLength) {
             return name;
         }
-        
+
         int total = name.length();
         String[] names = CmsStringUtil.splitAsArray(name, "/");
         if (name.endsWith("/")) {
-            names[names.length-1] = names[names.length-1] + "/";
+            names[names.length - 1] = names[names.length - 1] + "/";
         }
-        for (int i = 1; total > maxLength && i < names.length-1; i++) {
+        for (int i = 1; total > maxLength && i < names.length - 1; i++) {
             if (i > 1) {
-                names[i-1] = "";
+                names[i - 1] = "";
             }
             names[i] = "...";
             total = 0;
@@ -441,17 +441,17 @@ public final class CmsStringUtil {
             }
         }
         if (total > maxLength) {
-            names[0]=(names.length > 2) ? "" : (names.length > 1) ? "..." : names[0];
+            names[0] = (names.length > 2) ? "" : (names.length > 1) ? "..." : names[0];
         }
-        
+
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < names.length; i++) {
             if (names[i].length() > 0) {
                 result.append("/");
                 result.append(names[i]);
             }
-        }    
-        
+        }
+
         return result.toString();
     }
 
@@ -1049,13 +1049,14 @@ public final class CmsStringUtil {
      * Checks if the provided name is a valid resource name, that is contains only
      * valid characters.<p>
      *
-     * PLEASE NOTE:
-     * This logic is NOT yet used in the current release.<p>
-     *
      * @param name the resource name to check
      * @return true if the resource name is vaild, false otherwise 
      */
     public static boolean validateResourceName(String name) {
+
+        // PLEASE NOTE:
+        // This logic is NOT yet used in the current release.<p>
+        int todo;
 
         if (name == null) {
             return false;
