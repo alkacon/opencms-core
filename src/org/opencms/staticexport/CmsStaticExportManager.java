@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.121.4.10 $
+ * Date   : $Date: 2006/12/01 14:26:40 $
+ * Version: $Revision: 1.121.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
@@ -84,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.10 $ 
+ * @version $Revision: 1.121.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,8 +103,17 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Marker for error status code attribute. */
     public static final String EXPORT_ATTRIBUTE_ERROR_STATUS_CODE = "javax.servlet.error.status_code";
 
+    /** Name for the backup folder default name. */
+    public static final String EXPORT_BACKUP_FOLDER_NAME = "backup";
+
+    /** Name for the default work path. */
+    public static final Integer EXPORT_DEFAULT_BACKUPS = new Integer(0);
+
     /** Name for the folder default index file. */
     public static final String EXPORT_DEFAULT_FILE = "index_export.html";
+
+    /** Name for the default work path. */
+    public static final String EXPORT_DEFAULT_WORKPATH = CmsSystemInfo.FOLDER_WEBINF + "temp";
 
     /** Flag value for links without paramerters. */
     public static final int EXPORT_LINK_WITH_PARAMETER = 2;
@@ -183,6 +193,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Export url to send internal requests to without http://servername. */
     private String m_exportUrlPrefix;
 
+    /** Boolean value if the export is a full static export. */
+    private boolean m_fullStaticExport;
+
     /** Handler class for static export. */
     private I_CmsStaticExportHandler m_handler;
 
@@ -213,6 +226,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Temporary variable for reading the xml config file. */
     private CmsStaticExportRfsRule m_rfsTmpRule;
 
+    /** The number of backups stored for the export folder. */
+    private Integer m_staticExportBackups;
+
     /** Indicates if the static export is enabled or diabled. */
     private boolean m_staticExportEnabled;
 
@@ -221,6 +237,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** The path to where the static export will be written without the complete rfs path. */
     private String m_staticExportPathConfigured;
+
+    /** The path to where the static export will be written during the static export process. */
+    private String m_staticExportWorkPath;
+
+    /** The path to where the static export will be written during the static export process without the complete rfs path. */
+    private String m_staticExportWorkPathConfigured;
 
     /** Vfs Name of a resource used to do a "static export required" test. */
     private String m_testResource;
@@ -246,7 +268,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_rfsRules = new ArrayList();
         m_exportRules = new ArrayList();
         m_exportTmpRule = new CmsStaticExportExportRule("", "");
-        m_rfsTmpRule = new CmsStaticExportRfsRule("", "", "", "", "", null);
+        m_rfsTmpRule = new CmsStaticExportRfsRule("", "", "", "", "", "", null, null);
+        m_fullStaticExport = false;
     }
 
     /**
@@ -293,6 +316,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param source the source regex
      * @param rfsPrefix the url prefix
      * @param exportPath the rfs export path
+     * @param exportWorkPath the rfs export work path
+     * @param exportBackups the number of backups
      * @param useRelativeLinks the relative links value
      */
     public void addRfsRule(
@@ -301,18 +326,38 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         String source,
         String rfsPrefix,
         String exportPath,
-        String useRelativeLinks) {
+        String exportWorkPath,
+        String exportBackups,
+        String useRelativeLinks) throws CmsStaticExportException {
+
+        if (m_staticExportPathConfigured != null && exportPath.equals(m_staticExportPathConfigured)) {
+            throw new CmsStaticExportException(Messages.get().container(Messages.ERR_VALIDATE_EXPORTPATH_0));
+        }
+
+        if (!m_rfsRules.isEmpty()) {
+            Iterator itRules = m_rfsRules.iterator();
+            while (itRules.hasNext()) {
+                CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)itRules.next();
+                if (exportPath.equals(rule.getExportPathConfigured())) {
+                    throw new CmsStaticExportException(Messages.get().container(Messages.ERR_VALIDATE_EXPORTPATH_0));
+                }
+            }
+        }
 
         Boolean relativeLinks = (useRelativeLinks == null ? null : Boolean.valueOf(useRelativeLinks));
+        Integer backups = (exportBackups == null ? null : Integer.valueOf(exportBackups));
+
         m_rfsRules.add(new CmsStaticExportRfsRule(
             name,
             description,
             source,
             rfsPrefix,
             exportPath,
+            exportWorkPath,
+            backups,
             relativeLinks,
             m_rfsTmpRule.getRelatedSystemResources()));
-        m_rfsTmpRule = new CmsStaticExportRfsRule("", "", "", "", "", null);
+        m_rfsTmpRule = new CmsStaticExportRfsRule("", "", "", "", "", "", null, null);
     }
 
     /**
@@ -574,9 +619,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public synchronized void exportFullStaticRender(boolean purgeFirst, I_CmsReport report)
     throws CmsException, IOException, ServletException {
 
+        // set member to true to get temporary export paths for rules
+        m_fullStaticExport = true;
+        // save the real export path
+        String staticExportPathStore = m_staticExportPath;
+
+        // set the export path to the export work path
+        m_staticExportPath = m_staticExportWorkPath;
+
         // delete all old exports if the purgeFirst flag is set
         if (purgeFirst) {
-
             Map eventData = new HashMap();
             eventData.put(I_CmsEventListener.KEY_REPORT, report);
             CmsEvent clearCacheEvent = new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, eventData);
@@ -592,6 +644,42 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         CmsAfterPublishStaticExportHandler handler = new CmsAfterPublishStaticExportHandler();
         // export everything
         handler.doExportAfterPublish(null, report);
+
+        // set export path to the original one
+        m_staticExportPath = staticExportPathStore;
+
+        // set member to false for further exports
+        m_fullStaticExport = false;
+
+        // check if report contents no errors
+        if (!report.hasError()) {
+            // backup old export folders for default export 
+            File staticExport = new File(m_staticExportPath);
+            createExportBackupFolders(staticExport, m_staticExportPath, getExportBackups().intValue(), null);
+
+            // change the name of the used temporary export folder to the original default export path
+            File staticExportWork = new File(m_staticExportWorkPath);
+            staticExportWork.renameTo(new File(m_staticExportPath));
+
+            // backup old export folders of rule based exports
+            Iterator it = m_rfsRules.iterator();
+            while (it.hasNext()) {
+                CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)it.next();
+                File staticExportRule = new File(rule.getExportPath());
+                File staticExportWorkRule = new File(rule.getExportWorkPath());
+                // only backup if a temporary folder exists for this rule
+                if (staticExportWorkRule.exists()) {
+                    createExportBackupFolders(
+                        staticExportRule,
+                        rule.getExportPath(),
+                        rule.getExportBackups().intValue(),
+                        OpenCms.getResourceManager().getFileTranslator().translateResource(rule.getName()));
+                    staticExportWorkRule.renameTo(new File(rule.getExportPath()));
+                }
+            }
+        } else {
+            report.println(Messages.get().container(Messages.ERR_EXPORT_NOT_SUCCESSFUL_0), I_CmsReport.FORMAT_WARNING);
+        }
     }
 
     /**
@@ -690,6 +778,20 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public String getDefaultRfsPrefix() {
 
         return m_rfsPrefix;
+    }
+
+    /**
+     * Returns the number of stored backusp.<p>
+     * 
+     * @return the number of stored backups
+     */
+    public Integer getExportBackups() {
+
+        if (m_staticExportBackups != null) {
+            return m_staticExportBackups;
+        }
+        // if backups not configured set to default value
+        return EXPORT_DEFAULT_BACKUPS;
     }
 
     /**
@@ -827,6 +929,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
             }
         }
+        if (isFullStaticExport()) {
+            return getExportWorkPath();
+        }
         return m_staticExportPath;
     }
 
@@ -910,6 +1015,32 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public String getExportUrlPrefix() {
 
         return m_exportUrlPrefix;
+    }
+
+    /**
+     * Returns the export work path for the static export, that is the folder where the 
+     * static exported resources will be written to during the export process.<p>
+     * 
+     * @return the export work path for the static export
+     */
+    public String getExportWorkPath() {
+
+        return m_staticExportWorkPath;
+    }
+
+    /**
+     * Returns the original configured export work path for the static export without the complete rfs path, to be used 
+     * when re-writing the configuration.<p>
+     * 
+     * @return the original configured export work path for the static export without the complete rfs path
+     */
+    public String getExportWorkPathForConfiguration() {
+
+        if (m_staticExportWorkPathConfigured != null) {
+            return m_staticExportWorkPathConfigured;
+        }
+        // if work path not configured set to default value
+        return EXPORT_DEFAULT_WORKPATH;
     }
 
     /**
@@ -1237,6 +1368,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         // initialize static export RFS path (relative to web application)
         m_staticExportPath = normalizeExportPath(m_staticExportPathConfigured);
+        m_staticExportWorkPath = normalizeExportPath(getExportWorkPathForConfiguration());
         if (m_staticExportPath.equals(OpenCms.getSystemInfo().getWebApplicationRfsPath())) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_EXPORT_PATH_0));
         }
@@ -1247,9 +1379,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)itRfsRules.next();
             try {
                 rule.setExportPath(normalizeExportPath(rule.getExportPathConfigured()));
+                rule.setExportWorkPath(normalizeExportPath(rule.getExportWorkPathConfigured()));
             } catch (CmsIllegalArgumentException e) {
                 CmsLog.INIT.info(e.getMessageContainer());
                 rule.setExportPath(m_staticExportPath);
+                rule.setExportWorkPath(m_staticExportWorkPath);
             }
             rule.setRfsPrefix(normalizeRfsPrefix(rule.getRfsPrefixConfigured()));
         }
@@ -1445,6 +1579,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns true if the export process is a full static export.<p>
+     *
+     * @return true if the export process is a full static export
+     */
+    public boolean isFullStaticExport() {
+
+        return m_fullStaticExport;
+    }
+
+    /**
      * Returns <code>true</code> if the given VFS resource should be transported through a secure channel.<p>
      * 
      * The secure mode is only checked in the "Online" project. 
@@ -1597,6 +1741,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
+     * Sets the number of backups for the static export.<p>
+     * 
+     * @param backup number of backups
+     */
+    public void setExportBackups(String backup) {
+
+        m_staticExportBackups = new Integer(backup);
+    }
+
+    /**
      * Sets the export enbled value.<p>
      * 
      * @param value must be <code>"true"</code> or <code>"false"</code>
@@ -1666,6 +1820,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         m_exportUrl = insertContextStrings(url);
         m_exportUrlConfigured = url;
+    }
+
+    /**
+     * Sets the path where the static export is temporarily written.<p>
+     * 
+     * @param path the path where the static export is temporarily written
+     */
+    public void setExportWorkPath(String path) {
+
+        m_staticExportWorkPathConfigured = path;
     }
 
     /**
@@ -1909,6 +2073,51 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 eventType = "EVENT_PUBLISH_PROJECT";
             }
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLUSHED_CACHES_1, eventType));
+        }
+    }
+
+    /**
+     * Creates the backup folders for the given export folder and deletes the oldest if the maximum number is reached.<p>
+     * 
+     * @param staticExport folder for which a new backup folder has to be created
+     * @param exportPath export path to create backup path out of it
+     * @param exportBackups number of maximum 
+     * @param ruleBackupExtension extension for rule based backups
+     */
+    private void createExportBackupFolders(
+        File staticExport,
+        String exportPath,
+        int exportBackups,
+        String ruleBackupExtension) {
+
+        if (staticExport.exists()) {
+            String backupFolderName = exportPath.substring(0, exportPath.lastIndexOf(File.separator) + 1);
+            if (ruleBackupExtension != null) {
+                backupFolderName = backupFolderName + EXPORT_BACKUP_FOLDER_NAME + ruleBackupExtension;
+            } else {
+                backupFolderName = backupFolderName + EXPORT_BACKUP_FOLDER_NAME;
+            }
+            for (int i = exportBackups; i > 0; i--) {
+                File staticExportBackupOld = new File(backupFolderName + new Integer(i).toString());
+                if (staticExportBackupOld.exists()) {
+                    if ((i + 1) > exportBackups) {
+                        // delete folder if it is the last backup folder
+                        CmsFileUtil.purgeDirectory(staticExportBackupOld);
+                    } else {
+                        // set backup folder to the next backup folder name
+                        staticExportBackupOld.renameTo(new File(backupFolderName + new Integer(i + 1).toString()));
+                    }
+                }
+                // old export folder rename to first backup folder
+                if (i == 1) {
+                    staticExport.renameTo(staticExportBackupOld);
+                }
+            }
+
+            // if no backups will be stored the old export folder has to be deleted
+            if (exportBackups == 0) {
+                CmsFileUtil.purgeDirectory(staticExport);
+            }
         }
     }
 

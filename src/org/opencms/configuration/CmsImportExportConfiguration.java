@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.25.4.1 $
+ * Date   : $Date: 2006/12/01 14:26:40 $
+ * Version: $Revision: 1.25.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25.4.1 $
+ * @version $Revision: 1.25.4.2 $
  * 
  * @since 6.0.0
  */
@@ -125,6 +125,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /**  The node name of the static export export-rule export node. */
     protected static final String N_STATICEXPORT_EXPORT = "export-resources";
 
+    /**  The node name of the static export exportbackups node. */
+    protected static final String N_STATICEXPORT_EXPORTBACKUPS = "exportbackups";
+
     /**  The node name of the static export exportheaders node. */
     protected static final String N_STATICEXPORT_EXPORTHEADERS = "exportheaders";
 
@@ -139,6 +142,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
     /**  The node name of the static export exporturl node. */
     protected static final String N_STATICEXPORT_EXPORTURL = "exporturl";
+
+    /**  The node name of the static export exportworkpath node. */
+    protected static final String N_STATICEXPORT_EXPORTWORKPATH = "exportworkpath";
 
     /**  The node name of the static export handler node. */
     protected static final String N_STATICEXPORT_HANDLER = "staticexporthandler";
@@ -326,6 +332,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_HANDLER, "setHandler", 0);
         // exportpath rule
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTPATH, "setExportPath", 0);
+        // exportworkpath rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTWORKPATH, "setExportWorkPath", 0);
+        // exportbackups rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTBACKUPS, "setExportBackups", 0);
         // default property rule
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_DEFAULT, "setDefault", 0);
         // export suffix rule
@@ -459,13 +469,15 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             + N_STATICEXPORT_RFS_RULES
             + "/"
             + N_STATICEXPORT_RFS_RULE;
-        digester.addCallMethod(rfsRulePath, "addRfsRule", 6);
+        digester.addCallMethod(rfsRulePath, "addRfsRule", 8);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_NAME, 0);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_DESCRIPTION, 1);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_SOURCE, 2);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RFS_PREFIX, 3);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_EXPORTPATH, 4);
-        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RELATIVELINKS, 5);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_EXPORTWORKPATH, 5);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_EXPORTBACKUPS, 6);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RELATIVELINKS, 7);
         // rfs-rule related system resources
         digester.addCallMethod(
             rfsRulePath + "/" + N_STATICEXPORT_RELATED_SYSTEM_RES + "/" + N_STATICEXPORT_REGEX,
@@ -563,6 +575,22 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             exportPathUnmodified = exportPathUnmodified.substring(0, exportPathUnmodified.length() - 1);
         }
         staticexportElement.addElement(N_STATICEXPORT_EXPORTPATH).addText(exportPathUnmodified);
+
+        // <exportworkpath> node
+        String exportWorkPathUnmodified = m_staticExportManager.getExportWorkPathForConfiguration();
+        if (exportWorkPathUnmodified != null) {
+            // cut path seperator        
+            if (exportWorkPathUnmodified.endsWith(File.separator)) {
+                exportWorkPathUnmodified = exportWorkPathUnmodified.substring(0, exportWorkPathUnmodified.length() - 1);
+            }
+            staticexportElement.addElement(N_STATICEXPORT_EXPORTWORKPATH).addText(exportWorkPathUnmodified);
+        }
+
+        // <exportbackups> node
+        if (m_staticExportManager.getExportBackups() != null) {
+            String exportBackupsUnmodified = String.valueOf(m_staticExportManager.getExportBackups());
+            staticexportElement.addElement(N_STATICEXPORT_EXPORTBACKUPS).addText(exportBackupsUnmodified);
+        }
 
         // <defaultpropertyvalue> node
         staticexportElement.addElement(N_STATICEXPORT_DEFAULT).addText(m_staticExportManager.getDefault());
@@ -680,6 +708,13 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
                 rfsRuleElement.addElement(N_STATICEXPORT_SOURCE).addText(rule.getSource().pattern());
                 rfsRuleElement.addElement(N_STATICEXPORT_RFS_PREFIX).addText(rule.getRfsPrefixConfigured());
                 rfsRuleElement.addElement(N_STATICEXPORT_EXPORTPATH).addText(rule.getExportPathConfigured());
+                if (rule.getExportWorkPathConfigured() != null) {
+                    rfsRuleElement.addElement(N_STATICEXPORT_EXPORTWORKPATH).addText(rule.getExportWorkPathConfigured());
+                }
+                if (rule.getExportBackups() != null) {
+                    rfsRuleElement.addElement(N_STATICEXPORT_EXPORTBACKUPS).addText(
+                        String.valueOf(rule.getExportBackups()));
+                }
                 if (rule.getUseRelativeLinks() != null) {
                     rfsRuleElement.addElement(N_STATICEXPORT_RELATIVELINKS).addText(
                         rule.getUseRelativeLinks().toString());

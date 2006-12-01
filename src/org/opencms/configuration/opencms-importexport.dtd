@@ -114,6 +114,8 @@
 <!ELEMENT staticexport (
 	staticexporthandler, 
 	exportpath,
+	exportworkpath?,
+	exportbackups?,
 	defaultpropertyvalue,
 	defaultsuffixes?,
 	exportheaders?,
@@ -143,6 +145,18 @@
 # This is relative to the web application root path.
 -->	
 <!ELEMENT exportpath (#PCDATA)>
+
+<!--
+# The path in the "real" FS to write the static exported pages to
+# during the full static export is working.
+# This is relative to the web application root path.
+-->	
+<!ELEMENT exportworkpath (#PCDATA)>
+
+<!--
+# The number of backup folders in the real "FS".
+-->	
+<!ELEMENT exportbackups (#PCDATA)>
 
 <!--
 # The default value of the "export" property for resources where searching for
@@ -302,7 +316,16 @@
 <!--
 # A rfs-prefix definition for a single site.
 -->
-<!ELEMENT rfs-rule (name, description, source, rfs-prefix, exportpath, userelativelinks?, related-system-res)>
+<!ELEMENT rfs-rule (
+	name, 
+	description, 
+	source, 
+	rfs-prefix, 
+	exportpath, 
+	exportworkpath?, 
+	exportbackups?, 
+	userelativelinks?, 
+	related-system-res)>
 
 <!--
 # the source resources to be configured by a rfs-rule.

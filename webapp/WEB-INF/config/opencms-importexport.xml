@@ -48,6 +48,8 @@
 	<staticexport enabled="true">
 		<staticexporthandler>org.opencms.staticexport.CmsOnDemandStaticExportHandler</staticexporthandler>
 		<exportpath>export</exportpath>
+		<exportworkpath>temp</exportworkpath>
+		<exportbackups>2</exportbackups>
 		<defaultpropertyvalue>false</defaultpropertyvalue>
 		<defaultsuffixes>
 			<suffix key=".jpg"/>

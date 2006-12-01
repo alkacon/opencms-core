@@ -52,6 +52,8 @@
 	<staticexport enabled="true">
 		<staticexporthandler>org.opencms.staticexport.CmsOnDemandStaticExportHandler</staticexporthandler>
 		<exportpath>export</exportpath>
+		<exportworkpath>temp</exportworkpath>
+		<exportbackups>2</exportbackups>
 		<defaultpropertyvalue>true</defaultpropertyvalue>
 		<defaultsuffixes>
 			<suffix key=".jpg"/>
@@ -118,7 +120,9 @@
                     <description>rule for site default</description>
                     <source>/sites/default/</source>
                     <rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
-                    <exportpath>export</exportpath>
+                    <exportpath>exportRule</exportpath>
+					<exportworkpath>temp</exportworkpath>
+					<exportbackups>2</exportbackups>
                     <related-system-res/>
                 </rfs-rule>
                 <rfs-rule>
@@ -127,6 +131,8 @@
                     <source>/sites/site1/</source>
                     <rfs-prefix>site1</rfs-prefix>
                     <exportpath>c:/apache/site1</exportpath>
+					<exportworkpath>c:/apache/site1_temp</exportworkpath>
+					<exportbackups>2</exportbackups>
                     <related-system-res>
                         <regex>/system/modules/org.opencms.frontend.templateone/.*</regex>
                         <regex>/system/modules/org.opencms.frontend.templateone.modules/.*</regex>
@@ -138,6 +144,8 @@
                     <source>/sites/site2/</source>
                     <rfs-prefix>site2</rfs-prefix>
                     <exportpath>c:/apache/site2</exportpath>
+					<exportworkpath>c:/apache/site2_temp</exportworkpath>
+					<exportbackups>2</exportbackups>
         			<userelativelinks>true</userelativelinks>			
                     <related-system-res>
                         <regex>/system/modules/org.opencms.frontend.templateone/.*</regex>
