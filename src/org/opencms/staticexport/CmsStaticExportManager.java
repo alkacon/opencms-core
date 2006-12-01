@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/12/01 14:26:40 $
- * Version: $Revision: 1.121.4.11 $
+ * Date   : $Date: 2006/12/01 15:31:46 $
+ * Version: $Revision: 1.121.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.11 $ 
+ * @version $Revision: 1.121.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -319,6 +319,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param exportWorkPath the rfs export work path
      * @param exportBackups the number of backups
      * @param useRelativeLinks the relative links value
+     * @throws CmsStaticExportException if given export path exists already
      */
     public void addRfsRule(
         String name,

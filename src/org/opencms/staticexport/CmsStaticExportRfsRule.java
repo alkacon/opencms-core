@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportRfsRule.java,v $
- * Date   : $Date: 2006/12/01 14:26:40 $
- * Version: $Revision: 1.2.8.1 $
+ * Date   : $Date: 2006/12/01 15:31:46 $
+ * Version: $Revision: 1.2.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  * Help class for storing of rfs-rules..<p>
  * 
  * @author Michael Moossen
- * @version $Revision: 1.2.8.1 $
+ * @version $Revision: 1.2.8.2 $
  * @since 6.0.0
  */
 public class CmsStaticExportRfsRule {
@@ -325,7 +325,7 @@ public class CmsStaticExportRfsRule {
     /**
      * Sets the rfs export work Path after normalizing.<p>
      *
-     * @param exportPath the rfs export Path to set
+     * @param exportWorkPath the rfs export Work Path to set
      */
     public void setExportWorkPath(String exportWorkPath) {
 
