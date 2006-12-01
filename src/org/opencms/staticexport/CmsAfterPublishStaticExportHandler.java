@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.19.4.15 $
+ * Date   : $Date: 2006/12/01 14:24:15 $
+ * Version: $Revision: 1.19.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.15 $ 
+ * @version $Revision: 1.19.4.16 $ 
  * 
  * @since 6.0.0 
  * 
@@ -607,7 +607,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                 return getAllResources(cms);
             } else {
                 // after publish export
-                Map resourceMap = new HashMap();                 
+                Map resourceMap = new HashMap();
                 Iterator itPubRes = publishedResources.iterator();
                 while (itPubRes.hasNext()) {
                     CmsPublishedResource pubResource = (CmsPublishedResource)itPubRes.next();
