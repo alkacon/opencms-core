@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/11/07 16:17:40 $
- * Version: $Revision: 1.47.4.5 $
+ * Date   : $Date: 2006/12/01 14:23:49 $
+ * Version: $Revision: 1.47.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.47.4.5 $ 
+ * @version $Revision: 1.47.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,9 +127,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** Folder constant name.<p> */
     public static final String FOLDER_SETUP = "setup" + File.separatorChar;
-
-    /** Folder constant name.<p> */
-    public static final String FOLDER_WEBINF = "WEB-INF" + File.separatorChar;
 
     /** DB provider constant. */
     public static final String GENERIC_PROVIDER = "generic";
@@ -171,10 +168,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
     protected List m_installModules;
 
     /** Location for log file.  */
-    protected String m_logFile = FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "setup.log";
+    protected String m_logFile = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "setup.log";
 
     /** Location for logs relative to the webapp folder.  */
-    protected String m_logsFolder = FOLDER_WEBINF + CmsLog.FOLDER_LOGS;
+    protected String m_logsFolder = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS;
 
     /** A map with lists of dependent module package names keyed by module package names. */
     protected Map m_moduleDependencies;
@@ -183,7 +180,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     protected Map m_moduleFilenames;
 
     /** Location for module archives relative to the webapp folder.  */
-    protected String m_modulesFolder = FOLDER_WEBINF + CmsSystemInfo.FOLDER_PACKAGES + CmsSystemInfo.FOLDER_MODULES;
+    protected String m_modulesFolder = CmsSystemInfo.FOLDER_WEBINF + CmsSystemInfo.FOLDER_PACKAGES + CmsSystemInfo.FOLDER_MODULES;
 
     /** The new logging offset in the workplace import thread. */
     protected int m_newLoggingOffset;
@@ -753,7 +750,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public String getLibFolder() {
 
-        return getWebAppRfsPath() + FOLDER_WEBINF + FOLDER_LIB;
+        return getWebAppRfsPath() + CmsSystemInfo.FOLDER_WEBINF + FOLDER_LIB;
     }
 
     /**
@@ -2112,6 +2109,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
             // all servlet runtimes
             m_webAppRfsPath += File.separator;
         }
-        m_configRfsPath = m_webAppRfsPath + FOLDER_WEBINF + CmsSystemInfo.FOLDER_CONFIG;
+        m_configRfsPath = m_webAppRfsPath + CmsSystemInfo.FOLDER_WEBINF + CmsSystemInfo.FOLDER_CONFIG;
     }
 }

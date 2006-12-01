@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/11/28 15:36:35 $
- * Version: $Revision: 1.6.4.7 $
+ * Date   : $Date: 2006/12/01 14:23:49 $
+ * Version: $Revision: 1.6.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.7 $ 
+ * @version $Revision: 1.6.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,7 +133,7 @@ public class CmsUpdateBean extends CmsSetupBean {
 
         super();
         m_modulesFolder = FOLDER_UPDATE + CmsSystemInfo.FOLDER_MODULES;
-        m_logFile = FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "update.log";
+        m_logFile = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "update.log";
     }
 
     /**
