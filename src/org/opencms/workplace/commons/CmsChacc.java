@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.24.4.3 $
+ * Date   : $Date: 2006/12/01 08:33:27 $
+ * Version: $Revision: 1.24.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24.4.3 $ 
+ * @version $Revision: 1.24.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1443,7 +1443,11 @@ public class CmsChacc extends CmsDialog {
                     CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
                     if (ace.isResponsible()) {
                         I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
-                        responsibles.put(principal, sitePath);
+                        if (principal != null) {
+                            responsibles.put(principal, sitePath);
+                        } else {
+                            responsibles.put(ace.getPrincipal(), sitePath);
+                        }
                     }
                 }
             } catch (CmsException e) {
@@ -1455,7 +1459,6 @@ public class CmsChacc extends CmsDialog {
         }
 
         if (responsibles.size() == 0) {
-
             return key(Messages.GUI_AVAILABILITY_NO_RESPONSIBLES_0);
         }
         StringBuffer result = new StringBuffer(512);
@@ -1465,17 +1468,24 @@ public class CmsChacc extends CmsDialog {
         i = responsibles.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry)i.next();
-            I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
-            String image = "user.png";
-            if (principal instanceof CmsGroup) {
-                image = "group.png";
+            String name;
+            String image;
+            if (entry.getKey() instanceof I_CmsPrincipal) {
+                I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
+                name = principal.getName();
+                image = "commons/user.png";
+                if (principal instanceof CmsGroup) {
+                    image = "commons/group.png";
+                }
+            } else {
+                name = entry.getKey().toString();
+                image = "explorer/project_none.gif";
             }
             result.append("<div class=\"dialogrow\"><img src=\"");
             result.append(getSkinUri());
-            result.append("commons/");
             result.append(image);
             result.append("\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"Group\" title=\"Group\">&nbsp;<span class=\"textbold\">");
-            result.append(principal.getName());
+            result.append(name);
             result.append("</span>");
             if ("long".equals(getSettings().getPermissionDetailView())) {
                 result.append("<div class=\"dialogpermissioninherit\">");
