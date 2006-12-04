@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.218.4.16 $
+ * Date   : $Date: 2006/12/04 13:38:25 $
+ * Version: $Revision: 1.218.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -136,7 +136,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.16 $ 
+ * @version $Revision: 1.218.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -320,26 +320,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Returns the configured authorization handler.<p>
-     *
-     * @return the configured authorization handler
-     */
-    public I_CmsAuthorizationHandler getAuthorizationHandler() {
-
-        return m_authorizationHandler;
-    }
-
-    /**
-     * Returns the publish manager instance.<p>
-     * 
-     * @return the publish manager instance
-     */
-    public CmsPublishManager getPublishManager() {
-
-        return m_publishManager;
-    }
-
-    /**
      * Adds the specified request handler to the Map of OpenCms request handlers. <p>
      * 
      * @param handler the handler to add
@@ -364,6 +344,16 @@ public final class OpenCmsCore {
                     handler.getClass().getName()));
             }
         }
+    }
+
+    /**
+     * Returns the configured authorization handler.<p>
+     *
+     * @return the configured authorization handler
+     */
+    protected I_CmsAuthorizationHandler getAuthorizationHandler() {
+
+        return m_authorizationHandler;
     }
 
     /**
@@ -496,6 +486,16 @@ public final class OpenCmsCore {
     protected I_CmsPasswordHandler getPasswordHandler() {
 
         return m_passwordHandler;
+    }
+
+    /**
+     * Returns the publish manager instance.<p>
+     * 
+     * @return the publish manager instance
+     */
+    protected CmsPublishManager getPublishManager() {
+
+        return m_publishManager;
     }
 
     /**
