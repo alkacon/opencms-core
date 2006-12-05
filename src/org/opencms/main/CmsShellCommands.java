@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2006/11/28 16:20:46 $
- * Version: $Revision: 1.83.4.5 $
+ * Date   : $Date: 2006/12/05 16:24:02 $
+ * Version: $Revision: 1.83.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83.4.5 $ 
+ * @version $Revision: 1.83.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -671,8 +671,9 @@ class CmsShellCommands implements I_CmsShellCommands {
             new CmsShellReport(m_cms.getRequestContext().getLocale()));
         m_cms.unlockProject(id);
         m_cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
     }
-
+    
     /**
      * @see org.opencms.main.I_CmsShellCommands#initShellCmsObject(org.opencms.file.CmsObject, org.opencms.main.CmsShell)
      */
@@ -842,6 +843,17 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void prompt(String prompt) {
 
         m_shell.setPrompt(prompt);
+    }
+
+    /**
+     * Publishes the current project and waits until it finishes.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void publishProjectAndWait() throws Exception {
+        
+        m_cms.publishProject();
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**

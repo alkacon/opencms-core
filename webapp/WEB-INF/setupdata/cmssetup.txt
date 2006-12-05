@@ -44,7 +44,7 @@ chacc "/" "group" "Guests" "+v+r+i"
 
 # Publish the project
 unlockCurrentProject
-publishProject
+publishProjectAndWait
 
 # Create the default "Offline" project
 createDefaultProject "Offline" "The Offline Project"
