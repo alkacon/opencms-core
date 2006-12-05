@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSendEmailDialog.java,v $
- * Date   : $Date: 2005/06/29 20:16:25 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/12/05 16:31:07 $
+ * Version: $Revision: 1.10.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,10 @@
 
 package org.opencms.workplace.tools.workplace.broadcast;
 
+import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -50,12 +52,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Dialog to edit an email to send in the administration view.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,6 +67,9 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
     /** localized messages Keys prefix. */
     public static final String KEY_PREFIX = "email";
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSendEmailDialog.class);
 
     /** a warning about excluded users with no email. */
     private String m_excludedUsers = "";
@@ -201,14 +208,19 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
             String id = itIds.next().toString();
             CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(id);
             if (session != null) {
-                String userName = session.getUser().getFullName();
-                String emailAddress = session.getUser().getEmail();
-                if (!users.contains(userName)) {
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(emailAddress)) {
-                        users.add(userName);
-                    } else {
-                        excluded.add(userName);
+                try {
+                    CmsUser user = getCms().readUser(session.getUserId());
+                    String userName = user.getFullName();
+                    if (!users.contains(userName)) {
+                        String emailAddress = user.getEmail();
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(emailAddress)) {
+                            users.add(userName);
+                        } else {
+                            excluded.add(userName);
+                        }
                     }
+                } catch (Exception e) {
+                    LOG.error(e);
                 }
             }
         }
@@ -253,9 +265,13 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
             String id = itIds.next().toString();
             CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(id);
             if (session != null) {
-                String emailAddress = session.getUser().getEmail();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(emailAddress) && !emails.contains(emailAddress)) {
-                    emails.add(emailAddress);
+                try {
+                    String emailAddress = getCms().readUser(session.getUserId()).getEmail();
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(emailAddress) && !emails.contains(emailAddress)) {
+                        emails.add(emailAddress);
+                    }
+                } catch (Exception e) {
+                    LOG.error(e);
                 }
             }
         }

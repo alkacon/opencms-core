@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2006/07/26 14:59:07 $
- * Version: $Revision: 1.14.4.1 $
+ * Date   : $Date: 2006/12/05 16:31:07 $
+ * Version: $Revision: 1.14.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.workplace.tools.workplace.broadcast;
 
+import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
@@ -66,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14.4.1 $ 
+ * @version $Revision: 1.14.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,7 +209,7 @@ public class CmsSessionsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() {
+    protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
         // get content
@@ -216,8 +218,9 @@ public class CmsSessionsList extends A_CmsListDialog {
         while (itSessions.hasNext()) {
             CmsSessionInfo sessionInfo = (CmsSessionInfo)itSessions.next();
             CmsListItem item = getList().newItem(sessionInfo.getSessionId().toString());
-            item.set(LIST_COLUMN_USER, sessionInfo.getUser().getFullName());
-            item.set(LIST_COLUMN_EMAIL, sessionInfo.getUser().getEmail());
+            CmsUser user = getCms().readUser(sessionInfo.getUserId());
+            item.set(LIST_COLUMN_USER, user.getFullName());
+            item.set(LIST_COLUMN_EMAIL, user.getEmail());
             item.set(LIST_COLUMN_CREATION, new Date(sessionInfo.getTimeCreated()));
             item.set(LIST_COLUMN_INACTIVE, new Long(System.currentTimeMillis() - sessionInfo.getTimeUpdated()));
             try {

@@ -32,7 +32,8 @@
 	content-notification?,
 	workflow?,
 	authorizationhandler?,
-	publishhistory?)>
+	publishhistory?,
+	session-storageprovider?)>
 
 <!--
 # Version history settings.
@@ -371,7 +372,7 @@ Each job can have an optional list of parameters.
 # These settings control the size of various internal caches in the OpenCms database layer.
 -->
 <!ELEMENT resultcache (
-	keygenerator,
+	keygenerator,	
 	size-users,
 	size-groups,
 	size-usergroups,
@@ -484,3 +485,11 @@ Each job can have an optional list of parameters.
 # can be relative to the WEB-INF folder or an absolute path.
 -->
 <!ELEMENT history-repository (#PCDATA)>
+
+<!--
+# Session storage provider:
+# Provides a storage implementation for the user session.
+# See the JavaDoc of interface org.opencms.main.I_CmsSessionStorageProvider for more details.
+-->
+<!ELEMENT session-storageprovider EMPTY>
+<!ATTLIST session-storageprovider class CDATA #REQUIRED>

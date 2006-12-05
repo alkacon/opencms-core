@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2006/11/16 09:38:56 $
- * Version: $Revision: 1.28.4.4 $
+ * Date   : $Date: 2006/12/05 16:31:07 $
+ * Version: $Revision: 1.28.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28.4.4 $ 
+ * @version $Revision: 1.28.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,6 +111,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MULTI_EXCEPTION_1 = "ERR_MULTI_EXCEPTION_1";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_NO_SESSIONINFO_SESSION_0 = "ERR_NO_SESSIONINFO_SESSION_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_NO_WORKFLOW_CLASS_0 = "ERR_NO_WORKFLOW_CLASS_0";
 
     /** Message contant for key in the resource bundle. */
@@ -133,9 +136,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_MODULE_1 = "ERR_UNKNOWN_MODULE_1";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_NO_SESSIONINFO_SESSION_0 = "ERR_NO_SESSIONINFO_SESSION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_AVAILABLE_METHODS_1 = "GUI_SHELL_AVAILABLE_METHODS_1";
@@ -376,6 +376,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_SECURITY_SHUTDOWN_1 = "LOG_ERROR_SECURITY_SHUTDOWN_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1 = "LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_THREAD_SHUTDOWN_1 = "LOG_ERROR_THREAD_SHUTDOWN_1";

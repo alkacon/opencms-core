@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.146.4.15 $
+ * Date   : $Date: 2006/12/05 16:31:07 $
+ * Version: $Revision: 1.146.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.15 $
+ * @version $Revision: 1.146.4.16 $
  * 
  * @since 6.0.0 
  */
@@ -2998,7 +2998,7 @@ public final class CmsObject {
      */
     public CmsUser readUser(String username) throws CmsException {
 
-        return m_securityManager.readUser(username);
+        return m_securityManager.readUser(m_context, username);
     }
 
     /**

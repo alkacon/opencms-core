@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.12.4.5 $
+ * Date   : $Date: 2006/12/05 16:31:07 $
+ * Version: $Revision: 1.12.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceManager;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,7 +51,6 @@ import javax.servlet.http.HttpSessionEvent;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
-import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.collections.buffer.BoundedFifoBuffer;
 import org.apache.commons.logging.Log;
 
@@ -74,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.5 $ 
+ * @version $Revision: 1.12.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,8 +89,8 @@ public class CmsSessionManager {
     /** Counter for all sessions created so far. */
     private int m_sessionCountTotal;
 
-    /** Stores the session info objects mapped to the session id. */
-    private FastHashMap m_sessions;
+    /** Session storage provider instance. */
+    private I_CmsSessionStorageProvider m_sessionStorageProvider;
 
     /**
      * Creates a new instance of the OpenCms session manager.<p>
@@ -102,10 +99,6 @@ public class CmsSessionManager {
 
         // create a lock object for the session counter
         m_lockSessionCount = new Object();
-        // create a map for all sessions, these will be mapped using their session id
-        m_sessions = new FastHashMap();
-        // set to "fast" mode (will be reset for write access)
-        m_sessions.setFast(true);
     }
 
     /**
@@ -132,7 +125,7 @@ public class CmsSessionManager {
      */
     public int getSessionCountAuthenticated() {
 
-        return m_sessions.size();
+        return m_sessionStorageProvider.getSize();
     }
 
     /**
@@ -165,7 +158,7 @@ public class CmsSessionManager {
      */
     public CmsSessionInfo getSessionInfo(CmsUUID sessionId) {
 
-        return (CmsSessionInfo)m_sessions.get(sessionId);
+        return m_sessionStorageProvider.get(sessionId);
     }
 
     /**
@@ -227,16 +220,7 @@ public class CmsSessionManager {
      */
     public List getSessionInfos() {
 
-        List result = new ArrayList();
-        Iterator i = m_sessions.keySet().iterator();
-        while (i.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
-            if (sessionInfo != null) {
-                // may be the case in case of concurrent modification
-                result.add(sessionInfo);
-            }
-        }
-        return result;
+        return m_sessionStorageProvider.getAll();
     }
 
     /**
@@ -253,15 +237,7 @@ public class CmsSessionManager {
      */
     public List getSessionInfos(CmsUUID userId) {
 
-        List userSessions = new ArrayList();
-        Iterator i = m_sessions.keySet().iterator();
-        while (i.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
-            if (userId.equals(sessionInfo.getUser().getId())) {
-                userSessions.add(sessionInfo);
-            }
-        }
-        return userSessions;
+        return m_sessionStorageProvider.getAllOfUser(userId);
     }
 
     /**
@@ -280,38 +256,13 @@ public class CmsSessionManager {
         // create the broadcast
         CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().currentUser(), message);
         // send the broadcast to all authenticated sessions
-        Iterator i = m_sessions.keySet().iterator();
+        Iterator i = m_sessionStorageProvider.getAll().iterator();
         while (i.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
-            if (sessionInfo != null) {
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
+            if (m_sessionStorageProvider.get(sessionInfo.getSessionId()) != null) {
                 // double check for concurrent modification
                 sessionInfo.getBroadcastQueue().add(broadcast);
             }
-        }
-    }
-
-    /**
-     * Sends a broadcast to all sessions of a given user.<p>
-     * 
-     * @param cms the OpenCms user context of the user sending the broadcast
-     * 
-     * @param message the message to broadcast
-     * @param user the target (reciever) of the broadcast
-     */
-    public void sendBroadcast(CmsObject cms, String message, CmsUser user) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
-            // don't broadcast empty messages
-            return;
-        }
-        // create the broadcast
-        CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().currentUser(), message);
-        List userSessions = getSessionInfos(user.getId());
-        Iterator i = userSessions.iterator();
-        // send the broadcast to all sessions of the selected user
-        while (i.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
-            sessionInfo.getBroadcastQueue().add(broadcast);
         }
     }
 
@@ -321,7 +272,7 @@ public class CmsSessionManager {
      * @param cms the OpenCms user context of the user sending the broadcast
      * 
      * @param message the message to broadcast
-     * @param sessionId the OpenCms session id target (reciever) of the broadcast
+     * @param sessionId the OpenCms session uuid target (receiver) of the broadcast
      */
     public void sendBroadcast(CmsObject cms, String message, String sessionId) {
 
@@ -330,11 +281,83 @@ public class CmsSessionManager {
             return;
         }
         // send the broadcast only to the selected session
-        CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(getSessionUUID(sessionId));
+        CmsSessionInfo sessionInfo = m_sessionStorageProvider.get(new CmsUUID(sessionId));
         if (sessionInfo != null) {
             // double check for concurrent modification
             sessionInfo.getBroadcastQueue().add(new CmsBroadcast(cms.getRequestContext().currentUser(), message));
         }
+    }
+
+    /**
+     * Sends a broadcast to all sessions of a given user.<p>
+     * 
+     * @param fromUser the user sending the broadcast, like <code>cms.getRequestContext().currentUser()</code>
+     * @param message the message to broadcast
+     * @param toUser the target (receiver) of the broadcast
+     */
+    public void sendBroadcast(CmsUser fromUser, String message, CmsUser toUser) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
+            // don't broadcast empty messages
+            return;
+        }
+        // create the broadcast
+        CmsBroadcast broadcast = new CmsBroadcast(fromUser, message);
+        List userSessions = getSessionInfos(toUser.getId());
+        Iterator i = userSessions.iterator();
+        // send the broadcast to all sessions of the selected user
+        while (i.hasNext()) {
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
+            if (m_sessionStorageProvider.get(sessionInfo.getSessionId()) != null) {
+                // double check for concurrent modification
+                sessionInfo.getBroadcastQueue().add(broadcast);
+            }
+        }
+    }
+
+    /**
+     * Switches the current user to the given user. The session info is rebuild as if the given user
+     * performs a login at the workplace.
+     * 
+     * @param cms the current CmsObject
+     * @param req the current request
+     * @param user the user to switch to
+     * @throws CmsException
+     */
+    public void switchUser(CmsObject cms, HttpServletRequest req, CmsUser user) throws CmsException {
+
+        // only user with ACCOUNT_MANAGER role are allowed to switch the user
+        cms.checkRole(CmsRole.ACCOUNT_MANAGER);
+        CmsSessionInfo info = getSessionInfo(req);
+        HttpSession session = req.getSession(false);
+        if (info == null || session == null) {
+            throw new CmsException(Messages.get().container(Messages.ERR_NO_SESSIONINFO_SESSION_0));
+        }
+
+        // get the user settings for the given user and set the start project and the site root
+        CmsUserSettings settings = new CmsUserSettings(cms, user);
+        CmsProject userProject = cms.readProject(settings.getStartProject());
+        String userSiteRoot = settings.getStartSite();
+        CmsRequestContext context = new CmsRequestContext(
+            user,
+            userProject,
+            null,
+            userSiteRoot,
+            null,
+            null,
+            null,
+            0,
+            null,
+            null);
+        // create a new CmsSessionInfo and store it inside the session map
+        CmsSessionInfo newInfo = new CmsSessionInfo(context, info.getSessionId(), info.getMaxInactiveInterval());
+        addSessionInfo(newInfo);
+        // set the site root and the current project to the user preferences
+        cms.getRequestContext().setSiteRoot(userSiteRoot);
+        cms.getRequestContext().setCurrentProject(userProject);
+
+        // delete the stored workplace settings, so the session has to recieve them again
+        session.removeAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
     }
 
     /**
@@ -343,14 +366,13 @@ public class CmsSessionManager {
     public String toString() {
 
         StringBuffer output = new StringBuffer();
-        Iterator i = m_sessions.keySet().iterator();
+        Iterator i = m_sessionStorageProvider.getAll().iterator();
         output.append("[CmsSessions]:\n");
         while (i.hasNext()) {
-            CmsUUID key = (CmsUUID)i.next();
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-            output.append(key.toString());
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
+            output.append(sessionInfo.getSessionId().toString());
             output.append(" : ");
-            output.append(sessionInfo.getUser().toString());
+            output.append(sessionInfo.getUserId().toString());
             output.append('\n');
         }
         return output.toString();
@@ -363,7 +385,7 @@ public class CmsSessionManager {
      */
     protected void addSessionInfo(CmsSessionInfo sessionInfo) {
 
-        m_sessions.put(sessionInfo.getSessionId(), sessionInfo);
+        m_sessionStorageProvider.put(sessionInfo);
     }
 
     /**
@@ -376,6 +398,17 @@ public class CmsSessionManager {
     protected CmsUUID getSessionUUID(String sessionId) {
 
         return new CmsUUID(sessionId);
+    }
+
+    /**
+     * Sets the storage provider.<p>
+     * 
+     * @param sessionStorageProvider the storage provider implementation
+     */
+    protected void initialize(I_CmsSessionStorageProvider sessionStorageProvider) {
+
+        m_sessionStorageProvider = sessionStorageProvider;
+        m_sessionStorageProvider.initialize();
     }
 
     /**
@@ -425,15 +458,15 @@ public class CmsSessionManager {
         }
 
         CmsSessionInfo sessionInfo = getSessionInfo(event.getSession());
-        CmsUser user = null;
+        CmsUUID userId = null;
         if (sessionInfo != null) {
-            user = sessionInfo.getUser();
-            m_sessions.remove(sessionInfo.getSessionId());
+            userId = sessionInfo.getUserId();
+            m_sessionStorageProvider.remove(sessionInfo.getSessionId());
         }
 
-        if ((user != null) && (getSessionInfos(user.getId()).size() == 0)) {
+        if ((userId != null) && (getSessionInfos(userId).size() == 0)) {
             // remove the temporary locks of this user from memory
-            OpenCmsCore.getInstance().getLockManager().removeTempLocks(user);
+            OpenCmsCore.getInstance().getLockManager().removeTempLocks(userId);
         }
 
         if (LOG.isDebugEnabled()) {
@@ -442,48 +475,13 @@ public class CmsSessionManager {
     }
 
     /**
-     * Switches the current user to the given user. The session info is rebuild as if the given user
-     * performs a login at the workplace.
+     * Removes all stored session info objects.<p>
      * 
-     * @param cms the current CmsObject
-     * @param req the current request
-     * @param user the user to switch to
-     * @throws CmsException
+     * @throws Exception if something goes wrong 
      */
-    public void switchUser(CmsObject cms, HttpServletRequest req, CmsUser user) throws CmsException {
+    protected void shutdown() throws Exception {
 
-        // only user with ACCOUNT_MANAGER role are allowed to switch the user
-        cms.checkRole(CmsRole.ACCOUNT_MANAGER);
-        CmsSessionInfo info = getSessionInfo(req);
-        HttpSession session = req.getSession(false);
-        if (info == null || session == null) {
-            throw new CmsException(Messages.get().container(Messages.ERR_NO_SESSIONINFO_SESSION_0));
-        }
-
-        // get the user settings for the given user and set the start project and the site root
-        CmsUserSettings settings = new CmsUserSettings(cms, user);
-        CmsProject userProject = cms.readProject(settings.getStartProject());
-        String userSiteRoot = settings.getStartSite();
-        CmsRequestContext context = new CmsRequestContext(
-            user,
-            userProject,
-            null,
-            userSiteRoot,
-            null,
-            null,
-            null,
-            0,
-            null,
-            null);
-        // create a new CmsSessionInfo and store it inside the session map
-        CmsSessionInfo newInfo = new CmsSessionInfo(context, info.getSessionId(), info.getMaxInactiveInterval());
-        addSessionInfo(newInfo);
-        // set the site root and the current project to the user preferences
-        cms.getRequestContext().setSiteRoot(userSiteRoot);
-        cms.getRequestContext().setCurrentProject(userProject);
-
-        // delete the stored workplace settings, so the session has to recieve them again
-        session.removeAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+        m_sessionStorageProvider.shutdown();
     }
 
     /**
@@ -537,28 +535,6 @@ public class CmsSessionManager {
      */
     protected void validateSessionInfos() {
 
-        try {
-            // change session map to full synchronization or "slow" mode
-            m_sessions.setFast(false);
-            Iterator i = m_sessions.keySet().iterator();
-            while (i.hasNext()) {
-                CmsUUID sessionId = (CmsUUID)i.next();
-                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
-                if (sessionInfo != null) {
-                    // may be the case in case of concurrent modification
-                    if (sessionInfo.isExpired()) {
-                        // session is invalid, try to remove it
-                        try {
-                            m_sessions.remove(sessionId);
-                        } catch (ConcurrentModificationException ex) {
-                            // ignore, better luck next time...
-                        }
-                    }
-                }
-            }
-        } finally {
-            // reset session map to "fast" mode
-            m_sessions.setFast(true);
-        }
+        m_sessionStorageProvider.validate();
     }
 }

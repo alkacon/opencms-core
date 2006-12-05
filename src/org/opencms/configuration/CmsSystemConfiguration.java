@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/11/29 14:56:10 $
- * Version: $Revision: 1.36.4.8 $
+ * Date   : $Date: 2006/12/05 16:31:06 $
+ * Version: $Revision: 1.36.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,11 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.mail.CmsMailHost;
 import org.opencms.mail.CmsMailSettings;
 import org.opencms.main.CmsContextInfo;
+import org.opencms.main.CmsDefaultSessionStorageProvider;
 import org.opencms.main.CmsEventManager;
 import org.opencms.main.CmsHttpAuthenticationSettings;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsSessionStorageProvider;
 import org.opencms.main.I_CmsRequestHandler;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
@@ -78,11 +80,11 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Element;
 
 /**
- * VFS master configuration class.<p>
+ * System master configuration class.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.8 $
+ * @version $Revision: 1.36.4.9 $
  * 
  * @since 6.0.0
  */
@@ -325,6 +327,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the secure site. */
     public static final String N_SECURE = "secure";
 
+    /** The node name for the session-storageprovider node. */
+    public static final String N_SESSION_STORAGEPROVIDER = "session-storageprovider";
+
     /** The node name for the context site root. */
     public static final String N_SITEROOT = "siteroot";
 
@@ -407,7 +412,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
 
     /** The authorization handler. */
-    private I_CmsAuthorizationHandler m_authorizationHandler;
+    private String m_authorizationHandler;
 
     /** The settings of the driver manager. */
     private CmsCacheSettings m_cacheSettings;
@@ -476,6 +481,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The configured schedule manager. */
     private CmsScheduleManager m_scheduleManager;
 
+    /** The configured session storage provider class name. */
+    private String m_sessionStorageProvider;
+
     /** The configured site manager. */
     private CmsSiteManager m_siteManager;
 
@@ -483,7 +491,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     private int m_tempFileProjectId;
 
     /** The configured validation handler. */
-    private I_CmsValidationHandler m_validationHandler;
+    private String m_validationHandler;
 
     /** Indicates if the version history is enabled. */
     private boolean m_versionHistoryEnabled;
@@ -510,8 +518,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_configuredJobs = new ArrayList();
         m_runtimeProperties = new HashMap();
         m_eventManager = new CmsEventManager();
-        m_validationHandler = new CmsDefaultValidationHandler();
-        m_authorizationHandler = new CmsDefaultAuthorizationHandler();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
         }
@@ -968,6 +974,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             "setPublishHistoryRepository",
             1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYREPOSITORY, 0);
+
+        // add rule for session storage provider
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SESSION_STORAGEPROVIDER, "setSessionStorageProvider", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SESSION_STORAGEPROVIDER, 0, A_CLASS);
     }
 
     /**
@@ -1110,7 +1120,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // validation handler
         if (m_validationHandler != null) {
             Element valHandlerElem = systemElement.addElement(N_VALIDATIONHANDLER);
-            valHandlerElem.addAttribute(A_CLASS, m_validationHandler.getClass().getName());
+            valHandlerElem.addAttribute(A_CLASS, m_validationHandler);
         }
 
         // login manager
@@ -1159,7 +1169,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
                 String aliasServerName = ((CmsSiteMatcher)aliasIterator.next()).getUrl();
                 siteElement.addElement(N_ALIAS).addAttribute(A_SERVER, aliasServerName);
             }
-
         }
 
         // create <runtimeproperties> node
@@ -1298,7 +1307,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // authorization handler
         if (m_authorizationHandler != null) {
             Element authorizationHandlerElem = systemElement.addElement(N_AUTHORIZATIONHANDLER);
-            authorizationHandlerElem.addAttribute(A_CLASS, m_authorizationHandler.getClass().getName());
+            authorizationHandlerElem.addAttribute(A_CLASS, m_authorizationHandler);
         }
 
         // optional publish history nodes
@@ -1308,7 +1317,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             pubHistElement.addElement(N_HISTORYREPOSITORY).setText(m_publishHistoryRepository);
         }
 
-        // return the vfs node
+        // session storage provider
+        if (m_sessionStorageProvider != null) {
+            Element sessionStorageProviderElem = systemElement.addElement(N_SESSION_STORAGEPROVIDER);
+            sessionStorageProviderElem.addAttribute(A_CLASS, m_sessionStorageProvider);
+        }
+
+        // return the system node
         return systemElement;
     }
 
@@ -1319,7 +1334,21 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public I_CmsAuthorizationHandler getAuthorizationHandler() {
 
-        return m_authorizationHandler;
+        try {
+            I_CmsAuthorizationHandler authorizationHandler = (I_CmsAuthorizationHandler)Class.forName(
+                m_authorizationHandler).newInstance();
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.INIT_AUTHORIZATION_HANDLER_CLASS_SUCCESS_1,
+                    m_authorizationHandler));
+            }
+            return authorizationHandler;
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
+                m_authorizationHandler), t);
+            return new CmsDefaultAuthorizationHandler();
+        }
     }
 
     /**
@@ -1549,6 +1578,33 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Returns an instance of the configured session storage provider.<p>
+     * 
+     * @return an instance of the configured session storage provider
+     */
+    public I_CmsSessionStorageProvider getSessionStorageProvider() {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_sessionStorageProvider)) {
+            return new CmsDefaultSessionStorageProvider();
+        }
+
+        try {
+            I_CmsSessionStorageProvider sessionCacheProvider = (I_CmsSessionStorageProvider)Class.forName(m_sessionStorageProvider).newInstance();
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_SESSION_STORAGEPROVIDER_SUCCESS_1,
+                    m_sessionStorageProvider));
+            }
+            return sessionCacheProvider;
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
+                m_sessionStorageProvider), t);
+            return new CmsDefaultSessionStorageProvider();
+        }
+    }
+
+    /**
      * Returns the site manager.<p>
      *
      * @return the site manager
@@ -1575,7 +1631,20 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public I_CmsValidationHandler getValidationHandler() {
 
-        return m_validationHandler;
+        try {
+            I_CmsValidationHandler validationHandler = (I_CmsValidationHandler)Class.forName(m_validationHandler).newInstance();
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.INIT_VALIDATION_HANDLER_CLASS_SUCCESS_1,
+                    m_validationHandler));
+            }
+            return validationHandler;
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1,
+                m_validationHandler), t);
+            return new CmsDefaultValidationHandler();
+        }
     }
 
     /**
@@ -1601,58 +1670,36 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_workflowManager)) {
             return null;
         }
-        
-        Object initClass;
+
         try {
-            initClass = Class.forName(m_workflowManager).newInstance();
-        } catch (Throwable t) {
-            LOG.error(
-                Messages.get().getBundle().key(Messages.LOG_INIT_WORKFLOW_MANAGER_FAILURE_1, m_workflowManager),
-                t);
-            return null;
-        }
-        if (initClass instanceof I_CmsWorkflowManager) {
-            I_CmsWorkflowManager wfManager = (I_CmsWorkflowManager)initClass;
+            I_CmsWorkflowManager wfManager = (I_CmsWorkflowManager)Class.forName(m_workflowManager).newInstance();
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_WORKFLOW_MANAGER_SUCCESS_1,
+                    m_workflowManager));
+            }
             if (m_workflowEngine != null) {
                 try {
-                    initClass = Class.forName(m_workflowEngine).newInstance();
-                } catch (Throwable t) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.LOG_INIT_WORKFLOW_ENGINE_FAILURE_1,
-                        m_workflowEngine), t);
-                    return wfManager;
-                }
-                if (initClass instanceof I_CmsWorkflowEngine) {
-                    I_CmsWorkflowEngine wfEngine = (I_CmsWorkflowEngine)initClass;
+                    I_CmsWorkflowEngine wfEngine = (I_CmsWorkflowEngine)Class.forName(m_workflowEngine).newInstance();
                     if (CmsLog.INIT.isInfoEnabled()) {
                         CmsLog.INIT.info(Messages.get().getBundle().key(
                             Messages.INIT_WORKFLOW_ENGINE_SUCCESS_1,
                             m_workflowEngine));
                     }
                     wfManager.setEngine(wfEngine);
-                } else {
-                    if (CmsLog.INIT.isErrorEnabled()) {
-                        CmsLog.INIT.error(Messages.get().getBundle().key(
-                            Messages.INIT_WORKFLOW_ENGINE_INVALID_1,
-                            m_workflowEngine));
-                    }
-                    return wfManager;
+                } catch (Throwable t) {
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.LOG_INIT_WORKFLOW_ENGINE_FAILURE_1,
+                        m_workflowEngine), t);
                 }
             }
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_WORKFLOW_MANAGER_SUCCESS_1,
-                    m_workflowManager));
-            }
             return wfManager;
-        } else {
-            if (CmsLog.INIT.isErrorEnabled()) {
-                CmsLog.INIT.error(Messages.get().getBundle().key(
-                    Messages.INIT_WORKFLOW_MANAGER_INVALID_1,
-                    m_workflowManager));
-            }
+        } catch (Throwable t) {
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_INIT_WORKFLOW_MANAGER_FAILURE_1, m_workflowManager),
+                t);
+            return null;
         }
-        return null;
     }
 
     /**
@@ -1682,19 +1729,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void setAuthorizationHandler(String authorizationHandlerClass) {
 
-        try {
-            m_authorizationHandler = (I_CmsAuthorizationHandler)Class.forName(authorizationHandlerClass).newInstance();
-            if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.INIT_AUTHORIZATION_HANDLER_CLASS_SUCCESS_1,
-                    authorizationHandlerClass));
-            }
-        } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
-                m_authorizationHandler), t);
-            return;
-        }
+        m_authorizationHandler = authorizationHandlerClass;
     }
 
     /**
@@ -1950,6 +1985,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Sets the session storage provider.<p>
+     * 
+     * @param sessionStorageProviderClass the session storage provider class to set.
+     */
+    public void setSessionStorageProvider(String sessionStorageProviderClass) {
+
+        m_sessionStorageProvider = sessionStorageProviderClass;
+    }
+
+    /**
      * Sets the site manager.<p>
      *
      * @param siteManager the site manager to set
@@ -1988,19 +2033,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void setValidationHandler(String validationHandlerClass) {
 
-        try {
-            m_validationHandler = (I_CmsValidationHandler)Class.forName(validationHandlerClass).newInstance();
-            if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.INIT_VALIDATION_HANDLER_CLASS_SUCCESS_1,
-                    validationHandlerClass));
-            }
-        } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1,
-                validationHandlerClass), t);
-            return;
-        }
+        m_validationHandler = validationHandlerClass;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/Attic/CmsPublishDefaultEventListener.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/05 16:31:07 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,6 @@
 
 package org.opencms.publish;
 
-import org.opencms.main.CmsBroadcast;
-import org.opencms.main.CmsSessionInfo;
-import org.opencms.main.OpenCms;
-
-import java.util.Iterator;
 
 /**
  * Default implementation for the {@link I_CmsPublishEventListener}.<p>
@@ -44,11 +39,40 @@ import java.util.Iterator;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
 class CmsPublishDefaultEventListener extends CmsPublishEventAdapter {
+
+    /** Publish engine. */
+    private CmsPublishEngine m_publishEngine;
+
+    /**
+     * Default constructor.<p>
+     * 
+     * @param publishEngine the publish engine
+     */
+    protected CmsPublishDefaultEventListener(CmsPublishEngine publishEngine) {
+
+        m_publishEngine = publishEngine;
+    }
+
+    /**
+     * @see org.opencms.publish.CmsPublishEventAdapter#onAbort(String, org.opencms.publish.CmsPublishJobEnqueued)
+     */
+    public void onAbort(String userName, CmsPublishJobEnqueued publishJob) {
+
+        if (userName.equals(publishJob.getUserName())) {
+            // prevent showing messages if the owner aborted the job by himself 
+            return;
+        }
+        String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
+            Messages.GUI_PUBLISH_JOB_ABORTED_2,
+            new Long(publishJob.getEnqueueTime()),
+            userName);
+        sendMessage(publishJob.getUserName(), msgText);
+    }
 
     /**
      * @see org.opencms.publish.CmsPublishEventAdapter#onFinish(org.opencms.publish.CmsPublishJobRunning)
@@ -73,22 +97,6 @@ class CmsPublishDefaultEventListener extends CmsPublishEventAdapter {
     }
 
     /**
-     * @see org.opencms.publish.CmsPublishEventAdapter#onAbort(String, org.opencms.publish.CmsPublishJobEnqueued)
-     */
-    public void onAbort(String userName, CmsPublishJobEnqueued publishJob) {
-
-        if (userName.equals(publishJob.getUserName())) {
-            // prevent showing messages if the owner aborted the job by himself 
-            return;
-        }
-        String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
-            Messages.GUI_PUBLISH_JOB_ABORTED_2,
-            new Long(publishJob.getEnqueueTime()),
-            userName);
-        sendMessage(publishJob.getUserName(), msgText);
-    }
-
-    /**
      * @see org.opencms.publish.CmsPublishEventAdapter#onStart(org.opencms.publish.CmsPublishJobEnqueued)
      */
     public void onStart(CmsPublishJobEnqueued publishJob) {
@@ -106,24 +114,11 @@ class CmsPublishDefaultEventListener extends CmsPublishEventAdapter {
     /**
      * Sends a message to the given user.<p>
      * 
-     * @param userName the user to send the message to
-     * @param msgText the message to send
+     * @param toUserName the user to send the message to
+     * @param message the message to send
      */
-    private void sendMessage(String userName, String msgText) {
+    protected void sendMessage(String toUserName, String message) {
 
-        CmsBroadcast message = null;
-        Iterator itSessions = OpenCms.getSessionManager().getSessionInfos().iterator();
-        while (itSessions.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)itSessions.next();
-            // use only sessions of the given user 
-            if (sessionInfo.getUser().getName().equals(userName)) {
-                if (message == null) {
-                    // initialize the message if needed
-                    message = new CmsBroadcast(sessionInfo.getUser(), msgText);
-                }
-                // put the message in the queue
-                sessionInfo.getBroadcastQueue().add(message);
-            }
-        }
+        m_publishEngine.sendMessage(toUserName, message);
     }
 }

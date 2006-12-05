@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsBroadcast.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/12/05 16:31:06 $
+ * Version: $Revision: 1.7.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,11 @@ import org.opencms.file.CmsUser;
  * 
  * To addess a broadcast to another user, it must be placed in the
  * broadcast queue of that user using for example 
- * {@link org.opencms.main.CmsSessionManager#sendBroadcast(org.opencms.file.CmsObject, String, CmsUser)}.<p>
+ * {@link org.opencms.main.CmsSessionManager#sendBroadcast(CmsUser, String, CmsUser)}.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.8.1 $ 
  * 
  * @since 6.0.0 
  */

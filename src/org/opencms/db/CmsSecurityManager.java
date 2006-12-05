@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/11/29 17:04:32 $
- * Version: $Revision: 1.97.4.19 $
+ * Date   : $Date: 2006/12/05 16:31:07 $
+ * Version: $Revision: 1.97.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3807,6 +3807,30 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param username the name of the user that is to be read
+     *
+     * @return user read form the cms
+     * 
+     * @throws CmsException if operation was not succesful
+     */
+    public CmsUser readUser(CmsRequestContext context, String username) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsUser result = null;
+        try {
+            result = m_driverManager.readUser(dbc, username);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_USER_FOR_NAME_1, username), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns a user object.<p>
+     *
+     * @param context the current request context
+     * @param username the name of the user that is to be read
      * @param type the type of the user
      *
      * @return user read
@@ -3846,29 +3870,6 @@ public final class CmsSecurityManager {
         CmsUser result = null;
         try {
             result = m_driverManager.readUser(dbc, username, password);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_USER_FOR_NAME_1, username), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Returns a user object.<p>
-     *
-     * @param username the name of the user that is to be read
-     *
-     * @return user read form the cms
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public CmsUser readUser(String username) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext();
-        CmsUser result = null;
-        try {
-            result = m_driverManager.readUser(dbc, username);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_USER_FOR_NAME_1, username), e);
         } finally {

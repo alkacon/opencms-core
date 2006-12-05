@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2006/11/29 17:03:54 $
- * Version: $Revision: 1.37.4.12 $
+ * Date   : $Date: 2006/12/05 16:31:07 $
+ * Version: $Revision: 1.37.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +62,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.12 $ 
+ * @version $Revision: 1.37.4.13 $ 
  * 
  * @since 6.0.0 
  * 
@@ -471,14 +472,14 @@ public final class CmsLockManager {
     /**
      * Removes all exclusive temporary locks of a user.<p>
      * 
-     * @param user the user whose locks has to be removed
+     * @param userId the id of the user whose locks has to be removed
      */
-    public void removeTempLocks(CmsUser user) {
+    public void removeTempLocks(CmsUUID userId) {
 
         Iterator itLocks = m_locks.values().iterator();
         while (itLocks.hasNext()) {
             CmsLock currentLock = (CmsLock)itLocks.next();
-            if (currentLock.isTemporary() && currentLock.isOwnedBy(user)) {
+            if (currentLock.isTemporary() && currentLock.getUserId().equals(userId)) {
                 unlockResource(currentLock.getResourceName(), false);
             }
         }

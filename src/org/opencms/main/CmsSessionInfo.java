@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2006/07/26 14:59:07 $
- * Version: $Revision: 1.16.4.1 $
+ * Date   : $Date: 2006/12/05 16:31:07 $
+ * Version: $Revision: 1.16.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsUser;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -55,7 +54,7 @@ import org.apache.commons.collections.buffer.BoundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.1 $ 
+ * @version $Revision: 1.16.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +70,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
     private static final long serialVersionUID = 927301527031117920L;
 
     /** The broadcast queue buffer for the user of this session info. */
-    private Buffer m_broadcastQueue;
+    private transient Buffer m_broadcastQueue;
 
     /** The maximum time, in seconds, this session info is allowed to be inactive. */
     private int m_maxInactiveInterval;
@@ -91,8 +90,8 @@ public class CmsSessionInfo implements Comparable, Serializable {
     /** The time this session info was last updated. */
     private long m_timeUpdated;
 
-    /** The user to which this session info belongs. */
-    private CmsUser m_user;
+    /** The id of user to which this session info belongs. */
+    private CmsUUID m_userId;
 
     /**
      * Creates a new CmsSessionInfo object.<p>
@@ -106,7 +105,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
         m_timeCreated = System.currentTimeMillis();
         m_sessionId = sessionId;
         m_maxInactiveInterval = maxInactiveInterval;
-        m_user = context.currentUser();
+        m_userId = context.currentUser().getId();
         update(context);
         m_broadcastQueue = BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(QUEUE_SIZE));
     }
@@ -122,7 +121,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
             return 0;
         }
         if (!(obj instanceof CmsSessionInfo)) {
-            return m_user.getName().compareTo(((CmsSessionInfo)obj).getUser().getName());
+            return m_userId.compareTo(((CmsSessionInfo)obj).getUserId());
         }
         return 0;
     }
@@ -217,13 +216,13 @@ public class CmsSessionInfo implements Comparable, Serializable {
     }
 
     /**
-     * Returns the user to which this session info belongs.<p>
+     * Returns the id of the user to which this session info belongs.<p>
      * 
-     * @return the user to which this session info belongs
+     * @return the id of the user to which this session info belongs
      */
-    public CmsUser getUser() {
+    public CmsUUID getUserId() {
 
-        return m_user;
+        return m_userId;
     }
 
     /**
@@ -245,6 +244,24 @@ public class CmsSessionInfo implements Comparable, Serializable {
     public void setProject(int projectId) {
 
         m_projectId = projectId;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        StringBuffer str = new StringBuffer(64);
+        str.append("[");
+        str.append("sessionId: ").append(m_sessionId).append(", ");
+        str.append("userId: ").append(m_userId).append(", ");
+        str.append("projectId: ").append(m_projectId).append(", ");
+        str.append("siteRoot: ").append(m_siteRoot).append(", ");
+        str.append("timeCreated: ").append(m_timeCreated).append(", ");
+        str.append("timeUpdated: ").append(m_timeUpdated).append(", ");
+        str.append("maxInactiveInterval: ").append(m_maxInactiveInterval);
+        str.append("]");
+        return str.toString();
     }
 
     /**

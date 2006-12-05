@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/05 16:31:07 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,10 @@ import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.I_CmsDbContextFactory;
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsInitException;
@@ -61,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
@@ -72,6 +74,9 @@ public final class CmsPublishEngine implements Runnable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishEngine.class);
+
+    /** Admin user as message sender. */
+    private CmsUser m_adminUser;
 
     /** The current running publish job. */
     private CmsPublishThread m_currentPublishJob;
@@ -127,7 +132,7 @@ public final class CmsPublishEngine implements Runnable {
         // initialize event handling
         m_listeners = new CmsPublishListenerCollection();
         // initialize default event listener
-        addPublishListener(new CmsPublishDefaultEventListener());
+        addPublishListener(new CmsPublishDefaultEventListener(this));
         // initialize publish report repository path
         setReportsRepositoryPath(reportsRepositoryPath);
         // read the publish history from the repository
@@ -505,6 +510,29 @@ public final class CmsPublishEngine implements Runnable {
     protected void removePublishListener(I_CmsPublishEventListener listener) {
 
         m_listeners.remove(listener);
+    }
+
+    /**
+     * Sends a message to the given user.<p>
+     * 
+     * @param toUserName the user to send the message to
+     * @param message the message to send
+     */
+    protected void sendMessage(String toUserName, String message) {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext();
+        try {
+            if (m_adminUser == null) {
+                // set the admin user (as message sender)
+                m_adminUser = m_driverManager.readUser(dbc, OpenCms.getDefaultUsers().getUserAdmin());
+            }
+            CmsUser toUser = m_driverManager.readUser(dbc, toUserName);
+            OpenCms.getSessionManager().sendBroadcast(m_adminUser, message, toUser);
+        } catch (CmsDataAccessException e) {
+            LOG.error(e);
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/A_CmsMessageDialog.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/12/05 16:31:07 $
+ * Version: $Revision: 1.6.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.workplace.broadcast;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -45,12 +46,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Base dialog to edit a message info object.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,6 +64,9 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
 
     /** Request parameter name for the list of session ids. */
     public static final String PARAM_SESSIONIDS = "sessionids";
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsMessageDialog.class);
 
     /** Message info object. */
     protected CmsMessageInfo m_msgInfo;
@@ -119,9 +125,13 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
             String id = itIds.next().toString();
             CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(id);
             if (session != null) {
-                String userName = session.getUser().getFullName();
-                if (!users.contains(userName)) {
-                    users.add(userName);
+                try {
+                    String userName = getCms().readUser(session.getUserId()).getFullName();
+                    if (!users.contains(userName)) {
+                        users.add(userName);
+                    }
+                } catch (Exception e) {
+                    LOG.error(e);
                 }
             }
         }

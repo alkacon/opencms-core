@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/12/04 13:38:25 $
- * Version: $Revision: 1.218.4.17 $
+ * Date   : $Date: 2006/12/05 16:31:06 $
+ * Version: $Revision: 1.218.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -136,7 +136,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.17 $ 
+ * @version $Revision: 1.218.4.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -1026,6 +1026,9 @@ public final class OpenCmsCore {
         // store the runtime properties
         m_runtimeProperties.putAll(systemConfiguration.getRuntimeProperties());
 
+        // initialize the session storage provider
+        I_CmsSessionStorageProvider sessionStorageProvider = systemConfiguration.getSessionStorageProvider();
+
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms;
         try {
@@ -1069,6 +1072,8 @@ public final class OpenCmsCore {
                 m_workflowManager.initialize(initCmsObject(adminCms), m_securityManager);
             }
 
+            // initialize the session manager
+            m_sessionManager.initialize(sessionStorageProvider);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
@@ -1348,16 +1353,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Sets the session manager.<p>
-     * 
-     * @param sessionManager the session manager to set
-     */
-    protected void setSessionManager(CmsSessionManager sessionManager) {
-
-        m_sessionManager = sessionManager;
-    }
-
-    /**
      * Displays a resource from the OpenCms by writing the result to the provided 
      * Servlet response output stream.<p>
      * 
@@ -1389,7 +1384,6 @@ public final class OpenCmsCore {
 
         synchronized (LOCK) {
             if (getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE) {
-
                 System.err.println(Messages.get().getBundle().key(
                     Messages.LOG_SHUTDOWN_CONSOLE_NOTE_2,
                     getSystemInfo().getVersionName(),
@@ -1417,7 +1411,7 @@ public final class OpenCmsCore {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
                 }
 
-                // the first thing we have to do is to wait until the current publish process is finished
+                // the first thing we have to do is to wait until the current publish process finishes
                 m_publishEngine.shutDown();
 
                 try {
@@ -1475,6 +1469,15 @@ public final class OpenCmsCore {
                         Messages.LOG_ERROR_SECURITY_SHUTDOWN_1,
                         e.getMessage()), e);
                 }
+                try {
+                    if (m_sessionManager != null) {
+                        m_sessionManager.shutdown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1,
+                        e.getMessage()), e);
+                }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
                 if (CmsLog.INIT.isInfoEnabled()) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_OPENCMS_STOPPED_1, runtime));
@@ -1515,7 +1518,7 @@ public final class OpenCmsCore {
 
         return initCmsObject(
             request,
-            cms.getRequestContext().currentUser().getName(),
+            cms.getRequestContext().currentUser(),
             site.getSiteRoot(),
             cms.getRequestContext().currentProject().getId());
     }
@@ -1758,7 +1761,7 @@ public final class OpenCmsCore {
 
         CmsUser user = contextInfo.getUser();
         if (user == null) {
-            user = m_securityManager.readUser(contextInfo.getUserName());
+            user = m_securityManager.readUser(null, contextInfo.getUserName());
         }
 
         CmsProject project = contextInfo.getProject();
@@ -1784,110 +1787,10 @@ public final class OpenCmsCore {
     }
 
     /**
-     * This method handles the user authentification for each request sent to OpenCms.<p>
-     *
-     * User authentification is done in three steps:
-     * <ol>
-     * <li>Session authentification: OpenCms stores information of all authentificated
-     *      users in an internal storage based on the users session.</li>
-     * <li>Authorization handler authentification: If the session authentification fails, 
-     *      the current configured authorization handler is called.</li>
-     * <li>Default user: When both authentification methods fail, the user is set to 
-     *      the default (Guest) user.</li>
-     * </ol>
-     *
-     * @param req the current http request
-     * @param res the current http response
-     * 
-     * @return the initialized cms context
-     * 
-     * @throws IOException if user authentication fails
-     * @throws CmsException in case something goes wrong
-     */
-    private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
-
-        CmsObject cms;
-
-        // try to get an OpenCms user session info object for this request
-        CmsSessionInfo sessionInfo = m_sessionManager.getSessionInfo(req);
-        // initialize the requested site root
-        CmsSite site = getSiteManager().matchRequest(req);
-
-        if (sessionInfo != null) {
-            // a user name is found in the session manager, reuse this user information
-            int project = sessionInfo.getProject();
-
-            // initialize site root from request
-            String siteroot = null;
-            // a dedicated workplace site is configured
-            if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
-                // if no dedicated workplace site is configured, 
-                // or for the dedicated workplace site, use the site root from the session attribute
-                siteroot = sessionInfo.getSiteRoot();
-            }
-            if (siteroot == null) {
-                siteroot = site.getSiteRoot();
-            }
-            cms = initCmsObject(req, sessionInfo.getUser().getName(), siteroot, project);
-        } else {
-            cms = m_authorizationHandler.initCmsObject(req);
-            if (cms == null) {
-                // authentification failed, so display a login screen
-                requestAuthorization(req, res);
-                cms = initCmsObject(
-                    req,
-                    OpenCms.getDefaultUsers().getUserGuest(),
-                    site.getSiteRoot(),
-                    CmsProject.ONLINE_PROJECT_ID);
-            }
-        }
-        // return the initialized cms user context object
-        return cms;
-    }
-
-    /**
-     * Returns an initialized CmsObject with the given users permissions.<p>
-     * 
-     * In case the password is <code>null</code>, or the user is the <code>Guest</code> user,
-     * no password check is done. Therefore you can initialize all users without knowing their passwords 
-     * by just supplying <code>null</code> as password. This is intended only for 
-     * internal operation in the core.<p>
-     * 
-     * @param req the current request
-     * @param res the current response
-     * @param user the user to initialize the CmsObject with
-     * @param password the password of the user 
-     * @return a cms context that has been initialized with "Guest" permissions
-     * @throws CmsException in case the CmsObject could not be initialized
-     */
-    private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res, String user, String password)
-    throws CmsException {
-
-        String siteroot = null;
-        // gather information from request / response if provided
-        if ((req != null) && (res != null)) {
-            siteroot = OpenCms.getSiteManager().matchRequest(req).getSiteRoot();
-        }
-        // initialize the user        
-        if (user == null) {
-            user = getDefaultUsers().getUserGuest();
-        }
-        if (siteroot == null) {
-            siteroot = "/";
-        }
-        CmsObject cms = initCmsObject(req, user, siteroot, CmsProject.ONLINE_PROJECT_ID);
-        // login the user if different from Guest and password was provided
-        if ((password != null) && !getDefaultUsers().getUserGuest().equals(user)) {
-            cms.loginUser(user, password, CmsContextInfo.LOCALHOST);
-        }
-        return cms;
-    }
-
-    /**
      * Inits a CmsObject with the given users information.<p>
      * 
-     * @param request the current http request (or null)
-     * @param userName the name of the user to init
+     * @param request the current http request (or <code>null</code>)
+     * @param user the initialized user
      * @param siteRoot the users current site 
      * @param projectId the id of the users current project
      * 
@@ -1895,10 +1798,9 @@ public final class OpenCmsCore {
      * 
      * @throws CmsException in case something goes wrong
      */
-    private CmsObject initCmsObject(HttpServletRequest request, String userName, String siteRoot, int projectId)
+    private CmsObject initCmsObject(HttpServletRequest request, CmsUser user, String siteRoot, int projectId)
     throws CmsException {
 
-        CmsUser user = m_securityManager.readUser(userName);
         CmsProject project = null;
         try {
             project = m_securityManager.readProject(projectId);
@@ -1985,6 +1887,110 @@ public final class OpenCmsCore {
 
         // now generate and return the CmsObject
         return initCmsObject(contextInfo);
+    }
+
+    /**
+     * Handles the user authentification for each request sent to OpenCms.<p>
+     *
+     * User authentification is done in three steps:
+     * <ol>
+     * <li>Session authentification: OpenCms stores information of all authentificated
+     *      users in an internal storage based on the users session.</li>
+     * <li>Authorization handler authentification: If the session authentification fails, 
+     *      the current configured authorization handler is called.</li>
+     * <li>Default user: When both authentification methods fail, the user is set to 
+     *      the default (Guest) user.</li>
+     * </ol>
+     *
+     * @param req the current http request
+     * @param res the current http response
+     * 
+     * @return the initialized cms context
+     * 
+     * @throws IOException if user authentication fails
+     * @throws CmsException in case something goes wrong
+     */
+    private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
+
+        CmsObject cms;
+
+        // try to get an OpenCms user session info object for this request
+        CmsSessionInfo sessionInfo = m_sessionManager.getSessionInfo(req);
+        // initialize the requested site root
+        CmsSite site = getSiteManager().matchRequest(req);
+
+        if (sessionInfo != null) {
+            // a user name is found in the session manager, reuse this user information
+            int project = sessionInfo.getProject();
+
+            // initialize site root from request
+            String siteroot = null;
+            // a dedicated workplace site is configured
+            if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
+                // if no dedicated workplace site is configured, 
+                // or for the dedicated workplace site, use the site root from the session attribute
+                siteroot = sessionInfo.getSiteRoot();
+            }
+            if (siteroot == null) {
+                siteroot = site.getSiteRoot();
+            }
+            cms = initCmsObject(req, m_securityManager.readUser(null, sessionInfo.getUserId()), siteroot, project);
+        } else {
+            cms = m_authorizationHandler.initCmsObject(req);
+            if (cms == null) {
+                // authentification failed, so display a login screen
+                requestAuthorization(req, res);
+                cms = initCmsObject(
+                    req,
+                    m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
+                    site.getSiteRoot(),
+                    CmsProject.ONLINE_PROJECT_ID);
+            }
+        }
+        // return the initialized cms user context object
+        return cms;
+    }
+
+    /**
+     * Returns an initialized CmsObject with the given users permissions.<p>
+     * 
+     * In case the password is <code>null</code>, or the user is the <code>Guest</code> user,
+     * no password check is done. Therefore you can initialize all users without knowing their passwords 
+     * by just supplying <code>null</code> as password. This is intended only for 
+     * internal operation in the core.<p>
+     * 
+     * @param req the current request
+     * @param res the current response
+     * @param user the user to initialize the CmsObject with
+     * @param password the password of the user 
+     * @return a cms context that has been initialized with "Guest" permissions
+     * @throws CmsException in case the CmsObject could not be initialized
+     */
+    private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res, String user, String password)
+    throws CmsException {
+
+        String siteroot = null;
+        // gather information from request / response if provided
+        if ((req != null) && (res != null)) {
+            siteroot = OpenCms.getSiteManager().matchRequest(req).getSiteRoot();
+        }
+        // initialize the user        
+        if (user == null) {
+            user = getDefaultUsers().getUserGuest();
+        }
+        if (siteroot == null) {
+            siteroot = "/";
+        }
+        CmsObject cms = initCmsObject(
+            req,
+            m_securityManager.readUser(null, user),
+            siteroot,
+            CmsProject.ONLINE_PROJECT_ID);
+        // login the user if different from Guest and password was provided
+        if ((password != null) && !getDefaultUsers().getUserGuest().equals(user)) {
+            cms.loginUser(user, password, CmsContextInfo.LOCALHOST);
+        }
+        return cms;
     }
 
     /**
