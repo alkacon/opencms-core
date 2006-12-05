@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2006/10/20 10:23:54 $
- * Version: $Revision: 1.26.4.2 $
+ * Date   : $Date: 2006/12/05 15:26:51 $
+ * Version: $Revision: 1.26.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.26.4.2 $ 
+ * @version $Revision: 1.26.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,6 +134,9 @@ public class CmsNewResource extends CmsDialog {
     /** The property value for available resource to reset behaviour to default dialog. */
     public static final String VALUE_DEFAULT = "default";
 
+    /** The default suffix. */
+    public static final String DEFAULT_SUFFIX = ".html";
+    
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResource.class);
 
@@ -600,10 +603,12 @@ public class CmsNewResource extends CmsDialog {
      */
     protected String appendSuffixHtml(String resourceName, boolean forceSuffix) {
 
-        // append ".html" suffix to new file if not present
-        if ((forceSuffix || Boolean.valueOf(getParamAppendSuffixHtml()).booleanValue())
-            && (CmsResource.getName(resourceName).indexOf('.') < 0)) {
-            resourceName += ".html";
+        // append the default suffix (".html") to new file if no standard type was provided
+        if ((forceSuffix || Boolean.valueOf(getParamAppendSuffixHtml()).booleanValue())) {
+            
+            if (OpenCms.getResourceManager().getMimeType(resourceName, null, null) == null) {
+                resourceName += DEFAULT_SUFFIX;
+            }
         }
         return resourceName;
     }
