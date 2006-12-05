@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/A_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2006/11/29 14:57:00 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/12/05 16:23:16 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.4 
  */
@@ -63,15 +63,19 @@ public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHan
         // update the request context
         cms = OpenCmsCore.getInstance().updateContext(request, cms);
 
-        // create the session info object
-        CmsSessionInfo sessionInfo = new CmsSessionInfo(
-            cms.getRequestContext(),
-            new CmsUUID(),
-            request.getSession().getMaxInactiveInterval());
-        
-        // register the updated cms object in the session manager
-        OpenCmsCore.getInstance().getSessionManager().addSessionInfo(sessionInfo);
-        
+        if (!cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserGuest())
+            && !cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserExport())) {
+            
+            // create the session info object, only for 'real' users
+            CmsSessionInfo sessionInfo = new CmsSessionInfo(
+                cms.getRequestContext(),
+                new CmsUUID(),
+                request.getSession().getMaxInactiveInterval());
+
+            // register the updated cms object in the session manager
+            OpenCmsCore.getInstance().getSessionManager().addSessionInfo(sessionInfo);
+        }
+
         // return the updated cms object
         return cms;
     }
