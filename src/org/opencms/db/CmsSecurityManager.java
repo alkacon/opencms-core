@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/12/05 16:31:07 $
- * Version: $Revision: 1.97.4.20 $
+ * Date   : $Date: 2006/12/06 16:12:32 $
+ * Version: $Revision: 1.97.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -763,36 +763,6 @@ public final class CmsSecurityManager {
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, source, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
-
-            // if copying as siblings, deny operation if child sibling resources are already locked
-            // since we should not change the lock state of these siblings without request,
-            // but the copied folder should be locked by the current user and also all resources inside
-            if (!siblingMode.equals(CmsResource.COPY_AS_NEW)) {
-                CmsLockFilter filter = CmsLockFilter.FILTER_NON_INHERITED.filterSharedExclusive();
-                filter = filter.filterNotLockableByUser(dbc.currentUser());
-                Iterator itLocks = getLockedResources(context, source, filter).iterator();
-                if (itLocks.hasNext()) {
-                    if (siblingMode.equals(CmsResource.COPY_AS_SIBLING)) {
-                        throw new CmsVfsException(Messages.get().container(
-                            Messages.ERR_COPY_LOCKED_SIBLINGS_1,
-                            dbc.removeSiteRoot(source.getRootPath()),
-                            destination));
-                    } else {
-                        while (itLocks.hasNext()) {
-                            String resName = (String)itLocks.next();
-                            CmsResource resource = readResource(context, resName, CmsResourceFilter.ALL);
-                            // COPY_PRESERVE_SIBLING
-                            if (resource.getSiblingCount() > 1) {
-                                throw new CmsVfsException(Messages.get().container(
-                                    Messages.ERR_COPY_LOCKED_SIBLINGS_1,
-                                    dbc.removeSiteRoot(source.getRootPath()),
-                                    destination));
-                            }
-                        }
-                    }
-                }
-            }
-
             // target permissions will be checked later
             m_driverManager.copyResource(dbc, source, destination, siblingMode);
         } catch (Exception e) {
@@ -4974,7 +4944,7 @@ public final class CmsSecurityManager {
 
         if (writeRequired && checkLock) {
             // check lock state only if required
-            CmsLock lock = m_driverManager.getLock(dbc, resource);
+            CmsLock lock = m_lockManager.getLock(dbc, resource, false);
             // if the resource is not locked by the current user, write and control 
             // access must cause a permission error that must not be cached
             if (lock.isUnlocked() || !lock.isLockableBy(dbc.currentUser())) {
