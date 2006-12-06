@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/12/05 16:31:06 $
- * Version: $Revision: 1.36.4.9 $
+ * Date   : $Date: 2006/12/06 10:43:05 $
+ * Version: $Revision: 1.36.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.9 $
+ * @version $Revision: 1.36.4.10 $
  * 
  * @since 6.0.0
  */
@@ -1334,6 +1334,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public I_CmsAuthorizationHandler getAuthorizationHandler() {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_authorizationHandler)) {
+            return new CmsDefaultAuthorizationHandler();
+        }
         try {
             I_CmsAuthorizationHandler authorizationHandler = (I_CmsAuthorizationHandler)Class.forName(
                 m_authorizationHandler).newInstance();
@@ -1587,9 +1590,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_sessionStorageProvider)) {
             return new CmsDefaultSessionStorageProvider();
         }
-
         try {
-            I_CmsSessionStorageProvider sessionCacheProvider = (I_CmsSessionStorageProvider)Class.forName(m_sessionStorageProvider).newInstance();
+            I_CmsSessionStorageProvider sessionCacheProvider = (I_CmsSessionStorageProvider)Class.forName(
+                m_sessionStorageProvider).newInstance();
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_SESSION_STORAGEPROVIDER_SUCCESS_1,
@@ -1631,6 +1634,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public I_CmsValidationHandler getValidationHandler() {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_validationHandler)) {
+            return new CmsDefaultValidationHandler();
+        }
         try {
             I_CmsValidationHandler validationHandler = (I_CmsValidationHandler)Class.forName(m_validationHandler).newInstance();
             if (LOG.isInfoEnabled()) {
@@ -1670,7 +1676,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_workflowManager)) {
             return null;
         }
-
         try {
             I_CmsWorkflowManager wfManager = (I_CmsWorkflowManager)Class.forName(m_workflowManager).newInstance();
             if (CmsLog.INIT.isInfoEnabled()) {
