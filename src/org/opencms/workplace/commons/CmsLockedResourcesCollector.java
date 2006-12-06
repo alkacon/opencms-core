@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesCollector.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/06 13:16:42 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListResourceCollector;
@@ -44,12 +44,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
 /**
  * Collector for locked resources.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.4 
  */
@@ -57,6 +58,9 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
 
     /** Parameter of the default collector name. */
     public static final String COLLECTOR_NAME = "lockedResources";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLockedResourcesCollector.class);
 
     /** Resources parameter name constant. */
     public static final String PARAM_RESOURCES = "resources";
@@ -98,7 +102,7 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
-    public List getResources(CmsObject cms, Map params) throws CmsException {
+    public List getResources(CmsObject cms, Map params) {
 
         String resourcesParam = "/";
         if (params.containsKey(PARAM_RESOURCES)) {
@@ -118,7 +122,11 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
                 resName = resourcesParam.substring(pos + 1, newPos);
             }
             pos = newPos;
-            resources.add(cms.readResource(resName, CmsResourceFilter.ALL));
+            try {
+            	resources.add(cms.readResource(resName, CmsResourceFilter.ALL));
+            } catch (Exception e) {
+                LOG.error(e);
+            }
         }
         return resources;
     }
