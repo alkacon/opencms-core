@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/11/30 09:32:46 $
- * Version: $Revision: 1.570.2.39 $
+ * Date   : $Date: 2006/12/06 16:11:49 $
+ * Version: $Revision: 1.570.2.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1474,25 +1474,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /**
      * Creates a new resource with the provided content and properties.<p>
      * 
-     * The <code>content</code> parameter may be null if the resource id already exists.
-     * If so, the created resource will be made a sibling of the existing resource,
-     * the existing content will remain unchanged.
+     * The <code>content</code> parameter may be <code>null</code> if the resource id 
+     * already exists. If so, the created resource will be a sibling of the existing 
+     * resource, the existing content will remain unchanged.<p>
+     * 
      * This is used during file import for import of siblings as the 
-     * <code>manifest.xml</code> only contains one binary copy per file. 
-     * If the resource id exists but the <code>content</code> is not null,
+     * <code>manifest.xml</code> only contains one binary copy per file.<p>
+     *  
+     * If the resource id exists but the <code>content</code> is not <code>null</code>,
      * the created resource will be made a sibling of the existing resource,
      * and both will share the new content.<p>
-     * 
-     * Note: the id used to identify the content record (pk of the record) is generated
-     * on each call of this method (with valid content) !
      * 
      * @param dbc the current database context
      * @param resourcePath the name of the resource to create (full path)
      * @param resource the new resource to create
      * @param content the content for the new resource
      * @param properties the properties for the new resource
-     * @param importCase if true, signals that this operation is done while importing resource,
-     *      causing different lock behaviour and potential "lost and found" usage
+     * @param importCase if <code>true</code>, signals that this operation is done while 
+     *                      importing resource, causing different lock behaviour and 
+     *                      potential "lost and found" usage
      * 
      * @return the created resource
      * 
@@ -1779,7 +1779,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
                 // resource does not exist.
                 newResource = m_vfsDriver.createResource(dbc, dbc.currentProject(), newResource, content);
-
             } else {
                 // lock the original resource
                 lockResource(dbc, overwrittenResource, CmsLockType.EXCLUSIVE);
@@ -1829,7 +1828,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     newResource)));
             }
         }
-
         return newResource;
     }
 
@@ -2928,12 +2926,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // Improved: first calculate closure of all siblings, then filter and add them
             Set siblingsClosure = new HashSet(publishFiles);
             for (int i = 0; i < size; i++) {
-                CmsResource currentFile = (CmsResource)publishFiles.get(i);    
+                CmsResource currentFile = (CmsResource)publishFiles.get(i);
                 if (currentFile.getSiblingCount() > 1) {
-                    siblingsClosure.addAll(readSiblings(
-                      dbc,
-                      currentFile,
-                      CmsResourceFilter.ALL_MODIFIED));
+                    siblingsClosure.addAll(readSiblings(dbc, currentFile, CmsResourceFilter.ALL_MODIFIED));
                 }
             }
             publishList.addFiles(filterSiblings(dbc, publishList, siblingsClosure));
@@ -4197,6 +4192,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsResourceFilter.IGNORE_EXPIRATION);
 
             m_vfsDriver.moveResource(dbc, dbc.getRequestContext().currentProject().getId(), source, destination);
+            // move lock if locked
+            m_lockManager.moveResource(source.getRootPath(), destination);
 
             if (!internal) {
                 source.setState(source.getState().isNew() ? CmsResource.STATE_NEW : CmsResource.STATE_CHANGED);
@@ -4207,8 +4204,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     source,
                     CmsDriverManager.UPDATE_STRUCTURE_STATE);
             }
-            // remove the no longer valid entry from the lock manager
-            m_lockManager.removeDeletedResource(dbc, source.getRootPath());
 
             // flush all relevant caches
             clearAccessControlListCache();
@@ -4229,15 +4224,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resources.add(destRes);
             resources.add(destinationFolder);
 
-            // add the destination resource to the lock dispatcher 
-            // (do not need to call unlockResource here, since it will be called later)
-            m_lockManager.addResource(dbc, destRes, dbc.currentUser(), dbc.currentProject(), CmsLockType.EXCLUSIVE);
-
             // fire the events
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MOVED, Collections.singletonMap(
                 "resources",
                 resources)));
-
         } finally {
             // remove the create lock
             m_concurrentCreateResourceLocks.remove(destination);
@@ -4583,23 +4573,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 changeLock(dbc, resource, CmsLockType.PUBLISH);
             }
             // now check the lock state
-                lock = getLock(dbc, resource);
-                if (!lock.isPublish()) {
-                    if (report != null) {
-                        report.println(Messages.get().container(
+            lock = getLock(dbc, resource);
+            if (!lock.isPublish()) {
+                if (report != null) {
+                    report.println(Messages.get().container(
+                        Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
+                        dbc.removeSiteRoot(resource.getRootPath())), I_CmsReport.FORMAT_WARNING);
+                } else {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().getBundle().key(
                             Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
-                            dbc.removeSiteRoot(resource.getRootPath())), I_CmsReport.FORMAT_WARNING);
-                    } else {
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().getBundle().key(
-                                Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
-                                dbc.removeSiteRoot(resource.getRootPath())));
-                        }
+                            dbc.removeSiteRoot(resource.getRootPath())));
                     }
-                // remove files that could not be locked
-                    publishList.remove(resource);
                 }
+                // remove files that could not be locked
+                publishList.remove(resource);
             }
+        }
 
         // enqueue the publish job
         m_publishEngine.enqueuePublishJob(cms, publishList, report);
@@ -7507,10 +7497,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @return a filtered list of sibling resources for publishing
      */
-    private List filterSiblings(
-        CmsDbContext dbc,
-        CmsPublishList publishList,
-        Collection resourceList) {
+    private List filterSiblings(CmsDbContext dbc, CmsPublishList publishList, Collection resourceList) {
 
         List result = new ArrayList();
 
@@ -7863,6 +7850,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         resources = null;
 
         // TODO the calculated resource lists should be cached
+        int todo;
 
         return result;
     }
