@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2006/11/29 15:04:05 $
- * Version: $Revision: 1.16.8.3 $
+ * Date   : $Date: 2006/12/06 16:12:47 $
+ * Version: $Revision: 1.16.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.8.3 $
+ * @version $Revision: 1.16.8.4 $
  */
 public class TestCopy extends OpenCmsTestCase {
 
@@ -81,6 +81,7 @@ public class TestCopy extends OpenCmsTestCase {
         suite.addTest(new TestCopy("testCopyFolderAsNew"));
         suite.addTest(new TestCopy("testCopyOverwriteDeletedFile"));
         suite.addTest(new TestCopy("testCopyOverwriteLockedDeletedFile"));
+        suite.addTest(new TestCopy("testCopyFolderWithLockedSibling"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -202,6 +203,52 @@ public class TestCopy extends OpenCmsTestCase {
         // now assert the filter for the rest of the attributes        
         setMapping(destination, source);
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_COPY_FOLDER);
+    }
+
+    /**
+     * Tests to copy a folder with a (from other user) locked sibling.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testCopyFolderWithLockedSibling() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing coping a folder with a (from other user) locked sibling");
+
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("testproject"));
+
+        String sourceFolder = "/folder1";
+        String file = "/index.html";
+
+        cms.lockResource(sourceFolder + file);
+        
+        // switch user
+        CmsUser user = cms.getRequestContext().currentUser();
+        cms = getCmsObject();
+
+        assertLock(cms, sourceFolder + file, CmsLockType.EXCLUSIVE, user);
+
+        String destinationFolder = "/folder1_copy";
+        cms.copyResource(sourceFolder, destinationFolder, CmsResource.COPY_AS_SIBLING);
+        assertLock(cms, sourceFolder + file, CmsLockType.EXCLUSIVE, user);
+        assertLock(cms, destinationFolder + file, CmsLockType.SHARED_INHERITED, user);
+
+        String destinationFolder2 = "/folder1_copy2";
+        cms.copyResource(sourceFolder, destinationFolder2, CmsResource.COPY_PRESERVE_SIBLING);
+        assertLock(cms, sourceFolder + file, CmsLockType.EXCLUSIVE, user);
+        assertLock(cms, destinationFolder + file, CmsLockType.SHARED_INHERITED, user);
+        assertLock(cms, destinationFolder2 + file, CmsLockType.SHARED_INHERITED, user);
+        
+        cms.unlockResource(destinationFolder);
+        assertLock(cms, sourceFolder + file, CmsLockType.EXCLUSIVE, user);
+        assertLock(cms, destinationFolder + file, CmsLockType.SHARED_EXCLUSIVE, user);
+        assertLock(cms, destinationFolder2 + file, CmsLockType.SHARED_INHERITED, user);
+
+        cms.unlockResource(destinationFolder2);
+        assertLock(cms, sourceFolder + file, CmsLockType.EXCLUSIVE, user);
+        assertLock(cms, destinationFolder + file, CmsLockType.SHARED_EXCLUSIVE, user);
+        assertLock(cms, destinationFolder2 + file, CmsLockType.SHARED_EXCLUSIVE, user);
     }
 
     /**

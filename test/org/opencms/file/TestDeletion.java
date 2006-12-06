@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2006/11/29 15:04:07 $
- * Version: $Revision: 1.8.4.3 $
+ * Date   : $Date: 2006/12/06 16:12:47 $
+ * Version: $Revision: 1.8.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.file;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.I_CmsPrincipal;
@@ -53,7 +54,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.4.3 $
+ * @version $Revision: 1.8.4.4 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -83,6 +84,8 @@ public class TestDeletion extends OpenCmsTestCase {
         suite.addTest(new TestDeletion("testAdvancedGroupDeletion"));
         suite.addTest(new TestDeletion("testUserDeletion"));
         suite.addTest(new TestDeletion("testDeleteFolderWithUnvisibleResources"));
+        suite.addTest(new TestDeletion("testDeleteFolderWithLockedSiblings"));
+        suite.addTest(new TestDeletion("testDeleteFolderWithLockedResources"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -170,6 +173,93 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.deleteUser(testUser1.getId());
         cms.setParentGroup(OpenCms.getDefaultUsers().getGroupUsers(), null);
         cms.deleteGroup(testGroup2.getName());
+    }
+
+    /**
+     * Tests to delete a folder structure with (from other user) locked resources inside.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testDeleteFolderWithLockedResources() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to delete a folder structure with (from other user) locked resources inside");
+
+        String folder = "/mytestfolder3";
+        String file = "/index.html";
+
+        // create folder
+        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.unlockResource(folder);
+
+        // switch user
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        // copy resource
+        cms.copyResource(file, folder + file, CmsResource.COPY_AS_SIBLING);
+        assertLock(cms, file, CmsLockType.EXCLUSIVE);
+        assertLock(cms, folder + file, CmsLockType.SHARED_EXCLUSIVE);
+        cms.changeLock(folder + file);
+        assertLock(cms, file, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, folder + file, CmsLockType.EXCLUSIVE);
+        
+        // switch back
+        CmsUser user = cms.getRequestContext().currentUser();
+        cms = getCmsObject();
+
+        assertLock(cms, file, CmsLockType.SHARED_EXCLUSIVE, user);
+        assertLock(cms, folder + file, CmsLockType.EXCLUSIVE, user);
+
+        // delete the folder
+        cms.lockResource(folder);
+        assertLock(cms, folder + file, CmsLockType.INHERITED);
+        assertLock(cms, file, CmsLockType.UNLOCKED);
+        
+        cms.deleteResource(folder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+    }
+
+    /**
+     * Tests to delete a folder structure with (from other user) locked siblings inside.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testDeleteFolderWithLockedSiblings() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to delete a folder structure with (from other user) locked siblings inside");
+
+        String folder = "/mytestfolder2";
+        String file = "/index.html";
+
+        // create folder
+        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.unlockResource(folder);
+
+        // switch user
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        // copy resource
+        cms.copyResource(file, folder + file, CmsResource.COPY_AS_SIBLING);
+        cms.unlockResource(folder + file);
+
+        // lock the sibling
+        cms.lockResource(file);
+
+        // switch back
+        CmsUser user = cms.getRequestContext().currentUser();
+        cms = getCmsObject();
+
+        int sibCount = cms.readResource(file).getSiblingCount();
+        assertLock(cms, folder + file, CmsLockType.SHARED_EXCLUSIVE, user);
+
+        // delete the folder
+        cms.lockResource(folder);
+        assertLock(cms, folder + file, CmsLockType.SHARED_INHERITED, user);
+        cms.deleteResource(folder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        assertSiblingCount(cms, file, sibCount - 1);
     }
 
     /**
