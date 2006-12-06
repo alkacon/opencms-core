@@ -152,6 +152,6 @@
 			<history-size>100</history-size>
 			<history-repository>logs/publish</history-repository>
 		</publishhistory>
-		<session-storageprovider class="org.opencms.main.CmsSessionStorageProvider" />
+		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 	</system>
 </opencms>
