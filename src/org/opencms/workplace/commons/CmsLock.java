@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.16.4.10 $
+ * Date   : $Date: 2006/12/06 16:11:12 $
+ * Version: $Revision: 1.16.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.10 $ 
+ * @version $Revision: 1.16.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -450,7 +450,6 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         if (m_blockingFilter == null) {
             m_blockingFilter = CmsLockFilter.FILTER_ALL;
             m_blockingFilter = m_blockingFilter.filterNotLockableByUser(getCms().getRequestContext().currentUser());
-            m_blockingFilter = m_blockingFilter.filterSharedExclusive();
         }
         return m_blockingFilter;
     }

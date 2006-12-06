@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.27.4.8 $
+ * Date   : $Date: 2006/12/06 16:11:12 $
+ * Version: $Revision: 1.27.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.8 $ 
+ * @version $Revision: 1.27.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -737,7 +737,6 @@ public class CmsPublishProject extends CmsMultiDialog {
 
         CmsLockFilter blockingFilter = CmsLockFilter.FILTER_ALL;
         blockingFilter = blockingFilter.filterNotLockableByUser(getCms().getRequestContext().currentUser());
-        blockingFilter = blockingFilter.filterSharedExclusive();
         if (!isDirectPublish()) {
             blockingFilter = blockingFilter.filterProject(Integer.parseInt(getParamProjectid()));
         }
