@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.36.4.8 $
+ * Date   : $Date: 2006/12/07 15:29:11 $
+ * Version: $Revision: 1.36.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,9 @@ import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
-import org.opencms.file.CmsUser;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -55,7 +55,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.8 $
+ * @version $Revision: 1.36.4.9 $
  * 
  * @since 6.0.0
  */
@@ -82,6 +82,9 @@ public class CmsUserSettings {
 
     /** Key for additional info start settings. */
     public static final String ADDITIONAL_INFO_STARTSETTINGS = "USER_STARTSETTINGS";
+    
+    /** Key for additional info time warp. */
+    public static final String ADDITIONAL_INFO_TIMEWARP = "USER_TIMEWARP";
 
     /**
      *  Key for additional info city.
@@ -131,6 +134,7 @@ public class CmsUserSettings {
 
     /** Flag for displaying the filetype column. */
     public static final int FILELIST_TYPE = 2;
+
 
     /** Flag for displaying the owner column. */
     public static final int FILELIST_USER_CREATED = 32;
@@ -643,9 +647,7 @@ public class CmsUserSettings {
         }
         // worplace timewarp setting
         try {
-            m_timeWarp = ((Long)m_user.getAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_TIMEWARP)).longValue();
+            m_timeWarp = ((Long)m_user.getAdditionalInfo(ADDITIONAL_INFO_TIMEWARP)).longValue();
         } catch (Throwable t) {
             m_timeWarp = CmsContextInfo.CURRENT_TIME;
         }
@@ -909,13 +911,9 @@ public class CmsUserSettings {
         }
         // workplace user surf time (timewarp) 
         if (getTimeWarp() != CmsContextInfo.CURRENT_TIME) {
-            m_user.setAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_TIMEWARP, new Long(getTimeWarp()));
+            m_user.setAdditionalInfo(ADDITIONAL_INFO_TIMEWARP, new Long(getTimeWarp()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_TIMEWARP);
+            m_user.deleteAdditionalInfo(ADDITIONAL_INFO_TIMEWARP);
         }
         // workplace report type
         if (!getWorkplaceReportType().equals(

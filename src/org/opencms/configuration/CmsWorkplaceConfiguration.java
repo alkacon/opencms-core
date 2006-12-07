@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/10/25 16:53:42 $
- * Version: $Revision: 1.40.4.10 $
+ * Date   : $Date: 2006/12/07 15:29:11 $
+ * Version: $Revision: 1.40.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.10 $
+ * @version $Revision: 1.40.4.11 $
  * 
  * @since 6.0.0
  */
@@ -330,12 +330,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the state column node. */
     public static final String N_STATE = "show-state";
-
-    /**
-     * The node name of the timewarp node: This is not persisted in configuration as a default
-     * setting yet but only used for the additional info of the user.
-     */
-    public static final String N_TIMEWARP = "timewarp";
 
     /** The node name of the title column node. */
     public static final String N_TITLE = "show-title";
