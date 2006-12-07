@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2006/12/06 16:12:47 $
- * Version: $Revision: 1.16.8.4 $
+ * Date   : $Date: 2006/12/07 10:18:18 $
+ * Version: $Revision: 1.16.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
@@ -50,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.8.4 $
+ * @version $Revision: 1.16.8.5 $
  */
 public class TestCopy extends OpenCmsTestCase {
 
@@ -76,6 +78,7 @@ public class TestCopy extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCopy.class.getName());
 
+        suite.addTest(new TestCopy("testCopyFolderRecursive"));
         suite.addTest(new TestCopy("testCopySingleResourceAsNew"));
         suite.addTest(new TestCopy("testCopyFolderDateIssue"));
         suite.addTest(new TestCopy("testCopyFolderAsNew"));
@@ -206,6 +209,44 @@ public class TestCopy extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the "copy a folder recursive" bug.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testCopyFolderRecursive() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to copy a folder into itself");
+
+        String source = "/folder1/";
+        String destination = "/folder1/subfolder11/";
+
+        String file = "folder1";
+        try {
+            cms.createResource(file, CmsResourceTypePlain.getStaticTypeId());
+            fail("it should not be possible to create a file with the same name as a folder");
+            cms.copyResource(file, destination + file);
+        } catch (CmsVfsResourceAlreadyExistsException e) {
+            // ok
+        }
+
+        try {
+            cms.copyResource(source, destination);
+            fail("it should not be possible to copy a folder into itself");
+        } catch (CmsVfsException e) {
+            // ok
+        }
+
+        String newFolder = "/folder1bla/";
+        cms.createResource(newFolder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        try {
+            cms.copyResource(source, newFolder + "test");
+        } catch (Exception e) {
+            fail("/folder1bla/ should not be considered subfolder of /folder1/");
+        }
+    }
+
+    /**
      * Tests to copy a folder with a (from other user) locked sibling.<p>
      * 
      * @throws Exception if the test fails
@@ -222,7 +263,7 @@ public class TestCopy extends OpenCmsTestCase {
         String file = "/index.html";
 
         cms.lockResource(sourceFolder + file);
-        
+
         // switch user
         CmsUser user = cms.getRequestContext().currentUser();
         cms = getCmsObject();
@@ -239,7 +280,7 @@ public class TestCopy extends OpenCmsTestCase {
         assertLock(cms, sourceFolder + file, CmsLockType.EXCLUSIVE, user);
         assertLock(cms, destinationFolder + file, CmsLockType.SHARED_INHERITED, user);
         assertLock(cms, destinationFolder2 + file, CmsLockType.SHARED_INHERITED, user);
-        
+
         cms.unlockResource(destinationFolder);
         assertLock(cms, sourceFolder + file, CmsLockType.EXCLUSIVE, user);
         assertLock(cms, destinationFolder + file, CmsLockType.SHARED_EXCLUSIVE, user);

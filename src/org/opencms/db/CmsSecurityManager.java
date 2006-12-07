@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/12/06 16:12:32 $
- * Version: $Revision: 1.97.4.21 $
+ * Date   : $Date: 2006/12/07 10:18:18 $
+ * Version: $Revision: 1.97.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -759,17 +759,22 @@ public final class CmsSecurityManager {
         CmsResourceCopyMode siblingMode) throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsRequestContext rc = context;
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, source, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
+            if (source.isFolder() && destination.startsWith(source.getRootPath())) {
+                throw new CmsVfsException(Messages.get().container(
+                    Messages.ERR_RECURSIVE_INCLUSION_2,
+                    dbc.removeSiteRoot(source.getRootPath()),
+                    dbc.removeSiteRoot(destination)));
+            }
             // target permissions will be checked later
             m_driverManager.copyResource(dbc, source, destination, siblingMode);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_COPY_RESOURCE_2,
-                rc.removeSiteRoot(source.getRootPath()),
-                rc.removeSiteRoot(destination)), e);
+                dbc.removeSiteRoot(source.getRootPath()),
+                dbc.removeSiteRoot(destination)), e);
         } finally {
             dbc.clear();
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/12/05 16:31:07 $
- * Version: $Revision: 1.717.2.107 $
+ * Date   : $Date: 2006/12/07 10:18:18 $
+ * Version: $Revision: 1.717.2.108 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ OpenCms 6.5.5 - xxxxx, 2006
 - Improved direct and project publish dialogs to fit the new publish process semantics
 ! The static export performance has been improved, by first writting to a temporary folder
 ! New interface added to allow the distribution of the user session information across a cluster
+* Fixed issue #1275: Recursive copy of folders allowed
 
 OpenCms 6.5.4 - November 27, 2006
 * Fixed error when searching in sites with uppercase letters in site path

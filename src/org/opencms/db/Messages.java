@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.43.4.7 $
+ * Date   : $Date: 2006/12/07 10:18:18 $
+ * Version: $Revision: 1.43.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.7 $
+ * @version $Revision: 1.43.4.8 $
  * 
  * @since 6.0.0 
  */
@@ -503,6 +503,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_USERS_NO_PERMISSION_0 = "ERR_READ_USERS_NO_PERMISSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RECURSIVE_INCLUSION_2 = "ERR_RECURSIVE_INCLUSION_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REMOVE_ACL_ENTRY_2 = "ERR_REMOVE_ACL_ENTRY_2";

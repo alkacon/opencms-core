@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/12/06 16:11:49 $
- * Version: $Revision: 1.570.2.40 $
+ * Date   : $Date: 2006/12/07 10:18:18 $
+ * Version: $Revision: 1.570.2.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1284,7 +1284,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_COPIED, Collections.singletonMap(
             "resources",
             modifiedResources)));
-
     }
 
     /**
