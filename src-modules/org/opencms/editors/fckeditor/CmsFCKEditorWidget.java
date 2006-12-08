@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2006/10/25 09:37:07 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/12/08 16:25:47 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.1.7
  */
@@ -212,7 +212,7 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
                 if (buttonRendered) {
                     custom.append(",\"-\",");
                 }
-                custom.append("\"Image\"");
+                custom.append("\"OcmsImage\"");
                 buttonRendered = true;
             }
 

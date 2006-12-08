@@ -212,7 +212,7 @@ function closeBrowserWindow() {
    }
    http_request.onreadystatechange = httpStateDummy;
    http_request.open("POST", "<%= wp.getDialogRealUri() %>?<%= CmsDialog.PARAM_ACTION %>=<%= CmsEditor.EDITOR_CLOSEBROWSER %>&<%= CmsDialog.PARAM_RESOURCE %>=<%= wp.getParamResource() %>&<%= CmsEditor.PARAM_TEMPFILE %>=<%= wp.getParamTempfile() %>", true);
-   http_request.send(null);
+   http_request.send('');
 }
 
 // dummy function for html request

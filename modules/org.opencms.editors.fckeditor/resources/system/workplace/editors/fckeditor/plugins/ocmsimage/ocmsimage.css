@@ -1,0 +1,30 @@
+table.galleryarea {
+	padding-top: 5px;
+	width: 100%; 
+	background-color: Window;
+}
+
+td.galleryitem, td.galleryitemactive {
+	padding: 5px 15px 0 15px;
+	text-align: center;
+	vertical-align: top;
+	width: 120px;
+	height: 120px;
+}
+
+td.galleryitem {
+	border: 1px solid Window;
+}
+
+td.galleryitemactive {
+	border: 1px solid Highlight;
+}
+
+td.gallerynavigation {
+	padding: 5px 20px 5px 20px;
+}
+
+td.imageinfoheadline {
+	font-weight: bold;
+}
+

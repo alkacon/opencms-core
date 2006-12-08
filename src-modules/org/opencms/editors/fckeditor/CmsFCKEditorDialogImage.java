@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/Attic/CmsFCKEditorDialogImage.java,v $
- * Date   : $Date: 2006/11/27 09:09:22 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/08 16:25:47 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,6 +75,9 @@ public class CmsFCKEditorDialogImage extends CmsDialog {
 
     /** Request parameter name for the imgurl parameter. */
     public static final String PARAM_IMGURL = "imgurl";
+
+    /** Property definition name for the Copyright property. */
+    public static final String PROPERTY_COPYRIGHT = "Copyright";
 
     /** Value that is returned if no result was found. */
     public static final String RETURNVALUE_NONE = "none";
@@ -312,7 +315,20 @@ public class CmsFCKEditorDialogImage extends CmsDialog {
             type = res.getName().substring(dotIndex + 1).toLowerCase();
         }
         result.append(type);
+        result.append("', ");
+        // 11: image structure id hash code
         result.append("'");
+        result.append(res.getStructureId().hashCode());
+        result.append("'");
+        // 12: image copyright
+        String copyright = getJsp().property(PROPERTY_COPYRIGHT, sitePath, null);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(copyright)) {
+            // only add copyright information if it is set
+            result.append(", '");
+            result.append(CmsStringUtil.escapeJavaScript(copyright));
+            result.append("'");
+        }
+
         result.append(");\n");
 
         return result;

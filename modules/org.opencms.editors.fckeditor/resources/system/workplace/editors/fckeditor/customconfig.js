@@ -49,6 +49,7 @@ FCKConfig.ToolbarCanCollapse = false;
 FCKConfig.SkinPath = FCKConfig.BasePath + "skins/opencms/";
 
 FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");
+FCKConfig.Plugins.Add("ocmsimage", "en,de", "<%= cms.link("plugins/") %>");
 <%
 
 boolean showTableOptions = options.showElement("option.table", displayOptions);
@@ -101,7 +102,7 @@ if (options.showElement("option.flash", displayOptions)) {
 
 // determine if the insert/edit image button should be shown
 if (options.showElement("option.images", displayOptions)) {
-	toolbar.append(",'-','Image'");
+	toolbar.append(",'-', 'OcmsImage'");
 }
 
 // insert rule button

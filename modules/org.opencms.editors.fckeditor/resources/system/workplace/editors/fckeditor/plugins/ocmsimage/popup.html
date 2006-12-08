@@ -1,0 +1,22 @@
+<%@page import="org.opencms.jsp.*, org.opencms.frontend.layoutpage.*" %><%
+
+CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+
+String imgUri = request.getParameter("uri");
+
+%><html>
+<script type="text/javascript">
+if (window.outerHeight > screen.availHeight) {
+	window.outerHeight = screen.availHeight;
+}
+
+if (window.outerWidth > screen.availWidth) {
+	window.outerWidth = screen.availWidth;
+}
+</script>
+<body style="margin: 10px 0; padding: 0; background-color: #FFF;">
+<div style="text-align: center">
+<img src="<%= imgUri %>" alt="" />
+</div>
+</body>
+</html>
