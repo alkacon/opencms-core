@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2006/09/22 12:51:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/12/08 13:39:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -440,7 +440,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         result.append("    var searchform = document.forms['EDITOR'];\n");
         result.append("    var inputFields = searchform.elements;\n");
         result.append("    for (var i=0; i<inputFields.length; i++) {\n");
-        result.append("      if(inputFields[i].name.indexOf('categories') != -1) {\n");
+        result.append("      if(inputFields[i].name != null && inputFields[i].name.indexOf('categories') != -1) {\n");
         result.append("        inputFields[i].value='';\n");
         result.append("        inputFields[i].name='invalidsearchcategory';\n");
         result.append("      }\n");
