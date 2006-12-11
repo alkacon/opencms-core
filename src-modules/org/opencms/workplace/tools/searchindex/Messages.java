@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/Messages.java,v $
- * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.7.4.1 $
+ * Date   : $Date: 2006/12/11 14:24:25 $
+ * Version: $Revision: 1.7.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.7.4.1 $ 
+ * @version $Revision: 1.7.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,6 +63,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPS_FIELD_TOOL_OVERVIEW_0 = "GUI_GROUPS_FIELD_TOOL_OVERVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_DELETE_HELP_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_DELETE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_EDIT_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_EDIT_0";
