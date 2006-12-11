@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.55.4.4 $
+ * Date   : $Date: 2006/12/11 13:30:34 $
+ * Version: $Revision: 1.55.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,9 @@ import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.documents.CmsExtractionResultCache;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
@@ -82,7 +84,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.4 $ 
+ * @version $Revision: 1.55.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -177,7 +179,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void addAnalyzer(CmsSearchAnalyzer analyzer) {
 
-        m_analyzers.put(analyzer.getLocale().toString(), analyzer);
+        m_analyzers.put(analyzer.getLocale(), analyzer);
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
@@ -303,9 +305,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Returns an unmodifiable view (read-only) of the Analyzers Map.<p>
+     * Returns an unmodifiable view of the map that contains the {@link CmsSearchAnalyzer} list.<p>
+     * 
+     * The keys in the map are {@link Locale} objects, and the values are {@link CmsSearchAnalyzer} objects.
      *
-     * @return an unmodifiable view (read-only) of the Analyzers Map
+     * @return an unmodifiable view of the Analyzers Map
      */
     public Map getAnalyzers() {
 
@@ -313,13 +317,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Returns the CmsSearchAnalyzer Object.<p>
-     * @param locale unique locale key to specify the CmsSearchAnalyzer in HashMap
-     * @return the CmsSearchAnalyzer Object
+     * Returns the search analyzer for the given locale.<p>
+     * 
+     * @param locale the locale to get the analyzer for
+     * 
+     * @return the search analyzer for the given locale
      */
-    public CmsSearchAnalyzer getCmsSearchAnalyzer(String locale) {
+    public CmsSearchAnalyzer getCmsSearchAnalyzer(Locale locale) {
 
-        return (CmsSearchAnalyzer)m_analyzers.get(locale.toString());
+        return (CmsSearchAnalyzer)m_analyzers.get(locale);
     }
 
     /**
@@ -700,6 +706,82 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Removes this fieldconfiguration from the OpenCms configuration (if it is not used any more).<p>
+     * 
+     * @param fieldConfiguration the fieldconfiguration to remove from the configuration 
+     * 
+     * @return true if remove was successful, false if preconditions for removal are ok but the given 
+     *         searchindex was unknown to the manager.
+     * 
+     * @throws CmsIllegalStateException if the given indexsource is still used by at least one 
+     *         <code>{@link CmsSearchIndex}</code>.
+     *  
+     */
+    public boolean removeSearchFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration)
+    throws CmsIllegalStateException {
+
+        // validation if removal will be granted
+        Iterator itIndexes = m_indexes.iterator();
+        CmsSearchIndex idx;
+        // the list for collecting indexes that use the given fieldconfiguration
+        List referrers = new LinkedList();
+        CmsSearchFieldConfiguration refFieldConfig;
+        while (itIndexes.hasNext()) {
+            idx = (CmsSearchIndex)itIndexes.next();
+            refFieldConfig = idx.getFieldConfiguration();
+            if (refFieldConfig.equals(fieldConfiguration)) {
+                referrers.add(idx);
+            }
+        }
+        if (referrers.size() > 0) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_INDEX_CONFIGURATION_DELETE_2,
+                fieldConfiguration.getName(),
+                referrers.toString()));
+        }
+
+        // remove operation (no exception)
+        return m_fieldConfigurations.remove(fieldConfiguration.getName()) != null;
+
+    }
+
+    /**
+     * Removes a search field from the field configuration.<p>
+     * 
+     * @param fieldConfiguration the field configuration
+     * @param field field to remove from the field configuration
+     */
+    public void removeSearchFieldConfigurationField(CmsSearchFieldConfiguration fieldConfiguration, CmsSearchField field) {
+
+        fieldConfiguration.getFields().remove(field);
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().getBundle().key(
+                Messages.LOG_REMOVE_FIELDCONFIGURATION_FIELD_INDEX_2,
+                field.getName(),
+                fieldConfiguration.getName()));
+        }
+    }
+
+    /**
+     * Removes a search field mapping from the given field.<p>
+     * 
+     * @param field the field
+     * @param mapping mapping to remove from the field
+     */
+    public void removeSearchFieldMapping(CmsSearchField field, CmsSearchFieldMapping mapping) {
+
+        field.getMappings().remove(mapping);
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().getBundle().key(
+                Messages.LOG_REMOVE_FIELD_MAPPING_INDEX_2,
+                mapping.getType().toString(),
+                field.getName()));
+        }
+    }
+
+    /**
      * Removes all indexes included in the given list (which must contain the name of an index to remove).<p>
      * 
      * @param indexNames the names of the index to remove
@@ -932,9 +1014,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns an analyzer for the given language.<p>
-     * The analyzer is selected according to the analyzer configuration.
      * 
-     * @param locale a locale used, i.e. de, en, it
+     * The analyzer is selected according to the analyzer configuration.<p>
+     * 
+     * @param locale the locale to get the analyzer for
      * @return the appropriate lucene analyzer
      * @throws CmsIndexException if something goes wrong
      */
@@ -943,7 +1026,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         Analyzer analyzer = null;
         String className = null;
 
-        CmsSearchAnalyzer analyzerConf = (CmsSearchAnalyzer)m_analyzers.get(locale.toString());
+        CmsSearchAnalyzer analyzerConf = (CmsSearchAnalyzer)m_analyzers.get(locale);
         if (analyzerConf == null) {
             throw new CmsIndexException(Messages.get().container(Messages.ERR_ANALYZER_NOT_FOUND_1, locale));
         }
