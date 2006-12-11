@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsList.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/11 15:53:01 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -362,7 +362,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
                 };
             }
         };
-        relationsDetails.setAtColumn(LIST_COLUMN_ROOT_PATH);
+        relationsDetails.setAtColumn(LIST_COLUMN_NAME);
         relationsDetails.setVisible(true);
         relationsDetails.setFormatter(new CmsPublishBrokenRelationFormatter());
         relationsDetails.setShowActionName(Messages.get().container(

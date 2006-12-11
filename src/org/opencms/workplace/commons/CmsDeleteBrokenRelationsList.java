@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeleteBrokenRelationsList.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2006/12/11 15:53:01 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.5.4 
  */
@@ -356,7 +356,7 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListExplorerDialog {
                 };
             }
         };
-        relationsDetails.setAtColumn(LIST_COLUMN_ROOT_PATH);
+        relationsDetails.setAtColumn(LIST_COLUMN_NAME);
         relationsDetails.setVisible(true);
         relationsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_DELETE_BROKENRELATIONS_LABEL_RELATIONS_0)));
