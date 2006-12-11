@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2006/11/28 16:20:46 $
- * Version: $Revision: 1.17.4.2 $
+ * Date   : $Date: 2006/12/11 13:26:41 $
+ * Version: $Revision: 1.17.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchAnalyzer;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.digester.Digester;
@@ -58,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.17.4.2 $
+ * @version $Revision: 1.17.4.3 $
  * 
  * @since 6.0.0
  */
@@ -66,6 +68,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The "boost" attribute. */
     public static final String A_BOOST = "boost";
+
+    /** The "displayName" attribute. */
+    public static final String A_DISPLAY = "display";
 
     /** The "excerpt" attribute. */
     public static final String A_EXCERPT = "excerpt";
@@ -93,6 +98,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** Node name constant. */
     public static final String N_CONFIGURATION = "configuration";
+
+    /** Node name constant. */
+    public static final String N_DESCRIPTION = "description";
 
     /** Node name constant. */
     public static final String N_DIRECTORY = "directory";
@@ -246,7 +254,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addObjectCreate(xPath, CmsSearchAnalyzer.class);
         digester.addCallMethod(xPath + "/" + N_CLASS, "setClassName", 0);
         digester.addCallMethod(xPath + "/" + N_STEMMER, "setStemmerAlgorithm", 0);
-        digester.addCallMethod(xPath + "/" + N_LOCALE, "setLocale", 0);
+        digester.addCallMethod(xPath + "/" + N_LOCALE, "setLocaleString", 0);
         digester.addSetNext(xPath, "addAnalyzer");
 
         // search index rule
@@ -255,7 +263,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_REBUILD, "setRebuildMode", 0);
         digester.addCallMethod(xPath + "/" + N_PROJECT, "setProjectName", 0);
-        digester.addCallMethod(xPath + "/" + N_LOCALE, "setLocale", 0);
+        digester.addCallMethod(xPath + "/" + N_LOCALE, "setLocaleString", 0);
         digester.addCallMethod(xPath + "/" + N_CONFIGURATION, "setFieldConfigurationName", 0);
         digester.addCallMethod(xPath + "/" + N_SOURCES + "/" + N_SOURCE, "addSourceName", 0);
         digester.addSetNext(xPath, "addSearchIndex");
@@ -274,12 +282,15 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         xPath = XPATH_SEARCH + "/" + N_FIELDCONFIGURATIONS + "/" + N_FIELDCONFIGURATION;
         digester.addObjectCreate(xPath, CmsSearchFieldConfiguration.class);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
+        digester.addCallMethod(xPath + "/" + N_DESCRIPTION, "setDescription", 0);
         digester.addSetNext(xPath, "addFieldConfiguration");
 
         xPath = xPath + "/" + N_FIELDS + "/" + N_FIELD;
         digester.addObjectCreate(xPath, CmsSearchField.class);
         digester.addCallMethod(xPath, "setName", 1);
         digester.addCallParam(xPath, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallMethod(xPath, "setDisplayNameForConfiguration", 1);
+        digester.addCallParam(xPath, 0, A_DISPLAY);
         digester.addCallMethod(xPath, "setStored", 1);
         digester.addCallParam(xPath, 0, A_STORE);
         digester.addCallMethod(xPath, "setIndexed", 1);
@@ -374,12 +385,12 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // <analyzers> 
         Element analyzersElement = searchElement.addElement(N_ANALYZERS);
-        List analyzerList = new ArrayList(m_searchManager.getAnalyzers().keySet());
+        List analyzerLocaleList = new ArrayList(m_searchManager.getAnalyzers().keySet());
         // sort Analyzers in ascending order
-        Collections.sort(analyzerList);
-        Iterator analyzersIterator = analyzerList.iterator();
-        while (analyzersIterator.hasNext()) {
-            CmsSearchAnalyzer searchAnalyzer = m_searchManager.getCmsSearchAnalyzer((String)analyzersIterator.next());
+        Collections.sort(analyzerLocaleList, CmsLocaleComparator.getComparator());
+        Iterator analyzersLocaleInterator = analyzerLocaleList.iterator();
+        while (analyzersLocaleInterator.hasNext()) {
+            CmsSearchAnalyzer searchAnalyzer = m_searchManager.getCmsSearchAnalyzer((Locale)analyzersLocaleInterator.next());
             // add the next <analyzer> element
             Element analyzerElement = analyzersElement.addElement(N_ANALYZER);
             // add <class> element
@@ -486,16 +497,22 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
             CmsSearchFieldConfiguration config = (CmsSearchFieldConfiguration)configs.next();
             Element configElement = configurationsElement.addElement(N_FIELDCONFIGURATION);
             configElement.addElement(N_NAME).setText(config.getName());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config.getDescription())) {
+                configElement.addElement(N_DESCRIPTION).setText(config.getDescription());
+            }
             Element fieldsElement = configElement.addElement(N_FIELDS);
             Iterator fields = config.getFields().iterator();
             while (fields.hasNext()) {
                 CmsSearchField field = (CmsSearchField)fields.next();
                 Element fieldElement = fieldsElement.addElement(N_FIELD);
                 fieldElement.addAttribute(A_NAME, field.getName());
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDisplayNameForConfiguration())) {
+                    fieldElement.addAttribute(A_DISPLAY, field.getDisplayNameForConfiguration());
+                }
                 fieldElement.addAttribute(A_STORE, String.valueOf(field.isStored()));
                 String index;
                 if (field.isIndexed()) {
-                    if (field.isTokenized()) {
+                    if (field.isTokenizedAndIndexed()) {
                         // index and tokenized
                         index = CmsStringUtil.TRUE;
                     } else {
@@ -510,7 +527,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
                 if (field.getBoost() != CmsSearchField.BOOST_DEFAULT) {
                     fieldElement.addAttribute(A_BOOST, String.valueOf(field.getBoost()));
                 }
-                if (field.isInExcerpt()) {
+                if (field.isInExcerptAndStored()) {
                     fieldElement.addAttribute(A_EXCERPT, String.valueOf(true));
                 }
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDefaultValue())) {

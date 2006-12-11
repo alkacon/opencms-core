@@ -187,6 +187,7 @@
 -->
 <!ELEMENT fieldconfiguration (
 	name,
+	description?,
 	fields
 )>
 
@@ -201,6 +202,7 @@
 <!ELEMENT field (mapping+) >
 <!ATTLIST field 
 	name CDATA #REQUIRED
+	display CDATA #IMPLIED
 	store (true|false|TRUE|FALSE) #REQUIRED
 	index (true|false|TRUE|FALSE|tokenized|untokenized) #REQUIRED
 	excerpt (true|false|TRUE|FALSE) #IMPLIED
@@ -230,6 +232,11 @@
 # Element for a locigal name.
 -->
 <!ELEMENT name (#PCDATA)>
+
+<!--
+# Element for a locigal description.
+-->
+<!ELEMENT description (#PCDATA)>
 
 <!--
 # Element for a package/class name of a Java class.
