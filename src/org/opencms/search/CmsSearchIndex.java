@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2006/11/28 16:20:44 $
- * Version: $Revision: 1.60.4.5 $
+ * Date   : $Date: 2006/12/11 13:31:28 $
+ * Version: $Revision: 1.60.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.5 $ 
+ * @version $Revision: 1.60.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -455,6 +455,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public Locale getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Returns the locale of the index as a String.<p>
+     * 
+     * @return the locale of the index as a String
+     * 
+     * @see #getLocale()
+     */
+    public String getLocaleString() {
+
+        return getLocale().toString();
     }
 
     /**
@@ -866,6 +878,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         m_fieldConfigurationName = fieldConfigurationName;
     }
+    
+    /**
+     * Sets the field configuration used for this index.<p>
+     * 
+     * @param fieldConfiguration the field configuration to set
+     */
+    public void setFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration) {
+
+        m_fieldConfiguration = fieldConfiguration;
+    }
 
     /**
      * Sets the locale to index resources.<p>
@@ -878,11 +900,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Sets the locale to index resources.<p>
+     * Sets the locale to index resources as a String.<p>
      * 
      * @param locale the locale to index resources
+     * 
+     * @see #setLocale(Locale)
      */
-    public void setLocale(String locale) {
+    public void setLocaleString(String locale) {
 
         setLocale(CmsLocaleManager.getLocale(locale));
     }
