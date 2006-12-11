@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchAnalyzer.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.9.8.1 $
+ * Date   : $Date: 2006/12/11 13:31:59 $
+ * Version: $Revision: 1.9.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Locale;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.9.8.1 $ 
+ * @version $Revision: 1.9.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +74,18 @@ public class CmsSearchAnalyzer implements Cloneable {
     public Locale getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Returns the locale as a String.<p>
+     *
+     * @return the locale as a String
+     * 
+     * @see #getLocale()
+     */
+    public String getLocaleString() {
+
+        return getLocale().toString();
     }
 
     /**
@@ -110,8 +122,10 @@ public class CmsSearchAnalyzer implements Cloneable {
      * Sets the locale as a String.<p>
      *
      * @param locale the locale
+     * 
+     * @see #setLocale(Locale)
      */
-    public void setLocale(String locale) {
+    public void setLocaleString(String locale) {
 
         setLocale(CmsLocaleManager.getLocale(locale));
     }
