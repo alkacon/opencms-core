@@ -216,6 +216,7 @@
 		<fieldconfigurations>
 			<fieldconfiguration>
 				<name>other</name>
+				<description>other</description>
 				<fields>
 					<field name="content" store="true" index="true" excerpt="true">
 						<mapping type="content" default="default content value" />
@@ -247,22 +248,22 @@
 			<fieldconfiguration>
 				<name>standard</name>
 				<fields>
-					<field name="content" store="true" index="true">
+					<field name="content" display="%(key.field.content)" store="true" index="true">
 						<mapping type="content" />
 					</field>	
-					<field name="title-key" store="true" index="untokenized" boost="0.0">
+					<field name="title-key" display="-" store="true" index="untokenized" boost="0.0">
 						<mapping type="property">Title</mapping>
 					</field>	
-					<field name="title" store="false" index="true">
+					<field name="title" display="%(key.field.title)" store="false" index="true">
 						<mapping type="property">Title</mapping>
 					</field>	
-					<field name="keywords" store="true" index="true">
+					<field name="keywords" display="%(key.field.keywords)" store="true" index="true">
 						<mapping type="property">Keywords</mapping>
 					</field>	
-					<field name="description" store="true" index="true">
+					<field name="description" display="%(key.field.description)" store="true" index="true">
 						<mapping type="property">Description</mapping>
 					</field>					
-					<field name="meta" store="false" index="true">
+					<field name="meta" display="%(key.field.meta)" store="false" index="true">
 						<mapping type="property">Title</mapping>
 						<mapping type="property">Keywords</mapping>
 						<mapping type="property">Description</mapping>

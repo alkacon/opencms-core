@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/12/07 15:29:11 $
- * Version: $Revision: 1.36.4.9 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.36.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -55,11 +56,99 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.9 $
+ * @version $Revision: 1.36.4.10 $
  * 
  * @since 6.0.0
  */
 public class CmsUserSettings {
+
+    /**
+     *  Enumeration class for workplace search result styles.<p>
+     */
+    public static final class CmsSearchResultStyle implements Serializable {
+
+        /** Workplace search result style explorer view. */
+        public static final CmsSearchResultStyle STYLE_EXPLORER = new CmsSearchResultStyle(
+            "explorer",
+            Messages.GUI_WORKPLACE_SEARCH_STYLE_EXPLORER_0);
+
+        /** Workplace search result style list view with excerpts. */
+        public static final CmsSearchResultStyle STYLE_LIST_WITH_EXCERPTS = new CmsSearchResultStyle(
+            "list-with-excerpts",
+            Messages.GUI_WORKPLACE_SEARCH_STYLE_LIST_WITH_EXCERPTS_0);
+
+        /** Workplace search result style list view without excerpts. */
+        public static final CmsSearchResultStyle STYLE_LIST_WITHOUT_EXCERPTS = new CmsSearchResultStyle(
+            "list-without-excerpts",
+            Messages.GUI_WORKPLACE_SEARCH_STYLE_LIST_WITHOUT_EXCERPTS_0);
+
+        /** Serializable version id. */
+        private static final long serialVersionUID = 6611568161885127011L;
+
+        /** The localization key for this style. */
+        private final String m_key;
+
+        /** The internal style descriptor. */
+        private final String m_style;
+
+        /**
+         * Private constructor.<p>
+         * 
+         * @param style the workplace search result style string representation
+         * @param key the localization key for this style
+         */
+        private CmsSearchResultStyle(String style, String key) {
+
+            m_style = style;
+            m_key = key;
+        }
+
+        /**
+         * Returns the copy mode object from the old copy mode integer.<p>
+         * 
+         * @param mode the old copy mode integer
+         * 
+         * @return the copy mode object
+         */
+        public static CmsSearchResultStyle valueOf(String mode) {
+
+            if (STYLE_LIST_WITHOUT_EXCERPTS.m_style.equals(mode)) {
+                return STYLE_LIST_WITHOUT_EXCERPTS;
+            } else if (STYLE_LIST_WITH_EXCERPTS.m_style.equals(mode)) {
+                return STYLE_LIST_WITH_EXCERPTS;
+            } else {
+                return STYLE_EXPLORER;
+            }
+        }
+
+        /**
+         * Returns the localization key for this style.<p>
+         * 
+         * @return the localization key for this style
+         */
+        public String getKey() {
+
+            return m_key;
+        }
+
+        /**
+         * Returns the style string representation.<p>
+         *
+         * @return the style
+         */
+        public String getStyle() {
+
+            return m_style;
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        public String toString() {
+
+            return m_style;
+        }
+    }
 
     /** Key for additional info city. */
     // Value must unfortunatly still be "USER_TOWN" or existing serialized user information will be lost
@@ -82,7 +171,7 @@ public class CmsUserSettings {
 
     /** Key for additional info start settings. */
     public static final String ADDITIONAL_INFO_STARTSETTINGS = "USER_STARTSETTINGS";
-    
+
     /** Key for additional info time warp. */
     public static final String ADDITIONAL_INFO_TIMEWARP = "USER_TIMEWARP";
 
@@ -95,12 +184,6 @@ public class CmsUserSettings {
 
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_ZIPCODE = "USER_ZIPCODE";
-
-    /** The default button style. */
-    private static final int BUTTONSTYLE_DEFAULT = 1;
-
-    /** The default number of entries per page. */
-    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
 
     /** Flag for displaying the date created column. */
     public static final int FILELIST_DATE_CREATED = 1024;
@@ -135,7 +218,6 @@ public class CmsUserSettings {
     /** Flag for displaying the filetype column. */
     public static final int FILELIST_TYPE = 2;
 
-
     /** Flag for displaying the owner column. */
     public static final int FILELIST_USER_CREATED = 32;
 
@@ -145,11 +227,20 @@ public class CmsUserSettings {
     /** Flag for displaying the workflow check column. */
     public static final int FILELIST_WORKFLOW_STATE = 16384;
 
+    /** The default button style. */
+    private static final int BUTTONSTYLE_DEFAULT = 1;
+
+    /** The default number of entries per page. */
+    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
+
     /** Identifier prefix for all keys in the user additional info table. */
     private static final String PREFERENCES = "USERPREFERENCES_";
 
     /** Identifier for the project settings key. */
     private static final String PROJECT_SETTINGS = "PROJECT_SETTINGS";
+
+    /** Default workplace search index name. */
+    private static final String SEARCH_INDEX_DEFAULT = "Offline project (VFS)";
 
     /** Identifier for the synchronize setting key. */
     private static final String SYNC_SETTINGS = "SYNC_SETTINGS";
@@ -226,6 +317,12 @@ public class CmsUserSettings {
 
     private String m_workplaceReportType;
 
+    /** The name of the search index to use in the workplace. */
+    private String m_workplaceSearchIndexName;
+
+    /** Workplace search result list view style. */
+    private CmsSearchResultStyle m_workplaceSearchViewStyle;
+
     /**
      * Creates an empty new user settings object.<p>
      */
@@ -243,6 +340,8 @@ public class CmsUserSettings {
         m_newFolderCreateIndexPage = Boolean.TRUE;
         m_newFolderEditProperties = Boolean.TRUE;
         m_showUploadTypeDialog = Boolean.TRUE;
+        m_workplaceSearchIndexName = SEARCH_INDEX_DEFAULT;
+        m_workplaceSearchViewStyle = CmsSearchResultStyle.STYLE_EXPLORER;
     }
 
     /**
@@ -625,6 +724,26 @@ public class CmsUserSettings {
     }
 
     /**
+     * Returns the name of the search index to use in the workplace.<p>
+     *
+     * @return the name of the search index to use in the workplace
+     */
+    public String getWorkplaceSearchIndexName() {
+
+        return m_workplaceSearchIndexName;
+    }
+
+    /**
+     * Returns the workplace search result list view style.<p>
+     *
+     * @return the workplace search result list view style
+     */
+    public CmsSearchResultStyle getWorkplaceSearchViewStyle() {
+
+        return m_workplaceSearchViewStyle;
+    }
+
+    /**
      * Initializes the user settings with the given users setting parameters.<p>
      * 
      * @param cms the OpenCms context
@@ -830,6 +949,19 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW)).booleanValue();
         } catch (Throwable t) {
             m_restrictExplorerView = OpenCms.getWorkplaceManager().getDefaultUserSettings().getRestrictExplorerView();
+        }
+        // workplace search
+        m_workplaceSearchIndexName = ((String)m_user.getAdditionalInfo(PREFERENCES
+            + CmsWorkplaceConfiguration.N_WORKPLACESEARCH
+            + CmsWorkplaceConfiguration.N_SEARCHINDEXNAME));
+        if (m_workplaceSearchIndexName == null) {
+            m_workplaceSearchIndexName = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceSearchIndexName();
+        }
+        m_workplaceSearchViewStyle = CmsSearchResultStyle.valueOf(((String)m_user.getAdditionalInfo(PREFERENCES
+            + CmsWorkplaceConfiguration.N_WORKPLACESEARCH
+            + CmsWorkplaceConfiguration.N_SEARCHVIEWSTYLE)));
+        if (m_workplaceSearchViewStyle == null) {
+            m_workplaceSearchViewStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceSearchViewStyle();
         }
         // synchronize settings
         try {
@@ -1137,6 +1269,17 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
                 + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW);
         }
+        // workplace search
+        if (getWorkplaceSearchIndexName() != null) {
+            m_user.setAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACESEARCH
+                + CmsWorkplaceConfiguration.N_SEARCHINDEXNAME, getWorkplaceSearchIndexName());
+        }
+        if (getWorkplaceSearchViewStyle() != null) {
+            m_user.setAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACESEARCH
+                + CmsWorkplaceConfiguration.N_SEARCHVIEWSTYLE, getWorkplaceSearchViewStyle().toString());
+        }
         // synchronize settings        
         if (getSynchronizeSettings() != null) {
             m_user.setAdditionalInfo(PREFERENCES + SYNC_SETTINGS, getSynchronizeSettings());
@@ -1294,21 +1437,6 @@ public class CmsUserSettings {
     public void setExplorerFileEntries(int entries) {
 
         m_explorerFileEntries = entries;
-    }
-
-    /**
-     * Sets a specific explorer setting depending on the set parameter.<p>
-     * 
-     * @param set true if the setting should be set, otherwise false
-     * @param setting the settings constant value for the explorer settings
-     */
-    private void setExplorerSetting(boolean set, int setting) {
-
-        if (set) {
-            m_explorerSettings |= setting;
-        } else {
-            m_explorerSettings &= ~setting;
-        }
     }
 
     /**
@@ -1672,6 +1800,26 @@ public class CmsUserSettings {
     }
 
     /**
+     * Sets the name of the search index to use in the workplace.<p>
+     *
+     * @param workplaceSearchIndexName the name of the search index to use in the workplace to set
+     */
+    public void setWorkplaceSearchIndexName(String workplaceSearchIndexName) {
+
+        m_workplaceSearchIndexName = workplaceSearchIndexName;
+    }
+
+    /**
+     * Sets the workplace search result list view style.<p>
+     *
+     * @param workplaceSearchViewStyle the workplace search result list view style to set
+     */
+    public void setWorkplaceSearchViewStyle(CmsSearchResultStyle workplaceSearchViewStyle) {
+
+        m_workplaceSearchViewStyle = workplaceSearchViewStyle;
+    }
+
+    /**
      * Determines if the file creation date should be shown in explorer view.<p>
      * 
      * @return true if the file creation date should be shown, otherwise false
@@ -1809,5 +1957,20 @@ public class CmsUserSettings {
     public boolean useUploadApplet() {
 
         return m_uploadApplet;
+    }
+
+    /**
+     * Sets a specific explorer setting depending on the set parameter.<p>
+     * 
+     * @param set true if the setting should be set, otherwise false
+     * @param setting the settings constant value for the explorer settings
+     */
+    private void setExplorerSetting(boolean set, int setting) {
+
+        if (set) {
+            m_explorerSettings |= setting;
+        } else {
+            m_explorerSettings &= ~setting;
+        }
     }
 }

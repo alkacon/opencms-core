@@ -466,6 +466,10 @@
           <site>/sites/default/</site>
           <restrictexplorerview>false</restrictexplorerview>
         </workplace-startupsettings>
+        <workplace-search>
+        	<searchindex-name>Offline project (VFS)</searchindex-name>
+        	<searchview-style>explorer</searchview-style>
+        </workplace-search>
       </workplace-preferences>
       <explorer-preferences>
         <explorer-generaloptions>

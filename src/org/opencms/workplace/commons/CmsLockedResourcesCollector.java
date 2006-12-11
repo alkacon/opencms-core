@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesCollector.java,v $
- * Date   : $Date: 2006/12/06 16:13:18 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.4 
  */
@@ -63,9 +63,6 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLockedResourcesCollector.class);
 
-    /** Resources parameter name constant. */
-    public static final String PARAM_RESOURCES = "resources";
-
     /**
      * Constructor, creates a new instance.<p>
      * 
@@ -75,19 +72,7 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
     public CmsLockedResourcesCollector(A_CmsListExplorerDialog wp, List resources) {
 
         super(wp);
-        m_collectorParameter += SEP_PARAM + PARAM_RESOURCES + SEP_KEYVAL;
-        if (resources == null) {
-            // search anywhere
-            m_collectorParameter += "/";
-        } else {
-            Iterator it = resources.iterator();
-            while (it.hasNext()) {
-                m_collectorParameter += it.next();
-                if (it.hasNext()) {
-                    m_collectorParameter += "#";
-                }
-            }
-        }
+        setResourcesParam(resources);
     }
 
     /**
@@ -105,24 +90,10 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
      */
     public List getResources(CmsObject cms, Map params) {
 
-        String resourcesParam = "/";
-        if (params.containsKey(PARAM_RESOURCES)) {
-            resourcesParam = (String)params.get(PARAM_RESOURCES);
-        }
         List resources = new ArrayList();
-        if (resourcesParam.length() == 0) {
-            return resources;
-        }
-        int pos = 0;
-        while (pos > -1) {
-            int newPos = resourcesParam.indexOf("#", pos + 1);
-            String resName;
-            if (newPos == -1) {
-                resName = resourcesParam.substring(pos + 1);
-            } else {
-                resName = resourcesParam.substring(pos + 1, newPos);
-            }
-            pos = newPos;
+        Iterator itResourceNames = getResourceNamesFromParam(params).iterator();
+        while (itResourceNames.hasNext()) {
+            String resName = (String)itResourceNames.next();
             try {
                 resources.add(cms.readResource(resName, CmsResourceFilter.ALL));
             } catch (Exception e) {
@@ -137,12 +108,6 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
      */
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
-        String relativeTo = resUtil.getRelativeTo();
-        int abbrevLength = resUtil.getAbbrevLength();
-        resUtil.setRelativeTo(null);
-        resUtil.setAbbrevLength(0);
-        item.set(CmsLockedResourcesList.LIST_COLUMN_ROOT_PATH, resUtil.getPath());
-        resUtil.setRelativeTo(relativeTo);
-        resUtil.setAbbrevLength(abbrevLength);
+        // no-op
     }
 }

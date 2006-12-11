@@ -123,19 +123,19 @@ case 2:
 		<!--
 			function setToDefault() {
 				var theForm = document.forms[0];
-				theForm.<%= wp.PARAM_EXPLORER_FILEENTRIES %>.selectedIndex = 2;
-				theForm.<%= wp.PARAM_EXPLORER_BUTTONSTYLE %>.selectedIndex = 1;
-				theForm.<%= wp.PARAM_EXPLORER_FILETITLE %>.checked = true;
-				theForm.<%= wp.PARAM_EXPLORER_FILETYPE %>.checked = true;
-				theForm.<%= wp.PARAM_EXPLORER_FILEDATELASTMODIFIED %>.checked = true;				
-				theForm.<%= wp.PARAM_EXPLORER_FILEUSERLASTMODIFIED %>.checked = false;
-				theForm.<%= wp.PARAM_EXPLORER_FILESIZE %>.checked = false;
-				theForm.<%= wp.PARAM_EXPLORER_FILEDATECREATED %>.checked = false;
-				theForm.<%= wp.PARAM_EXPLORER_FILEPERMISSIONS %>.checked = false;
-				theForm.<%= wp.PARAM_EXPLORER_FILEUSERCREATED %>.checked = false;
-				theForm.<%= wp.PARAM_EXPLORER_FILELOCKEDBY %>.checked = false;
-				theForm.<%= wp.PARAM_EXPLORER_FILESTATE %>.checked = false;
-				theForm.<%= wp.PARAM_EXPLORER_WORKFLOW_STATUS %>.checked = false;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILEENTRIES %>.selectedIndex = 2;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_BUTTONSTYLE %>.selectedIndex = 1;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILETITLE %>.checked = true;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILETYPE %>.checked = true;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILEDATELASTMODIFIED %>.checked = true;				
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILEUSERLASTMODIFIED %>.checked = false;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILESIZE %>.checked = false;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILEDATECREATED %>.checked = false;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILEPERMISSIONS %>.checked = false;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILEUSERCREATED %>.checked = false;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILELOCKEDBY %>.checked = false;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILESTATE %>.checked = false;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_WORKFLOW_STATUS %>.checked = false;
 			}
 		//-->
 		</script>
@@ -143,11 +143,15 @@ case 2:
 		<table border="0" cellpadding="4" cellspacing="0">
 		<tr>
 			<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_PREF_BUTTON_STYLE_EXPLORER_0) %></td>
-			<td><%= wp.buildSelectExplorerButtonStyle("name=\"" + wp.PARAM_EXPLORER_BUTTONSTYLE + "\" style=\"width: 200px;\"") %></td>
+			<td><%= wp.buildSelectExplorerButtonStyle("name=\"" + CmsPreferences.PARAM_EXPLORER_BUTTONSTYLE + "\" style=\"width: 200px;\"") %></td>
 		</tr>
 		<tr>
 			<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_PREF_FILES_PER_PAGE_0) %></td>
-			<td><%= wp.buildSelectExplorerFileEntries("name=\"" + wp.PARAM_EXPLORER_FILEENTRIES + "\" style=\"width: 200px;\"") %></td>
+			<td><%= wp.buildSelectExplorerFileEntries("name=\"" + CmsPreferences.PARAM_EXPLORER_FILEENTRIES + "\" style=\"width: 200px;\"") %></td>
+		</tr>
+		<tr>
+			<td style="white-space: nowrap;"><%= wp.key(Messages.GUI_PREF_SEARCH_RESULT_0) %></td>
+			<td><%= wp.buildSelectWorkplaceSearchResult("name=\"" + CmsPreferences.PARAM_EXPLORER_SEARCH_RESULT + "\" style=\"width: 200px;\"") %></td>
 		</tr>
 		</table>
 		<%= wp.dialogBlockEnd() %>
@@ -155,38 +159,38 @@ case 2:
 		<%= wp.dialogBlockStart(wp.key(Messages.GUI_PREF_SETTINGS_DISPLAY_0)) %>
 		<table border="0" cellpadding="4" cellspacing="0">
 		<tr>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILETITLE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileTitle()) %>> <%= wp.key(Messages.GUI_LABEL_TITLE_0) %></td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILETITLE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileTitle()) %>> <%= wp.key(Messages.GUI_LABEL_TITLE_0) %></td>
 			<td style="width: 40px;">&nbsp;</td>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATELASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateLastModified()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_LAST_MODIFIED_0) %></td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEDATELASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateLastModified()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_LAST_MODIFIED_0) %></td>
 			<td style="width: 40px;">&nbsp;</td>		
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATERELEASED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateReleased()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_RELEASED_0) %></td>			
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEDATERELEASED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateReleased()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_RELEASED_0) %></td>			
 			<td style="width: 40px;">&nbsp;</td>		
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_WORKFLOW_STATUS %>" value="true"<%= wp.isChecked(wp.getParamTabExWorkflowStatus()) %>> <%= wp.key(Messages.GUI_LABEL_WORKFLOW_STATUS_0) %></td>			
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_WORKFLOW_STATUS %>" value="true"<%= wp.isChecked(wp.getParamTabExWorkflowStatus()) %>> <%= wp.key(Messages.GUI_LABEL_WORKFLOW_STATUS_0) %></td>			
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILETYPE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileType()) %>> <%= wp.key(Messages.GUI_LABEL_TYPE_0) %></td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILETYPE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileType()) %>> <%= wp.key(Messages.GUI_LABEL_TYPE_0) %></td>
 			<td>&nbsp;</td>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEUSERLASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserLastModified()) %>> <%= wp.key(Messages.GUI_LABEL_USER_LAST_MODIFIED_0) %></td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEUSERLASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserLastModified()) %>> <%= wp.key(Messages.GUI_LABEL_USER_LAST_MODIFIED_0) %></td>
 			<td>&nbsp;</td>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATEEXPIRED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateExpired()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_EXPIRED_0) %></td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEDATEEXPIRED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateExpired()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_EXPIRED_0) %></td>
 			<td style="width: 40px;">&nbsp;</td>		
 			<td>&nbsp;</td>		
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILESIZE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileSize()) %>> <%= wp.key(Messages.GUI_LABEL_SIZE_0) %></td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILESIZE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileSize()) %>> <%= wp.key(Messages.GUI_LABEL_SIZE_0) %></td>
 			<td>&nbsp;</td>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATECREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateCreated()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_CREATED_0) %></td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEDATECREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateCreated()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_CREATED_0) %></td>
 			<td>&nbsp;</td>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILESTATE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileState()) %>> <%= wp.key(Messages.GUI_LABEL_STATE_0) %></td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILESTATE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileState()) %>> <%= wp.key(Messages.GUI_LABEL_STATE_0) %></td>
 			<td style="width: 40px;">&nbsp;</td>		
 			<td>&nbsp;</td>		
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEPERMISSIONS %>" value="true"<%= wp.isChecked(wp.getParamTabExFilePermissions()) %>> <%= wp.key(Messages.GUI_LABEL_PERMISSIONS_0) %></td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEPERMISSIONS %>" value="true"<%= wp.isChecked(wp.getParamTabExFilePermissions()) %>> <%= wp.key(Messages.GUI_LABEL_PERMISSIONS_0) %></td>
 			<td>&nbsp;</td>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEUSERCREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserCreated()) %>> <%= wp.key(Messages.GUI_LABEL_CREATED_BY_0) %></td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEUSERCREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserCreated()) %>> <%= wp.key(Messages.GUI_LABEL_CREATED_BY_0) %></td>
 			<td>&nbsp;</td>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILELOCKEDBY %>" value="true"<%= wp.isChecked(wp.getParamTabExFileLockedBy()) %>> <%= wp.key(Messages.GUI_LABEL_LOCKED_BY_0) %></td>		
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILELOCKEDBY %>" value="true"<%= wp.isChecked(wp.getParamTabExFileLockedBy()) %>> <%= wp.key(Messages.GUI_LABEL_LOCKED_BY_0) %></td>		
 			<td style="width: 40px;">&nbsp;</td>		
 			<td>&nbsp;</td>		
 		</tr>

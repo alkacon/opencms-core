@@ -350,7 +350,8 @@
 # The workplace preferences define the preferences of the workplace itself.
 -->
 <!ELEMENT workplace-preferences (workplace-generaloptions,
-								 workplace-startupsettings)>
+								 workplace-startupsettings,
+								 workplace-search?)>
 
 <!--
 # The workplace generaloptions describes the general settings for the workplace.
@@ -453,6 +454,19 @@
 -->									
 <!ELEMENT restrictexplorerview (#PCDATA)>								 
 						
+<!--
+# The workplace search settings are used to define the behaviour of the workplace search for editors.
+-->										
+<!ELEMENT workplace-search (searchindex-name, searchview-style) >
+<!--
+# The name of the index to use for search, default is the "Offline project (VFS)" index.
+-->	
+<!ELEMENT searchindex-name (#PCDATA)>	
+<!--
+# The view to display first, the admin list view or the explorer view (default).
+-->	
+<!ELEMENT searchview-style (#PCDATA)>	
+
 <!--
 # The explorer preferences define the preferences workplace explorer.
 -->						

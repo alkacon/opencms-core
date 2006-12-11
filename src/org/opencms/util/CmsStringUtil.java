@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/12/01 14:22:57 $
- * Version: $Revision: 1.39.4.6 $
+ * Date   : $Date: 2006/12/11 15:10:53 $
+ * Version: $Revision: 1.39.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsLog;
 import java.awt.Color;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.4.6 $ 
+ * @version $Revision: 1.39.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,6 +183,27 @@ public final class CmsStringUtil {
                     contraints}));
             }
         }
+    }
+
+    /**
+     * Returns a string representation for the given collection using the given separator.<p>
+     * 
+     * @param collection the collection to print
+     * @param separator the item separator
+     * 
+     * @return the string representation for the given collection
+     */
+    public static String collectionAsString(Collection collection, String separator) {
+
+        StringBuffer string = new StringBuffer(128);
+        Iterator it = collection.iterator();
+        while (it.hasNext()) {
+            string.append(it.next());
+            if (it.hasNext()) {
+                string.append(separator);
+            }
+        }
+        return string.toString();
     }
 
     /**
@@ -1055,7 +1077,7 @@ public final class CmsStringUtil {
     public static boolean validateResourceName(String name) {
 
         // PLEASE NOTE:
-        // This logic is NOT yet used in the current release.<p>
+        // This logic is NOT yet used in the current release
         int todo;
 
         if (name == null) {
@@ -1103,5 +1125,30 @@ public final class CmsStringUtil {
         }
 
         return true;
+    }
+
+    /**
+     * Returns a string representation for the given map using the given separators.<p>
+     * 
+     * @param map the map to write
+     * @param sepItem the item separator string
+     * @param sepKeyval the key-value pair separator string
+     * 
+     * @return the string representation for the given map
+     */
+    public static String mapAsString(Map map, String sepItem, String sepKeyval) {
+
+        StringBuffer string = new StringBuffer(128);
+        Iterator it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            string.append(entry.getKey());
+            string.append(sepKeyval);
+            string.append(entry.getValue());
+            if (it.hasNext()) {
+                string.append(sepItem);
+            }
+        }
+        return string.toString();
     }
 }

@@ -1,5 +1,5 @@
-<%@ page import="org.opencms.workplace.tools.searchindex.*, org.opencms.workplace.CmsWidgetDialog" %>
+<%@ page import="org.opencms.workplace.tools.searchindex.CmsSearchWidgetDialog" %>
 <% 
-    CmsWidgetDialog wp = new CmsSearchWidgetDialog(pageContext, request, response);
+    CmsSearchWidgetDialog wp = new CmsSearchWidgetDialog(pageContext, request, response);
     wp.displayDialog();
 %>

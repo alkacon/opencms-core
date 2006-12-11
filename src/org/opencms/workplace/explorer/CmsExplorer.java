@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.32.4.10 $
+ * Date   : $Date: 2006/12/11 15:10:53 $
+ * Version: $Revision: 1.32.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,10 +45,13 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.galleries.A_CmsGallery;
+import org.opencms.workplace.list.I_CmsListResourceCollector;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.Collections;
 import java.util.List;
@@ -70,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.10 $ 
+ * @version $Revision: 1.32.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -705,6 +708,23 @@ public class CmsExplorer extends CmsWorkplace {
             settings.setExplorerPage(page);
         }
 
+        // if in explorer list view
+        if (getSettings().getExplorerMode().equals(CmsExplorer.VIEW_LIST)) {
+            // if no other view startup url has been set
+            if (getSettings().getViewStartup() == null) {
+                // if not in the admin view
+                if (getSettings().getViewUri().indexOf(CmsToolManager.ADMINVIEW_ROOT_LOCATION) < 0) {
+                    // set the view startup url as editor close link!
+                    String uri = CmsToolManager.VIEW_JSPPAGE_LOCATION;
+                    uri = CmsRequestUtil.appendParameter(
+                        CmsWorkplace.VFS_PATH_VIEWS + "explorer/explorer_fs.jsp",
+                        "uri",
+                        CmsEncoder.encode(CmsEncoder.encode(uri)));
+                    getSettings().setViewStartup(getJsp().link(uri));
+                }
+            }
+        }
+
         // the flaturl 
         settings.setExplorerFlaturl(request.getParameter(PARAMETER_FLATURL));
     }
@@ -754,11 +774,13 @@ public class CmsExplorer extends CmsWorkplace {
                 return Collections.EMPTY_LIST;
             }
         } else if (VIEW_LIST.equals(getSettings().getExplorerMode())) {
-
             // check if the list must show the list view or the check content view
             I_CmsResourceCollector collector = getSettings().getCollector();
             if (collector != null) {
                 // is this the collector for the list view
+                if (collector instanceof I_CmsListResourceCollector) {
+                    ((I_CmsListResourceCollector)collector).setPage(getSettings().getExplorerPage());
+                }
                 try {
                     return collector.getResults(getCms());
                 } catch (CmsException e) {
@@ -767,10 +789,8 @@ public class CmsExplorer extends CmsWorkplace {
                     }
                 }
             }
-
             return Collections.EMPTY_LIST;
         } else if (VIEW_GALLERY.equals(getSettings().getExplorerMode())) {
-
             // select galleries
             A_CmsGallery gallery = A_CmsGallery.createInstance(getSettings().getGalleryType(), getJsp());
             return gallery.getGalleries();

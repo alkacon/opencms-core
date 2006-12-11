@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckCollector.java,v $
- * Date   : $Date: 2006/11/08 09:28:53 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ import java.util.Map;
  * @author Michael Emmerich
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.1.2 
  */
@@ -78,7 +79,7 @@ public class CmsContentCheckCollector extends A_CmsListResourceCollector {
     public CmsContentCheckCollector(A_CmsListExplorerDialog wp, CmsContentCheckResult results) {
 
         super(wp);
-        m_collectorParameter += SEP_PARAM + PARAM_ALL;
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + PARAM_ALL;
         m_results = results;
     }
 

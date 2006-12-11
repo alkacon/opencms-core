@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.31.4.5 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.31.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -92,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.5 $
+ * @version $Revision: 1.31.4.6 $
  * 
  * @since 6.0.0
  */
@@ -190,6 +191,9 @@ public class CmsPreferences extends CmsTabDialog {
 
     /** Request parameter name for the explorer file user last modified. */
     public static final String PARAM_EXPLORER_FILEUSERLASTMODIFIED = "tabexfileuserlastmodified";
+
+    /** Request parameter name for the workplace search result list style. */
+    public static final String PARAM_EXPLORER_SEARCH_RESULT = "tabexworkplacesearchresult";
 
     /** Request parameter name for the explorer file state. */
     public static final String PARAM_EXPLORER_WORKFLOW_STATUS = "tabexworkflowstatus";
@@ -782,6 +786,41 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * Builds the html for the workplace search result list type select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the workplace search result list type select box
+     */
+    public String buildSelectWorkplaceSearchResult(String htmlAttributes) {
+
+        List options = new ArrayList(3);
+        List values = new ArrayList(3);
+        int checkedIndex = 0;
+
+        // add all styles to the select box
+        options.add(key(CmsSearchResultStyle.STYLE_EXPLORER.getKey()));
+        values.add(CmsSearchResultStyle.STYLE_EXPLORER.getStyle());
+        if (getParamTabExWorkplaceSearchResult().equals(CmsSearchResultStyle.STYLE_EXPLORER.toString())) {
+            // mark the currently active locale
+            checkedIndex = 0;
+        }
+        options.add(key(CmsSearchResultStyle.STYLE_LIST_WITH_EXCERPTS.getKey()));
+        values.add(CmsSearchResultStyle.STYLE_LIST_WITH_EXCERPTS.getStyle());
+        if (getParamTabExWorkplaceSearchResult().equals(CmsSearchResultStyle.STYLE_LIST_WITH_EXCERPTS.toString())) {
+            // mark the currently active locale
+            checkedIndex = 1;
+        }
+        options.add(key(CmsSearchResultStyle.STYLE_LIST_WITHOUT_EXCERPTS.getKey()));
+        values.add(CmsSearchResultStyle.STYLE_LIST_WITHOUT_EXCERPTS.getStyle());
+        if (getParamTabExWorkplaceSearchResult().equals(CmsSearchResultStyle.STYLE_LIST_WITHOUT_EXCERPTS.toString())) {
+            // mark the currently active locale
+            checkedIndex = 2;
+        }
+
+        return buildSelect(htmlAttributes, options, values, checkedIndex);
+    }
+
+    /**
      * Builds the html code for the static user information table (tab 4).<p>
      * 
      * @return the html code for the static user information table
@@ -1164,6 +1203,16 @@ public class CmsPreferences extends CmsTabDialog {
     public String getParamTabExWorkflowStatus() {
 
         return isParamEnabled(m_userSettings.showExplorerWorkflowState());
+    }
+
+    /**
+     * Returns the "workplace search result style" setting.<p>
+     * 
+     * @return the "workplace search result style" setting
+     */
+    public String getParamTabExWorkplaceSearchResult() {
+
+        return m_userSettings.getWorkplaceSearchViewStyle().toString();
     }
 
     /**
@@ -1616,6 +1665,19 @@ public class CmsPreferences extends CmsTabDialog {
     public void setParamTabExWorkflowStatus(String value) {
 
         m_userSettings.setShowExplorerWorkflowState(Boolean.valueOf(value).booleanValue());
+    }
+
+    /**
+     * Sets the "workplace search result style".<p>
+     * 
+     * @param style the "workplace search result style" to set
+     */
+    public void setParamTabExWorkplaceSearchResult(String style) {
+
+        if (style == null) {
+            style = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceSearchViewStyle().getStyle();
+        }
+        m_userSettings.setWorkplaceSearchViewStyle(CmsSearchResultStyle.valueOf(style));
     }
 
     /**

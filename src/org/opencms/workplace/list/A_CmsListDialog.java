@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.35.4.7 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.35.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsToolDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.35.4.7 $ 
+ * @version $Revision: 1.35.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -929,6 +930,18 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_METADATA_LIST_1, getListId()));
             }
         }
+        return getMetadata(listDialogName);
+    }
+    
+    /**
+     * Returns the list metadata object for the given dialog.<p>
+     * 
+     * @param listDialogName the dialog class name
+     * 
+     * @return the list metadata object
+     */
+    public static CmsListMetadata getMetadata(String listDialogName) {
+        
         return (CmsListMetadata)m_metadatas.get(listDialogName);
     }
 
@@ -952,7 +965,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         } else if (LIST_MULTI_ACTION.equals(getParamAction())) {
             setAction(ACTION_LIST_MULTI_ACTION);
         }
-        setParamStyle("new");
+        setParamStyle(CmsToolDialog.STYLE_NEW);
         // test the needed parameters
         try {
             validateParamaters();

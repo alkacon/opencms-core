@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsListResourceCollector.java,v $
- * Date   : $Date: 2006/04/18 16:14:03 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,32 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.0 
  */
 public interface I_CmsListResourceCollector extends I_CmsResourceCollector {
+
+    /** Parameter name constant. */
+    String PARAM_FILTER = "filter";
+
+    /** Parameter name constant. */
+    String PARAM_ORDER = "order";
+
+    /** Parameter name constant. */
+    String PARAM_PAGE = "page";
+
+    /** Resources parameter name constant. */
+    String PARAM_RESOURCES = "resources";
+
+    /** Parameter name constant. */
+    String PARAM_SORTBY = "sortby";
+
+    /** Key-Value delimiter constant. */
+    String SEP_KEYVAL = ":";
+
+    /** Parameter delimiter constant. */
+    String SEP_PARAM = "|";
 
     /**
      * Returns a list of list items from a list of resources.<p>

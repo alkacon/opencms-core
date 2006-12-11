@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/11 15:10:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,12 +46,13 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
 public class CmsPublishManager {
 
+    private static final int MS_ONE_SECOND = 1000;
     /** The underlying publish engine. */
     private final CmsPublishEngine m_publishEngine;
 
@@ -75,7 +76,8 @@ public class CmsPublishManager {
      * @throws CmsSecurityException if the current user has not enough permissions 
      * @throws CmsPublishException if the publish job can not been aborted 
      */
-    public void abortPublishJob(CmsObject cms, CmsPublishJobEnqueued publishJob) throws CmsException, CmsSecurityException, CmsPublishException {
+    public void abortPublishJob(CmsObject cms, CmsPublishJobEnqueued publishJob)
+    throws CmsException, CmsSecurityException, CmsPublishException {
 
         if (!cms.hasRole(CmsRole.PROJECT_MANAGER)
             && !cms.getRequestContext().currentUser().getName().equals(publishJob.getUserName())) {
@@ -177,11 +179,23 @@ public class CmsPublishManager {
      */
     public void waitWhileRunning() {
 
-        // wait until it is done
+        waitWhileRunning(Long.MAX_VALUE);
+    }
+
+    /**
+     * Waits until no publish jobs remain or the given max milliseconds.<p>
+     * 
+     * @param ms the max milliseconds to wait
+     */
+    public void waitWhileRunning(long ms) {
+
+        int i = 0;
+        // wait until it is done or time is over
         synchronized (this) {
-            while (isRunning()) {
+            while (isRunning() && (MS_ONE_SECOND * i <= ms)) {
                 try {
-                    this.wait(1000); // wait a sec
+                    this.wait(MS_ONE_SECOND); // wait a sec
+                    i++;
                 } catch (InterruptedException e) {
                     // ignore
                 }

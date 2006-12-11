@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesCollector.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.2.4.5 $
+ * Date   : $Date: 2006/12/11 15:10:53 $
+ * Version: $Revision: 1.2.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -56,7 +57,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2.4.5 $ 
+ * @version $Revision: 1.2.4.6 $ 
  * 
  * @since 6.1.0 
  */
@@ -84,8 +85,8 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
     public CmsProjectFilesCollector(A_CmsListExplorerDialog wp, int projectId, CmsResourceState state) {
 
         super(wp);
-        m_collectorParameter += SEP_PARAM + PARAM_STATE + SEP_KEYVAL + state;
-        m_collectorParameter += SEP_PARAM + PARAM_PROJECT + SEP_KEYVAL + projectId;
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + PARAM_STATE + I_CmsListResourceCollector.SEP_KEYVAL + state;
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + PARAM_PROJECT + I_CmsListResourceCollector.SEP_KEYVAL + projectId;
     }
 
     /**
@@ -130,7 +131,6 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
         // this is not sufficient (startsWith) if one siteRoot is prefix of another as siteRoot ends without slash!
         siteRoot += "/";
         while (itRes.hasNext()) {
-            
             CmsResource resource = (CmsResource)itRes.next();
             if (!resource.getRootPath().startsWith(siteRoot)
                 && !resource.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {

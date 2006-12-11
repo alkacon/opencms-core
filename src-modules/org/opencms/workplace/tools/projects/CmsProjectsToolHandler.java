@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsToolHandler.java,v $
- * Date   : $Date: 2006/10/26 08:36:53 $
- * Version: $Revision: 1.5.8.2 $
+ * Date   : $Date: 2006/12/11 15:10:53 $
+ * Version: $Revision: 1.5.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5.8.2 $ 
+ * @version $Revision: 1.5.8.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +71,6 @@ public class CmsProjectsToolHandler extends A_CmsToolHandler {
             if (wp instanceof CmsProjectFilesDialog) {
                 argMap.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, "false");
             }
-
             if (wp instanceof CmsAdminDialog) {
                 argMap.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, "true");
             }

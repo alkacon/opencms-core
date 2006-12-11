@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchEditorWrapper.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/12/11 15:10:53 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,8 @@
 
 package org.opencms.workplace.search;
 
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.tools.CmsToolDialog;
-import org.opencms.workplace.tools.CmsToolManager;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,20 +44,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchEditorWrapper extends CmsDialog {
-
-    /** The fields parameter value. */
-    private String m_paramFields;
-
-    /** The query parameter value. */
-    private String m_paramQuery;
-
-    /** The sortOrder parameter value. */
-    private String m_paramSortorder;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -98,21 +81,6 @@ public class CmsSearchEditorWrapper extends CmsDialog {
 
         initAdminTool();
 
-        // close link!
-        String uri = CmsWorkplace.VFS_PATH_VIEWS + "explorer/explorer_fs.jsp?uri=";
-        Map params = new HashMap();
-        params.put(CmsToolDialog.PARAM_ROOT, getParamRoot());
-        params.put(CmsToolDialog.PARAM_PATH, getParamPath());
-        params.put(CmsSearchResultsList.PARAM_QUERY, getParamQuery());
-        params.put(CmsSearchResultsList.PARAM_SORT_ORDER, getParamSortorder());
-        params.put(CmsSearchResultsList.PARAM_FIELDS, getParamFields());
-        uri = CmsRequestUtil.appendParameters(CmsToolManager.VIEW_JSPPAGE_LOCATION, params, true);
-        uri = CmsRequestUtil.appendParameter(
-            CmsWorkplace.VFS_PATH_VIEWS + "explorer/explorer_fs.jsp",
-            "uri",
-            CmsEncoder.encode(CmsEncoder.encode(uri)));
-        getSettings().setViewStartup(getJsp().link(uri));
-
         JspWriter out = getJsp().getJspContext().getOut();
         out.print(htmlStart());
         out.print(bodyStart(null));
@@ -124,70 +92,7 @@ public class CmsSearchEditorWrapper extends CmsDialog {
         out.print("<script type='text/javascript'>\n");
         out.print("document.forms['editor'].submit();\n");
         out.print("</script>\n");
-        out.print(dialogContentStart(getParamTitle()));
-        out.print(dialogContentEnd());
-        out.print(dialogEnd());
         out.print(bodyEnd());
         out.print(htmlEnd());
-    }
-
-    /**
-     * Returns the fields parameter value.<p>
-     *
-     * @return the fields parameter value
-     */
-    public String getParamFields() {
-
-        return m_paramFields;
-    }
-
-    /**
-     * Returns the query parameter value.<p>
-     *
-     * @return the query parameter value
-     */
-    public String getParamQuery() {
-
-        return m_paramQuery;
-    }
-
-    /**
-     * Returns the sortOrder parameter value.<p>
-     *
-     * @return the sortOrder parameter value
-     */
-    public String getParamSortorder() {
-
-        return m_paramSortorder;
-    }
-
-    /**
-     * Sets the fields parameter value.<p>
-     *
-     * @param paramFields the fields parameter value to set
-     */
-    public void setParamFields(String paramFields) {
-
-        m_paramFields = paramFields;
-    }
-
-    /**
-     * Sets the query parameter value.<p>
-     *
-     * @param paramQuery the query parameter value to set
-     */
-    public void setParamQuery(String paramQuery) {
-
-        m_paramQuery = paramQuery;
-    }
-
-    /**
-     * Sets the sortOrder parameter value.<p>
-     *
-     * @param paramSortOrder the sortOrder parameter value to set
-     */
-    public void setParamSortorder(String paramSortOrder) {
-
-        m_paramSortorder = paramSortOrder;
     }
 }

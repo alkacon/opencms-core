@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.20.4.2 $
+ * Date   : $Date: 2006/12/11 15:10:53 $
+ * Version: $Revision: 1.20.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.lucene.document.Field;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20.4.2 $ 
+ * @version $Revision: 1.20.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,8 +89,6 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
      */
     protected CmsSearchResult(int score, Document doc, String excerpt) {
 
-        Field f;
-
         m_score = score;
         m_excerpt = excerpt;
         m_fields = new HashMap();
@@ -112,7 +110,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
             }
         }
 
-        f = doc.getField(CmsSearchField.FIELD_PATH);
+        Field f = doc.getField(CmsSearchField.FIELD_PATH);
         if (f != null) {
             m_path = f.stringValue();
         } else {

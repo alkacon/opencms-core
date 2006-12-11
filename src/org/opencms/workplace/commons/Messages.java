@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/11/29 15:04:07 $
- * Version: $Revision: 1.15.4.12 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.15.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.12 $ 
+ * @version $Revision: 1.15.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -855,6 +855,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_RESTRICT_EXPLORER_VIEW_0 = "GUI_PREF_RESTRICT_EXPLORER_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_SEARCH_RESULT_0 = "GUI_PREF_SEARCH_RESULT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_SETTINGS_DEFAULT_0 = "GUI_PREF_SETTINGS_DEFAULT_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.17.4.6 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.17.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.6 $
+ * @version $Revision: 1.17.4.7 $
  * 
  * @since 6.0.0 
  */
@@ -63,6 +63,15 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Array list for fast lookup of "button styles". */
     public static final List BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
+
+    /** Publish button appearance: show always. */
+    public static final String PUBLISHBUTTON_SHOW_ALWAYS = "always";
+
+    /** Publish button appearance: show auto (only if user has publish permissions). */
+    public static final String PUBLISHBUTTON_SHOW_AUTO = "auto";
+
+    /** Publish button appearance: show never. */
+    public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
     /** Parameter for buttonstyle text & image. */
     private static final int BUTTONSTYLE_TEXTIMAGE = 1;
@@ -81,15 +90,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Value for preserving siblings in delete dialog settings. */
     private static final String DELETEMODE_PRESERVE = "preservesiblings";
-
-    /** Publish button appearance: show always. */
-    public static final String PUBLISHBUTTON_SHOW_ALWAYS = "always";
-
-    /** Publish button appearance: show auto (only if user has publish permissions). */
-    public static final String PUBLISHBUTTON_SHOW_AUTO = "auto";
-
-    /** Publish button appearance: show never. */
-    public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
     /** Value for publishing only resources in publish dialog settings. */
     private static final String PUBLISHMODE_ONLYRESOURCE = "onlyresource";
@@ -112,7 +112,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         } else {
             return COPYMODE_SIBLING;
         }
-
     }
 
     /**
@@ -241,17 +240,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getExplorerButtonStyleString() {
 
         return BUTTON_STYLES[getExplorerButtonStyle()];
-    }
-
-    /**
-     * Checks if  a specific explorer setting depending is set.<p>
-     * 
-     * @param setting the settings constant value for the explorer settings
-     * @return <code>"true"</code> if the explorer setting is set, otherwise <code>"false"</code>
-     */
-    private String getExplorerSetting(int setting) {
-
-        return String.valueOf((getExplorerSettings() & setting) > 0);
     }
 
     /**
@@ -836,7 +824,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setWorkplaceButtonStyle(String buttonstyle) {
 
         int buttonstyleValue = BUTTONSTYLE_TEXTIMAGE;
-
         try {
             if (buttonstyle != null) {
                 buttonstyleValue = BUTTON_STYLES_LIST.indexOf(buttonstyle);
@@ -844,7 +831,27 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         } catch (Exception e) {
             // do nothing, use the default value
         }
-
         setWorkplaceButtonStyle(buttonstyleValue);
+    }
+
+    /**
+     * Sets the style of the workplace search default view.<p>
+     * 
+     * @param viewStyle the style of the workplace search default view 
+     */
+    public void setWorkplaceSearchViewStyle(String viewStyle) {
+
+        setWorkplaceSearchViewStyle(CmsSearchResultStyle.valueOf(viewStyle));
+    }
+
+    /**
+     * Checks if  a specific explorer setting depending is set.<p>
+     * 
+     * @param setting the settings constant value for the explorer settings
+     * @return <code>"true"</code> if the explorer setting is set, otherwise <code>"false"</code>
+     */
+    private String getExplorerSetting(int setting) {
+
+        return String.valueOf((getExplorerSettings() & setting) > 0);
     }
 }

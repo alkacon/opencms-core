@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.13.4.11 $
+ * Date   : $Date: 2006/12/11 15:10:53 $
+ * Version: $Revision: 1.13.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -157,7 +157,7 @@ function res(text, nicename, icon, createLink, isEditable){
 
 function setDisplayResource(resource) {
 	displayResource = resource;
-	if (mode == "explorerview") {
+	if (win.head) {
 		win.head.forms.urlform.resource.value = displayResource.substring(getRootFolder().length - 1);
 	}
 }
@@ -218,7 +218,7 @@ function dU(doc, pages, actpage) {
 	openfolderMethod="openFolder";
 	showCols(vr.viewcfg);
 	printList(doc);
-	if (mode == "explorerview") {
+	if (win.head) {
 		displayHead(win.head, pages, actpage);
 	}
 }
@@ -1200,7 +1200,7 @@ function displayHead(doc, pages, actpage){
 
 	btSearch = button(vr.servpath + link_searchresource, "explorer_files", "ex_search.png", vr.langsearch, buttonType);
 
-	if(pages > 1){
+	if(pages > 1 && (mode != "listview")){
 		pageSelect=
 		"<td>&nbsp;&nbsp;"+vr.langpage+"&nbsp;</td>"
 		+ "<td class=menu>"

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2006/11/29 15:04:07 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListExplorerColumn;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
@@ -53,14 +52,11 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5 
  */
 public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
-
-    /** List column id constant. */
-    public static final String LIST_COLUMN_ROOT_PATH = "crp";
 
     /** list id constant. */
     public static final String LIST_ID = "pr";
@@ -132,7 +128,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                  */
                 protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
-                    item.set(CmsPublishResourcesList.LIST_COLUMN_ROOT_PATH, resUtil.getFullPath());
+                    // no-op
                 }
 
                 /**
@@ -177,19 +173,12 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
-        CmsListColumnDefinition rootPathCol = new CmsListExplorerColumn(LIST_COLUMN_ROOT_PATH);
-        rootPathCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
-        rootPathCol.setVisible(false);
-        rootPathCol.setPrintable(true);
-        metadata.addColumn(rootPathCol, 4);
 
         Iterator it = metadata.getColumnDefinitions().iterator();
         while (it.hasNext()) {
             CmsListColumnDefinition colDefinition = (CmsListColumnDefinition)it.next();
             colDefinition.setSorteable(false);
             if (colDefinition.getId().equals(LIST_COLUMN_NAME)) {
-                colDefinition.setPrintable(false);
                 colDefinition.removeDefaultAction(LIST_DEFACTION_OPEN);
                 colDefinition.setWidth("60%");
             }

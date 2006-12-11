@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsCollector.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5 
  */
@@ -57,9 +57,6 @@ public class CmsPublishBrokenRelationsCollector extends A_CmsListResourceCollect
 
     /** Parameter of the default collector name. */
     public static final String COLLECTOR_NAME = "potentialBrokenResources";
-
-    /** Resources parameter name constant. */
-    public static final String PARAM_RESOURCES = "resources";
 
     /**
      * Constructor, creates a new instance.<p>
@@ -70,19 +67,7 @@ public class CmsPublishBrokenRelationsCollector extends A_CmsListResourceCollect
     public CmsPublishBrokenRelationsCollector(A_CmsListExplorerDialog wp, List resources) {
 
         super(wp);
-        m_collectorParameter += SEP_PARAM + PARAM_RESOURCES + SEP_KEYVAL;
-        if (resources == null) {
-            // search anywhere
-            m_collectorParameter += "/";
-        } else {
-            Iterator it = resources.iterator();
-            while (it.hasNext()) {
-                m_collectorParameter += it.next();
-                if (it.hasNext()) {
-                    m_collectorParameter += "#";
-                }
-            }
-        }
+        setResourcesParam(resources);
     }
 
     /**
@@ -100,24 +85,10 @@ public class CmsPublishBrokenRelationsCollector extends A_CmsListResourceCollect
      */
     public List getResources(CmsObject cms, Map params) throws CmsException {
 
-        String resourcesParam = "/";
-        if (params.containsKey(PARAM_RESOURCES)) {
-            resourcesParam = (String)params.get(PARAM_RESOURCES);
-        }
         List resources = new ArrayList();
-        if (resourcesParam.length() == 0) {
-            return resources;
-        }
-        int pos = 0;
-        while (pos > -1) {
-            int newPos = resourcesParam.indexOf("#", pos + 1);
-            String resName;
-            if (newPos == -1) {
-                resName = resourcesParam.substring(pos + 1);
-            } else {
-                resName = resourcesParam.substring(pos + 1, newPos);
-            }
-            pos = newPos;
+        Iterator itResourceNames = getResourceNamesFromParam(params).iterator();
+        while (itResourceNames.hasNext()) {
+            String resName = (String)itResourceNames.next();
             resources.add(cms.readResource(resName, CmsResourceFilter.ALL));
         }
         return resources;
@@ -128,6 +99,6 @@ public class CmsPublishBrokenRelationsCollector extends A_CmsListResourceCollect
      */
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
-        item.set(CmsPublishBrokenRelationsList.LIST_COLUMN_ROOT_PATH, resUtil.getFullPath());
+        // no-op
     }
 }

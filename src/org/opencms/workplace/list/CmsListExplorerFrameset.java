@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.4.4.5 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.4.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.list;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorer;
@@ -63,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.5 $ 
+ * @version $Revision: 1.4.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,6 +154,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         String listLevelLink = CmsToolManager.linkForToolPath(getJsp(), toolPath, getToolManager().resolveAdminTool(
             rootKey,
             toolPath).getHandler().getParameters(this));
+        listLevelLink = CmsRequestUtil.appendParameter(listLevelLink, A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, Boolean.FALSE.toString());
         String parentName = getToolManager().resolveAdminTool(rootKey, parentPath).getHandler().getName();
 
         html.append(getToolManager().generateNavBar(toolPath, this));
@@ -202,7 +204,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             "openPage('" + listLevelLink + "');"));
         html.append("\n");
         // uplevel button only if needed
-        if (! toolPath.equals(getParentPath())) {
+        if (!toolPath.equals(getParentPath())) {
             html.append(A_CmsHtmlIconButton.defaultButtonHtml(
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 "id-up-level",

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResultsList.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/12/11 15:10:53 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,12 @@ package org.opencms.workplace.search;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.search.CmsSearchResult;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditor;
 import org.opencms.workplace.explorer.CmsExplorer;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -51,6 +51,7 @@ import org.opencms.workplace.list.I_CmsListFormatter;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -66,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,29 +82,14 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /** list id constant. */
     public static final String LIST_ID = "lsr";
 
-    /** The fields parameter name. */
-    public static final String PARAM_FIELDS = "fields";
-
-    /** query parameter name. */
-    public static final String PARAM_QUERY = "query";
-
-    /** sortOrder parameter name. */
-    public static final String PARAM_SORT_ORDER = "sortorder";
-
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/ex_search/buttons/";
 
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;
 
-    /** The comma separated list of fields to search parameter value. */
-    private String m_paramFields;
-
-    /** query parameter value. */
-    private String m_paramQuery;
-
-    /** sortOrder parameter value. */
-    private String m_paramSortorder;
+    /** Search parameters. */
+    private CmsSearchWorkplaceBean m_searchParams;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -152,9 +138,6 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
             params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
             params.put(CmsDialog.PARAM_CLOSELINK, CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp");
             params.put(CmsEditor.PARAM_BACKLINK, CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp");
-            params.put(CmsSearchResultsList.PARAM_QUERY, getParamQuery());
-            params.put(CmsSearchResultsList.PARAM_SORT_ORDER, getParamSortorder());
-            params.put(CmsSearchResultsList.PARAM_FIELDS, getParamFields());
             params.put(CmsDialog.PARAM_RESOURCE, getSelectedItem().get(LIST_COLUMN_NAME));
             getToolManager().jspForwardPage(this, "/system/workplace/explorer/search/edit.jsp", params);
         } else {
@@ -168,69 +151,32 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
-            m_collector = new CmsSearchResourcesCollector(this, getParamQuery(), getParamSortorder(), getParamFields());
+            m_collector = new CmsSearchResourcesCollector(
+                this,
+                getSearchParams().getQuery(),
+                getSearchParams().getSortOrder(),
+                getSearchParams().getFields(),
+                Collections.singletonList(getSearchParams().getSearchPath()));
+
+            // set the right resource util parameters
+            CmsResourceUtil resUtil = getResourceUtil();
+            resUtil.setAbbrevLength(50);
+            resUtil.setSiteMode(CmsResourceUtil.SITE_MODE_MATCHING);
         }
         return m_collector;
     }
 
     /**
-     * Returns the fields parameter value.<p>
-     *
-     * @return the fields parameter value
+     * Returns the search parameter bean.<p>
+     * 
+     * @return the search parameter bean
      */
-    public String getParamFields() {
+    private CmsSearchWorkplaceBean getSearchParams() {
 
-        return m_paramFields;
-    }
-
-    /**
-     * Returns the query parameter value.<p>
-     *
-     * @return the query parameter value
-     */
-    public String getParamQuery() {
-
-        return m_paramQuery;
-    }
-
-    /**
-     * Returns the sortOrder parameter value.<p>
-     *
-     * @return the sortOrder parameter value
-     */
-    public String getParamSortorder() {
-
-        return m_paramSortorder;
-    }
-
-    /**
-     * Sets the fields parameter value.<p>
-     *
-     * @param paramFields the fields parameter value to set
-     */
-    public void setParamFields(String paramFields) {
-
-        m_paramFields = paramFields;
-    }
-
-    /**
-     * Sets the query parameter value.<p>
-     *
-     * @param paramQuery the query parameter value to set
-     */
-    public void setParamQuery(String paramQuery) {
-
-        m_paramQuery = paramQuery;
-    }
-
-    /**
-     * Sets the sortOrder parameter value.<p>
-     *
-     * @param paramSortOrder the sortOrder parameter value to set
-     */
-    public void setParamSortorder(String paramSortOrder) {
-
-        m_paramSortorder = paramSortOrder;
+        if (m_searchParams == null) {
+            m_searchParams = (CmsSearchWorkplaceBean)((Map)getSettings().getDialogObject()).get(CmsSearchDialog.class.getName());
+        }
+        return m_searchParams;
     }
 
     /**
@@ -269,7 +215,9 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
                 // get excerpt for item
                 if (!item.getId().equals(CmsUUID.getNullUUID().toString())) {
                     CmsSearchResult result = collector.getSearchResult(item.getId());
-                    item.set(detailId, result.getExcerpt());
+                    if (result != null) {
+                        item.set(detailId, result.getExcerpt());
+                    }
                 }
             }
         }
@@ -357,7 +305,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
      */
     protected void validateParamaters() throws Exception {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamQuery())) {
+        if (getSearchParams() == null) {
             throw new Exception();
         }
     }

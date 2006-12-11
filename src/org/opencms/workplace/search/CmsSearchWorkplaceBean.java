@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchWorkplaceBean.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/11 15:10:53 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,18 +36,19 @@ import org.opencms.main.CmsIllegalStateException;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.Iterator;
-
 /**
  * Bean to handle search parameters in the workplace.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.3.0 
  */
 public class CmsSearchWorkplaceBean {
+
+    /** The current folder. */
+    private String m_currentFolder;
 
     /** The comma separated list of fields to search parameter value. */
     private String m_fields;
@@ -55,25 +56,22 @@ public class CmsSearchWorkplaceBean {
     /** The query. */
     private String m_query;
 
+    /** If set, will restrict the search to the current folder. */
+    private boolean m_restrictSearch;
+
     /** The sort Order. */
     private String m_sortOrder;
 
     /**
      * Default constructor.<p>
+     * 
+     * @param currentFolder the current folder
      */
-    public CmsSearchWorkplaceBean() {
+    public CmsSearchWorkplaceBean(String currentFolder) {
 
-        StringBuffer fields = new StringBuffer();
-        Iterator i = CmsSearchDialog.getFieldNames().iterator();
-        while (i.hasNext()) {
-            fields.append(i.next());
-            if (i.hasNext()) {
-                fields.append(',');
-            }
-        }
-
-        m_fields = fields.toString();
+        m_fields = CmsStringUtil.collectionAsString(new CmsSearchParameters().getFields(), ",");
         m_sortOrder = CmsSearchParameters.SORT_NAMES[0];
+        m_currentFolder = currentFolder;
     }
 
     /**
@@ -97,6 +95,20 @@ public class CmsSearchWorkplaceBean {
     }
 
     /**
+     * Returns the search path.<p>
+     * 
+     * @return the search path
+     */
+    public String getSearchPath() {
+
+        if (isRestrictSearch()) {
+            return m_currentFolder;
+        } else {
+            return "/";
+        }
+    }
+
+    /**
      * Returns the sort Order.<p>
      *
      * @return the sort Order
@@ -104,6 +116,16 @@ public class CmsSearchWorkplaceBean {
     public String getSortOrder() {
 
         return m_sortOrder;
+    }
+
+    /**
+     * Returns the restrict Search flag.<p>
+     *
+     * @return the restrict Search flag
+     */
+    public boolean isRestrictSearch() {
+
+        return m_restrictSearch;
     }
 
     /**
@@ -130,6 +152,16 @@ public class CmsSearchWorkplaceBean {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_VALIDATE_SEARCH_QUERY_0));
         }
         m_query = query;
+    }
+
+    /**
+     * Sets the restrict Search flag.<p>
+     *
+     * @param restrictSearch the restrict Search flag to set
+     */
+    public void setRestrictSearch(boolean restrictSearch) {
+
+        m_restrictSearch = restrictSearch;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsList.java,v $
- * Date   : $Date: 2006/11/29 15:04:07 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListIndependentJsAction;
 import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListExplorerColumn;
 import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
@@ -63,14 +62,11 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5 
  */
 public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
-
-    /** List column id constant. */
-    public static final String LIST_COLUMN_ROOT_PATH = "crp";
 
     /** list action id constant. */
     public static final String LIST_DETAIL_RELATIONS = "dr";
@@ -248,19 +244,12 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
-        CmsListColumnDefinition rootPathCol = new CmsListExplorerColumn(LIST_COLUMN_ROOT_PATH);
-        rootPathCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
-        rootPathCol.setVisible(false);
-        rootPathCol.setPrintable(true);
-        metadata.addColumn(rootPathCol, 4);
 
         Iterator it = metadata.getColumnDefinitions().iterator();
         while (it.hasNext()) {
             CmsListColumnDefinition colDefinition = (CmsListColumnDefinition)it.next();
             colDefinition.setSorteable(false);
             if (colDefinition.getId().equals(LIST_COLUMN_NAME)) {
-                colDefinition.setPrintable(false);
                 colDefinition.removeDefaultAction(LIST_DEFACTION_OPEN);
                 colDefinition.setWidth("60%");
             }

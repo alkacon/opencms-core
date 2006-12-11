@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.17.4.10 $
+ * Date   : $Date: 2006/12/11 15:10:53 $
+ * Version: $Revision: 1.17.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,18 +39,13 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
-import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListDropdownAction;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.10 $ 
+ * @version $Revision: 1.17.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,9 +76,6 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
-
-    /** Stores the value of the request parameter for the show explorer flag. */
-    private String m_paramShowexplorer;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -204,16 +196,6 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     }
 
     /**
-     * Returns the Show explorer parameter value.<p>
-     *
-     * @return the Show explorer parameter value
-     */
-    public String getParamShowexplorer() {
-
-        return m_paramShowexplorer;
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#refreshList()
      */
     public synchronized void refreshList() {
@@ -235,16 +217,6 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     public void setParamProjectid(String projectId) {
 
         m_paramProjectid = projectId;
-    }
-
-    /**
-     * Sets the Show explorer parameter value.<p>
-     *
-     * @param showExplorer the Show explorer parameter value to set
-     */
-    public void setParamShowexplorer(String showExplorer) {
-
-        m_paramShowexplorer = showExplorer;
     }
 
     /**
@@ -277,33 +249,6 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
         addMessages(Messages.get().getBundleName());
         // add default resource bundles
         super.initMessages();
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        super.initWorkplaceRequestValues(settings, request);
-
-        // this to show first the exlorer view
-        if (Boolean.valueOf(getParamShowexplorer()).booleanValue()) {
-            int projectId = getProject().getId();
-            Map params = new HashMap();
-            // set action parameter to initial dialog call
-            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
-            params.putAll(getToolManager().getCurrentTool(this).getHandler().getParameters(this));
-
-            getSettings().setExplorerProjectId(projectId);
-            getSettings().setExplorerPage(1);
-            getSettings().setCollector(getCollector());
-            getSettings().setExplorerMode(CmsExplorer.VIEW_LIST);
-            try {
-                getToolManager().jspForwardPage(this, PATH_DIALOGS + "list-explorer.jsp", params);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     /**

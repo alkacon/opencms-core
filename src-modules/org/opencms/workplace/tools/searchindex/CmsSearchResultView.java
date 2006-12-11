@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchResultView.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.3 $
+ * @version $Revision: 1.2.4.4 $
  * 
  * @since 6.0.0
  */
@@ -461,35 +461,16 @@ public class CmsSearchResultView {
                     result.append(it.next()).append("\" />\n");
                     count++;
                 }
-                
-                int todo;
-                // TODO: List of fields must not be hard-coded
-                
-//                result.append("  <input type=\"hidden\" name=\"");
-//                result.append("searchfieldcontent.").append(0).append("\" value=\"");
-//                result.append(search.getParameters().getSearchFieldContent()).append("\" />\n");
-//
-//                result.append("  <input type=\"hidden\" name=\"");
-//                result.append("searchfieldmeta.").append(0).append("\" value=\"");
-//                result.append(search.getParameters().getSearchFieldMeta()).append("\" />\n");
-//
-//                result.append("  <input type=\"hidden\" name=\"");
-//                result.append("searchfieldtitle.").append(0).append("\" value=\"");
-//                result.append(search.getParameters().getSearchFieldTitle()).append("\" />\n");
-//
-//                result.append("  <input type=\"hidden\" name=\"");
-//                result.append("searchfieldkeywords.").append(0).append("\" value=\"");
-//                result.append(search.getParameters().getSearchFieldKeywords()).append("\" />\n");
-//
-//                result.append("  <input type=\"hidden\" name=\"");
-//                result.append("searchfielddescription.").append(0).append("\" value=\"");
-//                result.append(search.getParameters().getSearchFieldDescription()).append("\" />\n");
-//
-//                result.append("  <input type=\"hidden\" name=\"");
-//                result.append("sortfields.").append(0).append("\" value=\"");
-//                result.append(search.getParameters().getSortName()).append("\" />\n");
-//                search.getParameters().getSearchFieldContent();
-                
+
+                result.append("  <input type=\"hidden\" name=\"");
+                result.append("fields").append("\" value=\"");
+                result.append(CmsStringUtil.collectionAsString(search.getParameters().getFields(), ","));
+                result.append("\" />\n");
+
+                result.append("  <input type=\"hidden\" name=\"");
+                result.append("sortfields.").append(0).append("\" value=\"");
+                result.append(search.getParameters().getSortName()).append("\" />\n");
+
                 result.append("</form>\n");
                 HTMLForm form = new HTMLForm(formname, result.toString());
 

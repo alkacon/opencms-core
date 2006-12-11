@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/12/07 15:29:11 $
- * Version: $Revision: 1.40.4.11 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.40.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.11 $
+ * @version $Revision: 1.40.4.12 $
  * 
  * @since 6.0.0
  */
@@ -307,6 +307,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the roots node. */
     public static final String N_ROOTS = "roots";
 
+    /** The node name of the searchindex-name node. */
+    public static final String N_SEARCHINDEXNAME = "searchindex-name";
+
+    /** The node name of the searchview-style node. */
+    public static final String N_SEARCHVIEWSTYLE = "searchview-style";
+
     /** The name of the separator node. */
     public static final String N_SEPARATOR = "separator";
 
@@ -363,6 +369,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the workplace preferences node. */
     public static final String N_WORKPLACEPREFERENCES = "workplace-preferences";
+
+    /** The node name of the workplace-search node. */
+    public static final String N_WORKPLACESEARCH = "workplace-search";
 
     /** The node name of the workplace startup settings node. */
     public static final String N_WORKPLACESTARTUPSETTINGS = "workplace-startupsettings";
@@ -964,6 +973,27 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_WORKPLACESTARTUPSETTINGS
             + "/"
             + N_RESTRICTEXPLORERVIEW, "setRestrictExplorerView", 0);
+        // add workplace search rules 
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACESEARCH
+            + "/"
+            + N_SEARCHINDEXNAME, "setWorkplaceSearchIndexName", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACESEARCH
+            + "/"
+            + N_SEARCHVIEWSTYLE, "setWorkplaceSearchViewStyle", 0);
 
         // add explorer preferences generaloptions rules 
         digester.addCallMethod("*/"
@@ -1481,6 +1511,15 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <restrictexplorerview> node
         workplaceStartupsettings.addElement(N_RESTRICTEXPLORERVIEW).setText(
             m_workplaceManager.getDefaultUserSettings().getRestrictExplorerViewString());
+
+        // add the <workplace-search> node
+        Element workplaceSearch = workplacePreferences.addElement(N_WORKPLACESEARCH);
+        // add the <searchindex-name> node
+        workplaceSearch.addElement(N_SEARCHINDEXNAME).setText(
+            m_workplaceManager.getDefaultUserSettings().getWorkplaceSearchIndexName());
+        // add the <searchview-explorer> node
+        workplaceSearch.addElement(N_SEARCHVIEWSTYLE).setText(
+            m_workplaceManager.getDefaultUserSettings().getWorkplaceSearchViewStyle().toString());
 
         // add the <explorer-preferences> node
         Element explorerPreferences = defaultPreferences.addElement(N_EXPLORERPREFERENCES);

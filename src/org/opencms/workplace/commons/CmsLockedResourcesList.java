@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesList.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListExplorerColumn;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
@@ -48,7 +47,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,9 +59,6 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;
     
-    /** List column id constant. */
-    public static final String LIST_COLUMN_ROOT_PATH = "crp";
-
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -147,19 +143,12 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
-        CmsListColumnDefinition rootPathCol = new CmsListExplorerColumn(LIST_COLUMN_ROOT_PATH);
-        rootPathCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
-        rootPathCol.setVisible(false);
-        rootPathCol.setPrintable(true);
-        metadata.addColumn(rootPathCol, 4);
 
         Iterator it = metadata.getColumnDefinitions().iterator();
         while (it.hasNext()) {
             CmsListColumnDefinition colDefinition = (CmsListColumnDefinition)it.next();
             colDefinition.setSorteable(false);
             if (colDefinition.getId().equals(LIST_COLUMN_NAME)) {
-                colDefinition.setPrintable(false);
                 colDefinition.removeDefaultAction(LIST_DEFACTION_OPEN);
             }
         }

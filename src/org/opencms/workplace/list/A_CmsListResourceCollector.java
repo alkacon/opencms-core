@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,29 +56,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.1.0 
  */
 public abstract class A_CmsListResourceCollector implements I_CmsListResourceCollector {
-
-    /** Parameter name constant. */
-    public static final String PARAM_FILTER = "filter";
-
-    /** Parameter name constant. */
-    public static final String PARAM_ORDER = "order";
-
-    /** Parameter name constant. */
-    public static final String PARAM_PAGE = "page";
-
-    /** Parameter name constant. */
-    public static final String PARAM_SORTBY = "sortby";
-
-    /** Key-Value delimiter constant. */
-    public static final String SEP_KEYVAL = ":";
-
-    /** Parameter delimiter constant. */
-    public static final String SEP_PARAM = "|";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsListResourceCollector.class);
@@ -119,10 +101,10 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
         if (state.getFilter() == null) {
             state.setFilter("");
         }
-        m_collectorParameter = PARAM_PAGE + SEP_KEYVAL + state.getPage();
-        m_collectorParameter += SEP_PARAM + PARAM_SORTBY + SEP_KEYVAL + state.getColumn();
-        m_collectorParameter += SEP_PARAM + PARAM_ORDER + SEP_KEYVAL + state.getOrder();
-        m_collectorParameter += SEP_PARAM + PARAM_FILTER + SEP_KEYVAL + state.getFilter();
+        m_collectorParameter = I_CmsListResourceCollector.PARAM_PAGE + I_CmsListResourceCollector.SEP_KEYVAL + state.getPage();
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + I_CmsListResourceCollector.PARAM_SORTBY + I_CmsListResourceCollector.SEP_KEYVAL + state.getColumn();
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + I_CmsListResourceCollector.PARAM_ORDER + I_CmsListResourceCollector.SEP_KEYVAL + state.getOrder();
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + I_CmsListResourceCollector.PARAM_FILTER + I_CmsListResourceCollector.SEP_KEYVAL + state.getFilter();
     }
 
     /**
@@ -195,7 +177,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
         if (parameter == null) {
             parameter = m_collectorParameter;
         }
-        Map params = CmsStringUtil.splitAsMap(parameter, SEP_PARAM, SEP_KEYVAL);
+        Map params = CmsStringUtil.splitAsMap(parameter, I_CmsListResourceCollector.SEP_PARAM, I_CmsListResourceCollector.SEP_KEYVAL);
         CmsListState state = getState(params);
         List resources = getInternalResources(getWp().getCms(), params);
         List ret = new ArrayList();
@@ -225,6 +207,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 resUtil.setResource(resource);
                 item = list.newItem(resource.getStructureId().toString());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_NAME, resUtil.getPath());
+                item.set(A_CmsListExplorerDialog.LIST_COLUMN_ROOT_PATH, resUtil.getFullPath());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, resUtil.getTitle());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_TYPE, resUtil.getResourceTypeName());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_SIZE, resUtil.getSizeString());
@@ -238,7 +221,6 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_STATE, resUtil.getStateName());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
                 item.set(A_CmsListExplorerDialog.LIST_COLUMN_SITE, resUtil.getSite());
-                setAdditionalColumns(item, resUtil);
                 m_liCache.put(resource.getStructureId().toString(), item);
             }
             ret.add(item);
@@ -295,7 +277,8 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                     CmsResourceFilter.ALL);
                 m_resCache.put(item.getId(), res);
             } catch (CmsException e) {
-                // ignore
+                // should never happen
+                LOG.error(e);
             }
         }
         return res;
@@ -333,6 +316,9 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_COLLECTOR_GET_RESULTS_START_0));
         }
+        if (parameter == null) {
+            parameter = m_collectorParameter;
+        }
         List resources = new ArrayList();
         if (getWp().getList() != null) {
             Iterator itItems = getListItems(parameter).iterator();
@@ -341,10 +327,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 resources.add(getResource(cms, item));
             }
         } else {
-            if (parameter == null) {
-                parameter = m_collectorParameter;
-            }
-            Map params = CmsStringUtil.splitAsMap(parameter, SEP_PARAM, SEP_KEYVAL);
+            Map params = CmsStringUtil.splitAsMap(parameter, I_CmsListResourceCollector.SEP_PARAM, I_CmsListResourceCollector.SEP_KEYVAL);
             resources = getInternalResources(cms, params);
         }
         if (LOG.isDebugEnabled()) {
@@ -400,17 +383,17 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
     public void setPage(int page) {
 
         if (m_collectorParameter != null) {
-            int pos = m_collectorParameter.indexOf(PARAM_PAGE);
+            int pos = m_collectorParameter.indexOf(I_CmsListResourceCollector.PARAM_PAGE);
             if (pos >= 0) {
                 String params = "";
-                int endPos = m_collectorParameter.indexOf(SEP_PARAM, pos);
+                int endPos = m_collectorParameter.indexOf(I_CmsListResourceCollector.SEP_PARAM, pos);
                 if (pos > 0) {
-                    pos -= SEP_PARAM.length(); // remove also the SEP_PARAM 
+                    pos -= I_CmsListResourceCollector.SEP_PARAM.length(); // remove also the SEP_PARAM 
                     params += m_collectorParameter.substring(0, pos);
                 }
                 if (endPos >= 0) {
                     if (pos == 0) {
-                        endPos += SEP_PARAM.length(); // remove also the SEP_PARAM
+                        endPos += I_CmsListResourceCollector.SEP_PARAM.length(); // remove also the SEP_PARAM
                     }
                     params += m_collectorParameter.substring(endPos, m_collectorParameter.length());
                 }
@@ -418,9 +401,9 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             }
         }
         if (m_collectorParameter.length() > 0) {
-            m_collectorParameter += SEP_PARAM;
+            m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM;
         }
-        m_collectorParameter += PARAM_PAGE + SEP_KEYVAL + page;
+        m_collectorParameter += I_CmsListResourceCollector.PARAM_PAGE + I_CmsListResourceCollector.SEP_KEYVAL + page;
         m_resources = null;
     }
 
@@ -476,6 +459,27 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
     }
 
     /**
+     * Returns the list of resource names from the parameter map.<p>
+     * 
+     * @param params the parameter map
+     * 
+     * @return the list of resource names
+     * 
+     * @see I_CmsListResourceCollector#PARAM_RESOURCES
+     */
+    protected List getResourceNamesFromParam(Map params) {
+
+        String resourcesParam = "/";
+        if (params.containsKey(I_CmsListResourceCollector.PARAM_RESOURCES)) {
+            resourcesParam = (String)params.get(I_CmsListResourceCollector.PARAM_RESOURCES);
+        }
+        if (resourcesParam.length() == 0) {
+            return Collections.EMPTY_LIST;
+        }
+        return CmsStringUtil.splitAsList(resourcesParam, "#");
+    }
+
+    /**
      * Returns the state of the parameter map.<p>
      * 
      * @param params the parameter map
@@ -486,22 +490,22 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
         CmsListState state = new CmsListState();
         try {
-            state.setPage(Integer.parseInt((String)params.get(PARAM_PAGE)));
+            state.setPage(Integer.parseInt((String)params.get(I_CmsListResourceCollector.PARAM_PAGE)));
         } catch (Throwable e) {
             // ignore
         }
         try {
-            state.setOrder(CmsListOrderEnum.valueOf((String)params.get(PARAM_ORDER)));
+            state.setOrder(CmsListOrderEnum.valueOf((String)params.get(I_CmsListResourceCollector.PARAM_ORDER)));
         } catch (Throwable e) {
             // ignore
         }
         try {
-            state.setFilter((String)params.get(PARAM_FILTER));
+            state.setFilter((String)params.get(I_CmsListResourceCollector.PARAM_FILTER));
         } catch (Throwable e) {
             // ignore
         }
         try {
-            state.setColumn((String)params.get(PARAM_SORTBY));
+            state.setColumn((String)params.get(I_CmsListResourceCollector.PARAM_SORTBY));
         } catch (Throwable e) {
             // ignore
         }
@@ -517,4 +521,20 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      * @param resUtil the resource util object for getting the info from
      */
     protected abstract void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil);
+
+    /**
+     * Sets the resources parameter.<p>
+     * 
+     * @param resources the list of resource names to use
+     */
+    protected void setResourcesParam(List resources) {
+
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + I_CmsListResourceCollector.PARAM_RESOURCES + I_CmsListResourceCollector.SEP_KEYVAL;
+        if (resources == null) {
+            // search anywhere
+            m_collectorParameter += "/";
+        } else {
+            m_collectorParameter += CmsStringUtil.collectionAsString(resources, "#");
+        }
+    }
 }

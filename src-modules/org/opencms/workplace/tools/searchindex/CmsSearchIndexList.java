@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexList.java,v $
- * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.3 $
+ * @version $Revision: 1.2.4.4 $
  * 
  * @since 6.0.0
  */
@@ -271,7 +271,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardTool(this, "/searchindex/singleindex/rebuildreport", params);
         } else if (action.equals(LIST_ACTION_SEARCH)) {
-            // forward to the edit index screen   
+            // forward to the search screen   
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             params.put(CmsRebuildReport.PARAM_INDEXES, index);
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);

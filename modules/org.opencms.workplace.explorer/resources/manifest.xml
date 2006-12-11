@@ -441,7 +441,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[path:/search/results|params:query=${param.query}&sortorder=${param.sortorder}&fields=${param.fields}]]></value>
+					<value><![CDATA[path:/search/results]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

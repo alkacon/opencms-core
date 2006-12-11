@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.4.4.6 $
+ * Date   : $Date: 2006/12/11 15:10:52 $
+ * Version: $Revision: 1.4.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsTouch;
 import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -46,16 +47,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Provides a list dialog for resources.<p> 
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4.4.6 $ 
+ * @version $Revision: 1.4.4.7 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
+
+    /** List column id constant. */
+    public static final String LIST_COLUMN_ROOT_PATH = "crp";
 
     /** List action id constant. */
     public static final String LIST_ACTION_EDIT = "eae";
@@ -79,9 +85,6 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     public static final String LIST_COLUMN_DATELASTMOD = "ecdl";
 
     /** List column id constant. */
-    public static final String LIST_COLUMN_SITE = "ecsi";
-
-    /** List column id constant. */
     public static final String LIST_COLUMN_DATEREL = "ecdr";
 
     /** List column id constant. */
@@ -101,6 +104,9 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /** List column id constant. */
     public static final String LIST_COLUMN_PROJSTATEICON = "ecpi";
+
+    /** List column id constant. */
+    public static final String LIST_COLUMN_SITE = "ecsi";
 
     /** List column id constant. */
     public static final String LIST_COLUMN_SIZE = "ecz";
@@ -134,6 +140,9 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /** Column visibility flags container. */
     private Map m_colVisibilities;
+
+    /** Stores the value of the request parameter for the show explorer flag. */
+    private String m_paramShowexplorer;
 
     /** Instance resource util. */
     private CmsResourceUtil m_resourceUtil;
@@ -185,6 +194,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
             getSettings().setCollector(getCollector());
             getSettings().setExplorerMode(CmsExplorer.VIEW_LIST);
             getSettings().setExplorerProjectId(getProject().getId());
+            setShowExplorer(true);
             try {
                 getToolManager().jspForwardPage(this, PATH_EXPLORER_LIST, params);
             } catch (Exception e) {
@@ -201,6 +211,16 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      * @return the collector to use to display the resources
      */
     public abstract I_CmsListResourceCollector getCollector();
+
+    /**
+     * Returns the Show explorer parameter value.<p>
+     *
+     * @return the Show explorer parameter value
+     */
+    public String getParamShowexplorer() {
+
+        return m_paramShowexplorer;
+    }
 
     /**
      * Returns an appropiate initialized resource util object.<p>
@@ -228,6 +248,16 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         CmsResourceUtil resUtil = getResourceUtil();
         resUtil.setResource(getCollector().getResource(getCms(), item));
         return resUtil;
+    }
+
+    /**
+     * Sets the Show explorer parameter value.<p>
+     *
+     * @param showExplorer the Show explorer parameter value to set
+     */
+    public void setParamShowexplorer(String showExplorer) {
+
+        m_paramShowexplorer = showExplorer;
     }
 
     /**
@@ -355,6 +385,34 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        super.initWorkplaceRequestValues(settings, request);
+        // this to show first the exlorer view
+        if (getShowExplorer()) {
+            int projectId = getProject().getId();
+            Map params = new HashMap();
+            // set action parameter to initial dialog call
+            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+            params.putAll(getToolManager().getCurrentTool(this).getHandler().getParameters(this));
+
+            getSettings().setExplorerProjectId(projectId);
+            getSettings().setCollector(getCollector());
+            getSettings().setExplorerMode(CmsExplorer.VIEW_LIST);
+            try {
+                setShowExplorer(true);
+                getToolManager().jspForwardPage(this, PATH_DIALOGS + "list-explorer.jsp", params);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            setShowExplorer(false);
+        }
+    }
+
+    /**
      * Returns the visibility flag for a given column.<p>
      * 
      * The default behaviour is to show the same columns as the explorer view,
@@ -449,6 +507,15 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         resourceOpenDefAction.setEnabled(true);
         nameCol.addDefaultAction(resourceOpenDefAction);
         metadata.addColumn(nameCol);
+        nameCol.setPrintable(false);
+
+        // position 4: root path for printing
+        CmsListColumnDefinition rootPathCol = new CmsListExplorerColumn(LIST_COLUMN_ROOT_PATH);
+        rootPathCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+        rootPathCol.setVisible(false);
+        rootPathCol.setPrintable(true);
+        metadata.addColumn(rootPathCol);
 
         // position 5: title
         CmsListColumnDefinition titleCol = new CmsListExplorerColumn(LIST_COLUMN_TITLE);
@@ -587,5 +654,41 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         metadata.addIndependentAction(CmsListIndependentAction.getDefaultExplorerSwitchAction());
+    }
+
+    /**
+     * Returns the show explorer flag.<p>
+     * 
+     * @return the show explorer flag
+     */
+    private boolean getShowExplorer() {
+
+        if (getParamShowexplorer() != null) {
+            return Boolean.valueOf(getParamShowexplorer()).booleanValue();
+        }
+        Map dialogObject = (Map)getSettings().getDialogObject();
+        if (dialogObject == null) {
+            return false;
+        }
+        Boolean storedParam = (Boolean)dialogObject.get(getClass().getName());
+        if (storedParam == null) {
+            return false;
+        }
+        return storedParam.booleanValue();
+    }
+
+    /**
+     * Sets the show explorer flag.<p>
+     * 
+     * @param showExplorer the show explorer flag
+     */
+    private void setShowExplorer(boolean showExplorer) {
+
+        Map dialogMap = (Map)getSettings().getDialogObject();
+        if (dialogMap == null) {
+            dialogMap = new HashMap();
+            getSettings().setDialogObject(dialogMap);
+        }
+        dialogMap.put(getClass().getName(), Boolean.valueOf(showExplorer));
     }
 }
