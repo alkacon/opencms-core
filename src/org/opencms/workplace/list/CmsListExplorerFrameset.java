@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.4.4.6 $
+ * Date   : $Date: 2006/12/11 16:30:28 $
+ * Version: $Revision: 1.4.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.list;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -59,12 +60,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Explorer dialog for the project files view.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.6 $ 
+ * @version $Revision: 1.4.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,6 +78,9 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
 
     /** Title uri parameter name. */
     public static final String PARAM_TITLE_URI = "title_uri";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsListExplorerFrameset.class);
 
     /**
      * Public constructor with JSP action element.<p>
@@ -154,7 +160,10 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         String listLevelLink = CmsToolManager.linkForToolPath(getJsp(), toolPath, getToolManager().resolveAdminTool(
             rootKey,
             toolPath).getHandler().getParameters(this));
-        listLevelLink = CmsRequestUtil.appendParameter(listLevelLink, A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, Boolean.FALSE.toString());
+        listLevelLink = CmsRequestUtil.appendParameter(
+            listLevelLink,
+            A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER,
+            Boolean.FALSE.toString());
         String parentName = getToolManager().resolveAdminTool(rootKey, parentPath).getHandler().getName();
 
         html.append(getToolManager().generateNavBar(toolPath, this));
@@ -165,6 +174,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             items = getSettings().getCollector().getResults(getCms()).size();
         } catch (CmsException e) {
             // ignore
+            LOG.error(e);
         }
 
         int size = (int)Math.ceil((double)items / getSettings().getUserSettings().getExplorerFileEntries());
@@ -227,42 +237,6 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     }
 
     /**
-     * Returns the form contents.<p>
-     * 
-     * @return the form contents
-     */
-    protected String getFormContent() {
-
-        return paramsAsHidden(Collections.singleton(PARAM_PAGE));
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden(java.util.Collection)
-     */
-    public String paramsAsHidden(Collection excludes) {
-
-        StringBuffer result = new StringBuffer(512);
-        Map params = new HashMap(getJsp().getRequest().getParameterMap());
-        params.remove(CmsListExplorerFrameset.PARAM_PAGE);
-        Iterator it = params.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String param = (String)entry.getKey();
-            if ((excludes == null) || (!excludes.contains(param))) {
-                String[] value = (String[])entry.getValue();
-                for (int i = 0; i < value.length; i++) {
-                    result.append("<input type=\"hidden\" name=\"");
-                    result.append(param);
-                    result.append("\" value=\"");
-                    result.append(value[i]);
-                    result.append("\">\n");
-                }
-            }
-        }
-        return result.toString();
-    }
-
-    /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 
      * @throws ServletException if forwarding explorer view fails
@@ -292,6 +266,42 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         }
         JspWriter out = getJsp().getJspContext().getOut();
         out.print(defaultActionHtml());
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden(java.util.Collection)
+     */
+    public String paramsAsHidden(Collection excludes) {
+
+        StringBuffer result = new StringBuffer(512);
+        Map params = new HashMap(getJsp().getRequest().getParameterMap());
+        params.remove(CmsListExplorerFrameset.PARAM_PAGE);
+        Iterator it = params.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            String param = (String)entry.getKey();
+            if ((excludes == null) || (!excludes.contains(param))) {
+                String[] value = (String[])entry.getValue();
+                for (int i = 0; i < value.length; i++) {
+                    result.append("<input type=\"hidden\" name=\"");
+                    result.append(param);
+                    result.append("\" value=\"");
+                    result.append(value[i]);
+                    result.append("\">\n");
+                }
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns the form contents.<p>
+     * 
+     * @return the form contents
+     */
+    protected String getFormContent() {
+
+        return paramsAsHidden(Collections.singleton(PARAM_PAGE));
     }
 
     /**
