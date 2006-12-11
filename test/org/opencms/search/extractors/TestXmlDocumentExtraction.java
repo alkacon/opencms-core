@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestXmlDocumentExtraction.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/11 13:17:19 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 import junit.extensions.TestSetup;
@@ -50,7 +51,7 @@ import junit.framework.TestSuite;
  * Tests the text extraction for <code>xmlpage</code> and <code>xmlcontent</code> resources.<p>
  * 
  * @author Alexander Kandzior
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestXmlDocumentExtraction extends OpenCmsTestCase {
 
@@ -106,7 +107,7 @@ public class TestXmlDocumentExtraction extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         CmsResource resource = cms.readResource("/folder1/page4.html");
         CmsSearchIndex index = new CmsSearchIndex();
-        index.setLocale("en");
+        index.setLocale(Locale.ENGLISH);
 
         I_CmsExtractionResult extractionResult = doc.extractContent(cms, resource, index);
         Map items = extractionResult.getContentItems();
@@ -127,7 +128,7 @@ public class TestXmlDocumentExtraction extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         CmsResource resource = cms.readResource("/xmlcontent/article_0003.html");
         CmsSearchIndex index = new CmsSearchIndex();
-        index.setLocale("en");
+        index.setLocale(Locale.ENGLISH);
 
         I_CmsExtractionResult extractionResult = doc.extractContent(cms, resource, index);
         Map items = extractionResult.getContentItems();

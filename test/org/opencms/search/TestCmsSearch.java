@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2006/11/29 15:04:15 $
- * Version: $Revision: 1.16.4.3 $
+ * Date   : $Date: 2006/12/11 13:16:41 $
+ * Version: $Revision: 1.16.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.16.4.3 $
+ * @version $Revision: 1.16.4.4 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -360,7 +360,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_TEST);
         searchIndex.setProjectName("Offline");
         // important: use german locale for a special treat on term analyzing
-        searchIndex.setLocale(Locale.GERMAN.toString());
+        searchIndex.setLocale(Locale.GERMAN);
         searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_AUTO);
         // available pre-configured in the test configuration files opencms-search.xml
         searchIndex.addSourceName("source1");
