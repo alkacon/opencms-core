@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2006/12/11 13:25:43 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/11 16:22:46 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.0.0 
  */
@@ -298,7 +298,11 @@ public class CmsSearchField {
      */
     public String getDisplayName() {
 
-        return m_displayName;
+        if (m_displayName == null) {
+            return m_name;
+        } else {
+            return m_displayName;
+        }
     }
 
     /**
@@ -603,10 +607,6 @@ public class CmsSearchField {
     public void setName(String name) {
 
         m_name = name;
-        if (m_displayName == null) {
-            // use name as default for display name
-            setDisplayName(name);
-        }
     }
 
     /**
