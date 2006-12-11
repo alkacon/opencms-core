@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/11 13:25:43 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.0.0 
  */
@@ -106,6 +106,9 @@ public class CmsSearchField {
     /** Name of the field that contains the type of the document. */
     public static final String FIELD_TYPE = "type";
 
+    /** Value of m_displayName if field should not be displayed. */
+    public static final String IGNORE_DISPLAY_NAME = "-";
+
     /** Constant for the "tokenized" index setting. */
     public static final String STR_TOKENIZED = "tokenized";
 
@@ -117,6 +120,15 @@ public class CmsSearchField {
 
     /** A default value for the field in case the content does not provide the value. */
     private String m_defaultValue;
+
+    /** Indicates if this field should be displayed. */
+    private boolean m_displayed;
+
+    /** The display name of the field. */
+    private String m_displayName;
+
+    /** The display name set from the configuration. */
+    private String m_displayNameForConfiguration;
 
     /** Indicates if this field should be used for generating the excerpt. */
     private boolean m_excerpt;
@@ -154,27 +166,30 @@ public class CmsSearchField {
      * There is no default value.<p> 
      * 
      * @param name the name of the field, see {@link #setName(String)}
+     * @param displayName the display name of this field, see {@link #setDisplayName(String)}
      * @param isStored controls if the field is stored and in the excerpt, see {@link #setStored(boolean)}
      * @param isIndexed controls if the field is indexed and tokenized, see {@link #setIndexed(boolean)}
      */
-    public CmsSearchField(String name, boolean isStored, boolean isIndexed) {
+    public CmsSearchField(String name, String displayName, boolean isStored, boolean isIndexed) {
 
-        this(name, isStored, isIndexed, isIndexed, false, BOOST_DEFAULT, null);
+        this(name, displayName, isStored, isIndexed, isIndexed, false, BOOST_DEFAULT, null);
     }
 
     /**
      * Creates a new search field configuration.<p>
      * 
      * @param name the name of the field, see {@link #setName(String)}
+     * @param displayName the display name of this field, see {@link #setDisplayName(String)}
      * @param isStored controls if the field is stored, see {@link #setStored(boolean)}
      * @param isIndexed controls if the field is indexed, see {@link #setIndexed(boolean)}
      * @param isTokenized controls if the field is tokenized, see {@link #setStored(boolean)}
-     * @param isInExcerpt controls if the field is in the excerpt, see {@link #isInExcerpt()}
+     * @param isInExcerpt controls if the field is in the excerpt, see {@link #isInExcerptAndStored()}
      * @param boost the boost factror for the field, see {@link #setBoost(float)}
      * @param defaultValue the default value for the field, see {@link #setDefaultValue(String)}
      */
     public CmsSearchField(
         String name,
+        String displayName,
         boolean isStored,
         boolean isIndexed,
         boolean isTokenized,
@@ -183,6 +198,7 @@ public class CmsSearchField {
         String defaultValue) {
 
         this();
+        setDisplayName(displayName);
         setName(name);
         setStored(isStored);
         setIndexed(isIndexed);
@@ -221,7 +237,7 @@ public class CmsSearchField {
 
             Index idx = Field.Index.NO;
             if (isIndexed()) {
-                if (isTokenized()) {
+                if (isTokenizedAndIndexed()) {
                     idx = Field.Index.TOKENIZED;
                 } else {
                     idx = Field.Index.UN_TOKENIZED;
@@ -276,6 +292,26 @@ public class CmsSearchField {
     }
 
     /**
+     * Returns the display name of the field.<p>
+     * 
+     * @return the display name of the field
+     */
+    public String getDisplayName() {
+
+        return m_displayName;
+    }
+
+    /**
+     * Returns the displayNameForConfiguration.<p>
+     *
+     * @return the displayNameForConfiguration
+     */
+    public String getDisplayNameForConfiguration() {
+
+        return m_displayNameForConfiguration;
+    }
+
+    /**
      * Returns the mappings for this field.<p>
      * 
      * @return the mappings for this field
@@ -306,6 +342,16 @@ public class CmsSearchField {
     }
 
     /**
+     * Returns true if the field should be displayed.<p>
+     * 
+     * @return returns true if the field should be displayed otherwise false
+     */
+    public boolean isDisplayed() {
+
+        return m_displayed;
+    }
+
+    /**
      * Returns the indexed.<p>
      *
      * @return the indexed
@@ -318,13 +364,25 @@ public class CmsSearchField {
     /**
      * Returns <code>true</code> if this fields content is used in the search result excerpt.<p>
      *
+     * @return <code>true</code> if this fields content is used in the search result excerpt
+     * 
+     * @see #isStored()
+     */
+    public boolean isInExcerpt() {
+
+        return m_excerpt;
+    }
+
+    /**
+     * Returns <code>true</code> if this fields content is used in the search result excerpt.<p>
+     *
      * A field can only be used in the excerpt if it is stored, see {@link #isStored()}.<p>
      *
      * @return <code>true</code> if this fields content is used in the search result excerpt
      * 
      * @see #isStored()
      */
-    public boolean isInExcerpt() {
+    public boolean isInExcerptAndStored() {
 
         return m_excerpt && m_stored;
     }
@@ -337,11 +395,24 @@ public class CmsSearchField {
      *
      * @return <code>true</code> if the content of this field is stored in the Lucene index
      * 
-     * @see #isTokenized()
+     * @see #isTokenizedAndIndexed()
      */
     public boolean isStored() {
 
         return m_stored;
+    }
+
+    /**
+     * Returns <code>true</code> if the content of this field is tokenized in the Lucene index.<p>
+     * 
+     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Index}
+     * for the concept behind tokenized and untokenized fields.<p>
+     *
+     * @return <code>true</code> if the content of this field is tokenized in the Lucene index
+     */
+    public boolean isTokenized() {
+
+        return m_tokenized;
     }
 
     /**
@@ -357,7 +428,7 @@ public class CmsSearchField {
      * @see #isStored()
      * @see #isIndexed()
      */
-    public boolean isTokenized() {
+    public boolean isTokenizedAndIndexed() {
 
         return m_tokenized && m_indexed;
     }
@@ -415,6 +486,45 @@ public class CmsSearchField {
     }
 
     /**
+     * Controls if the field is displayed or not.<p> 
+     * 
+     * @param displayed if true the field is displayed
+     */
+    public void setDisplayed(boolean displayed) {
+
+        m_displayed = displayed;
+    }
+
+    /**
+     * Sets the display name. If the given name equals IGNORE_DISPLAY_NAME the field is not displayed.<p> 
+     * 
+     * @param displayName the display name to set
+     */
+    public void setDisplayName(String displayName) {
+
+        if (CmsStringUtil.isEmpty(displayName) || (IGNORE_DISPLAY_NAME.equals(displayName))) {
+            m_displayName = null;
+            m_displayNameForConfiguration = null;
+            setDisplayed(false);
+        } else {
+            m_displayName = displayName;
+            m_displayNameForConfiguration = displayName;
+            setDisplayed(true);
+        }
+    }
+
+    /**
+     * Sets the displayNameForConfiguration.<p>
+     *
+     * @param displayNameForConfiguration the displayNameForConfiguration to set
+     */
+    public void setDisplayNameForConfiguration(String displayNameForConfiguration) {
+
+        m_displayNameForConfiguration = displayNameForConfiguration;
+        setDisplayName(displayNameForConfiguration);
+    }
+
+    /**
      * Controls if the content of this field is indexed (and possibly tokenized) in the Lucene index.<p> 
      *
      * @param indexed the indexed to set
@@ -429,7 +539,7 @@ public class CmsSearchField {
     /**
      * Controls if the content of this field is indexed (and possibly tokenized) in the Lucene index from a String parameter.<p> 
      * 
-     * This sets the values for {@link #isIndexed()} as well as {@link #isTokenized()}.<p>
+     * This sets the values for {@link #isIndexed()} as well as {@link #isTokenizedAndIndexed()}.<p>
      * 
      * The parameter can have the following values:
      * <ul>
@@ -493,6 +603,10 @@ public class CmsSearchField {
     public void setName(String name) {
 
         m_name = name;
+        if (m_displayName == null) {
+            // use name as default for display name
+            setDisplayName(name);
+        }
     }
 
     /**
