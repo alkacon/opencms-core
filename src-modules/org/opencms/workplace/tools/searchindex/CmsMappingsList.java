@@ -1,0 +1,400 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsMappingsList.java,v $
+ * Date   : $Date: 2006/12/11 13:35:27 $
+ * Version: $Revision: 1.1.2.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.workplace.tools.searchindex;
+
+import org.opencms.configuration.CmsSearchConfiguration;
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchManager;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.workplace.list.CmsListColumnAlignEnum;
+import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.CmsListOrderEnum;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+
+/**
+ * A list that displays the mappings of a request parameter given 
+ * <code>{@link org.opencms.search.fields.CmsSearchField}</code> ("field"). 
+ * 
+ * This list is no stand-alone page but has to be embedded in another dialog 
+ * (see <code> {@link org.opencms.workplace.tools.searchindex.A_CmsEmbeddedListDialog}</code>. <p>
+ * 
+ * @author Raphael Schnuck 
+ * 
+ * @version $Revision: 1.1.2.1 $
+ * 
+ * @since 6.5.5
+ */
+public class CmsMappingsList extends A_CmsEmbeddedListDialog {
+
+    /** list column id constant. */
+    public static final String LIST_ACTION_NONE = "an";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_DEFAULT = "cd";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_ICON = "ci";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_TYPE = "ct";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_VALUE = "cv";
+
+    /** list id constant. */
+    public static final String LIST_ID = "lsfcfm";
+
+    /** list action id constant. */
+    public static final String LIST_MACTION_DELETEMAPPING = "mad";
+
+    /** The path to the fieldconfiguration list icon. */
+    protected static final String LIST_ICON_MAPPING = "tools/searchindex/icons/small/fieldconfiguration-mapping.png";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMappingsList.class);
+
+    /** Stores the value of the request parameter for the field. */
+    private String m_paramField;
+
+    /** Stores the value of the request parameter for the field configuration. */
+    private String m_paramFieldconfiguration;
+
+    /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     */
+    public CmsMappingsList(CmsJspActionElement jsp) {
+
+        this(jsp, LIST_ID, Messages.get().container(Messages.GUI_LIST_MAPPINGS_NAME_0));
+    }
+
+    /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     * @param listId the id of the list
+     * @param listName the list name
+     */
+    public CmsMappingsList(CmsJspActionElement jsp, String listId, CmsMessageContainer listName) {
+
+        this(jsp, listId, listName, LIST_COLUMN_TYPE, CmsListOrderEnum.ORDER_ASCENDING, null);
+    }
+
+    /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     * @param listId the id of the displayed list
+     * @param listName the name of the list
+     * @param sortedColId the a priory sorted column
+     * @param sortOrder the order of the sorted column
+     * @param searchableColId the column to search into
+     */
+    public CmsMappingsList(
+        CmsJspActionElement jsp,
+        String listId,
+        CmsMessageContainer listName,
+        String sortedColId,
+        CmsListOrderEnum sortOrder,
+        String searchableColId) {
+
+        super(jsp, listId, listName, sortedColId, sortOrder, searchableColId);
+
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
+     */
+    public void executeListMultiActions() {
+
+        CmsSearchManager searchManager = OpenCms.getSearchManager();
+        if (getParamListAction().equals(LIST_MACTION_DELETEMAPPING)) {
+            // execute the delete multiaction
+            Iterator itItems = getSelectedItems().iterator();
+            CmsListItem listItem;
+            CmsSearchField field = null;
+            CmsSearchFieldMapping mapping;
+            List fields = searchManager.getFieldConfiguration(m_paramFieldconfiguration).getFields();
+            Iterator itFields = fields.iterator();
+            while (itFields.hasNext()) {
+                CmsSearchField curField = (CmsSearchField)itFields.next();
+                if (curField.getName().equals(m_paramField)) {
+                    field = curField;
+                }
+            }
+            if (field != null) {
+                Iterator itMappings;
+                List deleteMappings = new ArrayList();
+                while (itItems.hasNext()) {
+                    listItem = (CmsListItem)itItems.next();
+                    itMappings = field.getMappings().iterator();
+                    while (itMappings.hasNext()) {
+                        String item = (String)listItem.get(LIST_COLUMN_VALUE);
+                        CmsSearchFieldMapping curMapping = (CmsSearchFieldMapping)itMappings.next();
+                        String mappingValue = curMapping.getParam();
+                        if (item.equals(mappingValue)) {
+                            deleteMappings.add(curMapping);
+                        }
+                    }
+                }
+                itMappings = deleteMappings.iterator();
+                while (itMappings.hasNext()) {
+                    mapping = (CmsSearchFieldMapping)itMappings.next();
+                    searchManager.removeSearchFieldMapping(field, mapping);
+                }
+            }
+
+            refreshList();
+            writeConfiguration(false);
+        }
+        listSave();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
+     */
+    public void executeListSingleActions() {
+
+        // noop
+    }
+
+    /**
+     * Returns the request parameter "field".<p>
+     *  
+     * @return the request parameter "field"
+     */
+    public String getParamField() {
+
+        return m_paramField;
+    }
+
+    /**
+     * Returns the request parameter "fieldconfiguration".<p>
+     *  
+     * @return the request parameter "fieldconfiguration"
+     */
+    public String getParamFieldconfiguration() {
+
+        return m_paramFieldconfiguration;
+    }
+
+    /**
+     * Sets the request parameter "field". <p>
+     * 
+     * Method intended for workplace-properietary automatic filling of 
+     * request parameter values to dialogs, not for manual invocation. <p>
+     *  
+     * @param field the request parameter "field" to set 
+     */
+    public void setParamField(String field) {
+
+        m_paramField = field;
+    }
+
+    /**
+     * Sets the request parameter "fieldconfiguration". <p>
+     * 
+     * Method intended for workplace-properietary automatic filling of 
+     * request parameter values to dialogs, not for manual invocation. <p>
+     *  
+     * @param fieldconfiguration the request parameter "fieldconfiguration" to set 
+     */
+    public void setParamFieldconfiguration(String fieldconfiguration) {
+
+        m_paramFieldconfiguration = fieldconfiguration;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        // noop
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
+     */
+    protected List getListItems() {
+
+        List result = new ArrayList();
+        // get content
+        List mappings = getMappings();
+        Iterator itMappings = mappings.iterator();
+        CmsSearchFieldMapping mapping;
+        while (itMappings.hasNext()) {
+            mapping = (CmsSearchFieldMapping)itMappings.next();
+            CmsListItem item = getList().newItem(mapping.getType().toString());
+            String defaultValue = mapping.getDefaultValue();
+            String param = mapping.getParam();
+            if (defaultValue == null) {
+                defaultValue = "-";
+            }
+            if (param == null) {
+                param = "-";
+            }
+            item.set(LIST_COLUMN_VALUE, param);
+            item.set(LIST_COLUMN_TYPE, mapping.getType().toString());
+            item.set(LIST_COLUMN_DEFAULT, defaultValue);
+            result.add(item);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setColumns(CmsListMetadata metadata) {
+
+        // create dummy column for corporate design reasons
+        CmsListColumnDefinition dummyCol = new CmsListColumnDefinition(LIST_COLUMN_ICON);
+        dummyCol.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_MAPPING_0));
+        dummyCol.setWidth("20");
+        dummyCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        dummyCol.setSorteable(false);
+        // add dummy icon
+        CmsListDirectAction dummyAction = new CmsListDirectAction(LIST_ACTION_NONE);
+        dummyAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_MAPPING_0));
+        dummyAction.setIconPath(LIST_ICON_MAPPING);
+        dummyAction.setEnabled(false);
+        dummyCol.addDirectAction(dummyAction);
+        // add it to the list definition
+        metadata.addColumn(dummyCol);
+
+        // add column for value
+        CmsListColumnDefinition valueCol = new CmsListColumnDefinition(LIST_COLUMN_VALUE);
+        valueCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        valueCol.setName(Messages.get().container(Messages.GUI_LIST_MAPPING_COL_VALUE_0));
+        valueCol.setWidth("33%");
+        valueCol.setSorteable(true);
+        metadata.addColumn(valueCol);
+
+        // add column for type
+        CmsListColumnDefinition typeCol = new CmsListColumnDefinition(LIST_COLUMN_TYPE);
+        typeCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        typeCol.setName(Messages.get().container(Messages.GUI_LIST_MAPPING_COL_TYPE_0));
+        typeCol.setWidth("33%");
+        metadata.addColumn(typeCol);
+
+        // add column for default
+        CmsListColumnDefinition defaultCol = new CmsListColumnDefinition(LIST_COLUMN_DEFAULT);
+        defaultCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        defaultCol.setName(Messages.get().container(Messages.GUI_LIST_MAPPING_COL_DEFAULT_0));
+        defaultCol.setWidth("33%");
+        metadata.addColumn(defaultCol);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        // noop
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setMultiActions(CmsListMetadata metadata) {
+
+        // add add multi action
+        CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_MACTION_DELETEMAPPING);
+        deleteMultiAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_MACTION_DELETEMAPPING_NAME_0));
+        deleteMultiAction.setHelpText(Messages.get().container(
+            Messages.GUI_LIST_FIELD_MACTION_DELETEMAPPING_NAME_HELP_0));
+        deleteMultiAction.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_LIST_FIELD_MACTION_DELETEMAPPING_CONF_0));
+        deleteMultiAction.setIconPath(ICON_MULTI_MINUS);
+        metadata.addMultiAction(deleteMultiAction);
+    }
+
+    /**
+     * Writes the updated search configuration back to the XML 
+     * configuration file and refreshes the complete list.<p>
+     * 
+     * @param refresh if true, the list items are refreshed
+     */
+    protected void writeConfiguration(boolean refresh) {
+
+        // update the XML configuration
+        OpenCms.writeConfiguration(CmsSearchConfiguration.class);
+        if (refresh) {
+            refreshList();
+        }
+    }
+
+    /**
+     * Returns the configured mappings of the current field. 
+     * 
+     * @return the configured mappings of the current field
+     */
+    private List getMappings() {
+
+        CmsSearchManager manager = OpenCms.getSearchManager();
+        CmsSearchFieldConfiguration fieldConfig = manager.getFieldConfiguration(getParamFieldconfiguration());
+        CmsSearchField field;
+        List result = null;
+        Iterator itFields;
+        if (fieldConfig != null) {
+            itFields = fieldConfig.getFields().iterator();
+            while (itFields.hasNext()) {
+                field = (CmsSearchField)itFields.next();
+                if (field.getName().equals(getParamField())) {
+                    result = field.getMappings();
+                }
+            }
+        } else {
+            result = new ArrayList(0);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
+                    A_CmsFieldConfigurationDialog.PARAM_FIELDCONFIGURATION));
+            }
+        }
+        return result;
+    }
+}

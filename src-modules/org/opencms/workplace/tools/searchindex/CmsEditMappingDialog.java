@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditIndexSourceDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditMappingDialog.java,v $
  * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.2.4.1 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,10 +32,9 @@
 package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.search.CmsVfsIndexer;
-import org.opencms.widgets.CmsComboWidget;
-import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
@@ -48,22 +47,22 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * 
- * Dialog to edit new or existing search indexsource in the administration view.<p>
+ * Dialog to edit new or existing mapping in the administration view.<p>
  * 
- * @author Achim Westermann
+ * @author Raphael Schnuck
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
- * @since 6.0.0 
+ * @since 6.5.5 
  */
-public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
+public class CmsEditMappingDialog extends A_CmsMappingDialog {
 
     /**
      * Public constructor with JSP action element.<p>
      * 
-     * @param jsp an initialized JSP action element
+     * @param jsp
      */
-    public CmsEditIndexSourceDialog(CmsJspActionElement jsp) {
+    public CmsEditMappingDialog(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -75,9 +74,9 @@ public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsEditIndexSourceDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsEditMappingDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
-        this(new CmsJspActionElement(context, req, res));
+        super(context, req, res);
     }
 
     /**
@@ -98,9 +97,9 @@ public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
 
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
-            result.append(dialogBlockStart(key(Messages.GUI_LABEL_INDEXSOURCE_BLOCK_SETTINGS_0)));
+            result.append(dialogBlockStart(key(Messages.GUI_LABEL_FIELD_BLOCK_SETTINGS_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 1));
+            result.append(createDialogRowsHtml(0, 2));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -118,21 +117,46 @@ public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
 
         // widgets to display
         // new indexsource
-        if (m_indexsource.getName() == null) {
-            addWidget(new CmsWidgetDialogParameter(m_indexsource, "name", PAGES[0], new CmsInputWidget()));
-        } else {
-            // existing indexsource
-            addWidget(new CmsWidgetDialogParameter(m_indexsource, "name", PAGES[0], new CmsDisplayWidget()));
-        }
-        addWidget(new CmsWidgetDialogParameter(m_indexsource, "indexerClassName", "", PAGES[0], new CmsComboWidget(
-            getIndexerClassWidgetConfiguration()), 1, 1));
-
+        addWidget(new CmsWidgetDialogParameter(this, "type", PAGES[0], new CmsSelectWidget(getTypeWidgetConfiguration())));
+        addWidget(new CmsWidgetDialogParameter(m_mapping, "param", "", PAGES[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_mapping, "defaultValue", "", PAGES[0], new CmsInputWidget(), 0, 1));
     }
 
-    private List getIndexerClassWidgetConfiguration() {
+    /**
+     * Sets the mapping type of the mapping.<p>
+     * 
+     * @param type String value of the mapping type
+     */
+    public void setType(String type) {
+
+        m_mapping.setType(type);
+    }
+
+    /**
+     * Returns the String value of the mapping type.<p> 
+     * 
+     * @return String value of the mapping type 
+     */
+    public String getType() {
+
+        if (m_mapping != null && m_mapping.getType() != null) {
+            return m_mapping.getType().toString();
+        }
+        return "";
+    }
+
+    /**
+     * Returns a list of CmsSearchFieldMappingTypes for the type select box.<p>
+     * 
+     * @return a list of CmsSearchFieldMappingTypes
+     */
+    private List getTypeWidgetConfiguration() {
 
         List result = new ArrayList();
-        result.add(new CmsSelectWidgetOption(CmsVfsIndexer.class.getName(), true));
+        result.add(new CmsSelectWidgetOption(CmsSearchFieldMappingType.CONTENT.toString(), true));
+        result.add(new CmsSelectWidgetOption(CmsSearchFieldMappingType.PROPERTY.toString(), false));
+        result.add(new CmsSelectWidgetOption(CmsSearchFieldMappingType.PROPERTY_SEARCH.toString(), false));
+        result.add(new CmsSelectWidgetOption(CmsSearchFieldMappingType.ITEM.toString(), false));
         return result;
     }
 }

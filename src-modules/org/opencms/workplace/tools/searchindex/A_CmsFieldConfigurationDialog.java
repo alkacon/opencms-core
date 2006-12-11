@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsEditSearchIndexDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsFieldConfigurationDialog.java,v $
  * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.3.4.2 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,16 +35,16 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
-import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,52 +52,45 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Abstract dialog class for all dialogs that work on a <code>CmsSearchIndex</code>.<p> 
  * 
- * The <code>{@link #PARAM_INDEXNAME}</code> ("searchindex") is supported 
- * by means of widget technology (setter / getter).<p>
+ * Abstract widget dialog for all dialogs working with <code>{@link CmsSearchFieldConfiguration}</code>.<p> 
  * 
- * Also - for accessing search functionality a member <code>{@link #m_searchManager}</code> 
- * is accessible for implementations. <p>
+ * @author Raphael Schnuck
  * 
- * @author Achim Westermann
+ * @version $Revision: 1.1.2.1 $ 
  * 
- * @version $Revision: 1.3.4.2 $ 
- * 
- * @since 6.0.0 
+ * @since 6.5.5
  */
-public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
+public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
 
     /** localized messages Keys prefix. */
-    public static final String KEY_PREFIX = "searchindex";
+    public static final String KEY_PREFIX = "fieldconfiguration";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
     /** 
-     * The request parameter for the search index to work with when contacting 
+     * The request parameter for the fieldconfiguration to work with when contacting 
      * this dialog from another. <p>
-     * 
-     * It may be emtpy if we are on the new index dialog (/searchindex/new-index.jsp).<p>
      *      
-     **/
-    public static final String PARAM_INDEXNAME = "indexname";
+     */
+    public static final String PARAM_FIELDCONFIGURATION = "fieldconfiguration";
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchIndex m_index;
+    protected CmsSearchFieldConfiguration m_fieldconfiguration;
 
     /** The search manager singleton for convenient access. **/
     protected CmsSearchManager m_searchManager;
 
     /** Stores the value of the request parameter for the search index Name. */
-    private String m_paramIndexName;
+    private String m_paramFieldConfiguration;
 
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public A_CmsEditSearchIndexDialog(CmsJspActionElement jsp) {
+    public A_CmsFieldConfigurationDialog(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -109,7 +102,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public A_CmsEditSearchIndexDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public A_CmsFieldConfigurationDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -125,7 +118,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Commits the edited search index to the search manager.<p>
+     * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
     public void actionCommit() {
 
@@ -134,15 +127,12 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
         try {
 
             // if new create it first
-            if (!m_searchManager.getSearchIndexes().contains(m_index)) {
-                // empty or null name and uniqueness check in add method 
-                m_searchManager.addSearchIndex(m_index);
+            if (m_searchManager.getFieldConfiguration(m_fieldconfiguration.getName()) == null) {
+                m_searchManager.addFieldConfiguration(m_fieldconfiguration);
             }
-            // check if field configuration has been updated, if thus set field configuration to the now used
-            if (!m_index.getFieldConfigurationName().equals(m_index.getFieldConfiguration().getName())) {
-                m_index.setFieldConfiguration(m_searchManager.getFieldConfiguration(m_index.getFieldConfigurationName()));
+            if (checkWriteConfiguration()) {
+                writeConfiguration();
             }
-            writeConfiguration();
 
         } catch (Throwable t) {
             errors.add(t);
@@ -150,43 +140,75 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
 
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
+
     }
 
     /**
-     * Returns the request parameter value for parameter paramSearchIndex. <p>
+     * Returns the request parameter value for parameter fieldconfiguration. <p>
      * 
-     * @return the request parameter value for parameter paramSearchIndex
+     * @return the request parameter value for parameter fieldconfiguration
      */
-    public String getParamIndexName() {
+    public String getParamFieldconfiguration() {
 
-        return m_paramIndexName;
+        return m_paramFieldConfiguration;
     }
 
     /**
-     * Sets the value of the request parameter paramSearchIndex. 
+     * Sets the request parameter value for parameter fieldconfiguration. <p>
      * 
-     * @param paramSearchIndex the value of the request parameter paramSearchIndex to set
+     * @param fieldconfiguration the request parameter value for parameter fieldconfiguration
      */
-    public void setParamIndexName(String paramSearchIndex) {
+    public void setParamFieldconfiguration(String fieldconfiguration) {
 
-        m_paramIndexName = paramSearchIndex;
+        m_paramFieldConfiguration = fieldconfiguration;
     }
 
     /**
-     * Initializes the user object (a <code>{@link CmsSearchIndex}</code> instance.<p>
+     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
      * 
-     * Implementation always have to call <code>"super.defineWidgets()"</code> first as 
-     * this action may only be done here (relies on filled request parameters, the next 
-     * following operation <code>{@link CmsWidgetDialog#createDialogHtml()}</code> will 
-     * rely on this. <p>
+     * This overwrites the method from the super class to create a layout variation for the widgets.<p>
      * 
+     * @param dialog the dialog (page) to get the HTML for
+     * @return the dialog HTML for all defined widgets of the named dialog (page)
+     */
+    protected String createDialogHtml(String dialog) {
+
+        StringBuffer result = new StringBuffer(1024);
+
+        result.append(createWidgetTableStart());
+        // show error header once if there were validation errors
+        result.append(createWidgetErrorHeader());
+
+        if (dialog.equals(PAGES[0])) {
+            // create the widgets for the first dialog page
+            result.append(dialogBlockStart(key(Messages.GUI_LABEL_FIELDCONFIGURATION_BLOCK_SETTINGS_0)));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(0, 0));
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
+        }
+
+        result.append(createWidgetTableEnd());
+
+        // Output the list with cocument types:
+        return result.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
+     */
+    protected String defaultActionHtmlEnd() {
+
+        return "";
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
     protected void defineWidgets() {
 
         initUserObject();
         setKeyPrefix(KEY_PREFIX);
-
     }
 
     /**
@@ -204,7 +226,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      */
     protected String getToolPath() {
 
-        return "/searchindex";
+        return "/searchindex/fieldconfigurations/fieldconfiguration";
     }
 
     /**
@@ -221,21 +243,18 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     /**
      * Initializes the user object to work with depending on the dialog state and request parameters.<p>
      * 
-     * Two initializations of the user object on first dialog call are possible:
-     * <ul>
-     * <li>edit an existing search index</li>
-     * <li>create a new search index with default initialization</li>
-     * </ul>
      */
     protected void initUserObject() {
 
-        try {
-            m_index = m_searchManager.getIndex(getParamIndexName());
-            if (m_index == null) {
-                m_index = createDummySearchIndex();
+        if (m_fieldconfiguration == null) {
+            try {
+                m_fieldconfiguration = m_searchManager.getFieldConfiguration(getParamFieldconfiguration());
+                if (m_fieldconfiguration == null) {
+                    m_fieldconfiguration = new CmsSearchFieldConfiguration();
+                }
+            } catch (Exception e) {
+                m_fieldconfiguration = new CmsSearchFieldConfiguration();
             }
-        } catch (Exception e) {
-            m_index = createDummySearchIndex();
         }
     }
 
@@ -259,11 +278,11 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
         // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
 
-        // save the current search index
+        // save the current search index source
         Map dialogObject = (Map)getDialogObject();
         if (dialogObject == null) {
             dialogObject = new HashMap();
-            dialogObject.put(PARAM_INDEXNAME, m_index);
+            dialogObject.put(PARAM_FIELDCONFIGURATION, m_fieldconfiguration);
             setDialogObject(dialogObject);
         }
 
@@ -274,7 +293,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      * 
      * @return <code>true</code> if the new search index dialog has to be displayed
      */
-    protected boolean isNewSearchIndex() {
+    protected boolean isNewFieldConfiguration() {
 
         return DIALOG_INITIAL.equals(getParamAction());
     }
@@ -284,54 +303,33 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      */
     protected void validateParamaters() throws Exception {
 
-        if (!isNewSearchIndex()) {
-            // test the needed parameters: if initial we have "indexname", if from same widget we have name.0
-            if (getParamIndexName() == null && getJsp().getRequest().getParameter("name.0") == null) {
+        if (!isNewFieldConfiguration()) {
+            // test the needed parameters
+            if (getParamFieldconfiguration() == null && getJsp().getRequest().getParameter("name.0") == null) {
                 throw new CmsIllegalStateException(Messages.get().container(
                     Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
-                    PARAM_INDEXNAME));
+                    PARAM_FIELDCONFIGURATION));
             }
         }
     }
 
-    private CmsSearchIndexSource createDummyIndexSource() {
-
-        CmsSearchIndexSource result = new CmsSearchIndexSource();
-        result.setName("default");
-        result.setIndexerClassName("org.opencms.search.CmsVfsIndexer");
-        result.addDocumentType("html");
-        result.addDocumentType("generic");
-        result.addDocumentType("pdf");
-        // add search index source to config:
-        m_searchManager.addSearchIndexSource(result);
-        return result;
-    }
-
     /**
-     * Creates a "dummy" search index that is not linked to the search manager and has 
-     * a <code>null</code> name property that will be used for being filled with 
-     * the widget bean technology. <p>
-     * 
-     * @return a "dummy" search index that is not linked to the search manager and has 
-     *         a <code>null</code> name property that will be used for being filled with 
-     *         the widget bean technology
+     * Checks the configuration to write.<p>
+     *  
+     * @return true if configuration is valid, otherwise false
      */
-    private CmsSearchIndex createDummySearchIndex() {
+    private boolean checkWriteConfiguration() {
 
-        CmsSearchIndex result = new CmsSearchIndex();
-        result.setLocale(Locale.ENGLISH);
-        result.setProjectName("Online");
-        result.setRebuildMode("auto");
-
-        // find default source 
-        Map sources = m_searchManager.getSearchIndexSources();
-        if (sources.isEmpty()) {
-            CmsSearchIndexSource source = createDummyIndexSource();
-            sources.put(source.getName(), source);
+        if (!m_fieldconfiguration.getFields().isEmpty()) {
+            Iterator itFields = m_fieldconfiguration.getFields().iterator();
+            while (itFields.hasNext()) {
+                CmsSearchField field = (CmsSearchField)itFields.next();
+                if (field.getMappings().isEmpty()) {
+                    return false;
+                }
+            }
+            return true;
         }
-        result.addSourceName((String)sources.keySet().iterator().next());
-
-        return result;
-
+        return false;
     }
 }

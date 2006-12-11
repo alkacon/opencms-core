@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexList.java,v $
- * Date   : $Date: 2006/09/28 10:34:40 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/12/11 13:35:27 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -71,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.2 $
+ * @version $Revision: 1.2.4.3 $
  * 
  * @since 6.0.0
  */
@@ -126,8 +129,11 @@ public class CmsSearchIndexList extends A_CmsListDialog {
     public static final String LIST_COLUMN_SEARCH = "cas";
 
     /** list item detail id constant. */
+    public static final String LIST_DETAIL_FIELDCONFIGURATION = "df";
+
+    /** list item detail id constant. */
     public static final String LIST_DETAIL_INDEXSOURCE = "di";
-    
+
     /** list id constant. */
     public static final String LIST_ID = "lssi";
 
@@ -306,6 +312,8 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             item = (CmsListItem)itItems.next();
             if (detailId.equals(LIST_DETAIL_INDEXSOURCE)) {
                 fillDetailIndexSource(item, detailId);
+            } else if (detailId.equals(LIST_DETAIL_FIELDCONFIGURATION)) {
+                fillDetailFieldConfiguration(item, detailId);
             }
         }
     }
@@ -326,7 +334,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             item.set(LIST_COLUMN_NAME, index.getName());
             item.set(LIST_COLUMN_REBUILDMODE, index.getRebuildMode());
             item.set(LIST_COLUMN_PROJECT, index.getProject());
-            item.set(LIST_COLUMN_LOCALE, index.getLocale());
+            item.set(LIST_COLUMN_LOCALE, index.getLocale().toString());
             result.add(item);
         }
         return result;
@@ -484,6 +492,23 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         indexDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_LIST_SEARCHINDEX_DETAIL_INDEXSOURCE_NAME_0)));
         metadata.addItemDetails(indexDetails);
+
+        // add field configuration details
+        CmsListItemDetails configDetails = new CmsListItemDetails(LIST_DETAIL_FIELDCONFIGURATION);
+        configDetails.setAtColumn(LIST_COLUMN_NAME);
+        configDetails.setVisible(false);
+        configDetails.setShowActionName(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_SHOW_0));
+        configDetails.setShowActionHelpText(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_SHOW_HELP_0));
+        configDetails.setHideActionName(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_HIDE_0));
+        configDetails.setHideActionHelpText(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_HIDE_HELP_0));
+        configDetails.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_NAME_0));
+        configDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_NAME_0)));
+        metadata.addItemDetails(configDetails);
     }
 
     /**
@@ -524,6 +549,64 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         if (refresh) {
             refreshList();
         }
+    }
+
+    /**
+     * Fills details of the field configuration into the given item. <p>
+     * 
+     * @param item the list item to fill
+     * @param detailId the id for the detail to fill
+     */
+    private void fillDetailFieldConfiguration(CmsListItem item, String detailId) {
+
+        StringBuffer html = new StringBuffer();
+        // search for the corresponding CmsSearchIndex: 
+        String idxName = (String)item.get(LIST_COLUMN_NAME);
+        CmsSearchIndex idx = OpenCms.getSearchManager().getIndex(idxName);
+
+        CmsSearchFieldConfiguration idxFieldConfiguration = idx.getFieldConfiguration();
+        List fields = idxFieldConfiguration.getFields();
+
+        html.append("<ul>\n");
+        html.append("  <li>\n").append("    ").append("name      : ").append(idxFieldConfiguration.getName()).append(
+            "\n");
+        html.append("  </li>");
+        html.append("  <li>\n").append("    ").append("fields : ").append("\n");
+        html.append("    <ul>\n");
+
+        Iterator itFields = fields.iterator();
+        while (itFields.hasNext()) {
+            CmsSearchField field = (CmsSearchField)itFields.next();
+            String fieldDefault = field.getDefaultValue();
+            html.append("  <li>\n").append("    ");
+            html.append("name : ").append(field.getName()).append(", ");
+            html.append("store : ").append(field.isStored()).append(", ");
+            html.append("index : ").append(field.isIndexed()).append(", ");
+            html.append("tokenized : ").append(field.isTokenized()).append(", ");
+            html.append("excerpt : ").append(field.isInExcerpt()).append(", ");
+            html.append("boost : ").append(field.getBoost());
+            if (fieldDefault != null) {
+                html.append(", ").append("default : ").append(field.getDefaultValue());
+            }
+            html.append("\n").append("  </li>");
+            html.append("  <li>\n").append("    ").append("mappings : ").append("\n");
+            html.append("    <ul>\n");
+
+            Iterator itMappings = field.getMappings().iterator();
+            while (itMappings.hasNext()) {
+                CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)itMappings.next();
+                html.append("  <li>\n").append("    ");
+                html.append("type : ").append(mapping.getType().toString()).append(", ");
+                html.append("value : ").append(mapping.getParam()).append("\n");
+                html.append("  </li>");
+            }
+            html.append("    </ul>\n");
+            html.append("  </li>");
+        }
+        html.append("    </ul>\n");
+        html.append("  </li>");
+        html.append("</ul>\n");
+        item.set(detailId, html.toString());
     }
 
     /**

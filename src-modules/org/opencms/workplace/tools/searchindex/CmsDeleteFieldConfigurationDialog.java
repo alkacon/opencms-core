@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsOverviewSearchIndexDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsDeleteFieldConfigurationDialog.java,v $
  * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.2.4.1 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,37 +28,44 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+ 
 package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.widgets.CmsDisplayWidget;
-import org.opencms.workplace.CmsWidgetDialogParameter;
+import org.opencms.workplace.tools.CmsToolManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
+ * A <code>CmsWidgetDialog</code> that starts a (confirmed) delete dialog for 
+ * an fieldconfiguration.<p> 
  * 
- * Dialog to overview search index in the administration view.<p>
+ * The constraint for allowing deletion of the fieldconfiguration: It must not be referenced by 
+ * any searchindex.<p>
  * 
- * @author Achim Westermann
+ * @author Raphael Schnuck
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.1.2.1 $
  * 
- * @since 6.0.0 
+ * @since 6.5.5
  */
-public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
+public class CmsDeleteFieldConfigurationDialog extends A_CmsFieldConfigurationDialog {
 
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsOverviewSearchIndexDialog(CmsJspActionElement jsp) {
+
+    public CmsDeleteFieldConfigurationDialog(CmsJspActionElement jsp) {
 
         super(jsp);
+
     }
 
     /**
@@ -68,9 +75,35 @@ public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsOverviewSearchIndexDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
-        this(new CmsJspActionElement(context, req, res));
+    public CmsDeleteFieldConfigurationDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        super(context, req, res);
+
+    }
+
+    /**
+     * Commits the edited search index to the search manager.<p>
+     */
+    public void actionCommit() {
+
+        List errors = new ArrayList();
+
+        try {
+
+            m_searchManager.removeSearchFieldConfiguration(m_fieldconfiguration);
+            clearDialogObject();
+            writeConfiguration();
+            // if we go back to /searchindex/singleindex (overview) the deleted searchindex is not 
+            // there any more in the CmsSearchManager and CmsOverviewSearchIndex.getUserObject will 
+            // find null -> defineWidgets will provide null as bean...
+            setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/searchindex/fieldconfigurations"));
+
+        } catch (Throwable t) {
+            errors.add(t);
+        }
+        // set the list of errors to display when saving failed
+        setCommitErrors(errors);
     }
 
     /**
@@ -83,7 +116,7 @@ public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
      */
     protected String createDialogHtml(String dialog) {
 
-        StringBuffer result = new StringBuffer(1024);
+        StringBuffer result = new StringBuffer(512);
 
         result.append(createWidgetTableStart());
         // show error header once if there were validation errors
@@ -91,37 +124,20 @@ public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
-            result.append(dialogBlockStart(key(Messages.GUI_NAVTEXT_SEARCHINDEX_SHORT_0)));
+            result.append(dialogBlockStart(key(Messages.GUI_LIST_FIELDCONFIGURATION_ACTION_DELETE_NAME_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 4));
+            result.append(key(
+                Messages.GUI_LIST_FIELDCONFIGURATION_ACTION_DELETE_CONF_1,
+                new Object[] {m_fieldconfiguration.getName()}));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
 
         result.append(createWidgetTableEnd());
+
+        // See CmsWidgetDialog.dialogButtonsCustom(): if no widgets are defined that are non-display-only widgets, 
+        // no dialog buttons (Ok, Cancel) will be visible....
+        result.append(dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]));
         return result.toString();
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
-     */
-    protected String defaultActionHtmlEnd() {
-
-        return "";
-    }
-
-    /**
-     * Creates the list of widgets for this dialog.<p>
-     */
-    protected void defineWidgets() {
-
-        super.defineWidgets();
-
-        // widgets to display in first block (like edit view)
-        addWidget(new CmsWidgetDialogParameter(m_index, "name", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "rebuildMode", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "locale", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "project", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "fieldConfigurationName", PAGES[0], new CmsDisplayWidget()));
     }
 }

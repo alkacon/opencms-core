@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsOverviewSearchIndexDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditFieldConfigurationDialog.java,v $
  * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.2.4.1 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.widgets.CmsInputWidget;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,22 +42,22 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * 
- * Dialog to overview search index in the administration view.<p>
+ * Dialog to edit new or existing search indexsource in the administration view.<p>
  * 
- * @author Achim Westermann
+ * @author Raphael Schnuck
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
- * @since 6.0.0 
+ * @since 6.5.5 
  */
-public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
+public class CmsEditFieldConfigurationDialog extends A_CmsFieldConfigurationDialog {
 
     /**
      * Public constructor with JSP action element.<p>
      * 
-     * @param jsp an initialized JSP action element
+     * @param jsp
      */
-    public CmsOverviewSearchIndexDialog(CmsJspActionElement jsp) {
+    public CmsEditFieldConfigurationDialog(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -68,9 +69,9 @@ public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsOverviewSearchIndexDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsEditFieldConfigurationDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
-        this(new CmsJspActionElement(context, req, res));
+        super(context, req, res);
     }
 
     /**
@@ -91,9 +92,9 @@ public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
-            result.append(dialogBlockStart(key(Messages.GUI_NAVTEXT_SEARCHINDEX_SHORT_0)));
+            result.append(dialogBlockStart(key(Messages.GUI_LABEL_FIELDCONFIGURATION_BLOCK_SETTINGS_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 4));
+            result.append(createDialogRowsHtml(0, 1));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -103,25 +104,25 @@ public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
-     */
-    protected String defaultActionHtmlEnd() {
-
-        return "";
-    }
-
-    /**
      * Creates the list of widgets for this dialog.<p>
      */
     protected void defineWidgets() {
 
         super.defineWidgets();
 
-        // widgets to display in first block (like edit view)
-        addWidget(new CmsWidgetDialogParameter(m_index, "name", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "rebuildMode", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "locale", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "project", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "fieldConfigurationName", PAGES[0], new CmsDisplayWidget()));
+        // widgets to display
+        if (m_fieldconfiguration.getName() == null) {
+            addWidget(new CmsWidgetDialogParameter(m_fieldconfiguration, "name", PAGES[0], new CmsInputWidget()));
+        } else {
+            addWidget(new CmsWidgetDialogParameter(m_fieldconfiguration, "name", PAGES[0], new CmsDisplayWidget()));
+        }
+        addWidget(new CmsWidgetDialogParameter(
+            m_fieldconfiguration,
+            "description",
+            "",
+            PAGES[0],
+            new CmsInputWidget(),
+            0,
+            1));
     }
 }

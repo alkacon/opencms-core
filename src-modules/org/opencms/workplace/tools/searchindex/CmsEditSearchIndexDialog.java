@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2006/12/11 13:35:27 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,17 +34,19 @@ package org.opencms.workplace.tools.searchindex;
 import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,7 +106,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_LABEL_SEARCHINDEX_BLOCK_SETTINGS_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 3));
+            result.append(createDialogRowsHtml(0, 4));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -128,30 +130,51 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         }
         addWidget(new CmsWidgetDialogParameter(m_index, "rebuildMode", "", PAGES[0], new CmsSelectWidget(
             getRebuildModeWidgetConfiguration()), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_index, "locale", "", PAGES[0], new CmsSelectWidget(
+        addWidget(new CmsWidgetDialogParameter(m_index, "localeString", "", PAGES[0], new CmsSelectWidget(
             getLocaleWidgetConfiguration()), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_index, "project", "", PAGES[0], new CmsSelectWidget(
             getProjectWidgetConfiguration()), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_index, "fieldConfigurationName", "", PAGES[0], new CmsSelectWidget(
+            getFieldConfigurationWidgetConfiguration()), 0, 1));
+    }
+
+    private List getFieldConfigurationWidgetConfiguration() {
+
+        List result = new ArrayList();
+        List fieldConfigurations;
+        fieldConfigurations = m_searchManager.getFieldConfigurations();
+        Iterator itFieldConfigs = fieldConfigurations.iterator();
+        CmsSelectWidgetOption option;
+        CmsSearchFieldConfiguration curFieldConfig;
+        while (itFieldConfigs.hasNext()) {
+            curFieldConfig = (CmsSearchFieldConfiguration)itFieldConfigs.next();
+            option = new CmsSelectWidgetOption(
+                curFieldConfig.getName(),
+                (curFieldConfig.getName()).equals(CmsSearchFieldConfiguration.STR_STANDARD));
+            result.add(option);
+        }
+        return result;
     }
 
     private List getLocaleWidgetConfiguration() {
 
-        List result = new LinkedList();
-        String locale = m_index.getLocale().toString();
-        // find all different locales
-        Iterator itAnalyzerLocales = m_searchManager.getAnalyzers().keySet().iterator();
-        Set distinctLocales = new TreeSet();
-        while (itAnalyzerLocales.hasNext()) {
-            distinctLocales.add(itAnalyzerLocales.next());
+        List result = new ArrayList();
+        Locale indexLocale = m_index.getLocale();
+
+        Iterator analyzers = m_searchManager.getAnalyzers().keySet().iterator();
+        
+        Set distinctLocales = new HashSet();
+        while (analyzers.hasNext()) {
+            distinctLocales.add(analyzers.next());
         }
 
         // put an option for each distinct locale
-        itAnalyzerLocales = distinctLocales.iterator();
-        String curLocale;
+        Iterator locales = distinctLocales.iterator();
+        Locale locale;
         CmsSelectWidgetOption option;
-        while (itAnalyzerLocales.hasNext()) {
-            curLocale = (String)itAnalyzerLocales.next();
-            option = new CmsSelectWidgetOption(curLocale, curLocale.equals(locale));
+        while (locales.hasNext()) {
+            locale = (Locale)locales.next();
+            option = new CmsSelectWidgetOption(locale.toString(), locale.equals(indexLocale));
             result.add(option);
         }
         return result;
@@ -159,7 +182,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     private List getProjectWidgetConfiguration() {
 
-        List result = new LinkedList();
+        List result = new ArrayList();
         List projects;
         try {
             projects = getCms().getAllManageableProjects();
@@ -182,7 +205,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     private List getRebuildModeWidgetConfiguration() {
 
-        List result = new LinkedList();
+        List result = new ArrayList();
         String rebuildMode = m_index.getRebuildMode();
         CmsSelectWidgetOption option = new CmsSelectWidgetOption("auto", "auto".equals(rebuildMode));
         result.add(option);
