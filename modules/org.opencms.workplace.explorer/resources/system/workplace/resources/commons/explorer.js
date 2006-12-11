@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/12/11 15:10:53 $
- * Version: $Revision: 1.13.4.12 $
+ * Date   : $Date: 2006/12/11 16:30:11 $
+ * Version: $Revision: 1.13.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -154,14 +154,13 @@ function res(text, nicename, icon, createLink, isEditable){
 	this.editable = isEditable;
 }
 
-
 function setDisplayResource(resource) {
 	displayResource = resource;
+	mode = "explorerview";
 	if (win.head) {
 		win.head.forms.urlform.resource.value = displayResource.substring(getRootFolder().length - 1);
 	}
 }
-
 
 function getDisplayResource(param) {
 	if (param == "true") {
