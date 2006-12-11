@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.15.4.1 $
+ * Date   : $Date: 2006/12/11 13:28:43 $
+ * Version: $Revision: 1.15.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.15.4.1 $ 
+ * @version $Revision: 1.15.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,6 +72,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FIELD_TYPE_UNKNOWN_1 = "ERR_FIELD_TYPE_UNKNOWN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEX_CONFIGURATION_DELETE_2 = "ERR_INDEX_CONFIGURATION_DELETE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INDEX_LOCK_FAILED_1 = "ERR_INDEX_LOCK_FAILED_1";
@@ -243,6 +246,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_REBUILD_INDEXES_FINISHED_1 = "LOG_REBUILD_INDEXES_FINISHED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_REMOVE_FIELD_MAPPING_INDEX_2 = "LOG_REMOVE_FIELD_MAPPING_INDEX_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_REMOVE_FIELDCONFIGURATION_FIELD_INDEX_2 = "LOG_REMOVE_FIELDCONFIGURATION_FIELD_INDEX_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_REMOVE_SEARCH_INDEX_2 = "LOG_REMOVE_SEARCH_INDEX_2";
