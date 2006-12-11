@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2006/10/24 15:00:53 $
- * Version: $Revision: 1.18.4.5 $
+ * Date   : $Date: 2006/12/11 15:28:23 $
+ * Version: $Revision: 1.18.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.18.4.5 $ 
+ * @version $Revision: 1.18.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,6 +133,9 @@ public final class CmsRequestUtil {
 
     /** Delimiter char between url and query. */
     public static final String URL_DELIMITER = "?";
+
+    /** The prefix for &amp. */
+    private static final String AMP = "amp;";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRequestUtil.class);
@@ -307,6 +310,11 @@ public final class CmsRequestUtil {
             } else if (pos < 0) {
                 key = params[i];
                 value = "";
+            }
+            // adjust the key is it starts with "amp;"
+            // this happens when "&amp;" is used instead of a simple "&"
+            if (key.startsWith(AMP)) {
+                key = key.substring(AMP.length(), key.length());
             }
             // now make sure the values are of type String[]
             if (key != null) {
