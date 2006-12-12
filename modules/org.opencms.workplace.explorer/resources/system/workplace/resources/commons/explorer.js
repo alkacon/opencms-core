@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/12/12 08:27:18 $
- * Version: $Revision: 1.13.4.14 $
+ * Date   : $Date: 2006/12/12 09:23:37 $
+ * Version: $Revision: 1.13.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1120,7 +1120,8 @@ function openurl() {
 	if(win.head.forms.urlform && win.head.forms.urlform.pageSelect){
 		selectedpage = "&page=" + win.head.forms.urlform.pageSelect.value;
 	}
-	win.files.location.href = vr.servpath + "/system/workplace/views/explorer/explorer_files.jsp?resource=" + getDisplayResource() + selectedpage;
+	var selMode = "&mode=explorerview";
+	win.files.location.href = vr.servpath + "/system/workplace/views/explorer/explorer_files.jsp?resource=" + getDisplayResource() + selectedpage + selMode;
 }
 
 

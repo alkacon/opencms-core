@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2006/12/11 15:10:53 $
- * Version: $Revision: 1.32.4.11 $
+ * Date   : $Date: 2006/12/12 09:23:37 $
+ * Version: $Revision: 1.32.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.11 $ 
+ * @version $Revision: 1.32.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -706,6 +706,10 @@ public class CmsExplorer extends CmsWorkplace {
                 }
             }
             settings.setExplorerPage(page);
+        }
+        if (getSettings().getExplorerMode().equals(CmsExplorer.VIEW_EXPLORER)) {
+            // reset the startup URI, so that it is not displayed again on reload of the frameset
+            getSettings().setViewStartup(null);
         }
 
         // if in explorer list view
