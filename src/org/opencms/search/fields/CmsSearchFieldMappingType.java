@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMappingType.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/12 10:14:57 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.search.fields;
 
-import org.opencms.util.A_CmsModeEnumeration;
+import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 
 /**
@@ -42,11 +42,11 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.0.0 
  */
-public final class CmsSearchFieldMappingType extends A_CmsModeEnumeration {
+public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
 
     /** The "content" mapping type, maps the content of the resource (no parameters required). */
     public static final CmsSearchFieldMappingType CONTENT = new CmsSearchFieldMappingType(0);
@@ -115,7 +115,7 @@ public final class CmsSearchFieldMappingType extends A_CmsModeEnumeration {
     }
 
     /**
-     * @see org.opencms.util.A_CmsModeEnumeration#toString()
+     * @see org.opencms.util.A_CmsModeIntEnumeration#toString()
      */
     public String toString() {
 

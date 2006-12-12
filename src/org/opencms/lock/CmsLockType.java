@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockType.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/12/12 10:14:57 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,18 +31,18 @@
 
 package org.opencms.lock;
 
-import org.opencms.util.A_CmsModeEnumeration;
+import org.opencms.util.A_CmsModeIntEnumeration;
 
 /**
  * Indicates the different possible lock types.<p>
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.0.0
  */
-public final class CmsLockType extends A_CmsModeEnumeration {
+public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /** serializable version id. */
     private static final long serialVersionUID = 5333767594124738789L;

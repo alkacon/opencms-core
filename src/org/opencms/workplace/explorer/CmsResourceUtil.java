@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/12/12 10:14:57 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
-import org.opencms.util.A_CmsModeEnumeration;
+import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplace;
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,7 +77,7 @@ public final class CmsResourceUtil {
     /**
      * Enumeration class for defining the resource project state.<p>
      */
-    public static class CmsResourceProjectState extends A_CmsModeEnumeration {
+    public static class CmsResourceProjectState extends A_CmsModeIntEnumeration {
 
         private static final long serialVersionUID = 4580450220255428716L;
 

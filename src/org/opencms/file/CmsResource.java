@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2006/11/29 15:04:10 $
- * Version: $Revision: 1.45.4.7 $
+ * Date   : $Date: 2006/12/12 10:14:57 $
+ * Version: $Revision: 1.45.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.file;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.util.A_CmsModeEnumeration;
+import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -47,7 +47,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.7 $
+ * @version $Revision: 1.45.4.8 $
  * 
  * @since 6.0.0 
  */
@@ -56,7 +56,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      *  Enumeration class for resource copy modes.<p>
      */
-    public static final class CmsResourceCopyMode extends A_CmsModeEnumeration {
+    public static final class CmsResourceCopyMode extends A_CmsModeIntEnumeration {
 
         /** Copy mode for copy resources as new resource. */
         protected static final CmsResourceCopyMode MODE_COPY_AS_NEW = new CmsResourceCopyMode(1);
@@ -104,7 +104,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      *  Enumeration class for resource delete modes.<p>
      */
-    public static final class CmsResourceDeleteMode extends A_CmsModeEnumeration {
+    public static final class CmsResourceDeleteMode extends A_CmsModeIntEnumeration {
 
         /** Signals that siblings of this resource should not be deleted. */
         protected static final CmsResourceDeleteMode MODE_DELETE_PRESERVE_SIBLINGS = new CmsResourceDeleteMode(1);
@@ -147,7 +147,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      *  Enumeration class for resource undo changes modes.<p>
      */
-    public static final class CmsResourceUndoMode extends A_CmsModeEnumeration {
+    public static final class CmsResourceUndoMode extends A_CmsModeIntEnumeration {
 
         /** Indicates that the undo method will only undo content changes. */
         public static final CmsResourceUndoMode MODE_UNDO_CONTENT = new CmsResourceUndoMode(1);

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/A_CmsModeEnumeration.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/A_CmsModeIntEnumeration.java,v $
+ * Date   : $Date: 2006/12/12 10:14:57 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package org.opencms.util;
 import java.io.Serializable;
 
 /**
- * Base class for all mode enumeration classes.<p>
+ * Base class for all integer mode enumeration classes.<p>
  *
  * Like:<br>
  * <ul>
@@ -45,11 +45,11 @@ import java.io.Serializable;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.1 $
  * 
  * @since 6.5.3 
  */
-public abstract class A_CmsModeEnumeration implements Serializable {
+public abstract class A_CmsModeIntEnumeration implements Serializable {
 
     /** The internal mode descriptor. */
     private final int m_mode;
@@ -59,7 +59,7 @@ public abstract class A_CmsModeEnumeration implements Serializable {
      * 
      * @param mode the internal mode descriptor
      */
-    protected A_CmsModeEnumeration(int mode) {
+    protected A_CmsModeIntEnumeration(int mode) {
 
         m_mode = mode;
     }
@@ -72,9 +72,9 @@ public abstract class A_CmsModeEnumeration implements Serializable {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof A_CmsModeEnumeration) {
+        if (obj instanceof A_CmsModeIntEnumeration) {
             if (obj.getClass().equals(this.getClass())) {
-                A_CmsModeEnumeration eObj = (A_CmsModeEnumeration)obj;
+                A_CmsModeIntEnumeration eObj = (A_CmsModeIntEnumeration)obj;
                 return eObj.getMode() == m_mode;
             }
         }
