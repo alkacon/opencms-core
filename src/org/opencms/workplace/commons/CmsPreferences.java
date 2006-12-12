@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.31.4.6 $
+ * Date   : $Date: 2006/12/12 10:22:42 $
+ * Version: $Revision: 1.31.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.6 $
+ * @version $Revision: 1.31.4.7 $
  * 
  * @since 6.0.0
  */
@@ -799,19 +799,19 @@ public class CmsPreferences extends CmsTabDialog {
 
         // add all styles to the select box
         options.add(key(CmsSearchResultStyle.STYLE_EXPLORER.getKey()));
-        values.add(CmsSearchResultStyle.STYLE_EXPLORER.getStyle());
+        values.add(CmsSearchResultStyle.STYLE_EXPLORER.getMode());
         if (getParamTabExWorkplaceSearchResult().equals(CmsSearchResultStyle.STYLE_EXPLORER.toString())) {
             // mark the currently active locale
             checkedIndex = 0;
         }
         options.add(key(CmsSearchResultStyle.STYLE_LIST_WITH_EXCERPTS.getKey()));
-        values.add(CmsSearchResultStyle.STYLE_LIST_WITH_EXCERPTS.getStyle());
+        values.add(CmsSearchResultStyle.STYLE_LIST_WITH_EXCERPTS.getMode());
         if (getParamTabExWorkplaceSearchResult().equals(CmsSearchResultStyle.STYLE_LIST_WITH_EXCERPTS.toString())) {
             // mark the currently active locale
             checkedIndex = 1;
         }
         options.add(key(CmsSearchResultStyle.STYLE_LIST_WITHOUT_EXCERPTS.getKey()));
-        values.add(CmsSearchResultStyle.STYLE_LIST_WITHOUT_EXCERPTS.getStyle());
+        values.add(CmsSearchResultStyle.STYLE_LIST_WITHOUT_EXCERPTS.getMode());
         if (getParamTabExWorkplaceSearchResult().equals(CmsSearchResultStyle.STYLE_LIST_WITHOUT_EXCERPTS.toString())) {
             // mark the currently active locale
             checkedIndex = 2;
@@ -1675,7 +1675,7 @@ public class CmsPreferences extends CmsTabDialog {
     public void setParamTabExWorkplaceSearchResult(String style) {
 
         if (style == null) {
-            style = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceSearchViewStyle().getStyle();
+            style = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceSearchViewStyle().getMode();
         }
         m_userSettings.setWorkplaceSearchViewStyle(CmsSearchResultStyle.valueOf(style));
     }

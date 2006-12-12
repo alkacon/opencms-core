@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.36.4.10 $
+ * Date   : $Date: 2006/12/12 10:22:42 $
+ * Version: $Revision: 1.36.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,9 +43,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.synchronize.CmsSynchronizeSettings;
+import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -56,7 +56,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.10 $
+ * @version $Revision: 1.36.4.11 $
  * 
  * @since 6.0.0
  */
@@ -65,7 +65,7 @@ public class CmsUserSettings {
     /**
      *  Enumeration class for workplace search result styles.<p>
      */
-    public static final class CmsSearchResultStyle implements Serializable {
+    public static final class CmsSearchResultStyle extends A_CmsModeStringEnumeration {
 
         /** Workplace search result style explorer view. */
         public static final CmsSearchResultStyle STYLE_EXPLORER = new CmsSearchResultStyle(
@@ -88,9 +88,6 @@ public class CmsUserSettings {
         /** The localization key for this style. */
         private final String m_key;
 
-        /** The internal style descriptor. */
-        private final String m_style;
-
         /**
          * Private constructor.<p>
          * 
@@ -99,7 +96,7 @@ public class CmsUserSettings {
          */
         private CmsSearchResultStyle(String style, String key) {
 
-            m_style = style;
+            super(style);
             m_key = key;
         }
 
@@ -112,9 +109,9 @@ public class CmsUserSettings {
          */
         public static CmsSearchResultStyle valueOf(String mode) {
 
-            if (STYLE_LIST_WITHOUT_EXCERPTS.m_style.equals(mode)) {
+            if (STYLE_LIST_WITHOUT_EXCERPTS.getMode().equals(mode)) {
                 return STYLE_LIST_WITHOUT_EXCERPTS;
-            } else if (STYLE_LIST_WITH_EXCERPTS.m_style.equals(mode)) {
+            } else if (STYLE_LIST_WITH_EXCERPTS.getMode().equals(mode)) {
                 return STYLE_LIST_WITH_EXCERPTS;
             } else {
                 return STYLE_EXPLORER;
@@ -129,24 +126,6 @@ public class CmsUserSettings {
         public String getKey() {
 
             return m_key;
-        }
-
-        /**
-         * Returns the style string representation.<p>
-         *
-         * @return the style
-         */
-        public String getStyle() {
-
-            return m_style;
-        }
-
-        /**
-         * @see java.lang.Object#toString()
-         */
-        public String toString() {
-
-            return m_style;
         }
     }
 
