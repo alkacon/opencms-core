@@ -10,6 +10,7 @@
 	cache?,
 	directory,
 	timeout,
+	forceunlock?,
 	excerpt,
 	extractionCacheMaxAge?,
 	highlighter,
@@ -34,6 +35,12 @@
 # Timeout in milliseconds to abandon indexing threads.
 -->
 <!ELEMENT timeout (#PCDATA)>
+
+<!--
+# The state of unlocking during the indexing threads (always|never|onlyfull), 
+# default is onlyfull.
+-->
+<!ELEMENT forceunlock (#PCDATA)>
 
 <!--
 # The max. char. length of the excerpt in the search results.

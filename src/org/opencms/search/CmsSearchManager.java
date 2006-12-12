@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2006/12/12 09:37:02 $
- * Version: $Revision: 1.55.4.6 $
+ * Date   : $Date: 2006/12/12 14:52:57 $
+ * Version: $Revision: 1.55.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,7 @@ import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -84,11 +85,57 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.6 $ 
+ * @version $Revision: 1.55.4.7 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
+
+    /**
+     *  Enumeration class for force unlock types.<p>
+     */
+    public static final class CmsSearchForceUnlockMode extends A_CmsModeStringEnumeration {
+
+        /** Force unlock type always. */
+        public static final CmsSearchForceUnlockMode ALWAYS = new CmsSearchForceUnlockMode("always");
+
+        /** Force unlock type never. */
+        public static final CmsSearchForceUnlockMode NEVER = new CmsSearchForceUnlockMode("never");
+
+        /** Force unlock tyoe only full. */
+        public static final CmsSearchForceUnlockMode ONLYFULL = new CmsSearchForceUnlockMode("onlyfull");
+
+        /** serializable version id. */
+        private static final long serialVersionUID = 74746076708908673L;
+
+        /**
+         * Creates a new force unlock type with the given name.<p>
+         * 
+         * @param mode the mode id to use
+         */
+        protected CmsSearchForceUnlockMode(String mode) {
+
+            super(mode);
+        }
+
+        /**
+         * Returns the lock type for the given type value.<p>
+         *  
+         * @param type the type value to get the lock type for
+         * 
+         * @return the lock type for the given type value
+         */
+        public static CmsSearchForceUnlockMode valueOf(String type) {
+
+            if (type.equals(ALWAYS.toString())) {
+                return ALWAYS;
+            } else if (type.equals(NEVER.toString())) {
+                return NEVER;
+            } else {
+                return ONLYFULL;
+            }
+        }
+    }
 
     /** The default value used for generating search result exerpts (1024 chars). */
     public static final int DEFAULT_EXCERPT_LENGTH = 1024;
@@ -128,6 +175,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /** Contains the available field configurations. */
     private Map m_fieldConfigurations;
+
+    /** The force unlock type. */
+    private CmsSearchForceUnlockMode m_forceUnlockMode;
 
     /** The class used to highlight the search terms in the excerpt of a search result. */
     private I_CmsTermHighlighter m_highlighter;
@@ -393,6 +443,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         List result = new ArrayList(m_fieldConfigurations.values());
         Collections.sort(result);
         return Collections.unmodifiableList(result);
+    }
+
+    /**
+     * Returns the force unlock mode during indexing.<p>
+     *
+     * @return the force unlock mode during indexing
+     */
+    public CmsSearchForceUnlockMode getForceunlock() {
+
+        return m_forceUnlockMode;
     }
 
     /**
@@ -689,23 +749,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Removes a search index from the configuration.<p>
-     * 
-     * @param searchIndex the search index to remove
-     */
-    public void removeSearchIndex(CmsSearchIndex searchIndex) {
-
-        m_indexes.remove(searchIndex);
-
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_REMOVE_SEARCH_INDEX_2,
-                searchIndex.getName(),
-                searchIndex.getProject()));
-        }
-    }
-
-    /**
      * Removes this fieldconfiguration from the OpenCms configuration (if it is not used any more).<p>
      * 
      * @param fieldConfiguration the fieldconfiguration to remove from the configuration 
@@ -806,6 +849,23 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     field.getName()));
             }
             return field.getMappings().remove(mapping);
+        }
+    }
+
+    /**
+     * Removes a search index from the configuration.<p>
+     * 
+     * @param searchIndex the search index to remove
+     */
+    public void removeSearchIndex(CmsSearchIndex searchIndex) {
+
+        m_indexes.remove(searchIndex);
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().getBundle().key(
+                Messages.LOG_REMOVE_SEARCH_INDEX_2,
+                searchIndex.getName(),
+                searchIndex.getProject()));
         }
     }
 
@@ -913,6 +973,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Sets the unlock mode during indexing.<p>
+     * 
+     * @param value the value 
+     */
+    public void setForceunlock(String value) {
+
+        m_forceUnlockMode = CmsSearchForceUnlockMode.valueOf(value);
+    }
+
+    /**
      * Sets the highlighter.<p>
      *
      * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.<p>
@@ -995,49 +1065,87 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Checks is a given index is locked, if so waits for a numer of seconds and checks again,
-     * until either the index is unlocked or a limit of seconds set by <code>{@link #setIndexLockMaxWaitSeconds(int)}</code>
-     * is reached.<p>
+     * Proceed the unlocking of the given index depending on the setting of <code>m_forceUnlockMode</code> and the given mode.<p>
      * 
      * @param index the index to check the lock for
      * @param report the report to write error messages on
+     * @param mode the mode of the index process if true the index is updated otherwise it is rebuild completely
      * 
-     * @return <code>true</code> if the index is locked
+     * @throws CmsIndexException if unlocking of the index is impossible for some reasons
      */
-    protected boolean checkIndexLock(CmsSearchIndex index, I_CmsReport report) {
+    protected void forceIndexUnlock(CmsSearchIndex index, I_CmsReport report, boolean mode) throws CmsIndexException {
 
         File indexPath = new File(index.getPath());
-        // check if the target index path already exists
-        if (!indexPath.exists()) {
-            // if the folder does not yet exist it is also not locked
-            return false;
-        }
-
-        // check if the index is locked
         boolean indexLocked = true;
-        try {
-            int lockSecs = 0;
-            while (indexLocked && (lockSecs < m_indexLockMaxWaitSeconds)) {
+        // check if the target index path already exists
+        if (indexPath.exists()) {
+            // get the lock state of the given index
+            try {
                 indexLocked = IndexReader.isLocked(index.getPath());
-                if (indexLocked) {
-                    // index is still locked, wait one second
-                    report.println(Messages.get().container(
-                        Messages.RPT_SEARCH_INDEXING_LOCK_WAIT_2,
-                        index.getName(),
-                        new Integer(m_indexLockMaxWaitSeconds - lockSecs)), I_CmsReport.FORMAT_ERROR);
-                    // sleep one second
-                    Thread.sleep(1000);
-                    lockSecs++;
+            } catch (Exception e) {
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_IO_INDEX_READER_OPEN_2,
+                    index.getPath(),
+                    index.getName()), e);
+            }
+
+            // if index is unlocked do nothing
+            if (indexLocked) {
+                if (m_forceUnlockMode != null && m_forceUnlockMode.equals(CmsSearchForceUnlockMode.ALWAYS)) {
+                    try {
+                        // try to force unlock on the index
+                        IndexReader.unlock(FSDirectory.getDirectory(index.getPath(), false));
+                    } catch (Exception e) {
+                        // unable to force unlock of Lucene index, we can't continue this way
+                        CmsMessageContainer msg = Messages.get().container(
+                            Messages.ERR_INDEX_LOCK_FAILED_1,
+                            index.getName());
+                        report.println(msg, I_CmsReport.FORMAT_ERROR);
+                        throw new CmsIndexException(msg, e);
+                    }
+                } else if (m_forceUnlockMode != null && m_forceUnlockMode.equals(CmsSearchForceUnlockMode.NEVER)) {
+                    // wait if index will be unlocked during waiting
+                    indexLocked = waitIndexLock(index, report, indexLocked);
+                    // if index is still locked throw an exception
+                    if (indexLocked) {
+                        CmsMessageContainer msg = Messages.get().container(
+                            Messages.ERR_INDEX_LOCK_FAILED_1,
+                            index.getName());
+                        report.println(msg, I_CmsReport.FORMAT_ERROR);
+                        throw new CmsIndexException(msg);
+                    }
+                } else {
+                    if (mode) {
+                        // if index has to be updated wait if index will be unlocked during waiting
+                        indexLocked = waitIndexLock(index, report, indexLocked);
+                    }
+                    // check if the index is locked
+                    if (indexLocked) {
+                        // mode equals update throw exception
+                        if (mode) {
+                            // unable to lock the index for updating
+                            CmsMessageContainer msg = Messages.get().container(
+                                Messages.ERR_INDEX_LOCK_FAILED_1,
+                                index.getName());
+                            report.println(msg, I_CmsReport.FORMAT_ERROR);
+                            throw new CmsIndexException(msg);
+                        } else {
+                            try {
+                                // try to force unlock on the index
+                                IndexReader.unlock(FSDirectory.getDirectory(index.getPath(), false));
+                            } catch (Exception e) {
+                                // unable to force unlock of Lucene index, we can't continue this way
+                                CmsMessageContainer msg = Messages.get().container(
+                                    Messages.ERR_INDEX_LOCK_FAILED_1,
+                                    index.getName());
+                                report.println(msg, I_CmsReport.FORMAT_ERROR);
+                                throw new CmsIndexException(msg, e);
+                            }
+                        }
+                    }
                 }
             }
-        } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_IO_INDEX_READER_OPEN_2,
-                index.getPath(),
-                index.getName()), e);
         }
-
-        return indexLocked;
     }
 
     /**
@@ -1372,21 +1480,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if ((resourcesToIndex == null) || resourcesToIndex.isEmpty()) {
             // rebuild the complete index
 
-            if (checkIndexLock(index, report)) {
-                // unable to lock the index for updating
-                try {
-                    // try to force unlock on the index (full rebuild is done anyway)
-                    IndexReader.unlock(FSDirectory.getDirectory(index.getPath(), false));
-                } catch (Exception e) {
-                    // unable to force unlock of Lucene index, we can't continue this way
-                    CmsMessageContainer msg = Messages.get().container(
-                        Messages.ERR_INDEX_LOCK_FAILED_1,
-                        index.getName());
-                    report.println(msg, I_CmsReport.FORMAT_ERROR);
-                    throw new CmsIndexException(msg, e);
-                }
-            }
-
+            forceIndexUnlock(index, report, false);
             // create a new thread manager for the indexing threads
             CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(m_timeout);
 
@@ -1486,12 +1580,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     I_CmsReport.FORMAT_HEADLINE);
             }
 
-            if (checkIndexLock(index, report)) {
-                // unable to lock the index for updating
-                CmsMessageContainer msg = Messages.get().container(Messages.ERR_INDEX_LOCK_FAILED_1, index.getName());
-                report.println(msg, I_CmsReport.FORMAT_ERROR);
-                throw new CmsIndexException(msg);
-            }
+            forceIndexUnlock(index, report, true);
 
             if (hasResourcesToDelete) {
                 // delete the resource from the index
@@ -1581,5 +1670,42 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     I_CmsReport.FORMAT_HEADLINE);
             }
         }
+    }
+
+    /**
+     * Checks is a given index is locked, if so waits for a numer of seconds and checks again,
+     * until either the index is unlocked or a limit of seconds set by <code>{@link #setIndexLockMaxWaitSeconds(int)}</code>
+     * is reached and returns the lock state of the index.<p>
+     * 
+     * @param index the index to check the lock for
+     * @param report the report to write error messages on
+     * @param indexLocked the boolean value if the index is locked
+     * 
+     * @return the lock state of the index
+     */
+    private boolean waitIndexLock(CmsSearchIndex index, I_CmsReport report, boolean indexLocked) {
+
+        try {
+            int lockSecs = 0;
+            while (indexLocked && (lockSecs < m_indexLockMaxWaitSeconds)) {
+                indexLocked = IndexReader.isLocked(index.getPath());
+                if (indexLocked) {
+                    // index is still locked, wait one second
+                    report.println(Messages.get().container(
+                        Messages.RPT_SEARCH_INDEXING_LOCK_WAIT_2,
+                        index.getName(),
+                        new Integer(m_indexLockMaxWaitSeconds - lockSecs)), I_CmsReport.FORMAT_ERROR);
+                    // sleep one second
+                    Thread.sleep(1000);
+                    lockSecs++;
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_IO_INDEX_READER_OPEN_2,
+                index.getPath(),
+                index.getName()), e);
+        }
+        return indexLocked;
     }
 }

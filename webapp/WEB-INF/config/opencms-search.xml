@@ -4,7 +4,8 @@
 <opencms>
 	<search>
 		<directory>index</directory>
-		<timeout>60000</timeout>	
+		<timeout>60000</timeout>
+		<forceunlock>onlyfull</forceunlock>		
 		<excerpt>1024</excerpt>
 		<extractionCacheMaxAge>672.0</extractionCacheMaxAge>		
 		<highlighter>org.opencms.search.documents.CmsTermHighlighterHtml</highlighter>		

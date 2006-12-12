@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2006/12/11 13:26:41 $
- * Version: $Revision: 1.17.4.3 $
+ * Date   : $Date: 2006/12/12 14:52:57 $
+ * Version: $Revision: 1.17.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.17.4.3 $
+ * @version $Revision: 1.17.4.4 $
  * 
  * @since 6.0.0
  */
@@ -131,6 +131,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** Node name constant. */
     public static final String N_FIELDS = "fields";
+
+    /** Node name constant. */
+    public static final String N_FORCEUNLOCK = "forceunlock";
 
     /** Node name constant. */
     public static final String N_HIGHLIGHTER = "highlighter";
@@ -230,6 +233,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // timeout rule
         digester.addCallMethod(XPATH_SEARCH + "/" + N_TIMEOUT, "setTimeout", 0);
+
+        // forceunlock rule
+        digester.addCallMethod(XPATH_SEARCH + "/" + N_FORCEUNLOCK, "setForceunlock", 0);
 
         // rule for the max. char. lenght of the search result excerpt
         digester.addCallMethod(XPATH_SEARCH + "/" + N_EXCERPT, "setMaxExcerptLength", 0);
@@ -337,6 +343,10 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         searchElement.addElement(N_DIRECTORY).addText(m_searchManager.getDirectory());
         // add <timeout> element
         searchElement.addElement(N_TIMEOUT).addText(String.valueOf(m_searchManager.getTimeout()));
+        // add <forceunlock> element
+        if (m_searchManager.getForceunlock() != null) {
+            searchElement.addElement(N_FORCEUNLOCK).addText(m_searchManager.getForceunlock().toString());
+        }
         // add <exerpt> element
         searchElement.addElement(N_EXCERPT).addText(String.valueOf(m_searchManager.getMaxExcerptLength()));
         // add <extractionCacheMaxAge> element
