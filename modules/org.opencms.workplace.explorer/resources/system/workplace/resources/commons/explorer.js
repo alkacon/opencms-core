@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/12/11 16:30:11 $
- * Version: $Revision: 1.13.4.13 $
+ * Date   : $Date: 2006/12/12 08:27:18 $
+ * Version: $Revision: 1.13.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -156,7 +156,6 @@ function res(text, nicename, icon, createLink, isEditable){
 
 function setDisplayResource(resource) {
 	displayResource = resource;
-	mode = "explorerview";
 	if (win.head) {
 		win.head.forms.urlform.resource.value = displayResource.substring(getRootFolder().length - 1);
 	}
@@ -665,19 +664,19 @@ function handleOnClick(e) {
 
 
 // check if the event object is available and gets it if necessary
-function checkEvent(e) {
+function checkEvent(event) {
 
 	// fix for IE if window access is refused in some cases
 	try {
 		win.files.getElementById("contextmenu");
-	} catch (e) {
+	} catch (exc) {
 		updateWindowStore();
 	}
 	// check event
-	if (!e) {
-		e = win.fileswin.event;
+	if (!event) {
+		event = win.fileswin.event;
 	}
-	return e;
+	return event;
 }
 
 // toggles the style of the selected resources
@@ -1412,6 +1411,11 @@ function openFolder(folderName) {
 		folderName = getDisplayResource() + folderName + "/";
 	}
 	setDisplayResource(folderName);
+	if (mode != "explorerview") {
+		mode = "explorerview";
+		// reload explorer_files.jsp into the right frame
+		updateWindowStore();
+	}
 	openurl();
 }
 
