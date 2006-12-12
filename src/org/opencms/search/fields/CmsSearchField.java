@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2006/12/11 16:22:46 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/12/12 08:24:12 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.0.0 
  */
@@ -298,6 +298,9 @@ public class CmsSearchField {
      */
     public String getDisplayName() {
 
+        if (!isDisplayed()) {
+            return IGNORE_DISPLAY_NAME;
+        }
         if (m_displayName == null) {
             return m_name;
         } else {
