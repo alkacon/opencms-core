@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2006/12/11 15:28:23 $
- * Version: $Revision: 1.18.4.6 $
+ * Date   : $Date: 2006/12/12 14:45:58 $
+ * Version: $Revision: 1.18.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.18.4.6 $ 
+ * @version $Revision: 1.18.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -313,7 +313,7 @@ public final class CmsRequestUtil {
             }
             // adjust the key is it starts with "amp;"
             // this happens when "&amp;" is used instead of a simple "&"
-            if (key.startsWith(AMP)) {
+            if ((key != null) && (key.startsWith(AMP))) {
                 key = key.substring(AMP.length(), key.length());
             }
             // now make sure the values are of type String[]
