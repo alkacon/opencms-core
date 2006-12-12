@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2006/11/29 15:04:10 $
- * Version: $Revision: 1.86.4.5 $
+ * Date   : $Date: 2006/12/12 09:23:19 $
+ * Version: $Revision: 1.86.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.86.4.5 $ 
+ * @version $Revision: 1.86.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -483,6 +483,7 @@ public class CmsFrameset extends CmsWorkplace {
             m_reloadRequired = true;
             settings.setViewUri(view);
             // TODO: This is a workaround to make dialogs work in the legacy XMLTemplate views
+            int todo;
             settings.getFrameUris().put("body", view);
             settings.getFrameUris().put("admin_content", "/system/workplace/action/administration_content_top.html");
         }
