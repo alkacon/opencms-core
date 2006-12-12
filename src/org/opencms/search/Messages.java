@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2006/12/11 13:28:43 $
- * Version: $Revision: 1.15.4.2 $
+ * Date   : $Date: 2006/12/12 09:37:02 $
+ * Version: $Revision: 1.15.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.15.4.2 $ 
+ * @version $Revision: 1.15.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -48,6 +48,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ANALYZER_NOT_FOUND_1 = "ERR_ANALYZER_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFIGURATION_FIELD_DELETE_2 = "ERR_CONFIGURATION_FIELD_DELETE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATING_INDEX_DOC_0 = "ERR_CREATING_INDEX_DOC_0";
@@ -69,6 +72,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FIELD_CONFIGURATION_UNKNOWN_2 = "ERR_FIELD_CONFIGURATION_UNKNOWN_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_FIELD_MAPPING_DELETE_2 = "ERR_FIELD_MAPPING_DELETE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FIELD_TYPE_UNKNOWN_1 = "ERR_FIELD_TYPE_UNKNOWN_1";
