@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResourcesCollector.java,v $
- * Date   : $Date: 2006/12/11 16:30:28 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/12/12 08:26:22 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.1.0 
  */
@@ -134,24 +134,22 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
      */
     public List getResources(CmsObject cms, Map params) throws CmsException {
 
-        synchronized (this) {
-            List result = getSearchResults(params);
-            int count = getSearchBean(params).getSearchResultCount();
-            Object[] objs = new Object[count];
-            Arrays.fill(objs, new Object());
-            int from = (getSearchBean(params).getSearchPage() - 1) * getSearchBean(params).getMatchesPerPage();
-            int siteLen = cms.getRequestContext().getSiteRoot().length();
-            Iterator it = result.iterator();
-            while (it.hasNext()) {
-                CmsSearchResult sr = (CmsSearchResult)it.next();
-                CmsResource resource = cms.readResource(sr.getPath().substring(siteLen), CmsResourceFilter.ALL);
-                m_resCache.put(resource.getStructureId().toString(), resource);
-                m_srCache.put(resource.getStructureId().toString(), sr);
-                objs[from] = resource;
-                from++;
-            }
-            return Arrays.asList(objs);
+        List result = getSearchResults(params);
+        int count = getSearchBean(params).getSearchResultCount();
+        Object[] objs = new Object[count];
+        Arrays.fill(objs, new Object());
+        int from = (getSearchBean(params).getSearchPage() - 1) * getSearchBean(params).getMatchesPerPage();
+        int siteLen = cms.getRequestContext().getSiteRoot().length();
+        Iterator it = result.iterator();
+        while (it.hasNext()) {
+            CmsSearchResult sr = (CmsSearchResult)it.next();
+            CmsResource resource = cms.readResource(sr.getPath().substring(siteLen), CmsResourceFilter.ALL);
+            m_resCache.put(resource.getStructureId().toString(), resource);
+            m_srCache.put(resource.getStructureId().toString(), sr);
+            objs[from] = resource;
+            from++;
         }
+        return Arrays.asList(objs);
     }
 
     /**

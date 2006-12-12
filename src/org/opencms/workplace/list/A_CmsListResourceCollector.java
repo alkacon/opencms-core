@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2006/12/12 08:26:22 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.1.0 
  */
@@ -172,83 +172,85 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      * 
      * @throws CmsException if something goes wrong
      */
-    public synchronized List getListItems(String parameter) throws CmsException {
+    public List getListItems(String parameter) throws CmsException {
 
-        if (parameter == null) {
-            parameter = m_collectorParameter;
-        }
-        Map params = CmsStringUtil.splitAsMap(parameter, I_CmsListResourceCollector.SEP_PARAM, I_CmsListResourceCollector.SEP_KEYVAL);
-        CmsListState state = getState(params);
-        List resources = getInternalResources(getWp().getCms(), params);
-        List ret = new ArrayList();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_COLLECTOR_PROCESS_ITEMS_START_1,
-                new Integer(resources.size())));
-        }
-        CmsResourceUtil resUtil = getWp().getResourceUtil();
-        getWp().applyColumnVisibilities();
-        CmsHtmlList list = getWp().getList();
-        // get content
-        Iterator itRes = resources.iterator();
-        while (itRes.hasNext()) {
-            Object obj = itRes.next();
-            if (!(obj instanceof CmsResource)) {
-                ret.add(getDummyListItem(list));
-                continue;
+        synchronized (this) {
+            if (parameter == null) {
+                parameter = m_collectorParameter;
             }
-            CmsResource resource = (CmsResource)obj;
-            if (!resource.getRootPath().startsWith(getWp().getJsp().getRequestContext().getSiteRoot())
-                && !resource.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
-                continue;
+            Map params = CmsStringUtil.splitAsMap(parameter, I_CmsListResourceCollector.SEP_PARAM, I_CmsListResourceCollector.SEP_KEYVAL);
+            CmsListState state = getState(params);
+            List resources = getInternalResources(getWp().getCms(), params);
+            List ret = new ArrayList();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_COLLECTOR_PROCESS_ITEMS_START_1,
+                    new Integer(resources.size())));
             }
-            CmsListItem item = (CmsListItem)m_liCache.get(resource.getStructureId().toString());
-            if (item == null) {
-                resUtil.setResource(resource);
-                item = list.newItem(resource.getStructureId().toString());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_NAME, resUtil.getPath());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_ROOT_PATH, resUtil.getFullPath());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, resUtil.getTitle());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_TYPE, resUtil.getResourceTypeName());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_SIZE, resUtil.getSizeString());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS, resUtil.getPermissions());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATELASTMOD, new Date(resource.getDateLastModified()));
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERLASTMOD, resUtil.getUserLastModified());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATECREATE, new Date(resource.getDateCreated()));
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERCREATE, resUtil.getUserCreated());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEREL, new Date(resource.getDateReleased()));
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEEXP, new Date(resource.getDateExpired()));
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_STATE, resUtil.getStateName());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
-                item.set(A_CmsListExplorerDialog.LIST_COLUMN_SITE, resUtil.getSite());
-                m_liCache.put(resource.getStructureId().toString(), item);
+            CmsResourceUtil resUtil = getWp().getResourceUtil();
+            getWp().applyColumnVisibilities();
+            CmsHtmlList list = getWp().getList();
+            // get content
+            Iterator itRes = resources.iterator();
+            while (itRes.hasNext()) {
+                Object obj = itRes.next();
+                if (!(obj instanceof CmsResource)) {
+                    ret.add(getDummyListItem(list));
+                    continue;
+                }
+                CmsResource resource = (CmsResource)obj;
+                if (!resource.getRootPath().startsWith(getWp().getJsp().getRequestContext().getSiteRoot())
+                    && !resource.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                    continue;
+                }
+                CmsListItem item = (CmsListItem)m_liCache.get(resource.getStructureId().toString());
+                if (item == null) {
+                    resUtil.setResource(resource);
+                    item = list.newItem(resource.getStructureId().toString());
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_NAME, resUtil.getPath());
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_ROOT_PATH, resUtil.getFullPath());
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, resUtil.getTitle());
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_TYPE, resUtil.getResourceTypeName());
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_SIZE, resUtil.getSizeString());
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS, resUtil.getPermissions());
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATELASTMOD, new Date(resource.getDateLastModified()));
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERLASTMOD, resUtil.getUserLastModified());
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATECREATE, new Date(resource.getDateCreated()));
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERCREATE, resUtil.getUserCreated());
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEREL, new Date(resource.getDateReleased()));
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEEXP, new Date(resource.getDateExpired()));
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_STATE, resUtil.getStateName());
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
+                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_SITE, resUtil.getSite());
+                    m_liCache.put(resource.getStructureId().toString(), item);
+                }
+                ret.add(item);
             }
-            ret.add(item);
-        }
-        CmsListMetadata metadata = list.getMetadata();
-        if (metadata != null) {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(state.getFilter())) {
-                // filter
-                ret = metadata.getSearchAction().filter(ret, state.getFilter());
-            }
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(state.getColumn())) {
-                if ((metadata.getColumnDefinition(state.getColumn()) != null)
-                    && metadata.getColumnDefinition(state.getColumn()).isSorteable()) {
-                    // sort
-                    I_CmsListItemComparator c = metadata.getColumnDefinition(state.getColumn()).getListItemComparator();
-                    Collections.sort(ret, c.getComparator(state.getColumn(), getWp().getLocale()));
-                    if (state.getOrder().equals(CmsListOrderEnum.ORDER_DESCENDING)) {
-                        Collections.reverse(ret);
+            CmsListMetadata metadata = list.getMetadata();
+            if (metadata != null) {
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(state.getFilter())) {
+                    // filter
+                    ret = metadata.getSearchAction().filter(ret, state.getFilter());
+                }
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(state.getColumn())) {
+                    if ((metadata.getColumnDefinition(state.getColumn()) != null)
+                        && metadata.getColumnDefinition(state.getColumn()).isSorteable()) {
+                        // sort
+                        I_CmsListItemComparator c = metadata.getColumnDefinition(state.getColumn()).getListItemComparator();
+                        Collections.sort(ret, c.getComparator(state.getColumn(), getWp().getLocale()));
+                        if (state.getOrder().equals(CmsListOrderEnum.ORDER_DESCENDING)) {
+                            Collections.reverse(ret);
+                        }
                     }
                 }
             }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_COLLECTOR_PROCESS_ITEMS_END_1,
+                    new Integer(ret.size())));
+            }
+            return ret;
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_COLLECTOR_PROCESS_ITEMS_END_1,
-                new Integer(ret.size())));
-        }
-        return ret;
     }
 
     /**
@@ -313,29 +315,31 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      */
     public List getResults(CmsObject cms, String collectorName, String parameter) throws CmsException {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_COLLECTOR_GET_RESULTS_START_0));
-        }
-        if (parameter == null) {
-            parameter = m_collectorParameter;
-        }
-        List resources = new ArrayList();
-        if (getWp().getList() != null) {
-            Iterator itItems = getListItems(parameter).iterator();
-            while (itItems.hasNext()) {
-                CmsListItem item = (CmsListItem)itItems.next();
-                resources.add(getResource(cms, item));
+        synchronized (this) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_COLLECTOR_GET_RESULTS_START_0));
             }
-        } else {
-            Map params = CmsStringUtil.splitAsMap(parameter, I_CmsListResourceCollector.SEP_PARAM, I_CmsListResourceCollector.SEP_KEYVAL);
-            resources = getInternalResources(cms, params);
+            if (parameter == null) {
+                parameter = m_collectorParameter;
+            }
+            List resources = new ArrayList();
+            if (getWp().getList() != null) {
+                Iterator itItems = getListItems(parameter).iterator();
+                while (itItems.hasNext()) {
+                    CmsListItem item = (CmsListItem)itItems.next();
+                    resources.add(getResource(cms, item));
+                }
+            } else {
+                Map params = CmsStringUtil.splitAsMap(parameter, I_CmsListResourceCollector.SEP_PARAM, I_CmsListResourceCollector.SEP_KEYVAL);
+                resources = getInternalResources(cms, params);
+            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_COLLECTOR_GET_RESULTS_END_1,
+                    new Integer(resources.size())));
+            }
+            return resources;
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_COLLECTOR_GET_RESULTS_END_1,
-                new Integer(resources.size())));
-        }
-        return resources;
     }
 
     /**
