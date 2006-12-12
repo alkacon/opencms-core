@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsFieldsList.java,v $
- * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/12 16:05:24 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
@@ -427,6 +427,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
             item.set(LIST_COLUMN_EXCERPT_HIDE, new Boolean(field.isInExcerpt()));
             item.set(LIST_COLUMN_TOKEN_HIDE, new Boolean(field.isTokenized()));
             item.set(LIST_COLUMN_STORE_HIDE, new Boolean(field.isStored()));
+            item.set(LIST_COLUMN_DEFAULT, defaultValue);
 
             result.add(item);
         }
@@ -483,7 +484,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         nameCol.addDefaultAction(overviewAction);
         metadata.addColumn(nameCol);
 
-        // add column for name
+        // add column for display
         CmsListColumnDefinition displayCol = new CmsListColumnDefinition(LIST_COLUMN_DISPLAY);
         displayCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         displayCol.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_DISPLAY_0));
