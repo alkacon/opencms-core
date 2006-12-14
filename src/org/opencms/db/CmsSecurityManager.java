@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/12/07 10:18:18 $
- * Version: $Revision: 1.97.4.22 $
+ * Date   : $Date: 2006/12/14 11:18:04 $
+ * Version: $Revision: 1.97.4.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4949,7 +4949,7 @@ public final class CmsSecurityManager {
 
         if (writeRequired && checkLock) {
             // check lock state only if required
-            CmsLock lock = m_lockManager.getLock(dbc, resource, false);
+            CmsLock lock = m_lockManager.getLock(dbc, resource, true);
             // if the resource is not locked by the current user, write and control 
             // access must cause a permission error that must not be cached
             if (lock.isUnlocked() || !lock.isLockableBy(dbc.currentUser())) {

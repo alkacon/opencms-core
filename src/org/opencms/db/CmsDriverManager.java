@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/12/07 10:18:18 $
- * Version: $Revision: 1.570.2.41 $
+ * Date   : $Date: 2006/12/14 11:18:04 $
+ * Version: $Revision: 1.570.2.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2054,7 +2054,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc,
                 resource,
                 CmsPermissionSet.ACCESS_WRITE,
-                true,
+                false,
                 CmsResourceFilter.ALL);
 
             // delete the property values
