@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/Messages.java,v $
- * Date   : $Date: 2006/12/11 14:24:25 $
- * Version: $Revision: 1.7.4.2 $
+ * Date   : $Date: 2006/12/14 11:08:50 $
+ * Version: $Revision: 1.7.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.7.4.2 $ 
+ * @version $Revision: 1.7.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -51,6 +51,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SEARCHINDEX_REBUILD_MULTI_0 = "ERR_SEARCHINDEX_REBUILD_MULTI_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELD_TOOL_DELETE_0 = "GUI_GROUPS_FIELD_TOOL_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELD_TOOL_DELETE_HELP_0 = "GUI_GROUPS_FIELD_TOOL_DELETE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPS_FIELD_TOOL_EDIT_0 = "GUI_GROUPS_FIELD_TOOL_EDIT_0";
@@ -273,6 +279,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_DOCUMENTTYPES_NAME_HELP_0 = "GUI_LIST_DOCUMENTTYPES_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_DELETE_CONF_1 = "GUI_LIST_FIELD_ACTION_DELETE_CONF_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_DELETE_NAME_0 = "GUI_LIST_FIELD_ACTION_DELETE_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_FIELD_ACTION_EDIT_NAME_0 = "GUI_LIST_FIELD_ACTION_EDIT_NAME_0";
@@ -575,10 +587,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LIST_MAPPING_COL_DEFAULT_0 = "GUI_LIST_MAPPING_COL_DEFAULT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_MAPPING_COL_EDIT_NAME_HELP_0 = "GUI_LIST_MAPPING_COL_EDIT_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_MAPPING_COL_TYPE_0 = "GUI_LIST_MAPPING_COL_TYPE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_MAPPING_COL_VALUE_0 = "GUI_LIST_MAPPING_COL_VALUE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_MAPPING_NAME_HELP_0 = "GUI_LIST_MAPPING_NAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_MAPPINGS_NAME_0 = "GUI_LIST_MAPPINGS_NAME_0";
@@ -657,6 +675,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_SEARCHINDEX_ACTION_SEARCH_NAME_0 = "GUI_LIST_SEARCHINDEX_ACTION_SEARCH_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_COL_CONFIGURATION_0 = "GUI_LIST_SEARCHINDEX_COL_CONFIGURATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_SEARCHINDEX_COL_DELETE_HELP_0 = "GUI_LIST_SEARCHINDEX_COL_DELETE_HELP_0";
