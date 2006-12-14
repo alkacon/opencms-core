@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2006/12/12 14:55:31 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/12/14 11:11:39 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.0.0 
  */
@@ -280,6 +280,19 @@ public class CmsSearchField {
     }
 
     /**
+     * Returns the boost factor of thsi field as String value for display use.<p>
+     * 
+     * @return the boost factor of thsi field as String value for display use
+     */
+    public String getBoostDisplay() {
+
+        if (m_boost == BOOST_DEFAULT) {
+            return null;
+        }
+        return String.valueOf(m_boost);
+    }
+
+    /**
      * Returns the default value to use if no content for this field was collected.<p>
      *
      * In case no default is configured, <code>null</code> is returned.<p>
@@ -316,6 +329,26 @@ public class CmsSearchField {
     public String getDisplayNameForConfiguration() {
 
         return m_displayNameForConfiguration;
+    }
+
+    /**
+     * Returns the String value state of this field if it is indexed (and possibly tokenized) in the Lucene index.<p>
+     * 
+     * @return the String value state of this field if it is indexed (and possibly tokenized) in the Lucene index
+     * 
+     * @see #isTokenizedAndIndexed()
+     * @see #isIndexed()
+     */
+    public String getIndexed() {
+
+        if (isTokenizedAndIndexed()) {
+            return String.valueOf(isTokenizedAndIndexed());
+        }
+        if (isIndexed()) {
+            return STR_UN_TOKENIZED;
+        } else {
+            return String.valueOf(isIndexed());
+        }
     }
 
     /**
@@ -476,6 +509,18 @@ public class CmsSearchField {
             // invalid number format, use default boost factor
             setBoost(BOOST_DEFAULT);
         }
+    }
+
+    /**
+     * Sets the boost factor of this field (only for display use).<p>
+     * 
+     * @param boost the boost factor to set
+     * 
+     * @see #setBoost(String)
+     */
+    public void setBoostDisplay(String boost) {
+
+        setBoost(boost);
     }
 
     /**
