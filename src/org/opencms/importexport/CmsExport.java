@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2006/12/14 12:23:30 $
- * Version: $Revision: 1.84.4.4 $
+ * Date   : $Date: 2006/12/14 15:09:29 $
+ * Version: $Revision: 1.84.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.4 $ 
+ * @version $Revision: 1.84.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,6 +135,9 @@ public class CmsExport {
 
     /** Indicates if the unchanged resources should be included to the export .*/
     private boolean m_includeUnchanged;
+
+    /** Flag if only resources in the current project should be exported. */
+    private boolean m_inProject;
 
     /** Recursive flag, if set the folders are exported recursively. */
     private boolean m_recursive;
@@ -196,6 +199,7 @@ public class CmsExport {
      * @param contentAge export contents changed after this date/time
      * @param report to handle the log messages
      * @param recursive recursive flag
+     * @param inProject export project resources only flag
      * 
      * @throws CmsImportExportException if something goes wrong
      * @throws CmsRoleViolationException if the current user has not the required role
@@ -211,7 +215,8 @@ public class CmsExport {
         boolean exportWebusers,
         long contentAge,
         I_CmsReport report,
-        boolean recursive)
+        boolean recursive,
+        boolean inProject)
     throws CmsImportExportException, CmsRoleViolationException {
 
         setCms(cms);
@@ -228,6 +233,7 @@ public class CmsExport {
         m_contentAge = contentAge;
         m_exportCount = 0;
         m_recursive = recursive;
+        m_inProject = inProject;
 
         // clear all caches
         report.println(Messages.get().container(Messages.RPT_CLEARCACHE_0), I_CmsReport.FORMAT_NOTE);
@@ -365,7 +371,8 @@ public class CmsExport {
             false,
             contentAge,
             report,
-            recursive);
+            recursive,
+            false);
     }
 
     /**
@@ -398,7 +405,9 @@ public class CmsExport {
                     if (!state.isDeleted() && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
                         String export = getCms().getSitePath(file);
                         if (checkExportResource(export)) {
-                            exportFile(getCms().readFile(export, CmsResourceFilter.IGNORE_EXPIRATION));
+                            if (isInExportableProject(file)) {
+                                exportFile(getCms().readFile(export, CmsResourceFilter.IGNORE_EXPIRATION));
+                            }
                         }
                     }
                 }
@@ -800,7 +809,9 @@ public class CmsExport {
                             if (m_recursive) {
                                 addParentFolders(fileName);
                             }
-                            exportFile(file);
+                            if (isInExportableProject(file)) {
+                                exportFile(file);
+                            }
                         }
                     }
                 } catch (CmsImportExportException e) {
@@ -1370,6 +1381,30 @@ public class CmsExport {
 
             throw new CmsImportExportException(message, e);
         }
+    }
+
+    /**
+     * Checks if a resource is belongs to the correct project for exporting.<p>
+     * @param res the resource to check
+     * @return true if the resource can be exported, false otherwiese
+     */
+    private boolean isInExportableProject(CmsResource res) {
+
+        boolean retValue = true;
+        // the "only modified in current project flag" is checked
+        if (m_inProject) {
+            // resource state is new or changed
+            if (res.getState() == CmsResource.STATE_CHANGED || res.getState() == CmsResource.STATE_NEW) {
+                // the resource belongs not to the curent project, so it must not be exported    
+                if (res.getProjectLastModified() != m_cms.getRequestContext().currentProject().getId()) {
+                    retValue = false;
+                }
+            } else {
+                // state is unchanged, so do not export it
+                retValue = false;
+            }
+        }
+        return retValue;
     }
 
     /**
