@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexList.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.2.4.4 $
+ * Date   : $Date: 2006/12/14 11:19:02 $
+ * Version: $Revision: 1.2.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -74,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.4 $
+ * @version $Revision: 1.2.4.5 $
  * 
  * @since 6.0.0
  */
@@ -97,6 +98,9 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_SEARCHINDEX_OVERVIEW = "asio";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_CONFIGURATION = "cc";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_DELETE = "cad";
@@ -332,6 +336,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             index = (CmsSearchIndex)itIndexes.next();
             CmsListItem item = getList().newItem(index.getName());
             item.set(LIST_COLUMN_NAME, index.getName());
+            item.set(LIST_COLUMN_CONFIGURATION, index.getFieldConfiguration().getName());
             item.set(LIST_COLUMN_REBUILDMODE, index.getRebuildMode());
             item.set(LIST_COLUMN_PROJECT, index.getProject());
             item.set(LIST_COLUMN_LOCALE, index.getLocale().toString());
@@ -443,7 +448,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         nameCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_NAME_0));
-        nameCol.setWidth("45%");
+        nameCol.setWidth("35%");
         // a default action for the link to overview        
         CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_ACTION_SEARCHINDEX_OVERVIEW);
         defEditAction.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_OVERVIEW_NAME_0));
@@ -451,11 +456,18 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         nameCol.addDefaultAction(defEditAction);
         metadata.addColumn(nameCol);
 
+        // add column for field configuration
+        CmsListColumnDefinition configCol = new CmsListColumnDefinition(LIST_COLUMN_CONFIGURATION);
+        configCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        configCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_CONFIGURATION_0));
+        configCol.setWidth("15%");
+        metadata.addColumn(configCol);
+
         // add column for rebuild mode
         CmsListColumnDefinition rebuildModeCol = new CmsListColumnDefinition(LIST_COLUMN_REBUILDMODE);
         rebuildModeCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         rebuildModeCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_REBUILDMODE_0));
-        rebuildModeCol.setWidth("15%");
+        rebuildModeCol.setWidth("10%");
         metadata.addColumn(rebuildModeCol);
 
         // add column for project
@@ -577,16 +589,29 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         Iterator itFields = fields.iterator();
         while (itFields.hasNext()) {
             CmsSearchField field = (CmsSearchField)itFields.next();
+            String fieldName = field.getName();
+            boolean fieldStore = field.isStored();
+            String fieldIndex = field.getIndexed();
+            boolean fieldExcerpt = field.isInExcerpt();
+            float fieldBoost = field.getBoost();
             String fieldDefault = field.getDefaultValue();
+
             html.append("  <li>\n").append("    ");
-            html.append("name : ").append(field.getName()).append(", ");
-            html.append("store : ").append(field.isStored()).append(", ");
-            html.append("index : ").append(field.isIndexed()).append(", ");
-            html.append("tokenized : ").append(field.isTokenized()).append(", ");
-            html.append("excerpt : ").append(field.isInExcerpt()).append(", ");
-            html.append("boost : ").append(field.getBoost());
+            html.append("name=").append(fieldName);
+            if (fieldStore) {
+                html.append(", ").append("store=").append(fieldStore);
+            }
+            if (!fieldIndex.equals("false")) {
+                html.append(", ").append("index=").append(fieldIndex);
+            }
+            if (fieldExcerpt) {
+                html.append(", ").append("excerpt=").append(fieldExcerpt);
+            }
+            if (fieldBoost != CmsSearchField.BOOST_DEFAULT) {
+                html.append(", ").append("boost=").append(fieldBoost);
+            }
             if (fieldDefault != null) {
-                html.append(", ").append("default : ").append(field.getDefaultValue());
+                html.append(", ").append("default=").append(field.getDefaultValue());
             }
             html.append("\n").append("  </li>");
             html.append("  <li>\n").append("    ").append("mappings : ").append("\n");
@@ -596,8 +621,10 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             while (itMappings.hasNext()) {
                 CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)itMappings.next();
                 html.append("  <li>\n").append("    ");
-                html.append("type : ").append(mapping.getType().toString()).append(", ");
-                html.append("value : ").append(mapping.getParam()).append("\n");
+                html.append(mapping.getType().toString());
+                if (CmsStringUtil.isNotEmpty(mapping.getParam())) {
+                    html.append("=").append(mapping.getParam()).append("\n");
+                }
                 html.append("  </li>");
             }
             html.append("    </ul>\n");
