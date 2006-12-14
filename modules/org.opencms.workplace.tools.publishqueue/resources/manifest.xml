@@ -14,9 +14,8 @@
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[This module contains the tools for view the OpenCms publish queue.
-
 (c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>1.0.7</version>
+		<version>1.0.8</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -178,7 +177,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[130.0]]></value>
+					<value><![CDATA[15.0]]></value>
 				</property>
 				<property>
 					<name>default-file</name>
@@ -465,33 +464,14 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/publishqueue/buttons/publish_other.png</source>
-			<destination>system/workplace/resources/tools/publishqueue/buttons/publish_other.png</destination>
+			<source>system/workplace/resources/tools/publishqueue/buttons/publish_current_disabled.png</source>
+			<destination>system/workplace/resources/tools/publishqueue/buttons/publish_current_disabled.png</destination>
 			<type>image</type>
-			<uuidstructure>35e8ad58-6f41-11db-bd59-bf6fa13020a5</uuidstructure>
-			<uuidresource>35e8ad59-6f41-11db-bd59-bf6fa13020a5</uuidresource>
-			<datelastmodified>Mon, 13 Nov 2006 09:12:50 GMT</datelastmodified>
+			<uuidstructure>dca7dc3e-71fd-21db-a471-ba6fa1c02fa1</uuidstructure>
+			<uuidresource>d2add10f-72ff-13db-a4e1-b16fa13b20a5</uuidresource>
+			<datelastmodified>Tue, 14 Nov 2006 16:33:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 08 Nov 2006 15:53:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:20,h:20]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/tools/publishqueue/buttons/publish_own.png</source>
-			<destination>system/workplace/resources/tools/publishqueue/buttons/publish_own.png</destination>
-			<type>image</type>
-			<uuidstructure>35b911d3-6f41-11db-bd59-bf6fa13020a5</uuidstructure>
-			<uuidresource>35b911d4-6f41-11db-bd59-bf6fa13020a5</uuidresource>
-			<datelastmodified>Mon, 13 Nov 2006 09:12:55 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 08 Nov 2006 15:53:00 GMT</datecreated>
+			<datecreated>Tue, 14 Nov 2006 16:33:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

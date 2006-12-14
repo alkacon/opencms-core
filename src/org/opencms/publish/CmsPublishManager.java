@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2006/12/11 15:10:53 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/14 14:33:24 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.5
  */
@@ -79,7 +79,7 @@ public class CmsPublishManager {
     public void abortPublishJob(CmsObject cms, CmsPublishJobEnqueued publishJob)
     throws CmsException, CmsSecurityException, CmsPublishException {
 
-        if (!cms.hasRole(CmsRole.PROJECT_MANAGER)
+        if (!cms.hasRole(CmsRole.ADMINISTRATOR)
             && !cms.getRequestContext().currentUser().getName().equals(publishJob.getUserName())) {
             // Can only be executed by somebody with the role CmsRole#PROJECT_MANAGER or the owner of the job
             throw new CmsSecurityException(Messages.get().container(
@@ -192,7 +192,7 @@ public class CmsPublishManager {
         int i = 0;
         // wait until it is done or time is over
         synchronized (this) {
-            while (isRunning() && (MS_ONE_SECOND * i <= ms)) {
+            while (isRunning() && ((MS_ONE_SECOND * i) <= ms)) {
                 try {
                     this.wait(MS_ONE_SECOND); // wait a sec
                     i++;

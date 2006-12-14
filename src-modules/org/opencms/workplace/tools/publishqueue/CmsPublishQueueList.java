@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueList.java,v $
- * Date   : $Date: 2006/11/29 14:54:02 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/14 14:33:24 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5
  */
@@ -76,15 +76,6 @@ public class CmsPublishQueueList extends A_CmsListDialog {
 
     /** The path to the publish report view icon. */
     public static final String PUBLISHQUEUE_CANCEL_BUTTON = "tools/publishqueue/buttons/cancel.png";
-
-    /** The path to the publish report view icon. */
-    public static final String PUBLISHQUEUE_CANCEL_DISABLED_BUTTON = "tools/publishqueue/buttons/cancel_disabled.png";
-
-    /** The path to the publish report view icon. */
-    public static final String PUBLISHQUEUE_STATE_OTHER_BUTTON = "tools/publishqueue/buttons/publish_other.png";
-
-    /** The path to the publish report view icon. */
-    public static final String PUBLISHQUEUE_STATE_OWN_BUTTON = "tools/publishqueue/buttons/publish_own.png";
 
     /** The path to the publish report view icon. */
     public static final String PUBLISHQUEUE_STATE_PROCEED_BUTTON = "tools/publishqueue/buttons/publish_current.png";
@@ -118,9 +109,6 @@ public class CmsPublishQueueList extends A_CmsListDialog {
 
     /** list action id constant. */
     private static final String LIST_ACTION_USER = "au";
-
-    /** list column id constant. */
-    private static final String LIST_COLUMN_CANCEL = "cc";
 
     /** list column id constant. */
     private static final String LIST_COLUMN_NUMBER = "cn";
@@ -258,19 +246,19 @@ public class CmsPublishQueueList extends A_CmsListDialog {
 
         Iterator iter = OpenCms.getPublishManager().getPublishQueue().iterator();
         while (iter.hasNext()) {
-            CmsPublishJobEnqueued next = (CmsPublishJobEnqueued)iter.next();
-            CmsListItem item = getList().newItem(new Long(next.getEnqueueTime()).toString());
+            CmsPublishJobEnqueued publishJob = (CmsPublishJobEnqueued)iter.next();
+            CmsListItem item = getList().newItem(new Long(publishJob.getEnqueueTime()).toString());
             // check the state
             int state = STATE_OWN;
-            if (!next.getUserName().equals(getCms().getRequestContext().currentUser().getName())) {
+            if (!publishJob.getUserName().equals(getCms().getRequestContext().currentUser().getName())) {
                 state = STATE_OTHER;
             }
             item.set(LIST_COLUMN_STATE, new Integer(state));
             item.set(LIST_COLUMN_NUMBER, new Integer(number));
-            item.set(LIST_COLUMN_PROJECT, next.getProjectName(getLocale()));
-            item.set(LIST_COLUMN_STARTTIME, new Date(next.getEnqueueTime()));
-            item.set(LIST_COLUMN_USER, next.getUserName());
-            item.set(LIST_COLUMN_RESCOUNT, new Integer(next.getSize()));
+            item.set(LIST_COLUMN_PROJECT, publishJob.getProjectName(getLocale()));
+            item.set(LIST_COLUMN_STARTTIME, new Date(publishJob.getEnqueueTime()));
+            item.set(LIST_COLUMN_USER, publishJob.getUserName());
+            item.set(LIST_COLUMN_RESCOUNT, new Integer(publishJob.getSize()));
             ret.add(item);
             number++;
         }
@@ -296,29 +284,50 @@ public class CmsPublishQueueList extends A_CmsListDialog {
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
              */
             public CmsMessageContainer getHelpText() {
-            
+
                 if (isEnabled()) {
                     return super.getHelpText();
                 } else {
                     return EMPTY_MESSAGE;
                 }
             }
-            
+
             /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
-            public String getIconPath() {
+            public boolean isEnabled() {
+
+                return (getWp().getCms().hasRole(CmsRole.ADMINISTRATOR) || getWp().getCms().getRequestContext().currentUser().getName().equals(
+                    getItem().get(LIST_COLUMN_USER)));
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
 
                 int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
-                String buttonPath = "";
-                if (state == STATE_OWN) {
-                    buttonPath = PUBLISHQUEUE_STATE_OWN_BUTTON;
-                } else if (state == STATE_OTHER) {
-                    buttonPath = PUBLISHQUEUE_STATE_OTHER_BUTTON;
-                } else if (state == STATE_PROCEED) {
-                    buttonPath = PUBLISHQUEUE_STATE_PROCEED_BUTTON;
+                return (state == STATE_PROCEED);
+            }
+        };
+        viewDirectAction.setName(Messages.get().container(Messages.GUI_PUBLISHQUEUE_ACTION_VIEW_NAME_0));
+        viewDirectAction.setHelpText(Messages.get().container(Messages.GUI_PUBLISHQUEUE_ACTION_VIEW_HELP_0));
+        viewDirectAction.setIconPath(PUBLISHQUEUE_STATE_PROCEED_BUTTON);
+        stateCol.addDirectAction(viewDirectAction);
+
+        // add cancel action
+        CmsListDirectAction cancelAction = new CmsListDirectAction(LIST_ACTION_CANCEL) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            public CmsMessageContainer getHelpText() {
+
+                if (isEnabled()) {
+                    return super.getHelpText();
+                } else {
+                    return EMPTY_MESSAGE;
                 }
-                return buttonPath;
             }
 
             /**
@@ -327,14 +336,24 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             public boolean isEnabled() {
 
                 int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
-                return ((state == STATE_PROCEED) && (getWp().getCms().hasRole(CmsRole.PROJECT_MANAGER) || getWp().getCms().getRequestContext().currentUser().getName().equals(
-                    getItem().get(LIST_COLUMN_USER))));
+                return (getWp().getCms().hasRole(CmsRole.ADMINISTRATOR) || (state == STATE_OWN));
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
+                return (state != STATE_PROCEED);
             }
         };
-        viewDirectAction.setName(Messages.get().container(Messages.GUI_PUBLISHQUEUE_ACTION_VIEW_NAME_0));
-        viewDirectAction.setHelpText(Messages.get().container(Messages.GUI_PUBLISHQUEUE_ACTION_VIEW_HELP_0));
-        viewDirectAction.setIconPath(PUBLISHQUEUE_STATE_PROCEED_BUTTON);
-        stateCol.addDirectAction(viewDirectAction);
+        cancelAction.setName(Messages.get().container(Messages.GUI_PUBLISHQUEUE_ACTION_CANCEL_NAME_0));
+        cancelAction.setHelpText(Messages.get().container(Messages.GUI_PUBLISHQUEUE_ACTION_CANCEL_HELP_0));
+        cancelAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PUBLISHQUEUE_ACTION_CANCEL_CONF_0));
+        cancelAction.setIconPath(PUBLISHQUEUE_CANCEL_BUTTON);
+
+        stateCol.addDirectAction(cancelAction);
         stateCol.setFormatter(new I_CmsListFormatter() {
 
             /**
@@ -347,57 +366,6 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             }
         });
         metadata.addColumn(stateCol);
-
-        // create cancel column
-        CmsListColumnDefinition cancelCol = new CmsListColumnDefinition(LIST_COLUMN_CANCEL);
-        cancelCol.setName(Messages.get().container(Messages.GUI_PUBLISHQUEUE_COLS_CANCEL_0));
-        cancelCol.setWidth("20");
-        cancelCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        cancelCol.setSorteable(true);
-        // add cancel action
-        CmsListDirectAction cancelAction = new CmsListDirectAction(LIST_ACTION_CANCEL) {
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
-             */
-            public CmsMessageContainer getHelpText() {
-            
-                if (isEnabled()) {
-                    return super.getHelpText();
-                } else {
-                    return EMPTY_MESSAGE;
-                }
-            }
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
-             */
-            public String getIconPath() {
-
-                int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
-                String buttonPath = "";
-                if ((state == STATE_OWN) || getWp().getCms().hasRole(CmsRole.PROJECT_MANAGER)) {
-                    buttonPath = PUBLISHQUEUE_CANCEL_BUTTON;
-                } else {
-                    buttonPath = PUBLISHQUEUE_CANCEL_DISABLED_BUTTON;
-                }
-                return buttonPath;
-            }
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
-             */
-            public boolean isEnabled() {
-
-                int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
-                return ((state != STATE_PROCEED) && (getWp().getCms().hasRole(CmsRole.PROJECT_MANAGER) || (state == STATE_OWN)));
-            }
-        };
-        cancelAction.setName(Messages.get().container(Messages.GUI_PUBLISHQUEUE_ACTION_CANCEL_NAME_0));
-        cancelAction.setHelpText(Messages.get().container(Messages.GUI_PUBLISHQUEUE_ACTION_CANCEL_HELP_0));
-        cancelAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PUBLISHQUEUE_ACTION_CANCEL_CONF_0));
-        cancelCol.addDirectAction(cancelAction);
-        metadata.addColumn(cancelCol);
 
         // create column list number
         CmsListColumnDefinition numCol = new CmsListColumnDefinition(LIST_COLUMN_NUMBER);
@@ -426,7 +394,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
              */
             public CmsMessageContainer getHelpText() {
-            
+
                 if (isEnabled()) {
                     return super.getHelpText();
                 } else {
@@ -440,7 +408,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             public boolean isEnabled() {
 
                 int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
-                return ((state == STATE_PROCEED) && (getWp().getCms().hasRole(CmsRole.PROJECT_MANAGER) || getWp().getCms().getRequestContext().currentUser().getName().equals(
+                return ((state == STATE_PROCEED) && (getWp().getCms().hasRole(CmsRole.ADMINISTRATOR) || getWp().getCms().getRequestContext().currentUser().getName().equals(
                     getItem().get(LIST_COLUMN_USER))));
             }
         }

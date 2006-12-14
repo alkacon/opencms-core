@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueLiveReportDialog.java,v $
- * Date   : $Date: 2006/11/29 14:54:02 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/14 14:33:24 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.publishqueue;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobRunning;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -48,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5 
  */
@@ -124,6 +125,27 @@ public class CmsPublishQueueLiveReportDialog extends CmsReport {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
 
+        // test some preconditions
+        try {
+            CmsPublishJobRunning publishJob = OpenCms.getPublishManager().getCurrentPublishJob();
+            if (publishJob == null) {
+                throw new Exception();
+            }
+            if (!getCms().hasRole(CmsRole.ADMINISTRATOR)
+                && !publishJob.getUserName().equals(getCms().getRequestContext().currentUser().getName())) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            // redirect to parent if parameters not available
+            setAction(ACTION_CANCEL);
+            try {
+                actionCloseDialog();
+            } catch (JspException e1) {
+                // noop
+            }
+            return;
+        }
+
         // set the action for the JSP switch 
         if (REPORT_UPDATE.equals(getParamAction())) {
             setAction(ACTION_REPORT_UPDATE);
@@ -140,7 +162,9 @@ public class CmsPublishQueueLiveReportDialog extends CmsReport {
             // set parameters depending on publishing type
             if (publishJob.isDirectPublish()) {
                 // add the title for the direct publish dialog 
-                setDialogTitle(org.opencms.workplace.commons.Messages.GUI_PUBLISH_RESOURCE_1, org.opencms.workplace.commons.Messages.GUI_PUBLISH_MULTI_2);
+                setDialogTitle(
+                    org.opencms.workplace.commons.Messages.GUI_PUBLISH_RESOURCE_1,
+                    org.opencms.workplace.commons.Messages.GUI_PUBLISH_MULTI_2);
             } else {
                 // add the title for the publish project dialog 
                 setParamTitle(key(org.opencms.workplace.commons.Messages.GUI_PUBLISH_PROJECT_0));
