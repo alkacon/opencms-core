@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchFieldConfigurationList.java,v $
- * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/14 11:17:52 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -80,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
@@ -124,9 +125,6 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
 
     /** The path to the fieldconfiguration list icon. */
     protected static final String LIST_ICON_FIELDCONFIGURATION_EDIT = "tools/searchindex/icons/small/fieldconfiguration-edit.png";
-
-    /** The path to the fieldconfiguration list icon. */
-    protected static final String LIST_ICON_FIELDCONFIGURATION_NEWFIELD = "tools/searchindex/icons/small/fieldconfiguration-newfield.png";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchFieldConfigurationList.class);
@@ -323,7 +321,7 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
         CmsListDirectAction fieldAction = new CmsListDirectAction(LIST_ACTION_FIELD);
         fieldAction.setName(Messages.get().container(Messages.GUI_LIST_FIELDCONFIGURATION_ACTION_FIELD_NAME_0));
         fieldAction.setHelpText(Messages.get().container(Messages.GUI_LIST_FIELDCONFIGURATION_COL_FIELD_NAME_HELP_0));
-        fieldAction.setIconPath(LIST_ICON_FIELDCONFIGURATION_EDIT);
+        fieldAction.setIconPath(ICON_ADD);
         fieldCol.addDirectAction(fieldAction);
         // add it to the list definition
         metadata.addColumn(fieldCol);
@@ -401,7 +399,7 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
             Messages.GUI_LIST_FIELDCONFIGURATION_MACTION_DELETECONFIGURATION_NAME_HELP_0));
         deleteMultiAction.setConfirmationMessage(Messages.get().container(
             Messages.GUI_LIST_FIELDCONFIGURATION_MACTION_DELETECONFIGURATION_CONF_0));
-        deleteMultiAction.setIconPath(ICON_MULTI_MINUS);
+        deleteMultiAction.setIconPath(ICON_MULTI_DELETE);
         metadata.addMultiAction(deleteMultiAction);
     }
 
@@ -440,16 +438,29 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
         Iterator itFields = fields.iterator();
         while (itFields.hasNext()) {
             CmsSearchField field = (CmsSearchField)itFields.next();
+            String fieldName = field.getName();
+            boolean fieldStore = field.isStored();
+            String fieldIndex = field.getIndexed();
+            boolean fieldExcerpt = field.isInExcerpt();
+            float fieldBoost = field.getBoost();
             String fieldDefault = field.getDefaultValue();
+
             html.append("  <li>\n").append("    ");
-            html.append("name : ").append(field.getName()).append(", ");
-            html.append("store : ").append(field.isStored()).append(", ");
-            html.append("index : ").append(field.isIndexed()).append(", ");
-            html.append("tokenized : ").append(field.isTokenized()).append(", ");
-            html.append("excerpt : ").append(field.isInExcerpt()).append(", ");
-            html.append("boost : ").append(field.getBoost());
+            html.append("name=").append(fieldName);
+            if (fieldStore) {
+                html.append(", ").append("store=").append(fieldStore);
+            }
+            if (!fieldIndex.equals("false")) {
+                html.append(", ").append("index=").append(fieldIndex);
+            }
+            if (fieldExcerpt) {
+                html.append(", ").append("excerpt=").append(fieldExcerpt);
+            }
+            if (fieldBoost != CmsSearchField.BOOST_DEFAULT) {
+                html.append(", ").append("boost=").append(fieldBoost);
+            }
             if (fieldDefault != null) {
-                html.append(", ").append("default : ").append(field.getDefaultValue());
+                html.append(", ").append("default=").append(field.getDefaultValue());
             }
             html.append("\n").append("  </li>");
             html.append("  <li>\n").append("    ").append("mappings : ").append("\n");
@@ -459,8 +470,10 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
             while (itMappings.hasNext()) {
                 CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)itMappings.next();
                 html.append("  <li>\n").append("    ");
-                html.append("type : ").append(mapping.getType().toString()).append(", ");
-                html.append("value : ").append(mapping.getParam()).append("\n");
+                html.append(mapping.getType().toString());
+                if (CmsStringUtil.isNotEmpty(mapping.getParam())) {
+                    html.append("=").append(mapping.getParam()).append("\n");
+                }
                 html.append("  </li>");
             }
             html.append("    </ul>\n");
