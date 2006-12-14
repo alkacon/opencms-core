@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2006/12/11 13:23:58 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/14 15:42:30 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.0.0 
  */
@@ -60,7 +60,7 @@ public class CmsSearchFieldConfiguration implements Comparable {
     public static final String STR_STANDARD = "standard";
 
     /** The description for the standard field configuration. */
-    public static final String STR_STANDARD_DESCRIPTION = "The standard field configuration.";
+    public static final String STR_STANDARD_DESCRIPTION = "The standard OpenCms 7.0 search index field configuration.";
 
     /** The description of the configuration. */
     private String m_description;
