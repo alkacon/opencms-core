@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestBackup.java,v $
- * Date   : $Date: 2006/11/29 15:04:05 $
- * Version: $Revision: 1.7.8.4 $
+ * Date   : $Date: 2006/12/14 09:56:37 $
+ * Version: $Revision: 1.7.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit tests for backup operation.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.7.8.4 $
+ * @version $Revision: 1.7.8.5 $
  */
 public class TestBackup extends OpenCmsTestCase {
 
@@ -447,7 +447,6 @@ public class TestBackup extends OpenCmsTestCase {
             assertEquals(siblingContent, restoredContent);
             prop = cms.readPropertyObject(siblingname, CmsPropertyDefinition.PROPERTY_TITLE, false);
             assertEquals("SiblingTitle3", prop.getValue());
-
         } finally {
             cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
