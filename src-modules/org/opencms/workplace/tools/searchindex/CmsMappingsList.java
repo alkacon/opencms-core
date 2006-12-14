@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsMappingsList.java,v $
- * Date   : $Date: 2006/12/14 11:17:09 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/14 15:46:38 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.5
  */
@@ -186,10 +186,12 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
                     listItem = (CmsListItem)itItems.next();
                     itMappings = field.getMappings().iterator();
                     while (itMappings.hasNext()) {
-                        String item = (String)listItem.get(LIST_COLUMN_VALUE);
+                        String itemValue = (String)listItem.get(LIST_COLUMN_VALUE);
+                        String itemType = (String)listItem.get(LIST_COLUMN_TYPE);
+
                         CmsSearchFieldMapping curMapping = (CmsSearchFieldMapping)itMappings.next();
-                        String mappingValue = curMapping.getParam();
-                        if (item.equals(mappingValue)) {
+                        if (curMapping.getType().toString().equals(itemType)
+                            && ((curMapping.getParam() == null && itemValue == null) || (curMapping.getParam().equals(itemValue)))) {
                             deleteMappings.add(curMapping);
                         }
                     }
@@ -333,7 +335,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
         dummyCol.setSorteable(false);
         // add dummy icon
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);
-        editAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_MAPPING_0));
+        editAction.setName(Messages.get().container(Messages.GUI_LIST_MAPPING_COL_EDIT_NAME_0));
         editAction.setHelpText(Messages.get().container(Messages.GUI_LIST_MAPPING_COL_EDIT_NAME_HELP_0));
         editAction.setIconPath(LIST_ICON_MAPPING);
         dummyCol.addDirectAction(editAction);
