@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/12/14 14:34:00 $
- * Version: $Revision: 1.13.4.16 $
+ * Date   : $Date: 2006/12/14 15:31:04 $
+ * Version: $Revision: 1.13.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -378,7 +378,6 @@ function showContext(doc, i, isSingleContext) {
 		var lastWasSeparator = false;
 		var firstEntryWritten = false;
 		for (a = 0; a < vi.menus[typeId].items.length; a++) {
-
 			// 0:unchanged, 1:changed, 2:new, 3:deleted
 			var result = -1;
 
@@ -407,8 +406,8 @@ function showContext(doc, i, isSingleContext) {
 			} else {
 				// offline project
 				if (isSingleContext) {
-					if (! vi.liste[i].isInsideCurrentProject) {
-						// resource is from online project
+					if ((vi.liste[i].projectState != 5) && !vi.liste[i].isInsideCurrentProject) {
+						// if not publish lock and resource is from online project
 						if (vi.menus[typeId].items[a].rules.charAt(1) == 'i') {
 							result = (vi.menus[typeId].items[a].name == "-")?1:2;
 						} else {
@@ -427,8 +426,8 @@ function showContext(doc, i, isSingleContext) {
 							}
 						}
 					} else {
-						// resource is in this project => we have to differ 4 cases
-						if (vi.liste[i].lockedBy == '' || vi.liste[i].lockType == 5) {
+						// if not publish lock and resource is in this project => we have to differ 4 cases
+						if ((vi.liste[i].projectState != 5) && (vi.liste[i].lockedBy == '') || (vi.liste[i].lockType == 5)) {
 							// resource is not locked...
 							if (autolock) {
 								// autolock is enabled
@@ -439,7 +438,12 @@ function showContext(doc, i, isSingleContext) {
 							}
 						} else {
 							var isSharedLock = (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2)?true:false;
-							if (vi.liste[i].lockedInProjectId == vr.actProject) {
+							isSharedLock = isSharedLock || (vi.liste[i].projectState == 5);
+							// TODO: this is hardcoded for commons/lockchange.jsp !! ...
+							if ((vi.liste[i].projectState == 5) && (vi.menus[typeId].items[a].link.indexOf("lockchange") >= 0)) {
+								// disable steal lock for publish locks
+								display = 'i';
+							} else if (vi.liste[i].lockedInProjectId == vr.actProject) {
 								// locked in this project from ...
 								if (vi.liste[i].lockedBy == vr.userName) {
 									// ... the current user ...
