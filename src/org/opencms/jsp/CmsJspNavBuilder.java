@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.23.8.3 $
+ * Date   : $Date: 2006/12/14 12:23:30 $
+ * Version: $Revision: 1.23.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,15 +37,12 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Bean to provide a convenient way to build navigation structures based on the
@@ -61,63 +58,13 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23.8.3 $ 
+ * @version $Revision: 1.23.8.4 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.jsp.CmsJspNavElement
  */
 public class CmsJspNavBuilder {
-
-    /**
-     * Internal helper class to get a title - comparable CmsResource for channels.<p>
-     */
-    private static class ResourceTitleContainer implements Comparable {
-
-        /** The resource. */
-        protected CmsResource m_res;
-
-        /** The title of the resource. */
-        protected String m_title;
-
-        /**
-         * @param cms context provider for the current request
-         * @param res the resource to compare
-         */
-        ResourceTitleContainer(CmsObject cms, CmsResource res) {
-
-            m_res = res;
-            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-            try {
-                cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-                m_title = cms.readPropertyObject(res, org.opencms.file.CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-            } catch (Exception e) {
-                m_title = "";
-            } finally {
-                cms.getRequestContext().setSiteRoot(storedSiteRoot);
-            }
-        }
-
-        /**
-         * @see java.lang.Comparable#compareTo(Object)
-         */
-        public int compareTo(Object obj) {
-
-            if (obj == this) {
-                return 0;
-            }
-            if (obj instanceof ResourceTitleContainer) {
-                if (m_title == null) {
-                    return 1;
-                }
-                return (m_title.toLowerCase().compareTo(((ResourceTitleContainer)obj).m_title.toLowerCase()));
-            }
-            return 0;
-        }
-    }
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsJspNavBuilder.class);
 
     // Member variables
     private CmsObject m_cms;
@@ -142,102 +89,6 @@ public class CmsJspNavBuilder {
     public CmsJspNavBuilder(CmsObject cms) {
 
         init(cms);
-    }
-
-    /**
-     * Returns all subfolders of a channel, or an empty array if 
-     * the folder does not exist or has no subfolders.<p>
-     * 
-     * @param cms context provider for the current request
-     * @param channel the channel to look for subfolders in
-     * @return an unsorted list of CmsResources
-     */
-    public static List getChannelSubFolders(CmsObject cms, String channel) {
-
-        if (!channel.startsWith("/")) {
-            channel = "/" + channel;
-        }
-        if (!channel.endsWith("/")) {
-            channel += "/";
-        }
-
-        // Now read all subchannels of this channel    
-        List subChannels = new ArrayList();
-        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-        try {
-            cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-            subChannels = cms.getSubFolders(channel);
-        } catch (CmsException e) {
-            if (LOG.isErrorEnabled()) {
-                // will be localized if the CmsException was constructoed localized.
-                LOG.error(e.getLocalizedMessage());
-            }
-        } finally {
-            cms.getRequestContext().setSiteRoot(storedSiteRoot);
-        }
-
-        // Create an ArrayList out of the Vector        
-        java.util.ArrayList list = new java.util.ArrayList(subChannels.size());
-        list.addAll(subChannels);
-        return list;
-    }
-
-    /**
-     * Returns all subfolders of a sub channel that has 
-     * the given parent channel, or an empty array if 
-     * that combination does not exist or has no subfolders.<p>
-     * 
-     * @param cms context provider for the current request
-     * @param parentChannel the parent channel
-     * @param subChannel the sub channel
-     * @return an unsorted list of CmsResources
-     */
-    public static List getChannelSubFolders(CmsObject cms, String parentChannel, String subChannel) {
-
-        String channel = null;
-        if (subChannel == null) {
-            subChannel = "";
-        } else if (subChannel.startsWith("/")) {
-            subChannel = subChannel.substring(1);
-        }
-        if (parentChannel == null) {
-            parentChannel = "";
-        }
-        if (parentChannel.endsWith("/")) {
-            channel = parentChannel + subChannel;
-        } else {
-            channel = parentChannel + "/" + subChannel;
-        }
-        return getChannelSubFolders(cms, channel);
-    }
-
-    /**
-     * Returns all subfolders of a channel, 
-     * sorted by "Title" property ascending, or an empty array if 
-     * the folder does not exist or has no subfolders.
-     * 
-     * @param cms context provider for the current request
-     * @param channel the parent channel
-     * @param subChannel the sub channel
-     * @return a sorted list of CmsResources
-     */
-    public static List getChannelSubFoldersSortTitleAsc(CmsObject cms, String channel, String subChannel) {
-
-        List subChannels = getChannelSubFolders(cms, channel, subChannel);
-        // Create an ArrayList out of the Vector        
-        ArrayList tmpList = new java.util.ArrayList(subChannels.size());
-        for (int i = 0; i < subChannels.size(); i++) {
-            CmsResource res = (CmsResource)subChannels.get(i);
-            ResourceTitleContainer container = new ResourceTitleContainer(cms, res);
-            tmpList.add(container);
-        }
-        Collections.sort(tmpList);
-        java.util.ArrayList list = new java.util.ArrayList(subChannels.size());
-        for (int i = 0; i < tmpList.size(); i++) {
-            ResourceTitleContainer container = (ResourceTitleContainer)tmpList.get(i);
-            list.add(container.m_res);
-        }
-        return list;
     }
 
     /**
@@ -464,46 +315,6 @@ public class CmsJspNavBuilder {
             }
         }
         return list;
-    }
-
-    /**
-     * Returns all subfolders of a channel, or an empty array if 
-     * the folder does not exist or has no subfolders.<p>
-     * 
-     * @param channel the channel to look for subfolders in
-     * @return an unsorted list of CmsResources
-     */
-    public List getChannelSubFolders(String channel) {
-
-        return getChannelSubFolders(m_cms, channel);
-    }
-
-    /**
-     * Returns all subfolders of a sub channel that has 
-     * the given parent channel, or an empty array if 
-     * that combination does not exist or has no subfolders.<p>
-     * 
-     * @param parentChannel the parent channel
-     * @param subChannel the sub channel
-     * @return an unsorted list of CmsResources
-     */
-    public List getChannelSubFolders(String parentChannel, String subChannel) {
-
-        return getChannelSubFolders(m_cms, parentChannel, subChannel);
-    }
-
-    /**
-     * Returns all subfolders of a channel, 
-     * sorted by "Title" property ascending, or an empty array if 
-     * the folder does not exist or has no subfolders.
-     * 
-     * @param channel the parent channel
-     * @param subChannel the sub channel
-     * @return a sorted list of CmsResources
-     */
-    public List getChannelSubFoldersSortTitleAsc(String channel, String subChannel) {
-
-        return getChannelSubFoldersSortTitleAsc(m_cms, channel, subChannel);
     }
 
     /**

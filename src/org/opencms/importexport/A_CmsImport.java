@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.84.4.2 $
+ * Date   : $Date: 2006/12/14 12:23:30 $
+ * Version: $Revision: 1.84.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.2 $ 
+ * @version $Revision: 1.84.4.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -123,9 +123,6 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** Groups to create during import are stored here. */
     protected Stack m_groupsToCreate;
-
-    /** Indicates if module data is being imported. */
-    protected boolean m_importingChannelData;
 
     /** The import-path to write resources into the cms. */
     protected String m_importPath;

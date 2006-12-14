@@ -7,7 +7,6 @@ setSiteRoot "/"
 # Create folder structure
 createFolder "/" "system/"
 createFolder "/" "sites/"
-createFolder "/" "channels/"
 createFolder "/sites/" "default/"
 
 # Apply folder permissions

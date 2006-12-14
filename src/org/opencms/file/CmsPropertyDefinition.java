@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2006/11/28 16:20:46 $
- * Version: $Revision: 1.15.4.1 $
+ * Date   : $Date: 2006/12/14 12:23:30 $
+ * Version: $Revision: 1.15.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.4.1 $
+ * @version $Revision: 1.15.4.2 $
  * 
  * @since 6.0.0 
  */
@@ -60,9 +60,6 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** The name of the VFS property that controls the caching. */
     public static final String PROPERTY_CACHE = "cache";
-
-    /** Property for the channel id. */
-    public static final String PROPERTY_CHANNELID = "ChannelId";
 
     /** Property for the content conversion. */
     public static final String PROPERTY_CONTENT_CONVERSION = "content-conversion";

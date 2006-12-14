@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.84.4.3 $
+ * Date   : $Date: 2006/12/14 12:23:30 $
+ * Version: $Revision: 1.84.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.3 $ 
+ * @version $Revision: 1.84.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -842,7 +842,7 @@ public class CmsExport {
         i = m_exportedPageFiles.iterator();
         while (i.hasNext()) {
             String filename = (String)i.next();
-            // check if the site path is within the filename. If so,this export is
+            // check if the site path is within the filename. If so, this export is
             // started from the root site and the path to the bodies must be modifed
             // this is not nice, but it works.
             if (filename.startsWith(CmsResource.VFS_FOLDER_SITES)) {

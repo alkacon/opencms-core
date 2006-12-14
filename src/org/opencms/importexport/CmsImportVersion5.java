@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion5.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/12/14 12:23:30 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.3.0 
  * 
@@ -124,7 +124,6 @@ public class CmsImportVersion5 extends A_CmsImport {
         m_importResource = importResource;
         m_importZip = importZip;
         m_docXml = docXml;
-        m_importingChannelData = false;
         m_linkStorage = new HashMap();
         m_linkPropertyStorage = new HashMap();
         m_parseables = new ArrayList();
@@ -367,12 +366,6 @@ public class CmsImportVersion5 extends A_CmsImport {
         List fileNodes = null, acentryNodes = null;
         Element currentElement = null, currentEntry = null;
         List properties = null;
-        String storedSiteRoot = null;
-
-        if (m_importingChannelData) {
-            storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
-            m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-        }
 
         // get list of immutable resources
         List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
@@ -627,9 +620,7 @@ public class CmsImportVersion5 extends A_CmsImport {
                 }
             }
         } catch (Exception e) {
-
             m_report.println(e);
-
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
             if (LOG.isDebugEnabled()) {
@@ -637,10 +628,6 @@ public class CmsImportVersion5 extends A_CmsImport {
             }
 
             throw new CmsImportExportException(message, e);
-        } finally {
-            if (storedSiteRoot != null) {
-                m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
-            }
         }
     }
 

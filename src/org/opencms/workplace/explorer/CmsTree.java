@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.23.4.4 $
+ * Date   : $Date: 2006/12/14 12:23:30 $
+ * Version: $Revision: 1.23.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23.4.4 $ 
+ * @version $Revision: 1.23.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -343,11 +343,7 @@ public class CmsTree extends CmsWorkplace {
                 // iterate over all given target folders
                 String currentTargetFolder = (String)targets.next();
 
-                if ("channelselector".equals(getTreeType())) {
-                    // change the site root for channel tree window
-                    storedSiteRoot = getCms().getRequestContext().getSiteRoot();
-                    getCms().getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-                } else if (getSettings().getTreeSite(getTreeType()) != null) {
+                if (getSettings().getTreeSite(getTreeType()) != null) {
                     // change the site root for popup window with site selector
                     storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                     if (newTree() && (currentTargetFolder == null)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.43.4.3 $
+ * Date   : $Date: 2006/12/14 12:23:30 $
+ * Version: $Revision: 1.43.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.43.4.3 $ 
+ * @version $Revision: 1.43.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,9 +92,6 @@ public class CmsImport {
 
     /** Stores all import interface implementations .*/
     protected List m_importImplementations;
-
-    /** Indicates if module data is being imported. */
-    protected boolean m_importingChannelData;
 
     /** The import-path to write resources into the cms. */
     protected String m_importPath;
@@ -150,7 +147,6 @@ public class CmsImport {
         m_importFile = importFile;
         m_importPath = importPath;
         m_report = report;
-        m_importingChannelData = false;
         m_importImplementations = OpenCms.getImportExportManager().getImportVersionClasses();
     }
 
@@ -245,51 +241,35 @@ public class CmsImport {
      */
     public List getResourcesForProject() throws CmsImportExportException {
 
-        List fileNodes;
-        Element currentElement;
-        String destination;
         List resources = new ArrayList();
-        String storedSiteRoot = null;
 
-        try {
-            if (m_importingChannelData) {
-                storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
-                m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-            }
+        // get all file-nodes
+        List fileNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_FILE);
 
-            // get all file-nodes
-            fileNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_FILE);
+        // walk through all files in manifest
+        for (int i = 0; i < fileNodes.size(); i++) {
+            Element currentElement = (Element)fileNodes.get(i);
+            String destination = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESTINATION);
 
-            // walk through all files in manifest
-            for (int i = 0; i < fileNodes.size(); i++) {
-                currentElement = (Element)fileNodes.get(i);
-                destination = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESTINATION);
-
-                // get the resources for a project
-                try {
-                    String resource = destination.substring(0, destination.indexOf("/", 1) + 1);
-                    resource = m_importPath + resource;
-                    // add the resource, if it dosen't already exist
-                    if ((!resources.contains(resource)) && (!resource.equals(m_importPath))) {
-                        try {
-                            m_cms.readFolder(resource, CmsResourceFilter.IGNORE_EXPIRATION);
-                            // this resource exists in the current project -> add it
-                            resources.add(resource);
-                        } catch (CmsException exc) {
-                            // this resource is missing - we need the root-folder
-                            resources.add("/");
-                        }
+            // get the resources for a project
+            try {
+                String resource = destination.substring(0, destination.indexOf("/", 1) + 1);
+                resource = m_importPath + resource;
+                // add the resource, if it dosen't already exist
+                if ((!resources.contains(resource)) && (!resource.equals(m_importPath))) {
+                    try {
+                        m_cms.readFolder(resource, CmsResourceFilter.IGNORE_EXPIRATION);
+                        // this resource exists in the current project -> add it
+                        resources.add(resource);
+                    } catch (CmsException exc) {
+                        // this resource is missing - we need the root-folder
+                        resources.add("/");
                     }
-                } catch (StringIndexOutOfBoundsException exc) {
-                    // this is a resource in root-folder: ignore the excpetion
                 }
-            }
-        } finally {
-            if (storedSiteRoot != null) {
-                m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
+            } catch (StringIndexOutOfBoundsException exc) {
+                // this is a resource in root-folder: ignore the excpetion
             }
         }
-
         closeImportFile();
 
         if (resources.contains("/")) {

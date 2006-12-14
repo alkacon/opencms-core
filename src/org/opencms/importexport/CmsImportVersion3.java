@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.75.4.2 $
+ * Date   : $Date: 2006/12/14 12:23:30 $
+ * Version: $Revision: 1.75.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.75.4.2 $ 
+ * @version $Revision: 1.75.4.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -124,7 +124,6 @@ public class CmsImportVersion3 extends A_CmsImport {
         m_importResource = importResource;
         m_importZip = importZip;
         m_docXml = docXml;
-        m_importingChannelData = false;
         m_linkStorage = new HashMap();
         m_linkPropertyStorage = new HashMap();
         try {
@@ -208,12 +207,7 @@ public class CmsImportVersion3 extends A_CmsImport {
         List fileNodes, acentryNodes;
         Element currentElement, currentEntry;
         List properties = null;
-        String storedSiteRoot = null;
 
-        if (m_importingChannelData) {
-            storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
-            m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-        }
         // get list of unwanted properties
         List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
         if (deleteProperties == null) {
@@ -317,7 +311,6 @@ public class CmsImportVersion3 extends A_CmsImport {
 
                     List aceList = new ArrayList();
                     if (res != null) {
-
                         // write all imported access control entries for this file
                         acentryNodes = currentElement.selectNodes("*/" + CmsImportExportManager.N_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
@@ -379,20 +372,13 @@ public class CmsImportVersion3 extends A_CmsImport {
             }
 
         } catch (Exception e) {
-
             m_report.println(e);
-
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-
             throw new CmsImportExportException(message, e);
-        } finally {
-            if (storedSiteRoot != null) {
-                m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
-            }
         }
 
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2006/12/12 10:14:57 $
- * Version: $Revision: 1.45.4.8 $
+ * Date   : $Date: 2006/12/14 12:23:30 $
+ * Version: $Revision: 1.45.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.8 $
+ * @version $Revision: 1.45.4.9 $
  * 
  * @since 6.0.0 
  */
@@ -415,9 +415,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** Indicates that the undo method will undo move operations and recursive content changes. */
     public static final CmsResourceUndoMode UNDO_MOVE_CONTENT_RECURSIVE = CmsResourceUndoMode.MODE_UNDO_MOVE_CONTENT_RECURSIVE;
-
-    /** The vfs path of the channel folder. */
-    public static final String VFS_FOLDER_CHANNELS = "/channels";
 
     /** The vfs path of the sites master folder. */
     public static final String VFS_FOLDER_SITES = "/sites";

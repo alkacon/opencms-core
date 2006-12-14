@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/11/08 09:28:51 $
- * Version: $Revision: 1.22.4.7 $
+ * Date   : $Date: 2006/12/14 12:23:30 $
+ * Version: $Revision: 1.22.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.7 $ 
+ * @version $Revision: 1.22.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -449,7 +449,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append(":");
         applet.append(port);
         applet.append(path);
-        applet.append("/system/workplace/action/explorer_files_new_upload.html\">\n");
+        applet.append("/system/workplace/views/explorer/explorer_files.jsp\">\n");
         applet.append("<param name=\"sessionId\" value=\"");
         applet.append(sessionId);
         applet.append("\">\n");

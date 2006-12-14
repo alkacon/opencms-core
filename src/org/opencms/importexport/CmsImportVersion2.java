@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.113.4.3 $
+ * Date   : $Date: 2006/12/14 12:23:30 $
+ * Version: $Revision: 1.113.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.113.4.3 $ 
+ * @version $Revision: 1.113.4.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -176,7 +176,6 @@ public class CmsImportVersion2 extends A_CmsImport {
         m_importResource = importResource;
         m_importZip = importZip;
         m_docXml = docXml;
-        m_importingChannelData = false;
 
         m_folderStorage = new ArrayList();
         m_pageStorage = new ArrayList();
@@ -436,12 +435,6 @@ public class CmsImportVersion2 extends A_CmsImport {
         int resourceTypeId = CmsDbUtil.UNKNOWN_ID;
         List properties = null;
         boolean old_overwriteCollidingResources = false;
-        String storedSiteRoot = null;
-        
-        if (m_importingChannelData) {
-            storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
-            m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-        }
         try {
             m_webAppNames = getCompatibilityWebAppNames();
         } catch (Exception e) {
@@ -663,10 +656,6 @@ public class CmsImportVersion2 extends A_CmsImport {
 
             throw new CmsImportExportException(message, e);
         } finally {
-            if (storedSiteRoot != null) {
-                m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
-            }
-
             // set the flag to overwrite colliding resources back to its original value
             OpenCms.getImportExportManager().setOverwriteCollidingResources(old_overwriteCollidingResources);
         }
@@ -701,31 +690,6 @@ public class CmsImportVersion2 extends A_CmsImport {
         String targetName = null;
 
         try {
-
-            if (m_importingChannelData) {
-                // try to read an existing channel to get the channel id
-                String channelId = null;
-                try {
-                    if ((resourceTypeName.equalsIgnoreCase(CmsResourceTypeFolder.RESOURCE_TYPE_NAME))
-                        && (!destination.endsWith("/"))) {
-                        destination += "/";
-                    }
-                    CmsResource channel = m_cms.readResource("/" + destination);
-
-                    channelId = m_cms.readPropertyObject(
-                        m_cms.getSitePath(channel),
-                        CmsPropertyDefinition.PROPERTY_CHANNELID,
-                        false).getValue();
-
-                } catch (Exception e) {
-                    // ignore the exception, a new channel id will be generated
-                }
-
-                if (channelId != null) {
-                    properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CHANNELID, channelId, null));
-                }
-            }
-
             // get the file content
             if (source != null) {
                 content = getFileBytes(source);
@@ -814,14 +778,13 @@ public class CmsImportVersion2 extends A_CmsImport {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), exc);
             }
-
             // an error while importing the file
             m_report.println(exc);
             try {
                 // Sleep some time after an error so that the report output has a chance to keep up
                 Thread.sleep(1000);
             } catch (Exception e) {
-                // 
+                // ignore
             }
         }
         return res;

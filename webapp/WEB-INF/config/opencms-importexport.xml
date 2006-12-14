@@ -18,7 +18,6 @@
 			</importversions>
 			<immutables>
 				<resource uri="/system/"/>
-				<resource uri="/system/bodies/"/>
 				<resource uri="/system/galleries/"/>
 				<resource uri="/system/galleries/download/"/>
 				<resource uri="/system/galleries/externallinks/"/>
@@ -37,7 +36,6 @@
 				<resource uri="/system/workplace/scripts/"/>
 				<resource uri="/system/workplace/templates/"/>
 				<resource uri="/system/workplace/views/"/>
-				<resource uri="/channels/"/>
 				<resource uri="/sites/"/>
 			</immutables>
 			<principaltranslations/>
