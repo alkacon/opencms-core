@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsFieldsList.java,v $
- * Date   : $Date: 2006/12/12 16:05:24 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/14 11:16:36 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -72,14 +73,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.5
  */
 public class CmsFieldsList extends A_CmsEmbeddedListDialog {
 
     /** Standard list button location. */
-    public static final String ICON_FALSE = "list/multi_minus.png";
+    public static final String ICON_FALSE = "list/multi_deactivate.png";
 
     /** Standard list button location. */
     public static final String ICON_TRUE = "list/multi_activate.png";
@@ -111,12 +112,6 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
     /** list action id constant. */
     public static final String LIST_ACTION_STORE_TRUE = "ast";
 
-    /** list action id constant. */
-    public static final String LIST_ACTION_TOKEN_FALSE = "atf";
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_TOKEN_TRUE = "att";
-
     /** list column id constant. */
     public static final String LIST_COLUMN_BOOST = "cb";
 
@@ -142,9 +137,6 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
     public static final String LIST_COLUMN_INDEX = "cx";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_INDEX_HIDE = "cxh";
-
-    /** list column id constant. */
     public static final String LIST_COLUMN_MAPPING = "cm";
 
     /** list column id constant. */
@@ -156,12 +148,6 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
     /** list column id constant. */
     public static final String LIST_COLUMN_STORE_HIDE = "csh";
 
-    /** list column id constant. */
-    public static final String LIST_COLUMN_TOKEN = "ct";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_TOKEN_HIDE = "cth";
-
     /** list item detail id constant. */
     public static final String LIST_DETAIL_FIELD = "df";
 
@@ -170,9 +156,6 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
 
     /** list action id constant. */
     public static final String LIST_MACTION_DELETEFIELD = "mad";
-
-    /** The list icon for a folder resource. **/
-    protected static final String ICON_MAPPING = "tools/searchindex/icons/small/fieldconfiguration-newmapping.png";
 
     /** The path to the fieldconfiguration list icon. */
     protected static final String LIST_ICON_FIELD_EDIT = "tools/searchindex/icons/small/fieldconfiguration-editfield.png";
@@ -329,12 +312,6 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
                 fieldObject.setStored(true);
                 writeConfiguration(true);
             }
-        } else if (action.equals(LIST_ACTION_TOKEN_FALSE)) {
-            // execute the excerpt false action
-            if (fieldObject != null) {
-                fieldObject.setTokenized(true);
-                writeConfiguration(true);
-            }
         } else if (action.equals(LIST_ACTION_EXCERPT_TRUE)) {
             // execute the excerpt false action
             if (fieldObject != null) {
@@ -351,12 +328,6 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
             // execute the excerpt false action
             if (fieldObject != null) {
                 fieldObject.setStored(false);
-                writeConfiguration(true);
-            }
-        } else if (action.equals(LIST_ACTION_TOKEN_TRUE)) {
-            // execute the excerpt false action
-            if (fieldObject != null) {
-                fieldObject.setTokenized(false);
                 writeConfiguration(true);
             }
         }
@@ -423,9 +394,8 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
             item.set(LIST_COLUMN_NAME, field.getName());
             item.set(LIST_COLUMN_DISPLAY, field.getDisplayName());
             item.set(LIST_COLUMN_BOOST, new Float(field.getBoost()).toString());
-            item.set(LIST_COLUMN_INDEX_HIDE, new Boolean(field.isIndexed()));
+            item.set(LIST_COLUMN_INDEX, field.getIndexed());
             item.set(LIST_COLUMN_EXCERPT_HIDE, new Boolean(field.isInExcerpt()));
-            item.set(LIST_COLUMN_TOKEN_HIDE, new Boolean(field.isTokenized()));
             item.set(LIST_COLUMN_STORE_HIDE, new Boolean(field.isStored()));
             item.set(LIST_COLUMN_DEFAULT, defaultValue);
 
@@ -443,7 +413,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         CmsListColumnDefinition editCol = new CmsListColumnDefinition(LIST_COLUMN_EDIT);
         editCol.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_EDIT_NAME_0));
         editCol.setHelpText(Messages.get().container(Messages.GUI_LIST_FIELD_COL_EDIT_NAME_HELP_0));
-        editCol.setWidth("5");
+        editCol.setWidth("20");
         editCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         editCol.setSorteable(false);
         // add dummy icon
@@ -466,7 +436,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         CmsListDirectAction mappingAction = new CmsListDirectAction(LIST_ACTION_MAPPING);
         mappingAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_MAPPING_0));
         mappingAction.setHelpText(Messages.get().container(Messages.GUI_LIST_FIELD_COL_MAPPING_HELP_0));
-        mappingAction.setIconPath(CmsFieldsList.ICON_MAPPING);
+        mappingAction.setIconPath(ICON_ADD);
         mappingCol.addDirectAction(mappingAction);
         // add it to the list definition
         metadata.addColumn(mappingCol);
@@ -476,7 +446,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         nameCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_NAME_0));
         nameCol.setSorteable(true);
-        nameCol.setWidth("50%");
+        nameCol.setWidth("45%");
         // add overview action
         CmsListDefaultAction overviewAction = new CmsListDefaultAction(LIST_ACTION_OVERVIEW_FIELD);
         overviewAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_OVERVIEW_NAME_0));
@@ -488,7 +458,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         CmsListColumnDefinition displayCol = new CmsListColumnDefinition(LIST_COLUMN_DISPLAY);
         displayCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         displayCol.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_DISPLAY_0));
-        displayCol.setWidth("50%");
+        displayCol.setWidth("35%");
         metadata.addColumn(displayCol);
 
         // add hide column for store
@@ -500,16 +470,6 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         CmsListColumnDefinition excerptHideCol = new CmsListColumnDefinition(LIST_COLUMN_EXCERPT_HIDE);
         excerptHideCol.setVisible(false);
         metadata.addColumn(excerptHideCol);
-
-        // add hide column for index
-        CmsListColumnDefinition indexHideCol = new CmsListColumnDefinition(LIST_COLUMN_INDEX_HIDE);
-        indexHideCol.setVisible(false);
-        metadata.addColumn(indexHideCol);
-
-        // add hide column for token
-        CmsListColumnDefinition tokenHideCol = new CmsListColumnDefinition(LIST_COLUMN_TOKEN_HIDE);
-        tokenHideCol.setVisible(false);
-        metadata.addColumn(tokenHideCol);
 
         // add column for store
         CmsListColumnDefinition storeCol = new CmsListColumnDefinition(LIST_COLUMN_STORE);
@@ -556,96 +516,6 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         storeCol.addDirectAction(storeFalseAction);
         metadata.addColumn(storeCol);
 
-        // add column for index
-        CmsListColumnDefinition indexCol = new CmsListColumnDefinition(LIST_COLUMN_INDEX);
-        indexCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        indexCol.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_INDEX_0));
-        // true action
-        CmsListDirectAction indexTrueAction = new CmsListDirectAction(LIST_ACTION_INDEX_TRUE) {
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
-             */
-            public boolean isVisible() {
-
-                if (getItem() != null) {
-                    return ((Boolean)getItem().get(LIST_COLUMN_INDEX_HIDE)).booleanValue();
-                }
-                return super.isVisible();
-            }
-        };
-        indexTrueAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_TRUE_NAME_0));
-        indexTrueAction.setHelpText(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_TRUE_HELP_0));
-        indexTrueAction.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_TRUE_CONF_0));
-        indexTrueAction.setIconPath(ICON_TRUE);
-        // false action
-        CmsListDirectAction indexFalseAction = new CmsListDirectAction(LIST_ACTION_INDEX_FALSE) {
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
-             */
-            public boolean isVisible() {
-
-                if (getItem() != null) {
-                    return !((Boolean)getItem().get(LIST_COLUMN_INDEX_HIDE)).booleanValue();
-                }
-                return super.isVisible();
-            }
-        };
-        indexFalseAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_FALSE_NAME_0));
-        indexFalseAction.setHelpText(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_FALSE_HELP_0));
-        indexFalseAction.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_FALSE_CONF_0));
-        indexFalseAction.setIconPath(ICON_FALSE);
-
-        indexCol.addDirectAction(indexTrueAction);
-        indexCol.addDirectAction(indexFalseAction);
-        metadata.addColumn(indexCol);
-
-        // add column for tokenized
-        CmsListColumnDefinition tokenCol = new CmsListColumnDefinition(LIST_COLUMN_TOKEN);
-        tokenCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        tokenCol.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_TOKEN_0));
-        // true action
-        CmsListDirectAction tokenTrueAction = new CmsListDirectAction(LIST_ACTION_TOKEN_TRUE) {
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
-             */
-            public boolean isVisible() {
-
-                if (getItem() != null) {
-                    return ((Boolean)getItem().get(LIST_COLUMN_TOKEN_HIDE)).booleanValue();
-                }
-                return super.isVisible();
-            }
-        };
-        tokenTrueAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_TRUE_NAME_0));
-        tokenTrueAction.setHelpText(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_TRUE_HELP_0));
-        tokenTrueAction.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_TRUE_CONF_0));
-        tokenTrueAction.setIconPath(ICON_TRUE);
-        // false action
-        CmsListDirectAction tokenFalseAction = new CmsListDirectAction(LIST_ACTION_TOKEN_FALSE) {
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
-             */
-            public boolean isVisible() {
-
-                if (getItem() != null) {
-                    return !((Boolean)getItem().get(LIST_COLUMN_TOKEN_HIDE)).booleanValue();
-                }
-                return super.isVisible();
-            }
-        };
-        tokenFalseAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_FALSE_NAME_0));
-        tokenFalseAction.setHelpText(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_FALSE_HELP_0));
-        tokenFalseAction.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_FALSE_CONF_0));
-        tokenFalseAction.setIconPath(ICON_FALSE);
-
-        tokenCol.addDirectAction(tokenTrueAction);
-        tokenCol.addDirectAction(tokenFalseAction);
-        metadata.addColumn(tokenCol);
-
         // add colum for excerpt
         CmsListColumnDefinition excerptCol = new CmsListColumnDefinition(LIST_COLUMN_EXCERPT);
         excerptCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
@@ -691,16 +561,25 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         excerptCol.addDirectAction(excerptFalseAction);
         metadata.addColumn(excerptCol);
 
+        // add column for index
+        CmsListColumnDefinition indexCol = new CmsListColumnDefinition(LIST_COLUMN_INDEX);
+        indexCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        indexCol.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_INDEX_0));
+        indexCol.setWidth("10%");
+        metadata.addColumn(indexCol);
+
         // add column for boost
         CmsListColumnDefinition boostCol = new CmsListColumnDefinition(LIST_COLUMN_BOOST);
         boostCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         boostCol.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_BOOST_0));
+        boostCol.setWidth("5%");
         metadata.addColumn(boostCol);
 
         // add column for default
         CmsListColumnDefinition defaultCol = new CmsListColumnDefinition(LIST_COLUMN_DEFAULT);
         defaultCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         defaultCol.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_DEFAULT_0));
+        defaultCol.setWidth("5%");
         metadata.addColumn(defaultCol);
     }
 
@@ -736,7 +615,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         deleteMultiAction.setHelpText(Messages.get().container(Messages.GUI_LIST_FIELD_MACTION_DELETEFIELD_NAME_HELP_0));
         deleteMultiAction.setConfirmationMessage(Messages.get().container(
             Messages.GUI_LIST_FIELD_MACTION_DELETEFIELD_CONF_0));
-        deleteMultiAction.setIconPath(ICON_MULTI_MINUS);
+        deleteMultiAction.setIconPath(ICON_MULTI_DELETE);
         metadata.addMultiAction(deleteMultiAction);
     }
 
@@ -804,8 +683,10 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
             while (itMappings.hasNext()) {
                 CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)itMappings.next();
                 html.append("  <li>\n").append("    ");
-                html.append("type : ").append(mapping.getType().toString()).append(", ");
-                html.append("value : ").append(mapping.getParam()).append("\n");
+                html.append(mapping.getType().toString());
+                if (CmsStringUtil.isNotEmpty(mapping.getParam())) {
+                    html.append("=").append(mapping.getParam()).append("\n");
+                }
                 html.append("  </li>");
             }
             html.append("</ul>\n");
