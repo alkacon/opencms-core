@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsFieldDialog.java,v $
- * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/14 11:13:15 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5
  */
@@ -138,12 +138,12 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
         List errors = new ArrayList();
 
         try {
-            
+
             // if new create it first
             boolean found = false;
-            Iterator itFieldNames = m_fieldconfiguration.getFieldNames().iterator();
-            while (itFieldNames.hasNext()) {
-                if (((String)itFieldNames.next()).equals(m_field.getName())) {
+            Iterator itFields = m_fieldconfiguration.getFields().iterator();
+            while (itFields.hasNext()) {
+                if (((CmsSearchField)itFields.next()).getName().equals(m_field.getName())) {
                     found = true;
                 }
             }
@@ -252,6 +252,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
                     CmsSearchField curField = (CmsSearchField)itFields.next();
                     if (curField.getName().equals(getParamField())) {
                         m_field = curField;
+                        break;
                     }
                 }
                 if (m_field == null) {
