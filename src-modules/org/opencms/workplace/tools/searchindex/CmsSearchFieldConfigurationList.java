@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchFieldConfigurationList.java,v $
- * Date   : $Date: 2006/12/14 11:17:52 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/14 15:44:51 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.5
  */
@@ -328,15 +328,15 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
 
         // create column for deletion
         CmsListColumnDefinition deleteCol = new CmsListColumnDefinition(LIST_COLUMN_DELETE);
-        deleteCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_DELETE_NAME_0));
-        deleteCol.setHelpText(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_DELETE_HELP_0));
+        deleteCol.setName(Messages.get().container(Messages.GUI_LIST_FIELDCONFIGURATION_COL_DELETE_NAME_0));
+        deleteCol.setHelpText(Messages.get().container(Messages.GUI_GROUPS_FIELDCONFIGURATION_TOOL_DELETE_HELP_0));
         deleteCol.setWidth("10");
         deleteCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         deleteCol.setSorteable(false);
         // add delete action
         CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE);
-        deleteAction.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_ACTION_DELETE_NAME_0));
-        deleteAction.setHelpText(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_ACTION_DELETE_HELP_0));
+        deleteAction.setName(Messages.get().container(Messages.GUI_LIST_FIELDCONFIGURATION_ACTION_DELETE_NAME_0));
+        deleteAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_FIELDCONFIGURATION_TOOL_DELETE_HELP_0));
         deleteAction.setIconPath(ICON_DELETE);
         deleteCol.addDirectAction(deleteAction);
         // add it to the list definition
@@ -462,9 +462,7 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
             if (fieldDefault != null) {
                 html.append(", ").append("default=").append(field.getDefaultValue());
             }
-            html.append("\n").append("  </li>");
-            html.append("  <li>\n").append("    ").append("mappings : ").append("\n");
-            html.append("    <ul>\n");
+            html.append("\n").append("    <ul>\n");
 
             Iterator itMappings = field.getMappings().iterator();
             while (itMappings.hasNext()) {
