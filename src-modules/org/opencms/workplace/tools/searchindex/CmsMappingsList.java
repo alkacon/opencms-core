@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsMappingsList.java,v $
- * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/14 11:17:09 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,15 +42,22 @@ import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.tools.CmsToolDialog;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
 
 import org.apache.commons.logging.Log;
 
@@ -63,14 +70,20 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
 public class CmsMappingsList extends A_CmsEmbeddedListDialog {
 
     /** list column id constant. */
-    public static final String LIST_ACTION_NONE = "an";
+    public static final String LIST_ACTION_EDIT = "ae";
+
+    /** list column id constant. */
+    public static final String LIST_ACTION_EDITTYPE = "aet";
+
+    /** list column id constant. */
+    public static final String LIST_ACTION_EDITVALUE = "aev";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_DEFAULT = "cd";
@@ -197,9 +210,30 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void executeListSingleActions() {
+    public void executeListSingleActions() throws ServletException, IOException {
 
-        // noop
+        CmsListItem item = getSelectedItem();
+        Map params = new HashMap();
+        String action = getParamListAction();
+
+        params.put(A_CmsMappingDialog.PARAM_FIELD, m_paramField);
+        params.put(A_CmsMappingDialog.PARAM_FIELDCONFIGURATION, m_paramFieldconfiguration);
+        params.put(A_CmsMappingDialog.PARAM_TYPE, item.get(LIST_COLUMN_TYPE));
+        params.put(A_CmsMappingDialog.PARAM_PARAM, item.get(LIST_COLUMN_VALUE));
+
+        params.put(PARAM_ACTION, DIALOG_INITIAL);
+        params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+
+        if (action.equals(LIST_ACTION_EDIT)
+            || action.equals(LIST_ACTION_EDITTYPE)
+            || action.equals(LIST_ACTION_EDITVALUE)) {
+            // forward to the edit mapping screen   
+            getToolManager().jspForwardTool(
+                this,
+                "/searchindex/fieldconfigurations/fieldconfiguration/field/editmapping",
+                params);
+        }
+        listSave();
     }
 
     /**
@@ -293,15 +327,16 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
         // create dummy column for corporate design reasons
         CmsListColumnDefinition dummyCol = new CmsListColumnDefinition(LIST_COLUMN_ICON);
         dummyCol.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_MAPPING_0));
+        dummyCol.setHelpText(Messages.get().container(Messages.GUI_LIST_MAPPING_COL_EDIT_NAME_HELP_0));
         dummyCol.setWidth("20");
         dummyCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         dummyCol.setSorteable(false);
         // add dummy icon
-        CmsListDirectAction dummyAction = new CmsListDirectAction(LIST_ACTION_NONE);
-        dummyAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_MAPPING_0));
-        dummyAction.setIconPath(LIST_ICON_MAPPING);
-        dummyAction.setEnabled(false);
-        dummyCol.addDirectAction(dummyAction);
+        CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);
+        editAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_MAPPING_0));
+        editAction.setHelpText(Messages.get().container(Messages.GUI_LIST_MAPPING_COL_EDIT_NAME_HELP_0));
+        editAction.setIconPath(LIST_ICON_MAPPING);
+        dummyCol.addDirectAction(editAction);
         // add it to the list definition
         metadata.addColumn(dummyCol);
 
@@ -311,6 +346,10 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
         valueCol.setName(Messages.get().container(Messages.GUI_LIST_MAPPING_COL_VALUE_0));
         valueCol.setWidth("33%");
         valueCol.setSorteable(true);
+        CmsListDefaultAction editValueAction = new CmsListDefaultAction(LIST_ACTION_EDITVALUE);
+        editValueAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_MAPPING_0));
+        editValueAction.setHelpText(Messages.get().container(Messages.GUI_LIST_MAPPING_COL_EDIT_NAME_HELP_0));
+        valueCol.addDefaultAction(editValueAction);
         metadata.addColumn(valueCol);
 
         // add column for type
@@ -318,6 +357,10 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
         typeCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         typeCol.setName(Messages.get().container(Messages.GUI_LIST_MAPPING_COL_TYPE_0));
         typeCol.setWidth("33%");
+        CmsListDefaultAction editTypeAction = new CmsListDefaultAction(LIST_ACTION_EDITTYPE);
+        editTypeAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_COL_MAPPING_0));
+        editTypeAction.setHelpText(Messages.get().container(Messages.GUI_LIST_MAPPING_COL_EDIT_NAME_HELP_0));
+        typeCol.addDefaultAction(editTypeAction);
         metadata.addColumn(typeCol);
 
         // add column for default
@@ -348,7 +391,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
             Messages.GUI_LIST_FIELD_MACTION_DELETEMAPPING_NAME_HELP_0));
         deleteMultiAction.setConfirmationMessage(Messages.get().container(
             Messages.GUI_LIST_FIELD_MACTION_DELETEMAPPING_CONF_0));
-        deleteMultiAction.setIconPath(ICON_MULTI_MINUS);
+        deleteMultiAction.setIconPath(ICON_MULTI_DELETE);
         metadata.addMultiAction(deleteMultiAction);
     }
 
