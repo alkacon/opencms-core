@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexList.java,v $
- * Date   : $Date: 2006/12/14 11:19:02 $
- * Version: $Revision: 1.2.4.5 $
+ * Date   : $Date: 2006/12/14 15:44:01 $
+ * Version: $Revision: 1.2.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.5 $
+ * @version $Revision: 1.2.4.6 $
  * 
  * @since 6.0.0
  */
@@ -467,7 +467,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         CmsListColumnDefinition rebuildModeCol = new CmsListColumnDefinition(LIST_COLUMN_REBUILDMODE);
         rebuildModeCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         rebuildModeCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_REBUILDMODE_0));
-        rebuildModeCol.setWidth("10%");
+        rebuildModeCol.setWidth("5%");
         metadata.addColumn(rebuildModeCol);
 
         // add column for project
@@ -613,9 +613,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             if (fieldDefault != null) {
                 html.append(", ").append("default=").append(field.getDefaultValue());
             }
-            html.append("\n").append("  </li>");
-            html.append("  <li>\n").append("    ").append("mappings : ").append("\n");
-            html.append("    <ul>\n");
+            html.append("\n").append("    <ul>\n");
 
             Iterator itMappings = field.getMappings().iterator();
             while (itMappings.hasNext()) {
