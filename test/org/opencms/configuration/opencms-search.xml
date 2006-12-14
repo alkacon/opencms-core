@@ -248,6 +248,7 @@
 			</fieldconfiguration>			
 			<fieldconfiguration>
 				<name>standard</name>
+				<description>The standard OpenCms 7.0 search index field configuration.</description>
 				<fields>
 					<field name="content" display="%(key.field.content)" store="true" index="true">
 						<mapping type="content" />
