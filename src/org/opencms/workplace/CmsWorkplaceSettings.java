@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.57.4.2 $
+ * Date   : $Date: 2006/12/14 09:58:17 $
+ * Version: $Revision: 1.57.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.57.4.2 $ 
+ * @version $Revision: 1.57.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -401,17 +401,6 @@ public class CmsWorkplaceSettings {
     public String getViewUri() {
 
         return m_viewUri;
-    }
-
-    /**
-     * Checks if the current view is the administration view.<p>
-     * 
-     * @return true if the current view is the administration view, otherwise false 
-     */
-    public boolean isViewAdministration() {
-
-        return (getViewUri().endsWith("/system/workplace/action/administration.html") || getViewUri().endsWith(
-            "/system/workplace/action/tasks.html"));
     }
 
     /**

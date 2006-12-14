@@ -28,7 +28,6 @@
 				<resource uri="/system/modules/"/>
 				<resource uri="/system/shared/"/>
 				<resource uri="/system/workplace/"/>
-				<resource uri="/system/workplace/action/"/>
 				<resource uri="/system/workplace/administration/"/>
 				<resource uri="/system/workplace/help/"/>
 				<resource uri="/system/workplace/locales/"/>

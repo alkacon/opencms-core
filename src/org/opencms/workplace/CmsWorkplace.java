@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/11/29 15:04:10 $
- * Version: $Revision: 1.156.4.11 $
+ * Date   : $Date: 2006/12/14 09:58:17 $
+ * Version: $Revision: 1.156.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.11 $ 
+ * @version $Revision: 1.156.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1483,16 +1483,6 @@ public abstract class CmsWorkplace {
         if (segment == HTML_START) {
             StringBuffer result = new StringBuffer(128);
             result.append("</head>\n<body unselectable=\"on\"");
-            if (getSettings().isViewAdministration()) {
-                if ((className == null) || "dialog".equals(className)) {
-                    className = "dialogadmin";
-                }
-                if (parameters == null) {
-                    result.append(" onLoad=\"window.top.body.admin_head.location.href='");
-                    result.append(getJsp().link(CmsWorkplace.VFS_PATH_WORKPLACE + "action/administration_head.html"));
-                    result.append("';\"");
-                }
-            }
             if (className != null) {
                 result.append(" class=\"");
                 result.append(className);
