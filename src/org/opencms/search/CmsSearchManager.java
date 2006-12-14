@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2006/12/12 14:52:57 $
- * Version: $Revision: 1.55.4.7 $
+ * Date   : $Date: 2006/12/14 11:09:45 $
+ * Version: $Revision: 1.55.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.7 $ 
+ * @version $Revision: 1.55.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -763,6 +763,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public boolean removeSearchFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration)
     throws CmsIllegalStateException {
 
+        // never remove the standard field configuration
+        if (fieldConfiguration.getName().equals(CmsSearchFieldConfiguration.STR_STANDARD)) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_INDEX_CONFIGURATION_DELETE_STANDARD_1,
+                fieldConfiguration.getName()));
+        }
         // validation if removal will be granted
         Iterator itIndexes = m_indexes.iterator();
         CmsSearchIndex idx;
