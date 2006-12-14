@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/12/14 14:05:46 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,6 +78,9 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
     /** Boolean flag to decide whether unchanged resources should be exported or not.<p> */
     private boolean m_includeUnchanged;
+
+    /** Boolean flag to indicate that only the resources of the current project should be exported. */
+    private boolean m_projectOnly;
 
     /** Boolean flag to indicate if the folders are exported recursively or not. */
     private boolean m_recursive;
@@ -115,7 +118,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
             isExportWebusers(),
             getContentAge(),
             report,
-            isRecursive());
+            isRecursive(),
+            isProjectOnly());
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_END_0), I_CmsReport.FORMAT_HEADLINE);
     }
 
@@ -209,6 +213,16 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public boolean isIncludeUnchanged() {
 
         return m_includeUnchanged;
+    }
+
+    /**
+     * Returns the projectOnly.<p>
+     *
+     * @return the projectOnly
+     */
+    public boolean isProjectOnly() {
+
+        return m_projectOnly;
     }
 
     /**
@@ -319,6 +333,16 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public void setIncludeUnchanged(boolean excludeUnchanged) {
 
         m_includeUnchanged = excludeUnchanged;
+    }
+
+    /**
+     * Sets the projectOnly.<p>
+     *
+     * @param projectOnly the projectOnly to set
+     */
+    public void setProjectOnly(boolean projectOnly) {
+
+        m_projectOnly = projectOnly;
     }
 
     /**
