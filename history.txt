@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/12/14 15:09:29 $
- * Version: $Revision: 1.717.2.115 $
+ * Date   : $Date: 2006/12/14 16:09:04 $
+ * Version: $Revision: 1.717.2.116 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.5.5 - xxxxx, 2006
+OpenCms 6.5.5 - 14. December, 2006
 * Improved logic in new dialog to decide if default .html suffix should be appended
 ! The Lucene search index fields generated from the OpenCms content are now fully configurable
 ! Text extraction results for the full text search are now cached and reused to speed up index generation
