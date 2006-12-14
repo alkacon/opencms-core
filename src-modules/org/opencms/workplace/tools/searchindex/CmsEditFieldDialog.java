@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditFieldDialog.java,v $
- * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/14 11:15:13 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5 
  */
@@ -116,6 +117,14 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
 
         super.defineWidgets();
 
+        // set default value if field is new
+        if (m_field.getName() == null) {
+            m_field.setStored(true);
+            m_field.setIndexed(true);
+            m_field.setDisplayed(true);
+            m_field.setBoost(CmsSearchField.BOOST_DEFAULT);
+        }
+
         // widgets to display
         // new indexsource
         if (m_field.getName() == null) {
@@ -123,12 +132,19 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
         } else {
             addWidget(new CmsWidgetDialogParameter(m_field, "name", PAGES[0], new CmsDisplayWidget()));
         }
-        addWidget(new CmsWidgetDialogParameter(m_field, "displayName", "", PAGES[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_field, "stored", "", PAGES[0], new CmsCheckboxWidget(), 1, 1));
-        addWidget(new CmsWidgetDialogParameter(m_field, "indexed", "", PAGES[0], new CmsSelectWidget(
+        addWidget(new CmsWidgetDialogParameter(m_field, "indexed", "true", PAGES[0], new CmsSelectWidget(
             getTokenizedWidgetConfiguration()), 1, 1));
+        addWidget(new CmsWidgetDialogParameter(m_field, "stored", "true", PAGES[0], new CmsCheckboxWidget(), 1, 1));
         addWidget(new CmsWidgetDialogParameter(m_field, "inExcerpt", "", PAGES[0], new CmsCheckboxWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_field, "boost", "", PAGES[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(
+            m_field,
+            "displayNameForConfiguration",
+            "",
+            PAGES[0],
+            new CmsInputWidget(),
+            0,
+            1));
+        addWidget(new CmsWidgetDialogParameter(m_field, "boostDisplay", "", PAGES[0], new CmsInputWidget(), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_field, "defaultValue", "", PAGES[0], new CmsInputWidget(), 0, 1));
     }
 
@@ -142,7 +158,6 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
         List result = new ArrayList();
         result.add(new CmsSelectWidgetOption("true", true));
         result.add(new CmsSelectWidgetOption("false", false));
-        result.add(new CmsSelectWidgetOption("tokenized", false));
         result.add(new CmsSelectWidgetOption("untokenized", false));
         return result;
     }
