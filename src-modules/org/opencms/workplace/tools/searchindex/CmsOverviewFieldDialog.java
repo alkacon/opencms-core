@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsOverviewFieldDialog.java,v $
- * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/14 15:45:56 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5 
  */
@@ -71,6 +71,29 @@ public class CmsOverviewFieldDialog extends A_CmsFieldDialog {
     public CmsOverviewFieldDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
+    }
+
+    /**
+     * Returns the String value of the indexed value.<p> 
+     * 
+     * @return String value of the indexed value 
+     */
+    public String getIndexed() {
+
+        if (m_field != null && m_field.getIndexed() != null) {
+            return m_field.getIndexed();
+        }
+        return "";
+    }
+
+    /**
+     * Sets the indexed value of the field.<p>
+     * 
+     * @param indexed String value of the indexed value
+     */
+    public void setIndexed(String indexed) {
+
+        m_field.setIndexed(indexed);
     }
 
     /**
@@ -120,7 +143,7 @@ public class CmsOverviewFieldDialog extends A_CmsFieldDialog {
         addWidget(new CmsWidgetDialogParameter(m_field, "name", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_field, "displayName", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_field, "stored", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_field, "indexed", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, "indexed", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_field, "inExcerpt", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_field, "boost", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_field, "defaultValue", PAGES[0], new CmsDisplayWidget()));

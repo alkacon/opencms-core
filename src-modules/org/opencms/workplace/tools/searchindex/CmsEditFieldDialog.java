@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditFieldDialog.java,v $
- * Date   : $Date: 2006/12/14 11:15:13 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/14 15:46:54 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -79,6 +79,29 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
     public CmsEditFieldDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
+    }
+
+    /**
+     * Returns the String value of the indexed value.<p> 
+     * 
+     * @return String value of the indexed value 
+     */
+    public String getIndexed() {
+
+        if (m_field != null && m_field.getIndexed() != null) {
+            return m_field.getIndexed();
+        }
+        return "";
+    }
+
+    /**
+     * Sets the indexed value of the field.<p>
+     * 
+     * @param indexed String value of the indexed value
+     */
+    public void setIndexed(String indexed) {
+
+        m_field.setIndexed(indexed);
     }
 
     /**
@@ -132,7 +155,7 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
         } else {
             addWidget(new CmsWidgetDialogParameter(m_field, "name", PAGES[0], new CmsDisplayWidget()));
         }
-        addWidget(new CmsWidgetDialogParameter(m_field, "indexed", "true", PAGES[0], new CmsSelectWidget(
+        addWidget(new CmsWidgetDialogParameter(this, "indexed", "true", PAGES[0], new CmsSelectWidget(
             getTokenizedWidgetConfiguration()), 1, 1));
         addWidget(new CmsWidgetDialogParameter(m_field, "stored", "true", PAGES[0], new CmsCheckboxWidget(), 1, 1));
         addWidget(new CmsWidgetDialogParameter(m_field, "inExcerpt", "", PAGES[0], new CmsCheckboxWidget(), 0, 1));
