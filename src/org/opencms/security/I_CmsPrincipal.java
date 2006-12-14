@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.15.4.1 $
+ * Date   : $Date: 2006/12/14 12:41:30 $
+ * Version: $Revision: 1.15.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.security.Principal;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.15.4.1 $ 
+ * @version $Revision: 1.15.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,9 +62,6 @@ public interface I_CmsPrincipal extends Principal {
 
     /** Flag to indicate a group is a potential project user group. */
     int FLAG_GROUP_PROJECT_USER = 4;
-
-    /** Flag to indicate a group is used as a role in the workflow. */
-    int FLAG_GROUP_WORKFLOW_ROLE = 8;
 
     /** Identifier for group principals. */
     String PRINCIPAL_GROUP = "GROUP";

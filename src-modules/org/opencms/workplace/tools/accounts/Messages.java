@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2006/11/16 10:13:23 $
- * Version: $Revision: 1.9.4.3 $
+ * Date   : $Date: 2006/12/14 12:41:30 $
+ * Version: $Revision: 1.9.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.4.3 $ 
+ * @version $Revision: 1.9.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,9 +94,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EDIT_GROUPS_0 = "ERR_EDIT_GROUPS_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String ERR_EDIT_ROLES_0 = "ERR_EDIT_ROLES_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String ERR_EDIT_USER_0 = "ERR_EDIT_USER_0";
 
     /** Message contant for key in the resource bundle. */
@@ -116,9 +113,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_USERGROUPS_DIRECT_GROUP_1 = "ERR_USERGROUPS_DIRECT_GROUP_1";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_USERROLES_DIRECT_ROLE_1 = "ERR_USERROLES_DIRECT_ROLE_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ACCOUNTS_ADMIN_TOOL_GROUP_0 = "GUI_ACCOUNTS_ADMIN_TOOL_GROUP_0";
@@ -232,18 +226,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITUSER_ROLES_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_ROLES_ADMIN_TOOL_GROUP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITUSER_ROLES_ADMIN_TOOL_HELP_0 = "GUI_EDITUSER_ROLES_ADMIN_TOOL_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITUSER_ROLES_ADMIN_TOOL_NAME_0 = "GUI_EDITUSER_ROLES_ADMIN_TOOL_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITUSER_ROLES_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_ROLES_ADMIN_TOOL_NAVBARNAME_0";
-    
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_EDITUSER_SWITCH_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_SWITCH_ADMIN_TOOL_GROUP_0";
     
     /** Message contant for key in the resource bundle. */
@@ -299,18 +281,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EDITWEBUSER_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITWEBUSER_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_ROLES_ADMIN_TOOL_GROUP_0 = "GUI_EDITWEBUSER_ROLES_ADMIN_TOOL_GROUP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_ROLES_ADMIN_TOOL_HELP_0 = "GUI_EDITWEBUSER_ROLES_ADMIN_TOOL_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_ROLES_ADMIN_TOOL_NAME_0 = "GUI_EDITWEBUSER_ROLES_ADMIN_TOOL_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_ROLES_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITWEBUSER_ROLES_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUP_DEPENDENCIES_DELETE_0 = "GUI_GROUP_DEPENDENCIES_DELETE_0";
@@ -718,57 +688,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERGROUPS_LIST_NAME_0 = "GUI_USERGROUPS_LIST_NAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_ACTION_ADD_CONF_0 = "GUI_USERROLES_LIST_ACTION_ADD_CONF_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_ACTION_ADD_HELP_0 = "GUI_USERROLES_LIST_ACTION_ADD_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_ACTION_ADD_NAME_0 = "GUI_USERROLES_LIST_ACTION_ADD_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_ACTION_REMOVE_CONF_0 = "GUI_USERROLES_LIST_ACTION_REMOVE_CONF_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_ACTION_REMOVE_HELP_0 = "GUI_USERROLES_LIST_ACTION_REMOVE_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_ACTION_REMOVE_NAME_0 = "GUI_USERROLES_LIST_ACTION_REMOVE_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_ACTION_STATE_DISABLED_HELP_0 = "GUI_USERROLES_LIST_ACTION_STATE_DISABLED_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_ACTION_STATE_DISABLED_NAME_0 = "GUI_USERROLES_LIST_ACTION_STATE_DISABLED_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_COLS_STATE_0 = "GUI_USERROLES_LIST_COLS_STATE_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_COLS_STATE_HELP_0 = "GUI_USERROLES_LIST_COLS_STATE_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_MACTION_ADD_CONF_0 = "GUI_USERROLES_LIST_MACTION_ADD_CONF_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_MACTION_ADD_HELP_0 = "GUI_USERROLES_LIST_MACTION_ADD_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_MACTION_ADD_NAME_0 = "GUI_USERROLES_LIST_MACTION_ADD_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_MACTION_REMOVE_CONF_0 = "GUI_USERROLES_LIST_MACTION_REMOVE_CONF_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_MACTION_REMOVE_HELP_0 = "GUI_USERROLES_LIST_MACTION_REMOVE_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_MACTION_REMOVE_NAME_0 = "GUI_USERROLES_LIST_MACTION_REMOVE_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERROLES_LIST_NAME_0 = "GUI_USERROLES_LIST_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_ADMIN_TOOL_GROUP_0 = "GUI_USERS_ADMIN_TOOL_GROUP_0";
 
     /** Message contant for key in the resource bundle. */
@@ -805,15 +724,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERS_DETAIL_HIDE_GROUPS_NAME_0 = "GUI_USERS_DETAIL_HIDE_GROUPS_NAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_DETAIL_HIDE_ROLES_HELP_0 = "GUI_USERS_DETAIL_HIDE_ROLES_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_DETAIL_HIDE_ROLES_NAME_0 = "GUI_USERS_DETAIL_HIDE_ROLES_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_DETAIL_ROLES_NAME_0 = "GUI_USERS_DETAIL_ROLES_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_DETAIL_SHOW_ADDRESS_HELP_0 = "GUI_USERS_DETAIL_SHOW_ADDRESS_HELP_0";
 
     /** Message contant for key in the resource bundle. */
@@ -824,12 +734,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_DETAIL_SHOW_GROUPS_NAME_0 = "GUI_USERS_DETAIL_SHOW_GROUPS_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_DETAIL_SHOW_ROLES_HELP_0 = "GUI_USERS_DETAIL_SHOW_ROLES_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_DETAIL_SHOW_ROLES_NAME_0 = "GUI_USERS_DETAIL_SHOW_ROLES_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_ACTIVATE_CONF_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_CONF_0";
@@ -866,12 +770,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_GROUPS_NAME_0 = "GUI_USERS_LIST_ACTION_GROUPS_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_ROLES_HELP_0 = "GUI_USERS_LIST_ACTION_ROLES_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_ROLES_NAME_0 = "GUI_USERS_LIST_ACTION_ROLES_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_SWITCH_CONF_0 = "GUI_USERS_LIST_ACTION_SWITCH_CONF_0";
@@ -929,12 +827,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_COLS_LOGIN_0 = "GUI_USERS_LIST_COLS_LOGIN_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_COLS_ROLES_0 = "GUI_USERS_LIST_COLS_ROLES_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_COLS_ROLES_HELP_0 = "GUI_USERS_LIST_COLS_ROLES_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_COLS_STATE_0 = "GUI_USERS_LIST_COLS_STATE_0";

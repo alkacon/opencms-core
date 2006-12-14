@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2006/06/13 09:46:57 $
- * Version: $Revision: 1.19.4.2 $
+ * Date   : $Date: 2006/12/14 12:41:30 $
+ * Version: $Revision: 1.19.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.2 $
+ * @version $Revision: 1.19.4.3 $
  * 
  * @since 6.0.0 
  * 
@@ -145,16 +145,6 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
     }
 
     /**
-     * Returns <code>true</code> if this group is enabled as a role for tasks.<p>
-     * 
-     * @return <code>true</code> if this group is enabled as a role for tasks
-     */
-    public boolean getRole() {
-
-        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE) == I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE;
-    }
-
-    /**
      * @see org.opencms.security.I_CmsPrincipal#isGroup()
      */
     public boolean isGroup() {
@@ -221,18 +211,6 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
 
         if (getProjectManager() != value) {
             setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER);
-        }
-    }
-
-    /**
-     * Sets the "role for tasks" flag for this group to the given value.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setRole(boolean value) {
-
-        if (getRole() != value) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE);
         }
     }
 

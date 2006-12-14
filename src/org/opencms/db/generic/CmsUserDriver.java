@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.110.2.2 $
+ * Date   : $Date: 2006/12/14 12:41:30 $
+ * Version: $Revision: 1.110.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.110.2.2 $
+ * @version $Revision: 1.110.2.3 $
  * 
  * @since 6.0.0 
  */
@@ -1579,7 +1579,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             usersGroup,
             "The users group",
             I_CmsPrincipal.FLAG_ENABLED
-                | I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE
                 | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER,
             null,
             null);
@@ -1590,8 +1589,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             "The projectmanager group",
             I_CmsPrincipal.FLAG_ENABLED
                 | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER
-                | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
-                | I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE,
+                | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER,
             users.getName(),
             null);
 

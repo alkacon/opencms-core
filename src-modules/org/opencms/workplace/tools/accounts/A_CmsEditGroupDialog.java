@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditGroupDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/12/14 12:41:30 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,7 +128,6 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
                     getParentGroup());
                 newGroup.setProjectManager(m_group.getProjectManager());
                 newGroup.setProjectCoWorker(m_group.getProjectCoWorker());
-                newGroup.setRole(m_group.getRole());
                 m_group = newGroup;
             } else {
                 if (getParentGroup() != null) {
@@ -237,7 +236,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(4, 6));
+            result.append(createDialogRowsHtml(4, 5));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -264,16 +263,18 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
         }
         if (isEditable(m_group)) {
             addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsTextareaWidget()));
-            addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsSelectWidget(getSelectGroups())));
+            addWidget(new CmsWidgetDialogParameter(
+                this,
+                "parentGroup",
+                PAGES[0],
+                new CmsSelectWidget(getSelectGroups())));
             addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsCheckboxWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "role", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsCheckboxWidget()));
         } else {
             addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "role", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsDisplayWidget()));
         }
@@ -402,5 +403,5 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
      * @return the editable flag
      */
     protected abstract boolean isEditable(CmsGroup group);
-    
+
 }
