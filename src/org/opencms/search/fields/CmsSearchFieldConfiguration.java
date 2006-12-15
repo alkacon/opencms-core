@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2006/12/14 15:42:30 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/12/15 11:50:06 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.0.0 
  */
@@ -101,7 +101,7 @@ public class CmsSearchFieldConfiguration implements Comparable {
 
         CmsSearchField field;
         // content mapping
-        field = new CmsSearchField(CmsSearchField.FIELD_CONTENT, "%{label.searchindex.searchFieldContent}", true, true);
+        field = new CmsSearchField(CmsSearchField.FIELD_CONTENT, "%(key.field.content)", true, true);
         field.addMapping(new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, null));
         result.addField(field);
 
@@ -121,40 +121,28 @@ public class CmsSearchFieldConfiguration implements Comparable {
         result.addField(field);
 
         // title mapping as indexed field
-        field = new CmsSearchField(
-            CmsSearchField.FIELD_TITLE_UNSTORED,
-            "%{label.searchindex.searchFieldTitle}",
-            false,
-            true);
+        field = new CmsSearchField(CmsSearchField.FIELD_TITLE_UNSTORED, "%(key.field.title)", false, true);
         field.addMapping(new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.PROPERTY,
             CmsPropertyDefinition.PROPERTY_TITLE));
         result.addField(field);
 
         // mapping of "Keywords" property to search field with the same name
-        field = new CmsSearchField(
-            CmsSearchField.FIELD_KEYWORDS,
-            "%{label.searchindex.searchFieldKeywords}",
-            true,
-            true);
+        field = new CmsSearchField(CmsSearchField.FIELD_KEYWORDS, "%(key.field.keywords)", true, true);
         field.addMapping(new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.PROPERTY,
             CmsPropertyDefinition.PROPERTY_KEYWORDS));
         result.addField(field);
 
         // mapping of "Description" property to search field with the same name
-        field = new CmsSearchField(
-            CmsSearchField.FIELD_DESCRIPTION,
-            "%{label.searchindex.searchFieldDescription}",
-            true,
-            true);
+        field = new CmsSearchField(CmsSearchField.FIELD_DESCRIPTION, "%(key.field.description)", true, true);
         field.addMapping(new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.PROPERTY,
             CmsPropertyDefinition.PROPERTY_DESCRIPTION));
         result.addField(field);
 
         // "meta" field is a combination of "Title", "Keywords" and "Description" properties
-        field = new CmsSearchField(CmsSearchField.FIELD_META, "%{label.searchindex.searchFieldMeta}", false, true);
+        field = new CmsSearchField(CmsSearchField.FIELD_META, "%(key.field.meta)", false, true);
         field.addMapping(new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.PROPERTY,
             CmsPropertyDefinition.PROPERTY_TITLE));
