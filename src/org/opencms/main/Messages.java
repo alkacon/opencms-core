@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2006/12/05 16:31:07 $
- * Version: $Revision: 1.28.4.5 $
+ * Date   : $Date: 2006/12/18 15:31:06 $
+ * Version: $Revision: 1.28.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28.4.5 $ 
+ * @version $Revision: 1.28.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -442,6 +442,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_NO_WORKPLACE_PERMISSIONS_0 = "ERR_NO_WORKPLACE_PERMISSIONS_0";
 
     /**
      * Hides the public constructor for this utility class.<p>
