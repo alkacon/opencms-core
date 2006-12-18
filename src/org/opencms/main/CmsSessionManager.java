@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2006/12/18 15:31:06 $
- * Version: $Revision: 1.12.4.7 $
+ * Date   : $Date: 2006/12/18 17:16:28 $
+ * Version: $Revision: 1.12.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
+import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
@@ -75,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.7 $ 
+ * @version $Revision: 1.12.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -338,9 +339,11 @@ public class CmsSessionManager {
             throw new CmsException(Messages.get().container(Messages.ERR_NO_SESSIONINFO_SESSION_0));
         }
 
-        CmsAccessControlList acl = cms.getAccessControlList(CmsFrameset.JSP_WORKPLACE_URI);
-        if (acl.getPermissions(user) == null
-            || (acl.getPermissions(user).getAllowedPermissions() & CmsPermissionSet.PERMISSION_READ) == 0) {
+        CmsPermissionSet permissions = OpenCmsCore.getInstance().getSecurityManager().getPermissions(
+            cms.getRequestContext(),
+            cms.readResource(CmsFrameset.JSP_WORKPLACE_URI),
+            user);
+        if (permissions == null || (permissions.getAllowedPermissions() & CmsPermissionSet.PERMISSION_READ) == 0) {
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_NO_WORKPLACE_PERMISSIONS_0));
         }
 

@@ -1,12 +1,7 @@
-<%@ page import="org.opencms.main.*, 
-                 org.opencms.jsp.*, 
-                 org.opencms.util.*, 
-                 org.opencms.workplace.*, 
-                 java.util.*"%><%	
+<%@ page import="org.opencms.workplace.tools.accounts.*"%><%	
 
-	CmsJspActionElement actionElement = new CmsJspActionElement(pageContext, request, response);
-	CmsSessionManager sessionManager = OpenCms.getSessionManager();
-	sessionManager.switchUser(actionElement.getCmsObject(), actionElement.getRequest(), actionElement.getCmsObject().readUser(new CmsUUID(request.getParameter("userid"))));
+                CmsUsersList usersList = new CmsUsersList(pageContext, request, response);
+             	usersList.actionSwitchUser();
 %>
 <html>
 <head></head>

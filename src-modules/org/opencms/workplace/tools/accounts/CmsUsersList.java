@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2006/12/18 15:32:01 $
- * Version: $Revision: 1.15.4.3 $
+ * Date   : $Date: 2006/12/18 17:16:28 $
+ * Version: $Revision: 1.15.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.CmsSessionManager;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -63,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15.4.3 $ 
+ * @version $Revision: 1.15.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,6 +106,24 @@ public class CmsUsersList extends A_CmsUsersList {
     public CmsUsersList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Calls the switch user method of the SessionManager.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void actionSwitchUser() throws CmsException {
+
+        try {
+            CmsSessionManager sessionManager = OpenCms.getSessionManager();
+            sessionManager.switchUser(getCms(), getJsp().getRequest(), getCms().readUser(
+                new CmsUUID(getJsp().getRequest().getParameter("userid"))));
+        } catch (CmsException e) {
+            String toolPath = getCurrentToolPath().substring(0, getCurrentToolPath().lastIndexOf("/"));
+            getToolManager().setCurrentToolPath(this, toolPath);
+            throw e;
+        }
     }
 
     /**
