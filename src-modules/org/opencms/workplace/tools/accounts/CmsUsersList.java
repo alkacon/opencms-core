@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2006/11/29 15:04:15 $
- * Version: $Revision: 1.15.4.2 $
+ * Date   : $Date: 2006/12/18 15:32:01 $
+ * Version: $Revision: 1.15.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15.4.2 $ 
+ * @version $Revision: 1.15.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,18 +111,48 @@ public class CmsUsersList extends A_CmsUsersList {
      */
     public void executeListSingleActions() throws IOException, ServletException {
 
-        // only the switch action is forwarded here,
-        // other actions are execute in the super class
-        if (getParamListAction().equals(LIST_ACTION_SWITCH)) {
-            String userId = getSelectedItem().getId();
-            Map params = new HashMap();
-            params.put(A_CmsEditUserDialog.PARAM_USERID, userId);
-            // set action parameter to initial dialog call
-            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
-            // forward
+        String userId = getSelectedItem().getId();
+        String userName = getSelectedItem().get(LIST_COLUMN_LOGIN).toString();
+
+        Map params = new HashMap();
+        params.put(A_CmsEditUserDialog.PARAM_USERID, userId);
+        // set action parameter to initial dialog call
+        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+
+        if (getParamListAction().equals(LIST_DEFACTION_EDIT)) {
+            // forward to the edit user screen
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit", params);
+        } else if (m_editActionIds.contains(getParamListAction())) {
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/user", params);
+        } else if (getParamListAction().equals(LIST_ACTION_GROUPS)) {
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/groups", params);
+        } else if (getParamListAction().equals(LIST_ACTION_SWITCH)) {
+            // forward to switch user screen
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/switch", params);
+        } else if (getParamListAction().equals(LIST_ACTION_ROLES)) {
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/roles", params);
+        } else if (m_deleteActionIds.contains(getParamListAction())) {
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/delete", params);
+        } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
+            // execute the activate action
+            try {
+                CmsUser user = readUser(userName);
+                user.setEnabled(true);
+                getCms().writeUser(user);
+            } catch (CmsException e) {
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ACTIVATE_USER_1, userName), e);
+            }
+        } else if (getParamListAction().equals(LIST_ACTION_DEACTIVATE)) {
+            // execute the activate action
+            try {
+                CmsUser user = readUser(userName);
+                user.setEnabled(false);
+                getCms().writeUser(user);
+            } catch (CmsException e) {
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DEACTIVATE_USER_1, userName), e);
+            }
         } else {
-            super.executeListSingleActions();
+            throwListUnsupportedActionException();
         }
         listSave();
     }
