@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.14.2.5 $
+ * Date   : $Date: 2006/12/18 11:07:07 $
+ * Version: $Revision: 1.14.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,11 +40,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14.2.5 $ 
+ * @version $Revision: 1.14.2.6 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Name of the resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.workplace.explorer.messages";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_FOLDER_0 = "ERR_CREATE_FOLDER_0";
@@ -346,6 +349,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_POINTER_LINKTO_0 = "GUI_POINTER_LINKTO_0";
 
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_TOOLTIP_0 = "GUI_PUBLISH_TOOLTIP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_KEEPPROPERTIES_0 = "GUI_RESOURCE_KEEPPROPERTIES_0";
 
@@ -357,6 +363,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECT_TEMPLATE_0 = "GUI_SELECT_TEMPLATE_0";
+
+    /** End part of contant for creation NEWTITLE key. */
+    private static final String GUI_STATE_POSTFIX = "_0";
+
+    /**The  first part of contant for creation NEWTITLE key. */
+    private static final String GUI_STATE_PREFIX = "GUI_EXPLORER_STATE";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_EXPLORERTREE_0 = "GUI_TITLE_EXPLORERTREE_0";
@@ -378,15 +390,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_TITLE_NEWPROPERTYINFO_0 = "GUI_TITLE_NEWPROPERTYINFO_0";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_WORKFLOW_TASK_INFO_TOOLTIP_5 = "GUI_WORKFLOW_TASK_INFO_TOOLTIP_5";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_TOOLTIP_0 = "GUI_PUBLISH_TOOLTIP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_WORKFLOW_DISABLED_0 = "GUI_WORKFLOW_DISABLED_0";
+    public static final String GUI_TOOLTIP_TASK_INFO_5 = "GUI_TOOLTIP_TASK_INFO_5";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOADAPPLET_ACTION_COUNT_0 = "GUI_UPLOADAPPLET_ACTION_COUNT_0";
@@ -396,6 +402,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOADAPPLET_ACTION_ERROR_0 = "GUI_UPLOADAPPLET_ACTION_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOADAPPLET_ACTION_OVERWRITECHECK_0 = "org.GUI_UPLOADAPPLET_ACTION_OVERWRITECHECK_0.workplace.explorer.messages";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOADAPPLET_ACTION_SELECT_0 = "GUI_UPLOADAPPLET_ACTION_SELECT_0";
@@ -429,6 +438,27 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOADAPPLET_MESSAGE_UPLOAD_0 = "GUI_UPLOADAPPLET_MESSAGE_UPLOAD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOADAPPLET_OVERWRITE_DIALOG_CANCEL_0 = "GUI_UPLOADAPPLET_OVERWRITE_DIALOG_CANCEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOADAPPLET_OVERWRITE_DIALOG_INTRO_0 = "GUI_UPLOADAPPLET_OVERWRITE_DIALOG_INTRO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOADAPPLET_OVERWRITE_DIALOG_OK_0 = "GUI_UPLOADAPPLET_OVERWRITE_DIALOG_OK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOADAPPLET_OVERWRITE_DIALOG_TITLE_0 = "GUI_UPLOADAPPLET_OVERWRITE_DIALOG_TITLE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_WORKFLOW_DISABLED_0 = "GUI_WORKFLOW_DISABLED_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_WORKFLOW_TASK_INFO_TOOLTIP_5 = "GUI_WORKFLOW_TASK_INFO_TOOLTIP_5";
+
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_ACCESS_ENTRY_2 = "LOG_ADD_ACCESS_ENTRY_2";
@@ -489,18 +519,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_ORDER_CONTEXT_MENU_1 = "LOG_WRONG_ORDER_CONTEXT_MENU_1";
-
-    /** Name of the resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.explorer.messages";
-
-    /** End part of contant for creation NEWTITLE key. */
-    private static final String GUI_STATE_POSTFIX = "_0";
-
-    /**The  first part of contant for creation NEWTITLE key. */
-    private static final String GUI_STATE_PREFIX = "GUI_EXPLORER_STATE";
-
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>

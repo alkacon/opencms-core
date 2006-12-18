@@ -28,6 +28,11 @@ case CmsNewResourceUpload.ACTION_APPLET:
 <%
 break;
 
+case CmsNewResourceUpload.ACTION_APPLET_CHECK_OVERWRITE: 
+//////////////////// ACTION: applet requests check for potential file overwrites 
+    out.print(wp.handleUploadOverwriteCheckRequest(request));
+    break;
+   
 case CmsNewResourceUpload.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 	wp.actionCloseDialog();

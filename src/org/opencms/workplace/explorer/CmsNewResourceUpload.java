@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/12/14 12:23:30 $
- * Version: $Revision: 1.22.4.8 $
+ * Date   : $Date: 2006/12/18 11:07:07 $
+ * Version: $Revision: 1.22.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,9 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -72,7 +74,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.8 $ 
+ * @version $Revision: 1.22.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,6 +82,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /** The value for the resource upload applet action. */
     public static final int ACTION_APPLET = 140;
+
+    /** The value for the resource upload applet action. */
+    public static final int ACTION_APPLET_CHECK_OVERWRITE = 141;
 
     /** The value for the resource name form action. */
     public static final int ACTION_NEWFORM2 = 120;
@@ -89,6 +94,22 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /** The value for the resource name form submission action. */
     public static final int ACTION_SUBMITFORM2 = 130;
+
+    /** Constant for pre selection of the file filter for web documents / snippets in the upload applet. */
+    // Warning: keep in sync with org.opencms.applet.upload.ImageFilter.FILTER_ID.
+    public static final String APPLET_FILEFILTER_IMAGES = "imagefilter";
+
+    /** Constant for pre selection of the file filter for office documents in the upload applet. */
+    // Warning: keep in sync with org.opencms.applet.upload.OfficeFilter.FILTER_ID.
+    public static final String APPLET_FILEFILTER_OFFICE = "officefilter";
+
+    /** Constant for pre selection of the file filter for web documents / snippets in the upload applet. */
+    // Warning: keep in sync with org.opencms.applet.upload.WebFilter.FILTER_ID.
+    public static final String APPLET_FILEFILTER_WEB = "webfilter";
+
+    /** The value for the resource upload applet action. */
+    // Warning: This constant has to be kept in sync with the same named constant in org.opencms.applet.FileUploadApplet!    
+    public static final String DIALOG_CHECK_OVERWRITE = "checkoverwrite";
 
     /** The name for the resource form submission action. */
     public static final String DIALOG_SHOWERROR = "showerror";
@@ -442,7 +463,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append("<param name=\"targetframe\" value=\"");
         applet.append(getParamTargetFrame());
         applet.append("\">\n");
-        applet.append("<param name=error value=\"");
+        applet.append("<param name=\"error\" value=\"");
         applet.append(scheme);
         applet.append("://");
         applet.append(host);
@@ -455,6 +476,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append("\">\n");
         applet.append("<param name=\"filelist\" value=\"");
         applet.append(currentFolder);
+        applet.append("\">\n");
+        applet.append("<param name=\"filefilterselection\" value=\"");
+        applet.append(getAppletFileFilterPreselectionConstant());
         applet.append("\">\n");
         applet.append("<param name=\"colors\" value=\"");
         applet.append(colors);
@@ -476,6 +500,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append("\">\n");
         applet.append("<param name=\"actionOutputUpload\" value=\"");
         applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_UPLOAD_0));
+        applet.append("\">\n");
+        applet.append("<param name=\"actionOverwriteCheck\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_OVERWRITECHECK_0));
         applet.append("\">\n");
         applet.append("<param name=\"messageOutputUpload\" value=\"");
         applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_UPLOAD_0));
@@ -501,6 +528,21 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append("<param name=\"certificateErrorTitle\" value=\"");
         applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_TITLE_0));
         applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogTitle\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_TITLE_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogIntro\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_INTRO_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogOk\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_OK_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogCancel\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_CANCEL_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogLocale\" value=\"");
+        applet.append(getLocale().toString());
+        applet.append(" \">\n");
         applet.append("<param name=\"certificateErrorMessage\" value=\"");
         applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_MESSAGE_0));
         applet.append(" \">\n");
@@ -508,6 +550,33 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
         return applet.toString();
 
+    }
+
+    /**
+     * Returns the proper constant for preselection of a file filter of the upload applet depending on the current 
+     * folder to upload to. <p>
+     * 
+     * @return one of <code>{@link #APPLET_FILEFILTER_IMAGES}</code>, <code>{@link #APPLET_FILEFILTER_OFFICE}</code>, 
+     *      <code>{@link #APPLET_FILEFILTER_WEB}</code>
+     */
+    private String getAppletFileFilterPreselectionConstant() {
+
+        String result = "";
+        try {
+            CmsResource res = getCms().readResource(getParamCurrentFolder(), CmsResourceFilter.IGNORE_EXPIRATION);
+            result = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+            if ("imagegallery".equals(result)) {
+                result = APPLET_FILEFILTER_IMAGES;
+            } else if ("htmlgallery".equals(result)) {
+                result = APPLET_FILEFILTER_WEB;
+            } else if ("downloadgallery".equals(result)) {
+                result = APPLET_FILEFILTER_OFFICE;
+            }
+        } catch (CmsException e) {
+            System.err.println(e);
+            // ignore this, gallery type will simply not be supported for pre selection of the file type selector in the upload applet 
+        }
+        return result;
     }
 
     /**
@@ -582,6 +651,91 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public String getParamUploadFolder() {
 
         return m_paramUploadFolder;
+    }
+
+    /** 
+     * Replies on the request of the upload applet for checking potential overwrites of VFS resources 
+     * with the line based resources that do exist on the host. <p> 
+     * 
+     * @param request the request sent by the applet 
+     * 
+     * @return the line based resources that do exist on the host
+     */
+    public String handleUploadOverwriteCheckRequest(HttpServletRequest request) {
+
+        StringBuffer result = new StringBuffer();
+        String uploadFiles = CmsEncoder.decode(request.getHeader("uploadFiles"));
+        String currentFolder = CmsEncoder.decode(request.getHeader("uploadFolder"));
+        if (currentFolder.endsWith("/")) {
+            currentFolder = currentFolder.substring(0, currentFolder.length() - 1);
+        }
+        List vfsfiles = CmsStringUtil.splitAsList(uploadFiles, '\n');
+        Iterator it = vfsfiles.iterator();
+        // apply directory translation only for server comparison
+        String vfsfile;
+        // return the clean file as know by the client
+        String clientfile;
+
+        while (it.hasNext()) {
+            clientfile = (String)it.next();
+            vfsfile = new StringBuffer(currentFolder).append(clientfile).toString();
+            vfsfile = OpenCms.getResourceManager().getFileTranslator().translateResource(vfsfile);
+            if (getCms().existsResource(vfsfile)) {
+                result.append(CmsEncoder.encode(clientfile, CmsEncoder.ENCODING_UTF_8));
+                result.append('\n');
+            }
+        }
+        return result.toString();
+
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
+     */
+    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
+
+        String siteRoot = jsp.getRequestContext().getSiteRoot();
+        // In case of the upload applet the site stored in the user preferences must NOT be made the current 
+        // site even if we have a new session! Since the upload applet will create a new session for the upload itself, 
+        // we must make sure to use the site of the request, NOT the site stored in the user preferences.
+        // The default logic will erase the request site in case of a new session.
+        // With this workaround the site from the request is made the current site as required.
+        super.initWorkplaceMembers(jsp);
+        if (!siteRoot.equals(getSettings().getSite())) {
+            getSettings().setSite(siteRoot);
+            jsp.getRequestContext().setSiteRoot(siteRoot);
+        }
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_OK.equals(getParamAction())) {
+            setAction(ACTION_OK);
+        } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
+            setAction(ACTION_SUBMITFORM);
+        } else if (DIALOG_SUBMITFORM2.equals(getParamAction())) {
+            setAction(ACTION_SUBMITFORM2);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            setAction(ACTION_CANCEL);
+        } else if (DIALOG_CHECK_OVERWRITE.equals(getParamAction())) {
+            setAction(ACTION_APPLET_CHECK_OVERWRITE);
+        } else {
+            if (getSettings().getUserSettings().useUploadApplet()) {
+                setAction(ACTION_APPLET);
+            } else {
+                setAction(ACTION_DEFAULT);
+            }
+            // build title for new resource dialog     
+            setParamTitle(key(Messages.GUI_NEWRESOURCE_UPLOAD_0));
+        }
     }
 
     /**
@@ -662,52 +816,5 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public boolean unzipUpload() {
 
         return Boolean.valueOf(getParamUnzipFile()).booleanValue();
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
-     */
-    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
-
-        String siteRoot = jsp.getRequestContext().getSiteRoot();
-        // In case of the upload applet the site stored in the user preferences must NOT be made the current 
-        // site even if we have a new session! Since the upload applet will create a new session for the upload itself, 
-        // we must make sure to use the site of the request, NOT the site stored in the user preferences.
-        // The default logic will erase the request site in case of a new session.
-        // With this workaround the site from the request is made the current site as required.
-        super.initWorkplaceMembers(jsp);
-        if (!siteRoot.equals(getSettings().getSite())) {
-            getSettings().setSite(siteRoot);
-            jsp.getRequestContext().setSiteRoot(siteRoot);
-        }
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_OK.equals(getParamAction())) {
-            setAction(ACTION_OK);
-        } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
-            setAction(ACTION_SUBMITFORM);
-        } else if (DIALOG_SUBMITFORM2.equals(getParamAction())) {
-            setAction(ACTION_SUBMITFORM2);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL);
-        } else {
-            if (getSettings().getUserSettings().useUploadApplet()) {
-                setAction(ACTION_APPLET);
-            } else {
-                setAction(ACTION_DEFAULT);
-            }
-            // build title for new resource dialog     
-            setParamTitle(key(Messages.GUI_NEWRESOURCE_UPLOAD_0));
-        }
     }
 }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/OfficeFilter.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/WebFilter.java,v $
  * Date   : $Date: 2006/12/18 11:07:08 $
- * Version: $Revision: 1.8.8.2 $
+ * Version: $Revision: 1.1.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,24 +36,26 @@ import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * Filter for fileselector box, filters office files.<p>
+ * Filter for fileselector box, filters html files.<p>
  * 
- * Filetypes returned by this filter are DOC, XLS, PPT and PDF.
+ * Filetypes returned by this filter are html, htm, shtml, xml, xhtml, js, css and txt.
  * Based on the Java 1.4 example.<p>
  *
- * @author Michael Emmerich 
+ * @author Achim Westermann 
  * 
- * @version $Revision: 1.8.8.2 $ 
+ * @version $Revision: 1.1.4.2 $ 
  * 
- * @since 6.0.0 
+ * @since 6.2.4 
  */
-public class OfficeFilter extends FileFilter {
+public class WebFilter extends FileFilter {
 
     /** Constant for pre selection. */
-    public static final String FILTER_ID = "officefilter";
+    public static final String FILTER_ID = "webfilter";
 
     /**
-     * Accept all directories and all doc, xls, ppt, pdf files.
+     * Accept all directories and all html, htm, shtml, xml, xhtml, js, css and txt.
+     * <p>
+     * 
      * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
      */
     public boolean accept(File f) {
@@ -62,7 +64,7 @@ public class OfficeFilter extends FileFilter {
             return true;
         }
 
-        return FileUploadUtils.isOfficeExtension(FileUploadUtils.getExtension(f));
+        return FileUploadUtils.isWebExtension(FileUploadUtils.getExtension(f));
     }
 
     /**
@@ -70,6 +72,6 @@ public class OfficeFilter extends FileFilter {
      */
     public String getDescription() {
 
-        return "Office";
+        return "Html";
     }
 }
