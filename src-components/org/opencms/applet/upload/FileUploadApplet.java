@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2006/12/18 11:07:08 $
- * Version: $Revision: 1.19.4.2 $
+ * Date   : $Date: 2006/12/19 12:10:09 $
+ * Version: $Revision: 1.19.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.2 $ 
+ * @version $Revision: 1.19.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,27 +165,35 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private FontMetrics m_metrics;
     private Graphics m_offgraphics;
     private Image m_offscreen;
+    
     /** The URL of the OpenCms instance. */
     private String m_opencms = "";
+    
     /** Output mode selector. */
     private int m_outputMode;
+    
     private ModalDialog m_overwriteDialog;
     private String m_overwriteDialogCancel = "Cancel";
     private String m_overwriteDialogIntro = "The files listed below already exist on the server. \nAll checked files will be overwritten.";
     private String m_overwriteDialogLocale = "en";
     private String m_overwriteDialogOk = "Ok";
     private String m_overwriteDialogTitle = "Select the files to overwrite on the server";
-    /** List of potential overwrites*/
+    
+    /** List of potential overwrites. */
     private List m_overwrites;
+    
     /** The Target Frame to return to after uploading the files. */
     private String m_redirectTargetFrame = "";
 
     /** The URL to return to after uploading the files. */
     private String m_redirectUrl = "";
+    
     /** Number of resources to upload. */
     private int m_resources;
+    
     /** Applet thread. */
-    Thread m_runner;
+    private Thread m_runner;
+    
     /** Definition of the images during upload. */
     private Image m_source;
 
@@ -199,243 +207,6 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
     /** The name of the folder to upload to. */
     private String m_uploadFolder = "";
-
-    /**
-     * Adds a single file to the zip output.<p>
-     * 
-     * @param zipStream the zip output stream
-     * @param file the file to add to the stream
-     * @throws Exception if something goes wrong
-     */
-    private void addFileToZip(ZipOutputStream zipStream, File file) throws Exception {
-
-        // add to zipfile
-        String name = file.getAbsolutePath();
-        name = name.substring(m_fileSelector.getCurrentDirectory().getAbsolutePath().length());
-        if (name.length() > 40) {
-            name = "..." + name.substring(name.length() - 40, name.length());
-        }
-
-        m_message = m_messageOutputAdding + " " + name + "..";
-        m_step++;
-        repaint();
-        ZipEntry entry = new ZipEntry(name);
-        zipStream.putNextEntry(entry);
-        zipStream.write(getFileBytes(file));
-        zipStream.closeEntry();
-    }
-
-    private void addFolderToZip(ZipOutputStream zipStream, File file) throws Exception {
-
-        File[] children = file.listFiles();
-        File child;
-        for (int i = 0; i < children.length; i++) {
-            child = children[i];
-            if (child.isDirectory()) {
-                addFolderToZip(zipStream, child);
-            } else {
-                addFileToZip(zipStream, child);
-            }
-        }
-    }
-
-    /**
-     * Returns the merge of both file arrays with no check for duplications. <p>
-     * 
-     * @param files first array of files 
-     * 
-     * @param overwriteFiles 2nd array of files 
-     * 
-     * @return the union of both file arrays
-     */
-    private File[] addOverwrites(File[] files, File[] overwriteFiles) {
-
-        List result = new ArrayList(files.length + overwriteFiles.length);
-        // faster for loop;)
-        for (int i = files.length - 1; i >= 0; i--) {
-            result.add(files[i]);
-        }
-        for (int i = overwriteFiles.length - 1; i >= 0; i--) {
-            result.add(overwriteFiles[i]);
-        }
-
-        return (File[])result.toArray(new File[result.size()]);
-    }
-
-    /**
-     * Checks if the given client files exist on the server and stores duplications in the internal member 
-     * {@link #m_overwrites}. <p>
-     * Comparison is made by cutting the current directory of the file chooser from the path of the given files. 
-     * The server files (VFS files) to compare to are found by the current session of the user which finds the correct site and 
-     * the knowledge about the current directory. File translation rules are taken into account on the server. <p>
-     * 
-     * @param files the local files to check if they exist in the VFS 
-     * 
-     * @return one of {@link ModalDialog#ERROR_OPTION} , {@link ModalDialog#CANCEL_OPTION}, {@link ModalDialog#APPROVE_OPTION}. 
-     */
-    int checkServerOverwrites(File[] files) {
-
-        m_action = m_actionOverwriteCheck;
-        repaint();
-        int rtv = ModalDialog.ERROR_OPTION;
-        // collect files
-        List fileNames = new ArrayList();
-        for (int i = 0; i < files.length; i++) {
-            getRelativeFilePaths(files[i], fileNames);
-        }
-
-        StringBuffer uploadFiles = new StringBuffer();
-        Iterator it = fileNames.iterator();
-        while (it.hasNext()) {
-            uploadFiles.append(((String)it.next())).append('\n');
-        }
-
-        // request to server
-        HttpClient client = new HttpClient();
-        PostMethod post = new PostMethod(m_targetUrl);
-        try {
-            // files to upload:
-            Header postHeader = new Header("uploadFiles", URLEncoder.encode(uploadFiles.toString(), "utf-8"));
-            post.addRequestHeader(postHeader);
-            // upload folder in vfs: 
-            Header header2 = new Header("uploadFolder", URLEncoder.encode(getParameter("filelist"), "utf-8"));
-            post.addRequestHeader(header2);
-
-            // the action constant
-            post.setParameter("action", DIALOG_CHECK_OVERWRITE);
-
-            // add jsessionid query string
-            String sessionId = getParameter("sessionId");
-            String query = ";" + C_JSESSIONID.toLowerCase() + "=" + sessionId;
-            post.setQueryString(query);
-            post.addRequestHeader(C_JSESSIONID, sessionId);
-
-            HttpConnectionParams connectionParams = client.getHttpConnectionManager().getParams();
-            connectionParams.setConnectionTimeout(5000);
-
-            // add the session cookie
-            client.getState();
-            client.getHostConfiguration().getHost();
-
-            HttpState initialState = new HttpState();
-            URI uri = new URI(m_targetUrl, false);
-            Cookie sessionCookie = new Cookie(uri.getHost(), C_JSESSIONID, sessionId, "/", null, false);
-            initialState.addCookie(sessionCookie);
-            client.setState(initialState);
-            int status = client.executeMethod(post);
-
-            if (status == HttpStatus.SC_OK) {
-                String response = post.getResponseBodyAsString();
-                m_overwrites = parseDuplicateFiles(URLDecoder.decode(response, "utf-8"));
-                if (m_overwrites.size() > 0) {
-                    rtv = showDuplicationsDialog(m_overwrites);
-                } else {
-                    rtv = ModalDialog.APPROVE_OPTION;
-                }
-
-            } else {
-                // continue without overwrite check 
-                String error = m_errorLine1 + "\n" + post.getStatusLine();
-                System.err.println(error);
-            }
-        } catch (HttpException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace(System.err);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace(System.err);
-        }
-        return rtv;
-    }
-
-    /**
-     * Counts all resources to add to the zip file.<p>
-     * 
-     * @param files the files to be packed into the zipfile
-     * @return number of resources
-     */
-    private int countResources(File[] files) {
-
-        int count = 0;
-        // look through all selected resources
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isFile()) {
-                // its a file, count it
-                count++;
-            } else {
-                // its a folder, count all resources in it and add the number
-                count += countSubresources(files[i]);
-            }
-        }
-        return count;
-    }
-
-    /**
-     * Counts all resources in a folder.<p>
-     * 
-     * @param folder the folder to count
-     * @return number of resources
-     */
-    private int countSubresources(File folder) {
-
-        int count = 0;
-        if (folder.isFile()) {
-            // check if is really a folder
-            count = 1;
-        } else {
-            // recurest to count
-            count = countResources(folder.listFiles());
-        }
-        return count;
-    }
-
-    /**
-     * Creates a ZipFile from all files to upload.<p>
-     * 
-     * @param files the files to be packed into the zipfile
-     * @return reference to the zipfile
-     */
-    private File createZipFile(File[] files) {
-
-        File targetFile = null;
-        if (files.length > 0) {
-            m_action = m_actionOutputCreate;
-            try {
-                // create a new zipStream
-                String zipFileName = ".opencms_upload.zip";
-                String userHome = System.getProperty("user.home");
-                // create file in user home directory where write permissions should exist
-                if (userHome != null) {
-                    if (!userHome.endsWith(File.separator)) {
-                        userHome = userHome + File.separator;
-                    }
-                    zipFileName = userHome + zipFileName;
-                }
-                ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(zipFileName));
-                // loop through all files
-                for (int i = 0; i < files.length; i++) {
-
-                    // if its a file, add it to the zipfile
-                    if (files[i].isFile()) {
-                        addFileToZip(zipStream, files[i]);
-                    } else {
-
-                        addFolderToZip(zipStream, files[i]);
-                    }
-                    repaint();
-                    // free mem
-                    files[i] = null;
-                }
-                zipStream.close();
-                // get the zipfile
-                targetFile = new File(zipFileName);
-            } catch (Exception e) {
-                System.err.println("Error creating zipfile " + e);
-            }
-
-        }
-        return targetFile;
-    }
 
     /**
      * @see java.applet.Applet#destroy()
@@ -465,141 +236,6 @@ public class FileUploadApplet extends JApplet implements Runnable {
         }
 
         stop();
-    }
-
-    /**
-     * Extracts the colors from the parameter String.<p>
-     * 
-     * @param colors list of color names and values
-     * @return HashMap with color names and values
-     */
-    private HashMap extractColors(String colors) {
-
-        HashMap colorStorage = new HashMap();
-
-        if (colors != null) {
-            StringTokenizer tok = new StringTokenizer(colors, ",");
-            // loop through the tokens
-            // all tokens have the format "extension=type"    
-            while (tok.hasMoreElements()) {
-                String token = tok.nextToken();
-                // now extract the file extension and the type
-                String colorName = token.substring(0, token.indexOf("="));
-                String colorValue = token.substring(token.indexOf("=") + 1);
-                colorStorage.put(colorName, colorValue);
-            }
-        }
-        return colorStorage;
-    }
-
-    /**
-     * Gets a color for drawing the output.<p>
-     * 
-     * @param colorName the name of the color
-     * @return color
-     */
-    private Color getColor(String colorName) {
-
-        Color col = Color.black;
-        try {
-            col = Color.decode((String)m_colors.get(colorName));
-        } catch (Exception e) {
-            System.err.println("Error reading " + colorName + ":" + e);
-        }
-        return col;
-    }
-
-    /**
-     * Returns a byte array containing the content of server FS file.<p>
-     *
-     * @param file the name of the file to read
-     * @return bytes[] the content of the file
-     * @throws Exception if something goes wrong
-     */
-    private byte[] getFileBytes(File file) throws Exception {
-
-        byte[] buffer = null;
-        FileInputStream fileStream = null;
-        int charsRead;
-        int size;
-        try {
-            fileStream = new FileInputStream(file);
-            charsRead = 0;
-            size = new Long(file.length()).intValue();
-            buffer = new byte[size];
-            while (charsRead < size) {
-                charsRead += fileStream.read(buffer, charsRead, size - charsRead);
-            }
-            return buffer;
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            try {
-                if (fileStream != null) {
-                    fileStream.close();
-                }
-            } catch (IOException e) {
-                // ignore
-            }
-        }
-    }
-
-    /**
-     * Puts all given files (and all files in subtree of given potential "folder" file) into the given 
-     * list (as {@link File} instances) with respect to the current file filter in the file chooser. 
-     * <p>
-     * 
-     * 
-     * @param file the file or folder to collect all subfiles of with respect to the current file chooser. 
-     * 
-     * @param fileNames all given files (and all files in subtree of given potential "folder" file) into the given 
-     *      list (as {@link File} instances) with respect to the current file filter in the file chooser 
-     */
-    private void getFilesInTree(final File file, final List fileNames) {
-
-        if (file.isDirectory()) {
-            File[] children = file.listFiles();
-            for (int i = 0; i < children.length; i++) {
-                getFilesInTree(children[i], fileNames);
-
-            }
-        } else {
-            FileFilter filter = m_fileSelector.getFileFilter();
-            if (filter.accept(file)) {
-                fileNames.add(file);
-            }
-        }
-    }
-
-    /**
-     * Puts the path of the given file in relation to the current root directory of the intenal 
-     * file chooser with support for folder-recursion. <p>
-     * 
-     * 
-     * @param file the file to put into relation to the root directory of the internal file chooser or a folder 
-     *      of files to do this. 
-     * 
-     * @param fileNames will contain the result. 
-     */
-    private void getRelativeFilePaths(final File file, final List fileNames) {
-
-        if (file.isDirectory()) {
-            File[] children = file.listFiles();
-            for (int i = 0; i < children.length; i++) {
-                getRelativeFilePaths(children[i], fileNames);
-
-            }
-        } else {
-            FileFilter filter = m_fileSelector.getFileFilter();
-            if (filter.accept(file)) {
-                String rootDir = m_fileSelector.getCurrentDirectory().getAbsolutePath();
-                int rootDirLength = rootDir.length();
-                String filePath = file.getAbsolutePath();
-                filePath = filePath.substring(rootDirLength);
-                filePath = filePath.replace('\\', '/');
-                fileNames.add(filePath);
-            }
-        }
     }
 
     /**
@@ -795,26 +431,6 @@ public class FileUploadApplet extends JApplet implements Runnable {
         g.drawImage(m_offscreen, 0, 0, null);
     }
 
-    private List parseDuplicateFiles(String responseBodyAsString) {
-
-        List result = new ArrayList();
-        LineNumberReader reader = new LineNumberReader(new InputStreamReader(new ByteArrayInputStream(
-            responseBodyAsString.getBytes())));
-        try {
-            String trim;
-            for (String read = reader.readLine(); read != null; read = reader.readLine()) {
-                trim = read.trim();
-                if (!(trim.equals("") || trim.equals("\n"))) {
-                    // empty strings could happen if the serverside jsp is edited and has new unwanted linebreaks
-                    result.add(read);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
     /**
      * @see java.lang.Runnable#run()
      */
@@ -944,6 +560,429 @@ public class FileUploadApplet extends JApplet implements Runnable {
         }
     }
 
+    /**
+     * @see java.applet.Applet#start()
+     */
+    public void start() {
+
+        if (m_certificateAccepted) {
+            // certificate was accepted, start upload thread
+            m_runner = new Thread(this);
+            m_runner.start();
+        } else {
+            // certificate was not accepted, show error message
+            displayError();
+        }
+    }
+
+    /**
+     * @see java.applet.Applet#stop()
+     */
+    public void stop() {
+
+        m_runner = null;
+    }
+
+    /**
+     * @see java.awt.Component#update(java.awt.Graphics)
+     */
+    public void update(Graphics g) {
+
+        paint(g);
+    }
+
+    /**
+     * Checks if the given client files exist on the server and stores duplications in the internal member 
+     * {@link #m_overwrites}. <p>
+     * Comparison is made by cutting the current directory of the file chooser from the path of the given files. 
+     * The server files (VFS files) to compare to are found by the current session of the user which finds the correct site and 
+     * the knowledge about the current directory. File translation rules are taken into account on the server. <p>
+     * 
+     * @param files the local files to check if they exist in the VFS 
+     * 
+     * @return one of {@link ModalDialog#ERROR_OPTION} , {@link ModalDialog#CANCEL_OPTION}, {@link ModalDialog#APPROVE_OPTION}. 
+     */
+    int checkServerOverwrites(File[] files) {
+
+        m_action = m_actionOverwriteCheck;
+        repaint();
+        int rtv = ModalDialog.ERROR_OPTION;
+        // collect files
+        List fileNames = new ArrayList();
+        for (int i = 0; i < files.length; i++) {
+            getRelativeFilePaths(files[i], fileNames);
+        }
+
+        StringBuffer uploadFiles = new StringBuffer();
+        Iterator it = fileNames.iterator();
+        while (it.hasNext()) {
+            uploadFiles.append(((String)it.next())).append('\n');
+        }
+
+        // request to server
+        HttpClient client = new HttpClient();
+        PostMethod post = new PostMethod(m_targetUrl);
+        try {
+            // files to upload:
+            Header postHeader = new Header("uploadFiles", URLEncoder.encode(uploadFiles.toString(), "utf-8"));
+            post.addRequestHeader(postHeader);
+            // upload folder in vfs: 
+            Header header2 = new Header("uploadFolder", URLEncoder.encode(getParameter("filelist"), "utf-8"));
+            post.addRequestHeader(header2);
+
+            // the action constant
+            post.setParameter("action", DIALOG_CHECK_OVERWRITE);
+
+            // add jsessionid query string
+            String sessionId = getParameter("sessionId");
+            String query = ";" + C_JSESSIONID.toLowerCase() + "=" + sessionId;
+            post.setQueryString(query);
+            post.addRequestHeader(C_JSESSIONID, sessionId);
+
+            HttpConnectionParams connectionParams = client.getHttpConnectionManager().getParams();
+            connectionParams.setConnectionTimeout(5000);
+
+            // add the session cookie
+            client.getState();
+            client.getHostConfiguration().getHost();
+
+            HttpState initialState = new HttpState();
+            URI uri = new URI(m_targetUrl, false);
+            Cookie sessionCookie = new Cookie(uri.getHost(), C_JSESSIONID, sessionId, "/", null, false);
+            initialState.addCookie(sessionCookie);
+            client.setState(initialState);
+            int status = client.executeMethod(post);
+
+            if (status == HttpStatus.SC_OK) {
+                String response = post.getResponseBodyAsString();
+                m_overwrites = parseDuplicateFiles(URLDecoder.decode(response, "utf-8"));
+                if (m_overwrites.size() > 0) {
+                    rtv = showDuplicationsDialog(m_overwrites);
+                } else {
+                    rtv = ModalDialog.APPROVE_OPTION;
+                }
+
+            } else {
+                // continue without overwrite check 
+                String error = m_errorLine1 + "\n" + post.getStatusLine();
+                System.err.println(error);
+            }
+        } catch (HttpException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace(System.err);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace(System.err);
+        }
+        return rtv;
+    }
+
+    /**
+     * Adds a single file to the zip output.<p>
+     * 
+     * @param zipStream the zip output stream
+     * @param file the file to add to the stream
+     * @throws Exception if something goes wrong
+     */
+    private void addFileToZip(ZipOutputStream zipStream, File file) throws Exception {
+
+        // add to zipfile
+        String name = file.getAbsolutePath();
+        name = name.substring(m_fileSelector.getCurrentDirectory().getAbsolutePath().length());
+        if (name.length() > 40) {
+            name = "..." + name.substring(name.length() - 40, name.length());
+        }
+
+        m_message = m_messageOutputAdding + " " + name + "..";
+        m_step++;
+        repaint();
+        ZipEntry entry = new ZipEntry(name);
+        zipStream.putNextEntry(entry);
+        zipStream.write(getFileBytes(file));
+        zipStream.closeEntry();
+    }
+
+    private void addFolderToZip(ZipOutputStream zipStream, File file) throws Exception {
+
+        File[] children = file.listFiles();
+        File child;
+        for (int i = 0; i < children.length; i++) {
+            child = children[i];
+            if (child.isDirectory()) {
+                addFolderToZip(zipStream, child);
+            } else {
+                addFileToZip(zipStream, child);
+            }
+        }
+    }
+
+    /**
+     * Returns the merge of both file arrays with no check for duplications. <p>
+     * 
+     * @param files first array of files 
+     * 
+     * @param overwriteFiles 2nd array of files 
+     * 
+     * @return the union of both file arrays
+     */
+    private File[] addOverwrites(File[] files, File[] overwriteFiles) {
+
+        List result = new ArrayList(files.length + overwriteFiles.length);
+        // faster for loop;)
+        for (int i = files.length - 1; i >= 0; i--) {
+            result.add(files[i]);
+        }
+        for (int i = overwriteFiles.length - 1; i >= 0; i--) {
+            result.add(overwriteFiles[i]);
+        }
+
+        return (File[])result.toArray(new File[result.size()]);
+    }
+
+    /**
+     * Counts all resources to add to the zip file.<p>
+     * 
+     * @param files the files to be packed into the zipfile
+     * @return number of resources
+     */
+    private int countResources(File[] files) {
+
+        int count = 0;
+        // look through all selected resources
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                // its a file, count it
+                count++;
+            } else {
+                // its a folder, count all resources in it and add the number
+                count += countSubresources(files[i]);
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Counts all resources in a folder.<p>
+     * 
+     * @param folder the folder to count
+     * @return number of resources
+     */
+    private int countSubresources(File folder) {
+
+        int count = 0;
+        if (folder.isFile()) {
+            // check if is really a folder
+            count = 1;
+        } else {
+            // recurest to count
+            count = countResources(folder.listFiles());
+        }
+        return count;
+    }
+
+    /**
+     * Creates a ZipFile from all files to upload.<p>
+     * 
+     * @param files the files to be packed into the zipfile
+     * @return reference to the zipfile
+     */
+    private File createZipFile(File[] files) {
+
+        File targetFile = null;
+        if (files.length > 0) {
+            m_action = m_actionOutputCreate;
+            try {
+                // create a new zipStream
+                String zipFileName = ".opencms_upload.zip";
+                String userHome = System.getProperty("user.home");
+                // create file in user home directory where write permissions should exist
+                if (userHome != null) {
+                    if (!userHome.endsWith(File.separator)) {
+                        userHome = userHome + File.separator;
+                    }
+                    zipFileName = userHome + zipFileName;
+                }
+                ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(zipFileName));
+                // loop through all files
+                for (int i = 0; i < files.length; i++) {
+
+                    // if its a file, add it to the zipfile
+                    if (files[i].isFile()) {
+                        addFileToZip(zipStream, files[i]);
+                    } else {
+
+                        addFolderToZip(zipStream, files[i]);
+                    }
+                    repaint();
+                    // free mem
+                    files[i] = null;
+                }
+                zipStream.close();
+                // get the zipfile
+                targetFile = new File(zipFileName);
+            } catch (Exception e) {
+                System.err.println("Error creating zipfile " + e);
+            }
+
+        }
+        return targetFile;
+    }
+
+    /**
+     * Extracts the colors from the parameter String.<p>
+     * 
+     * @param colors list of color names and values
+     * @return HashMap with color names and values
+     */
+    private HashMap extractColors(String colors) {
+
+        HashMap colorStorage = new HashMap();
+
+        if (colors != null) {
+            StringTokenizer tok = new StringTokenizer(colors, ",");
+            // loop through the tokens
+            // all tokens have the format "extension=type"    
+            while (tok.hasMoreElements()) {
+                String token = tok.nextToken();
+                // now extract the file extension and the type
+                String colorName = token.substring(0, token.indexOf("="));
+                String colorValue = token.substring(token.indexOf("=") + 1);
+                colorStorage.put(colorName, colorValue);
+            }
+        }
+        return colorStorage;
+    }
+
+    /**
+     * Gets a color for drawing the output.<p>
+     * 
+     * @param colorName the name of the color
+     * @return color
+     */
+    private Color getColor(String colorName) {
+
+        Color col = Color.black;
+        try {
+            col = Color.decode((String)m_colors.get(colorName));
+        } catch (Exception e) {
+            System.err.println("Error reading " + colorName + ":" + e);
+        }
+        return col;
+    }
+
+    /**
+     * Returns a byte array containing the content of server FS file.<p>
+     *
+     * @param file the name of the file to read
+     * @return bytes[] the content of the file
+     * @throws Exception if something goes wrong
+     */
+    private byte[] getFileBytes(File file) throws Exception {
+
+        byte[] buffer = null;
+        FileInputStream fileStream = null;
+        int charsRead;
+        int size;
+        try {
+            fileStream = new FileInputStream(file);
+            charsRead = 0;
+            size = new Long(file.length()).intValue();
+            buffer = new byte[size];
+            while (charsRead < size) {
+                charsRead += fileStream.read(buffer, charsRead, size - charsRead);
+            }
+            return buffer;
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            try {
+                if (fileStream != null) {
+                    fileStream.close();
+                }
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+    }
+
+    /**
+     * Puts all given files (and all files in subtree of given potential "folder" file) into the given 
+     * list (as {@link File} instances) with respect to the current file filter in the file chooser. 
+     * <p>
+     * 
+     * 
+     * @param file the file or folder to collect all subfiles of with respect to the current file chooser. 
+     * 
+     * @param fileNames all given files (and all files in subtree of given potential "folder" file) into the given 
+     *      list (as {@link File} instances) with respect to the current file filter in the file chooser 
+     */
+    private void getFilesInTree(final File file, final List fileNames) {
+
+        if (file.isDirectory()) {
+            File[] children = file.listFiles();
+            for (int i = 0; i < children.length; i++) {
+                getFilesInTree(children[i], fileNames);
+
+            }
+        } else {
+            FileFilter filter = m_fileSelector.getFileFilter();
+            if (filter.accept(file)) {
+                fileNames.add(file);
+            }
+        }
+    }
+
+    /**
+     * Puts the path of the given file in relation to the current root directory of the intenal 
+     * file chooser with support for folder-recursion. <p>
+     * 
+     * 
+     * @param file the file to put into relation to the root directory of the internal file chooser or a folder 
+     *      of files to do this. 
+     * 
+     * @param fileNames will contain the result. 
+     */
+    private void getRelativeFilePaths(final File file, final List fileNames) {
+
+        if (file.isDirectory()) {
+            File[] children = file.listFiles();
+            for (int i = 0; i < children.length; i++) {
+                getRelativeFilePaths(children[i], fileNames);
+
+            }
+        } else {
+            FileFilter filter = m_fileSelector.getFileFilter();
+            if (filter.accept(file)) {
+                String rootDir = m_fileSelector.getCurrentDirectory().getAbsolutePath();
+                int rootDirLength = rootDir.length();
+                String filePath = file.getAbsolutePath();
+                filePath = filePath.substring(rootDirLength);
+                filePath = filePath.replace('\\', '/');
+                fileNames.add(filePath);
+            }
+        }
+    }
+
+    private List parseDuplicateFiles(String responseBodyAsString) {
+
+        List result = new ArrayList();
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(new ByteArrayInputStream(
+            responseBodyAsString.getBytes())));
+        try {
+            String trim;
+            for (String read = reader.readLine(); read != null; read = reader.readLine()) {
+                trim = read.trim();
+                if (!(trim.equals("") || trim.equals("\n"))) {
+                    // empty strings could happen if the serverside jsp is edited and has new unwanted linebreaks
+                    result.add(read);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     /** 
      * Displays the dialog that shows the list of files that will be overwritten on the server.
      * <p>
@@ -1010,29 +1049,6 @@ public class FileUploadApplet extends JApplet implements Runnable {
     }
 
     /**
-     * @see java.applet.Applet#start()
-     */
-    public void start() {
-
-        if (m_certificateAccepted) {
-            // certificate was accepted, start upload thread
-            m_runner = new Thread(this);
-            m_runner.start();
-        } else {
-            // certificate was not accepted, show error message
-            displayError();
-        }
-    }
-
-    /**
-     * @see java.applet.Applet#stop()
-     */
-    public void stop() {
-
-        m_runner = null;
-    }
-
-    /**
      * Return all files that are found in the first argument except a matching path suffix is found in the list 
      * of Strings given by the 2nd argument. <p>
      * 
@@ -1062,14 +1078,6 @@ public class FileUploadApplet extends JApplet implements Runnable {
             result.add(new File(rootPath, path));
         }
         return (File[])result.toArray(new File[result.size()]);
-    }
-
-    /**
-     * @see java.awt.Component#update(java.awt.Graphics)
-     */
-    public void update(Graphics g) {
-
-        paint(g);
     }
 
     /**

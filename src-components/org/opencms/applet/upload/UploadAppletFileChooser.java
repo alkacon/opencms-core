@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/UploadAppletFileChooser.java,v $
- * Date   : $Date: 2006/12/18 11:07:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/19 12:10:09 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.swing.JFileChooser;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  */
 public class UploadAppletFileChooser extends javax.swing.JFileChooser {
@@ -62,15 +62,16 @@ public class UploadAppletFileChooser extends javax.swing.JFileChooser {
     private static final long serialVersionUID = 6473542662952983859L;
 
     /** The applet to work for. */
-    private FileUploadApplet m_applet;
+    protected FileUploadApplet m_applet;
 
     /** Access to the internal file chooser dialog object. */
     protected JDialog m_dialogAccessHack;
 
-    private int m_returnValue = ERROR_OPTION;
+    /** Return value code. */
+    protected int m_returnValue = ERROR_OPTION;
 
     /**
-     * Creates a file chooser for the given upload applet. <p>
+     * Creates a file chooser for the given upload applet.<p>
      * 
      * @param applet the upload applet peer for this file chooser
      */
@@ -136,7 +137,7 @@ public class UploadAppletFileChooser extends javax.swing.JFileChooser {
         m_returnValue = ERROR_OPTION;
         rescanCurrentDirectory();
 
-        m_dialogAccessHack.show();
+        m_dialogAccessHack.setVisible(true);
         m_dialogAccessHack.dispose();
         m_dialogAccessHack = null;
         return m_returnValue;

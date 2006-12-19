@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ModalDialog.java,v $
- * Date   : $Date: 2006/12/18 11:07:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/19 12:10:09 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.swing.JPanel;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  */
 public class ModalDialog extends JDialog {
@@ -96,13 +96,13 @@ public class ModalDialog extends JDialog {
     private static final long serialVersionUID = 6915311633181971117L;
 
     /** The text of the cancel button. */
-    private String m_CancelText = "Cancel";
+    private String m_cancelText = "Cancel";
 
     /** The ui controls and model to interact with. */
     private JComponent m_controlPanel;
 
     /** The text of the ok button. */
-    private String m_OKText = "OK";
+    private String m_okText = "OK";
 
     /** One of the option constants. */
     protected int m_returnValue;
@@ -136,8 +136,8 @@ public class ModalDialog extends JDialog {
 
         super(JOptionPane.getFrameForComponent(component), title, true);
         m_controlPanel = controlComponent;
-        m_CancelText = cancelText;
-        m_OKText = okText;
+        m_cancelText = cancelText;
+        m_okText = okText;
 
         Container contentPane = getContentPane();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
@@ -165,7 +165,7 @@ public class ModalDialog extends JDialog {
         JPanel okCancelPanel = new JPanel();
         okCancelPanel.setLayout(new BoxLayout(okCancelPanel, BoxLayout.X_AXIS));
         okCancelPanel.add(Box.createHorizontalGlue());
-        JButton ok = new JButton(m_OKText);
+        JButton ok = new JButton(m_okText);
         ok.addActionListener(new ActionListener() {
 
             public void actionPerformed(final ActionEvent e) {
@@ -176,7 +176,7 @@ public class ModalDialog extends JDialog {
         });
         okCancelPanel.add(ok);
         okCancelPanel.add(Box.createHorizontalGlue());
-        JButton cancel = new JButton(m_CancelText);
+        JButton cancel = new JButton(m_cancelText);
         cancel.addActionListener(new ActionListener() {
 
             public void actionPerformed(final ActionEvent e) {
