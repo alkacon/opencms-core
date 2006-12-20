@@ -317,7 +317,6 @@ function buildHtmlGalleryItems(displayPage) {
 
 	var elem = document.getElementById("galleryitems");
 	elem.innerHTML = result;
-	oEditor.FCKLanguageManager.TranslateElements(document, "SPAN", "innerHTML") ;
 }
 
 /* stores the hide image info timeout to interrupt it on a mouseover */
