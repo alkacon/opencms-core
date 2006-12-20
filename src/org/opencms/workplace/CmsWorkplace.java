@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/12/14 09:58:17 $
- * Version: $Revision: 1.156.4.12 $
+ * Date   : $Date: 2006/12/20 14:02:24 $
+ * Version: $Revision: 1.156.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.12 $ 
+ * @version $Revision: 1.156.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -1113,7 +1113,12 @@ public abstract class CmsWorkplace {
                 result.append("] ");
                 result.append(key(Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0));
                 result.append(' ');
-                result.append(message.getUser().getName());
+                if (message.getUser() != null) {
+                    result.append(message.getUser().getName());
+                } else {
+                    // system message
+                    result.append(key(Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0));
+                }
                 result.append(":\n");
                 result.append(message.getMessage());
                 result.append("\n\n");

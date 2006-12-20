@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsBroadcast.java,v $
- * Date   : $Date: 2006/12/05 16:31:06 $
- * Version: $Revision: 1.7.8.1 $
+ * Date   : $Date: 2006/12/20 14:02:06 $
+ * Version: $Revision: 1.7.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.file.CmsUser;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7.8.1 $ 
+ * @version $Revision: 1.7.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,6 +93,8 @@ public class CmsBroadcast {
     /**
      * Returns the user that was the sender of this broadcast.<p>
      *
+     * It could be <code>null</code> to signalize a system message.<p>
+     * 
      * @return the user that was the sender of this broadcast
      */
     public CmsUser getUser() {

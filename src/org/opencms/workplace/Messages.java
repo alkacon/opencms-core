@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2006/11/29 15:04:10 $
- * Version: $Revision: 1.23.4.10 $
+ * Date   : $Date: 2006/12/20 14:02:24 $
+ * Version: $Revision: 1.23.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.4.10 $ 
+ * @version $Revision: 1.23.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,6 +171,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_STATENIP_0 = "GUI_EXPLORER_STATENIP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_BROADCAST_FROM_SYSTEM_0 = "GUI_LABEL_BROADCAST_FROM_SYSTEM_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_BROADCASTMESSAGEFROM_0 = "GUI_LABEL_BROADCASTMESSAGEFROM_0";

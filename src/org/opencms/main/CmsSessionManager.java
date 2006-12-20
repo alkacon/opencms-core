@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2006/12/18 17:16:28 $
- * Version: $Revision: 1.12.4.8 $
+ * Date   : $Date: 2006/12/20 14:02:06 $
+ * Version: $Revision: 1.12.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
@@ -76,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.8 $ 
+ * @version $Revision: 1.12.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -296,7 +294,11 @@ public class CmsSessionManager {
     /**
      * Sends a broadcast to all sessions of a given user.<p>
      * 
-     * @param fromUser the user sending the broadcast, like <code>cms.getRequestContext().currentUser()</code>
+     * The user sending the message may be a real user like 
+     * <code>cms.getRequestContext().currentUser()</code> or
+     * <code>null</code> for a system message.<p>
+     * 
+     * @param fromUser the user sending the broadcast
      * @param message the message to broadcast
      * @param toUser the target (receiver) of the broadcast
      */
