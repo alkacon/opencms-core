@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2006/12/18 11:07:07 $
- * Version: $Revision: 1.14.2.6 $
+ * Date   : $Date: 2006/12/20 13:54:02 $
+ * Version: $Revision: 1.14.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14.2.6 $ 
+ * @version $Revision: 1.14.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -391,9 +391,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message contant for key in the resource bundle. */
     public static final String GUI_TITLE_NEWPROPERTYINFO_0 = "GUI_TITLE_NEWPROPERTYINFO_0";
 
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_TOOLTIP_TASK_INFO_5 = "GUI_TOOLTIP_TASK_INFO_5";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOADAPPLET_ACTION_COUNT_0 = "GUI_UPLOADAPPLET_ACTION_COUNT_0";
 
@@ -404,7 +401,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_UPLOADAPPLET_ACTION_ERROR_0 = "GUI_UPLOADAPPLET_ACTION_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOADAPPLET_ACTION_OVERWRITECHECK_0 = "org.GUI_UPLOADAPPLET_ACTION_OVERWRITECHECK_0.workplace.explorer.messages";
+    public static final String GUI_UPLOADAPPLET_ACTION_OVERWRITECHECK_0 = "GUI_UPLOADAPPLET_ACTION_OVERWRITECHECK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOADAPPLET_ACTION_SELECT_0 = "GUI_UPLOADAPPLET_ACTION_SELECT_0";
