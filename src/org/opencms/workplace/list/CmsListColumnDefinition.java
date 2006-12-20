@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2006/11/29 15:00:26 $
- * Version: $Revision: 1.25.4.4 $
+ * Date   : $Date: 2006/12/20 13:53:30 $
+ * Version: $Revision: 1.25.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.25.4.4 $ 
+ * @version $Revision: 1.25.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,7 +132,7 @@ public class CmsListColumnDefinition {
             defaultAction.setListId(m_listId);
         }
         // set the column id
-        defaultAction.setColumnForLink(getId());
+        defaultAction.setColumnForLink(this);
 
         m_defaultActions.add(defaultAction);
     }
@@ -401,7 +401,7 @@ public class CmsListColumnDefinition {
         if (!m_defaultActions.isEmpty()) {
             Iterator itDefaultActions = m_defaultActions.iterator();
             while (itDefaultActions.hasNext()) {
-                I_CmsListDirectAction defAction = (I_CmsListDirectAction)itDefaultActions.next();
+                CmsListDefaultAction defAction = (CmsListDefaultAction)itDefaultActions.next();
                 defAction.setItem(item);
                 boolean enabled = defAction.isEnabled();
                 if (isPrintable) {
@@ -608,6 +608,12 @@ public class CmsListColumnDefinition {
     public void setFormatter(I_CmsListFormatter formatter) {
 
         m_formatter = formatter;
+        // set the formatter for all default actions
+        Iterator it = m_defaultActions.iterator();
+        while (it.hasNext()) {
+            CmsListDefaultAction action = (CmsListDefaultAction)it.next();
+            action.setColumnForLink(this);
+        }
     }
 
     /**
