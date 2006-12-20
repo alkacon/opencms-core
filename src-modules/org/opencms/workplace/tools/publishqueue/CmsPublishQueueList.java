@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueList.java,v $
- * Date   : $Date: 2006/12/14 14:33:24 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/20 14:01:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,18 @@
 
 package org.opencms.workplace.tools.publishqueue;
 
+import org.opencms.db.CmsPublishList;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobEnqueued;
 import org.opencms.publish.CmsPublishJobRunning;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -46,6 +50,8 @@ import org.opencms.workplace.list.CmsListDateMacroFormatter;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.I_CmsListFormatter;
@@ -65,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.5
  */
@@ -127,6 +133,9 @@ public class CmsPublishQueueList extends A_CmsListDialog {
 
     /** list column id constant. */
     private static final String LIST_COLUMN_USER = "cu";
+
+    /** list detail id constant. */
+    private static final String LIST_DETAIL_RESOURCES = "dr";
 
     /**
      * Public constructor.<p>
@@ -213,11 +222,75 @@ public class CmsPublishQueueList extends A_CmsListDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
+     */
+    protected String customHtmlStart() {
+
+        StringBuffer result = new StringBuffer(8);
+        result.append("<script type=\"text/javascript\">\n");
+        result.append("adminVal=\"" + getJsp().link("/system/workplace/views/admin/admin-fs.jsp") + "\";\n");
+        result.append("for(var i = 0; i < top.frames[0].document.getElementsByName(\"wpView\")[0].length; i++){\n");
+        result.append("if(top.frames[0].document.getElementsByName(\"wpView\")[0].options[i].value==adminVal){\n");
+        result.append("top.frames[0].document.getElementsByName(\"wpView\")[0].options[i].selected=true;\n");
+        result.append("break;\n");
+        result.append("}\n}\n");
+        result.append("</script>");
+        return result.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlEnd()
+     */
+    protected String defaultActionHtmlEnd() {
+
+        return "&nbsp;<br>";
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
     protected void fillDetails(String detailId) {
 
-        //noop
+        // get content
+        List publishJobs = getList().getAllContent();
+        Iterator itPublishJobs = publishJobs.iterator();
+        while (itPublishJobs.hasNext()) {
+            CmsListItem item = (CmsListItem)itPublishJobs.next();
+            int state = ((Integer)item.get(LIST_COLUMN_STATE)).intValue();
+            boolean enabled = ((state == STATE_PROCEED) && (getCms().hasRole(CmsRole.ADMINISTRATOR) || getCms().getRequestContext().currentUser().getName().equals(
+                item.get(LIST_COLUMN_USER))));
+            enabled = enabled || (getCms().hasRole(CmsRole.ADMINISTRATOR) || (state == STATE_OWN));
+            if (!enabled) {
+                continue;
+            }
+            CmsUUID publishHistoryId = new CmsUUID(item.getId());
+            CmsPublishJobBase publishJob = OpenCms.getPublishManager().getJobByPublishHistoryId(publishHistoryId);
+            StringBuffer html = new StringBuffer(32);
+            if (publishJob != null && detailId.equals(LIST_DETAIL_RESOURCES)) {
+                // resources
+                CmsPublishList publishList;
+                if (publishJob instanceof CmsPublishJobEnqueued) {
+                    publishList = ((CmsPublishJobEnqueued)publishJob).getPublishList();
+                } else if (publishJob instanceof CmsPublishJobRunning) {
+                    publishList = ((CmsPublishJobRunning)publishJob).getPublishList();
+                } else {
+                    continue;
+                }
+                List resources = new ArrayList(publishList.size());
+                resources.addAll(publishList.getFolderList());
+                resources.addAll(publishList.getFileList());
+                resources.addAll(publishList.getDeletedFolderList());
+                Iterator itResources = resources.iterator();
+                while (itResources.hasNext()) {
+                    CmsResource resource = (CmsResource)itResources.next();
+                    html.append(getCms().getSitePath(resource));
+                    html.append("<br>");
+                }
+            } else {
+                continue;
+            }
+            item.set(detailId, html.toString());
+        }
     }
 
     /**
@@ -233,7 +306,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
         // get the current job to display it at the top of the publish queue
         if (OpenCms.getPublishManager().isRunning()) {
             CmsPublishJobRunning currentJob = OpenCms.getPublishManager().getCurrentPublishJob();
-            CmsListItem item = getList().newItem(new Long(currentJob.getEnqueueTime()).toString());
+            CmsListItem item = getList().newItem(currentJob.getPublishList().getPublishHistoryId().toString());
             item.set(LIST_COLUMN_STATE, new Integer(STATE_PROCEED));
             item.set(LIST_COLUMN_NUMBER, new Integer(number));
             item.set(LIST_COLUMN_PROJECT, currentJob.getProjectName(getLocale()));
@@ -247,7 +320,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
         Iterator iter = OpenCms.getPublishManager().getPublishQueue().iterator();
         while (iter.hasNext()) {
             CmsPublishJobEnqueued publishJob = (CmsPublishJobEnqueued)iter.next();
-            CmsListItem item = getList().newItem(new Long(publishJob.getEnqueueTime()).toString());
+            CmsListItem item = getList().newItem(publishJob.getPublishList().getPublishHistoryId().toString());
             // check the state
             int state = STATE_OWN;
             if (!publishJob.getUserName().equals(getCms().getRequestContext().currentUser().getName())) {
@@ -281,18 +354,6 @@ public class CmsPublishQueueList extends A_CmsListDialog {
         CmsListDirectAction viewDirectAction = new CmsListDirectAction(LIST_ACTION_STATE) {
 
             /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
-             */
-            public CmsMessageContainer getHelpText() {
-
-                if (isEnabled()) {
-                    return super.getHelpText();
-                } else {
-                    return EMPTY_MESSAGE;
-                }
-            }
-
-            /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
             public boolean isEnabled() {
@@ -317,18 +378,6 @@ public class CmsPublishQueueList extends A_CmsListDialog {
 
         // add cancel action
         CmsListDirectAction cancelAction = new CmsListDirectAction(LIST_ACTION_CANCEL) {
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
-             */
-            public CmsMessageContainer getHelpText() {
-
-                if (isEnabled()) {
-                    return super.getHelpText();
-                } else {
-                    return EMPTY_MESSAGE;
-                }
-            }
 
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
@@ -460,7 +509,23 @@ public class CmsPublishQueueList extends A_CmsListDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        //noop
+        // create resources list item detail 
+        CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_DETAIL_RESOURCES);
+        resourcesDetails.setAtColumn(LIST_COLUMN_NUMBER);
+        resourcesDetails.setVisible(false);
+        resourcesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_PUBLISHQUEUE_DETAIL_LABEL_RESOURCES_0)));
+        resourcesDetails.setShowActionName(Messages.get().container(
+            Messages.GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_NAME_0));
+        resourcesDetails.setShowActionHelpText(Messages.get().container(
+            Messages.GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_HELP_0));
+        resourcesDetails.setHideActionName(Messages.get().container(
+            Messages.GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_NAME_0));
+        resourcesDetails.setHideActionHelpText(Messages.get().container(
+            Messages.GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_HELP_0));
+
+        // add author info item detail to meta data
+        metadata.addItemDetails(resourcesDetails);
     }
 
     /**

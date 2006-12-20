@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobInfoBean.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/20 14:01:20 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
@@ -127,6 +127,8 @@ final class CmsPublishJobInfoBean {
         m_locale = m_cms.getRequestContext().getLocale();
 
         m_publishList = publishList;
+        m_publishHistoryId = m_publishList.getPublishHistoryId();
+
         m_size = m_publishList.size();
         m_directPublish = m_publishList.isDirectPublish();
 
@@ -337,7 +339,6 @@ final class CmsPublishJobInfoBean {
         }
         m_cms = null;
         m_report = null;
-        m_publishHistoryId = m_publishList.getPublishHistoryId();
         m_publishList = null;
         if (m_publishReport instanceof CmsPublishReport) {
             ((CmsPublishReport)m_publishReport).finish();

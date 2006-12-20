@@ -1,12 +1,26 @@
-<%@ page import="org.opencms.workplace.tools.publishqueue.*" %><%// initialize list dialogs
-	CmsPublishQueuePersonalList wpPersonalQueue = new CmsPublishQueuePersonalList(pageContext, request, response);
-	CmsPublishQueueList wpPublishQueue = new CmsPublishQueueList(pageContext, request, response);
-	CmsPublishQueueTwoListsDialog wpTwoLists = new CmsPublishQueueTwoListsDialog(wpPersonalQueue, wpPublishQueue);
-	// perform the active list actions
-	wpTwoLists.displayDialog(true);
-	// perform the active list actions
-	if (wpPersonalQueue.isForwarded() || wpPublishQueue.isForwarded()) {
-		return;
-	}
-	// write the content of list dialogs
-	wpTwoLists.writeDialog();%>
+<%@ page import="
+    org.opencms.jsp.CmsJspActionElement, 
+    org.opencms.workplace.tools.publishqueue.CmsPublishQueueList,
+    org.opencms.workplace.tools.publishqueue.CmsPublishQueuePersonalList
+" %><%
+
+  CmsJspActionElement actionElement = new CmsJspActionElement(pageContext, request, response);
+
+  CmsPublishQueueList wpPublishQueue = new CmsPublishQueueList(pageContext, request, response);
+  // perform the list actions   
+  wpPublishQueue.displayDialog(true);
+  if (wpPublishQueue.isForwarded()) {
+    return;
+  }
+
+  CmsPublishQueuePersonalList wpPersonalQueue = new CmsPublishQueuePersonalList(actionElement);
+  // perform the list actions   
+  wpPersonalQueue.displayDialog(true);
+  if (wpPersonalQueue.isForwarded()) {
+    return;
+  }
+
+  // write the content of list dialogs
+  wpPublishQueue.writeDialog();
+  wpPersonalQueue.writeDialog();
+%>

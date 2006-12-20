@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2006/12/14 14:33:24 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/12/20 14:01:20 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -46,7 +47,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.5
  */
@@ -110,6 +111,20 @@ public class CmsPublishManager {
             return null;
         }
         return new CmsPublishJobRunning(m_publishEngine.getCurrentPublishJob().getPublishJob());
+    }
+
+    /**
+     * Returns a publish job based on its publish history id.<p>
+     * 
+     * The returned publish job may be an enqueued, running or finished publish job.<p>
+     * 
+     * @param publishHistoryId the publish hostory id to search for
+     * 
+     * @return the publish job with the given publish history id, or <code>null</code>
+     */
+    public CmsPublishJobBase getJobByPublishHistoryId(CmsUUID publishHistoryId) {
+
+        return m_publishEngine.getJobByPublishHistoryId(publishHistoryId);
     }
 
     /**

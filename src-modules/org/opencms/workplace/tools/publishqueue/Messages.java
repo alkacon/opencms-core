@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/Messages.java,v $
- * Date   : $Date: 2006/11/29 14:54:02 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/20 14:01:20 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5 
  */
@@ -131,6 +131,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_COLS_USER_0 = "GUI_PUBLISHQUEUE_COLS_USER_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_HELP_0 = "GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_NAME_0 = "GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_PUBLISHQUEUE_DETAIL_LABEL_RESOURCES_0 = "GUI_PUBLISHQUEUE_DETAIL_LABEL_RESOURCES_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_HELP_0 = "GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_NAME_0 = "GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_LIST_NAME_0 = "GUI_PUBLISHQUEUE_LIST_NAME_0";

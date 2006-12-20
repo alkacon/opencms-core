@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobFinished.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/12/20 14:01:20 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,12 @@
 
 package org.opencms.publish;
 
-import org.opencms.util.CmsUUID;
-
 /**
  * Defines a read-only publish job that has been already published.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
@@ -75,16 +73,6 @@ public class CmsPublishJobFinished extends CmsPublishJobBase {
     }
 
     /**
-     * Returns the publish history id.<p>
-     * 
-     * @return the publish history id
-     */
-    public CmsUUID getPublishHistoryId() {
-        
-        return m_publishJob.getPublishHistoryId();
-    }
-
-    /**
      * Returns the path in the RFS to temporary store the report for the publish job.<p>
      *
      * @return the path in the RFS to temporary store the report for the publish job
@@ -93,7 +81,7 @@ public class CmsPublishJobFinished extends CmsPublishJobBase {
 
         return m_publishJob.getReportFilePath();
     }
-    
+
     /**
      * Returns the time the publish job did actually start.<p>
      *

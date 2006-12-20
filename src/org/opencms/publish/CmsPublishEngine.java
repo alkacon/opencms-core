@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2006/12/05 16:31:07 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/20 14:01:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAuthentificationException;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsUUID;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.5
  */
@@ -74,9 +75,6 @@ public final class CmsPublishEngine implements Runnable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishEngine.class);
-
-    /** Admin user as message sender. */
-    private CmsUser m_adminUser;
 
     /** The current running publish job. */
     private CmsPublishThread m_currentPublishJob;
@@ -180,6 +178,41 @@ public final class CmsPublishEngine implements Runnable {
         if (!isRunning) {
             run();
         }
+    }
+
+    /**
+     * Returns a publish job based on its publish history id.<p>
+     * 
+     * The returned publish job may be an enqueued, running or finished publish job.<p>
+     * 
+     * @param publishHistoryId the publish hostory id to search for
+     * 
+     * @return the publish job with the given publish history id, or <code>null</code>
+     */
+    public CmsPublishJobBase getJobByPublishHistoryId(CmsUUID publishHistoryId) {
+
+        // try current running job
+        if ((m_currentPublishJob != null)
+            && m_currentPublishJob.getPublishJob().getPublishHistoryId().equals(publishHistoryId)) {
+            return new CmsPublishJobRunning(m_currentPublishJob.getPublishJob());
+        }
+        // try enqueued jobs
+        Iterator itEnqueuedJobs = getPublishQueue().asList().iterator();
+        while (itEnqueuedJobs.hasNext()) {
+            CmsPublishJobEnqueued enqueuedJob = (CmsPublishJobEnqueued)itEnqueuedJobs.next();
+            if (enqueuedJob.getPublishList().getPublishHistoryId().equals(publishHistoryId)) {
+                return enqueuedJob;
+            }
+        }
+        // try finished jobs
+        Iterator itFinishedJobs = getPublishHistory().asList().iterator();
+        while (itFinishedJobs.hasNext()) {
+            CmsPublishJobFinished finishedJob = (CmsPublishJobFinished)itFinishedJobs.next();
+            if (finishedJob.getPublishHistoryId().equals(publishHistoryId)) {
+                return finishedJob;
+            }
+        }
+        return null;
     }
 
     /**
@@ -522,12 +555,8 @@ public final class CmsPublishEngine implements Runnable {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext();
         try {
-            if (m_adminUser == null) {
-                // set the admin user (as message sender)
-                m_adminUser = m_driverManager.readUser(dbc, OpenCms.getDefaultUsers().getUserAdmin());
-            }
             CmsUser toUser = m_driverManager.readUser(dbc, toUserName);
-            OpenCms.getSessionManager().sendBroadcast(m_adminUser, message, toUser);
+            OpenCms.getSessionManager().sendBroadcast(null, message, toUser);
         } catch (CmsDataAccessException e) {
             LOG.error(e);
         } finally {

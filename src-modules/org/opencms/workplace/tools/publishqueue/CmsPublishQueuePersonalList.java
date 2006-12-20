@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueuePersonalList.java,v $
- * Date   : $Date: 2006/12/14 14:33:24 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/20 14:01:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDateMacroFormatter;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
@@ -48,6 +49,7 @@ import org.opencms.workplace.list.CmsListOrderEnum;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -63,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.5
  */
@@ -88,6 +90,9 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     public static final String LIST_ID = "lppq";
 
     /** list column id constant. */
+    private static final String LIST_ACTION_USER = "au";
+
+    /** list column id constant. */
     private static final String LIST_COLUMN_ENDTIME = "ce";
 
     /** list column id constant. */
@@ -97,16 +102,13 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     private static final String LIST_COLUMN_PROJECT = "cp";
 
     /** list column id constant. */
-    private static final String LIST_COLUMN_USER = "cu";
-
-    /** list column id constant. */
-    private static final String LIST_ACTION_USER = "au";
-
-    /** list column id constant. */
     private static final String LIST_COLUMN_RESCOUNT = "cr";
 
     /** list column id constant. */
     private static final String LIST_COLUMN_STARTTIME = "ct";
+
+    /** list column id constant. */
+    private static final String LIST_COLUMN_USER = "cu";
 
     /** list column id constant. */
     private static final String LIST_COLUMN_VIEW = "cv";
@@ -151,6 +153,16 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             LIST_COLUMN_STARTTIME,
             CmsListOrderEnum.ORDER_DESCENDING,
             null);
+    }
+
+    /**
+     * Overrides the implementation to skip generation of gray header. <p>
+     * 
+     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
+     */
+    public String defaultActionHtmlStart() {
+
+        return new StringBuffer(getList().listJs()).append(dialogContentStart(getParamTitle())).toString();
     }
 
     /**
@@ -214,10 +226,8 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             CmsPublishJobFinished publishJob = (CmsPublishJobFinished)iter.next();
             CmsListItem item = getList().newItem(new Long(publishJob.getStartTime()).toString());
             item.set(LIST_COLUMN_PROJECT, publishJob.getProjectName(getLocale()));
-            item.set(
-                LIST_COLUMN_STARTTIME,
-                Messages.get().getBundle(getLocale()).getDateTime(publishJob.getStartTime()));
-            item.set(LIST_COLUMN_ENDTIME, Messages.get().getBundle(getLocale()).getDateTime(publishJob.getFinishTime()));
+            item.set(LIST_COLUMN_STARTTIME, new Date(publishJob.getStartTime()));
+            item.set(LIST_COLUMN_ENDTIME, new Date(publishJob.getFinishTime()));
             item.set(LIST_COLUMN_RESCOUNT, new Integer(publishJob.getSize()));
             item.set(LIST_COLUMN_FILE, publishJob.getReportFilePath());
             item.set(LIST_COLUMN_USER, publishJob.getUserName());
@@ -253,6 +263,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         CmsListColumnDefinition projectCol = new CmsListColumnDefinition(LIST_COLUMN_PROJECT);
         projectCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_PROJECT_0));
         projectCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        projectCol.setWidth("30%");
         // add default action
         CmsListDefaultAction projectAction = new CmsListDefaultAction(LIST_ACTION_PROJECT);
         projectAction.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_ACTION_VIEW_NAME_0));
@@ -264,6 +275,8 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         CmsListColumnDefinition startCol = new CmsListColumnDefinition(LIST_COLUMN_STARTTIME);
         startCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_STARTPUBLISHING_0));
         startCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        startCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
+        startCol.setWidth("20%");
         // add default action 
         CmsListDefaultAction startAction = new CmsListDefaultAction(LIST_ACTION_START);
         startAction.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_ACTION_VIEW_NAME_0));
@@ -275,6 +288,8 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         CmsListColumnDefinition endCol = new CmsListColumnDefinition(LIST_COLUMN_ENDTIME);
         endCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_STOPPUBLISHING_0));
         endCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        endCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
+        endCol.setWidth("20%");
         // add default action
         CmsListDefaultAction endAction = new CmsListDefaultAction(LIST_ACTION_END);
         endAction.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_ACTION_VIEW_NAME_0));
@@ -282,10 +297,11 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         endCol.addDefaultAction(endAction);
         metadata.addColumn(endCol);
 
-        // create end time column
+        // create user column
         CmsListColumnDefinition userCol = new CmsListColumnDefinition(LIST_COLUMN_USER);
         userCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_USER_0));
         userCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        userCol.setWidth("25%");
         // add default action
         CmsListDefaultAction userAction = new CmsListDefaultAction(LIST_ACTION_USER);
         userAction.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_ACTION_VIEW_NAME_0));
@@ -297,6 +313,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         CmsListColumnDefinition countCol = new CmsListColumnDefinition(LIST_COLUMN_RESCOUNT);
         countCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_RESCOUNT_0));
         countCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        countCol.setWidth("5%");
         // add default action
         CmsListDefaultAction countAction = new CmsListDefaultAction(LIST_ACTION_COUNT);
         countAction.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_ACTION_VIEW_NAME_0));
