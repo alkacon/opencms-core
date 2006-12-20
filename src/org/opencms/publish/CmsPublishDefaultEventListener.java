@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/Attic/CmsPublishDefaultEventListener.java,v $
- * Date   : $Date: 2006/12/20 14:01:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/12/20 14:09:39 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.publish;
 
+import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsAfterPublishStaticExportHandler;
 
 /**
  * Default implementation for the {@link I_CmsPublishEventListener}.<p>
@@ -39,7 +41,7 @@ package org.opencms.publish;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.5
  */
@@ -102,7 +104,7 @@ class CmsPublishDefaultEventListener extends CmsPublishEventAdapter {
     public void onStart(CmsPublishJobEnqueued publishJob) {
 
         boolean busyStart = ((System.currentTimeMillis() - publishJob.getEnqueueTime()) > 2000);
-        boolean bigJob = (publishJob.getPublishList().size() > 25);
+        boolean bigJob = ((publishJob.getPublishList().size() > 25) || (OpenCms.getStaticExportManager().getHandler() instanceof CmsAfterPublishStaticExportHandler));
         if (busyStart || bigJob) {
             String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
                 Messages.GUI_PUBLISH_JOB_STARTED_1,
