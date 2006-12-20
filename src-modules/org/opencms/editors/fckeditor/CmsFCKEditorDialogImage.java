@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/Attic/CmsFCKEditorDialogImage.java,v $
- * Date   : $Date: 2006/12/08 16:25:47 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/12/20 11:29:29 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -254,26 +254,31 @@ public class CmsFCKEditorDialogImage extends CmsDialog {
 
         StringBuffer result = new StringBuffer(512);
         String sitePath = getCms().getRequestContext().getSitePath(res);
+        OpenCms.getSystemInfo().getOpenCmsContext();
         // get the scaler for the image resource
         CmsImageScaler scaler = new CmsImageScaler(getCms(), res);
         // create the new object
         result.append("new ImgFile(");
-        // 1: image url
+        // 1: image site path
+        result.append("'");
+        result.append(sitePath);
+        result.append("', ");
+        // 2: image url
         result.append("'");
         result.append(getJsp().link(sitePath));
         result.append("', ");
-        // 2: image link including scale parameters
+        // 3: image link including scale parameters
         result.append("'");
         result.append(getJsp().link(sitePath + getImageGallery().getDefaultScaleParams().toRequestParam()));
         result.append("', ");
-        // 3: image title
+        // 4: image title
         result.append("'");
         result.append(CmsStringUtil.escapeJavaScript(getJsp().property(
             CmsPropertyDefinition.PROPERTY_TITLE,
             sitePath,
             res.getName())));
         result.append("', ");
-        // 4: image width
+        // 5: image width
         result.append("'");
         if (scaler.isValid()) {
             result.append(scaler.getWidth());
@@ -281,7 +286,7 @@ public class CmsFCKEditorDialogImage extends CmsDialog {
             result.append("?");
         }
         result.append("', ");
-        // 5: image height
+        // 6: image height
         result.append("'");
         if (scaler.isValid()) {
             result.append(scaler.getHeight());
@@ -289,25 +294,25 @@ public class CmsFCKEditorDialogImage extends CmsDialog {
             result.append("?");
         }
         result.append("', ");
-        // 6: image size (in kb)
+        // 7: image size (in kb)
         result.append("'");
         result.append(res.getLength() / 1024);
         result.append(" ");
         result.append(key(org.opencms.workplace.galleries.Messages.GUI_LABEL_KILOBYTES_0));
         result.append("', ");
-        // 7: image creation date (formatted)
+        // 8: image creation date (formatted)
         result.append("'");
         result.append(getMessages().getDateTime(res.getDateCreated()));
         result.append("', ");
-        // 8: image modification date (formatted)
+        // 9: image modification date (formatted)
         result.append("'");
         result.append(getMessages().getDateTime(res.getDateLastModified()));
         result.append("', ");
-        // 9: image ID
+        // 10: image ID
         result.append("'");
         result.append(res.getStructureId());
         result.append("', ");
-        // 10: image type (gif, jpg)
+        // 11: image type (gif, jpg)
         result.append("'");
         String type = "";
         int dotIndex = res.getName().lastIndexOf('.');
@@ -316,11 +321,13 @@ public class CmsFCKEditorDialogImage extends CmsDialog {
         }
         result.append(type);
         result.append("', ");
-        // 11: image structure id hash code
+        // 12: image structure id hash code
         result.append("'");
         result.append(res.getStructureId().hashCode());
-        result.append("'");
-        // 12: image copyright
+        result.append("', ");
+        // 13: image state, if the image is new or changed
+        result.append(res.getState());
+        // 14: image copyright
         String copyright = getJsp().property(PROPERTY_COPYRIGHT, sitePath, null);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(copyright)) {
             // only add copyright information if it is set

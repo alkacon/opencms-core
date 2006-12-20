@@ -138,7 +138,12 @@ window.onload = function()
 
 function LoadSelection()
 {
-	if ( ! oImage ) return ;
+	if ( ! oImage ) {
+		GetE("txtImageBorder").checked = true;
+		setImageBorder();
+		GetE('cmbAlign').value = "left";
+		return ;
+	}
 
 	var altText = "";
 	var copyText = "";
@@ -575,12 +580,23 @@ function UpdatePreview(useTimeout)
 		eImgPreviewLink.style.display = 'none' ;
 	else
 	{
-		if (activeImage == null || activeImage.url != GetE('txtUrl').value) {
-			// set the active image from the selection information
-			setActiveImage(-1, GetE('txtUrl').value);
-			if (useTimeout) {
-				setTimeout("UpdatePreview(true)", 100);
-				return;
+		var txtUrl = GetE('txtUrl').value;
+		if (activeImage == null || activeImage.url != txtUrl) {
+			var setNew = true;
+			if (activeImage != null) {
+				var fullPath = ocmsServer + ocmsContext + activeImage.sitePath;
+				var contextPath = ocmsContext + activeImage.sitePath;
+				if (fullPath == activeImage.url || contextPath == activeImage.url) {
+					setNew = false;
+				}
+			}
+			if (setNew) {
+				// set the active image from the selection information
+				setActiveImage(-1, GetE('txtUrl').value);
+				if (useTimeout) {
+					setTimeout("UpdatePreview(true)", 100);
+					return;
+				}
 			}
 		}
 		if ((activeImage && activeImage.copyright == null) && GetE("txtCopyrightText").value == "") {

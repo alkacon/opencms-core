@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.jsp.*, org.opencms.editors.fckeditor.*, org.opencms.loader.*, org.opencms.workplace.*, org.opencms.workplace.galleries.*" buffer="none" %><%
+<%@ page import="org.opencms.jsp.*, org.opencms.editors.fckeditor.*, org.opencms.loader.*, org.opencms.main.*, org.opencms.workplace.*, org.opencms.workplace.galleries.*" buffer="none" %><%
 
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 CmsDialog wp = new CmsDialog(cms);
@@ -6,8 +6,15 @@ CmsDialog wp = new CmsDialog(cms);
 %>/* absolute path to JSP that delivers the (AJAX) requested data from the server */
 var vfsPathGalleryJsp = "<%= cms.link("/system/workplace/editors/fckeditor/plugins/ocmsimage/gallery/gallery.jsp") %>";
 
+/* absolute path to plugin */
+var vfsPathPlugin = "<%= cms.link("/system/workplace/editors/fckeditor/plugins/ocmsimage/") %>";
+
 /* absolute path to the JSP that displays the image in original size */
 var vfsPopupUri = "<%= cms.link("/system/workplace/editors/fckeditor/plugins/ocmsimage/popup.html") %>";
+
+/* context path and workplace server name */
+var ocmsContext = "<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
+var ocmsServer = "<%= OpenCms.getSiteManager().getWorkplaceServer() %>";
 
 /* parameter name of the __scale request parameter */
 var paramScale = "<%= CmsImageScaler.PARAM_SCALE %>";
@@ -27,7 +34,7 @@ function checkRequestState(state) {
 	if (state == "fatal") {
 		txt = "<%= wp.key(org.opencms.editors.fckeditor.Messages.GUI_AJAX_STATE_GIVEUP_0) %>";
 	} else if (state == "wait") {
-		txt = "<%= wp.key(org.opencms.editors.fckeditor.Messages.GUI_AJAX_STATE_WAIT_0) %>";
+		txt = GetE("imgAjaxWait").innerHTML;
 	} else if (state == "error") {
 		txt = "<%= wp.key(org.opencms.editors.fckeditor.Messages.GUI_AJAX_STATE_ERROR_0) %> " + msg;
 	}
@@ -161,6 +168,22 @@ function buildHtmlGalleryItems(displayPage) {
 			result += "\" id=\"";
 			result += currImg.structureId;
 			result += "\">";
+			// show state information for new or changed image
+			if (currImg.state == 1 || currImg.state == 2) {
+				//result += "\" onmouseover=\"document.getElementById(\'st_" + currImg.structureId + "\').style.display = 'block'\" onmouseout=\"document.getElementById(\'st_" + currImg.structureId + "\').style.display = 'none'\">";
+				result += "<div class=\"imglayer\" id=\"st_" + currImg.structureId + "\">";
+				result += "<img src=\"<%= cms.link("/system/workplace/resources/commons/warning.png") %>\" title=\"";
+				if (currImg.state == 1) {
+					// changed image
+					result += GetE("imgStateChanged").innerHTML;
+				} else {
+					// new image
+					result += GetE("imgStateNew").innerHTML;
+				}
+				result += "\" border=\"0\">";
+				result += "</div>";
+			}
+
 			// create the link to the detail view
 			result += "<a href=\"javascript:setActiveImage(";
 			result += imgIndex;
@@ -196,35 +219,97 @@ function buildHtmlGalleryItems(displayPage) {
 	    result += "</tr>\n";
 	}
 
-	result += "<tr><td class=\"gallerynavigation\">";
+	result += "<tr><td class=\"gallerynavigation\" colspan=\"";
+	result += columns + "\">";
 
 	var pageCount = Math.ceil(gItems.length / photosPerPage);
 	if (pageCount > 1) {
-		// show navigation and number of pages greater than 1     
+		// show navigation and number of pages greater than 1 
+		result += "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"><tr><td>";    
 		if (currentPage > 1) {
-			// build the "Back" link
-			result += "<a href=\"javascript:buildHtmlGalleryItems(1);\">";
-			result += "<span fcklang=\"DlgImgNavBack\">Back</span>";
+			// build the "Back to start" link
+			result += "<a href=\"javascript:buildHtmlGalleryItems(1);\"><img src=\"";
+			result += vfsPathPlugin + "buttons/nav_beginning.png";
+			result += "\" border=\"0\" alt=\"\" width=\"16\" height=\"16\">";
 			result += "</a> ";
+			// build the "Back" link
+			result += "<a href=\"javascript:buildHtmlGalleryItems(" + (currentPage - 1) + ");\"><img src=\"";
+			result += vfsPathPlugin + "buttons/nav_step_back.png";
+			result += "\" border=\"0\" alt=\"\" width=\"16\" height=\"16\">";
+			result += "</a>";
+		} else {
+			// build the "Back to start" image
+			result += "<img src=\"";
+			result += vfsPathPlugin + "buttons/nav_beginning_i.png";
+			result += "\" border=\"0\" alt=\"\" width=\"16\" height=\"16\"> ";
+			// build the "Back" image
+			result += "<img src=\"";
+			result += vfsPathPlugin + "buttons/nav_step_back_i.png";
+			result += "\" border=\"0\" alt=\"\" width=\"16\" height=\"16\">";
 		}
+		result += "</td><td>&nbsp;&nbsp;</td>";
+		result += "<td style=\"vertical-align: top; line-height: 16px;\">";
 		// build the page index information
-		for (var i = 1; i <= pageCount; i++) {
+		var displayPages = 15;
+		var countBeforeCurrent = Math.floor(displayPages / 2);
+            	var countAfterCurrent;
+		if ((currentPage - countBeforeCurrent) < 1) {
+			// set count before to number of available pages 
+			countBeforeCurrent = currentPage - 1;
+		}
+		// set count after to number of remaining pages (- 1 for current page) 
+		countAfterCurrent = displayPages - countBeforeCurrent - 1;
+		// calculate start and end index
+		startIndex = currentPage - countBeforeCurrent;
+		endIndex = currentPage + countAfterCurrent;
+		// check end index
+		if (endIndex > pageCount) {
+			var delta = endIndex - pageCount;
+			// decrease start index with delta to get the right number of displayed pages
+			startIndex -= delta;
+			// check start index to avoid values < 1
+			if (startIndex < 1) {
+				startIndex = 1;
+			}
+			endIndex = pageCount;
+		}
+		for (var i = startIndex; i <= endIndex; i++) {
 			if (i == currentPage) {
-				result += i + " ";
+				result += "<span class=\"gallerypageactive\">";
+				result += i + " </span>";
 			} else {
-				result += "<a href=\"javascript:buildHtmlGalleryItems(" + i + ");\">";
+				result += "<a href=\"javascript:buildHtmlGalleryItems(" + i + ");\" class=\"gallerypage\">";
 				result += i;
 				result += "</a> ";
 			}
 		}
+		result += "</td><td>&nbsp;&nbsp;</td>";
+		result += "<td>";
 		if (currentPage < pageCount) {
 			// build the "Next" link
-			result += "<a href=\"javascript:buildHtmlGalleryItems(" + (currentPage + 1) + ");\">";
-			result += "<span fcklang=\"DlgImgNavNext\">Next</span>";
+			result += "<a href=\"javascript:buildHtmlGalleryItems(" + (currentPage + 1) + ");\"><img src=\"";
+			result += vfsPathPlugin + "buttons/nav_step_forward.png";
+			result += "\" border=\"0\" alt=\"\" width=\"16\" height=\"16\">";
+			result += "</a> ";
+			// build the "to end" link
+			result += "<a href=\"javascript:buildHtmlGalleryItems(" + pageCount + ");\"><img src=\"";
+			result += vfsPathPlugin + "buttons/nav_end.png";
+			result += "\" border=\"0\" alt=\"\" width=\"16\" height=\"16\">";
 			result += "</a>";
+		} else {
+			// build the "Next" image
+			result += "<img src=\"";
+			result += vfsPathPlugin + "buttons/nav_step_forward_i.png";
+			result += "\" border=\"0\" alt=\"\" width=\"16\" height=\"16\"> ";
+			// build the "to end" image
+			result += "<img src=\"";
+			result += vfsPathPlugin + "buttons/nav_end_i.png";
+			result += "\" border=\"0\" alt=\"\" width=\"16\" height=\"16\">";
+
 		}
+		result += "</td></tr></table>";
 	} else {
-		result += "&nbsp;";
+		result += "<span class=\"gallerypageactive \">&nbsp;</span>";
 	}
 
 	result += "</td></tr>\n";
@@ -252,6 +337,17 @@ function showGalleryImageInfo(imgIndex, idPrefix, currImg, showAll) {
 	imgName += "\">";
 	imgName += currImg.url.substring(currImg.url.lastIndexOf("/") + 1);
 	imgName += "</span>";
+	var stateTxt = "";
+	if (currImg.state == 1) {
+		// changed image
+		stateTxt = GetE("imgStateChanged").innerHTML;
+		GetE(idPrefix + "state").className = "stateinfochanged";
+	} else if (currImg.state == 2) {
+		// new image
+		stateTxt = GetE("imgStateNew").innerHTML;
+		GetE(idPrefix + "state").className = "stateinfonew";
+	}
+	GetE(idPrefix + "state").innerHTML = stateTxt;
 	GetE(idPrefix + "name").innerHTML = imgName;
 	GetE(idPrefix + "title").innerHTML = currImg.title;
 	GetE(idPrefix + "type").innerHTML = getImageType(currImg.type);
@@ -275,6 +371,7 @@ function hideGalleryImageInfo() {
 
 /* hides the additional image information */
 function doHideGalleryImageInfo() {
+	GetE("galleryimagestate").innerHTML = "";
 	GetE("galleryimagename").innerHTML = "";
 	GetE("galleryimagetitle").innerHTML = "";
 	GetE("galleryimagetype").innerHTML = "";
@@ -380,7 +477,8 @@ function checkChecked(elemName) {
 /* ######### Definition of objects usable in dialog and methods to create them ######### */
 
 /* represents an image file to display in the gallery */
-var ImgFile = function(url, link, title, width, height, size, dateCreated, dateModified, structureId, type, hashCode, copyright) {
+var ImgFile = function(sitePath, url, link, title, width, height, size, dateCreated, dateModified, structureId, type, hashCode, state, copyright) {
+	this.sitePath = sitePath;
 	this.url = url;
 	this.link = link;
 	this.title = title;
@@ -392,6 +490,7 @@ var ImgFile = function(url, link, title, width, height, size, dateCreated, dateM
 	this.structureId = structureId;
 	this.type = type;
 	this.hashCode = hashCode;
+	this.state = state;
 	this.copyright = copyright;
 }
 

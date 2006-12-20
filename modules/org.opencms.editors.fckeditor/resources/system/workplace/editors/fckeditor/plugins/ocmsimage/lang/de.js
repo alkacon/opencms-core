@@ -1,6 +1,6 @@
-FCKLang.OcmsImageBtn			= "Bild einfügen/editieren";
+FCKLang.OcmsImageBtn			= "Bild einf\u00fcgen/editieren";
 FCKLang.OcmsImageDlgTitle		= "Bild Eigenschaften";
-FCKLang.OcmsImageDlgTooltip		= "Bild einfügen/editieren";
+FCKLang.OcmsImageDlgTooltip		= "Bild einf\u00fcgen/editieren";
 
 // Dialog tabs
 FCKLang.DlgImgGalleryTab		= "Bildergallerien";
@@ -15,19 +15,18 @@ FCKLang.DlgImgDetailTypebmp		= "Bitmap Bild";
 FCKLang.DlgImgDetailTypeNo		= "Unbekannter Bildtyp";
 
 
+
 FCKLang.DlgImgAltText			= "Beschreibung / Alt-Text";
-FCKLang.DlgImgSubtitle			= "Bildunterschrift einfügen";
-FCKLang.DlgBtnResetTitle		= "Titel zurücksetzen";
+FCKLang.DlgImgSubtitle			= "Bildunterschrift einf\u00fcgen";
+FCKLang.DlgBtnResetTitle		= "Titel zur\u00fccksetzen";
 FCKLang.DlgImgCopyrightText		= "Copyright Information";
-FCKLang.DlgImgCopyright			= "Copyright Information einfügen";
-FCKLang.DlgBtnResetCopyright		= "Copyright zurücksetzen";
+FCKLang.DlgImgCopyright			= "Copyright Information einf\u00fcgen";
+FCKLang.DlgBtnResetCopyright		= "Copyright zur\u00fccksetzen";
 
 FCKLang.DlgImgLinkOriginal		= "Link zum Bild im Originalformat setzen";
 
-FCKLang.DlgImgImageBorder		= "Abstandsrahmen erzeugen";
-
-FCKLang.DlgImgWidthPreset		= "Vorgabe";
-FCKLang.DlgImgHeightPreset		= "Vorgabe";
+FCKLang.DlgImgImageBorder		= "Abstandsr\u00e4nder erzeugen";
+FCKLang.DlgImgAlignNone			= "Keine";
 
 // Image gallery keys
 FCKLang.DlgImgInfoHeadline		= "Bildangaben";
@@ -35,10 +34,15 @@ FCKLang.DlgImgInfoName			= "Name:";
 FCKLang.DlgImgInfoTitle			= "Titel:";
 FCKLang.DlgImgInfoType			= "Typ:";
 FCKLang.DlgImgInfoDateCreated		= "Erstellt am:";
-FCKLang.DlgImgInfoDateModified		= "Geändert am:";
+FCKLang.DlgImgInfoDateModified		= "Ge\u00e4ndert am:";
 FCKLang.DlgImgInfoId			= "ID:";
 FCKLang.DlgImgInfoFormat		= "Format:";
-FCKLang.DlgImgInfoSize			= "Größe:";
+FCKLang.DlgImgInfoSize			= "Gr\u00f6\u00dfe:";
 
-FCKLang.DlgImgNavBack			= "Zurück";
+FCKLang.DlgImgNavBack			= "Zur\u00fcck";
 FCKLang.DlgImgNavNext			= "Weiter";
+
+FCKLang.DlgImgStateNew			= "Dieses Bild ist neu und noch nicht online verf\u00fcgbar.";
+FCKLang.DlgImgStateChanged		= "Die \u00c4nderungen an diesem Bild wurden noch nicht publiziert.";
+
+FCKLang.DlgImgAjaxWait			= "Bitte warten Sie...";

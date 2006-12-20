@@ -23,10 +23,8 @@ FCKLang.DlgBtnResetCopyright		= "Reset Copyright";
 
 FCKLang.DlgImgLinkOriginal		= "Insert link to image in original format";
 
-FCKLang.DlgImgImageBorder		= "Create image space border";
-
-FCKLang.DlgImgWidthPreset		= "Presets";
-FCKLang.DlgImgHeightPreset		= "Presets";
+FCKLang.DlgImgImageBorder		= "Create image spacings";
+FCKLang.DlgImgAlignNone			= "None";
 
 // Image gallery keys
 FCKLang.DlgImgInfoHeadline		= "Image information";
@@ -41,3 +39,8 @@ FCKLang.DlgImgInfoSize			= "Size:";
 
 FCKLang.DlgImgNavBack			= "Back";
 FCKLang.DlgImgNavNext			= "Next";
+
+FCKLang.DlgImgStateNew			= "This image is new and not yet publicly available.";
+FCKLang.DlgImgStateChanged		= "The changes on this image are not yet published.";
+
+FCKLang.DlgImgAjaxWait			= "Please wait...";

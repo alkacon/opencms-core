@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.5.4</opencms_version>
-		<createdate>Fri, 08 Dec 2006 15:17:37 GMT</createdate>
+		<createdate>Wed, 20 Dec 2006 11:23:51 GMT</createdate>
 		<project>Offline</project>
 		<export_version>5</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module adds the popular Open Source HTML editor "FCKeditor" to the OpenCms Workplace.</p>
 <p>Install this module if you want a WYSIWYG editor for Mozilla based browsers. The version of FCKeditor is 2.3.2</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.6</version>
+		<version>1.2.7</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -465,7 +465,7 @@
 			<type>plain</type>
 			<uuidstructure>0c20cdbf-7a45-11db-88c0-e15ad2a7b8e1</uuidstructure>
 			<uuidresource>0c20cdc0-7a45-11db-88c0-e15ad2a7b8e1</uuidresource>
-			<datelastmodified>Fri, 24 Nov 2006 16:20:27 GMT</datelastmodified>
+			<datelastmodified>Tue, 19 Dec 2006 16:56:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 22 Nov 2006 16:18:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -479,7 +479,7 @@
 			<type>plain</type>
 			<uuidstructure>56bd3f23-7583-11db-a878-e15ad2a7b8e1</uuidstructure>
 			<uuidresource>56bd3f24-7583-11db-a878-e15ad2a7b8e1</uuidresource>
-			<datelastmodified>Fri, 08 Dec 2006 14:53:23 GMT</datelastmodified>
+			<datelastmodified>Wed, 20 Dec 2006 11:21:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Nov 2006 15:01:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -493,7 +493,7 @@
 			<type>jsp</type>
 			<uuidstructure>7f542d75-85fb-11db-b8ed-e15ad2a7b8e1</uuidstructure>
 			<uuidresource>7f542d76-85fb-11db-b8ed-e15ad2a7b8e1</uuidresource>
-			<datelastmodified>Fri, 08 Dec 2006 14:52:10 GMT</datelastmodified>
+			<datelastmodified>Wed, 20 Dec 2006 11:20:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 07 Dec 2006 14:01:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -516,12 +516,176 @@
 			<type>plain</type>
 			<uuidstructure>71405068-8389-11db-9ad4-e15ad2a7b8e1</uuidstructure>
 			<uuidresource>71405069-8389-11db-9ad4-e15ad2a7b8e1</uuidresource>
-			<datelastmodified>Fri, 08 Dec 2006 11:02:43 GMT</datelastmodified>
+			<datelastmodified>Fri, 08 Dec 2006 16:00:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Dec 2006 11:20:27 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons</destination>
+			<type>folder</type>
+			<uuidstructure>1ee4168d-901c-11db-a4ac-e15ad2a7b8e1</uuidstructure>
+			<datelastmodified>Fri, 15 Dec 2006 14:40:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Dec 2006 14:40:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_beginning.png</source>
+			<destination>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_beginning.png</destination>
+			<type>image</type>
+			<uuidstructure>1ef7ecae-901c-11db-a4ac-e15ad2a7b8e1</uuidstructure>
+			<uuidresource>4b40d453-8c4a-11db-b7b7-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 15 Dec 2006 14:41:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Dec 2006 14:41:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_beginning_i.png</source>
+			<destination>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_beginning_i.png</destination>
+			<type>image</type>
+			<uuidstructure>1f6c5961-901c-11db-a4ac-e15ad2a7b8e1</uuidstructure>
+			<uuidresource>4b6b66c8-8c4a-11db-b7b7-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 15 Dec 2006 14:41:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Dec 2006 14:41:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_end.png</source>
+			<destination>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_end.png</destination>
+			<type>image</type>
+			<uuidstructure>1f75a834-901c-11db-a4ac-e15ad2a7b8e1</uuidstructure>
+			<uuidresource>4b748e8d-8c4a-11db-b7b7-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 15 Dec 2006 14:41:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Dec 2006 14:41:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_end_i.png</source>
+			<destination>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_end_i.png</destination>
+			<type>image</type>
+			<uuidstructure>1f7ecff7-901c-11db-a4ac-e15ad2a7b8e1</uuidstructure>
+			<uuidresource>4b7c2fb2-8c4a-11db-b7b7-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 15 Dec 2006 14:41:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Dec 2006 14:41:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_step_back.png</source>
+			<destination>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_step_back.png</destination>
+			<type>image</type>
+			<uuidstructure>1f81dd3a-901c-11db-a4ac-e15ad2a7b8e1</uuidstructure>
+			<uuidresource>4b8cf897-8c4a-11db-b7b7-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 15 Dec 2006 14:41:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Dec 2006 14:41:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_step_back_i.png</source>
+			<destination>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_step_back_i.png</destination>
+			<type>image</type>
+			<uuidstructure>1f92a61d-901c-11db-a4ac-e15ad2a7b8e1</uuidstructure>
+			<uuidresource>4bb31e3c-8c4a-11db-b7b7-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 15 Dec 2006 14:41:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Dec 2006 14:41:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_step_forward.png</source>
+			<destination>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_step_forward.png</destination>
+			<type>image</type>
+			<uuidstructure>1f98c0a0-901c-11db-a4ac-e15ad2a7b8e1</uuidstructure>
+			<uuidresource>4bbc4601-8c4a-11db-b7b7-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 15 Dec 2006 14:41:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Dec 2006 14:41:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_step_forward_i.png</source>
+			<destination>system/workplace/editors/fckeditor/plugins/ocmsimage/buttons/nav_step_forward_i.png</destination>
+			<type>image</type>
+			<uuidstructure>1f9d7b93-901c-11db-a4ac-e15ad2a7b8e1</uuidstructure>
+			<uuidresource>4bc26086-8c4a-11db-b7b7-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 15 Dec 2006 14:41:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Dec 2006 14:41:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -542,7 +706,7 @@
 			<type>jsp</type>
 			<uuidstructure>96cfa1df-796c-11db-b523-e15ad2a7b8e1</uuidstructure>
 			<uuidresource>96cfa1e0-796c-11db-b523-e15ad2a7b8e1</uuidresource>
-			<datelastmodified>Tue, 05 Dec 2006 17:04:33 GMT</datelastmodified>
+			<datelastmodified>Wed, 20 Dec 2006 11:20:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 21 Nov 2006 14:28:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -573,7 +737,7 @@
 			<type>plain</type>
 			<uuidstructure>011b424b-7587-11db-a878-e15ad2a7b8e1</uuidstructure>
 			<uuidresource>011b424c-7587-11db-a878-e15ad2a7b8e1</uuidresource>
-			<datelastmodified>Fri, 08 Dec 2006 15:10:35 GMT</datelastmodified>
+			<datelastmodified>Wed, 20 Dec 2006 10:32:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Nov 2006 15:27:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -587,7 +751,7 @@
 			<type>jsp</type>
 			<uuidstructure>6aae9f67-7968-11db-b523-e15ad2a7b8e1</uuidstructure>
 			<uuidresource>6aae9f68-7968-11db-b523-e15ad2a7b8e1</uuidresource>
-			<datelastmodified>Fri, 08 Dec 2006 12:01:38 GMT</datelastmodified>
+			<datelastmodified>Wed, 20 Dec 2006 11:23:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 21 Nov 2006 13:58:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -618,7 +782,7 @@
 			<type>plain</type>
 			<uuidstructure>b5d02a4d-7b9a-11db-a033-e15ad2a7b8e1</uuidstructure>
 			<uuidresource>b5d02a4e-7b9a-11db-a033-e15ad2a7b8e1</uuidresource>
-			<datelastmodified>Fri, 08 Dec 2006 11:27:50 GMT</datelastmodified>
+			<datelastmodified>Wed, 20 Dec 2006 09:45:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 24 Nov 2006 09:03:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -632,7 +796,7 @@
 			<type>plain</type>
 			<uuidstructure>ef4985f6-7583-11db-a878-e15ad2a7b8e1</uuidstructure>
 			<uuidresource>ef4985f7-7583-11db-a878-e15ad2a7b8e1</uuidresource>
-			<datelastmodified>Fri, 08 Dec 2006 11:28:35 GMT</datelastmodified>
+			<datelastmodified>Wed, 20 Dec 2006 09:45:56 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Nov 2006 15:05:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
