@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/12/14 14:05:46 $
- * Version: $Revision: 1.798 $
+ * Date   : $Date: 2006/12/21 10:33:20 $
+ * Version: $Revision: 1.799 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,7 @@ OpenCms 6.2.x
 
 ! Added option in export to export only those files modifed in the current project
 * Static export works with links containing a "&amp;"
+! Added new event EVENT_FULLSTATIC_EXPORT fired by CmsStaticExportThread and CmsStaticExportJob
 
 OpenCms 6.2.3 - November 30, 2006
 * Fixed error when searching in sites with uppercase letters in site path
