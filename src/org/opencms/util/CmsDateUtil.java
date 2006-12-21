@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDateUtil.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/12/21 15:19:44 $
+ * Version: $Revision: 1.17.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.TimeZone;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,6 +182,22 @@ public final class CmsDateUtil {
         }
 
         return OLD_COOKIE.format(new Date(time));
+    }
+
+    /**
+     * Returns the long value of a date created by the given integer values.<p>
+     * 
+     * @param year the integer value of year
+     * @param month the integer value of month
+     * @param date the integer value of date
+     * 
+     * @return the long value of a date created by the given integer values
+     */
+    public static long parseDate(int year, int month, int date) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, date);
+        return calendar.getTime().getTime();
     }
 
     /**
