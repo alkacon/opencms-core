@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/11/02 13:16:00 $
- * Version: $Revision: 1.577 $
+ * Date   : $Date: 2006/12/21 10:34:02 $
+ * Version: $Revision: 1.578 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -643,9 +643,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         groupname));
                 }
             } else {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_UNKNOWN_USER_1,
-                    user.getName()));
+                throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, username));
             }
         }
     }
@@ -746,7 +744,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
         } else {
-            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, user.getName()));
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, name));
         }
         return newUser;
     }
@@ -1359,7 +1357,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         return m_workflowDriver.createTask(dbc, 0, 0, 1, // standard project type,
             dbc.currentUser().getId(),
             dbc.currentUser().getId(),
-            role.getId(),
+            (role == null ? null : role.getId()),
             projectName,
             now,
             timestamp,
@@ -2697,7 +2695,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 removeUserFromGroup(dbc, username, group.getName());
             }
         }
-        
+
         // offline
         transferPrincipalResources(dbc, project, user.getId(), replacementUser.getId(), withACEs);
         // online
