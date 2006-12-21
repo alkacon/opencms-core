@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.16.4.13 $
+ * Date   : $Date: 2006/12/21 15:32:12 $
+ * Version: $Revision: 1.16.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,11 +59,14 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.13 $ 
+ * @version $Revision: 1.16.4.14 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsResourceTypeFolderBase.class);
 
     /**
      * Default constructor, used to initialize member variables.<p>
@@ -218,9 +221,6 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         }
     }
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsResourceTypeFolderBase.class);
-
     /**
      * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
      */
@@ -359,6 +359,33 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                     childResource,
                     dateLastModified,
                     recursive);
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.file.types.A_CmsResourceType#undelete(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, boolean)
+     */
+    public void undelete(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
+    throws CmsException {
+
+        // handle the folder itself
+        super.undelete(cms, securityManager, resource, recursive);
+
+        if (recursive) {
+            // collect all resources in the folder (but exclude deleted ones)
+            List resources = securityManager.readChildResources(
+                cms.getRequestContext(),
+                resource,
+                CmsResourceFilter.ALL,
+                true,
+                true);
+
+            // now walk through all sub-resources in the folder
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = (CmsResource)resources.get(i);
+                // handle child resources
+                getResourceType(childResource.getTypeId()).undelete(cms, securityManager, childResource, recursive);
             }
         }
     }

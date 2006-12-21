@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/12/14 11:18:04 $
- * Version: $Revision: 1.570.2.42 $
+ * Date   : $Date: 2006/12/21 15:32:12 $
+ * Version: $Revision: 1.570.2.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -6263,6 +6263,40 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // this time don't catch CmsObjectNotFoundException (user not found)
         user = (user != null) ? user : m_userDriver.readUser(dbc, username, CmsUser.USER_TYPE_WEBUSER);
         m_userDriver.writePassword(dbc, username, user.getType(), null, newPassword, null);
+    }
+
+    /**
+     * Undelete the resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the name of the resource to apply this operation to
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#undeleteResource(String, boolean)
+     * @see I_CmsResourceType#undelete(CmsObject, CmsSecurityManager, CmsResource, boolean)
+     */
+    public void undelete(CmsDbContext dbc, CmsResource resource) throws CmsException {
+
+        if (!resource.getState().isDeleted()) {
+            throw new CmsVfsException(Messages.get().container(
+                Messages.ERR_UNDELETE_FOR_RESOURCE_DELETED_1,
+                dbc.removeSiteRoot(resource.getRootPath())));
+        }
+
+        // set the state to changed
+        resource.setState(CmsResourceState.STATE_CHANGED);
+        // perform the changes
+        updateState(dbc, resource, false);
+
+        // clear the cache
+        clearResourceCache();
+
+        // fire change event
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_RESOURCE));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**

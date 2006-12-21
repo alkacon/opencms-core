@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndelete.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.15.4.2 $
+ * Date   : $Date: 2006/12/21 15:32:12 $
+ * Version: $Revision: 1.15.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15.4.2 $ 
+ * @version $Revision: 1.15.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,7 +182,7 @@ public class CmsUndelete extends CmsMultiDialog {
                 // lock resource if autolock is enabled
                 checkLock(resName);
                 // undelete the resource
-                getCms().undeleteResource(resName);
+                getCms().undeleteResource(resName, true);
             } catch (CmsException e) {
                 if (isMultiOperation()) {
                     // collect exceptions to create a detailed output

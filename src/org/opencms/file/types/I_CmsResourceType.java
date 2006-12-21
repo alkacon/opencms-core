@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.29.4.4 $
+ * Date   : $Date: 2006/12/21 15:32:12 $
+ * Version: $Revision: 1.29.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29.4.4 $ 
+ * @version $Revision: 1.29.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -297,8 +297,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @see CmsObject#deleteResource(String, CmsResourceDeleteMode)
      * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, CmsResourceDeleteMode)
      */
-    void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsResourceDeleteMode siblingMode)
-    throws CmsException;
+    void deleteResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsResourceDeleteMode siblingMode) throws CmsException;
 
     /**
      * Returns the default for the <code>cache</code> property setting of this resource type.<p>
@@ -479,11 +482,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @see CmsObject#lockResource(String)
      * @see CmsSecurityManager#lockResource(org.opencms.file.CmsRequestContext, CmsResource, CmsLockType)
      */
-    void lockResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        CmsLockType type) throws CmsException;
+    void lockResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsLockType type)
+    throws CmsException;
 
     /**
      * Moves a resource to the given destination.<p>
@@ -640,10 +640,27 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         boolean recursive) throws CmsException;
 
     /**
+     * Undeletes a resource.<p>
+     * 
+     * Only resources that have already been published once can be undeleted,
+     * if a "new" resource is deleted it can not be undeleted.<p>
+     * 
+     * @param cms the current cms context
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the resource to undelete
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#undeleteResource(String, boolean)
+     * @see CmsSecurityManager#undelete(org.opencms.file.CmsRequestContext, CmsResource)
+     */
+    void undelete(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
+    throws CmsException;
+
+    /**
      * Undos all changes in the resource by restoring the version from the 
      * online project to the current offline project.<p>
-     * 
-     * This is also used when doing an "undelete" operation.<p>
      * 
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager

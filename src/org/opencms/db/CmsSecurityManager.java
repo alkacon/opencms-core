@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/12/14 11:18:04 $
- * Version: $Revision: 1.97.4.23 $
+ * Date   : $Date: 2006/12/21 15:32:12 $
+ * Version: $Revision: 1.97.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4256,6 +4256,35 @@ public final class CmsSecurityManager {
             m_driverManager.setPassword(dbc, username, newPassword);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_SET_PASSWORD_1, username), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Undelete the resource by resetting it's state.<p>
+     * 
+     * @param context the current request context
+     * @param resource the name of the resource to apply this operation to
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#undeleteResource(String, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#undelete(CmsObject, CmsSecurityManager, CmsResource, boolean)
+     */
+    public void undelete(CmsRequestContext context, CmsResource resource) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkOfflineProject(dbc);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+            checkSystemLocks(dbc, resource);
+
+            m_driverManager.undelete(dbc, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_UNDELETE_FOR_RESOURCE_1,
+                context.getSitePath(resource)), e);
         } finally {
             dbc.clear();
         }

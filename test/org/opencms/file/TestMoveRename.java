@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2006/11/29 15:04:07 $
- * Version: $Revision: 1.16.8.3 $
+ * Date   : $Date: 2006/12/21 15:32:11 $
+ * Version: $Revision: 1.16.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16.8.3 $
+ * @version $Revision: 1.16.8.4 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
 
@@ -293,7 +293,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         }
 
         // restore the starting state
-        cms.undeleteResource(deletedFolder);
+        cms.undoChanges(deletedFolder, CmsResource.UNDO_CONTENT_RECURSIVE);
         cms.unlockResource(deletedFolder);
         cms.unlockResource(file);
     }

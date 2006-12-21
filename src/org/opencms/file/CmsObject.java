@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/12/05 16:31:07 $
- * Version: $Revision: 1.146.4.16 $
+ * Date   : $Date: 2006/12/21 15:32:12 $
+ * Version: $Revision: 1.146.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.16 $
+ * @version $Revision: 1.146.4.17 $
  * 
  * @since 6.0.0 
  */
@@ -3303,31 +3303,29 @@ public final class CmsObject {
     }
 
     /**
-     * Undeletes a resource (this is the same operation as "undo changes").<p>
+     * Undeletes a resource.<p>
      * 
      * Only resources that have already been published once can be undeleted,
      * if a "new" resource is deleted it can not be undeleted.<p>
      * 
-     * Internally, this method undos all changes to a resource by restoring 
-     * the version from the online project, that is to the state of last 
-     * publishing.<p>
-     * 
-     * @param resourcename the name of the resource to undelete (full path)
+     * @param resourcename the name of the resource to undelete
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
      *
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#undoChanges(String, CmsResourceUndoMode)
      */
-    public void undeleteResource(String resourcename) throws CmsException {
+    public void undeleteResource(String resourcename, boolean recursive) throws CmsException {
 
-        undoChanges(resourcename, CmsResource.UNDO_CONTENT_RECURSIVE);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        getResourceType(resource.getTypeId()).undelete(this, m_securityManager, resource, recursive);
     }
 
     /**
      * Undos all changes to a resource by restoring the version from the 
      * online project to the current offline project.<p>
      * 
-     * @param resourcename the name of the resource to undo the changes for (full path)
+     * @param resourcename the name of the resource to undo the changes for
      * @param mode the undo mode, one of the <code>{@link CmsResourceUndoMode}#UNDO_XXX</code> constants
      *
      * @throws CmsException if something goes wrong

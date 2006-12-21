@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.43.4.9 $
+ * Date   : $Date: 2006/12/21 15:32:12 $
+ * Version: $Revision: 1.43.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.9 $
+ * @version $Revision: 1.43.4.10 $
  * 
  * @since 6.0.0 
  */
@@ -563,6 +563,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TEST_MOVED_RESOURCE_1 = "ERR_TEST_MOVED_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNDELETE_FOR_RESOURCE_1 = "ERR_UNDELETE_FOR_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNDELETE_FOR_RESOURCE_DELETED_1 = "ERR_UNDELETE_FOR_RESOURCE_DELETED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNDO_CHANGES_FOR_RESOURCE_1 = "ERR_UNDO_CHANGES_FOR_RESOURCE_1";

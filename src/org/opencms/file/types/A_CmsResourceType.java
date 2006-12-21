@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.42.4.14 $
+ * Date   : $Date: 2006/12/21 15:32:12 $
+ * Version: $Revision: 1.42.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.14 $ 
+ * @version $Revision: 1.42.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -311,18 +311,18 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         String destination,
         List properties) throws CmsException {
 
-        return securityManager.createSibling(
-            cms.getRequestContext(),
-            source,
-            cms.getRequestContext().addSiteRoot(destination),
-            properties);
+        return securityManager.createSibling(cms.getRequestContext(), source, cms.getRequestContext().addSiteRoot(
+            destination), properties);
     }
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResourceDeleteMode)
      */
-    public void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsResourceDeleteMode siblingMode)
-    throws CmsException {
+    public void deleteResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsResourceDeleteMode siblingMode) throws CmsException {
 
         securityManager.deleteResource(cms.getRequestContext(), resource, siblingMode);
     }
@@ -545,11 +545,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.lock.CmsLockType)
      */
-    public void lockResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        CmsLockType type) throws CmsException {
+    public void lockResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsLockType type)
+    throws CmsException {
 
         securityManager.lockResource(cms.getRequestContext(), resource, type);
     }
@@ -687,10 +684,22 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
+     * @see org.opencms.file.types.I_CmsResourceType#undelete(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, boolean)
+     */
+    public void undelete(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
+    throws CmsException {
+
+        securityManager.undelete(cms.getRequestContext(), resource);
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResourceUndoMode)
      */
-    public void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsResourceUndoMode mode)
-    throws CmsException {
+    public void undoChanges(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsResourceUndoMode mode) throws CmsException {
 
         securityManager.undoChanges(cms.getRequestContext(), resource, mode);
         updateRelationForUndo(cms, securityManager, resource);
@@ -774,6 +783,35 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 CmsFile.upgrade(resource, cms)));
         }
         return resource;
+    }
+
+    /**
+     * Deletes all relations for the given resource and all its siblings.<p>
+     * 
+     * @param cms the cms context
+     * @param securityManager the security manager object
+     * @param resource the resource to delete the resource for
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void deleteRelationsWithSiblings(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
+    throws CmsException {
+
+        List siblings;
+        if (resource.getSiblingCount() > 1) {
+            siblings = securityManager.readSiblings(
+                cms.getRequestContext(),
+                resource,
+                CmsResourceFilter.IGNORE_EXPIRATION);
+        } else {
+            siblings = new ArrayList();
+            siblings.add(resource);
+        }
+        Iterator it = siblings.iterator();
+        while (it.hasNext()) {
+            CmsResource sibling = (CmsResource)it.next();
+            securityManager.deleteRelationsForResource(cms.getRequestContext(), sibling, CmsRelationFilter.TARGETS);
+        }
     }
 
     /**
@@ -982,30 +1020,5 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         deleteRelationsWithSiblings(cms, securityManager, oldResource);
         // create the relations for the new resource, only if type is link parseable!!
         createRelations(cms, securityManager, newResourceName);
-    }
-
-    /**
-     * Deletes all relations for the given resource and all its siblings.<p>
-     * 
-     * @param cms the cms context
-     * @param securityManager the security manager object
-     * @param resource the resource to delete the resource for
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    protected void deleteRelationsWithSiblings(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource) throws CmsException {
-    
-        List siblings;
-        if (resource.getSiblingCount() > 1) {
-            siblings = securityManager.readSiblings(cms.getRequestContext(), resource, CmsResourceFilter.IGNORE_EXPIRATION);
-        } else {
-            siblings = new ArrayList();
-            siblings.add(resource);
-        }
-        Iterator it = siblings.iterator();
-        while (it.hasNext()) {
-            CmsResource sibling = (CmsResource)it.next();
-            securityManager.deleteRelationsForResource(cms.getRequestContext(), sibling, CmsRelationFilter.TARGETS);
-        }
     }
 }

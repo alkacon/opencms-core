@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2006/11/30 09:20:34 $
- * Version: $Revision: 1.20.4.4 $
+ * Date   : $Date: 2006/12/21 15:32:11 $
+ * Version: $Revision: 1.20.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.4 $
+ * @version $Revision: 1.20.4.5 $
  */
 public class TestLock extends OpenCmsTestCase {
 
@@ -624,7 +624,7 @@ public class TestLock extends OpenCmsTestCase {
 
         needLock = false;
         try {
-            cms.undeleteResource(source);
+            cms.undeleteResource(source, true);
         } catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
@@ -642,7 +642,7 @@ public class TestLock extends OpenCmsTestCase {
 
         // now undelete the resource
         cms.lockResource(source);
-        cms.undeleteResource(source);
+        cms.undoChanges(source, CmsResource.UNDO_CONTENT_RECURSIVE);
         cms.unlockResource(source);
 
         // make sure original resource is still unchanged
