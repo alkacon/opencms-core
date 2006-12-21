@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.29.4.2 $
+ * Date   : $Date: 2006/12/21 15:18:39 $
+ * Version: $Revision: 1.29.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.29.4.2 $ 
+ * @version $Revision: 1.29.4.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -132,6 +132,19 @@ public interface I_CmsEventListener {
      * @see #EVENT_PUBLISH_PROJECT
      */
     int EVENT_BEFORE_PUBLISH_PROJECT = 3;
+
+    /**
+     * Event "full static export".<p>
+     * 
+     * This is thrown in {@link org.opencms.staticexport.CmsStaticExportManager}.
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "purge": the boolean value to purge the export folders first</li>
+     * <li><code>{@link #KEY_REPORT}</code>:  a <code>{@link org.opencms.report.I_CmsReport}</code> to print output messages to</li>
+     * </ul>
+     */
+    int EVENT_FULLSTATIC_EXPORT = 4;
 
     /** 
      * Event "all caches must be cleared".<p>
@@ -304,7 +317,7 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_PROPERTY_DEFINITION_CREATED = 28;
-    
+
     /** 
      * Acknowledge the occurrence of the specified event, implement this 
      * method to check for CmsEvents in your class.

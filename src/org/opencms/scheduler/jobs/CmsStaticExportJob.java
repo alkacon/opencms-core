@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsStaticExportJob.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.7.8.1 $
+ * Date   : $Date: 2006/12/21 15:18:39 $
+ * Version: $Revision: 1.7.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,9 @@
 package org.opencms.scheduler.jobs;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
@@ -40,6 +42,7 @@ import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.staticexport.Messages;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -51,7 +54,7 @@ import javax.servlet.ServletException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.7.8.1 $ 
+ * @version $Revision: 1.7.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,6 +70,10 @@ public class CmsStaticExportJob implements I_CmsScheduledJob {
         try {
             report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsStaticExportJob.class);
             OpenCms.getStaticExportManager().exportFullStaticRender(true, report);
+            Map eventData = new HashMap();
+            eventData.put("purge", new Boolean(true));
+            eventData.put(I_CmsEventListener.KEY_REPORT, report);
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FULLSTATIC_EXPORT, eventData));
         } catch (CmsException e) {
             if (report != null) {
                 report.println(e);
