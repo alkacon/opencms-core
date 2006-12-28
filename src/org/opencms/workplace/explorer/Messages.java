@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2006/12/20 13:54:02 $
- * Version: $Revision: 1.14.2.7 $
+ * Date   : $Date: 2006/12/28 10:02:54 $
+ * Version: $Revision: 1.14.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14.2.7 $ 
+ * @version $Revision: 1.14.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,6 +72,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1 = "ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_STORE_CLIENT_FOLDER_1 = "ERR_UPLOAD_STORE_CLIENT_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_BACK_0 = "GUI_BUTTON_BACK_0";

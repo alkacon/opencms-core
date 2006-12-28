@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/12/12 10:22:42 $
- * Version: $Revision: 1.36.4.11 $
+ * Date   : $Date: 2006/12/28 10:02:54 $
+ * Version: $Revision: 1.36.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.11 $
+ * @version $Revision: 1.36.4.12 $
  * 
  * @since 6.0.0
  */
@@ -66,6 +66,9 @@ public class CmsUserSettings {
      *  Enumeration class for workplace search result styles.<p>
      */
     public static final class CmsSearchResultStyle extends A_CmsModeStringEnumeration {
+
+        /** Serializable version id. */
+        private static final long serialVersionUID = 6611568161885127011L;
 
         /** Workplace search result style explorer view. */
         public static final CmsSearchResultStyle STYLE_EXPLORER = new CmsSearchResultStyle(
@@ -81,9 +84,6 @@ public class CmsUserSettings {
         public static final CmsSearchResultStyle STYLE_LIST_WITHOUT_EXCERPTS = new CmsSearchResultStyle(
             "list-without-excerpts",
             Messages.GUI_WORKPLACE_SEARCH_STYLE_LIST_WITHOUT_EXCERPTS_0);
-
-        /** Serializable version id. */
-        private static final long serialVersionUID = 6611568161885127011L;
 
         /** The localization key for this style. */
         private final String m_key;
@@ -161,8 +161,17 @@ public class CmsUserSettings {
      */
     public static final String ADDITIONAL_INFO_TOWN = "USER_TOWN";
 
+    /** Key for additional info upload applet client folder path. */
+    public static final String ADDITIONAL_INFO_UPLOADAPPLET_CLIENTFOLDER = "USER_UPLOADAPPLET_CLIENTFOLDER";
+
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_ZIPCODE = "USER_ZIPCODE";
+
+    /** The default button style. */
+    private static final int BUTTONSTYLE_DEFAULT = 1;
+
+    /** The default number of entries per page. */
+    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
 
     /** Flag for displaying the date created column. */
     public static final int FILELIST_DATE_CREATED = 1024;
@@ -205,12 +214,6 @@ public class CmsUserSettings {
 
     /** Flag for displaying the workflow check column. */
     public static final int FILELIST_WORKFLOW_STATE = 16384;
-
-    /** The default button style. */
-    private static final int BUTTONSTYLE_DEFAULT = 1;
-
-    /** The default number of entries per page. */
-    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
 
     /** Identifier prefix for all keys in the user additional info table. */
     private static final String PREFERENCES = "USERPREFERENCES_";
@@ -287,6 +290,9 @@ public class CmsUserSettings {
     private long m_timeWarp;
 
     private boolean m_uploadApplet;
+
+    /** The path of the preselected folder for the upload applet on the client machine. */
+    private String m_uploadAppletClientFolder;
 
     private CmsUser m_user;
 
@@ -673,6 +679,16 @@ public class CmsUserSettings {
     }
 
     /**
+     * Returns the folder path  of the upload applet on the client machine.<p>
+     *
+     * @return the folder path  of the upload applet on the client machine
+     */
+    public String getUploadAppletClientFolder() {
+
+        return m_uploadAppletClientFolder;
+    }
+
+    /**
      * Returns the current user for the settings.<p>
      * 
      * @return the CmsUser
@@ -971,6 +987,8 @@ public class CmsUserSettings {
             }
             m_projectSettings.setProjectFilesMode(CmsProjectResourcesDisplayMode.ALL_CHANGES);
         }
+        // upload applet client folder path
+        m_uploadAppletClientFolder = (String)m_user.getAdditionalInfo(ADDITIONAL_INFO_UPLOADAPPLET_CLIENTFOLDER);
 
         try {
             save(null);
@@ -1271,6 +1289,12 @@ public class CmsUserSettings {
         } else {
             m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS);
         }
+        // upload applet client folder path
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_uploadAppletClientFolder)) {
+            m_user.setAdditionalInfo(ADDITIONAL_INFO_UPLOADAPPLET_CLIENTFOLDER, m_uploadAppletClientFolder);
+        } else {
+            m_user.deleteAdditionalInfo(ADDITIONAL_INFO_UPLOADAPPLET_CLIENTFOLDER);
+        }
 
         // only write the updated user to the DB if we have the cms object
         if (cms != null) {
@@ -1416,6 +1440,21 @@ public class CmsUserSettings {
     public void setExplorerFileEntries(int entries) {
 
         m_explorerFileEntries = entries;
+    }
+
+    /**
+     * Sets a specific explorer setting depending on the set parameter.<p>
+     * 
+     * @param set true if the setting should be set, otherwise false
+     * @param setting the settings constant value for the explorer settings
+     */
+    private void setExplorerSetting(boolean set, int setting) {
+
+        if (set) {
+            m_explorerSettings |= setting;
+        } else {
+            m_explorerSettings &= ~setting;
+        }
     }
 
     /**
@@ -1739,6 +1778,16 @@ public class CmsUserSettings {
     }
 
     /**
+     * Sets the folder path  of the upload applet on the client machine.<p>
+     *
+     * @param uploadAppletClientFolder the folder path  of the upload applet on the client machine
+     */
+    public void setUploadAppletClientFolder(String uploadAppletClientFolder) {
+
+        m_uploadAppletClientFolder = uploadAppletClientFolder;
+    }
+
+    /**
      * Sets the current user for the settings.<p>
      * 
      * @param user the CmsUser
@@ -1936,20 +1985,5 @@ public class CmsUserSettings {
     public boolean useUploadApplet() {
 
         return m_uploadApplet;
-    }
-
-    /**
-     * Sets a specific explorer setting depending on the set parameter.<p>
-     * 
-     * @param set true if the setting should be set, otherwise false
-     * @param setting the settings constant value for the explorer settings
-     */
-    private void setExplorerSetting(boolean set, int setting) {
-
-        if (set) {
-            m_explorerSettings |= setting;
-        } else {
-            m_explorerSettings &= ~setting;
-        }
     }
 }

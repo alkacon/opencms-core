@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2006/12/19 12:10:09 $
- * Version: $Revision: 1.19.4.3 $
+ * Date   : $Date: 2006/12/28 10:02:55 $
+ * Version: $Revision: 1.19.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.3 $ 
+ * @version $Revision: 1.19.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,6 +128,9 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
     private String m_certificateErrorTitle = "Error initializing the OpenCms Upload Applet";
 
+    /** The initial folder path for the file chooser. */
+    private String m_clientFolder = null;
+
     /** Color defintions. */
     private HashMap m_colors = new HashMap();
 
@@ -146,17 +149,16 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private UploadAppletFileChooser m_fileSelector;
 
     private Image m_floater;
-
     /** Image position for the floater during upload. */
     private int m_floaterPos = 50;
     /** Definition variables for graphics output. */
     private Font m_font;
+
     /** Maximum file upload size. */
     private long m_maxsize = -1;
 
     /** Output string for loggin messages. */
     private String m_message = "";
-
     private String m_messageNoPreview = "no preview available";
     private String m_messageOutputAdding = "Adding ";
     private String m_messageOutputErrorSize = "Zip file too big:";
@@ -165,35 +167,35 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private FontMetrics m_metrics;
     private Graphics m_offgraphics;
     private Image m_offscreen;
-    
+
     /** The URL of the OpenCms instance. */
     private String m_opencms = "";
-    
+
     /** Output mode selector. */
     private int m_outputMode;
-    
+
     private ModalDialog m_overwriteDialog;
     private String m_overwriteDialogCancel = "Cancel";
     private String m_overwriteDialogIntro = "The files listed below already exist on the server. \nAll checked files will be overwritten.";
     private String m_overwriteDialogLocale = "en";
     private String m_overwriteDialogOk = "Ok";
     private String m_overwriteDialogTitle = "Select the files to overwrite on the server";
-    
+
     /** List of potential overwrites. */
     private List m_overwrites;
-    
+
     /** The Target Frame to return to after uploading the files. */
     private String m_redirectTargetFrame = "";
 
     /** The URL to return to after uploading the files. */
     private String m_redirectUrl = "";
-    
+
     /** Number of resources to upload. */
     private int m_resources;
-    
+
     /** Applet thread. */
     private Thread m_runner;
-    
+
     /** Definition of the images during upload. */
     private Image m_source;
 
@@ -209,386 +211,65 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private String m_uploadFolder = "";
 
     /**
-     * @see java.applet.Applet#destroy()
+     * Adds a single file to the zip output.<p>
+     * 
+     * @param zipStream the zip output stream
+     * @param file the file to add to the stream
+     * @throws Exception if something goes wrong
      */
-    public void destroy() {
+    private void addFileToZip(ZipOutputStream zipStream, File file) throws Exception {
 
-        // NOOP
-    }
-
-    /**
-     * Displays an error message in case the applet could not be initialized.<p>
-     */
-    public void displayError() {
-
-        m_outputMode = 5;
-        m_action = m_certificateErrorTitle;
-        m_message = m_certificateErrorMessage;
-
-        JOptionPane.showMessageDialog(this, m_message, m_action, JOptionPane.ERROR_MESSAGE);
-
-        try {
-            // redirect back to the server
-            getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
-        } catch (MalformedURLException e) {
-            // this should never happen
-            e.printStackTrace();
+        // add to zipfile
+        String name = file.getAbsolutePath();
+        name = name.substring(m_fileSelector.getCurrentDirectory().getAbsolutePath().length());
+        if (name.length() > 40) {
+            name = "..." + name.substring(name.length() - 40, name.length());
         }
 
-        stop();
-    }
-
-    /**
-     * @see java.applet.Applet#init()
-     */
-    public void init() {
-
-        // has to be first before any gui components are created
-        if (getParameter("overwriteDialogLocale") != null) {
-            m_overwriteDialogLocale = getParameter("overwriteDialogLocale");
-            Locale wpLocale = new Locale(m_overwriteDialogLocale);
-            setLocale(wpLocale);
-        }
-
-        m_opencms = getParameter("opencms");
-        m_targetUrl = getParameter("target");
-        m_redirectUrl = getParameter("redirect");
-        m_redirectTargetFrame = getParameter("targetframe");
-        if ((m_redirectTargetFrame == null) || m_redirectTargetFrame.equals("")) {
-            m_redirectTargetFrame = "explorer_files";
-        }
-        m_errorUrl = getParameter("error");
-        m_uploadFolder = getParameter("filelist");
-        m_fileFilterSelection = getParameter("filefilterselection");
-        String tmpSize = getParameter("maxsize");
-        if ((tmpSize != null) && (tmpSize.length() > 0)) {
-            m_maxsize = Long.parseLong(tmpSize);
-        }
-        m_fileExtensions = getParameter("fileExtensions");
-        m_colors = extractColors(getParameter("colors"));
-
-        // setup the applet output
-        m_font = new java.awt.Font(null, Font.BOLD, 12);
-        m_metrics = getFontMetrics(m_font);
-        m_source = getImage(getCodeBase(), "org/opencms/applet/upload/applet_source.png");
-        m_target = getImage(getCodeBase(), "org/opencms/applet/upload/applet_target.png");
-        m_floater = getImage(getCodeBase(), "org/opencms/applet/upload/floater.gif");
-
-        // get the output massages in the correct language
-        if (getParameter("actionOutputSelect") != null) {
-            m_actionOutputSelect = getParameter("actionOutputSelect");
-        }
-        if (getParameter("actionOutputCount") != null) {
-            m_actionOutputCount = getParameter("actionOutputCount");
-        }
-        if (getParameter("actionOutputCreate") != null) {
-            m_actionOutputCreate = getParameter("actionOutputCreate");
-        }
-        if (getParameter("actionOverwriteCheck") != null) {
-            m_actionOverwriteCheck = getParameter("actionOverwriteCheck");
-        }
-        if (getParameter("actionOutputUpload") != null) {
-            m_actionOutputUpload = getParameter("actionOutputUpload");
-        }
-        if (getParameter("actionOutputError") != null) {
-            m_actionOutputError = getParameter("actionOutputError");
-        }
-        if (getParameter("messageOutputUpload") != null) {
-            m_messageOutputUpload = getParameter("messageOutputUpload");
-        }
-        if (getParameter("messageOutputAdding") != null) {
-            m_messageOutputAdding = getParameter("messageOutputAdding");
-        }
-        if (getParameter("messageOutputErrorZip") != null) {
-            m_messageOutputErrorZip = getParameter("messageOutputErrorZip");
-        }
-        if (getParameter("messageOutputErrorSize") != null) {
-            m_messageOutputErrorSize = getParameter("messageOutputErrorSize");
-        }
-        if (getParameter("messageNoPreview") != null) {
-            m_messageNoPreview = getParameter("messageNoPreview");
-        }
-        if (getParameter("errorLine1") != null) {
-            m_errorLine1 = getParameter("errorLine1");
-        }
-        if (getParameter("certificateErrorTitle") != null) {
-            m_certificateErrorTitle = getParameter("certificateErrorTitle");
-        }
-        if (getParameter("certificateErrorMessage") != null) {
-            m_certificateErrorMessage = getParameter("certificateErrorMessage");
-        }
-        if (getParameter("overwriteDialogTitle") != null) {
-            m_overwriteDialogTitle = getParameter("overwriteDialogTitle");
-        }
-        if (getParameter("overwriteDialogIntro") != null) {
-            m_overwriteDialogIntro = getParameter("overwriteDialogIntro");
-        }
-        if (getParameter("overwriteDialogCancel") != null) {
-            m_overwriteDialogCancel = getParameter("overwriteDialogCancel");
-        }
-        if (getParameter("overwriteDialogOk") != null) {
-            m_overwriteDialogOk = getParameter("overwriteDialogOk");
-        }
-
-        m_certificateAccepted = true;
-        try {
-            // set log factory to default log factory, otherwise commons logging detection will fail with an exception 
-            System.setProperty(
-                org.apache.commons.logging.LogFactory.FACTORY_PROPERTY,
-                org.apache.commons.logging.LogFactory.FACTORY_DEFAULT);
-        } catch (SecurityException e) {
-            // this indicates the applet certificate has not been accepted
-            m_certificateAccepted = false;
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Move the floating upload image to right, wrap around on right side.<p>
-     */
-    public void moveFloater() {
-
-        m_floaterPos += 10;
-        if ((m_floaterPos) > 430) {
-            m_floaterPos = 50;
-        }
+        m_message = m_messageOutputAdding + " " + name + "..";
+        m_step++;
         repaint();
+        ZipEntry entry = new ZipEntry(name);
+        zipStream.putNextEntry(entry);
+        zipStream.write(getFileBytes(file));
+        zipStream.closeEntry();
     }
 
-    /**
-     * @see java.awt.Component#paint(Graphics)
-     */
-    public void paint(Graphics g) {
+    private void addFolderToZip(ZipOutputStream zipStream, File file) throws Exception {
 
-        // create the box
-        m_offscreen = createImage(getSize().width, getSize().height);
-        m_offgraphics = m_offscreen.getGraphics();
-        m_offgraphics.setColor(getColor("bgColor"));
-        m_offgraphics.fillRect(0, 0, getSize().width, getSize().height);
-        m_offgraphics.setColor(getColor("outerBorderRightBottom"));
-        m_offgraphics.drawLine(0, getSize().height - 1, getSize().width - 1, getSize().height - 1);
-        m_offgraphics.drawLine(getSize().width - 1, 0, getSize().width - 1, getSize().height - 1);
-        m_offgraphics.setColor(getColor("outerBorderLeftTop"));
-        m_offgraphics.drawLine(0, 0, getSize().width - 1, 0);
-        m_offgraphics.drawLine(0, 0, 0, getSize().height - 1);
-        m_offgraphics.setColor(getColor("innerBorderRightBottom"));
-        m_offgraphics.drawLine(1, getSize().height - 2, getSize().width - 2, getSize().height - 2);
-        m_offgraphics.drawLine(getSize().width - 2, 1, getSize().width - 2, getSize().height - 2);
-        m_offgraphics.setColor(getColor("innerBorderLeftTop"));
-        m_offgraphics.drawLine(1, 1, getSize().width - 2, 1);
-        m_offgraphics.drawLine(1, 1, 1, getSize().height - 2);
-        m_offgraphics.setColor(getColor("bgHeadline"));
-        m_offgraphics.fillRect(4, 4, getSize().width - 5, 18);
-
-        m_offgraphics.setColor(getColor("innerBorderRightBottom"));
-        m_offgraphics.drawLine(10, getSize().height - 11, getSize().width - 11, getSize().height - 11);
-        m_offgraphics.drawLine(getSize().width - 11, 25, getSize().width - 11, getSize().height - 11);
-        m_offgraphics.setColor(getColor("innerBorderLeftTop"));
-        m_offgraphics.drawLine(10, 25, getSize().width - 11, 25);
-        m_offgraphics.drawLine(10, 25, 10, getSize().height - 11);
-
-        // draw title
-        int cx = 10;
-        int cy = 17;
-        m_offgraphics.setFont(m_font);
-        m_offgraphics.setColor(getColor("colorHeadline"));
-        m_offgraphics.drawString(m_action, cx, cy);
-
-        m_offgraphics.setColor(getColor("colorText"));
-        // draw process message
-        if (m_outputMode >= 3) {
-            cx = Math.max((getSize().width - m_metrics.stringWidth(m_message)) / 2, 0);
-        } else {
-            cx = 25;
-        }
-        cy = 41;
-        m_offgraphics.drawString(m_message, cx, cy);
-
-        // draw process bar during zip creation
-        if (m_outputMode == 2) {
-            float bar = new Float(m_step).floatValue() / new Float(m_resources).floatValue();
-            String barText = "(" + m_step + " / " + m_resources + ")";
-            m_offgraphics.drawRect(25, 50, 450, 20);
-            m_offgraphics.setColor(Color.white);
-            m_offgraphics.fillRect(26, 51, 449, 19);
-            m_offgraphics.setColor(getColor("progessBar"));
-            m_offgraphics.fillRect(26, 51, new Float(bar * 449).intValue(), 19);
-            int progressWith = m_metrics.stringWidth(barText);
-            cx = Math.max((getSize().width - progressWith) / 2, 0);
-            cy = 64;
-            m_offgraphics.setColor(Color.black);
-            m_offgraphics.drawString(barText, cx, cy);
-        }
-
-        // show floater during upload
-        if (m_outputMode == 3) {
-            m_offgraphics.drawImage(m_floater, m_floaterPos, 57, this);
-            m_offgraphics.drawImage(m_source, 30, 47, this);
-            m_offgraphics.drawImage(m_target, 440, 47, this);
-        }
-
-        // copy the offcreen graphics to the applet
-        g.drawImage(m_offscreen, 0, 0, null);
-    }
-
-    /**
-     * @see java.lang.Runnable#run()
-     */
-    public void run() {
-
-        try {
-            boolean ok = true;
-            while (ok) {
-                ok = true;
-
-                m_message = "";
-                m_resources = 0;
-                m_step = 0;
-                // create a new file chooser
-
-                if (m_fileSelector == null) {
-                    m_fileSelector = new UploadAppletFileChooser(this);
-                }
-
-                // file selector can read files and folders
-                m_fileSelector.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-
-                m_fileSelector.setDialogTitle(m_actionOutputSelect);
-
-                FileFilter imageFilter = new ImageFilter();
-                FileFilter officeFilter = new OfficeFilter();
-                FileFilter webFilter = new WebFilter();
-
-                // add two custom file filters (office and images) and the default filters
-                m_fileSelector.addChoosableFileFilter(imageFilter);
-                m_fileSelector.addChoosableFileFilter(officeFilter);
-                m_fileSelector.addChoosableFileFilter(webFilter);
-
-                m_fileSelector.setAcceptAllFileFilterUsed(true);
-                // enable multi-selection of files
-                m_fileSelector.setMultiSelectionEnabled(true);
-                // add custom icons for file types.
-                m_fileSelector.setFileView(new ImageFileView(m_opencms, m_fileExtensions));
-                // add the image preview pane.
-                m_fileSelector.setAccessory(new ImagePreview(m_fileSelector, m_messageNoPreview));
-
-                m_action = m_actionOutputSelect;
-
-                // pre - selection of the filter: 
-                if (m_fileFilterSelection != null && !m_fileFilterSelection.trim().equals("")) {
-                    if (WebFilter.FILTER_ID.equals(m_fileFilterSelection)) {
-                        m_fileSelector.setFileFilter(webFilter);
-                    } else if (OfficeFilter.FILTER_ID.equals(m_fileFilterSelection)) {
-                        m_fileSelector.setFileFilter(officeFilter);
-                    } else if (ImageFilter.FILTER_ID.equals(m_fileFilterSelection)) {
-                        m_fileSelector.setFileFilter(imageFilter);
-                    }
-                }
-                repaint();
-                int returnVal = m_fileSelector.showDialog(this, "OK");
-
-                // process the results.
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    // count all resources
-                    m_outputMode = 1;
-                    m_action = m_actionOutputCount;
-                    repaint();
-
-                    File[] files = m_fileSelector.getSelectedFiles();
-                    List fileNames = new ArrayList();
-                    for (int i = 0; i < files.length; i++) {
-                        getRelativeFilePaths(files[i], fileNames);
-                    }
-
-                    if (m_overwrites.size() > 0) {
-                        // subtract all duplicate files first
-                        files = subtractDuplicates(fileNames, m_overwrites);
-                        files = addOverwrites(
-                            files,
-                            ((FileSelectionPanel)m_overwriteDialog.getControlPanel().getComponent(1)).getSelectedFiles());
-                    } else {
-
-                        fileNames = new ArrayList();
-                        for (int i = 0; i < files.length; i++) {
-                            getFilesInTree(files[i], fileNames);
-                        }
-                        files = (File[])fileNames.toArray(new File[fileNames.size()]);
-                    }
-
-                    m_resources = countResources(files);
-
-                    // create the zipfile  
-                    m_outputMode = 2;
-                    File targetFile = createZipFile(files);
-                    // check the size of the zip files
-                    if ((targetFile == null) || ((m_maxsize > 0) && (targetFile.length() > m_maxsize))) {
-                        // show some details in the applet itself
-                        m_outputMode = 4;
-                        if (targetFile == null) {
-                            m_message = m_messageOutputErrorZip;
-                        } else {
-                            m_message = m_messageOutputErrorSize + " " + targetFile.length() + " > " + m_maxsize;
-                        }
-                        m_action = m_actionOutputError;
-                        repaint();
-                        // show an error-alertbog
-                        JOptionPane.showMessageDialog(this, m_message, m_action, JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        m_outputMode = 3;
-                        m_message = m_messageOutputUpload + " (" + targetFile.length() / 1024 + " kb)";
-                        repaint();
-                        // upload the zipfile
-                        FileUploadThread uploadThreat = new FileUploadThread();
-
-                        uploadThreat.init(this);
-                        uploadThreat.start();
-
-                        uploadZipFile(targetFile);
-                        ok = false;
-                    }
-
-                } else {
-                    //the cancel button was used, so go back to the workplace
-                    ok = false;
-                    getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
-                }
+        File[] children = file.listFiles();
+        File child;
+        for (int i = 0; i < children.length; i++) {
+            child = children[i];
+            if (child.isDirectory()) {
+                addFolderToZip(zipStream, child);
+            } else {
+                addFileToZip(zipStream, child);
             }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
     /**
-     * @see java.applet.Applet#start()
+     * Returns the merge of both file arrays with no check for duplications. <p>
+     * 
+     * @param files first array of files 
+     * 
+     * @param overwriteFiles 2nd array of files 
+     * 
+     * @return the union of both file arrays
      */
-    public void start() {
+    private File[] addOverwrites(File[] files, File[] overwriteFiles) {
 
-        if (m_certificateAccepted) {
-            // certificate was accepted, start upload thread
-            m_runner = new Thread(this);
-            m_runner.start();
-        } else {
-            // certificate was not accepted, show error message
-            displayError();
+        List result = new ArrayList(files.length + overwriteFiles.length);
+        // faster for loop;)
+        for (int i = files.length - 1; i >= 0; i--) {
+            result.add(files[i]);
         }
-    }
+        for (int i = overwriteFiles.length - 1; i >= 0; i--) {
+            result.add(overwriteFiles[i]);
+        }
 
-    /**
-     * @see java.applet.Applet#stop()
-     */
-    public void stop() {
-
-        m_runner = null;
-    }
-
-    /**
-     * @see java.awt.Component#update(java.awt.Graphics)
-     */
-    public void update(Graphics g) {
-
-        paint(g);
+        return (File[])result.toArray(new File[result.size()]);
     }
 
     /**
@@ -678,68 +359,6 @@ public class FileUploadApplet extends JApplet implements Runnable {
     }
 
     /**
-     * Adds a single file to the zip output.<p>
-     * 
-     * @param zipStream the zip output stream
-     * @param file the file to add to the stream
-     * @throws Exception if something goes wrong
-     */
-    private void addFileToZip(ZipOutputStream zipStream, File file) throws Exception {
-
-        // add to zipfile
-        String name = file.getAbsolutePath();
-        name = name.substring(m_fileSelector.getCurrentDirectory().getAbsolutePath().length());
-        if (name.length() > 40) {
-            name = "..." + name.substring(name.length() - 40, name.length());
-        }
-
-        m_message = m_messageOutputAdding + " " + name + "..";
-        m_step++;
-        repaint();
-        ZipEntry entry = new ZipEntry(name);
-        zipStream.putNextEntry(entry);
-        zipStream.write(getFileBytes(file));
-        zipStream.closeEntry();
-    }
-
-    private void addFolderToZip(ZipOutputStream zipStream, File file) throws Exception {
-
-        File[] children = file.listFiles();
-        File child;
-        for (int i = 0; i < children.length; i++) {
-            child = children[i];
-            if (child.isDirectory()) {
-                addFolderToZip(zipStream, child);
-            } else {
-                addFileToZip(zipStream, child);
-            }
-        }
-    }
-
-    /**
-     * Returns the merge of both file arrays with no check for duplications. <p>
-     * 
-     * @param files first array of files 
-     * 
-     * @param overwriteFiles 2nd array of files 
-     * 
-     * @return the union of both file arrays
-     */
-    private File[] addOverwrites(File[] files, File[] overwriteFiles) {
-
-        List result = new ArrayList(files.length + overwriteFiles.length);
-        // faster for loop;)
-        for (int i = files.length - 1; i >= 0; i--) {
-            result.add(files[i]);
-        }
-        for (int i = overwriteFiles.length - 1; i >= 0; i--) {
-            result.add(overwriteFiles[i]);
-        }
-
-        return (File[])result.toArray(new File[result.size()]);
-    }
-
-    /**
      * Counts all resources to add to the zip file.<p>
      * 
      * @param files the files to be packed into the zipfile
@@ -826,6 +445,36 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
         }
         return targetFile;
+    }
+
+    /**
+     * @see java.applet.Applet#destroy()
+     */
+    public void destroy() {
+
+        // NOOP
+    }
+
+    /**
+     * Displays an error message in case the applet could not be initialized.<p>
+     */
+    public void displayError() {
+
+        m_outputMode = 5;
+        m_action = m_certificateErrorTitle;
+        m_message = m_certificateErrorMessage;
+
+        JOptionPane.showMessageDialog(this, m_message, m_action, JOptionPane.ERROR_MESSAGE);
+
+        try {
+            // redirect back to the server
+            getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
+        } catch (MalformedURLException e) {
+            // this should never happen
+            e.printStackTrace();
+        }
+
+        stop();
     }
 
     /**
@@ -963,6 +612,202 @@ public class FileUploadApplet extends JApplet implements Runnable {
         }
     }
 
+    /**
+     * @see java.applet.Applet#init()
+     */
+    public void init() {
+
+        // has to be first before any gui components are created
+        if (getParameter("overwriteDialogLocale") != null) {
+            m_overwriteDialogLocale = getParameter("overwriteDialogLocale");
+            Locale wpLocale = new Locale(m_overwriteDialogLocale);
+            setLocale(wpLocale);
+        }
+
+        m_opencms = getParameter("opencms");
+        m_targetUrl = getParameter("target");
+        m_redirectUrl = getParameter("redirect");
+        m_redirectTargetFrame = getParameter("targetframe");
+        if ((m_redirectTargetFrame == null) || m_redirectTargetFrame.equals("")) {
+            m_redirectTargetFrame = "explorer_files";
+        }
+        m_errorUrl = getParameter("error");
+        m_uploadFolder = getParameter("filelist");
+        m_fileFilterSelection = getParameter("filefilterselection");
+        String tmpSize = getParameter("maxsize");
+        if ((tmpSize != null) && (tmpSize.length() > 0)) {
+            m_maxsize = Long.parseLong(tmpSize);
+        }
+        m_fileExtensions = getParameter("fileExtensions");
+        m_colors = extractColors(getParameter("colors"));
+
+        // setup the applet output
+        m_font = new java.awt.Font(null, Font.BOLD, 12);
+        m_metrics = getFontMetrics(m_font);
+        m_source = getImage(getCodeBase(), "org/opencms/applet/upload/applet_source.png");
+        m_target = getImage(getCodeBase(), "org/opencms/applet/upload/applet_target.png");
+        m_floater = getImage(getCodeBase(), "org/opencms/applet/upload/floater.gif");
+
+        // get the output massages in the correct language
+        if (getParameter("actionOutputSelect") != null) {
+            m_actionOutputSelect = getParameter("actionOutputSelect");
+        }
+        if (getParameter("actionOutputCount") != null) {
+            m_actionOutputCount = getParameter("actionOutputCount");
+        }
+        if (getParameter("actionOutputCreate") != null) {
+            m_actionOutputCreate = getParameter("actionOutputCreate");
+        }
+        if (getParameter("actionOverwriteCheck") != null) {
+            m_actionOverwriteCheck = getParameter("actionOverwriteCheck");
+        }
+        if (getParameter("actionOutputUpload") != null) {
+            m_actionOutputUpload = getParameter("actionOutputUpload");
+        }
+        if (getParameter("actionOutputError") != null) {
+            m_actionOutputError = getParameter("actionOutputError");
+        }
+        if (getParameter("messageOutputUpload") != null) {
+            m_messageOutputUpload = getParameter("messageOutputUpload");
+        }
+        if (getParameter("messageOutputAdding") != null) {
+            m_messageOutputAdding = getParameter("messageOutputAdding");
+        }
+        if (getParameter("messageOutputErrorZip") != null) {
+            m_messageOutputErrorZip = getParameter("messageOutputErrorZip");
+        }
+        if (getParameter("messageOutputErrorSize") != null) {
+            m_messageOutputErrorSize = getParameter("messageOutputErrorSize");
+        }
+        if (getParameter("messageNoPreview") != null) {
+            m_messageNoPreview = getParameter("messageNoPreview");
+        }
+        if (getParameter("errorLine1") != null) {
+            m_errorLine1 = getParameter("errorLine1");
+        }
+        if (getParameter("certificateErrorTitle") != null) {
+            m_certificateErrorTitle = getParameter("certificateErrorTitle");
+        }
+        if (getParameter("certificateErrorMessage") != null) {
+            m_certificateErrorMessage = getParameter("certificateErrorMessage");
+        }
+        if (getParameter("overwriteDialogTitle") != null) {
+            m_overwriteDialogTitle = getParameter("overwriteDialogTitle");
+        }
+        if (getParameter("overwriteDialogIntro") != null) {
+            m_overwriteDialogIntro = getParameter("overwriteDialogIntro");
+        }
+        if (getParameter("overwriteDialogCancel") != null) {
+            m_overwriteDialogCancel = getParameter("overwriteDialogCancel");
+        }
+        if (getParameter("overwriteDialogOk") != null) {
+            m_overwriteDialogOk = getParameter("overwriteDialogOk");
+        }
+        if (getParameter("clientFolder") != null) {
+            m_clientFolder = getParameter("clientFolder");
+        }
+
+        m_certificateAccepted = true;
+        try {
+            // set log factory to default log factory, otherwise commons logging detection will fail with an exception 
+            System.setProperty(
+                org.apache.commons.logging.LogFactory.FACTORY_PROPERTY,
+                org.apache.commons.logging.LogFactory.FACTORY_DEFAULT);
+        } catch (SecurityException e) {
+            // this indicates the applet certificate has not been accepted
+            m_certificateAccepted = false;
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Move the floating upload image to right, wrap around on right side.<p>
+     */
+    public void moveFloater() {
+
+        m_floaterPos += 10;
+        if ((m_floaterPos) > 430) {
+            m_floaterPos = 50;
+        }
+        repaint();
+    }
+
+    /**
+     * @see java.awt.Component#paint(Graphics)
+     */
+    public void paint(Graphics g) {
+
+        // create the box
+        m_offscreen = createImage(getSize().width, getSize().height);
+        m_offgraphics = m_offscreen.getGraphics();
+        m_offgraphics.setColor(getColor("bgColor"));
+        m_offgraphics.fillRect(0, 0, getSize().width, getSize().height);
+        m_offgraphics.setColor(getColor("outerBorderRightBottom"));
+        m_offgraphics.drawLine(0, getSize().height - 1, getSize().width - 1, getSize().height - 1);
+        m_offgraphics.drawLine(getSize().width - 1, 0, getSize().width - 1, getSize().height - 1);
+        m_offgraphics.setColor(getColor("outerBorderLeftTop"));
+        m_offgraphics.drawLine(0, 0, getSize().width - 1, 0);
+        m_offgraphics.drawLine(0, 0, 0, getSize().height - 1);
+        m_offgraphics.setColor(getColor("innerBorderRightBottom"));
+        m_offgraphics.drawLine(1, getSize().height - 2, getSize().width - 2, getSize().height - 2);
+        m_offgraphics.drawLine(getSize().width - 2, 1, getSize().width - 2, getSize().height - 2);
+        m_offgraphics.setColor(getColor("innerBorderLeftTop"));
+        m_offgraphics.drawLine(1, 1, getSize().width - 2, 1);
+        m_offgraphics.drawLine(1, 1, 1, getSize().height - 2);
+        m_offgraphics.setColor(getColor("bgHeadline"));
+        m_offgraphics.fillRect(4, 4, getSize().width - 5, 18);
+
+        m_offgraphics.setColor(getColor("innerBorderRightBottom"));
+        m_offgraphics.drawLine(10, getSize().height - 11, getSize().width - 11, getSize().height - 11);
+        m_offgraphics.drawLine(getSize().width - 11, 25, getSize().width - 11, getSize().height - 11);
+        m_offgraphics.setColor(getColor("innerBorderLeftTop"));
+        m_offgraphics.drawLine(10, 25, getSize().width - 11, 25);
+        m_offgraphics.drawLine(10, 25, 10, getSize().height - 11);
+
+        // draw title
+        int cx = 10;
+        int cy = 17;
+        m_offgraphics.setFont(m_font);
+        m_offgraphics.setColor(getColor("colorHeadline"));
+        m_offgraphics.drawString(m_action, cx, cy);
+
+        m_offgraphics.setColor(getColor("colorText"));
+        // draw process message
+        if (m_outputMode >= 3) {
+            cx = Math.max((getSize().width - m_metrics.stringWidth(m_message)) / 2, 0);
+        } else {
+            cx = 25;
+        }
+        cy = 41;
+        m_offgraphics.drawString(m_message, cx, cy);
+
+        // draw process bar during zip creation
+        if (m_outputMode == 2) {
+            float bar = new Float(m_step).floatValue() / new Float(m_resources).floatValue();
+            String barText = "(" + m_step + " / " + m_resources + ")";
+            m_offgraphics.drawRect(25, 50, 450, 20);
+            m_offgraphics.setColor(Color.white);
+            m_offgraphics.fillRect(26, 51, 449, 19);
+            m_offgraphics.setColor(getColor("progessBar"));
+            m_offgraphics.fillRect(26, 51, new Float(bar * 449).intValue(), 19);
+            int progressWith = m_metrics.stringWidth(barText);
+            cx = Math.max((getSize().width - progressWith) / 2, 0);
+            cy = 64;
+            m_offgraphics.setColor(Color.black);
+            m_offgraphics.drawString(barText, cx, cy);
+        }
+
+        // show floater during upload
+        if (m_outputMode == 3) {
+            m_offgraphics.drawImage(m_floater, m_floaterPos, 57, this);
+            m_offgraphics.drawImage(m_source, 30, 47, this);
+            m_offgraphics.drawImage(m_target, 440, 47, this);
+        }
+
+        // copy the offcreen graphics to the applet
+        g.drawImage(m_offscreen, 0, 0, null);
+    }
+
     private List parseDuplicateFiles(String responseBodyAsString) {
 
         List result = new ArrayList();
@@ -981,6 +826,141 @@ public class FileUploadApplet extends JApplet implements Runnable {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * @see java.lang.Runnable#run()
+     */
+    public void run() {
+
+        try {
+            boolean ok = true;
+            while (ok) {
+                ok = true;
+
+                m_message = "";
+                m_resources = 0;
+                m_step = 0;
+                // create a new file chooser
+
+                if (m_fileSelector == null) {
+                    m_fileSelector = new UploadAppletFileChooser(this);
+                }
+
+                // file selector can read files and folders
+                m_fileSelector.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
+                m_fileSelector.setDialogTitle(m_actionOutputSelect);
+
+                FileFilter imageFilter = new ImageFilter();
+                FileFilter officeFilter = new OfficeFilter();
+                FileFilter webFilter = new WebFilter();
+
+                // add two custom file filters (office and images) and the default filters
+                m_fileSelector.addChoosableFileFilter(imageFilter);
+                m_fileSelector.addChoosableFileFilter(officeFilter);
+                m_fileSelector.addChoosableFileFilter(webFilter);
+
+                m_fileSelector.setAcceptAllFileFilterUsed(true);
+                // enable multi-selection of files
+                m_fileSelector.setMultiSelectionEnabled(true);
+                // add custom icons for file types.
+                m_fileSelector.setFileView(new ImageFileView(m_opencms, m_fileExtensions));
+                // add the image preview pane.
+                m_fileSelector.setAccessory(new ImagePreview(m_fileSelector, m_messageNoPreview));
+                if (m_clientFolder != null && !m_clientFolder.trim().equals("")) {
+                    File clientFolder = new File(m_clientFolder);
+                    if (clientFolder.exists() && clientFolder.isDirectory()) {
+                        m_fileSelector.setCurrentDirectory(clientFolder);
+                    }
+                }
+
+                m_action = m_actionOutputSelect;
+
+                // pre - selection of the filter: 
+                if (m_fileFilterSelection != null && !m_fileFilterSelection.trim().equals("")) {
+                    if (WebFilter.FILTER_ID.equals(m_fileFilterSelection)) {
+                        m_fileSelector.setFileFilter(webFilter);
+                    } else if (OfficeFilter.FILTER_ID.equals(m_fileFilterSelection)) {
+                        m_fileSelector.setFileFilter(officeFilter);
+                    } else if (ImageFilter.FILTER_ID.equals(m_fileFilterSelection)) {
+                        m_fileSelector.setFileFilter(imageFilter);
+                    }
+                }
+                repaint();
+                int returnVal = m_fileSelector.showDialog(this, "OK");
+
+                // process the results.
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    // count all resources
+                    m_outputMode = 1;
+                    m_action = m_actionOutputCount;
+                    repaint();
+
+                    File[] files = m_fileSelector.getSelectedFiles();
+                    List fileNames = new ArrayList();
+                    for (int i = 0; i < files.length; i++) {
+                        getRelativeFilePaths(files[i], fileNames);
+                    }
+
+                    if (m_overwrites.size() > 0) {
+                        // subtract all duplicate files first
+                        files = subtractDuplicates(fileNames, m_overwrites);
+                        files = addOverwrites(
+                            files,
+                            ((FileSelectionPanel)m_overwriteDialog.getControlPanel().getComponent(1)).getSelectedFiles());
+                    } else {
+
+                        fileNames = new ArrayList();
+                        for (int i = 0; i < files.length; i++) {
+                            getFilesInTree(files[i], fileNames);
+                        }
+                        files = (File[])fileNames.toArray(new File[fileNames.size()]);
+                    }
+
+                    m_resources = countResources(files);
+
+                    // create the zipfile  
+                    m_outputMode = 2;
+                    File targetFile = createZipFile(files);
+                    // check the size of the zip files
+                    if ((targetFile == null) || ((m_maxsize > 0) && (targetFile.length() > m_maxsize))) {
+                        // show some details in the applet itself
+                        m_outputMode = 4;
+                        if (targetFile == null) {
+                            m_message = m_messageOutputErrorZip;
+                        } else {
+                            m_message = m_messageOutputErrorSize + " " + targetFile.length() + " > " + m_maxsize;
+                        }
+                        m_action = m_actionOutputError;
+                        repaint();
+                        // show an error-alertbog
+                        JOptionPane.showMessageDialog(this, m_message, m_action, JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        m_outputMode = 3;
+                        m_message = m_messageOutputUpload + " (" + targetFile.length() / 1024 + " kb)";
+                        repaint();
+                        // upload the zipfile
+                        FileUploadThread uploadThreat = new FileUploadThread();
+
+                        uploadThreat.init(this);
+                        uploadThreat.start();
+
+                        uploadZipFile(targetFile);
+                        ok = false;
+                    }
+
+                } else {
+                    //the cancel button was used, so go back to the workplace
+                    ok = false;
+                    getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
+                }
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /** 
@@ -1049,6 +1029,29 @@ public class FileUploadApplet extends JApplet implements Runnable {
     }
 
     /**
+     * @see java.applet.Applet#start()
+     */
+    public void start() {
+
+        if (m_certificateAccepted) {
+            // certificate was accepted, start upload thread
+            m_runner = new Thread(this);
+            m_runner.start();
+        } else {
+            // certificate was not accepted, show error message
+            displayError();
+        }
+    }
+
+    /**
+     * @see java.applet.Applet#stop()
+     */
+    public void stop() {
+
+        m_runner = null;
+    }
+
+    /**
      * Return all files that are found in the first argument except a matching path suffix is found in the list 
      * of Strings given by the 2nd argument. <p>
      * 
@@ -1081,6 +1084,14 @@ public class FileUploadApplet extends JApplet implements Runnable {
     }
 
     /**
+     * @see java.awt.Component#update(java.awt.Graphics)
+     */
+    public void update(Graphics g) {
+
+        paint(g);
+    }
+
+    /**
      * Uploads the zipfile to the OpenCms.<p>
      * 
      * @param uploadFile the zipfile to upload
@@ -1093,11 +1104,12 @@ public class FileUploadApplet extends JApplet implements Runnable {
         PostMethod post = new PostMethod(m_targetUrl);
 
         try {
-            Part[] parts = new Part[4];
+            Part[] parts = new Part[5];
             parts[0] = new FilePart(uploadFile.getName(), uploadFile);
             parts[1] = new StringPart("action", "submitform");
             parts[2] = new StringPart("unzipfile", "true");
             parts[3] = new StringPart("uploadfolder", m_uploadFolder);
+            parts[4] = new StringPart("clientfolder", m_fileSelector.getCurrentDirectory().getAbsolutePath());
 
             HttpMethodParams methodParams = post.getParams();
             methodParams.setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);

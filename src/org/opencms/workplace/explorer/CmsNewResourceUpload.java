@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/12/18 11:07:07 $
- * Version: $Revision: 1.22.4.9 $
+ * Date   : $Date: 2006/12/28 10:02:54 $
+ * Version: $Revision: 1.22.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.explorer;
 
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsImportFolder;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -43,6 +44,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -62,6 +64,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.logging.Log;
 
 /**
  * The new resource upload dialog handles the upload of single files or zipped files.<p>
@@ -74,7 +77,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.9 $ 
+ * @version $Revision: 1.22.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,6 +120,12 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** The name for the resource form submission action. */
     public static final String DIALOG_SUBMITFORM2 = "submitform2";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewResourceUpload.class);
+
+    /** Request parameter name for the upload folder name. */
+    public static final String PARAM_CLIENTFOLDER = "clientfolder";
+
     /** Request parameter name for the new resource file name. */
     public static final String PARAM_NEWRESOURCENAME = "newresourcename";
 
@@ -138,6 +147,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** Request parameter name for the upload folder name. */
     public static final String PARAM_UPLOADFOLDER = "uploadfolder";
 
+    private String m_paramClientFolder;
     private String m_paramNewResourceName;
     private String m_paramRedirectUrl;
     private String m_paramTargetFrame;
@@ -266,6 +276,20 @@ public class CmsNewResourceUpload extends CmsNewResource {
         // determine the type of upload
         boolean unzipFile = Boolean.valueOf(getParamUnzipFile()).booleanValue();
         // Suffix for error messages (e.g. when exceeding the maximum file upload size)
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamClientFolder())) {
+            CmsUserSettings userSettings = new CmsUserSettings(getCms());
+            userSettings.setUploadAppletClientFolder(getParamClientFolder());
+            try {
+                userSettings.save(getCms());
+            } catch (CmsException e) {
+                // it's not fatal if the client folder for the applet file chooser is not possible 
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle(getLocale()).key(
+                        Messages.ERR_UPLOAD_STORE_CLIENT_FOLDER_1,
+                        new Object[] {getCms().getRequestContext().currentUser().getName()}), e);
+                }
+            }
+        }
 
         try {
             // get the file item from the multipart request
@@ -546,6 +570,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append("<param name=\"certificateErrorMessage\" value=\"");
         applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_MESSAGE_0));
         applet.append(" \">\n");
+        applet.append("<param name=\"clientFolder\" value=\"");
+        applet.append(new CmsUserSettings(getCms()).getUploadAppletClientFolder());
+        applet.append(" \">\n");
         applet.append("</applet>\n");
 
         return applet.toString();
@@ -577,6 +604,16 @@ public class CmsNewResourceUpload extends CmsNewResource {
             // ignore this, gallery type will simply not be supported for pre selection of the file type selector in the upload applet 
         }
         return result;
+    }
+
+    /**
+     * Returns the paramClientFolder.<p>
+     *
+     * @return the paramClientFolder
+     */
+    public String getParamClientFolder() {
+
+        return m_paramClientFolder;
     }
 
     /**
@@ -736,6 +773,16 @@ public class CmsNewResourceUpload extends CmsNewResource {
             // build title for new resource dialog     
             setParamTitle(key(Messages.GUI_NEWRESOURCE_UPLOAD_0));
         }
+    }
+
+    /**
+     * Sets the client upload folder name.<p>
+     * 
+     * @param clientFolder the client upload folder name
+     */
+    public void setParamClientFolder(String clientFolder) {
+
+        m_paramClientFolder = clientFolder;
     }
 
     /**
