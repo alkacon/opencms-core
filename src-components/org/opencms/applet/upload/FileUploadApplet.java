@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2006/12/28 10:02:55 $
- * Version: $Revision: 1.19.4.4 $
+ * Date   : $Date: 2006/12/28 15:00:33 $
+ * Version: $Revision: 1.19.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.4 $ 
+ * @version $Revision: 1.19.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -220,7 +220,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private void addFileToZip(ZipOutputStream zipStream, File file) throws Exception {
 
         // add to zipfile
-        String name = file.getAbsolutePath();
+        String name = file.getAbsolutePath().replace('\\', '/');
         name = name.substring(m_fileSelector.getCurrentDirectory().getAbsolutePath().length());
         if (name.length() > 40) {
             name = "..." + name.substring(name.length() - 40, name.length());
