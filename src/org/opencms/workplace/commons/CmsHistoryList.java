@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/01/02 09:09:11 $
- * Version: $Revision: 1.5.4.10 $
+ * Date   : $Date: 2007/01/02 10:52:30 $
+ * Version: $Revision: 1.5.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.10 $ 
+ * @version $Revision: 1.5.4.11 $ 
  * 
  * @since 6.0.2 
  */
@@ -421,58 +421,62 @@ public class CmsHistoryList extends A_CmsListDialog {
         List backupFileHeaders = getCms().readAllBackupFileHeaders(getParamResource());
         Iterator i = backupFileHeaders.iterator();
         while (i.hasNext()) {
-            CmsBackupResource file = (CmsBackupResource)i.next();
-            // the tagId for the Backup project            
-            int tagId = file.getTagId();
-            //String version = .toString();
-            CmsBackupProject project = getCms().readBackupProject(tagId);
-            String versionId = new Integer(project.getVersionId()).toString();
-            String filetype = String.valueOf(file.getTypeId());
-            String dateLastModified = getMessages().getDateTime(file.getDateLastModified());
-            String datePublished = getMessages().getDateTime(project.getPublishingDate());
-            CmsListItem item = getList().newItem(versionId);
-            //version
-            item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(new Integer(file.getVersionId())));
-            // filename
-            item.set(LIST_COLUMN_DATE_PUBLISHED, datePublished);
-            // nicename
-            item.set(LIST_COLUMN_DATE_LAST_MODIFIED, dateLastModified);
-            // group           
-            item.set(LIST_COLUMN_FILE_TYPE, filetype);
-            // user           
-            item.set(LIST_COLUMN_USER, readUserNameOfBackupFile(getCms(), file));
-            // path           
-            item.set(LIST_COLUMN_RESOURCE_PATH, file.getRootPath());
-            // size 
-            item.set(LIST_COLUMN_SIZE, new Integer(file.getLength()).toString());
-            result.add(item);
-            // invisible backup tag (for reading backup project in fillDetails)
-            item.set(LIST_COLUMN_BACKUP_TAG, new Integer(tagId));
-            // invisible structure id           
-            item.set(LIST_COLUMN_STRUCTURE_ID, file.getStructureId().toString());
-        }
-        CmsFile offlineFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
 
-        // display offline version, if state is not unchanged
-        if (!offlineFile.getState().isUnchanged()) {
-            CmsListItem item = getList().newItem("-1");
-            //version
-            item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(OFFLINE_PROJECT));
-            // filename
-            item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
-            // nicename
-            item.set(LIST_COLUMN_DATE_LAST_MODIFIED, getMessages().getDateTime(offlineFile.getDateLastModified()));
-            // group           
-            item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(offlineFile.getTypeId()));
-            // user           
-            item.set(LIST_COLUMN_USER, getCms().readUser(offlineFile.getUserLastModified()).getName());
-            // size 
-            item.set(LIST_COLUMN_SIZE, new Integer(offlineFile.getLength()).toString());
-            // path
-            item.set(LIST_COLUMN_RESOURCE_PATH, offlineFile.getRootPath());
-            result.add(item);
-            // invisible structure id           
-            item.set(LIST_COLUMN_STRUCTURE_ID, offlineFile.getStructureId().toString());
+            CmsBackupResource file = (CmsBackupResource)i.next();
+            if (-1 != file.getVersionId()
+                && getCms().existsResource(getCms().getRequestContext().removeSiteRoot(file.getRootPath()))) {
+                // the tagId for the Backup project            
+                int tagId = file.getTagId();
+                //String version = .toString();
+                CmsBackupProject project = getCms().readBackupProject(tagId);
+                String versionId = new Integer(project.getVersionId()).toString();
+                String filetype = String.valueOf(file.getTypeId());
+                String dateLastModified = getMessages().getDateTime(file.getDateLastModified());
+                String datePublished = getMessages().getDateTime(project.getPublishingDate());
+                CmsListItem item = getList().newItem(versionId);
+                //version
+                item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(new Integer(file.getVersionId())));
+                // filename
+                item.set(LIST_COLUMN_DATE_PUBLISHED, datePublished);
+                // nicename
+                item.set(LIST_COLUMN_DATE_LAST_MODIFIED, dateLastModified);
+                // group           
+                item.set(LIST_COLUMN_FILE_TYPE, filetype);
+                // user           
+                item.set(LIST_COLUMN_USER, readUserNameOfBackupFile(getCms(), file));
+                // path           
+                item.set(LIST_COLUMN_RESOURCE_PATH, file.getRootPath());
+                // size 
+                item.set(LIST_COLUMN_SIZE, new Integer(file.getLength()).toString());
+                result.add(item);
+                // invisible backup tag (for reading backup project in fillDetails)
+                item.set(LIST_COLUMN_BACKUP_TAG, new Integer(tagId));
+                // invisible structure id           
+                item.set(LIST_COLUMN_STRUCTURE_ID, file.getStructureId().toString());
+            }
+            CmsFile offlineFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+
+            // display offline version, if state is not unchanged
+            if (!offlineFile.getState().isUnchanged()) {
+                CmsListItem item = getList().newItem("-1");
+                //version
+                item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(OFFLINE_PROJECT));
+                // filename
+                item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
+                // nicename
+                item.set(LIST_COLUMN_DATE_LAST_MODIFIED, getMessages().getDateTime(offlineFile.getDateLastModified()));
+                // group           
+                item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(offlineFile.getTypeId()));
+                // user           
+                item.set(LIST_COLUMN_USER, getCms().readUser(offlineFile.getUserLastModified()).getName());
+                // size 
+                item.set(LIST_COLUMN_SIZE, new Integer(offlineFile.getLength()).toString());
+                // path
+                item.set(LIST_COLUMN_RESOURCE_PATH, offlineFile.getRootPath());
+                result.add(item);
+                // invisible structure id           
+                item.set(LIST_COLUMN_STRUCTURE_ID, offlineFile.getStructureId().toString());
+            }
         }
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_SEL1).setVisible(result.size() > 1);
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_SEL2).setVisible(result.size() > 1);
@@ -516,16 +520,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         restoreCol.setSorteable(false);
 
         // add icon action
-        CmsListDirectAction restoreAction = new CmsListDirectAction(LIST_ACTION_RESTORE) {
-
-            // do not show icon for offline version
-            public boolean isVisible() {
-
-                return !"-1".equals(getItem().getId())
-                    && getCms().existsResource(
-                        getCms().getRequestContext().removeSiteRoot((String)getItem().get(LIST_COLUMN_RESOURCE_PATH)));
-            }
-        };
+        CmsListDirectAction restoreAction = new CmsListDirectAction(LIST_ACTION_RESTORE);
         restoreAction.setName(Messages.get().container(Messages.GUI_HISTORY_RESTORE_VERSION_0));
         restoreAction.setIconPath("tools/ex_history/buttons/restore.png");
         restoreAction.setConfirmationMessage(Messages.get().container(Messages.GUI_HISTORY_CONFIRMATION_0));
@@ -589,15 +584,6 @@ public class CmsHistoryList extends A_CmsListDialog {
                     singleHelp);
             }
 
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
-             */
-            public boolean isVisible() {
-
-                return !"-1".equals(getItem().getId())
-                    && getCms().existsResource(
-                        getCms().getRequestContext().removeSiteRoot((String)getItem().get(LIST_COLUMN_RESOURCE_PATH)));
-            }
         };
         fileAction.setName(Messages.get().container(Messages.GUI_HISTORY_PREVIEW_0));
         fileAction.setEnabled(true);
