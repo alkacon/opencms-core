@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2006/12/29 10:20:00 $
- * Version: $Revision: 1.5.4.9 $
+ * Date   : $Date: 2007/01/02 09:09:11 $
+ * Version: $Revision: 1.5.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.9 $ 
+ * @version $Revision: 1.5.4.10 $ 
  * 
  * @since 6.0.2 
  */
@@ -192,11 +192,17 @@ public class CmsHistoryList extends A_CmsListDialog {
     /** list id constant. */
     public static final String LIST_ID = "him";
 
+    /** list multi action id constant. */
+    private static final String LIST_MACTION_COMPARE = "mc";
+
     /** list independent action id constant. */
     public static final String LIST_RACTION_SEL1 = "rs1";
 
     /** list independent action id constant. */
     public static final String LIST_RACTION_SEL2 = "rs2";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHistoryList.class);
 
     /** constant for the offline project.<p> */
     public static final String OFFLINE_PROJECT = "offline";
@@ -221,12 +227,6 @@ public class CmsHistoryList extends A_CmsListDialog {
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "buttons/";
-
-    /** list multi action id constant. */
-    private static final String LIST_MACTION_COMPARE = "mc";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsHistoryList.class);
 
     /**
      * Public constructor.<p>
@@ -307,6 +307,14 @@ public class CmsHistoryList extends A_CmsListDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
+     */
+    protected String defaultActionHtmlStart() {
+
+        return getList().listJs() + dialogContentStart(getParamTitle());
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
     public void executeListMultiActions() throws IOException, ServletException {
@@ -358,11 +366,33 @@ public class CmsHistoryList extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
+     * Fills details of the project into the given item. <p> 
+     * 
+     * @param item the list item to fill 
+     * 
+     * @param detailId the id for the detail to fill
+     * 
      */
-    protected String defaultActionHtmlStart() {
+    private void fillDetailProject(CmsListItem item, String detailId) {
 
-        return getList().listJs() + dialogContentStart(getParamTitle());
+        StringBuffer html = new StringBuffer();
+
+        // search /read for the corresponding backup project: it's tag id transmitted from getListItems() 
+        // in a hidden column
+        Object tagIdObj = item.get(LIST_COLUMN_BACKUP_TAG);
+        if (tagIdObj != null) {
+            // it is null if the offline version with changes is shown here: now backup project available then
+
+            int tagId = ((Integer)tagIdObj).intValue();
+            try {
+                CmsBackupProject project = getCms().readBackupProject(tagId);
+                // output of project info
+                html.append(project.getName()).append("<br/>").append(project.getDescription());
+            } catch (CmsException cmse) {
+                html.append(cmse.getMessageContainer().key(this.getLocale()));
+            }
+        }
+        item.set(detailId, html.toString());
     }
 
     /**
@@ -456,9 +486,13 @@ public class CmsHistoryList extends A_CmsListDialog {
      */
     protected void performRestoreOperation() throws CmsException {
 
+        String resourcePath = (String)getSelectedItem().get(LIST_COLUMN_RESOURCE_PATH);
         int tagId = Integer.parseInt(((CmsListItem)getSelectedItems().get(0)).getId());
-        checkLock(getParamResource());
-        getCms().restoreResourceBackup(getParamResource(), tagId);
+        // only check lock if the resource exists, deleted siblings could appear in the history list too!
+        if (getCms().existsResource(resourcePath)) {
+            checkLock(resourcePath);
+        }
+        getCms().restoreResourceBackup(resourcePath, tagId);
     }
 
     /**
@@ -487,7 +521,9 @@ public class CmsHistoryList extends A_CmsListDialog {
             // do not show icon for offline version
             public boolean isVisible() {
 
-                return !"-1".equals(getItem().getId());
+                return !"-1".equals(getItem().getId())
+                    && getCms().existsResource(
+                        getCms().getRequestContext().removeSiteRoot((String)getItem().get(LIST_COLUMN_RESOURCE_PATH)));
             }
         };
         restoreAction.setName(Messages.get().container(Messages.GUI_HISTORY_RESTORE_VERSION_0));
@@ -527,10 +563,14 @@ public class CmsHistoryList extends A_CmsListDialog {
                 StringBuffer jsCode = new StringBuffer(512);
                 jsCode.append("window.open('");
                 String versionId = getItem().getId();
-                if ("-1".equals(versionId)) {
+                String resourcePath = jsp.link(jsp.getRequestContext().removeSiteRoot(
+                    getItem().get(LIST_COLUMN_RESOURCE_PATH).toString()));
+
+                // is the resource already a sibling already deleted?
+                boolean allowPreview = getCms().existsResource(resourcePath);
+                if ("-1".equals(versionId) || !allowPreview) {
                     // offline version
-                    jsCode.append(jsp.link(jsp.getRequestContext().removeSiteRoot(
-                        getItem().get(LIST_COLUMN_RESOURCE_PATH).toString())));
+                    jsCode.append(resourcePath);
                 } else {
                     jsCode.append(jsp.link(getBackupLink(getCms(), new CmsUUID(
                         getItem().get(LIST_COLUMN_STRUCTURE_ID).toString()), versionId)));
@@ -547,6 +587,16 @@ public class CmsHistoryList extends A_CmsListDialog {
                     confirmationMessage,
                     jsCode.toString(),
                     singleHelp);
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                return !"-1".equals(getItem().getId())
+                    && getCms().existsResource(
+                        getCms().getRequestContext().removeSiteRoot((String)getItem().get(LIST_COLUMN_RESOURCE_PATH)));
             }
         };
         fileAction.setName(Messages.get().container(Messages.GUI_HISTORY_PREVIEW_0));
@@ -679,35 +729,5 @@ public class CmsHistoryList extends A_CmsListDialog {
         compareAction.setName(Messages.get().container(Messages.GUI_HISTORY_COMPARE_0));
         compareAction.setIconPath("tools/ex_history/buttons/compare.png");
         metadata.addMultiAction(compareAction);
-    }
-
-    /**
-     * Fills details of the project into the given item. <p> 
-     * 
-     * @param item the list item to fill 
-     * 
-     * @param detailId the id for the detail to fill
-     * 
-     */
-    private void fillDetailProject(CmsListItem item, String detailId) {
-
-        StringBuffer html = new StringBuffer();
-
-        // search /read for the corresponding backup project: it's tag id transmitted from getListItems() 
-        // in a hidden column
-        Object tagIdObj = item.get(LIST_COLUMN_BACKUP_TAG);
-        if (tagIdObj != null) {
-            // it is null if the offline version with changes is shown here: now backup project available then
-
-            int tagId = ((Integer)tagIdObj).intValue();
-            try {
-                CmsBackupProject project = getCms().readBackupProject(tagId);
-                // output of project info
-                html.append(project.getName()).append("<br/>").append(project.getDescription());
-            } catch (CmsException cmse) {
-                html.append(cmse.getMessageContainer().key(this.getLocale()));
-            }
-        }
-        item.set(detailId, html.toString());
     }
 }
