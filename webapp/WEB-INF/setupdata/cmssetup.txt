@@ -2,7 +2,7 @@
 echo on
 
 # Login the Admin user
-login /Admin admin
+login "/Admin" "admin"
 
 # Create the setup project
 createTempfileProject
