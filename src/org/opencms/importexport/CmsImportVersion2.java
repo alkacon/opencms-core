@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2006/12/14 12:23:30 $
- * Version: $Revision: 1.113.4.4 $
+ * Date   : $Date: 2007/01/08 14:03:04 $
+ * Version: $Revision: 1.113.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.113.4.4 $ 
+ * @version $Revision: 1.113.4.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -285,20 +285,7 @@ public class CmsImportVersion2 extends A_CmsImport {
     }
 
     /**
-     * Imports a single user.<p>
-     * @param name user name
-     * @param description user description
-     * @param flags user flags
-     * @param password user password 
-     * @param firstname firstname of the user
-     * @param lastname lastname of the user
-     * @param email user email
-     * @param address user address 
-     * @param type user type
-     * @param userInfo user info
-     * @param userGroups user groups
-     * 
-     * @throws CmsImportExportException in case something goes wrong
+     * @see org.opencms.importexport.A_CmsImport#importUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Map, java.util.List)
      */
     protected void importUser(
         String name,
@@ -309,7 +296,6 @@ public class CmsImportVersion2 extends A_CmsImport {
         String lastname,
         String email,
         String address,
-        String type,
         Map userInfo,
         List userGroups) throws CmsImportExportException {
 
@@ -333,7 +319,6 @@ public class CmsImportVersion2 extends A_CmsImport {
             lastname,
             email,
             address,
-            type,
             userInfo,
             userGroups);
     }

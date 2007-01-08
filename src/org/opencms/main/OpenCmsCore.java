@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/12/05 16:31:06 $
- * Version: $Revision: 1.218.4.18 $
+ * Date   : $Date: 2007/01/08 14:03:03 $
+ * Version: $Revision: 1.218.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -136,7 +136,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.18 $ 
+ * @version $Revision: 1.218.4.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -740,8 +740,8 @@ public final class OpenCmsCore {
         String userName = contextInfo.getUserName();
 
         if ((adminCms == null) || !adminCms.hasRole(CmsRole.ADMINISTRATOR)) {
-            if (!userName.equals(getDefaultUsers().getUserGuest())
-                && !userName.equals(getDefaultUsers().getUserExport())) {
+            if (!userName.endsWith(getDefaultUsers().getUserGuest())
+                && !userName.endsWith(getDefaultUsers().getUserExport())) {
 
                 // if no admin object is provided, only "Guest" or "Export" user can be generated
                 CmsMessageContainer message = Messages.get().container(
@@ -1032,7 +1032,7 @@ public final class OpenCmsCore {
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms;
         try {
-            adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
+            adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null, null);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ADMINCMS_0), e);
         }
@@ -1520,7 +1520,8 @@ public final class OpenCmsCore {
             request,
             cms.getRequestContext().currentUser(),
             site.getSiteRoot(),
-            cms.getRequestContext().currentProject().getId());
+            cms.getRequestContext().currentProject().getId(),
+            cms.getRequestContext().getOuFqn());
     }
 
     /**
@@ -1780,7 +1781,8 @@ public final class OpenCmsCore {
             contextInfo.getRemoteAddr(),
             contextInfo.getRequestTime(),
             m_resourceManager.getFolderTranslator(),
-            m_resourceManager.getFileTranslator());
+            m_resourceManager.getFileTranslator(),
+            contextInfo.getOuFqn());
 
         // now initialize and return the CmsObject
         return new CmsObject(m_securityManager, context);
@@ -1793,13 +1795,18 @@ public final class OpenCmsCore {
      * @param user the initialized user
      * @param siteRoot the users current site 
      * @param projectId the id of the users current project
+     * @param ouFqn the organizational unit
      * 
      * @return the initialized CmsObject
      * 
      * @throws CmsException in case something goes wrong
      */
-    private CmsObject initCmsObject(HttpServletRequest request, CmsUser user, String siteRoot, int projectId)
-    throws CmsException {
+    private CmsObject initCmsObject(
+        HttpServletRequest request,
+        CmsUser user,
+        String siteRoot,
+        int projectId,
+        String ouFqn) throws CmsException {
 
         CmsProject project = null;
         try {
@@ -1883,7 +1890,8 @@ public final class OpenCmsCore {
             i18nInfo.getLocale(),
             i18nInfo.getEncoding(),
             remoteAddr,
-            requestTime);
+            requestTime,
+            ouFqn);
 
         // now generate and return the CmsObject
         return initCmsObject(contextInfo);
@@ -1934,7 +1942,12 @@ public final class OpenCmsCore {
             if (siteroot == null) {
                 siteroot = site.getSiteRoot();
             }
-            cms = initCmsObject(req, m_securityManager.readUser(null, sessionInfo.getUserId()), siteroot, project);
+            cms = initCmsObject(
+                req,
+                m_securityManager.readUser(null, sessionInfo.getUserId()),
+                siteroot,
+                project,
+                sessionInfo.getOrganizationalUnitFqn());
         } else {
             cms = m_authorizationHandler.initCmsObject(req);
             if (cms == null) {
@@ -1944,7 +1957,8 @@ public final class OpenCmsCore {
                     req,
                     m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
                     site.getSiteRoot(),
-                    CmsProject.ONLINE_PROJECT_ID);
+                    CmsProject.ONLINE_PROJECT_ID,
+                    null);
             }
         }
         // return the initialized cms user context object
@@ -1963,11 +1977,18 @@ public final class OpenCmsCore {
      * @param res the current response
      * @param user the user to initialize the CmsObject with
      * @param password the password of the user 
+     * @param ouFqn the organizational unit, if <code>null</code> the users ou is used
+     * 
      * @return a cms context that has been initialized with "Guest" permissions
+     * 
      * @throws CmsException in case the CmsObject could not be initialized
      */
-    private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res, String user, String password)
-    throws CmsException {
+    private CmsObject initCmsObject(
+        HttpServletRequest req,
+        HttpServletResponse res,
+        String user,
+        String password,
+        String ouFqn) throws CmsException {
 
         String siteroot = null;
         // gather information from request / response if provided
@@ -1985,9 +2006,10 @@ public final class OpenCmsCore {
             req,
             m_securityManager.readUser(null, user),
             siteroot,
-            CmsProject.ONLINE_PROJECT_ID);
+            CmsProject.ONLINE_PROJECT_ID,
+            ouFqn);
         // login the user if different from Guest and password was provided
-        if ((password != null) && !getDefaultUsers().getUserGuest().equals(user)) {
+        if ((password != null) && !user.endsWith(getDefaultUsers().getUserGuest())) {
             cms.loginUser(user, password, CmsContextInfo.LOCALHOST);
         }
         return cms;
@@ -2006,7 +2028,7 @@ public final class OpenCmsCore {
         // this will create an admin user with the "right" site root already set
         CmsObject adminCms;
         try {
-            adminCms = initCmsObject(req, res, getDefaultUsers().getUserAdmin(), null);
+            adminCms = initCmsObject(req, res, getDefaultUsers().getUserAdmin(), null, null);
         } catch (CmsException e) {
             // this should never happen, if it does we can't continue
             throw new IOException(Messages.get().getBundle().key(

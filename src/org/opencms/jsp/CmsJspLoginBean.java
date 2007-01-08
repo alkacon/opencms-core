@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2006/04/24 11:02:07 $
- * Version: $Revision: 1.19.4.1 $
+ * Date   : $Date: 2007/01/08 14:03:05 $
+ * Version: $Revision: 1.19.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19.4.1 $ 
+ * @version $Revision: 1.19.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,8 +189,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             getCmsObject().loginUser(
                 userName,
                 password,
-                getRequestContext().getRemoteAddress(),
-                CmsUser.USER_TYPE_SYSTEMUSER);
+                getRequestContext().getRemoteAddress());
 
             // make sure we have a new session after login for security reasons
             session = getRequest().getSession(false);
@@ -225,7 +224,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             if (m_loginException instanceof CmsAuthentificationException) {
                 // the authentification of the user failed
 
-                if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_3 == m_loginException.getMessageContainer().getKey()) {
+                if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == m_loginException.getMessageContainer().getKey()) {
 
                     // the user has been disabled
                     LOG.warn(Messages.get().getBundle().key(
@@ -234,7 +233,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                         getRequestContext().addSiteRoot(getRequestContext().getUri()),
                         getRequestContext().getRemoteAddress()));
 
-                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_5 == m_loginException.getMessageContainer().getKey()) {
+                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == m_loginException.getMessageContainer().getKey()) {
 
                     // the user has been disabled
                     LOG.warn(Messages.get().getBundle().key(
@@ -246,7 +245,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                             m_loginException.getMessageContainer().getArgs()[3],
                             m_loginException.getMessageContainer().getArgs()[4]}));
 
-                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_3 == m_loginException.getMessageContainer().getKey()) {
+                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_2 == m_loginException.getMessageContainer().getKey()) {
 
                     // the requested user does not exist in the database
                     LOG.warn(Messages.get().getBundle().key(

@@ -176,7 +176,7 @@ public class CmsListDemo15a extends A_CmsListDialog {
 
         List ret = new ArrayList();
         // get content
-        List users = getCms().getUsers(CmsUser.USER_TYPE_SYSTEMUSER);
+        List users = getCms().getUsers();
         Iterator itUsers = users.iterator();
         while (itUsers.hasNext()) {
             CmsUser user = (CmsUser)itUsers.next();

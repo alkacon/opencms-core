@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2006/12/14 12:23:30 $
- * Version: $Revision: 1.84.4.3 $
+ * Date   : $Date: 2007/01/08 14:03:04 $
+ * Version: $Revision: 1.84.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.3 $ 
+ * @version $Revision: 1.84.4.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -572,6 +572,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Imports a single user.<p>
+     * 
      * @param name user name
      * @param description user description
      * @param flags user flags
@@ -580,7 +581,6 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @param lastname lastname of the user
      * @param email user email
      * @param address user address 
-     * @param type user type
      * @param userInfo user info
      * @param userGroups user groups
      * 
@@ -595,7 +595,6 @@ public abstract class A_CmsImport implements I_CmsImport {
         String lastname,
         String email,
         String address,
-        String type,
         Map userInfo,
         List userGroups) throws CmsImportExportException {
 
@@ -618,7 +617,6 @@ public abstract class A_CmsImport implements I_CmsImport {
                     email,
                     address,
                     Integer.parseInt(flags),
-                    Integer.parseInt(type),
                     userInfo);
                 // add user to all groups list
                 for (int i = 0; i < userGroups.size(); i++) {
@@ -660,7 +658,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         List userGroups;
         Element currentElement, currentGroup;
         Map userInfo = new HashMap();
-        String name, description, flags, password, firstname, lastname, email, address, type, pwd, infoNode, defaultGroup;
+        String name, description, flags, password, firstname, lastname, email, address, pwd, infoNode, defaultGroup;
         // try to get the import resource
         //getImportResource();
         try {
@@ -680,7 +678,6 @@ public abstract class A_CmsImport implements I_CmsImport {
                 lastname = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_LASTNAME);
                 email = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_EMAIL);
                 address = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TAG_ADDRESS);
-                type = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
                 defaultGroup = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DEFAULTGROUP);
                 // get the userinfo and put it into the additional info map
                 infoNode = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_USERINFO);
@@ -719,7 +716,6 @@ public abstract class A_CmsImport implements I_CmsImport {
                     lastname,
                     email,
                     address,
-                    type,
                     userInfo,
                     userGroups);
             }

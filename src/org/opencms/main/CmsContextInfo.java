@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsContextInfo.java,v $
- * Date   : $Date: 2006/07/31 13:40:19 $
- * Version: $Revision: 1.12.8.1 $
+ * Date   : $Date: 2007/01/08 14:03:03 $
+ * Version: $Revision: 1.12.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * Contains user information for automated creation of a  
  * {@link org.opencms.file.CmsRequestContext} during system runtime.<p>
  * 
- * @version $Revision: 1.12.8.1 $ 
+ * @version $Revision: 1.12.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +69,9 @@ public class CmsContextInfo {
 
     /** The locale name to create the context with. */
     private String m_localeName;
+
+    /** The organizational unit to create the context with. */
+    private String m_ouFqn;
 
     /** The project to create the context with. */
     private CmsProject m_project;
@@ -105,6 +108,7 @@ public class CmsContextInfo {
      * <dt>Locale name</dt><dd>(configured default locale name)</dd>
      * <dt>Encoding</dt><dd>(configured default system encoding)</dd>
      * <dt>Remote address</dt><dd>127.0.0.1</dd>
+     * <dt>Organizational unit</dt><dd>/</dd>
      * </dl><p>
      */
     public CmsContextInfo() {
@@ -117,6 +121,7 @@ public class CmsContextInfo {
         setEncoding(OpenCms.getSystemInfo().getDefaultEncoding());
         setRemoteAddr(CmsContextInfo.LOCALHOST);
         setRequestTime(System.currentTimeMillis());
+        setOuFqn(null);
     }
 
     /**
@@ -134,6 +139,7 @@ public class CmsContextInfo {
         setEncoding(requestContext.getEncoding());
         setRemoteAddr(requestContext.getRemoteAddress());
         setRequestTime(requestContext.getRequestTime());
+        setOuFqn(requestContext.getOuFqn());
     }
 
     /**
@@ -147,6 +153,7 @@ public class CmsContextInfo {
      * @param encoding the encoding to create the context with
      * @param remoteAddr the remote ip address to create the context with
      * @param requestTime the time of the request (used for resource publication / expiration date)
+     * @param ouFqn the fully qualified name of the organizational unit to create the context with
      */
     public CmsContextInfo(
         CmsUser user,
@@ -156,7 +163,8 @@ public class CmsContextInfo {
         Locale locale,
         String encoding,
         String remoteAddr,
-        long requestTime) {
+        long requestTime,
+        String ouFqn) {
 
         m_user = user;
         setUserName(m_user.getName());
@@ -168,6 +176,7 @@ public class CmsContextInfo {
         setEncoding(encoding);
         setRemoteAddr(remoteAddr);
         setRequestTime(requestTime);
+        setOuFqn(ouFqn);
     }
 
     /**
@@ -253,6 +262,16 @@ public class CmsContextInfo {
     public String getLocaleName() {
 
         return m_localeName;
+    }
+
+    /**
+     * Returns the fully qualified name of the organizational unit.<p>
+     * 
+     * @return the fully qualified name of the organizational unit
+     */
+    public String getOuFqn() {
+
+        return m_ouFqn;
     }
 
     /**
@@ -410,6 +429,16 @@ public class CmsContextInfo {
         checkFrozen();
         m_localeName = localeName;
         m_locale = CmsLocaleManager.getLocale(localeName);
+    }
+
+    /**
+     * Sets the fully qualified name of the organizational unit.<p>
+     * 
+     * @param ouFqn the fully qualified name of the organizational unit to set
+     */
+    public void setOuFqn(String ouFqn) {
+
+        m_ouFqn = ouFqn;
     }
 
     /**

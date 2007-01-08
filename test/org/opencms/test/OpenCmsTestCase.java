@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.90.4.12 $
+ * Date   : $Date: 2007/01/08 14:03:06 $
+ * Version: $Revision: 1.90.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
@@ -93,7 +94,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.12 $
+ * @version $Revision: 1.90.4.13 $
  * 
  * @since 6.0.0
  */
@@ -695,7 +696,7 @@ public class OpenCmsTestCase extends TestCase {
 
             // log in the Admin user and switch to the setup project
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-            cms.loginUser("Admin", "admin");
+            cms.loginUser("/Admin", "admin");
             cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
 
             if (importFolder != null) {
@@ -1221,6 +1222,7 @@ public class OpenCmsTestCase extends TestCase {
         CmsPermissionSet permission) {
 
         //TODO: This method does not work correctly so far, it must be completed!
+        int todo;
 
         try {
             // create the exclude list
@@ -1996,6 +1998,37 @@ public class OpenCmsTestCase extends TestCase {
             }
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }
+    }
+
+    /**
+     * Asserts the given permission string with the access control entry for the given resource and principal.<p>
+     * 
+     * @param cms the cms object
+     * @param resourceName the resource name
+     * @param principal the principal
+     * @param permissionString the permission string to compare
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void assertPermissionString(
+        CmsObject cms,
+        String resourceName,
+        I_CmsPrincipal principal,
+        String permissionString) throws CmsException {
+
+        Iterator it = cms.getAccessControlEntries(resourceName).iterator();
+        while (it.hasNext()) {
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)it.next();
+            if (ace.getPrincipal().equals(principal.getId())) {
+                assertEquals(permissionString, ace.getPermissions().getPermissionString()
+                    + ace.getInheritingString()
+                    + ace.getResponsibleString());
+                return;
+            }
+        }
+        if (permissionString != null) {
+            fail("Ace not found");
         }
     }
 

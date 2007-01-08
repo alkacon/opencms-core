@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.32.4.1 $
+ * Date   : $Date: 2007/01/08 14:03:01 $
+ * Version: $Revision: 1.32.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.db;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 
@@ -41,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.32.4.1 $
+ * @version $Revision: 1.32.4.2 $
  * 
  * @since 6.0.0
  */
@@ -134,10 +133,40 @@ public class CmsDefaultUsers {
         String groupUsers,
         String groupGuests) {
 
+        init(
+            userAdmin,
+            userGuest,
+            userExport,
+            userDeletedResource,
+            groupAdministrators,
+            groupProjectmanagers,
+            groupUsers,
+            groupGuests);
+    }
+
+    /**
+     * Initializes this instance.<p>
+     * 
+     * @param userAdmin the name of the default admin user
+     * @param userGuest the name of the guest user
+     * @param userExport the name of the export user
+     * @param userDeletedResource the name of the deleted resource user, can be <code>null</code>
+     * @param groupAdministrators the name of the administrators group
+     * @param groupProjectmanagers the name of the project managers group
+     * @param groupUsers the name of the users group
+     * @param groupGuests the name of the guests group
+     */
+    protected void init(
+        String userAdmin,
+        String userGuest,
+        String userExport,
+        String userDeletedResource,
+        String groupAdministrators,
+        String groupProjectmanagers,
+        String groupUsers,
+        String groupGuests) {
+
         // check if all required user and group names are not null or empty
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_CHECKING_DEFAULT_USER_NAMES_0));
-        }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userAdmin)
             || CmsStringUtil.isEmptyOrWhitespaceOnly(userGuest)
             || CmsStringUtil.isEmptyOrWhitespaceOnly(userExport)
@@ -160,22 +189,6 @@ public class CmsDefaultUsers {
         m_groupProjectmanagers = groupProjectmanagers.trim();
         m_groupUsers = groupUsers.trim();
         m_groupGuests = groupGuests.trim();
-
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADMIN_USER_1, getUserAdmin()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_GUEST_USER_1, getUserGuest()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_USER_1, getUserExport()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_DELETED_RESOURCE_USER_1,
-                getUserDeletedResource()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADMIN_GROUP_1, getGroupAdministrators()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_PROJECT_MANAGERS_GROUP_1,
-                getGroupProjectmanagers()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_USERS_GROUP_1, getGroupUsers()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_GUESTS_GROUP_1, getGroupGuests()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USER_NAMES_INITIALIZED_0));
-        }
     }
 
     /**

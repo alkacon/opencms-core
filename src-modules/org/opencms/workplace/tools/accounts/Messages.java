@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2006/12/14 12:41:30 $
- * Version: $Revision: 1.9.4.4 $
+ * Date   : $Date: 2007/01/08 14:02:56 $
+ * Version: $Revision: 1.9.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.4.4 $ 
+ * @version $Revision: 1.9.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -236,51 +236,6 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EDITUSER_SWITCH_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_SWITCH_ADMIN_TOOL_NAVBARNAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_ADMIN_TOOL_GROUP_0 = "GUI_EDITWEBUSER_ADMIN_TOOL_GROUP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_ADMIN_TOOL_HELP_0 = "GUI_EDITWEBUSER_ADMIN_TOOL_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_ADMIN_TOOL_NAME_0 = "GUI_EDITWEBUSER_ADMIN_TOOL_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITWEBUSER_ADMIN_TOOL_NAVBARNAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_DELETE_ADMIN_TOOL_GROUP_0 = "GUI_EDITWEBUSER_DELETE_ADMIN_TOOL_GROUP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_DELETE_ADMIN_TOOL_HELP_0 = "GUI_EDITWEBUSER_DELETE_ADMIN_TOOL_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_DELETE_ADMIN_TOOL_NAME_0 = "GUI_EDITWEBUSER_DELETE_ADMIN_TOOL_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_GROUPS_ADMIN_TOOL_GROUP_0 = "GUI_EDITWEBUSER_GROUPS_ADMIN_TOOL_GROUP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_GROUPS_ADMIN_TOOL_HELP_0 = "GUI_EDITWEBUSER_GROUPS_ADMIN_TOOL_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_GROUPS_ADMIN_TOOL_NAME_0 = "GUI_EDITWEBUSER_GROUPS_ADMIN_TOOL_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_GROUPS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITWEBUSER_GROUPS_ADMIN_TOOL_NAVBARNAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_OVERVIEW_ADMIN_TOOL_GROUP_0 = "GUI_EDITWEBUSER_OVERVIEW_ADMIN_TOOL_GROUP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_OVERVIEW_ADMIN_TOOL_HELP_0 = "GUI_EDITWEBUSER_OVERVIEW_ADMIN_TOOL_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_OVERVIEW_ADMIN_TOOL_NAME_0 = "GUI_EDITWEBUSER_OVERVIEW_ADMIN_TOOL_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EDITWEBUSER_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITWEBUSER_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUP_DEPENDENCIES_DELETE_0 = "GUI_GROUP_DEPENDENCIES_DELETE_0";
@@ -610,15 +565,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NEWUSER_ADMIN_TOOL_NAME_0 = "GUI_NEWUSER_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_NEWWEBUSER_ADMIN_TOOL_GROUP_0 = "GUI_NEWWEBUSER_ADMIN_TOOL_GROUP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_NEWWEBUSER_ADMIN_TOOL_HELP_0 = "GUI_NEWWEBUSER_ADMIN_TOOL_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_NEWWEBUSER_ADMIN_TOOL_NAME_0 = "GUI_NEWWEBUSER_ADMIN_TOOL_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_NOTGROUPUSERS_LIST_NAME_0 = "GUI_NOTGROUPUSERS_LIST_NAME_0";
 
     /** Message contant for key in the resource bundle. */
@@ -941,21 +887,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_TRANSFER_NOTICE_TEXT_0 = "GUI_USERS_TRANSFER_NOTICE_TEXT_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_WEBUSERGROUPS_LIST_NAME_0 = "GUI_WEBUSERGROUPS_LIST_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_WEBUSERS_ADMIN_TOOL_GROUP_0 = "GUI_WEBUSERS_ADMIN_TOOL_GROUP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_WEBUSERS_ADMIN_TOOL_HELP_0 = "GUI_WEBUSERS_ADMIN_TOOL_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_WEBUSERS_ADMIN_TOOL_NAME_0 = "GUI_WEBUSERS_ADMIN_TOOL_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_WEBUSERS_LIST_NAME_0 = "GUI_WEBUSERS_LIST_NAME_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.accounts.messages";

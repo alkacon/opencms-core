@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/12/21 15:32:12 $
- * Version: $Revision: 1.97.4.24 $
+ * Date   : $Date: 2007/01/08 14:03:02 $
+ * Version: $Revision: 1.97.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsOrganizationalUnit;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -178,6 +179,36 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Adds a resource to the given organizational unit.<p>
+     * 
+     * @param context the current request context
+     * @param orgUnit the organizational unit to add the resource to
+     * @param resource the resource that is to be added to the organizational unit
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#addResourceToOrgUnit(String, String)
+     * @see CmsObject#removeResourceFromOrgUnit(String, String)
+     */
+    public void addResourceToOrgUnit(CmsRequestContext context, CmsOrganizationalUnit orgUnit, CmsResource resource)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
+            checkOfflineProject(dbc);
+            m_driverManager.addResourceToOrgUnit(dbc, orgUnit, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_ADD_RESOURCE_TO_ORGUNIT_2,
+                orgUnit.getName(),
+                dbc.removeSiteRoot(resource.getRootPath())), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Adds a user to a group.<p>
      *
      * @param context the current request context
@@ -197,91 +228,6 @@ public final class CmsSecurityManager {
         } finally {
             dbc.clear();
         }
-    }
-
-    /**
-     * Creates a new web user.<p>
-     * 
-     * A web user has no access to the workplace but is able to access personalized
-     * functions controlled by the OpenCms.<br>
-     * 
-     * Moreover, a web user can be created by any user, the intention being that
-     * a "Guest" user can create a personalized account for himself.<p>
-     * 
-     * @param context the current request context
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param group the default groupname for the user
-     * @param description the description for the user
-     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user
-     * 
-     * @return the new user will be returned
-     * 
-     * @throws CmsException if operation was not succesfull
-     */
-    public CmsUser addWebUser(
-        CmsRequestContext context,
-        String name,
-        String password,
-        String group,
-        String description,
-        Map additionalInfos) throws CmsException {
-
-        CmsUser result = null;
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            result = m_driverManager.addWebUser(dbc, name, password, group, description, additionalInfos);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_ADD_USER_WEB_1, name), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Adds a web user to the Cms.<p>
-     * 
-     * A web user has no access to the workplace but is able to access personalized
-     * functions controlled by the OpenCms.<p>
-     * 
-     * @param context the current request context
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param group the default groupname for the user
-     * @param additionalGroup an additional group for the user
-     * @param description the description for the user
-     * @param additionalInfos a Hashtable with additional infos for the user, these infos may be stored into the Usertables (depending on the implementation)
-     *
-     * @return the new user will be returned
-     * @throws CmsException if operation was not succesfull
-     */
-    public CmsUser addWebUser(
-        CmsRequestContext context,
-        String name,
-        String password,
-        String group,
-        String additionalGroup,
-        String description,
-        Map additionalInfos) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsUser result = null;
-        try {
-            result = m_driverManager.addWebUser(
-                dbc,
-                name,
-                password,
-                group,
-                additionalGroup,
-                description,
-                additionalInfos);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_ADD_USER_WEB_1, name), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
     }
 
     /**
@@ -377,51 +323,6 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
-    }
-
-    /**
-     * Changes the user type of the user.<p>
-     * 
-     * @param context the current request context
-     * @param userId the id of the user to change
-     * @param userType the new usertype of the user
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void changeUserType(CmsRequestContext context, CmsUUID userId, int userType) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
-            m_driverManager.changeUserType(dbc, userId, userType);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_CHANGE_USER_TYPE_WITH_ID_1, userId.toString()), e);
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
-     * Changes the user type of the user.<p>
-
-     * Only the administrator can change the type.<p>
-     * 
-     * @param context the current request context
-     * @param username the name of the user to change
-     * @param userType the new usertype of the user
-     * @throws CmsException if something goes wrong
-     */
-    public void changeUserType(CmsRequestContext context, String username, int userType) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
-            m_driverManager.changeUserType(dbc, username, userType);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_CHANGE_USER_TYPE_WITH_NAME_1, username), e);
-        } finally {
-            dbc.clear();
-        }
     }
 
     /**
@@ -878,6 +779,43 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Creates a new organizational unit.<p>
+     * 
+     * @param context the current request context
+     * @param ouFqn the fully qualified name of the new organizational unit
+     * @param description the description of the new organizational unit
+     * @param flags the flags for the new organizational unit
+     * @param resource the first associated resource
+     *
+     * @return a <code>{@link CmsOrganizationalUnit}</code> object representing 
+     *          the newly created organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @see CmsObject#createOrganizationalUnit(String, String, int, String)
+     */
+    public CmsOrganizationalUnit createOrganizationalUnit(
+        CmsRequestContext context,
+        String ouFqn,
+        String description,
+        int flags,
+        CmsResource resource) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsOrganizationalUnit result = null;
+        try {
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
+            checkOfflineProject(dbc);
+            result = m_driverManager.createOrganizationalUnit(dbc, ouFqn, description, flags, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_CREATE_ORGUNIT_1, ouFqn), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
      * Creates a project.<p>
      *
      * @param context the current request context
@@ -1212,6 +1150,33 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Deletes an organizational unit.<p>
+     *
+     * Only organizational units that contain no suborganizational unit can be deleted.<p>
+     * 
+     * @param context the current request context
+     * @param organizationalUnit the organizational unit to delete
+     * 
+     * @throws CmsException if operation was not successful
+     * 
+     * @see CmsObject#deleteOrganizationalUnit(String)
+     */
+    public void deleteOrganizationalUnit(CmsRequestContext context, CmsOrganizationalUnit organizationalUnit)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
+            checkOfflineProject(dbc);
+            m_driverManager.deleteOrganizationalUnit(dbc, organizationalUnit);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_ORGUNIT_1, organizationalUnit), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Deletes a project.<p>
      *
      * All modified resources currently inside this project will be reset to their online state.<p>
@@ -1401,21 +1366,7 @@ public final class CmsSecurityManager {
      */
     public void deleteUser(CmsRequestContext context, String username) throws CmsException {
 
-        CmsUser user = readUser(context, username, CmsUser.USER_TYPE_SYSTEMUSER);
-        deleteUser(context, user, null);
-    }
-
-    /**
-     * Deletes a web user.<p>
-     *
-     * @param context the current request context
-     * @param userId the Id of the web user to be deleted
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void deleteWebUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
-
-        CmsUser user = readUser(context, userId);
+        CmsUser user = readUser(context, username);
         deleteUser(context, user, null);
     }
 
@@ -1703,7 +1654,7 @@ public final class CmsSecurityManager {
         List result = null;
         try {
             checkRole(dbc, CmsRole.SYSTEM_USER);
-            result = m_driverManager.getChild(dbc, groupname);
+            result = m_driverManager.getChild(dbc, m_driverManager.readGroup(dbc, groupname));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_CHILD_GROUPS_1, groupname), e);
         } finally {
@@ -1730,7 +1681,7 @@ public final class CmsSecurityManager {
         List result = null;
         try {
             checkRole(dbc, CmsRole.SYSTEM_USER);
-            result = m_driverManager.getChilds(dbc, groupname);
+            result = m_driverManager.getChilds(dbc, m_driverManager.readGroup(dbc, groupname));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_CHILD_GROUPS_TRANSITIVE_1, groupname), e);
         } finally {
@@ -1781,6 +1732,38 @@ public final class CmsSecurityManager {
             result = m_driverManager.getGroups(dbc);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_GROUPS_0), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns all groups of the given organizational unit.<p>
+     *
+     * @param context the current request context
+     * @param orgUnit the organizational unit to get the groups for
+     * @param recursive if all groups of sub-organizational units should be retrieved too
+     * 
+     * @return all <code>{@link CmsGroup}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @see CmsObject#getResourcesForOrganizationalUnit(String)
+     * @see CmsObject#getGroupsForOrganizationalUnit(String, boolean)
+     * @see CmsObject#getUsersForOrganizationalUnit(String, boolean)
+     */
+    public List getGroupsForOrganizationalUnit(
+        CmsRequestContext context,
+        CmsOrganizationalUnit orgUnit,
+        boolean recursive) throws CmsException {
+
+        List result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.getGroupsForOrganizationalUnit(dbc, orgUnit, recursive);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_ORGUNIT_GROUPS_1, orgUnit.getName()), e);
         } finally {
             dbc.clear();
         }
@@ -1875,6 +1858,35 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns all child organizational units of the given parent organizational unit including 
+     * hierarchical deeper organization units if needed.<p>
+     *
+     * @param context the current request context
+     * @param parent the parent organizational unit
+     * @param includeChilds if hierarchical deeper organization units should also be returned
+     * 
+     * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
+     * 
+     * @throws CmsException if operation was not succesful
+     * 
+     * @see CmsObject#getOrganizationalUnits(String, boolean)
+     */
+    public List getOrganizationalUnits(CmsRequestContext context, CmsOrganizationalUnit parent, boolean includeChilds)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        List result = null;
+        try {
+            result = m_driverManager.getOrganizationalUnits(dbc, parent, includeChilds);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_GET_ORGUNITS_1, parent.getName()), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
      * Returns the parent group of a group.<p>
      *
      * @param context the current request context
@@ -1960,6 +1972,35 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns all resources of the given organizational unit.<p>
+     *
+     * @param context the current request context
+     * @param orgUnit the organizational unit to get all resources for
+     * 
+     * @return all <code>{@link CmsResource}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @see CmsObject#getResourcesForOrganizationalUnit(String)
+     * @see CmsObject#getGroupsForOrganizationalUnit(String, boolean)
+     * @see CmsObject#getUsersForOrganizationalUnit(String, boolean)
+     */
+    public List getResourcesForOrganizationalUnit(CmsRequestContext context, CmsOrganizationalUnit orgUnit)
+    throws CmsException {
+
+        List result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.getResourcesForOrganizationalUnit(dbc, orgUnit);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_ORGUNIT_RESOURCES_1, orgUnit.getName()), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
      * Returns all resources associated to a given principal via an ACE with the given permissions.<p> 
      * 
      * If the <code>includeAttr</code> flag is set it returns also all resources associated to 
@@ -2038,26 +2079,31 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns all users from a given type.<p>
+     * Returns all users of the given organizational unit.<p>
      *
      * @param context the current request context
-     * @param type the type of the users
+     * @param orgUnit the organizational unit to get the users for
+     * @param recursive if all users of sub-organizational units should be retrieved too
      * 
-     * @return a list of all <code>{@link CmsUser}</code> objects of the given type
+     * @return all <code>{@link CmsUser}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
      * 
-     * @throws CmsException if operation was not succesful
+     * @see CmsObject#getResourcesForOrganizationalUnit(String)
+     * @see CmsObject#getGroupsForOrganizationalUnit(String, boolean)
+     * @see CmsObject#getUsersForOrganizationalUnit(String, boolean)
      */
-    public List getUsers(CmsRequestContext context, int type) throws CmsException {
+    public List getUsersForOrganizationalUnit(
+        CmsRequestContext context,
+        CmsOrganizationalUnit orgUnit,
+        boolean recursive) throws CmsException {
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            if (type != CmsUser.USER_TYPE_WEBUSER) {
-                checkRole(dbc, CmsRole.SYSTEM_USER);
-            }
-            result = m_driverManager.getUsers(dbc, type);
+            result = m_driverManager.getUsersForOrganizationalUnit(dbc, orgUnit, recursive);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_GET_USERS_OF_TYPE_1, new Integer(type)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_ORGUNIT_USERS_1, orgUnit.getName()), e);
         } finally {
             dbc.clear();
         }
@@ -2208,6 +2254,10 @@ public final class CmsSecurityManager {
         try {
             groups = m_driverManager.getGroupsOfUser(dbc, user.getName(), dbc.getRequestContext().getRemoteAddress());
         } catch (CmsException e) {
+            if (user.getName().endsWith(OpenCms.getDefaultUsers().getUserAdmin())) {
+                // if opencms is still being set up
+                return true;
+            }
             // any exception: return false
             return false;
         }
@@ -2332,7 +2382,6 @@ public final class CmsSecurityManager {
      * @param email the email of the user
      * @param address the address of the user
      * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
-     * @param type the type of the user
      * @param additionalInfos the additional user infos
      * 
      * @return the imported user
@@ -2351,7 +2400,6 @@ public final class CmsSecurityManager {
         String email,
         String address,
         int flags,
-        int type,
         Map additionalInfos) throws CmsException, CmsRoleViolationException {
 
         CmsUser newUser = null;
@@ -2371,12 +2419,11 @@ public final class CmsSecurityManager {
                 email,
                 address,
                 flags,
-                type,
                 additionalInfos);
 
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
-                Messages.ERR_IMPORT_USER_9,
+                Messages.ERR_IMPORT_USER_8,
                 new Object[] {
                     id,
                     name,
@@ -2386,7 +2433,6 @@ public final class CmsSecurityManager {
                     email,
                     address,
                     new Integer(flags),
-                    new Integer(type),
                     additionalInfos}), e);
         } finally {
             dbc.clear();
@@ -2437,6 +2483,20 @@ public final class CmsSecurityManager {
 
         // create the driver manager
         m_driverManager = CmsDriverManager.newInstance(configurationManager, this, dbContextFactory, publishEngine);
+
+        try {
+            // invoke the init method of the driver manager
+            m_driverManager.init(configurationManager);
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_OK_0));
+            }
+        } catch (Exception exc) {
+            CmsMessageContainer message = Messages.get().container(Messages.LOG_ERR_DRIVER_MANAGER_START_0);
+            if (LOG.isFatalEnabled()) {
+                LOG.fatal(message.key(), exc);
+            }
+            throw new CmsInitException(message, exc);
+        }
 
         // create a new lock manager
         m_lockManager = m_driverManager.getLockManager();
@@ -2541,23 +2601,18 @@ public final class CmsSecurityManager {
      * @param username the name of the user to be logged in
      * @param password the password of the user
      * @param remoteAddress the ip address of the request
-     * @param userType the user type to log in (System user or Web user)
      * 
      * @return the logged in user
      *
      * @throws CmsException if the login was not succesful
      */
-    public CmsUser loginUser(
-        CmsRequestContext context,
-        String username,
-        String password,
-        String remoteAddress,
-        int userType) throws CmsException {
+    public CmsUser loginUser(CmsRequestContext context, String username, String password, String remoteAddress)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsUser result = null;
         try {
-            result = m_driverManager.loginUser(dbc, username, password, remoteAddress, userType);
+            result = m_driverManager.loginUser(dbc, username, password, remoteAddress);
         } finally {
             dbc.clear();
         }
@@ -3154,6 +3209,30 @@ public final class CmsSecurityManager {
         CmsGroup result = null;
         try {
             result = m_driverManager.readManagerGroup(dbc, project);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Reads an organizational Unit based on its fully qualified name.<p>
+     *
+     * @param context the current request context
+     * @param ouFqn the fully qualified name of the organizational Unit to be read
+     * 
+     * @return the organizational Unit that with the provided fully qualified name
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsOrganizationalUnit readOrganizationalUnit(CmsRequestContext context, String ouFqn) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsOrganizationalUnit result = null;
+        try {
+            result = m_driverManager.readOrganizationalUnit(dbc, ouFqn);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_ORGUNIT_1, ouFqn), e);
         } finally {
             dbc.clear();
         }
@@ -3802,31 +3881,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns a user object.<p>
-     *
-     * @param context the current request context
-     * @param username the name of the user that is to be read
-     * @param type the type of the user
-     *
-     * @return user read
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public CmsUser readUser(CmsRequestContext context, String username, int type) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsUser result = null;
-        try {
-            result = m_driverManager.readUser(dbc, username, type);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_USER_FOR_NAME_1, username), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
      * Returns a user object if the password for the user is correct.<p>
      *
      * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
@@ -3847,57 +3901,6 @@ public final class CmsSecurityManager {
             result = m_driverManager.readUser(dbc, username, password);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_USER_FOR_NAME_1, username), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Read a web user from the database.<p>
-     * 
-     * @param context the current request context
-     * @param username the web user to read
-     * 
-     * @return the read web user
-     * 
-     * @throws CmsException if the user could not be read. 
-     */
-    public CmsUser readWebUser(CmsRequestContext context, String username) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsUser result = null;
-        try {
-            result = m_driverManager.readWebUser(dbc, username);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_USER_WEB_1, username), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Returns a user object if the password for the user is correct.<p>
-     *
-     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
-     *
-     * @param context the current request context
-     * @param username the username of the user that is to be read
-     * @param password the password of the user that is to be read
-     * 
-     * @return the webuser read
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public CmsUser readWebUser(CmsRequestContext context, String username, String password) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsUser result = null;
-        try {
-            result = m_driverManager.readWebUser(dbc, username, password);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_USER_WEB_1, username), e);
         } finally {
             dbc.clear();
         }
@@ -3928,6 +3931,36 @@ public final class CmsSecurityManager {
                 Messages.ERR_REMOVE_ACL_ENTRY_2,
                 context.getSitePath(resource),
                 principal.toString()), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Removes a resource from the given organizational unit.<p>
+     * 
+     * @param context the current request context
+     * @param orgUnit the organizational unit to remove the resource from
+     * @param resource the resource that is to be removed from the organizational unit
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#addResourceToOrgUnit(String, String)
+     * @see CmsObject#addResourceToOrgUnit(String, String)
+     */
+    public void removeResourceFromOrgUnit(CmsRequestContext context, CmsOrganizationalUnit orgUnit, CmsResource resource)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
+            checkOfflineProject(dbc);
+            m_driverManager.removeResourceFromOrgUnit(dbc, orgUnit, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_REMOVE_RESOURCE_FROM_ORGUNIT_2,
+                orgUnit.getName(),
+                dbc.removeSiteRoot(resource.getRootPath())), e);
         } finally {
             dbc.clear();
         }
@@ -4262,6 +4295,37 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Adds an user or group to the given organizational unit.<p>
+     * 
+     * @param context the current request context
+     * @param orgUnit the organizational unit to add the principal to
+     * @param principal the principal that is to be added to the organizational unit
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#setPrincipalsOrganizationalUnit(String, String, String)
+     */
+    public void setPrincipalsOrganizationalUnit(
+        CmsRequestContext context,
+        CmsOrganizationalUnit orgUnit,
+        I_CmsPrincipal principal) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
+            checkOfflineProject(dbc);
+            m_driverManager.setPrincipalsOrganizationalUnit(dbc, orgUnit, principal);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_SET_PRINCIPALS_ORGUNIT_2,
+                orgUnit.getName(),
+                principal.getName()), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Undelete the resource by resetting it's state.<p>
      * 
      * @param context the current request context
@@ -4578,9 +4642,43 @@ public final class CmsSecurityManager {
      */
     public void writeLocks() throws CmsException {
 
+        if (m_dbContextFactory == null) {
+            // already shutdown
+            return;
+        }
         CmsDbContext dbc = m_dbContextFactory.getDbContext();
         try {
             m_driverManager.writeLocks(dbc);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Writes an already existing organizational unit.<p>
+     *
+     * The organizational unit id has to be a valid OpenCms organizational unit id.<p>
+     * 
+     * The organizational unit with the given id will be completely overriden
+     * by the given data.<p>
+     *
+     * @param context the current request context
+     * @param organizationalUnit the organizational unit that should be written
+     * 
+     * @throws CmsException if operation was not successful
+     * 
+     * @see CmsObject#writeOrganizationalUnit(CmsOrganizationalUnit)
+     */
+    public void writeOrganizationalUnit(CmsRequestContext context, CmsOrganizationalUnit organizationalUnit)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
+            checkOfflineProject(dbc);
+            m_driverManager.writeOrganizationalUnit(dbc, organizationalUnit);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_ORGUNIT_1, organizationalUnit.getName()), e);
         } finally {
             dbc.clear();
         }
@@ -4761,36 +4859,6 @@ public final class CmsSecurityManager {
             m_driverManager.writeUser(dbc, user);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_WRITE_USER_1, user.getName()), e);
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
-     * Updates the user information of a web user.<br>
-     * 
-     * Only a web user can be updated this way.<p>
-     *
-     * The user id has to be a valid OpenCms user id.<br>
-     * 
-     * The user with the given id will be completely overriden
-     * by the given data.<p>
-     * 
-     * @param context the current request context
-     * @param user the user to be updated
-     *
-     * @throws CmsException if operation was not succesful
-     */
-    public void writeWebUser(CmsRequestContext context, CmsUser user) throws CmsException {
-
-        if (!user.isWebUser()) {
-            throw new CmsSecurityException(Messages.get().container(Messages.ERR_WRITE_WEB_USER_CONSTRAINT_0));
-        }
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            m_driverManager.writeWebUser(dbc, user);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_WEB_USER_1, user.getName()), e);
         } finally {
             dbc.clear();
         }
@@ -5242,5 +5310,4 @@ public final class CmsSecurityManager {
             }
         }
     }
-
 }

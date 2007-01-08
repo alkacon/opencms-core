@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2006/12/14 15:09:29 $
- * Version: $Revision: 1.84.4.5 $
+ * Date   : $Date: 2007/01/08 14:03:04 $
+ * Version: $Revision: 1.84.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.5 $ 
+ * @version $Revision: 1.84.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,9 +123,6 @@ public class CmsExport {
 
     /** Indicates if the user data and group data should be included to the export. */
     private boolean m_exportUserdata;
-
-    /** Indicates if the webuser data should be included to the export. */
-    private boolean m_exportWebusers;
 
     /** The export ZIP stream to write resources to. */
     private ZipOutputStream m_exportZipStream;
@@ -195,7 +192,6 @@ public class CmsExport {
      * @param includeUnchanged <code>true</code>, if unchanged files should be included
      * @param moduleElement module informations in a Node for module export
      * @param exportUserdata if true, the user and group data will also be exported
-     * @param exportWebusers if true, the webuser data will also be exported
      * @param contentAge export contents changed after this date/time
      * @param report to handle the log messages
      * @param recursive recursive flag
@@ -212,7 +208,6 @@ public class CmsExport {
         boolean includeUnchanged,
         Element moduleElement,
         boolean exportUserdata,
-        boolean exportWebusers,
         long contentAge,
         I_CmsReport report,
         boolean recursive,
@@ -229,7 +224,6 @@ public class CmsExport {
         m_includeSystem = includeSystem;
         m_includeUnchanged = includeUnchanged;
         m_exportUserdata = exportUserdata;
-        m_exportWebusers = exportWebusers;
         m_contentAge = contentAge;
         m_exportCount = 0;
         m_recursive = recursive;
@@ -252,7 +246,7 @@ public class CmsExport {
             exportAllResources(exportNode, resourcesToExport);
 
             // export userdata and groupdata if selected
-            if (m_exportUserdata || m_exportWebusers) {
+            if (m_exportUserdata) {
                 Element userGroupData = exportNode.addElement(CmsImportExportManager.N_USERGROUPDATA);
                 getSaxWriter().writeOpen(userGroupData);
 
@@ -368,7 +362,6 @@ public class CmsExport {
             includeUnchanged,
             moduleElement,
             exportUserdata,
-            false,
             contentAge,
             report,
             recursive,
@@ -1284,7 +1277,6 @@ public class CmsExport {
             e.addElement(CmsImportExportManager.N_EMAIL).addText(user.getEmail());
             e.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(user.getFlags()));
             e.addElement(CmsImportExportManager.N_TAG_ADDRESS).addCDATA(user.getAddress());
-            e.addElement(CmsImportExportManager.N_TYPE).addText(Integer.toString(user.getType()));
             // serialize the user info and write it into a file
             try {
                 String datfileName = "/~" + CmsImportExportManager.N_USERINFO + "/" + user.getName() + ".dat";
@@ -1347,10 +1339,6 @@ public class CmsExport {
             if (m_exportUserdata) {
                 // add system users
                 allUsers.addAll(getCms().getUsers());
-            }
-            if (m_exportWebusers) {
-                // add webusers
-                allUsers.addAll(getCms().getUsers(CmsUser.USER_TYPE_WEBUSER));
             }
             for (int i = 0, l = allUsers.size(); i < l; i++) {
                 CmsUser user = (CmsUser)allUsers.get(i);

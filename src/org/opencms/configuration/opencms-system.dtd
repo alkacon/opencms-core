@@ -375,6 +375,7 @@ Each job can have an optional list of parameters.
 	keygenerator,	
 	size-users,
 	size-groups,
+	size-orgunits,
 	size-usergroups,
 	size-projects,
 	size-resources,
@@ -397,6 +398,11 @@ Each job can have an optional list of parameters.
 # The size of the driver manager's cache for groups.
 -->
 <!ELEMENT size-groups (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for organizational units.
+-->
+<!ELEMENT size-orgunits (#PCDATA)>
 
 <!--
 # The size of the driver manager's cache for user/group relations.

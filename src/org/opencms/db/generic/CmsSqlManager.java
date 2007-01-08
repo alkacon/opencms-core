@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2006/11/07 16:17:40 $
- * Version: $Revision: 1.65.4.3 $
+ * Date   : $Date: 2007/01/08 14:02:57 $
+ * Version: $Revision: 1.65.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65.4.3 $
+ * @version $Revision: 1.65.4.4 $
  * 
  * @since 6.0.0 
  */
@@ -257,7 +257,10 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @param reservedParam the reserved JDBC pool id
      * 
      * @return a JDBC connection
+     * 
      * @throws SQLException if a database access error occurs
+     * 
+     * @deprecated should be removed, the reserved param should be inside the dbc
      */
     public Connection getConnection(CmsDbContext dbc, Object reservedParam) throws SQLException {
 

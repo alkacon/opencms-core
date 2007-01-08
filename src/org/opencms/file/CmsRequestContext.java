@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2006/11/29 15:04:10 $
- * Version: $Revision: 1.29.4.6 $
+ * Date   : $Date: 2007/01/08 14:03:04 $
+ * Version: $Revision: 1.29.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.workplace.CmsWorkplace;
@@ -46,7 +47,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29.4.6 $
+ * @version $Revision: 1.29.4.7 $
  * 
  * @since 6.0.0 
  */
@@ -72,6 +73,9 @@ public final class CmsRequestContext {
 
     /** The locale for this request. */
     private Locale m_locale;
+
+    /** The fully qualified name of the organizational unit for this request. */
+    private String m_ouFqn;
 
     /** The remote ip address. */
     private String m_remoteAddr;
@@ -107,6 +111,7 @@ public final class CmsRequestContext {
      * @param requestTime the time of the request (used for resource publication / expiration date)
      * @param directoryTranslator the directory translator
      * @param fileTranslator the file translator
+     * @param ouFqn the fully qualified name of the organizational unit
      */
     public CmsRequestContext(
         CmsUser user,
@@ -118,7 +123,8 @@ public final class CmsRequestContext {
         String remoteAddr,
         long requestTime,
         CmsResourceTranslator directoryTranslator,
-        CmsResourceTranslator fileTranslator) {
+        CmsResourceTranslator fileTranslator,
+        String ouFqn) {
 
         m_updateSession = true;
         m_user = user;
@@ -131,6 +137,7 @@ public final class CmsRequestContext {
         m_requestTime = requestTime;
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
+        setOuFqn(ouFqn);
     }
 
     /**
@@ -296,6 +303,16 @@ public final class CmsRequestContext {
     }
 
     /**
+     * Returns the fully qualified name of the organizational unit.<p>
+     * 
+     * @return the fully qualified name of the organizational unit
+     */
+    public String getOuFqn() {
+
+        return m_ouFqn;
+    }
+
+    /**
      * Returns the remote ip address.<p>
      * 
      * @return the renote ip addresss as string
@@ -391,13 +408,13 @@ public final class CmsRequestContext {
         if ((siteRoot == m_siteRoot) && resourcename.startsWith(siteRoot)) {
             resourcename = resourcename.substring(siteRoot.length());
         }
-        
+
         // TODO: since the site root does not includes the trailing slash,
         // having a multisite configuration, where one site path is prefix of other,
         // like: /sites/test and /sites/testA, will result into a mix up of the site 
         // resources in the whole system (sibling view, project view, and more).
         int todoV7;
-        
+
         return resourcename;
     }
 
@@ -545,10 +562,33 @@ public final class CmsRequestContext {
      * 
      * @param user the new user to use
      * @param project the new users current project
+     * @param ouFqn the organizational unit
      */
-    protected void switchUser(CmsUser user, CmsProject project) {
+    protected void switchUser(CmsUser user, CmsProject project, String ouFqn) {
 
         m_user = user;
         m_currentProject = project;
+        setOuFqn(ouFqn);
+    }
+
+    /**
+     * Sets the organizational unit fully qualified name.<p>
+     * 
+     * @param ouFqn the organizational unit fully qualified name
+     */
+    private void setOuFqn(String ouFqn) {
+
+        String userOu = CmsOrganizationalUnit.getParentFqn(m_user.getName());
+        if (ouFqn != null) {
+            if (!ouFqn.startsWith(userOu)) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_BAD_ORGUNIT_2,
+                    ouFqn,
+                    userOu));
+            }
+            m_ouFqn = ouFqn;
+        } else {
+            m_ouFqn = userOu;
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultValidationHandler.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/08 14:02:58 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,20 +39,73 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.3.0 
  */
 public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
 
-    /** The user name constraints. */
-    public static final String USERNAME_CONSTRAINTS = "-._~$@";
-
     /** The email regular expression. */
     public static final String EMAIL_REGEX = "^([a-zA-Z0-9_\\.\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$";
 
+    /** The user name constraints. */
+    public static final String USERNAME_CONSTRAINTS = "-._~$@";
+
     /** The zipcode regular expression. */
     public static final String ZIPCODE_REGEX = "[\\w]*";
+
+    /**
+     * The email should only be composed by digits and standard english letters, points, 
+     * underscores and exact one "At" symbol.<p>
+     * 
+     * @see org.opencms.security.I_CmsValidationHandler#checkEmail(java.lang.String)
+     */
+    public void checkEmail(String email) throws CmsIllegalArgumentException {
+
+        if (!CmsStringUtil.validateRegex(email, EMAIL_REGEX, false)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));
+        }
+    }
+
+    /**
+     * @see org.opencms.security.I_CmsValidationHandler#checkFirstname(java.lang.String)
+     */
+    public void checkFirstname(String firstname) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(firstname)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_FIRSTNAME_EMPTY_0));
+        }
+    }
+
+    /**
+     * @see org.opencms.security.I_CmsValidationHandler#checkGroupName(java.lang.String)
+     */
+    public void checkGroupName(String name) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_GROUPNAME_EMPTY_0));
+        }
+    }
+
+    /**
+     * @see org.opencms.security.I_CmsValidationHandler#checkLastname(java.lang.String)
+     */
+    public void checkLastname(String lastname) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(lastname)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LASTNAME_EMPTY_0));
+        }
+    }
+
+    /**
+     * @see org.opencms.security.I_CmsValidationHandler#checkOrganizationalUnitName(java.lang.String)
+     */
+    public void checkOrganizationalUnitName(String organizationalUnitName) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(organizationalUnitName)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_ORGUNITNAME_EMPTY_0));
+        }
+    }
 
     /**
      * A user name can only be composed of digits, 
@@ -70,29 +123,6 @@ public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
     }
 
     /**
-     * @see org.opencms.security.I_CmsValidationHandler#checkGroupName(java.lang.String)
-     */
-    public void checkGroupName(String name) throws CmsIllegalArgumentException {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_GROUPNAME_EMPTY_0));
-        }
-    }
-
-    /**
-     * The email should only be composed by digits and standard english letters, points, 
-     * underscores and exact one "At" symbol.<p>
-     * 
-     * @see org.opencms.security.I_CmsValidationHandler#checkEmail(java.lang.String)
-     */
-    public void checkEmail(String email) throws CmsIllegalArgumentException {
-
-        if (!CmsStringUtil.validateRegex(email, EMAIL_REGEX, false)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));
-        }
-    }
-
-    /**
      * That means, the parameter should only be composed by digits and standard english letters.<p>
      * 
      * @see org.opencms.security.I_CmsValidationHandler#checkZipCode(java.lang.String)
@@ -101,26 +131,6 @@ public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
 
         if (!CmsStringUtil.validateRegex(zipcode, ZIPCODE_REGEX, true)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_ZIPCODE_VALIDATION_1, zipcode));
-        }
-    }
-
-    /**
-     * @see org.opencms.security.I_CmsValidationHandler#checkFirstname(java.lang.String)
-     */
-    public void checkFirstname(String firstname) throws CmsIllegalArgumentException {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(firstname)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_FIRSTNAME_EMPTY_0));
-        }
-    }
-
-    /**
-     * @see org.opencms.security.I_CmsValidationHandler#checkLastname(java.lang.String)
-     */
-    public void checkLastname(String lastname) throws CmsIllegalArgumentException {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(lastname)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LASTNAME_EMPTY_0));
         }
     }
 

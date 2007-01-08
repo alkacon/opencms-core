@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/12/21 15:32:12 $
- * Version: $Revision: 1.570.2.43 $
+ * Date   : $Date: 2007/01/08 14:03:01 $
+ * Version: $Revision: 1.570.2.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,19 +40,20 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsOrganizationalUnit;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
@@ -96,8 +97,8 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -136,6 +137,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private static class CacheId extends Object {
 
+        /** Name prefix for organizational units. */
+        public static final String ORGUNIT_PREFIX = "_ou_";
+
         /**
          * Name of the object.
          */
@@ -147,7 +151,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         public CmsUUID m_uuid;
 
         /**
-         * Creates a new CacheId for a CmsGroup.<p>
+         * Creates a new {@link CacheId} for a {@link CmsGroup}.<p>
          * 
          * @param group the group to create a cache id from
          */
@@ -158,7 +162,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         /**
-         * Creates a new CacheId for a CmsResource.<p>
+         * Creates a new {@link CacheId} for a {@link CmsOrganizationalUnit}.<p>
+         * 
+         * @param orgUnit the organizational unit to create a cache id from
+         */
+        public CacheId(CmsOrganizationalUnit orgUnit) {
+
+            m_name = ORGUNIT_PREFIX + orgUnit.getFqn();
+            m_uuid = orgUnit.getId();
+        }
+
+        /**
+         * Creates a new {@link CacheId} for a {@link CmsResource}.<p>
          * 
          * @param resource the resource to create a cache id from
          */
@@ -169,13 +184,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         /**
-         * Creates a new CacheId for a CmsUser.<p>
+         * Creates a new {@link CacheId} for a {@link CmsUser}.<p>
          * 
          * @param user the user to create a cache id from
          */
         public CacheId(CmsUser user) {
 
-            m_name = user.getName() + user.getType();
+            m_name = user.getName();
             m_uuid = user.getId();
         }
 
@@ -386,9 +401,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Constant mode parameter to read all files and folders in the {@link #readChangedResourcesInsideProject(CmsDbContext, int, CmsReadChangedProjectResourceMode)}} method. */
     private static final CmsReadChangedProjectResourceMode RCPRM_FOLDERS_ONLY_MODE = new CmsReadChangedProjectResourceMode();
 
-    /** Separator for user cache. */
-    private static final char USER_CACHE_SEP = '\u0000';
-
     /** Cache for access control lists. */
     private Map m_accessControlListCache;
 
@@ -412,6 +424,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** The lock manager. */
     private CmsLockManager m_lockManager;
+
+    /** Cache for organizational units. */
+    private Map m_orgUnitCache;
 
     /** Cache for offline projects. */
     private Map m_projectCache;
@@ -589,19 +604,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         backupDriver = (I_CmsBackupDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
-        try {
-            // invoke the init method of the driver manager
-            driverManager.init(configurationManager, config, vfsDriver, userDriver, projectDriver, backupDriver);
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_OK_0));
-            }
-        } catch (Exception exc) {
-            CmsMessageContainer message = Messages.get().container(Messages.LOG_ERR_DRIVER_MANAGER_START_0);
-            if (LOG.isFatalEnabled()) {
-                LOG.fatal(message.key(), exc);
-            }
-            throw new CmsInitException(message, exc);
-        }
+        // store the access objects
+        driverManager.m_vfsDriver = vfsDriver;
+        driverManager.m_userDriver = userDriver;
+        driverManager.m_projectDriver = projectDriver;
+        driverManager.m_backupDriver = backupDriver;
+
+        // store the configuration
+        driverManager.m_propertyConfiguration = config;
 
         // register the driver manager for required events
         org.opencms.main.OpenCms.addCmsEventListener(driverManager, new int[] {
@@ -612,6 +622,24 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // return the configured driver manager
         return driverManager;
+    }
+
+    /**
+     * Adds a resource to the given organizational unit.<p>
+     * 
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to add the resource to
+     * @param resource the resource that is to be added to the organizational unit
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#addResourceToOrgUnit(String, String)
+     * @see CmsObject#addResourceToOrgUnit(String, String)
+     */
+    public void addResourceToOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
+    throws CmsException {
+
+        m_userDriver.addResourceToOrganizationalUnit(dbc, orgUnit, resource);
     }
 
     /**
@@ -628,33 +656,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException, CmsDbEntryNotFoundException {
 
         if (!userInGroup(dbc, username, groupname)) {
-            CmsUser user;
-            CmsGroup group;
-            try {
-                user = readUser(dbc, username);
-            } catch (CmsDbEntryNotFoundException e) {
-                user = readWebUser(dbc, username);
-            }
+            CmsUser user = readUser(dbc, username);
             //check if the user exists
             if (user != null) {
                 // web user can not be members of:
                 // Administrators, Projectmanagers or Users
-                if (user.getType() == CmsUser.USER_TYPE_WEBUSER) {
-                    List forbidden = new ArrayList();
-                    forbidden.add(OpenCms.getDefaultUsers().getGroupAdministrators());
-                    forbidden.add(OpenCms.getDefaultUsers().getGroupProjectmanagers());
-                    forbidden.add(OpenCms.getDefaultUsers().getGroupUsers());
-                    if (forbidden.contains(groupname)) {
-                        throw new CmsSecurityException(
-                            Messages.get().container(Messages.ERR_WEBUSER_GROUP_1, forbidden));
-                    }
-                }
-
-                group = readGroup(dbc, groupname);
+                CmsGroup group = readGroup(dbc, groupname);
                 //check if group exists
                 if (group != null) {
                     //add this user to the group
-                    m_userDriver.createUserInGroup(dbc, user.getId(), group.getId(), null);
+                    m_userDriver.createUserInGroup(dbc, user.getId(), group.getId());
                     // update the cache
                     m_userGroupsCache.clear();
                 } else {
@@ -666,107 +677,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, username));
             }
         }
-    }
-
-    /**
-     * Creates a new web user.<p>
-     * 
-     * A web user has no access to the workplace but is able to access personalized
-     * functions controlled by the OpenCms.<br>
-     * 
-     * Moreover, a web user can be created by any user, the intention being that
-     * a "Guest" user can create a personalized account for himself.<p>
-     * 
-     * @param dbc the current database context
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param group the default groupname for the user
-     * @param description the description for the user
-     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user
-     *        Infos may be stored into the Usertables (depending on the implementation).
-     *
-     * @return the new user will be returned
-     * 
-     * @throws CmsException if operation was not succesfull
-     * @throws CmsSecurityException if the password is not valid
-     * @throws CmsIllegalArgumentException if the provided name has an illegal format (length == 0)
-     * @throws CmsDbEntryNotFoundException if the user for the given name or the given group was not found 
-     */
-    public CmsUser addWebUser(
-        CmsDbContext dbc,
-        String name,
-        String password,
-        String group,
-        String description,
-        Map additionalInfos)
-    throws CmsException, CmsSecurityException, CmsIllegalArgumentException, CmsDbEntryNotFoundException {
-
-        return addWebUser(dbc, name, password, group, null, description, additionalInfos);
-    }
-
-    /**
-     * Adds a web user to the Cms.<p>
-     * 
-     * A web user has no access to the workplace but is able to access personalized
-     * functions controlled by the OpenCms.<p>
-     * 
-     * @param dbc the current database context
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param group the default groupname for the user
-     * @param additionalGroup an additional group for the user
-     * @param description the description for the user
-     * @param additionalInfos a Hashtable with additional infos for the user, these
-     *        Infos may be stored into the Usertables (depending on the implementation)
-     *
-     * @return the new user will be returned
-     * 
-     * @throws CmsException if operation was not succesfull
-     * @throws CmsSecurityException if the password is not valid
-     * @throws CmsIllegalArgumentException if the provided name has an illegal format (length == 0)
-     * @throws CmsDbEntryNotFoundException if the user for the given name or the given group was not found 
-     */
-    public CmsUser addWebUser(
-        CmsDbContext dbc,
-        String name,
-        String password,
-        String group,
-        String additionalGroup,
-        String description,
-        Map additionalInfos)
-    throws CmsException, CmsDbEntryNotFoundException, CmsIllegalArgumentException, CmsSecurityException {
-
-        CmsUser newUser = createUser(dbc, name, password, description, additionalInfos, CmsUser.USER_TYPE_WEBUSER);
-        CmsUser user = m_userDriver.readUser(dbc, newUser.getName(), CmsUser.USER_TYPE_WEBUSER);
-        //check if the user exists
-        if (user != null) {
-            CmsGroup usergroup = readGroup(dbc, group);
-            //check if group exists
-            if ((usergroup != null) && isWebgroup(dbc, usergroup)) {
-                //add this user to the group
-                m_userDriver.createUserInGroup(dbc, user.getId(), usergroup.getId(), null);
-                // update the cache
-                m_userGroupsCache.clear();
-            } else {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, group));
-            }
-            // if an additional groupname is given and the group does not belong to
-            // Users, Administrators or Projectmanager add the user to this group
-            if (CmsStringUtil.isNotEmpty(additionalGroup)) {
-                CmsGroup addGroup = readGroup(dbc, additionalGroup);
-                if ((addGroup != null) && isWebgroup(dbc, addGroup)) {
-                    //add this user to the group
-                    m_userDriver.createUserInGroup(dbc, user.getId(), addGroup.getId(), null);
-                    // update the cache
-                    m_userGroupsCache.clear();
-                } else {
-                    throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, group));
-                }
-            }
-        } else {
-            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, name));
-        }
-        return newUser;
     }
 
     /**
@@ -933,66 +843,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         return changedResources;
-    }
-
-    /**
-     * Changes the user type of the user.<p>
-     * 
-     * @param dbc the current database context
-     * @param user the user to change
-     * @param userType the new usertype of the user
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    public void changeUserType(CmsDbContext dbc, CmsUser user, int userType) throws CmsDataAccessException {
-
-        // try to remove user from cache
-        clearUserCache(user);
-        m_userDriver.writeUserType(dbc, user.getId(), userType, null);
-    }
-
-    /**
-     * Changes the user type of the user.<p>
-     * 
-     * @param dbc the current database context
-     * @param userId the id of the user to change
-     * @param userType the new usertype of the user
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     * @throws CmsDataAccessException if an underlying <code>Exception</code> related to runtime type instantiation (<code>IOException</code>, <code>ClassCastException</code>) occurs. 
-     * @throws CmsDbSqlException  if an underlying <code>Exception</code> related to data retrieval (<code>SQLException</code>) occurs.  
-     * @throws CmsDbEntryNotFoundException if the user corresponding to the given id does not exist in the database
-     * 
-     */
-    public void changeUserType(CmsDbContext dbc, CmsUUID userId, int userType)
-    throws CmsDataAccessException, CmsDbEntryNotFoundException, CmsDbSqlException {
-
-        CmsUser theUser = m_userDriver.readUser(dbc, userId);
-        changeUserType(dbc, theUser, userType);
-    }
-
-    /**
-     * Changes the user type of the user.<p>
-     *
-     * Only the administrator can change the type.<p>
-     * 
-     * @param dbc the current database context
-     * @param username the name of the user to change
-     * @param userType the new usertype of the user
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void changeUserType(CmsDbContext dbc, String username, int userType) throws CmsException {
-
-        CmsUser theUser = null;
-        try {
-            // try to read the webuser
-            theUser = readWebUser(dbc, username);
-        } catch (CmsDbEntryNotFoundException confe) {
-            // try to read the systemuser
-            theUser = readUser(dbc, username);
-        }
-        changeUserType(dbc, theUser, userType);
     }
 
     /**
@@ -1357,22 +1207,80 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param name the name of the new group
      * @param description the description for the new group
      * @param flags the flags for the new group
-     * @param parent the name of the parent group (or null)
+     * @param parent the name of the parent group (or <code>null</code>)
      * 
      * @return new created group
      * 
-     * @throws CmsDataAccessException if the creation of the group failed
+     * @throws CmsException if the creation of the group failed
      * @throws CmsIllegalArgumentException if the length of the given name was below 1
      */
     public CmsGroup createGroup(CmsDbContext dbc, CmsUUID id, String name, String description, int flags, String parent)
-    throws CmsIllegalArgumentException, CmsDataAccessException {
+    throws CmsIllegalArgumentException, CmsException {
 
         // check the groupname
         OpenCms.getValidationHandler().checkGroupName(name);
         // trim the name
         name = name.trim();
+
         // create the group
-        return m_userDriver.createGroup(dbc, id, name, description, flags, parent, null);
+        CmsGroup group = m_userDriver.createGroup(dbc, id, name, description, flags, parent);
+        // put it into the cache
+        m_groupCache.put(new CacheId(group), group);
+        // return it
+        return group;
+    }
+
+    /**
+     * Creates a new organizational unit.<p>
+     * 
+     * @param dbc the current db context
+     * @param ouFqn the fully qualified name of the new organizational unit
+     * @param description the description of the new organizational unit
+     * @param flags the flags for the new organizational unit
+     * @param resource the first associated resource
+     *
+     * @return a <code>{@link CmsOrganizationalUnit}</code> object representing 
+     *          the newly created organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @see CmsObject#createOrganizationalUnit(String, String, int, String)
+     */
+    public CmsOrganizationalUnit createOrganizationalUnit(
+        CmsDbContext dbc,
+        String ouFqn,
+        String description,
+        int flags,
+        CmsResource resource) throws CmsException {
+
+        String name;
+        CmsOrganizationalUnit parent;
+        if (ouFqn.equals("")) {
+            // root ou case
+            parent = null;
+            name = ouFqn;
+        } else {
+            // normal case
+            int pos = ouFqn.lastIndexOf('/');
+            parent = readOrganizationalUnit(dbc, ouFqn.substring(0, pos));
+            name = ouFqn.substring(pos + 1);
+            // check the name
+            OpenCms.getValidationHandler().checkOrganizationalUnitName(name);
+        }
+        // trim the name
+        name = name.trim();
+        // create the organizational unit
+        CmsOrganizationalUnit orgUnit = m_userDriver.createOrganizationalUnit(
+            dbc,
+            name,
+            description,
+            flags,
+            parent,
+            resource.getRootPath());
+        // put the new created org unit into the cache
+        m_orgUnitCache.put(new CacheId(orgUnit), orgUnit);
+        // return it
+        return orgUnit;
     }
 
     /**
@@ -2024,7 +1932,31 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, Map additionalInfos)
     throws CmsException, CmsIllegalArgumentException {
 
-        return createUser(dbc, name, password, description, additionalInfos, CmsUser.USER_TYPE_SYSTEMUSER);
+        // no space before or after the name
+        name = name.trim();
+        String userName = CmsOrganizationalUnit.getLastNameFromFqn(name);
+        // check the username
+        OpenCms.getValidationHandler().checkUserName(userName);
+        // check the password
+        validatePassword(password);
+
+        if ((name.length() > 0)) {
+            return m_userDriver.createUser(
+                dbc,
+                new CmsUUID(),
+                name,
+                OpenCms.getPasswordHandler().digest(password),
+                description,
+                " ",
+                " ",
+                " ",
+                0,
+                I_CmsPrincipal.FLAG_ENABLED,
+                additionalInfos,
+                " ");
+        } else {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USER_1, name));
+        }
     }
 
     /**
@@ -2183,7 +2115,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             replacementGroup = readGroup(dbc, replacementId);
         }
         // get all child groups of the group
-        List childs = getChild(dbc, group.getName());
+        List childs = getChild(dbc, group);
         // get all users in this group
         List users = getUsersOfGroup(dbc, group.getName());
         // get online project
@@ -2228,8 +2160,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         // remove the group
         m_userDriver.removeAccessControlEntriesForPrincipal(dbc, dbc.currentProject(), onlineProject, group.getId());
-        m_userDriver.deleteGroup(dbc, group.getName(), null);
-        m_groupCache.remove(new CacheId(group.getName()));
+        m_userDriver.deleteGroup(dbc, group.getName());
+        m_groupCache.remove(new CacheId(group));
     }
 
     /**
@@ -2246,6 +2178,35 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void deleteGroup(CmsDbContext dbc, String name) throws CmsDataAccessException, CmsException {
 
         deleteGroup(dbc, readGroup(dbc, name), null);
+    }
+
+    /**
+     * Deletes an organizational unit.<p>
+     *
+     * Only organizational units that contain no suborganizational unit can be deleted.<p>
+     * 
+     * @param dbc the current db context
+     * @param organizationalUnit the organizational unit to delete
+     * 
+     * @throws CmsException if operation was not successful
+     * 
+     * @see CmsObject#deleteOrganizationalUnit(String)
+     */
+    public void deleteOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit)
+    throws CmsException {
+
+        // get online project
+        CmsProject onlineProject = readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
+        // remove the aces
+        m_userDriver.removeAccessControlEntriesForPrincipal(
+            dbc,
+            dbc.currentProject(),
+            onlineProject,
+            organizationalUnit.getId());
+        // remove the organizational unit itself
+        m_userDriver.deleteOrganizationalUnit(dbc, organizationalUnit);
+        // remove it from the cache
+        m_orgUnitCache.remove(new CacheId(organizationalUnit));
     }
 
     /**
@@ -2506,6 +2467,49 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         boolean removeAce = true;
 
+        if (resource.isFolder()) {
+            // check if the folder has any resources in it
+            Iterator childResources = m_vfsDriver.readChildResources(dbc, dbc.currentProject(), resource, true, true).iterator();
+
+            int projectId = CmsProject.ONLINE_PROJECT_ID;
+            if (dbc.currentProject().isOnlineProject()) {
+                projectId++; // HACK: to get an offline project id
+            }
+
+            // collect the names of the resources inside the folder, excluding the moved resources
+            StringBuffer errorResNames = new StringBuffer(128);
+            while (childResources.hasNext()) {
+                CmsResource errorRes = (CmsResource)childResources.next();
+                // if deleting offline, or not moved, or just renamed inside the deleted folder
+                // so, it may remain some orphan online entries for moved resources
+                // which will be fixed during the publishing of the moved resources
+                boolean error = !dbc.currentProject().isOnlineProject();
+                if (!error) {
+                    try {
+                        String originalPath = m_vfsDriver.readResource(dbc, projectId, errorRes.getRootPath(), true).getRootPath();
+                        error = originalPath.equals(errorRes.getRootPath())
+                            || originalPath.startsWith(resource.getRootPath());
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        // ignore
+                    }
+                }
+                if (error) {
+                    if (errorResNames.length() != 0) {
+                        errorResNames.append(", ");
+                    }
+                    errorResNames.append("[" + dbc.removeSiteRoot(errorRes.getRootPath()) + "]");
+                }
+            }
+
+            // the current implementation only deletes empty folders
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(errorResNames.toString())) {
+                throw new CmsVfsException(org.opencms.db.generic.Messages.get().container(
+                    org.opencms.db.generic.Messages.ERR_DELETE_NONEMTY_FOLDER_2,
+                    dbc.removeSiteRoot(resource.getRootPath()),
+                    errorResNames.toString()));
+            }
+        }
+
         // delete all collected resources
         for (int i = 0; i < size; i++) {
             CmsResource currentResource = (CmsResource)resources.get(i);
@@ -2669,23 +2673,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // online
         transferPrincipalResources(dbc, onlineProject, user.getId(), replacementUser.getId(), withACEs);
         m_userDriver.removeAccessControlEntriesForPrincipal(dbc, project, onlineProject, user.getId());
-        m_userDriver.deleteUser(dbc, username, null);
-        // delete user from cache
-        clearUserCache(user);
-    }
-
-    /**
-     * Deletes a web user from the Cms.<p>
-     * 
-     * @param dbc the current database context
-     * @param userId the Id of the user to be deleted
-     *
-     * @throws CmsException if operation was not succesfull
-     */
-    public void deleteWebUser(CmsDbContext dbc, CmsUUID userId) throws CmsException {
-
-        CmsUser user = readUser(dbc, userId);
-        m_userDriver.deleteUser(dbc, user.getName(), null);
+        m_userDriver.deleteUser(dbc, username);
         // delete user from cache
         clearUserCache(user);
     }
@@ -2756,6 +2744,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             m_userCache = null;
             m_groupCache = null;
+            m_orgUnitCache = null;
             m_userGroupsCache = null;
             m_projectCache = null;
             m_propertyCache = null;
@@ -3157,15 +3146,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Returns all child groups of a group.<p>
      *
      * @param dbc the current database context
-     * @param groupname the name of the group
+     * @param group the group to get the child for
      * 
      * @return a list of all child <code>{@link CmsGroup}</code> objects
      * 
      * @throws CmsException if operation was not succesful
      */
-    public List getChild(CmsDbContext dbc, String groupname) throws CmsException {
+    public List getChild(CmsDbContext dbc, CmsGroup group) throws CmsException {
 
-        return m_userDriver.readChildGroups(dbc, groupname);
+        return m_userDriver.readChildGroups(dbc, group.getName());
     }
 
     /**
@@ -3174,23 +3163,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * This method also returns all sub-child groups of the current group.
      *
      * @param dbc the current database context
-     * @param groupname the name of the group
+     * @param group the group to get the children for
      * 
      * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
      * @throws CmsException if operation was not succesful
      */
-    public List getChilds(CmsDbContext dbc, String groupname) throws CmsException {
+    public List getChilds(CmsDbContext dbc, CmsGroup group) throws CmsException {
 
         Set allChilds = new HashSet();
         // iterate all child groups
-        Iterator it = m_userDriver.readChildGroups(dbc, groupname).iterator();
+        Iterator it = m_userDriver.readChildGroups(dbc, group.getName()).iterator();
         while (it.hasNext()) {
-            CmsGroup group = (CmsGroup)it.next();
+            CmsGroup child = (CmsGroup)it.next();
             // add the group itself
-            allChilds.add(group);
+            allChilds.add(child);
             // now get all subchilds for each group
-            allChilds.addAll(getChilds(dbc, group.getName()));
+            allChilds.addAll(getChilds(dbc, child));
         }
         return new ArrayList(allChilds);
     }
@@ -3223,6 +3212,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List getGroups(CmsDbContext dbc) throws CmsException {
 
         return m_userDriver.readGroups(dbc);
+    }
+
+    /**
+     * Returns all groups of the given organizational unit.<p>
+     *
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to get the groups for
+     * @param recursive if all groups of sub-organizational units should be retrieved too
+     * 
+     * @return all <code>{@link CmsGroup}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @see CmsObject#getResourcesForOrganizationalUnit(String)
+     * @see CmsObject#getGroupsForOrganizationalUnit(String, boolean)
+     */
+    public List getGroupsForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
+    throws CmsException {
+
+        return m_userDriver.getGroupsForOrganizationalUnit(dbc, orgUnit, recursive);
     }
 
     /**
@@ -3351,6 +3360,29 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns all child organizational units of the given parent organizational unit including 
+     * hierarchical deeper organization units if needed.<p>
+     *
+     * @param dbc the current db context
+     * @param parent the parent organizational unit, or <code>null</code> for the root
+     * @param includeChilds if hierarchical deeper organization units should also be returned
+     * 
+     * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
+     * 
+     * @throws CmsException if operation was not succesful
+     * 
+     * @see CmsObject#getOrganizationalUnits(String, boolean)
+     */
+    public List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChilds)
+    throws CmsException {
+
+        if (parent == null) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PARENT_ORGUNIT_NULL_0));
+        }
+        return m_userDriver.getOrganizationalUnits(dbc, parent, includeChilds);
+    }
+
+    /**
      * Returns the parent group of a group.<p>
      *
      * @param dbc the current database context
@@ -3437,6 +3469,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
             filter = filter.filterStructureId(resource.getStructureId());
         }
         return m_vfsDriver.readRelations(dbc, dbc.currentProject().getId(), filter);
+    }
+
+    /**
+     * Returns all resources of the given organizational unit.<p>
+     *
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to get all resources for
+     * 
+     * @return all <code>{@link CmsResource}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @see CmsObject#getResourcesForOrganizationalUnit(String)
+     * @see CmsObject#getUsersForOrganizationalUnit(String, boolean)
+     * @see CmsObject#getGroupsForOrganizationalUnit(String, boolean)
+     */
+    public List getResourcesForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit) throws CmsException {
+
+        return m_userDriver.getResourcesForOrganizationalUnit(dbc, orgUnit);
     }
 
     /**
@@ -3536,22 +3587,27 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List getUsers(CmsDbContext dbc) throws CmsException {
 
-        return m_userDriver.readUsers(dbc, CmsUser.USER_TYPE_SYSTEMUSER);
+        return m_userDriver.readUsers(dbc);
     }
 
     /**
-     * Returns all users from a given type.<p>
+     * Returns all direct users of the given organizational unit.<p>
      *
-     * @param dbc the current database context
-     * @param type the type of the users
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to get all users for
+     * @param recursive if all groups of sub-organizational units should be retrieved too
      * 
-     * @return a list of all <code>{@link CmsUser}</code> objects of the given type
+     * @return all <code>{@link CmsUser}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
      * 
-     * @throws CmsException if operation was not succesful
+     * @see CmsObject#getResourcesForOrganizationalUnit(String)
+     * @see CmsObject#getUsersForOrganizationalUnit(String, boolean)
      */
-    public List getUsers(CmsDbContext dbc, int type) throws CmsException {
+    public List getUsersForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
+    throws CmsException {
 
-        return m_userDriver.readUsers(dbc, type);
+        return m_userDriver.getUsersForOrganizationalUnit(dbc, orgUnit, recursive);
     }
 
     /**
@@ -3566,7 +3622,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List getUsersOfGroup(CmsDbContext dbc, String groupname) throws CmsException {
 
-        return m_userDriver.readUsersOfGroup(dbc, groupname, CmsUser.USER_TYPE_SYSTEMUSER);
+        readGroup(dbc, groupname); // check that the group really exists
+        return m_userDriver.readUsersOfGroup(dbc, groupname);
     }
 
     /**
@@ -3618,7 +3675,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param email the email of the user
      * @param address the address of the user
      * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
-     * @param type the type of the user
      * @param additionalInfos the additional user infos
      * 
      * @return the imported user
@@ -3636,7 +3692,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String email,
         String address,
         int flags,
-        int type,
         Map additionalInfos) throws CmsException {
 
         // no space before or after the name
@@ -3644,7 +3699,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // check the username
         OpenCms.getValidationHandler().checkUserName(name);
 
-        CmsUser newUser = m_userDriver.importUser(
+        CmsUser newUser = m_userDriver.createUser(
             dbc,
             new CmsUUID(id),
             name,
@@ -3656,9 +3711,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             0,
             flags,
             additionalInfos,
-            address,
-            type,
-            null);
+            address);
         return newUser;
     }
 
@@ -3666,36 +3719,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Initializes the driver and sets up all required modules and connections.<p>
      * 
      * @param configurationManager the configuration manager
-     * @param configuration the OpenCms configuration
-     * @param vfsDriver the vfsdriver
-     * @param userDriver the userdriver
-     * @param projectDriver the projectdriver
-     * @param backupDriver the backupdriver
      * 
      * @throws CmsException if something goes wrong
      * @throws Exception if something goes wrong
      */
-    public void init(
-        CmsConfigurationManager configurationManager,
-        ExtendedProperties configuration,
-        I_CmsVfsDriver vfsDriver,
-        I_CmsUserDriver userDriver,
-        I_CmsProjectDriver projectDriver,
-        I_CmsBackupDriver backupDriver) throws CmsException, Exception {
+    public void init(CmsConfigurationManager configurationManager) throws CmsException, Exception {
 
         // initialize the access-module.
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_0));
         }
-
-        // store the access objects
-        m_vfsDriver = vfsDriver;
-        m_userDriver = userDriver;
-        m_projectDriver = projectDriver;
-        m_backupDriver = backupDriver;
-
-        // store the configuration
-        m_propertyConfiguration = configuration;
 
         CmsSystemConfiguration systemConfiguation = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);
         CmsCacheSettings settings = systemConfiguation.getCacheSettings();
@@ -3714,6 +3747,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_groupCache = Collections.synchronizedMap(lruMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_groupCache", lruMap);
+        }
+
+        lruMap = new LRUMap(settings.getOrgUnitCacheSize());
+        m_orgUnitCache = Collections.synchronizedMap(lruMap);
+        if (OpenCms.getMemoryMonitor().enabled()) {
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_orgUnitCache", lruMap);
         }
 
         lruMap = new LRUMap(settings.getUserGroupsCacheSize());
@@ -3752,12 +3791,24 @@ public final class CmsDriverManager implements I_CmsEventListener {
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_accessControlListCache", lruMap);
         }
 
-        getProjectDriver().fillDefaults(new CmsDbContext());
-
         // initialize the HTML link validator
         m_htmlLinkValidator = new CmsRelationSystemValidator(this);
+
         // initialize the lock list for the "CreateResource" method, use Vector for most efficient synchronization 
         m_concurrentCreateResourceLocks = new Vector();
+
+        // fills the defaults if needed
+        CmsDbContext dbc = new CmsDbContext();
+        getUserDriver().fillDefaults(dbc);
+        getProjectDriver().fillDefaults(dbc);
+
+        // create the root organizational unit if needed
+        getUserDriver().createRootOrganizationalUnit(
+            new CmsDbContext(new CmsRequestContext(readUser(
+                new CmsDbContext(),
+                OpenCms.getDefaultUsers().getUserAdmin()), readProject(
+                new CmsDbContext(),
+                I_CmsProjectDriver.SETUP_PROJECT_NAME), null, "/", null, null, null, 0, null, null, null)));
     }
 
     /**
@@ -3988,7 +4039,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param userName the name of the user to be logged in
      * @param password the password of the user
      * @param remoteAddress the ip address of the request
-     * @param userType the user type to log in (System user or Web user)
      * 
      * @return the logged in user
      *
@@ -3996,7 +4046,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsDataAccessException in case of errors accessing the database
      * @throws CmsPasswordEncryptionException in case of errors encrypting the users password
      */
-    public CmsUser loginUser(CmsDbContext dbc, String userName, String password, String remoteAddress, int userType)
+    public CmsUser loginUser(CmsDbContext dbc, String userName, String password, String remoteAddress)
     throws CmsAuthentificationException, CmsDataAccessException, CmsPasswordEncryptionException {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(password)) {
@@ -4005,7 +4055,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsUser newUser;
         try {
             // read the user from the driver to avoid the cache
-            newUser = m_userDriver.readUser(dbc, userName, password, remoteAddress, userType);
+            newUser = m_userDriver.readUser(dbc, userName, password, remoteAddress);
         } catch (CmsDbEntryNotFoundException e) {
             // this indicates that the username / password combination does not exist
             // any other exception indicates database issues, these are not catched here
@@ -4013,7 +4063,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // check if a user with this name exists at all 
             boolean userExists = true;
             try {
-                readUser(dbc, userName, userType);
+                readUser(dbc, userName);
             } catch (CmsDataAccessException e2) {
                 // apparently this user does not exist in the database
                 userExists = false;
@@ -4022,18 +4072,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
             if (userExists) {
                 if (dbc.currentUser().isGuestUser()) {
                     // add an invalid login attempt for this user to the storage
-                    OpenCms.getLoginManager().addInvalidLogin(userName, userType, remoteAddress);
+                    OpenCms.getLoginManager().addInvalidLogin(userName, remoteAddress);
                 }
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
-                    org.opencms.security.Messages.ERR_LOGIN_FAILED_3,
+                    org.opencms.security.Messages.ERR_LOGIN_FAILED_2,
                     userName,
-                    new Integer(userType),
                     remoteAddress), e);
             } else {
+                String userOu = CmsOrganizationalUnit.getParentFqn(userName);
+                if (userOu != null) {
+                    String parentOu = CmsOrganizationalUnit.getParentFqn(userOu);
+                    if (parentOu != null) {
+                        // try a higher level ou
+                        String uName = CmsOrganizationalUnit.getLastNameFromFqn(userName);
+                        return loginUser(dbc, CmsOrganizationalUnit.appendFqn(parentOu, uName), password, remoteAddress);
+                    }
+                }
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
-                    org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_3,
+                    org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_2,
                     userName,
-                    new Integer(userType),
                     remoteAddress), e);
             }
         }
@@ -4041,18 +4098,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (!newUser.isEnabled()) {
             // user is disabled, throw a securiy exception
             throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
-                org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_3,
+                org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2,
                 userName,
-                new Integer(userType),
                 remoteAddress));
         }
 
         if (dbc.currentUser().isGuestUser()) {
             // check if this account is temporarily disabled because of too many invalid login attempts
             // this will throw an exception if the test fails
-            OpenCms.getLoginManager().checkInvalidLogins(userName, userType, remoteAddress);
+            OpenCms.getLoginManager().checkInvalidLogins(userName, remoteAddress);
             // test successful, remove all previous invalid login attempts for this user from the storage
-            OpenCms.getLoginManager().removeInvalidLogins(userName, userType, remoteAddress);
+            OpenCms.getLoginManager().removeInvalidLogins(userName, remoteAddress);
         }
 
         if (!m_securityManager.hasRole(dbc, newUser, CmsRole.ADMINISTRATOR)) {
@@ -4064,7 +4120,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         newUser.setLastlogin(System.currentTimeMillis());
 
         // write the changed user object back to the user driver
-        m_userDriver.writeUser(dbc, newUser, null);
+        m_userDriver.writeUser(dbc, newUser);
 
         // update cache
         putUserInCache(newUser);
@@ -4072,6 +4128,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // invalidate all user dependent caches
         m_accessControlListCache.clear();
         m_groupCache.clear();
+        m_orgUnitCache.clear();
         m_userGroupsCache.clear();
         m_resourceListCache.clear();
         m_securityManager.clearPermissionCache();
@@ -4131,7 +4188,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         try {
-            CmsUser user = readUser(dbc, principalName, CmsUser.USER_TYPE_SYSTEMUSER);
+            CmsUser user = readUser(dbc, principalName);
             if (user != null) {
                 return user;
             }
@@ -4901,23 +4958,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsGroup readGroup(CmsDbContext dbc, CmsProject project) {
 
-        // try to read group form cache
-        CmsGroup group = (CmsGroup)m_groupCache.get(new CacheId(project.getGroupId()));
-        if (group == null) {
-            try {
-                group = m_userDriver.readGroup(dbc, project.getGroupId());
-            } catch (CmsDataAccessException exc) {
-                return new CmsGroup(
-                    CmsUUID.getNullUUID(),
-                    CmsUUID.getNullUUID(),
-                    project.getGroupId() + "",
-                    "deleted group",
-                    0);
-            }
-            m_groupCache.put(new CacheId(group), group);
+        try {
+            return readGroup(dbc, project.getGroupId());
+        } catch (CmsException exc) {
+            return new CmsGroup(
+                CmsUUID.getNullUUID(),
+                CmsUUID.getNullUUID(),
+                project.getGroupId() + "",
+                "deleted group",
+                0,
+                null);
         }
-
-        return group;
     }
 
     /**
@@ -4932,7 +4983,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsGroup readGroup(CmsDbContext dbc, CmsUUID groupId) throws CmsException {
 
-        return m_userDriver.readGroup(dbc, groupId);
+        CmsGroup group = null;
+        // try to read group from cache
+        group = (CmsGroup)m_groupCache.get(new CacheId(groupId));
+        if (group == null) {
+            group = m_userDriver.readGroup(dbc, groupId);
+            m_groupCache.put(new CacheId(group), group);
+        }
+        return group;
     }
 
     /**
@@ -4948,7 +5006,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsGroup readGroup(CmsDbContext dbc, String groupname) throws CmsDataAccessException {
 
         CmsGroup group = null;
-        // try to read group form cache
+        // try to read group from cache
         group = (CmsGroup)m_groupCache.get(new CacheId(groupname));
         if (group == null) {
             group = m_userDriver.readGroup(dbc, groupname);
@@ -4979,24 +5037,40 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsGroup readManagerGroup(CmsDbContext dbc, CmsProject project) {
 
-        CmsGroup group = null;
-        // try to read group form cache
-        group = (CmsGroup)m_groupCache.get(new CacheId(project.getManagerGroupId()));
-        if (group == null) {
-            try {
-                group = m_userDriver.readGroup(dbc, project.getManagerGroupId());
-            } catch (CmsDataAccessException exc) {
-                // the group does not exist any more - return a dummy-group
-                return new CmsGroup(
-                    CmsUUID.getNullUUID(),
-                    CmsUUID.getNullUUID(),
-                    project.getManagerGroupId() + "",
-                    "deleted group",
-                    0);
-            }
-            m_groupCache.put(new CacheId(group), group);
+        try {
+            return readGroup(dbc, project.getManagerGroupId());
+        } catch (CmsException exc) {
+            // the group does not exist any more - return a dummy-group
+            return new CmsGroup(
+                CmsUUID.getNullUUID(),
+                CmsUUID.getNullUUID(),
+                project.getManagerGroupId() + "",
+                "deleted group",
+                0,
+                null);
         }
-        return group;
+    }
+
+    /**
+     * Reads an organizational Unit based on its fully qualified name.<p>
+     *
+     * @param dbc the current db context
+     * @param ouFqn the fully qualified name of the organizational Unit to be read
+     * 
+     * @return the organizational Unit that with the provided fully qualified name
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsOrganizationalUnit readOrganizationalUnit(CmsDbContext dbc, String ouFqn) throws CmsException {
+
+        CmsOrganizationalUnit organizationalUnit = null;
+        // try to read organizational unit from cache
+        organizationalUnit = (CmsOrganizationalUnit)m_orgUnitCache.get(new CacheId(CacheId.ORGUNIT_PREFIX + ouFqn));
+        if (organizationalUnit == null) {
+            organizationalUnit = m_userDriver.readOrganizationalUnit(dbc, ouFqn);
+            m_orgUnitCache.put(new CacheId(organizationalUnit), organizationalUnit);
+        }
+        return organizationalUnit;
     }
 
     /**
@@ -5738,28 +5812,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsUser readUser(CmsDbContext dbc, String username) throws CmsDataAccessException {
 
-        return readUser(dbc, username, CmsUser.USER_TYPE_SYSTEMUSER);
-    }
-
-    /**
-     * Returns a user object.<p>
-     *
-     * @param dbc the current database context
-     * @param username the name of the user that is to be read
-     * @param type the type of the user
-     *
-     * @return user read
-     * 
-     * @throws CmsDataAccessException if an underlying <code>Exception</code> related to runtime type instantiation (<code>IOException</code>, <code>ClassCastException</code>) occurs 
-     * @throws CmsDbSqlException  if an underlying <code>Exception</code> related to data retrieval (<code>SQLException</code>) occurs
-     * @throws CmsDbEntryNotFoundException if the user corresponding to the given id does not exist in the database 
-     */
-    public CmsUser readUser(CmsDbContext dbc, String username, int type)
-    throws CmsDataAccessException, CmsDbSqlException, CmsDbEntryNotFoundException {
-
-        CmsUser user = getUserFromCache(username, type);
+        CmsUser user = getUserFromCache(username);
         if (user == null) {
-            user = m_userDriver.readUser(dbc, username, type);
+            user = m_userDriver.readUser(dbc, username);
             putUserInCache(user);
         }
         return user;
@@ -5781,43 +5836,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsUser readUser(CmsDbContext dbc, String username, String password) throws CmsException {
 
         // don't read user from cache here because password may have changed
-        CmsUser user = m_userDriver.readUser(dbc, username, password, CmsUser.USER_TYPE_SYSTEMUSER);
-        putUserInCache(user);
-        return user;
-    }
-
-    /**
-     * Read a web user from the database.<p>
-     * 
-     * @param dbc the current database context
-     * @param username the web user to read
-     * 
-     * @return the read web user
-     * 
-     * @throws CmsException if the user could not be read. 
-     */
-    public CmsUser readWebUser(CmsDbContext dbc, String username) throws CmsException {
-
-        return readUser(dbc, username, CmsUser.USER_TYPE_WEBUSER);
-    }
-
-    /**
-     * Returns a user object if the password for the user is correct.<p>
-     *
-     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
-     *
-     * @param dbc the current database context
-     * @param username the username of the user that is to be read
-     * @param password the password of the user that is to be read
-     * 
-     * @return the webuser read
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public CmsUser readWebUser(CmsDbContext dbc, String username, String password) throws CmsException {
-
-        // don't read user from cache here because password may have changed
-        CmsUser user = m_userDriver.readUser(dbc, username, password, CmsUser.USER_TYPE_WEBUSER);
+        CmsUser user = m_userDriver.readUser(dbc, username, password, null);
         putUserInCache(user);
         return user;
     }
@@ -5847,6 +5866,24 @@ public final class CmsDriverManager implements I_CmsEventListener {
         data.put("resource", resource);
         data.put("change", new Integer(CHANGED_ACCESSCONTROL));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
+    }
+
+    /**
+     * Removes a resource from the given organizational unit.<p>
+     * 
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to remove the resource from
+     * @param resource the resource that is to be removed from the organizational unit
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#addResourceToOrgUnit(String, String)
+     * @see CmsObject#addResourceToOrgUnit(String, String)
+     */
+    public void removeResourceFromOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
+    throws CmsException {
+
+        m_userDriver.removeResourceFromOrganizationalUnit(dbc, orgUnit, resource);
     }
 
     /**
@@ -5927,7 +5964,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             group = readGroup(dbc, groupname);
             //check if group exists
             if (group != null) {
-                m_userDriver.deleteUserInGroup(dbc, user.getId(), group.getId(), null);
+                m_userDriver.deleteUserInGroup(dbc, user.getId(), group.getId());
                 m_userGroupsCache.clear();
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
@@ -6007,18 +6044,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // read the user as a system user to verify that the specified old password is correct
             try {
-                user = m_userDriver.readUser(dbc, username, oldPassword, CmsUser.USER_TYPE_SYSTEMUSER);
-            } catch (CmsDbEntryNotFoundException e) {
-                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username), e);
-            }
-
-            // dito as a web user
-            try {
-                user = (user != null) ? user : m_userDriver.readUser(
-                    dbc,
-                    username,
-                    oldPassword,
-                    CmsUser.USER_TYPE_WEBUSER);
+                user = m_userDriver.readUser(dbc, username, oldPassword, null);
             } catch (CmsDbEntryNotFoundException e) {
                 throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username), e);
             }
@@ -6027,7 +6053,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username));
             }
 
-            m_userDriver.writePassword(dbc, username, user.getType(), oldPassword, newPassword, null);
+            m_userDriver.writePassword(dbc, username, oldPassword, newPassword);
 
         } else if (CmsStringUtil.isEmpty(oldPassword)) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_PWD_OLD_MISSING_0));
@@ -6248,21 +6274,69 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void setPassword(CmsDbContext dbc, String username, String newPassword)
     throws CmsException, CmsIllegalArgumentException {
 
-        CmsUser user = null;
-
         validatePassword(newPassword);
 
         // read the user as a system user to verify that the specified old password is correct
-        try {
-            user = m_userDriver.readUser(dbc, username, CmsUser.USER_TYPE_SYSTEMUSER);
-        } catch (CmsDbEntryNotFoundException confe) {
-            // only continue if not found and read user from web might succeed
-        }
+        m_userDriver.readUser(dbc, username);
+        // only continue if not found and read user from web might succeed
+        m_userDriver.writePassword(dbc, username, null, newPassword);
+    }
 
-        // dito as a web user
-        // this time don't catch CmsObjectNotFoundException (user not found)
-        user = (user != null) ? user : m_userDriver.readUser(dbc, username, CmsUser.USER_TYPE_WEBUSER);
-        m_userDriver.writePassword(dbc, username, user.getType(), null, newPassword, null);
+    /**
+     * Adds an user or group to the given organizational unit.<p>
+     * 
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to add the resource to
+     * @param principal the principal that is to be added to the organizational unit
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#setPrincipalsOrganizationalUnit(String, String, String)
+     */
+    public void setPrincipalsOrganizationalUnit(
+        CmsDbContext dbc,
+        CmsOrganizationalUnit orgUnit,
+        I_CmsPrincipal principal) throws CmsException {
+
+        if (principal.isGroup()) {
+            // check if all users can also be moved
+            List users = m_userDriver.readUsersOfGroup(dbc, principal.getName());
+            Iterator itUsers = users.iterator();
+            while (itUsers.hasNext()) {
+                CmsUser user = (CmsUser)itUsers.next();
+                if (m_userDriver.readGroupsOfUser(dbc, user.getId(), dbc.getRequestContext().getRemoteAddress()).size() != 1) {
+                    throw new CmsDbConsistencyException(Messages.get().container(
+                        Messages.ERR_ORGUNIT_MOVE_GROUP_3,
+                        orgUnit.getFqn(),
+                        principal.getName(),
+                        user.getName()));
+                }
+            }
+            // move all the users
+            itUsers = users.iterator();
+            while (itUsers.hasNext()) {
+                CmsUser user = (CmsUser)itUsers.next();
+                // move user
+                m_userDriver.setPrincipalsOrganizationalUnit(dbc, orgUnit, user);
+                // remove user from cache
+                clearUserCache(user);
+            }
+        } else if (principal.isUser()) {
+            if (!m_userDriver.readGroupsOfUser(dbc, principal.getId(), dbc.getRequestContext().getRemoteAddress()).isEmpty()) {
+                throw new CmsDbConsistencyException(Messages.get().container(
+                    Messages.ERR_ORGUNIT_MOVE_USER_2,
+                    orgUnit.getFqn(),
+                    principal.getName()));
+            }
+        }
+        // move the principal
+        m_userDriver.setPrincipalsOrganizationalUnit(dbc, orgUnit, principal);
+        // remove the principal from cache
+        if (principal.isGroup()) {
+            m_groupCache.remove(new CacheId((CmsGroup)principal));
+        } else if (principal.isUser()) {
+            clearUserCache((CmsUser)principal);
+        }
     }
 
     /**
@@ -6866,7 +6940,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
 
         m_groupCache.remove(new CacheId(group));
-        m_userDriver.writeGroup(dbc, group, null);
+        m_userDriver.writeGroup(dbc, group);
         m_groupCache.put(new CacheId(group), group);
     }
 
@@ -6883,6 +6957,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void writeLocks(CmsDbContext dbc) throws CmsException {
 
         m_lockManager.writeLocks(dbc);
+    }
+
+    /**
+     * Writes an already existing organizational unit.<p>
+     *
+     * The organizational unit id has to be a valid OpenCms organizational unit id.<br>
+     * 
+     * The organizational unit with the given id will be completely overriden
+     * by the given data.<p>
+     *
+     * @param dbc the current db context
+     * @param organizationalUnit the organizational unit that should be written
+     * 
+     * @throws CmsException if operation was not successful
+     * 
+     * @see CmsObject#writeOrganizationalUnit(CmsOrganizationalUnit)
+     */
+    public void writeOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit) throws CmsException {
+
+        m_orgUnitCache.remove(new CacheId(organizationalUnit));
+        m_userDriver.writeOrganizationalUnit(dbc, organizationalUnit);
+        m_orgUnitCache.put(new CacheId(organizationalUnit), organizationalUnit);
     }
 
     /**
@@ -7089,7 +7185,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException {
 
         clearUserCache(user);
-        m_userDriver.writeUser(dbc, user, null);
+        m_userDriver.writeUser(dbc, user);
         // update the cache
         putUserInCache(user);
     }
@@ -7112,7 +7208,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void writeWebUser(CmsDbContext dbc, CmsUser user) throws CmsException {
 
         clearUserCache(user);
-        m_userDriver.writeUser(dbc, user, null);
+        m_userDriver.writeUser(dbc, user);
         // update the cache
         putUserInCache(user);
     }
@@ -7162,6 +7258,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param group the group to be checked
      *
      * @return true if the group does not belong to users, administrators or projectmanagers
+     * 
      * @throws CmsException if operation was not succesful
      */
     protected boolean isWebgroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
@@ -7179,7 +7276,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 return isWebgroup(dbc, m_userDriver.readGroup(dbc, group.getParentId()));
             }
         }
-
         return true;
     }
 
@@ -7349,6 +7445,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_userCache.clear();
         m_groupCache.clear();
+        m_orgUnitCache.clear();
         m_userGroupsCache.clear();
         m_accessControlListCache.clear();
         m_securityManager.clearPermissionCache();
@@ -7378,57 +7475,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         removeUserFromCache(user);
         m_resourceListCache.clear();
-    }
-
-    /**
-     * Creates a new user.<p>
-     *
-     * @param dbc the current database context
-     * @param name the name for the new user
-     * @param password the password for the new user
-     * @param description the description for the new user
-     * @param additionalInfos the additional infos for the user
-     * @param type the type of the user to create
-     *
-     * @return the created user
-     * 
-     * @see CmsObject#createUser(String, String, String, Map)
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws CmsIllegalArgumentException if the name for the user is not valid
-     */
-    private CmsUser createUser(
-        CmsDbContext dbc,
-        String name,
-        String password,
-        String description,
-        Map additionalInfos,
-        int type) throws CmsException, CmsIllegalArgumentException {
-
-        // no space before or after the name
-        name = name.trim();
-        // check the username
-        OpenCms.getValidationHandler().checkUserName(name);
-        // check the password
-        validatePassword(password);
-
-        if ((name.length() > 0)) {
-            return m_userDriver.createUser(
-                dbc,
-                name,
-                password,
-                description,
-                " ",
-                " ",
-                " ",
-                0,
-                I_CmsPrincipal.FLAG_ENABLED,
-                additionalInfos,
-                " ",
-                type);
-        } else {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USER_1, name));
-        }
     }
 
     /**
@@ -7770,15 +7816,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Gets a user cache key.<p>
      * 
      * @param username the name of the user
-     * @param type the user type
+     * 
      * @return the user cache key
      */
-    private String getUserCacheKey(String username, int type) {
+    private String getUserCacheKey(String username) {
 
         StringBuffer result = new StringBuffer(32);
         result.append(username);
-        result.append(USER_CACHE_SEP);
-        result.append(CmsUser.isSystemUser(type));
         return result.toString();
     }
 
@@ -7797,12 +7841,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Gets a user from cache.<p>
      * 
      * @param username the username
-     * @param type the user tpye
+     * 
      * @return CmsUser from cache
      */
-    private CmsUser getUserFromCache(String username, int type) {
+    private CmsUser getUserFromCache(String username) {
 
-        return (CmsUser)m_userCache.get(getUserCacheKey(username, type));
+        return (CmsUser)m_userCache.get(getUserCacheKey(username));
     }
 
     /**
@@ -7812,7 +7856,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private void putUserInCache(CmsUser user) {
 
-        m_userCache.put(getUserCacheKey(user.getName(), user.getType()), user);
+        m_userCache.put(getUserCacheKey(user.getName()), user);
         m_userCache.put(getUserCacheKey(user.getId()), user);
     }
 
@@ -7895,7 +7939,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private void removeUserFromCache(CmsUser user) {
 
-        m_userCache.remove(getUserCacheKey(user.getName(), user.getType()));
+        m_userCache.remove(getUserCacheKey(user.getName()));
         m_userCache.remove(getUserCacheKey(user.getId()));
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2006/12/05 16:31:07 $
- * Version: $Revision: 1.16.4.2 $
+ * Date   : $Date: 2007/01/08 14:03:03 $
+ * Version: $Revision: 1.16.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.buffer.BoundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.2 $ 
+ * @version $Revision: 1.16.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,6 +75,9 @@ public class CmsSessionInfo implements Comparable, Serializable {
     /** The maximum time, in seconds, this session info is allowed to be inactive. */
     private int m_maxInactiveInterval;
 
+    /** The fully qualified name of the organizational unit. */
+    private String m_ouFqn;
+
     /** The current project id of the user. */
     private int m_projectId;
 
@@ -89,7 +92,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
 
     /** The time this session info was last updated. */
     private long m_timeUpdated;
-
+    
     /** The id of user to which this session info belongs. */
     private CmsUUID m_userId;
 
@@ -150,6 +153,16 @@ public class CmsSessionInfo implements Comparable, Serializable {
     public int getMaxInactiveInterval() {
 
         return m_maxInactiveInterval;
+    }
+
+    /**
+     * Returns the fully qualified name of the organizational unit ofr this session.<p>
+     * 
+     * @return the fully qualified name of the organizational unit ofr this session
+     */
+    public String getOrganizationalUnitFqn() {
+
+        return m_ouFqn;
     }
 
     /**
@@ -260,6 +273,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
         str.append("timeCreated: ").append(m_timeCreated).append(", ");
         str.append("timeUpdated: ").append(m_timeUpdated).append(", ");
         str.append("maxInactiveInterval: ").append(m_maxInactiveInterval);
+        str.append("ouFqn: ").append(m_ouFqn);
         str.append("]");
         return str.toString();
     }
@@ -268,12 +282,13 @@ public class CmsSessionInfo implements Comparable, Serializable {
      * Updates the session info object with the information from
      * the given request context.<p>
      * 
-     * @param context the requrest context to update the session with
+     * @param context the request context to update the session with
      */
     protected void update(CmsRequestContext context) {
 
         m_timeUpdated = System.currentTimeMillis();
         m_siteRoot = context.getSiteRoot();
         setProject(context.currentProject().getId());
+        m_ouFqn = context.getOuFqn();
     }
 }

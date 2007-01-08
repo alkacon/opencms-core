@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/monitor/TestMemoryMonitor.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/01/08 14:03:05 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.8.1 $
  * 
  * @since 6.0.0
  */
@@ -121,7 +121,7 @@ public class TestMemoryMonitor extends OpenCmsTestCase {
                 fail("Something caused the waiting test thread to interrupt!");
             }
             seconds++;
-        } while (seconds < 19);
+        } while (seconds < 18);
 
         assertEquals(5, OpenCms.getMemoryMonitor().getLogCount());
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2006/12/01 08:33:27 $
- * Version: $Revision: 1.24.4.4 $
+ * Date   : $Date: 2007/01/08 14:02:59 $
+ * Version: $Revision: 1.24.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24.4.4 $ 
+ * @version $Revision: 1.24.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -881,20 +881,6 @@ public class CmsChacc extends CmsDialog {
     }
 
     /**
-     * Check if the current permissions are inherited to subresources.<p>
-     * 
-     * @param flags value of all flags of the current entry
-     * @return true if permissions are inherited to subresources, otherwise false 
-     */
-    protected boolean isInheriting(int flags) {
-
-        if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_INHERIT) > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Check if the current permissions are overwriting the inherited ones.<p>
      * 
      * @param flags value of all flags of the current entry
@@ -1287,7 +1273,7 @@ public class CmsChacc extends CmsDialog {
                 result.append("\t<td class=\"dialogpermissioncell textcenter\">");
                 result.append("<input type=\"checkbox\" name=\"").append(PARAM_INHERIT).append("\" value=\"true\"").append(
                     disabled);
-                if (isInheriting(entry.getFlags())) {
+                if (entry.isInheriting()) {
                     result.append(" checked=\"checked\"");
                 }
                 result.append("></td>\n");

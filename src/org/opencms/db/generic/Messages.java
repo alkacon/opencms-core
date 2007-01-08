@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2006/11/13 15:59:42 $
- * Version: $Revision: 1.25.2.3 $
+ * Date   : $Date: 2007/01/08 14:02:58 $
+ * Version: $Revision: 1.25.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25.2.3 $
+ * @version $Revision: 1.25.2.4 $
  * 
  * @since 6.0.0 
  */
@@ -89,6 +89,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INITIALIZING_USER_DRIVER_0 = "ERR_INITIALIZING_USER_DRIVER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INITIALIZING_VFS_DRIVER_0 = "ERR_INITIALIZING_VFS_DRIVER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_DELETE_OPTION_1 = "ERR_INVALID_DELETE_OPTION_1";
 
     /** Message constant for key in the resource bundle. */
@@ -128,6 +131,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_NO_USER_WITH_ID_1 = "ERR_NO_USER_WITH_ID_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_ORGUNIT_ALREADY_CONTAINS_PRINCIPAL_2 = "ERR_ORGUNIT_ALREADY_CONTAINS_PRINCIPAL_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ORGUNIT_ALREADY_CONTAINS_RESOURCE_2 = "ERR_ORGUNIT_ALREADY_CONTAINS_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ORGUNIT_DOESNOT_CONTAINS_PRINCIPAL_2 = "ERR_ORGUNIT_DOESNOT_CONTAINS_PRINCIPAL_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ORGUNIT_DOESNOT_CONTAINS_RESOURCE_2 = "ERR_ORGUNIT_DOESNOT_CONTAINS_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_OUT_OF_MEMORY_0 = "ERR_OUT_OF_MEMORY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -135,6 +150,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PARENT_FOLDER_DELETED_1 = "ERR_PARENT_FOLDER_DELETED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3 = "ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PATH_NOT_IN_PARENT_ORGUNIT_SCOPE_2 = "ERR_PATH_NOT_IN_PARENT_ORGUNIT_SCOPE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_DELETED_FILE_1 = "ERR_READ_DELETED_FILE_1";
@@ -150,6 +171,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_FOLDER_WITH_ID_1 = "ERR_READ_FOLDER_WITH_ID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_ORGUNIT_1 = "ERR_READ_ORGUNIT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_PARENT_ID_1 = "ERR_READ_PARENT_ID_1";
@@ -233,16 +257,22 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_FILL_DEFAULTS_0 = "INIT_FILL_DEFAULTS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_ROOT_ORGUNIT_DEFAULTS_INITIALIZED_0 = "INIT_ROOT_ORGUNIT_DEFAULTS_INITIALIZED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_ROOT_ORGUNIT_INITIALIZATION_FAILED_0 = "INIT_ROOT_ORGUNIT_INITIALIZATION_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_SET_DIGEST_ERROR_0 = "INIT_SET_DIGEST_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SHUTDOWN_DRIVER_1 = "INIT_SHUTDOWN_DRIVER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_USER_GROUP_DEFAULTS_INITIALIZED_0 = "INIT_USER_GROUP_DEFAULTS_INITIALIZED_0";
+    public static final String INIT_SYSTEM_FOLDER_INITIALIZATION_FAILED_0 = "INIT_SYSTEM_FOLDER_INITIALIZATION_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_USER_GROUP_INITIALIZATION_FAILED_0 = "INIT_USER_GROUP_INITIALIZATION_FAILED_0";
+    public static final String INIT_SYSTEM_FOLDER_INITIALIZED_0 = "INIT_SYSTEM_FOLDER_INITIALIZED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_RELATION_2 = "LOG_CREATE_RELATION_2";

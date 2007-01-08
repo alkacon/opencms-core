@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2006/12/14 15:09:29 $
- * Version: $Revision: 1.21.4.1 $
+ * Date   : $Date: 2007/01/08 14:03:05 $
+ * Version: $Revision: 1.21.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.21.4.1 $ 
+ * @version $Revision: 1.21.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,9 +66,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
     /** Boolean flag to decide whether user/group data should be exported or not.<p> */
     private boolean m_exportUserdata;
-
-    /** Boolean flag to decide whether webuser data should be exported or not.<p> */
-    private boolean m_exportWebusers;
 
     /** The name of the export file in the real file system.<p> */
     private String m_fileName;
@@ -95,7 +92,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
         m_includeSystem = false;
         m_includeUnchanged = true;
         m_exportUserdata = true;
-        m_exportWebusers = false;
         m_exportPaths = Collections.EMPTY_LIST;
         m_recursive = true;
     }
@@ -115,7 +111,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
             isIncludeUnchanged(),
             null,
             isExportUserdata(),
-            isExportWebusers(),
             getContentAge(),
             report,
             isRecursive(),
@@ -183,16 +178,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public boolean isExportUserdata() {
 
         return m_exportUserdata;
-    }
-
-    /**
-     * Returns the boolean flag to decide whether webusers should be exported or not.<p>
-     * 
-     * @return true, if webusers should be exported
-     */
-    public boolean isExportWebusers() {
-
-        return m_exportWebusers;
     }
 
     /**
@@ -290,16 +275,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public void setExportUserdata(boolean exportUserdata) {
 
         m_exportUserdata = exportUserdata;
-    }
-
-    /**
-     * Sets the boolean flag to decide whether webusers should be exported or not.<p>
-     * 
-     * @param exportWebusers true, if webusers should not be exported
-     */
-    public void setExportWebusers(boolean exportWebusers) {
-
-        m_exportWebusers = exportWebusers;
     }
 
     /**

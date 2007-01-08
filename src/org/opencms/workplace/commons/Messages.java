@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.15.4.13 $
+ * Date   : $Date: 2007/01/08 14:02:58 $
+ * Version: $Revision: 1.15.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.13 $ 
+ * @version $Revision: 1.15.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -1230,12 +1230,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERSELECTION_LIST_NAME_0 = "GUI_USERSELECTION_LIST_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERSELECTION_TYPE_SYSTEM_0 = "GUI_USERSELECTION_TYPE_SYSTEM_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERSELECTION_TYPE_WEB_0 = "GUI_USERSELECTION_TYPE_WEB_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_COMPUTING_PUBRES_FAILED_0 = "LOG_COMPUTING_PUBRES_FAILED_0";

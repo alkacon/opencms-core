@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.76.4.3 $
+ * Date   : $Date: 2007/01/08 14:03:01 $
+ * Version: $Revision: 1.76.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,11 +52,14 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76.4.3 $
+ * @version $Revision: 1.76.4.4 $
  * 
  * @since 6.0.0 
  */
 public interface I_CmsProjectDriver {
+
+    /** Name of the setup project. */
+    String SETUP_PROJECT_NAME = "_setupProject";
 
     /** The type ID to identify project driver implementations. */
     int DRIVER_TYPE_ID = 1;

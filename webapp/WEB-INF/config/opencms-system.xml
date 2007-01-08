@@ -76,6 +76,7 @@
 			<keygenerator>org.opencms.db.CmsCacheKey</keygenerator>
 			<size-users>64</size-users>
 			<size-groups>64</size-groups>
+			<size-orgunits>64</size-orgunits>
 			<size-usergroups>256</size-usergroups>
 			<size-projects>32</size-projects>
 			<size-resources>8192</size-resources>

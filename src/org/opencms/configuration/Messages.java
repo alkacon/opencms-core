@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2006/12/05 16:31:06 $
- * Version: $Revision: 1.14.4.7 $
+ * Date   : $Date: 2007/01/08 14:02:56 $
+ * Version: $Revision: 1.14.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.4.7 $
+ * @version $Revision: 1.14.4.8 $
  * 
  * @since 6.0.0
  */
@@ -55,19 +55,43 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UNKNOWN_RESTYPE_CLASS_2 = "ERR_UNKNOWN_RESTYPE_CLASS_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_ADMIN_GROUP_1 = "INIT_ADMIN_GROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_ADMIN_USER_1 = "INIT_ADMIN_USER_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1 = "INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_AUTHORIZATION_HANDLER_CLASS_SUCCESS_1 = "INIT_AUTHORIZATION_HANDLER_CLASS_SUCCESS_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_CHECKING_DEFAULT_USER_NAMES_0 = "INIT_CHECKING_DEFAULT_USER_NAMES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_CONFIG_I18N_FINISHED_0 = "INIT_CONFIG_I18N_FINISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DEFAULT_USER_NAMES_INITIALIZED_0 = "INIT_DEFAULT_USER_NAMES_INITIALIZED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DELETED_RESOURCE_USER_1 = "INIT_DELETED_RESOURCE_USER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_EVENTMANAGER_CLASS_INVALID_1 = "INIT_EVENTMANAGER_CLASS_INVALID_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_EVENTMANAGER_CLASS_SUCCESS_1 = "INIT_EVENTMANAGER_CLASS_SUCCESS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_EXPORT_USER_1 = "INIT_EXPORT_USER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_GUEST_USER_1 = "INIT_GUEST_USER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_GUESTS_GROUP_1 = "INIT_GUESTS_GROUP_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_HISTORY_SETTINGS_2 = "INIT_HISTORY_SETTINGS_2";
@@ -98,6 +122,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_NOTIFICATION_TIME_1 = "INIT_NOTIFICATION_TIME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_PROJECT_MANAGERS_GROUP_1 = "INIT_PROJECT_MANAGERS_GROUP_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_PWD_HANDLER_SUCCESS_1 = "INIT_PWD_HANDLER_SUCCESS_1";
@@ -139,6 +166,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_SEARCH_MANAGER_FINISHED_0 = "INIT_SEARCH_MANAGER_FINISHED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_SESSION_STORAGEPROVIDER_SUCCESS_1 = "INIT_SESSION_STORAGEPROVIDER_SUCCESS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_SITE_CONFIG_FINISHED_0 = "INIT_SITE_CONFIG_FINISHED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -152,6 +182,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_TEMPFILE_PROJECT_ID_1 = "INIT_TEMPFILE_PROJECT_ID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_USERS_GROUP_1 = "INIT_USERS_GROUP_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_VALIDATION_HANDLER_CLASS_INVALID_1 = "INIT_VALIDATION_HANDLER_CLASS_INVALID_1";
@@ -191,9 +224,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WORKFLOW_ENGINE_SUCCESS_1 = "INIT_WORKFLOW_ENGINE_SUCCESS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_SESSION_STORAGEPROVIDER_SUCCESS_1 = "INIT_SESSION_STORAGEPROVIDER_SUCCESS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WORKFLOW_MANAGER_SUCCESS_1 = "INIT_WORKFLOW_MANAGER_SUCCESS_1";
@@ -247,10 +277,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_INIT_REQUEST_HANDLER_FAILURE_1 = "LOG_INIT_REQUEST_HANDLER_FAILURE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_INIT_WORKFLOW_ENGINE_FAILURE_1 = "LOG_INIT_WORKFLOW_ENGINE_FAILURE_1";
+    public static final String LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1 = "LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1 = "LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1";
+    public static final String LOG_INIT_WORKFLOW_ENGINE_FAILURE_1 = "LOG_INIT_WORKFLOW_ENGINE_FAILURE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_WORKFLOW_MANAGER_FAILURE_1 = "LOG_INIT_WORKFLOW_MANAGER_FAILURE_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheSettings.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/01/08 14:03:01 $
+ * Version: $Revision: 1.4.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,13 @@
 
 package org.opencms.db;
 
+
 /**
  * The settings of the OpenCms driver manager.<p>
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.4.8.1 $
  * 
  * @since 6.0.0
  */
@@ -50,6 +51,9 @@ public class CmsCacheSettings {
 
     /** The size of the driver manager's cache for groups. */
     private int m_groupCacheSize;
+
+    /** The size of the driver manager's cache for organizational units. */
+    private int m_orgUnitCacheSize;
 
     /** The size of the security manager's cache for permission checks. */
     private int m_permissionCacheSize;
@@ -108,6 +112,16 @@ public class CmsCacheSettings {
     public int getGroupCacheSize() {
 
         return m_groupCacheSize;
+    }
+
+    /**
+     * Returns the size of the driver manager's cache for organizational units.<p>
+     * 
+     * @return the size of the driver manager's cache for organizational units
+     */
+    public int getOrgUnitCacheSize() {
+
+        return m_orgUnitCacheSize;
     }
 
     /**
@@ -211,6 +225,16 @@ public class CmsCacheSettings {
     }
 
     /**
+     * Sets the size of the driver manager's cache for organizational units.<p>
+     *
+     * @param size the size of the driver manager's cache for organizational units
+     */
+    public void setOrgUnitCacheSize(String size) {
+
+        m_orgUnitCacheSize = getIntValue(size, 64);
+    }
+
+    /**
      * Sets the size of the security manager's cache for permission checks.<p>
      *
      * @param size the size of the security manager's cache for permission checks
@@ -295,8 +319,6 @@ public class CmsCacheSettings {
         } catch (NumberFormatException e) {
             // intentionally left blank
         }
-
         return defaultValue;
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/12/21 15:32:12 $
- * Version: $Revision: 1.146.4.17 $
+ * Date   : $Date: 2007/01/08 14:03:03 $
+ * Version: $Revision: 1.146.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,20 +89,16 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.17 $
+ * @version $Revision: 1.146.4.18 $
  * 
  * @since 6.0.0 
  */
 public final class CmsObject {
 
-    /**
-     * The request context.
-     */
+    /** The request context. */
     protected CmsRequestContext m_context;
 
-    /**
-     * The security manager to access the cms.
-     */
+    /** The security manager to access the cms. */
     protected CmsSecurityManager m_securityManager;
 
     /**
@@ -118,6 +114,21 @@ public final class CmsObject {
     public CmsObject(CmsSecurityManager securityManager, CmsRequestContext context) {
 
         init(securityManager, context);
+    }
+
+    /**
+     * Adds a resource to the given organizational unit.<p>
+     * 
+     * @param ouFqn the full qualified name of the organizational unit to add the resource to
+     * @param resourceName the name of the resource that is to be added to the organizational unit
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void addResourceToOrgUnit(String ouFqn, String resourceName) throws CmsException {
+
+        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
+        m_securityManager.addResourceToOrgUnit(m_context, orgUnit, resource);
     }
 
     /**
@@ -151,11 +162,15 @@ public final class CmsObject {
      * @return the newly created user
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @deprecated there are no more webusers
      */
     public CmsUser addWebUser(String name, String password, String group, String description, Map additionalInfos)
     throws CmsException {
 
-        return m_securityManager.addWebUser(m_context, name, password, group, description, additionalInfos);
+        CmsUser user = m_securityManager.createUser(m_context, name, password, description, additionalInfos);
+        m_securityManager.addUserToGroup(m_context, name, group);
+        return user;
     }
 
     /**
@@ -283,32 +298,6 @@ public final class CmsObject {
             oldValue,
             newValue,
             recursive);
-    }
-
-    /**
-     * Changes the type of a user given its id.<p>
-     *
-     * @param userId The id of the user to change
-     * @param userType The new type of the user
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void changeUserType(CmsUUID userId, int userType) throws CmsException {
-
-        m_securityManager.changeUserType(m_context, userId, userType);
-    }
-
-    /**
-     * Changes the type of a user given its name.<p>
-     *
-     * @param username The name of the user to change
-     * @param userType The new type of the user
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void changeUserType(String username, int userType) throws CmsException {
-
-        m_securityManager.changeUserType(m_context, username, userType);
     }
 
     /**
@@ -477,6 +466,31 @@ public final class CmsObject {
     public CmsGroup createGroup(String name, String description, int flags, String parent) throws CmsException {
 
         return m_securityManager.createGroup(m_context, name, description, flags, parent);
+    }
+
+    /**
+     * Creates a new organizational unit.<p>
+     * 
+     * The parent structure must exist.<p>
+     * 
+     * @param ouFqn the fully qualified name of the new organizational unit
+     * @param description the description of the new organizational unit
+     * @param flags the flags for the new organizational unit
+     * @param resourceName the first associated resource
+     *
+     * @return a <code>{@link CmsOrganizationalUnit}</code> object representing 
+     *          the newly created organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public CmsOrganizationalUnit createOrganizationalUnit(
+        String ouFqn,
+        String description,
+        int flags,
+        String resourceName) throws CmsException {
+
+        CmsResource resource = readResource(resourceName);
+        return m_securityManager.createOrganizationalUnit(m_context, ouFqn, description, flags, resource);
     }
 
     /**
@@ -685,13 +699,28 @@ public final class CmsObject {
      *
      * Only groups that contain no subgroups can be deleted.<p>
      * 
-     * @param delgroup the name of the group
+     * @param group the name of the group
      * 
-     * @throws CmsException  if operation was not successful
+     * @throws CmsException if operation was not successful
      */
-    public void deleteGroup(String delgroup) throws CmsException {
+    public void deleteGroup(String group) throws CmsException {
 
-        m_securityManager.deleteGroup(m_context, delgroup);
+        m_securityManager.deleteGroup(m_context, group);
+    }
+
+    /**
+     * Deletes an organizational unit.<p>
+     *
+     * Only organizational units that contain no suborganizational unit can be deleted.<p>
+     * 
+     * @param ouFqn the fully qualified name of the organizational unit to delete
+     * 
+     * @throws CmsException if operation was not successful
+     */
+    public void deleteOrganizationalUnit(String ouFqn) throws CmsException {
+
+        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
+        m_securityManager.deleteOrganizationalUnit(m_context, orgUnit);
     }
 
     /**
@@ -820,10 +849,12 @@ public final class CmsObject {
      * @param userId the id of the user to be deleted
      *
      * @throws CmsException if operation was not successful
+     * 
+     * @deprecated there are no more webusers
      */
     public void deleteWebUser(CmsUUID userId) throws CmsException {
 
-        m_securityManager.deleteWebUser(m_context, userId);
+        m_securityManager.deleteUser(m_context, userId);
     }
 
     /**
@@ -1082,7 +1113,23 @@ public final class CmsObject {
      */
     public List getGroups() throws CmsException {
 
-        return (m_securityManager.getGroups(m_context));
+        return m_securityManager.getGroups(m_context);
+    }
+
+    /**
+     * Returns all groups of the given organizational unit.<p>
+     *
+     * @param ouFqn the fully qualified name of the organizational unit to get all principals for
+     * @param recursive if all groups of sub-organizational units should be retrieved too
+     * 
+     * @return all <code>{@link CmsGroup}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public List getGroupsForOrganizationalUnit(String ouFqn, boolean recursive) throws CmsException {
+
+        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
+        return (m_securityManager.getGroupsForOrganizationalUnit(m_context, orgUnit, recursive));
     }
 
     /**
@@ -1181,6 +1228,23 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.moveToLostAndFound(m_context, resource, true);
+    }
+
+    /**
+     * Returns all child organizational units of the given parent organizational unit including 
+     * hierarchical deeper organization units if needed.<p>
+     *
+     * @param ouFqn the fully qualified name of the parent organizational unit
+     * @param includeChilds if hierarchical deeper organization units should also be returned
+     * 
+     * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
+     * 
+     * @throws CmsException if operation was not succesful
+     */
+    public List getOrganizationalUnits(String ouFqn, boolean includeChilds) throws CmsException {
+
+        CmsOrganizationalUnit parent = readOrganizationalUnit(ouFqn);
+        return m_securityManager.getOrganizationalUnits(m_context, parent, includeChilds);
     }
 
     /**
@@ -1342,6 +1406,21 @@ public final class CmsObject {
     public CmsRequestContext getRequestContext() {
 
         return m_context;
+    }
+
+    /**
+     * Returns all resources of the given organizational unit.<p>
+     *
+     * @param ouFqn the fully qualified name of the organizational unit to get all resources for
+     * 
+     * @return all <code>{@link CmsResource}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public List getResourcesForOrganizationalUnit(String ouFqn) throws CmsException {
+
+        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
+        return m_securityManager.getResourcesForOrganizationalUnit(m_context, orgUnit);
     }
 
     /**
@@ -1514,17 +1593,19 @@ public final class CmsObject {
     }
 
     /**
-     * Returns all users of the given type.<p>
+     * Returns all users of the given organizational unit.<p>
      *
-     * @param type the type of the users
+     * @param ouFqn the fully qualified name of the organizational unit to get all principals for
+     * @param recursive if all users of sub-organizational units should be retrieved too
      * 
-     * @return a list of all <code>{@link CmsUser}</code> objects of the given type
-     * 
+     * @return all <code>{@link CmsUser}</code> objects in the organizational unit
+     *
      * @throws CmsException if operation was not successful
      */
-    public List getUsers(int type) throws CmsException {
+    public List getUsersForOrganizationalUnit(String ouFqn, boolean recursive) throws CmsException {
 
-        return (m_securityManager.getUsers(m_context, type));
+        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
+        return (m_securityManager.getUsersForOrganizationalUnit(m_context, orgUnit, recursive));
     }
 
     /**
@@ -1664,7 +1745,6 @@ public final class CmsObject {
      * @param email the email of the user
      * @param address the address of the user
      * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
-     * @param type the type of the user
      * @param additionalInfos the additional user infos
      * 
      * @return the imported user
@@ -1681,7 +1761,6 @@ public final class CmsObject {
         String email,
         String address,
         int flags,
-        int type,
         Map additionalInfos) throws CmsException {
 
         return m_securityManager.importUser(
@@ -1695,7 +1774,6 @@ public final class CmsObject {
             email,
             address,
             flags,
-            type,
             additionalInfos);
     }
 
@@ -1797,29 +1875,12 @@ public final class CmsObject {
      */
     public String loginUser(String username, String password, String remoteAddress) throws CmsException {
 
-        return loginUser(username, password, remoteAddress, CmsUser.USER_TYPE_SYSTEMUSER);
-    }
-
-    /**
-     * Logs a user with a given type and a given ip address into the Cms, if the password is correct.<p>
-     *
-     * @param username the name of the user
-     * @param password the password of the user
-     * @param remoteAddress the ip address
-     * @param type the user type (System or Web user)
-     * 
-     * @return the name of the logged in user
-     *
-     * @throws CmsException if the login was not successful
-     */
-    public String loginUser(String username, String password, String remoteAddress, int type) throws CmsException {
-
         // login the user
-        CmsUser newUser = m_securityManager.loginUser(m_context, username, password, remoteAddress, type);
+        CmsUser newUser = m_securityManager.loginUser(m_context, username, password, remoteAddress);
         // set the project back to the "Online" project
         CmsProject newProject = m_securityManager.readProject(CmsProject.ONLINE_PROJECT_ID);
         // switch the cms context to the new user and project
-        m_context.switchUser(newUser, newProject);
+        m_context.switchUser(newUser, newProject, CmsOrganizationalUnit.getParentFqn(username));
         // init this CmsObject with the new user
         init(m_securityManager, m_context);
         // fire a login event
@@ -1837,10 +1898,12 @@ public final class CmsObject {
      * @return the name of the logged in user
      *
      * @throws CmsException if the login was not successful
+     * 
+     * @deprecated there are no more webusers
      */
     public String loginWebUser(String username, String password) throws CmsException {
 
-        return loginUser(username, password, m_context.getRemoteAddress(), CmsUser.USER_TYPE_WEBUSER);
+        return loginUser(username, password, m_context.getRemoteAddress());
     }
 
     /**
@@ -2341,6 +2404,20 @@ public final class CmsObject {
     public CmsGroup readManagerGroup(CmsProject project) {
 
         return m_securityManager.readManagerGroup(m_context, project);
+    }
+
+    /**
+     * Reads an organizational Unit based on its fully qualified name.<p>
+     *
+     * @param ouFqn the fully qualified name of the organizational Unit to be read
+     * 
+     * @return the organizational Unit with the provided fully qualified name
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsOrganizationalUnit readOrganizationalUnit(String ouFqn) throws CmsException {
+
+        return m_securityManager.readOrganizationalUnit(m_context, ouFqn);
     }
 
     /**
@@ -3002,21 +3079,6 @@ public final class CmsObject {
     }
 
     /**
-     * Returns a user given its name and type.
-     *
-     * @param username the name of the user to be returned
-     * @param type the type of the user
-     * 
-     * @return the user with the given name and type
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public CmsUser readUser(String username, int type) throws CmsException {
-
-        return m_securityManager.readUser(m_context, username, type);
-    }
-
-    /**
      * Returns a user, if the password is correct.<p>
      * 
      * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
@@ -3041,10 +3103,12 @@ public final class CmsObject {
      * @return the webuser
      *
      * @throws CmsException if operation was not succesful
+     * 
+     * @deprecated there are no more webusers
      */
     public CmsUser readWebUser(String username) throws CmsException {
 
-        return m_securityManager.readWebUser(m_context, username);
+        return m_securityManager.readUser(m_context, username);
     }
 
     /**
@@ -3058,10 +3122,27 @@ public final class CmsObject {
      * @return a web user
      *
      * @throws CmsException if something goes wrong
+     * 
+     * @deprecated there are no more webusers
      */
     public CmsUser readWebUser(String username, String password) throws CmsException {
 
-        return m_securityManager.readWebUser(m_context, username, password);
+        return m_securityManager.readUser(m_context, username, password);
+    }
+
+    /**
+     * Removes a resource from the given organizational unit.<p>
+     * 
+     * @param ouFqn the fully qualified name of the organizational unit to remove the resource from
+     * @param resourceName the name of the resource that is to be removed from the organizational unit
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void removeResourceFromOrgUnit(String ouFqn, String resourceName) throws CmsException {
+
+        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
+        m_securityManager.removeResourceFromOrgUnit(m_context, orgUnit, resource);
     }
 
     /**
@@ -3268,6 +3349,23 @@ public final class CmsObject {
     }
 
     /**
+     * Adds an user or group to the given organizational unit.<p>
+     * 
+     * @param ouFqn the full qualified name of the organizational unit to add the principal to
+     * @param principalType the type of the principal that is to be added to the organizational unit
+     * @param principalName the name of the principal that is to be added to the organizational unit
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setPrincipalsOrganizationalUnit(String ouFqn, String principalType, String principalName)
+    throws CmsException {
+
+        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
+        I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+        m_securityManager.setPrincipalsOrganizationalUnit(m_context, orgUnit, principal);
+    }
+
+    /**
      * Changes the timestamp information of a resource.<p>
      * 
      * This method is used to set the "last modified" date
@@ -3453,10 +3551,9 @@ public final class CmsObject {
     /**
      * Writes an already existing group.<p>
      *
-     * The group id has to be a valid OpenCms group id.<br>
+     * The group has to be a valid OpenCms group.<br>
      * 
-     * The group with the given id will be completely overriden
-     * by the given data.<p>
+     * The group will be completely overriden by the given data.<p>
      *
      * @param group the group that should be written
      * 
@@ -3465,6 +3562,22 @@ public final class CmsObject {
     public void writeGroup(CmsGroup group) throws CmsException {
 
         m_securityManager.writeGroup(m_context, group);
+    }
+
+    /**
+     * Writes an already existing organizational unit.<p>
+     *
+     * The organizational unit has to be a valid OpenCms organizational unit.<br>
+     * 
+     * The organizational unit will be completely overriden by the given data.<p>
+     *
+     * @param organizationalUnit the organizational unit that should be written
+     * 
+     * @throws CmsException if operation was not successful
+     */
+    public void writeOrganizationalUnit(CmsOrganizationalUnit organizationalUnit) throws CmsException {
+
+        m_securityManager.writeOrganizationalUnit(m_context, organizationalUnit);
     }
 
     /**
@@ -3647,10 +3760,12 @@ public final class CmsObject {
      * @param user the user to be written
      *
      * @throws CmsException if operation was not successful
+     * 
+     * @deprecated there are no more webusers
      */
     public void writeWebUser(CmsUser user) throws CmsException {
 
-        m_securityManager.writeWebUser(m_context, user);
+        m_securityManager.writeUser(m_context, user);
     }
 
     /**

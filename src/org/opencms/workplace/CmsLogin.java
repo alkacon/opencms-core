@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/01/08 14:03:06 $
+ * Version: $Revision: 1.24.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,10 +239,10 @@ public class CmsLogin extends CmsJspLoginBean {
                 } else {
                     // there was an error during login
 
-                    if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_3 == getLoginException().getMessageContainer().getKey()) {
+                    if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == getLoginException().getMessageContainer().getKey()) {
                         // the user account is disabled
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_DISABLED_0);
-                    } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_5 == getLoginException().getMessageContainer().getKey()) {
+                    } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == getLoginException().getMessageContainer().getKey()) {
                         // the user account is temporarily disabled because of too many login failures
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
                     } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == getLoginException().getMessageContainer().getKey()) {

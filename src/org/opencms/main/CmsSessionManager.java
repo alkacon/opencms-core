@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2006/12/20 14:02:06 $
- * Version: $Revision: 1.12.4.9 $
+ * Date   : $Date: 2007/01/08 14:03:03 $
+ * Version: $Revision: 1.12.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.9 $ 
+ * @version $Revision: 1.12.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -363,6 +363,7 @@ public class CmsSessionManager {
             null,
             0,
             null,
+            null,
             null);
         // create a new CmsSessionInfo and store it inside the session map
         CmsSessionInfo newInfo = new CmsSessionInfo(context, info.getSessionId(), info.getMaxInactiveInterval());
@@ -550,6 +551,10 @@ public class CmsSessionManager {
      */
     protected void validateSessionInfos() {
 
-        m_sessionStorageProvider.validate();
+        // since this method is called from another thread
+        // we have to prevent access before initialization
+        if (m_sessionStorageProvider != null) {
+            m_sessionStorageProvider.validate();
+        }
     }
 }

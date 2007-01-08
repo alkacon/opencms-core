@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.58.8.2 $
+ * Date   : $Date: 2007/01/08 14:03:01 $
+ * Version: $Revision: 1.58.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,14 @@ package org.opencms.db;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsOrganizationalUnit;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsInitException;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPasswordEncryptionException;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -49,17 +53,26 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.58.8.2 $
+ * @version $Revision: 1.58.8.3 $
  * 
  * @since 6.0.0 
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
 
-    /** TODO: Remove "Object reservedParam" from all methods, refactor to use special instance of dbc instead. */
-    int TODO_V7 = 0;
-
     /** The type ID to identify user driver implementations. */
     int DRIVER_TYPE_ID = 2;
+
+    /**
+     * Adds a resource to the given organizational unit.<p>
+     * 
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to add the resource to
+     * @param resource the resource that is to be added to the organizational unit
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void addResourceToOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
+    throws CmsDataAccessException;
 
     /**
      * Creates an access control entry.<p>
@@ -86,15 +99,12 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Creates a new group.<p>
      * 
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     * 
      * @param dbc the current database context
      * @param groupId the id of the new group
-     * @param groupName the name of the new group
+     * @param groupFqn the fully qualified name of the new group
      * @param description The description for the new group
      * @param flags the flags for the new group
      * @param parentGroupName the name of the parent group (or null if the group has no parent)
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      *
      * @return the created group
      * @throws CmsDataAccessException if something goes wrong
@@ -102,18 +112,48 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     CmsGroup createGroup(
         CmsDbContext dbc,
         CmsUUID groupId,
-        String groupName,
+        String groupFqn,
         String description,
         int flags,
-        String parentGroupName,
-        Object reservedParam) throws CmsDataAccessException;
+        String parentGroupName) throws CmsDataAccessException;
+
+    /**
+     * Creates a new organizational unit.<p>
+     * 
+     * @param dbc the current db context
+     * @param name the name of the new organizational unit
+     * @param description the description of the new organizational unit
+     * @param flags the flags for the new organizational unit
+     * @param parent the parent organizational unit (or <code>null</code>)
+     * @param associationRootPath the first associated resource
+     *
+     * @return a <code>{@link CmsOrganizationalUnit}</code> object representing 
+     *          the newly created organizational unit
+     *
+     * @throws CmsDataAccessException if operation was not successful
+     */
+    CmsOrganizationalUnit createOrganizationalUnit(
+        CmsDbContext dbc,
+        String name,
+        String description,
+        int flags,
+        CmsOrganizationalUnit parent,
+        String associationRootPath) throws CmsDataAccessException;
+
+    /**
+     * Creates the default root organizational unit.<p>
+     * 
+     * @param dbc the current database context
+     */
+    void createRootOrganizationalUnit(CmsDbContext dbc);
 
     /**
      * Creates a new user.<p>
      * 
      * @param dbc the current database context
-     * @param name the user name
-     * @param password the user password
+     * @param id the id of the user
+     * @param userFqn the fully qualified name of the new user
+     * @param password the already encripted user password
      * @param description the user description
      * @param firstname the user firstname
      * @param lastname the user lastname
@@ -122,15 +162,15 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param flags the user flags
      * @param additionalInfos the user additional infos
      * @param address the user default address
-     * @param type the user type
      * 
      * @return the created user
+     * 
      * @throws CmsDataAccessException if something goes wrong
-     * @throws CmsPasswordEncryptionException if the user password could not be encrypted
      */
     CmsUser createUser(
         CmsDbContext dbc,
-        String name,
+        CmsUUID id,
+        String userFqn,
         String password,
         String description,
         String firstname,
@@ -139,23 +179,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         long lastlogin,
         int flags,
         Map additionalInfos,
-        String address,
-        int type) throws CmsDataAccessException, CmsPasswordEncryptionException;
+        String address) throws CmsDataAccessException;
 
     /**
      * Adds a user to a group.<p>
      *
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     *
      * @param dbc the current database context
      * @param userid the id of the user that is to be added to the group
      * @param groupid the id of the group
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
      * @throws CmsDataAccessException if operation was not succesfull
      */
-    void createUserInGroup(CmsDbContext dbc, CmsUUID userid, CmsUUID groupid, Object reservedParam)
-    throws CmsDataAccessException;
+    void createUserInGroup(CmsDbContext dbc, CmsUUID userid, CmsUUID groupid) throws CmsDataAccessException;
 
     /**
      * Deletes all access control entries (ACEs) belonging to a resource.<p>
@@ -172,45 +207,48 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Deletes a group.<p>
      * 
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     * 
      * Only groups that contain no subgroups can be deleted.<p>
      * 
      * @param dbc the current database context
-     * @param name the name of the group that is to be deleted
-     * @param reservedParam additional params to be used by driver implementation
+     * @param groupFqn the fully qualified name of the group that is to be deleted
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteGroup(CmsDbContext dbc, String name, Object reservedParam) throws CmsDataAccessException;
+    void deleteGroup(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException;
+
+    /**
+     * Deletes an organizational unit.<p>
+     *
+     * Only organizational units that contain no suborganizational unit can be deleted.<p>
+     * 
+     * @param dbc the current db context
+     * @param organizationalUnit the organizational unit to delete
+     * 
+     * @throws CmsDataAccessException if operation was not successful
+     */
+    void deleteOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit)
+    throws CmsDataAccessException;
 
     /**
      * Deletes a user.<p>
      * 
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     * 
      * @param dbc the current database context
-     * @param userName the name of the user to delete
-     * @param reservedParam additional params to be used by driver implementation
+     * @param userFqn the fully qualified name of the user to delete
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteUser(CmsDbContext dbc, String userName, Object reservedParam) throws CmsDataAccessException;
+    void deleteUser(CmsDbContext dbc, String userFqn) throws CmsDataAccessException;
 
     /**
      * Removes a user from a group.<p>
      * 
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     * 
      * @param dbc the current database context
      * @param userId the id of the user that is to be removed from the group
      * @param groupId the id of the group
-     * @param reservedParam additional params to be used by driver implementation
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId, Object reservedParam)
-    throws CmsDataAccessException;
+    void deleteUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId) throws CmsDataAccessException;
 
     /**
      * Destroys this driver.<p>
@@ -222,31 +260,75 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Tests if a group with the specified name exists.<p>
      * 
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     * 
      * @param dbc the current database context
-     * @param groupname the user name to be checked
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
+     * @param groupFqn the fully qualified group name to be checked
      * 
-     * @return true, if a group with the specified name exists, false otherwise
+     * @return <code>true</code>, if a group with the specified name exists, <code>false</code> otherwise
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    boolean existsGroup(CmsDbContext dbc, String groupname, Object reservedParam) throws CmsDataAccessException;
+    boolean existsGroup(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException;
 
     /**
      * Tests if a user with the specified name exists.<p>
      * 
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     * 
      * @param dbc the current database context
-     * @param username the user name to be checked
-     * @param usertype the type of the user
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
+     * @param userFqn the fully qualified name of the user to be checked
      * 
      * @return true, if a user with the specified name exists, false otherwise
      * @throws CmsDataAccessException if something goes wrong
      */
-    boolean existsUser(CmsDbContext dbc, String username, int usertype, Object reservedParam)
+    boolean existsUser(CmsDbContext dbc, String userFqn) throws CmsDataAccessException;
+
+    /**
+     * Initializes the default organizational units, users and groups.<p>
+     * 
+     * @param dbc the current database context, be aware that this dbc has no runtime data!
+     * 
+     * @throws CmsInitException if something goes wrong
+     */
+    void fillDefaults(CmsDbContext dbc) throws CmsInitException;
+
+    /**
+     * Returns all groups of the given organizational unit.<p>
+     *
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to get all groups for
+     * @param recursive flag to signalize the retrieval of groups of sub-organizational units too
+     * 
+     * @return all <code>{@link CmsGroup}</code> objects in the organizational unit
+     *
+     * @throws CmsDataAccessException if operation was not successful
+     */
+    List getGroupsForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
+    throws CmsDataAccessException;
+
+    /**
+     * Returns all child organizational units of the given parent organizational unit including 
+     * hierarchical deeper organization units if needed.<p>
+     *
+     * @param dbc the current db context
+     * @param parent the parent organizational unit, or <code>null</code> for the root
+     * @param includeChilds if hierarchical deeper organization units should also be returned
+     * 
+     * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
+     * 
+     * @throws CmsDataAccessException if operation was not succesful
+     */
+    List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChilds)
+    throws CmsDataAccessException;
+
+    /**
+     * Returns all resources of the given organizational unit.<p>
+     *
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to get all resources for
+     * 
+     * @return all <code>{@link CmsResource}</code> objects in the organizational unit
+     *
+     * @throws CmsDataAccessException if operation was not successful
+     */
+    List getResourcesForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit)
     throws CmsDataAccessException;
 
     /**
@@ -257,45 +339,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     CmsSqlManager getSqlManager();
 
     /**
-     * Creates a new user by import.<p>
-     * 
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     * 
-     * @param dbc the current database context
-     * @param id the id of the user
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param description the description for the user
-     * @param firstname the firstname of the user
-     * @param lastname the lastname of the user
-     * @param email the email of the user
-     * @param lastlogin the user lastlogin time
-     * @param flags the flags for a user (e.g. <code>{@link org.opencms.security.I_CmsPrincipal#FLAG_ENABLED}</code>)
-     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
-     *                      infos may be stored into the Usertables (depending on the implementation).
-     * @param address the address of the user
-     * @param type the type of the user
-     * @param reservedParam reserved optional parameter, should be <code>null</code> on standard OpenCms installations
+     * Returns all users of the given organizational unit.<p>
      *
-     * @return a new <code>{@link CmsUser}</code> object representing the added user
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to get all users for
+     * @param recursive flag to signalize the retrieval of users of sub-organizational units too
+     * 
+     * @return all <code>{@link CmsUser}</code> objects in the organizational unit
      *
      * @throws CmsDataAccessException if operation was not successful
      */
-    CmsUser importUser(
-        CmsDbContext dbc,
-        CmsUUID id,
-        String name,
-        String password,
-        String description,
-        String firstname,
-        String lastname,
-        String email,
-        long lastlogin,
-        int flags,
-        Map additionalInfos,
-        String address,
-        int type,
-        Object reservedParam) throws CmsDataAccessException;
+    List getUsersForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
+    throws CmsDataAccessException;
 
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -354,6 +409,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param principal the id of the principal
      * 
      * @return an access control entry that defines the permissions of the principal for the given resource
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
     CmsAccessControlEntry readAccessControlEntry(
@@ -366,13 +422,13 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * Reads all child groups of a group.<p>
      *
      * @param dbc the current database context
-     * @param groupname the name of the group to read the child groups from
+     * @param groupFqn the fully qualified name of the group to read the child groups from
      * 
      * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
      * @throws CmsDataAccessException if operation was not succesful
      */
-    List readChildGroups(CmsDbContext dbc, String groupname) throws CmsDataAccessException;
+    List readChildGroups(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException;
 
     /**
      * Reads a group based on the group id.<p>
@@ -390,13 +446,13 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * Reads a group based on the group name.<p>
      * 
      * @param dbc the current database context
-     * @param groupName the name of the group that is to be read
+     * @param groupFqn the fully qualified name of the group that is to be read
      * 
      * @return the group that was read
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsGroup readGroup(CmsDbContext dbc, String groupName) throws CmsDataAccessException;
+    CmsGroup readGroup(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException;
 
     /**
      * Reads all existing groups.<p>
@@ -414,13 +470,25 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @param dbc the current database context
      * @param userId the id of the user
-     * @param paramStr additional parameter
+     * @param remoteAddress the IP address to filter the groups in the result list
      * 
      * @return a list of <code>{@link CmsGroup}</code> objects
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String paramStr) throws CmsDataAccessException;
+    List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String remoteAddress) throws CmsDataAccessException;
+
+    /**
+     * Reads an organizational Unit based on its fully qualified name.<p>
+     *
+     * @param dbc the current db context
+     * @param ouFqn the fully qualified name of the organizational Unit to be read
+     * 
+     * @return the organizational Unit with the provided fully qualified name
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    CmsOrganizationalUnit readOrganizationalUnit(CmsDbContext dbc, String ouFqn) throws CmsDataAccessException;
 
     /**
      * Reads a user based on the user id.<p>
@@ -435,35 +503,16 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     CmsUser readUser(CmsDbContext dbc, CmsUUID id) throws CmsDataAccessException;
 
     /**
-     * Reads a user based in the user name and user type.<p>
+     * Reads a user based in the user fully qualified name.<p>
      * 
      * @param dbc the current database context
-     * @param name the name of the user to read
-     * @param type the type of the user to read
+     * @param userFqn the fully qualified name of the user to read
      *
      * @return the user that was read
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsUser readUser(CmsDbContext dbc, String name, int type) throws CmsDataAccessException;
-
-    /**
-     * Reads a user from the database, only if the password is correct.<p>
-     *
-     * If the user/pwd pair is not valid a <code>{@link CmsDataAccessException}</code> is thrown.<p>
-     * 
-     * @param dbc the current database context
-     * @param name the name of the user
-     * @param password the password of the user
-     * @param type the type of the user
-     * 
-     * @return the user that was read
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     * @throws CmsPasswordEncryptionException if the password of the user could not be encrypted
-     */
-    CmsUser readUser(CmsDbContext dbc, String name, String password, int type)
-    throws CmsDataAccessException, CmsPasswordEncryptionException;
+    CmsUser readUser(CmsDbContext dbc, String userFqn) throws CmsDataAccessException;
 
     /**
      * Reads a user from the database, only if the password is correct.<p>
@@ -471,41 +520,38 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param dbc the current database context
      * @param name the name of the user
      * @param password the password of the user
-     * @param remoteAddress the remote address of the request
-     * @param type the type of the user
+     * @param remoteAddress the remote address of the request, may be <code>null</code>
      * 
      * @return the user that was read
      * 
      * @throws CmsDataAccessException if something goes wrong
      * @throws CmsPasswordEncryptionException if the password of the user could not be encrypted
      */
-    CmsUser readUser(CmsDbContext dbc, String name, String password, String remoteAddress, int type)
+    CmsUser readUser(CmsDbContext dbc, String name, String password, String remoteAddress)
     throws CmsDataAccessException, CmsPasswordEncryptionException;
 
     /**
-     * Reads all existing users of the given type.<p>
+     * Reads all existing users.<p>
      *
      * @param dbc the current database context
-     * @param type the type to read the users for
      * 
-     * @return a list of all <code>{@link CmsUser}</code> objects of the given type
+     * @return a list of all <code>{@link CmsUser}</code> objects
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readUsers(CmsDbContext dbc, int type) throws CmsDataAccessException;
+    List readUsers(CmsDbContext dbc) throws CmsDataAccessException;
 
     /**
      * Reads all users that are members of the given group.<p>
      *
      * @param dbc the current database context
-     * @param name the name of the group to read the users from
-     * @param type the type of the users to read
+     * @param groupFqn the fully qualified name of the group to read the users from
      * 
      * @return all <code>{@link CmsUser}</code> objects in the group
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readUsersOfGroup(CmsDbContext dbc, String name, int type) throws CmsDataAccessException;
+    List readUsersOfGroup(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException;
 
     /**
      * Removes all access control entries belonging to a resource.<p>
@@ -549,6 +595,30 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     throws CmsDataAccessException;
 
     /**
+     * Removes a resource from the given organizational unit.<p>
+     * 
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to remove the resource from
+     * @param resource the resource that is to be removed from the organizational unit
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void removeResourceFromOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
+    throws CmsDataAccessException;
+
+    /**
+     * Adds an user or group to the given organizational unit.<p>
+     * 
+     * @param dbc the current db context
+     * @param orgUnit the organizational unit to add the resource to
+     * @param principal the principal that is to be added to the organizational unit
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void setPrincipalsOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, I_CmsPrincipal principal)
+    throws CmsDataAccessException;
+
+    /**
      * Writes an access control entry.<p>
      * 
      * @param dbc the current database context
@@ -568,38 +638,42 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * The group with the given id will be completely overriden
      * by the given data.<p>
      * 
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     * 
      * @param dbc the current database context
      * @param group the group to update
-     * @param reservedParam additional params to be used by driver implementation
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeGroup(CmsDbContext dbc, CmsGroup group, Object reservedParam) throws CmsDataAccessException;
+    void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException;
+
+    /**
+     * Writes an already existing organizational unit.<p>
+     *
+     * The organizational unit id has to be a valid OpenCms organizational unit id.<br>
+     * 
+     * The organizational unit with the given id will be completely overriden
+     * by the given data.<p>
+     *
+     * @param dbc the current db context
+     * @param organizationalUnit the organizational unit that should be written
+     * 
+     * @throws CmsDataAccessException if operation was not successful
+     */
+    void writeOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit)
+    throws CmsDataAccessException;
 
     /**
      * Sets a new password for a user.<p>
      * 
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     * 
      * @param dbc the current database context
-     * @param userName the user to set the password for
-     * @param type the type of the user
+     * @param userFqn the fullyqualified name of the user to set the password for
      * @param oldPassword the current password
      * @param newPassword the password to set
-     * @param reservedParam additional params to be used by driver implementation
      *
      * @throws CmsDataAccessException if something goes wrong
      * @throws CmsPasswordEncryptionException if the (new) password could not be encrypted
      */
-    void writePassword(
-        CmsDbContext dbc,
-        String userName,
-        int type,
-        String oldPassword,
-        String newPassword,
-        Object reservedParam) throws CmsDataAccessException, CmsPasswordEncryptionException;
+    void writePassword(CmsDbContext dbc, String userFqn, String oldPassword, String newPassword)
+    throws CmsDataAccessException, CmsPasswordEncryptionException;
 
     /**
      * Updates the user information. <p>
@@ -609,28 +683,10 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * The user with the given id will be completely overriden
      * by the given data.<p>
      *
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     *
      * @param dbc the current database context
      * @param user the user to update
-     * @param reservedParam additional params to be used by driver implementation
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeUser(CmsDbContext dbc, CmsUser user, Object reservedParam) throws CmsDataAccessException;
-
-    /**
-     * Changes the user type of the given user.<p>
-     * 
-     * TODO: Remove "Object reservedParam", refactor to use special instance of dbc instead.
-     * 
-     * @param dbc the current database context
-     * @param userId the id of the user to change
-     * @param userType the new type of the user
-     * @param reservedParam additional params to be used by driver implementation
-     *
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    void writeUserType(CmsDbContext dbc, CmsUUID userId, int userType, Object reservedParam)
-    throws CmsDataAccessException;
+    void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/12/06 10:43:05 $
- * Version: $Revision: 1.36.4.10 $
+ * Date   : $Date: 2007/01/08 14:02:56 $
+ * Version: $Revision: 1.36.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.10 $
+ * @version $Revision: 1.36.4.11 $
  * 
  * @since 6.0.0
  */
@@ -341,6 +341,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The size of the driver manager's cache for groups. */
     public static final String N_SIZE_GROUPS = "size-groups";
+
+    /** The size of the driver manager's cache for organizational units. */
+    public static final String N_SIZE_ORGUNITS = "size-orgunits";
 
     /** The size of the security manager's cache for permission checks. */
     public static final String N_SIZE_PERMISSIONS = "size-permissions";
@@ -923,6 +926,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_KEYGENERATOR, "setCacheKeyGenerator", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_USERS, "setUserCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_GROUPS, "setGroupCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ORGUNITS, "setOrgUnitCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_USERGROUPS, "setUserGroupsCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROJECTS, "setProjectCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_RESOURCES, "setResourceCacheSize", 0);
@@ -1275,6 +1279,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         cacheElement.addElement(N_KEYGENERATOR).setText(m_cacheSettings.getCacheKeyGenerator());
         cacheElement.addElement(N_SIZE_USERS).setText(Integer.toString(m_cacheSettings.getUserCacheSize()));
         cacheElement.addElement(N_SIZE_GROUPS).setText(Integer.toString(m_cacheSettings.getGroupCacheSize()));
+        cacheElement.addElement(N_SIZE_ORGUNITS).setText(Integer.toString(m_cacheSettings.getOrgUnitCacheSize()));
         cacheElement.addElement(N_SIZE_USERGROUPS).setText(Integer.toString(m_cacheSettings.getUserGroupsCacheSize()));
         cacheElement.addElement(N_SIZE_PROJECTS).setText(Integer.toString(m_cacheSettings.getProjectCacheSize()));
         cacheElement.addElement(N_SIZE_RESOURCES).setText(Integer.toString(m_cacheSettings.getResourceCacheSize()));
@@ -1770,6 +1775,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         String groupUsers,
         String groupGuests) {
 
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_CHECKING_DEFAULT_USER_NAMES_0));
+        }
         m_cmsDefaultUsers = new CmsDefaultUsers(
             userAdmin,
             userGuest,
@@ -1779,6 +1787,34 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             groupProjectmanagers,
             groupUsers,
             groupGuests);
+
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_ADMIN_USER_1,
+                m_cmsDefaultUsers.getUserAdmin()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_GUEST_USER_1,
+                m_cmsDefaultUsers.getUserGuest()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_EXPORT_USER_1,
+                m_cmsDefaultUsers.getUserExport()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_DELETED_RESOURCE_USER_1,
+                m_cmsDefaultUsers.getUserDeletedResource()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_ADMIN_GROUP_1,
+                m_cmsDefaultUsers.getGroupAdministrators()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_PROJECT_MANAGERS_GROUP_1,
+                m_cmsDefaultUsers.getGroupProjectmanagers()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_USERS_GROUP_1,
+                m_cmsDefaultUsers.getGroupUsers()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_GUESTS_GROUP_1,
+                m_cmsDefaultUsers.getGroupGuests()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USER_NAMES_INITIALIZED_0));
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2006/12/05 16:24:02 $
- * Version: $Revision: 1.83.4.6 $
+ * Date   : $Date: 2007/01/08 14:03:03 $
+ * Version: $Revision: 1.83.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83.4.6 $ 
+ * @version $Revision: 1.83.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,6 +112,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @return the created user
      * @throws Exception if something goes wrong
      * @see CmsObject#addWebUser(String, String, String, String, Hashtable)
+     * @deprecated
      */
     public CmsUser addWebUser(String name, String password, String group, String description) throws Exception {
 

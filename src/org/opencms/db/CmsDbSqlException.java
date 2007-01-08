@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbSqlException.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/01/08 14:03:03 $
+ * Version: $Revision: 1.7.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.commons.dbcp.DelegatingPreparedStatement;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.7.8.1 $
  * 
  * @since 6.0.0
  */
@@ -85,7 +85,7 @@ public class CmsDbSqlException extends CmsDbException {
             // unfortunately, DelegatingPreparedStatement has no toString() method implementation
             Statement s = stmt;
             while (s instanceof DelegatingPreparedStatement) {
-                s = ((DelegatingPreparedStatement)s).getDelegate();
+                s = ((DelegatingPreparedStatement)s).getInnermostDelegate();
             }
             if (s != null) {
                 // the query that crashed

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.241.4.15 $
+ * Date   : $Date: 2007/01/08 14:02:57 $
+ * Version: $Revision: 1.241.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.15 $
+ * @version $Revision: 1.241.4.16 $
  * 
  * @since 6.0.0 
  */
@@ -481,7 +481,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             null);
 
         // create the root-folder for the online project
-        CmsFolder onlineRootFolder = new CmsFolder(
+        CmsFolder rootFolder = new CmsFolder(
             new CmsUUID(),
             new CmsUUID(),
             "/",
@@ -497,18 +497,41 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT);
 
-        m_driverManager.getVfsDriver().createResource(dbc, onlineProject, onlineRootFolder, null);
+        m_driverManager.getVfsDriver().createResource(dbc, onlineProject, rootFolder, null);
 
-        onlineRootFolder.setState(CmsResource.STATE_UNCHANGED);
+        rootFolder.setState(CmsResource.STATE_UNCHANGED);
 
-        m_driverManager.getVfsDriver().writeResource(dbc, onlineProject, onlineRootFolder, CmsDriverManager.UPDATE_ALL);
+        m_driverManager.getVfsDriver().writeResource(dbc, onlineProject, rootFolder, CmsDriverManager.UPDATE_ALL);
 
         // important: must access through driver manager to ensure proper cascading
         m_driverManager.getProjectDriver().createProjectResource(
             dbc,
             onlineProject.getId(),
-            onlineRootFolder.getRootPath(),
+            rootFolder.getRootPath(),
             null);
+
+        // create the system-folder for the online project
+        CmsFolder systemFolder = new CmsFolder(
+            new CmsUUID(),
+            new CmsUUID(),
+            "/system",
+            CmsResourceTypeFolder.RESOURCE_TYPE_ID,
+            0,
+            onlineProject.getId(),
+            CmsResource.STATE_NEW,
+            0,
+            admin.getId(),
+            0,
+            admin.getId(),
+            1,
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT);
+
+        m_driverManager.getVfsDriver().createResource(dbc, onlineProject, systemFolder, null);
+
+        systemFolder.setState(CmsResource.STATE_UNCHANGED);
+
+        m_driverManager.getVfsDriver().writeResource(dbc, onlineProject, systemFolder, CmsDriverManager.UPDATE_ALL);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // setup project stuff
@@ -520,7 +543,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             admin,
             administrators,
             administrators,
-            "_setupProject",
+            SETUP_PROJECT_NAME,
             "Initial site import",
             I_CmsPrincipal.FLAG_ENABLED,
             CmsProject.PROJECT_TYPE_TEMPORARY,
@@ -530,9 +553,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsResource offlineRootFolder = m_driverManager.getVfsDriver().createResource(
             dbc,
             setupProject,
-            onlineRootFolder,
+            rootFolder,
             null);
-
+        
         offlineRootFolder.setState(CmsResource.STATE_UNCHANGED);
 
         m_driverManager.getVfsDriver().writeResource(dbc, setupProject, offlineRootFolder, CmsDriverManager.UPDATE_ALL);
@@ -543,6 +566,17 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             setupProject.getId(),
             offlineRootFolder.getRootPath(),
             null);
+
+        // create the system-folder for the offline project       
+        CmsResource offlineSystemFolder = m_driverManager.getVfsDriver().createResource(
+            dbc,
+            setupProject,
+            systemFolder,
+            null);
+        
+        offlineSystemFolder.setState(CmsResource.STATE_UNCHANGED);
+
+        m_driverManager.getVfsDriver().writeResource(dbc, setupProject, offlineSystemFolder, CmsDriverManager.UPDATE_ALL);
     }
 
     /**
@@ -1548,7 +1582,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         String resName = null;
 
         try {
-            conn = getSqlManager().getConnection(dbc, reservedParam);
+            conn = getSqlManager().getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_READ");
 
             // select resource from the database

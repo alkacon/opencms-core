@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsValidationHandler.java,v $
- * Date   : $Date: 2006/06/08 09:38:46 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/08 14:02:58 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,29 +38,11 @@ import org.opencms.main.CmsIllegalArgumentException;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.3.0 
  */
 public interface I_CmsValidationHandler {
-
-    /**
-     * Checks if the provided firstname is valid.<p>
-     * 
-     * @param firstname the firstname to validate
-     * 
-     * @throws CmsIllegalArgumentException if the given email address is not valid
-     */
-    void checkFirstname(String firstname) throws CmsIllegalArgumentException;
-
-    /**
-     * Checks if the provided lastname is valid.<p>
-     * 
-     * @param lastname the lastname to validate
-     * 
-     * @throws CmsIllegalArgumentException if the given email address is not valid
-     */
-    void checkLastname(String lastname) throws CmsIllegalArgumentException;
 
     /**
      * Checks if the provided email is a valid email address.<p>
@@ -72,13 +54,40 @@ public interface I_CmsValidationHandler {
     void checkEmail(String email) throws CmsIllegalArgumentException;
 
     /**
-     * Checks if the provided group name is a valid user name.<p>
+     * Checks if the provided firstname is valid.<p>
+     * 
+     * @param firstname the firstname to validate
+     * 
+     * @throws CmsIllegalArgumentException if the given email address is not valid
+     */
+    void checkFirstname(String firstname) throws CmsIllegalArgumentException;
+
+    /**
+     * Checks if the provided group name is a valid group name.<p>
      *
      * @param groupName the group name to check
      * 
      * @throws CmsIllegalArgumentException if the given group name is not valid
      */
     void checkGroupName(String groupName) throws CmsIllegalArgumentException;
+
+    /**
+     * Checks if the provided lastname is valid.<p>
+     * 
+     * @param lastname the lastname to validate
+     * 
+     * @throws CmsIllegalArgumentException if the given email address is not valid
+     */
+    void checkLastname(String lastname) throws CmsIllegalArgumentException;
+
+    /**
+     * Checks if the provided organizational unit name is a valid organizational unit name.<p>
+     *
+     * @param organizationalUnitName the organizational unit name to check
+     * 
+     * @throws CmsIllegalArgumentException if the given organizational unit name is not valid
+     */
+    void checkOrganizationalUnitName(String organizationalUnitName) throws CmsIllegalArgumentException;
 
     /**
      * Checks if the provided user name is a valid user name.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/01/08 14:02:58 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -64,6 +64,9 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
 
     /** The name of this principal. */
     protected String m_name;
+
+    /** The fully qualified name of the associated organizational unit. */
+    protected String m_ouFqn;
 
     /**
      * Empty constructor for subclassing.<p>
@@ -306,7 +309,20 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
      */
     public String getName() {
 
-        return m_name;
+        if (m_ouFqn == null) {
+            return m_name;
+        }
+        return m_ouFqn + "/" + m_name;
+    }
+
+    /**
+     * Returns the fully qualified name of the associated organizational unit.<p>
+     *
+     * @return the fully qualified name of the associated organizational unit
+     */
+    public String getOrganizationalUnitFqn() {
+
+        return m_ouFqn;
     }
 
     /**
@@ -346,7 +362,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
      */
     public boolean isGroup() {
 
-        return this instanceof CmsGroup;
+        return (this instanceof CmsGroup);
     }
 
     /**
@@ -354,7 +370,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
      */
     public boolean isUser() {
 
-        return this instanceof CmsUser;
+        return (this instanceof CmsUser);
     }
 
     /**

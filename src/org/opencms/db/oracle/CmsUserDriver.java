@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.55.4.1 $
+ * Date   : $Date: 2007/01/08 14:03:01 $
+ * Version: $Revision: 1.55.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,10 @@ import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsDataAccessException;
+import org.opencms.file.CmsOrganizationalUnit;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
@@ -64,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.1 $
+ * @version $Revision: 1.55.4.2 $
  * 
  * @since 6.0.0 
  */
@@ -102,11 +101,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createUser(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Map, java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#createUser(CmsDbContext, CmsUUID, String, String, String, String, String, String, long, int, Map, String)
      */
     public CmsUser createUser(
         CmsDbContext dbc,
-        String name,
+        CmsUUID id,
+        String userFqn,
         String password,
         String description,
         String firstname,
@@ -115,15 +115,17 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         long lastlogin,
         int flags,
         Map additionalInfos,
-        String address,
-        int type) throws CmsDataAccessException, CmsPasswordEncryptionException {
+        String address) throws CmsDataAccessException {
 
-        CmsUUID id = new CmsUUID();
+        userFqn = internalAppendRootOrgUnit(dbc, userFqn);
+
         PreparedStatement stmt = null;
         Connection conn = null;
 
-        if (existsUser(dbc, name, type, null)) {
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
+        if (existsUser(dbc, userFqn)) {
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1,
+                userFqn);
             if (LOG.isErrorEnabled()) {
                 LOG.error(message.key());
             }
@@ -134,10 +136,10 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             conn = m_sqlManager.getConnection(dbc);
 
             // write data to database
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_ADD");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_ADD_11");
             stmt.setString(1, id.toString());
-            stmt.setString(2, name);
-            stmt.setString(3, OpenCms.getPasswordHandler().digest(password));
+            stmt.setString(2, CmsOrganizationalUnit.getLastNameFromFqn(userFqn));
+            stmt.setString(3, password);
             stmt.setString(4, m_sqlManager.validateEmpty(description));
             stmt.setString(5, m_sqlManager.validateEmpty(firstname));
             stmt.setString(6, m_sqlManager.validateEmpty(lastname));
@@ -145,82 +147,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setLong(8, lastlogin);
             stmt.setInt(9, flags);
             stmt.setString(10, m_sqlManager.validateEmpty(address));
-            stmt.setInt(11, type);
+            stmt.setString(11, CmsOrganizationalUnit.getParentFqn(userFqn));
             stmt.executeUpdate();
             stmt.close();
             stmt = null;
 
-            internalWriteUserInfo(dbc, id, additionalInfos, null);
-
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-
-        return readUser(dbc, id);
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Map, java.lang.String, int, java.lang.Object)
-     */
-    public CmsUser importUser(
-        CmsDbContext dbc,
-        CmsUUID id,
-        String name,
-        String password,
-        String description,
-        String firstname,
-        String lastname,
-        String email,
-        long lastlogin,
-        int flags,
-        Map additionalInfos,
-        String address,
-        int type,
-        Object reservedParam) throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        if (existsUser(dbc, name, type, reservedParam)) {
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
-            if (LOG.isErrorEnabled()) {
-                LOG.error(message.key());
-            }
-            throw new CmsDbEntryAlreadyExistsException(message);
-        }
-
-        try {
-            if (reservedParam == null) {
-                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection(dbc);
-            } else {
-                // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(dbc, ((Integer)reservedParam).intValue());
-            }
-
-            // write data to database
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_ADD");
-            stmt.setString(1, id.toString());
-            stmt.setString(2, name);
-            stmt.setString(3, m_sqlManager.validateEmpty(password)); // imported passwords are already encrypted
-            stmt.setString(4, m_sqlManager.validateEmpty(description));
-            stmt.setString(5, m_sqlManager.validateEmpty(firstname));
-            stmt.setString(6, m_sqlManager.validateEmpty(lastname));
-            stmt.setString(7, m_sqlManager.validateEmpty(email));
-            stmt.setLong(8, lastlogin);
-            stmt.setInt(9, flags);
-            stmt.setString(10, m_sqlManager.validateEmpty(address));
-            stmt.setInt(11, type);
-            stmt.executeUpdate();
-            stmt.close();
-            stmt = null;
-
-            internalWriteUserInfo(dbc, id, additionalInfos, reservedParam);
-
+            internalWriteUserInfo(dbc, id, additionalInfos);
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
                 org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
@@ -240,9 +172,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeUser(CmsDbContext, CmsUser, Object)
+     * @see org.opencms.db.I_CmsUserDriver#writeUser(CmsDbContext, CmsUser)
      */
-    public void writeUser(CmsDbContext dbc, CmsUser user, Object reservedParam) throws CmsDataAccessException {
+    public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -250,10 +182,10 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         try {
 
             // get connection
-            conn = m_sqlManager.getConnection(dbc, reservedParam);
+            conn = m_sqlManager.getConnection(dbc);
 
             // write data to database
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_WRITE");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_WRITE_8");
             stmt.setString(1, m_sqlManager.validateEmpty(user.getDescription()));
             stmt.setString(2, m_sqlManager.validateEmpty(user.getFirstname()));
             stmt.setString(3, m_sqlManager.validateEmpty(user.getLastname()));
@@ -261,13 +193,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setLong(5, user.getLastlogin());
             stmt.setInt(6, user.getFlags());
             stmt.setString(7, m_sqlManager.validateEmpty(user.getAddress()));
-            stmt.setInt(8, user.getType());
-            stmt.setString(9, user.getId().toString());
+            stmt.setString(8, user.getId().toString());
             stmt.executeUpdate();
             stmt.close();
             stmt = null;
 
-            internalWriteUserInfo(dbc, user.getId(), user.getAdditionalInfo(), reservedParam);
+            internalWriteUserInfo(dbc, user.getId(), user.getAdditionalInfo());
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
@@ -284,11 +215,10 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      * @param dbc the database context
      * @param userId the user id
      * @param additionalInfo the additional user info
-     * @param reservedParam for future use
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    private void internalWriteUserInfo(CmsDbContext dbc, CmsUUID userId, Map additionalInfo, Object reservedParam)
+    private void internalWriteUserInfo(CmsDbContext dbc, CmsUUID userId, Map additionalInfo)
     throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
@@ -305,7 +235,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             byte[] value = internalSerializeAdditionalUserInfo(additionalInfo);
 
             // get connection
-            conn = m_sqlManager.getConnection(dbc, reservedParam);
+            conn = m_sqlManager.getConnection(dbc);
             wasInTransaction = !conn.getAutoCommit();
             if (!wasInTransaction) {
                 conn.setAutoCommit(false);

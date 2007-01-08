@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/01/08 14:02:58 $
+ * Version: $Revision: 1.21.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -281,6 +281,20 @@ public class CmsAccessControlEntry {
     }
 
     /**
+     * Returns the string representation of the "inherit" flag.<p>
+     * 
+     * @return string of the format {{+|-}i}*
+     */
+    public String getInheritingString() {
+
+        if (isInheriting()) {
+            return "+i";
+        } else {
+            return "-i";
+        }
+    }
+
+    /**
      * Returns the current permission set (both allowed and denied permissions).<p>
      * 
      * @return the set of permissions
@@ -355,6 +369,16 @@ public class CmsAccessControlEntry {
     public boolean isInherited() {
 
         return ((m_flags & CmsAccessControlEntry.ACCESS_FLAGS_INHERITED) > 0);
+    }
+
+    /**
+     * Returns if this ace is being inherited to the folder subresources.<p>
+     * 
+     * @return  <code>true</code>, if this ace is being inherited to the folder subresources
+     */
+    public boolean isInheriting() {
+
+        return ((m_flags & CmsAccessControlEntry.ACCESS_FLAGS_INHERIT) > 0);
     }
 
     /**

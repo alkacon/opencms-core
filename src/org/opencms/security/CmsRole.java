@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2006/09/14 11:24:51 $
- * Version: $Revision: 1.11.4.2 $
+ * Date   : $Date: 2007/01/08 14:02:58 $
+ * Version: $Revision: 1.11.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.List;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.2 $ 
+ * @version $Revision: 1.11.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,7 +161,7 @@ public final class CmsRole {
     private static List m_systemRoles;
 
     /** The distinct group names of this role. */
-    private Object[] m_distictGroupNames;
+    private String[] m_distictGroupNames;
 
     /** The name of the group this role is mapped to in the OpenCms database.*/
     private String m_groupName;
@@ -413,7 +413,7 @@ public final class CmsRole {
 
         for (int i = 0; i < m_distictGroupNames.length; i++) {
             for (int j = 0; j < groupNames.length; j++) {
-                if (m_distictGroupNames[i].equals(groupNames[j])) {
+                if (groupNames[j].endsWith(m_distictGroupNames[i])) {
                     return true;
                 }
             }
@@ -454,6 +454,7 @@ public final class CmsRole {
                 distinctGroups.add(name);
             }
         }
-        m_distictGroupNames = distinctGroups.toArray();
+        m_distictGroupNames = new String[distinctGroups.size()];
+        distinctGroups.toArray(m_distictGroupNames);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2006/09/14 11:24:51 $
- * Version: $Revision: 1.20.4.4 $
+ * Date   : $Date: 2007/01/08 14:02:58 $
+ * Version: $Revision: 1.20.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.4 $ 
+ * @version $Revision: 1.20.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,6 +47,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_GROUPNAME_EMPTY_0 = "ERR_BAD_GROUPNAME_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_BAD_ORGUNITNAME_EMPTY_0 = "ERR_BAD_ORGUNITNAME_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_USERNAME_4 = "ERR_BAD_USERNAME_4";
@@ -82,16 +85,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_LASTNAME_EMPTY_0 = "ERR_LASTNAME_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOGIN_FAILED_3 = "ERR_LOGIN_FAILED_3";
+    public static final String ERR_LOGIN_FAILED_2 = "ERR_LOGIN_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOGIN_FAILED_DISABLED_3 = "ERR_LOGIN_FAILED_DISABLED_3";
+    public static final String ERR_LOGIN_FAILED_DISABLED_2 = "ERR_LOGIN_FAILED_DISABLED_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOGIN_FAILED_NO_USER_3 = "ERR_LOGIN_FAILED_NO_USER_3";
+    public static final String ERR_LOGIN_FAILED_NO_USER_2 = "ERR_LOGIN_FAILED_NO_USER_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOGIN_FAILED_TEMP_DISABLED_5 = "ERR_LOGIN_FAILED_TEMP_DISABLED_5";
+    public static final String ERR_LOGIN_FAILED_TEMP_DISABLED_4 = "ERR_LOGIN_FAILED_TEMP_DISABLED_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_FAILED_WITH_MESSAGE_1 = "ERR_LOGIN_FAILED_WITH_MESSAGE_1";

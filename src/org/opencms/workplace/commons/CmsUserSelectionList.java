@@ -88,9 +88,6 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /** Stores the value of the request parameter for the group name. */
     private String m_paramGroup;
 
-    /** Stores the value of the request parameter for the user type. */
-    private String m_paramUsertype;
-
     /** Stores the value of the request parameter for the flags. */
     private String m_paramFlags;
 
@@ -136,13 +133,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         String param = "";
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamGroup())) {
             param = Messages.get().getBundle(getLocale()).key(Messages.GUI_USERSELECTION_GROUP_BLOCK_1, getParamGroup());
-        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamUsertype())) {
-            if (Integer.parseInt(getParamUsertype()) == CmsUser.USER_TYPE_WEBUSER) {
-                param = Messages.get().getBundle(getLocale()).key(Messages.GUI_USERSELECTION_TYPE_WEB_0);
-            } else {
-                param = Messages.get().getBundle(getLocale()).key(Messages.GUI_USERSELECTION_TYPE_SYSTEM_0);
-            }
-        }
+        } 
         html.append(key(Messages.GUI_USERSELECTION_INTRO_TITLE_1, new Object[] {param}));
         html.append("\n\t\t\t</td>");
         html.append("\t\t</tr>\n");
@@ -178,16 +169,6 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the user type parameter value.<p>
-     *
-     * @return the user type parameter value
-     */
-    public String getParamUsertype() {
-
-        return m_paramUsertype;
-    }
-
-    /**
      * Returns the flags parameter value.<p>
      *
      * @return the flags parameter value
@@ -205,16 +186,6 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     public void setParamGroup(String groupName) {
 
         m_paramGroup = groupName;
-    }
-
-    /**
-     * Sets the user type parameter value.<p>
-     *
-     * @param userType the user type parameter value to set
-     */
-    public void setParamUsertype(String userType) {
-
-        m_paramUsertype = userType;
     }
 
     /**
@@ -268,10 +239,8 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         List ret = new ArrayList();
         if (getParamGroup() != null) {
             ret.addAll(getCms().getUsersOfGroup(getParamGroup()));
-        } else if (getParamUsertype() == null) {
-            ret.addAll(getCms().getUsers());
         } else {
-            ret.addAll(getCms().getUsers(Integer.parseInt(getParamUsertype())));
+            ret.addAll(getCms().getUsers());
         }
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());
@@ -358,11 +327,6 @@ public class CmsUserSelectionList extends A_CmsListDialog {
             getCms().readGroup(getParamGroup()).getName();
         } catch (Exception e) {
             setParamGroup(null);
-        }
-        try {
-            Integer.valueOf(getParamUsertype());
-        } catch (Throwable e) {
-            setParamUsertype(null);
         }
         try {
             Integer.valueOf(getParamFlags());

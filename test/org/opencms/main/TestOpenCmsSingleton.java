@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2006/11/03 09:42:26 $
- * Version: $Revision: 1.15.8.2 $
+ * Date   : $Date: 2007/01/08 14:03:03 $
+ * Version: $Revision: 1.15.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsOrganizationalUnit;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -57,7 +58,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.15.8.2 $
+ * @version $Revision: 1.15.8.3 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
@@ -154,13 +155,13 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
         // test creation of "Guest" user CmsObject
         cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        if (!cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserGuest())) {
+        if (!cms.getRequestContext().currentUser().getName().equals(CmsOrganizationalUnit.appendFqn(null, OpenCms.getDefaultUsers().getUserGuest()))) {
             fail("'Guest' user could not be properly initialized!");
         }
 
         // test creation of "Export" user CmsObject
         cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-        if (!cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserExport())) {
+        if (!cms.getRequestContext().currentUser().getName().equals(CmsOrganizationalUnit.appendFqn(null, OpenCms.getDefaultUsers().getUserExport()))) {
             fail("'Export' user could not be properly initialized!");
         }
 
@@ -207,7 +208,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
             fail("'Admin' user creation with valid Admin context didn't work!");
             return;
         }
-        if (!cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserAdmin())) {
+        if (!cms.getRequestContext().currentUser().getName().equals(CmsOrganizationalUnit.appendFqn(null, OpenCms.getDefaultUsers().getUserAdmin()))) {
             fail("'Admin' user could not be properly initialized with valid Admin context!");
         }
         if (cms == getCmsObject()) {
