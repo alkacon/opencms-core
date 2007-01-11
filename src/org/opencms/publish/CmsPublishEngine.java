@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2006/12/20 14:01:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/11 11:07:49 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.5
  */
@@ -467,15 +467,22 @@ public final class CmsPublishEngine implements Runnable {
             dbc.clear();
         }
 
-        // fire the publish finish event
-        m_listeners.fireFinish(new CmsPublishJobRunning(publishJob));
-        // finish the job
-        publishJob.finish();
-        // put the publish job into the history list
-        m_publishHistory.add(new CmsPublishJobFinished(publishJob));
-        // wipe the dead thread
-        m_currentPublishJob = null;
-
+        try {
+            // fire the publish finish event
+            m_listeners.fireFinish(new CmsPublishJobRunning(publishJob));
+            // finish the job
+            publishJob.finish();
+            // put the publish job into the history list
+            m_publishHistory.add(new CmsPublishJobFinished(publishJob));
+            // wipe the dead thread
+            m_currentPublishJob = null;
+        } catch (Throwable t) {
+            // catch every thing including runtime exceptions
+            if (LOG.isErrorEnabled()) {
+                LOG.equals(t);
+            }
+        }
+        
         // try to start a new publish job
         new Thread(this).start();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishListenerCollection.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/11 11:07:49 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
@@ -68,7 +68,17 @@ public final class CmsPublishListenerCollection extends Vector {
         }
         for (Iterator it = iterator(); it.hasNext();) {
             I_CmsPublishEventListener listener = (I_CmsPublishEventListener)it.next();
-            listener.onAbort(userName, publishJob);
+            try {
+                listener.onAbort(userName, publishJob);
+            } catch (Throwable t) {
+                // catch every thing including runtime exceptions
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_JOB_ABORT_ERROR_1, listener.getClass().getName()), t);
+                }
+                if (publishJob.m_publishJob.getPublishReport() != null) {
+                    publishJob.m_publishJob.getPublishReport().println(t);
+                }
+            }
         }
     }
 
@@ -84,7 +94,17 @@ public final class CmsPublishListenerCollection extends Vector {
         }
         for (Iterator it = iterator(); it.hasNext();) {
             I_CmsPublishEventListener listener = (I_CmsPublishEventListener)it.next();
-            listener.onEnqueue(publishJob);
+            try {
+                listener.onEnqueue(publishJob);
+            } catch (Throwable t) {
+                // catch every thing including runtime exceptions
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_JOB_ENQUEUE_ERROR_1, listener.getClass().getName()), t);
+                }
+                if (publishJob.m_publishJob.getPublishReport() != null) {
+                    publishJob.m_publishJob.getPublishReport().println(t);
+                }
+            }
         }
     }
 
@@ -100,7 +120,17 @@ public final class CmsPublishListenerCollection extends Vector {
         }
         for (Iterator it = iterator(); it.hasNext();) {
             I_CmsPublishEventListener listener = (I_CmsPublishEventListener)it.next();
-            listener.onFinish(publishJob);
+            try {
+                listener.onFinish(publishJob);
+            } catch (Throwable t) {
+                // catch every thing including runtime exceptions
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_JOB_FINISH_ERROR_1, listener.getClass().getName()), t);
+                }
+                if (publishJob.m_publishJob.getPublishReport() != null) {
+                    publishJob.m_publishJob.getPublishReport().println(t);
+                }
+            }
         }
     }
 
@@ -116,7 +146,17 @@ public final class CmsPublishListenerCollection extends Vector {
         }
         for (Iterator it = iterator(); it.hasNext();) {
             I_CmsPublishEventListener listener = (I_CmsPublishEventListener)it.next();
-            listener.onRemove(publishJob);
+            try {
+                listener.onRemove(publishJob);
+            } catch (Throwable t) {
+                // catch every thing including runtime exceptions
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_JOB_REMOVE_ERROR_1, listener.getClass().getName()), t);
+                }
+                if (publishJob.m_publishJob.getPublishReport() != null) {
+                    publishJob.m_publishJob.getPublishReport().println(t);
+                }
+            }
         }
     }
 
@@ -132,7 +172,17 @@ public final class CmsPublishListenerCollection extends Vector {
         }
         for (Iterator it = iterator(); it.hasNext();) {
             I_CmsPublishEventListener listener = (I_CmsPublishEventListener)it.next();
-            listener.onStart(publishJob);
+            try {
+                listener.onStart(publishJob);
+            } catch (Throwable t) {
+                // catch every thing including runtime exceptions
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_JOB_START_ERROR_1, listener.getClass().getName()), t);
+                }
+                if (publishJob.m_publishJob.getPublishReport() != null) {
+                    publishJob.m_publishJob.getPublishReport().println(t);
+                }
+            }
         }
     }
 }
