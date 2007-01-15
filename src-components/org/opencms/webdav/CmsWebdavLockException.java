@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavLockException.java,v $
- * Date   : $Date: 2007/01/12 17:24:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/15 18:52:03 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ public class CmsWebdavLockException extends Exception {
      */
     public void addMultiStatus(String href, int status) {
 
-        m_multiStatusList.put(href, status);
+        m_multiStatusList.put(href, new Integer(status));
     }
 
     /**
