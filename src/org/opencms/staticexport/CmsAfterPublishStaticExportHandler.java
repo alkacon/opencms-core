@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/12/01 14:24:15 $
- * Version: $Revision: 1.19.4.16 $
+ * Date   : $Date: 2007/01/15 08:58:26 $
+ * Version: $Revision: 1.19.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.16 $ 
+ * @version $Revision: 1.19.4.17 $ 
  * 
  * @since 6.0.0 
  * 
@@ -223,7 +223,12 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             m_busy = true;
             exportAfterPublish(publishHistoryId, report);
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORT_ERROR_0), t);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORT_ERROR_0), t);
+            }
+            if (report != null) {
+                report.addError(t);
+            }
         } finally {
             m_busy = false;
         }
