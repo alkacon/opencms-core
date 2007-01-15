@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Messages.java,v $
- * Date   : $Date: 2006/11/29 15:04:10 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.3.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RELATION_TYPE_ILLEGAL_MODE_0 = "ERR_RELATION_TYPE_ILLEGAL_MODE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_POINTING_TO_0 = "GUI_LINK_POINTING_TO_0";
@@ -71,6 +74,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RELATION_TYPE_JSP_WEAK_0 = "GUI_RELATION_TYPE_JSP_WEAK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RELATION_TYPE_OU_RESOURCE_0 = "GUI_RELATION_TYPE_OU_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RELATION_TYPE_UNKNOWN_1 = "GUI_RELATION_TYPE_UNKNOWN_1";
@@ -104,19 +110,19 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_SEARCH_1 = "LOG_LINK_SEARCH_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_VALIDATION_READBYID_FAILED_2 = "LOG_LINK_VALIDATION_READBYID_FAILED_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_VALIDATION_READBYPATH_FAILED_2 = "LOG_LINK_VALIDATION_READBYPATH_FAILED_2";
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_VALIDATION_RESOURCEDELETED_1 = "LOG_LINK_VALIDATION_RESOURCEDELETED_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_VALIDATION_RESOURCENOTINLOOKUP_1 = "LOG_LINK_VALIDATION_RESOURCENOTINLOOKUP_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RETRIEVAL_RESOURCES_1 = "LOG_RETRIEVAL_RESOURCES_1";
 

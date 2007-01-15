@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexResponse.java,v $
- * Date   : $Date: 2007/01/08 14:03:05 $
- * Version: $Revision: 1.1.8.3 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.1.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsOrganizationalUnit;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsRequestUtil;
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Jason Trump
  *  
- * @version $Revision: 1.1.8.3 $
+ * @version $Revision: 1.1.8.4 $
  * 
  * @since 6.0.1
  */

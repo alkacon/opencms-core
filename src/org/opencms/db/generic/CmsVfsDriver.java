@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/01/08 14:02:58 $
- * Version: $Revision: 1.258.4.11 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.258.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.11 $
+ * @version $Revision: 1.258.4.12 $
  * 
  * @since 6.0.0 
  */
@@ -102,6 +102,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
     /** Operator to concatenate or conditions. */
     protected static final String OR_CONDITION = " OR ";
+
+    /** Operator to concatenate or conditions. */
+    protected static final String AND_CONDITION = " AND ";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsVfsDriver.class);
@@ -837,15 +840,15 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#deleteRelations(org.opencms.db.CmsDbContext, int, org.opencms.relations.CmsRelationFilter)
+     * @see org.opencms.db.I_CmsVfsDriver#deleteRelations(org.opencms.db.CmsDbContext, int, CmsResource, org.opencms.relations.CmsRelationFilter)
      */
-    public void deleteRelations(CmsDbContext dbc, int projectId, CmsRelationFilter filter)
+    public void deleteRelations(CmsDbContext dbc, int projectId, CmsResource resource, CmsRelationFilter filter)
     throws CmsDataAccessException {
 
-        List params = new ArrayList(5);
+        List params = new ArrayList(7);
 
         // prepare the selection criteria
-        String conditions = prepareRelationConditions(filter, params);
+        String conditionsSQL = prepareRelationConditions(filter, resource, params);
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -854,7 +857,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conn = m_sqlManager.getConnection(dbc, projectId);
             StringBuffer queryBuf = new StringBuffer(256);
             queryBuf.append(m_sqlManager.readQuery(projectId, "C_DELETE_RELATIONS"));
-            queryBuf.append(conditions);
+            queryBuf.append(conditionsSQL);
             stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
 
             for (int i = 0; i < params.size(); i++) {
@@ -1564,8 +1567,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         List relations = new ArrayList();
 
         // prepare the selection criteria
-        List params = new ArrayList(5);
-        String conditions = prepareRelationConditions(filter, params);
+        List params = new ArrayList(7);
+        String conditions = prepareRelationConditions(filter, null, params);
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -3005,11 +3008,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * concatenated by <code>AND</code> operators.<p>
      * 
      * @param filter the filter
+     * @param resource the resource (may be null, if you want to delete all relations for the resource in the filter)
      * @param params the parameter values (return parameter)
      * 
      * @return the WHERE sql statement part string
      */
-    private String prepareRelationConditions(CmsRelationFilter filter, List params) {
+    private String prepareRelationConditions(CmsRelationFilter filter, CmsResource resource, List params) {
 
         StringBuffer conditions = new StringBuffer(128);
 
@@ -3020,22 +3024,37 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             if ((filter.getStructureId() != null) && !filter.getStructureId().isNullUUID()) {
                 if (filter.isSource()) {
                     conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_ID"));
+                    params.add(filter.getStructureId().toString());
                     if (filter.isTarget()) {
                         // if both, then 'OR' condition is used
                         conditions.append(OR_CONDITION);
                         conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_ID"));
                         params.add(filter.getStructureId().toString());
+                    } else if (resource != null) {
+                        conditions.append(AND_CONDITION);
+                        conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_ID"));
+                        params.add(resource.getStructureId().toString());
                     }
+
                 } else if (filter.isTarget()) {
                     conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_ID"));
+                    params.add(filter.getStructureId().toString());
+                    if (resource != null) {
+                        conditions.append(AND_CONDITION);
+                        conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_PATH"));
+                        params.add(resource.getRootPath());
+                    }
                 }
-                params.add(filter.getStructureId().toString());
             }
             // source or target path filter
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter.getPath())) {
                 if ((filter.getStructureId() != null) && !filter.getStructureId().isNullUUID()) {
-                    // if path and id, then 'OR' condition is used
-                    conditions.append(OR_CONDITION);
+                    // if path and id, then 'OR' condition is used, only if the resource param will not be used
+                    if (resource == null || (filter.isSource() && filter.isTarget())) {
+                        conditions.append(OR_CONDITION);
+                    } else {
+                        conditions.append(AND_CONDITION);
+                    }
                 }
                 String queryPath = filter.getPath();
                 if (filter.isIncludeChilds()) {
@@ -3043,16 +3062,26 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 }
                 if (filter.isSource()) {
                     conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_PATH"));
+                    params.add(queryPath);
                     if (filter.isTarget()) {
                         // if both, or condition is used
                         conditions.append(OR_CONDITION);
                         conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_PATH"));
                         params.add(queryPath);
+                    } else if (resource != null) {
+                        conditions.append(AND_CONDITION);
+                        conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_PATH"));
+                        params.add(resource.getRootPath());
                     }
                 } else if (filter.isTarget()) {
                     conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_PATH"));
+                    params.add(queryPath);
+                    if (resource != null) {
+                        conditions.append(AND_CONDITION);
+                        conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_PATH"));
+                        params.add(resource.getRootPath());
+                    }
                 }
-                params.add(queryPath);
             }
             conditions.append(END_CONDITION);
         }

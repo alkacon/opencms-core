@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2007/01/08 14:03:05 $
- * Version: $Revision: 1.19.4.2 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.19.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19.4.2 $ 
+ * @version $Revision: 1.19.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -277,7 +277,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                         userName,
                         getRequestContext().addSiteRoot(getRequestContext().getUri()),
                         getRequestContext().getRemoteAddress());
-                    if (userName.equalsIgnoreCase(OpenCms.getDefaultUsers().getUserAdmin())) {
+                    if (OpenCms.getDefaultUsers().isUserAdmin(userName)) {
                         // someone tried to log in as "Admin", log this in a higher channel
                         LOG.error(message.key());
                     } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesToolHandler.java,v $
- * Date   : $Date: 2006/07/20 09:46:57 $
- * Version: $Revision: 1.5.8.1 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.5.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.5.8.1 $ 
+ * @version $Revision: 1.5.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,7 +52,7 @@ public class CmsModulesToolHandler extends A_CmsToolHandler {
      */
     public boolean isEnabled(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.MODULE_MANAGER);
+        return cms.hasRole(CmsRole.DATABASE_MANAGER);
 
     }
 
@@ -61,6 +61,6 @@ public class CmsModulesToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.MODULE_MANAGER);
+        return cms.hasRole(CmsRole.DATABASE_MANAGER);
     }
 }

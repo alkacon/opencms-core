@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2007/01/08 14:03:04 $
- * Version: $Revision: 1.19.4.4 $
+ * Date   : $Date: 2007/01/15 18:48:34 $
+ * Version: $Revision: 1.19.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.4 $
+ * @version $Revision: 1.19.4.5 $
  * 
  * @since 6.0.0 
  * 
@@ -131,7 +131,7 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
      * 
      * @return <code>true</code> if this group is enabled as a project user group 
      */
-    public boolean getProjectCoWorker() {
+    public boolean isProjectCoWorker() {
 
         return (getFlags() & I_CmsPrincipal.FLAG_GROUP_PROJECT_USER) == I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
     }
@@ -141,7 +141,7 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
      * 
      * @return <code>true</code> if this group is enabled as a project manager group
      */
-    public boolean getProjectManager() {
+    public boolean isProjectManager() {
 
         return (getFlags() & I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER) == I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
     }
@@ -199,7 +199,7 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
      */
     public void setProjectCoWorker(boolean value) {
 
-        if (getProjectCoWorker() != value) {
+        if (isProjectCoWorker() != value) {
             setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_PROJECT_USER);
         }
     }
@@ -211,7 +211,7 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
      */
     public void setProjectManager(boolean value) {
 
-        if (getProjectManager() != value) {
+        if (isProjectManager() != value) {
             setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER);
         }
     }
@@ -230,5 +230,15 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
         result.append(" description:");
         result.append(m_description);
         return result.toString();
+    }
+
+    /**
+     * Checks if this group is a role group.<p>
+     * 
+     * @return <code>true</code> if this group is a role group
+     */
+    public boolean isRole() {
+
+        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_ROLE) == I_CmsPrincipal.FLAG_GROUP_ROLE;
     }
 }

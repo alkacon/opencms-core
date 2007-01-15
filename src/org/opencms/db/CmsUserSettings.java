@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/12/28 10:02:54 $
- * Version: $Revision: 1.36.4.12 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.36.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsRole;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
@@ -56,7 +57,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.12 $
+ * @version $Revision: 1.36.4.13 $
  * 
  * @since 6.0.0
  */
@@ -976,12 +977,8 @@ public class CmsUserSettings {
             m_projectSettings = new CmsUserProjectSettings();
             m_projectSettings.setDeleteAfterPublishing(false);
             try {
-                m_projectSettings.setManagerGroup(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers()).getId());
-            } catch (Exception e) {
-                // ignore
-            }
-            try {
-                m_projectSettings.setUserGroup(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers()).getId());
+                m_projectSettings.setManagerGroup(cms.readGroup(CmsRole.WORKPLACE_USER.getGroupName()).getId());
+                m_projectSettings.setUserGroup(cms.readGroup(CmsRole.PROJECT_MANAGER.getGroupName()).getId());
             } catch (Exception e) {
                 // ignore
             }
@@ -993,7 +990,7 @@ public class CmsUserSettings {
         try {
             save(null);
         } catch (CmsException e) {
-            // to nothing here            
+            // do nothing here            
         }
     }
 

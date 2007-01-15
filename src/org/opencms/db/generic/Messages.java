@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2007/01/08 14:02:58 $
- * Version: $Revision: 1.25.2.4 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.25.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25.2.4 $
+ * @version $Revision: 1.25.2.5 $
  * 
  * @since 6.0.0 
  */
@@ -143,6 +143,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ORGUNIT_DOESNOT_CONTAINS_RESOURCE_2 = "ERR_ORGUNIT_DOESNOT_CONTAINS_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_ORGUNIT_REMOVE_LAST_RESOURCE_2 = "ERR_ORGUNIT_REMOVE_LAST_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_OUT_OF_MEMORY_0 = "ERR_OUT_OF_MEMORY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -242,6 +245,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_ASSIGNED_POOL_1 = "INIT_ASSIGNED_POOL_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_DEFAULT_USERS_CREATED_0 = "INIT_DEFAULT_USERS_CREATED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DEFAULT_USERS_CREATION_FAILED_0 = "INIT_DEFAULT_USERS_CREATION_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_DIGEST_ALGORITHM_1 = "INIT_DIGEST_ALGORITHM_1";
 
     /** Message constant for key in the resource bundle. */
@@ -273,6 +282,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SYSTEM_FOLDER_INITIALIZED_0 = "INIT_SYSTEM_FOLDER_INITIALIZED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_SYSTEM_ROLES_CREATED_0 = "INIT_SYSTEM_ROLES_CREATED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_SYSTEM_ROLES_CREATION_FAILED_0 = "INIT_SYSTEM_ROLES_CREATION_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_RELATION_2 = "LOG_CREATE_RELATION_2";

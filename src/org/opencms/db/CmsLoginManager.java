@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsLoginManager.java,v $
- * Date   : $Date: 2007/01/08 14:03:03 $
- * Version: $Revision: 1.6.8.1 $
+ * Date   : $Date: 2007/01/15 18:48:33 $
+ * Version: $Revision: 1.6.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Hashtable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6.8.1 $
+ * @version $Revision: 1.6.8.2 $
  * 
  * @since 6.0.0
  */
@@ -271,7 +271,7 @@ public class CmsLoginManager {
     /**
      * Removes the current login message.<p>
      * 
-     * This operation requires that the current user has role permissions of <code>{@link CmsRole#ADMINISTRATOR}</code>.<p>
+     * This operation requires that the current user has role permissions of <code>{@link CmsRole#ROOT_ADMIN}</code>.<p>
      * 
      * @param cms the current OpenCms user context
      * 
@@ -279,14 +279,14 @@ public class CmsLoginManager {
      */
     public void removeLoginMessage(CmsObject cms) throws CmsRoleViolationException {
 
-        cms.checkRole(CmsRole.ADMINISTRATOR);
+        cms.checkRole(CmsRole.ROOT_ADMIN);
         m_loginMessage = null;
     }
 
     /**
      * Sets the login message to display if a user logs in.<p>
      * 
-     * This operation requires that the current user has role permissions of <code>{@link CmsRole#ADMINISTRATOR}</code>.<p>
+     * This operation requires that the current user has role permissions of <code>{@link CmsRole#ROOT_ADMIN}</code>.<p>
      * 
      * @param cms the current OpenCms user context
      * @param message the message to set
@@ -297,7 +297,7 @@ public class CmsLoginManager {
 
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // during configuration phase no permission check id required
-            cms.checkRole(CmsRole.ADMINISTRATOR);
+            cms.checkRole(CmsRole.ROOT_ADMIN);
         }
         m_loginMessage = message;
         if (m_loginMessage != null) {

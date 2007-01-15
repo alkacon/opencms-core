@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2007/01/08 14:02:56 $
- * Version: $Revision: 1.36.4.11 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.36.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.11 $
+ * @version $Revision: 1.36.4.12 $
  * 
  * @since 6.0.0
  */
@@ -183,17 +183,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the form-based node. */
     public static final String N_FORM_BASED = "form-based";
 
-    /** The node name for the group-administrators node. */
-    public static final String N_GROUP_ADMINISTRATORS = "group-administrators";
-
     /** The node name for the group-guests node. */
     public static final String N_GROUP_GUESTS = "group-guests";
-
-    /** The node name for the group-projectmanagers node. */
-    public static final String N_GROUP_PROJECTMANAGERS = "group-projectmanagers";
-
-    /** The node name for the group-users node. */
-    public static final String N_GROUP_USERS = "group-users";
 
     /** The node name for the publish "history-repository" value. */
     public static final String N_HISTORYREPOSITORY = "history-repository";
@@ -866,15 +857,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_RUNTIMECLASSES + "/" + N_RUNTIMEINFO, 0, A_CLASS);
 
         // add default users rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS, "setCmsDefaultUsers", 8);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS, "setCmsDefaultUsers", 5);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_ADMIN, 0);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_GUEST, 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_EXPORT, 2);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_DELETEDRESOURCE, 3);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_ADMINISTRATORS, 4);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_PROJECTMANAGERS, 5);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_USERS, 6);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_GUESTS, 7);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_GUESTS, 4);
 
         // add defaultContentEncoding rule
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULT_CONTENT_ENCODING, "setDefaultContentEncoding", 1);
@@ -1206,12 +1194,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             // create <user-deletedresource> subnode
             defaultusersElement.addElement(N_USER_DELETEDRESOURCE).addText(m_cmsDefaultUsers.getUserDeletedResource());
         }
-        // create <group-administrators> subnode
-        defaultusersElement.addElement(N_GROUP_ADMINISTRATORS).addText(m_cmsDefaultUsers.getGroupAdministrators());
-        // create <group-projectmanagers> subnode
-        defaultusersElement.addElement(N_GROUP_PROJECTMANAGERS).addText(m_cmsDefaultUsers.getGroupProjectmanagers());
-        // create <group-users> subnode
-        defaultusersElement.addElement(N_GROUP_USERS).addText(m_cmsDefaultUsers.getGroupUsers());
         // create <group-guests> subnode
         defaultusersElement.addElement(N_GROUP_GUESTS).addText(m_cmsDefaultUsers.getGroupGuests());
 
@@ -1759,9 +1741,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * @param userGuest the name of the guest user
      * @param userExport the name of the export user
      * @param userDeletedResource the name of the deleted resource user, can be <code>null</code>
-     * @param groupAdministrators the name of the administrators group
-     * @param groupProjectmanagers the name of the project managers group
-     * @param groupUsers the name of the users group
      * @param groupGuests the name of the guests group
      */
     public void setCmsDefaultUsers(
@@ -1770,9 +1749,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         String userGuest,
         String userExport,
         String userDeletedResource,
-        String groupAdministrators,
-        String groupProjectmanagers,
-        String groupUsers,
         String groupGuests) {
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -1783,9 +1759,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             userGuest,
             userExport,
             userDeletedResource,
-            groupAdministrators,
-            groupProjectmanagers,
-            groupUsers,
             groupGuests);
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -1801,15 +1774,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_DELETED_RESOURCE_USER_1,
                 m_cmsDefaultUsers.getUserDeletedResource()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_ADMIN_GROUP_1,
-                m_cmsDefaultUsers.getGroupAdministrators()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_PROJECT_MANAGERS_GROUP_1,
-                m_cmsDefaultUsers.getGroupProjectmanagers()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_USERS_GROUP_1,
-                m_cmsDefaultUsers.getGroupUsers()));
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_GUESTS_GROUP_1,
                 m_cmsDefaultUsers.getGroupGuests()));

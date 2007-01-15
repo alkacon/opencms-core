@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/01/08 14:03:04 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
+ * Date   : $Date: 2007/01/15 18:48:35 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,9 +29,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
+package org.opencms.security;
 
-import org.opencms.db.CmsDefaultUsers;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
@@ -44,26 +43,20 @@ import org.opencms.util.CmsUUID;
  * @version $Revision: 1.1.2.1 $
  * 
  * @since 6.5.6 
- * 
- * @see CmsUser
- * @see CmsGroup
  */
 public class CmsOrganizationalUnit {
 
     /** The description of this organizational unit. */
-    protected String m_description;
+    private String m_description;
 
     /** The flags of this organizational unit. */
-    protected int m_flags;
+    private int m_flags;
 
     /** The unique id of this organizational unit. */
-    protected CmsUUID m_id;
+    private CmsUUID m_id;
 
     /** The name of this organizational unit. */
-    protected String m_name;
-
-    /** The default users for this organizational unit. */
-    private CmsDefaultUsers m_defaultUsers;
+    private String m_name;
 
     /** The parent organizational units full qualified name. */
     private String m_parentFqn;
@@ -185,37 +178,6 @@ public class CmsOrganizationalUnit {
     }
 
     /**
-     * Returns the default users for this organizational unit.<p>
-     * 
-     * @return the default users for this organizational unit
-     */
-    public CmsDefaultUsers getDefaultUsers() {
-
-        if (m_defaultUsers == null) {
-            // initialize organizational unit default users and groups
-            String userAdmin = appendFqn(OpenCms.getDefaultUsers().getUserAdmin());
-            String userGuest = appendFqn(OpenCms.getDefaultUsers().getUserGuest());
-            String userExport = appendFqn(OpenCms.getDefaultUsers().getUserExport());
-            String userDeletedResource = appendFqn(OpenCms.getDefaultUsers().getUserDeletedResource());
-            String groupAdministrators = appendFqn(OpenCms.getDefaultUsers().getGroupAdministrators());
-            String groupProjectmanagers = appendFqn(OpenCms.getDefaultUsers().getGroupProjectmanagers());
-            String groupUsers = appendFqn(OpenCms.getDefaultUsers().getGroupUsers());
-            String groupGuests = appendFqn(OpenCms.getDefaultUsers().getGroupGuests());
-
-            m_defaultUsers = new CmsDefaultUsers(
-                userAdmin,
-                userGuest,
-                userExport,
-                userDeletedResource,
-                groupAdministrators,
-                groupProjectmanagers,
-                groupUsers,
-                groupGuests);
-        }
-        return m_defaultUsers;
-    }
-
-    /**
      * Returns the description of this organizational unit.<p>
      *
      * @return the description of this organizational unit
@@ -302,9 +264,6 @@ public class CmsOrganizationalUnit {
      */
     public void setDescription(String description) {
 
-        if (m_parentFqn == null) {
-            throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_ORGUNIT_ROOT_EDITION_0));
-        }
         m_description = description;
     }
 
@@ -319,10 +278,33 @@ public class CmsOrganizationalUnit {
      */
     public void setFlags(int value) {
 
+        m_flags = value;
+    }
+
+    /**
+     * Sets the name.<p>
+     *
+     * @param name the name to set
+     */
+    public void setName(String name) {
+
         if (m_parentFqn == null) {
             throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_ORGUNIT_ROOT_EDITION_0));
         }
-        m_flags = value;
+        m_name = name;
+    }
+
+    /**
+     * Sets the full qualified name of the parent organizational unit of this organizational unit.<p>
+     *  
+     * @param parentFqn the fully qualified name of the parent organizational unit to set
+     */
+    public void setParentFqn(String parentFqn) {
+
+        if (m_parentFqn == null) {
+            throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_ORGUNIT_ROOT_EDITION_0));
+        }
+        m_parentFqn = parentFqn;
     }
 
     /**

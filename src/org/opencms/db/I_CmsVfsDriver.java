@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.114.4.9 $
+ * Date   : $Date: 2007/01/15 18:48:33 $
+ * Version: $Revision: 1.114.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.9 $
+ * @version $Revision: 1.114.4.10 $
  * 
  * @since 6.0.0 
  */
@@ -213,11 +213,12 @@ public interface I_CmsVfsDriver {
      * 
      * @param dbc the current database context
      * @param projectId the id of the project to execute the query in
+     * @param resource the base resource (may be null, if you want to delete all relations for the resource in the filter)
      * @param filter the filter to restrict the relations to remove
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteRelations(CmsDbContext dbc, int projectId, CmsRelationFilter filter) throws CmsDataAccessException;
+    void deleteRelations(CmsDbContext dbc, int projectId, CmsResource resource, CmsRelationFilter filter) throws CmsDataAccessException;
 
     /**
      * Destroys this driver.<p>

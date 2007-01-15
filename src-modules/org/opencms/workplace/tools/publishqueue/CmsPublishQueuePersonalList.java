@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueuePersonalList.java,v $
- * Date   : $Date: 2006/12/20 14:01:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.5
  */
@@ -216,7 +216,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         List ret = new ArrayList();
 
         List queue;
-        if (getCms().hasRole(CmsRole.ADMINISTRATOR)) {
+        if (getCms().hasRole(CmsRole.ROOT_ADMIN)) {
             queue = OpenCms.getPublishManager().getPublishHistory();
         } else {
             queue = OpenCms.getPublishManager().getPublishHistory(getCms().getRequestContext().currentUser());

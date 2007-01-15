@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestLoginAndPasswordHandler.java,v $
- * Date   : $Date: 2007/01/08 14:03:04 $
- * Version: $Revision: 1.7.4.2 $
+ * Date   : $Date: 2007/01/15 18:48:35 $
+ * Version: $Revision: 1.7.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.security;
 
 import org.opencms.db.CmsLoginMessage;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsOrganizationalUnit;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -48,7 +47,7 @@ import junit.framework.TestSuite;
  * Tests login and password related functions.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.7.4.2 $
+ * @version $Revision: 1.7.4.3 $
  * 
  * @since 6.0
  */

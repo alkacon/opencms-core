@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2006/10/23 11:50:30 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,12 +49,15 @@ import java.util.Locale;
  *   <li>{@link #XML_WEAK}</li>
  *   <li>{@link #JSP_STRONG}</li>
  *   <li>{@link #JSP_WEAK}</li>
+ *   <li>{@link #OU_RESOURCE}</li>
  * </ul>
  * <p>
  * 
+ * User defined relation types are also available.<p>
+ * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  * 
  * @since 6.3.0
  */
@@ -74,20 +77,14 @@ public final class CmsRelationType implements Serializable {
     /** String constant for "WEAK" relations. */
     private static final String VALUE_WEAK = "WEAK";
 
-    /** Constant for the <code>&lta href=''&gt</code> tag in a html page/element. */
-    public static final CmsRelationType HYPERLINK = new CmsRelationType("A", 1);
-
     /** Constant for the <code>&ltimg src=''&gt</code> tag in a html page/element. */
     public static final CmsRelationType EMBEDDED_IMAGE = new CmsRelationType("IMG", 2);
 
     /** Constant for the <code>&ltembed src=''&gt</code> tag in a html page/element. */
     public static final CmsRelationType EMBEDDED_OBJECT = new CmsRelationType("OBJECT", 7);
 
-    /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'strong' links. */
-    public static final CmsRelationType XML_STRONG = new CmsRelationType(PREFIX_XML + VALUE_STRONG, 3);
-
-    /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'weak' links. */
-    public static final CmsRelationType XML_WEAK = new CmsRelationType(PREFIX_XML + VALUE_WEAK, 4);
+    /** Constant for the <code>&lta href=''&gt</code> tag in a html page/element. */
+    public static final CmsRelationType HYPERLINK = new CmsRelationType("A", 1);
 
     /** Constant for the all types of links in a jsp file using the <code>link.strong</code> macro. */
     public static final CmsRelationType JSP_STRONG = new CmsRelationType(PREFIX_JSP + VALUE_STRONG, 5);
@@ -95,6 +92,18 @@ public final class CmsRelationType implements Serializable {
     /** Constant for the all types of links in a jsp file using the <code>link.weak</code> macro. */
     public static final CmsRelationType JSP_WEAK = new CmsRelationType(PREFIX_JSP + VALUE_WEAK, 6);
 
+    /** Constant for the organizational units resource associations. */
+    public static final CmsRelationType OU_RESOURCE = new CmsRelationType("OU", 8);
+
+    /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'strong' links. */
+    public static final CmsRelationType XML_STRONG = new CmsRelationType(PREFIX_XML + VALUE_STRONG, 3);
+
+    /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'weak' links. */
+    public static final CmsRelationType XML_WEAK = new CmsRelationType(PREFIX_XML + VALUE_WEAK, 4);
+
+    /** Constant indicating the starting mode for user defined relation types. */
+    private static final int USER_DEFINED_MODE_LIMIT = 100;
+    
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -4060567973007877250L;
 
@@ -106,7 +115,8 @@ public final class CmsRelationType implements Serializable {
         XML_WEAK,
         JSP_STRONG,
         JSP_WEAK,
-        EMBEDDED_OBJECT};
+        EMBEDDED_OBJECT,
+        OU_RESOURCE};
 
     /** Internal representation. */
     private final int m_mode;
@@ -120,14 +130,22 @@ public final class CmsRelationType implements Serializable {
      * @param type the type key value
      * @param mode the internal representation
      */
-    private CmsRelationType(String type, int mode) {
+    public CmsRelationType(String type, int mode) {
 
         m_type = type;
         m_mode = mode;
+        if (VALUE_ARRAY != null && m_mode <= USER_DEFINED_MODE_LIMIT) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_RELATION_TYPE_ILLEGAL_MODE_0,
+                type,
+                new Integer(mode)));
+        }
     }
 
     /**
      * Parses an <code>int</code> into an element of this enumeration.<p>
+     *
+     * User defined relations are not recognized!.<p>
      *
      * @param type the internal representation number to parse
      * 
@@ -150,6 +168,8 @@ public final class CmsRelationType implements Serializable {
     /**
      * Parses an <code>String</code> into an element of this enumeration.<p>
      *
+     * User defined relations are not recognized!.<p>
+     *
      * @param value the type to parse
      * 
      * @return the enumeration element
@@ -171,32 +191,6 @@ public final class CmsRelationType implements Serializable {
                 CmsRelationType.class.getName()));
         }
         return result;
-    }
-
-    /**
-     * Internal parse method.<p>
-     * 
-     * @param value the type to parse
-     * 
-     * @return the enumeration element, or <code>null</code> if no matching element is found
-     */
-    private static CmsRelationType valueOfInternal(String value) {
-
-        if (value != null) {
-            String valueUp = value.toUpperCase();
-            for (int i = 0; i < VALUE_ARRAY.length; i++) {
-                if (valueUp.equals(VALUE_ARRAY[i].m_type)) {
-                    return VALUE_ARRAY[i];
-                }
-            }
-            // deprecated types
-            if (valueUp.equals("REFERENCE") || valueUp.equals("XML_REFERENCE")) {
-                return XML_WEAK;
-            } else if (valueUp.equals("ATTACHMENT") || valueUp.equals("XML_ATTACHMENT")) {
-                return XML_STRONG;
-            }
-        }
-        return null;
     }
 
     /**
@@ -242,6 +236,32 @@ public final class CmsRelationType implements Serializable {
     }
 
     /**
+     * Internal parse method.<p>
+     * 
+     * @param value the type to parse
+     * 
+     * @return the enumeration element, or <code>null</code> if no matching element is found
+     */
+    private static CmsRelationType valueOfInternal(String value) {
+
+        if (value != null) {
+            String valueUp = value.toUpperCase();
+            for (int i = 0; i < VALUE_ARRAY.length; i++) {
+                if (valueUp.equals(VALUE_ARRAY[i].m_type)) {
+                    return VALUE_ARRAY[i];
+                }
+            }
+            // deprecated types
+            if (valueUp.equals("REFERENCE") || valueUp.equals("XML_REFERENCE")) {
+                return XML_WEAK;
+            } else if (valueUp.equals("ATTACHMENT") || valueUp.equals("XML_ATTACHMENT")) {
+                return XML_STRONG;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
@@ -264,6 +284,9 @@ public final class CmsRelationType implements Serializable {
      */
     public String getLocalizedName(Locale locale) {
 
+        if (getMode() > USER_DEFINED_MODE_LIMIT) {
+            return getType();
+        }
         String nameKey = null;
         switch (getMode()) {
             case 1: // hyperlink
@@ -287,6 +310,9 @@ public final class CmsRelationType implements Serializable {
             case 7: // embedded object
                 nameKey = Messages.GUI_RELATION_TYPE_EMBEDDED_OBJECT_0;
                 break;
+            case 8: // ou resource
+                nameKey = Messages.GUI_RELATION_TYPE_OU_RESOURCE_0;
+                break;
             default:
                 return Messages.get().getBundle(locale).key(
                     Messages.GUI_RELATION_TYPE_UNKNOWN_1,
@@ -305,6 +331,22 @@ public final class CmsRelationType implements Serializable {
         return m_mode;
     }
 
+    /**
+     * Returns the full type name.<p>
+     * 
+     * This will always be the "full" descriptor like e.g. <code>"XML_WEAK"</code>.
+     * In case you need only the short form, use {@link #getTypeShort()}.<p>
+     * 
+     * @return the full type name
+     * 
+     * @see #getTypeShort()
+     * @see CmsRelationType#valueOf(String) 
+     */
+    public String getType() {
+
+        return m_type;
+    }
+    
     /**
      * Returns the short type name.<p>
      * 
@@ -341,27 +383,21 @@ public final class CmsRelationType implements Serializable {
     }
 
     /**
-     * Returns the full type name.<p>
-     * 
-     * This will always be the "full" descriptor like e.g. <code>"XML_WEAK"</code>.
-     * In case you need only the short form, use {@link #getTypeShort()}.<p>
-     * 
-     * @return the full type name
-     * 
-     * @see #getTypeShort()
-     * @see CmsRelationType#valueOf(String) 
-     */
-    public String getType() {
-
-        return m_type;
-    }
-
-    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
 
         return m_mode;
+    }
+
+    /**
+     * Checks if this is an internal relation type.<p>
+     * 
+     * @return <code>true</code> if this is an internal relation type
+     */
+    public boolean isInternal() {
+        
+        return (getMode() <= USER_DEFINED_MODE_LIMIT);
     }
 
     /**

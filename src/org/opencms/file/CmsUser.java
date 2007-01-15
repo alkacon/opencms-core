@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/01/08 14:03:04 $
- * Version: $Revision: 1.32.4.5 $
+ * Date   : $Date: 2007/01/15 18:48:34 $
+ * Version: $Revision: 1.32.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
@@ -68,7 +69,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.5 $
+ * @version $Revision: 1.32.4.6 $
  * 
  * @since 6.0.0
  * 
@@ -121,19 +122,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public CmsUser(CmsUUID id, String name, String description, String ouFqn) {
 
-        this(
-            id,
-            name,
-            "",
-            description,
-            "",
-            "",
-            "",
-            CmsDbUtil.UNKNOWN_ID,
-            I_CmsPrincipal.FLAG_ENABLED,
-            null,
-            "",
-            ouFqn);
+        this(id, name, "", description, "", "", "", CmsDbUtil.UNKNOWN_ID, I_CmsPrincipal.FLAG_ENABLED, null, "", ouFqn);
     }
 
     /**
@@ -434,6 +423,16 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Returns the fully qualified name of this user's organizational unit.<p>
+     * 
+     * @return the fully qualified name of this user's organizational unit
+     */
+    public String getOrgUnitFqn() {
+
+        return CmsOrganizationalUnit.getParentFqn(getName());
+    }
+
+    /**
      * Returns the encrypted user password.<p>
      *
      * @return the encrypted user password
@@ -471,7 +470,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public boolean isGuestUser() {
 
-        return OpenCms.getDefaultUsers().getUserGuest().equals(getName());
+        return OpenCms.getDefaultUsers().isUserGuest(getName());
     }
 
     /**

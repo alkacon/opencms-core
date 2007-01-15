@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchToolHandler.java,v $
- * Date   : $Date: 2005/06/25 14:28:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.1.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.1.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,7 +52,7 @@ public class CmsSearchToolHandler extends A_CmsToolHandler {
      */
     public boolean isEnabled(CmsObject cms) {
 
-        return true;
+        return cms.hasRole(CmsRole.WORKPLACE_MANAGER);
     }
 
     /**
@@ -60,6 +60,6 @@ public class CmsSearchToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.SEARCH_MANAGER);
+        return cms.hasRole(CmsRole.WORKPLACE_MANAGER);
     }
 }

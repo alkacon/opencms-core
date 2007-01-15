@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.31.4.1 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.31.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31.4.1 $ 
+ * @version $Revision: 1.31.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -467,7 +467,7 @@ public class CmsXmlContentTypeManager {
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
 
             // simple test cases don't require this check
-            cms.checkRole(CmsRole.ADMINISTRATOR);
+            cms.checkRole(CmsRole.ROOT_ADMIN);
         }
 
         // initilaize the special entity resolver

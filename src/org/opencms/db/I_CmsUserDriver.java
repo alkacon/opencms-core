@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/08 14:03:01 $
- * Version: $Revision: 1.58.8.3 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.58.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,12 +34,12 @@ package org.opencms.db;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsOrganizationalUnit;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsInitException;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.58.8.3 $
+ * @version $Revision: 1.58.8.4 $
  * 
  * @since 6.0.0 
  */
@@ -73,7 +73,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      */
     void addResourceToOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsDataAccessException;
-
+    
     /**
      * Creates an access control entry.<p>
      * 
@@ -301,6 +301,19 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsDataAccessException if operation was not successful
      */
     List getGroupsForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
+    throws CmsDataAccessException;
+
+    /**
+     * Returns all deepest organizational units that contains the given resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to look for
+     * 
+     * @return a list of organizational units fully qualified names that contains the given resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    List getOrganizationalUnitsForResource(CmsDbContext dbc, CmsResource resource)
     throws CmsDataAccessException;
 
     /**
@@ -599,11 +612,11 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @param dbc the current db context
      * @param orgUnit the organizational unit to remove the resource from
-     * @param resource the resource that is to be removed from the organizational unit
+     * @param resourceName the root path of the resource that is to be removed from the organizational unit
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void removeResourceFromOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
+    void removeResourceFromOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, String resourceName)
     throws CmsDataAccessException;
 
     /**

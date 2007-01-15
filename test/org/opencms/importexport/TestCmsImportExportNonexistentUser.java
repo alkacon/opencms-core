@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExportNonexistentUser.java,v $
- * Date   : $Date: 2006/11/29 15:04:16 $
- * Version: $Revision: 1.12.8.2 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.12.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
+import org.opencms.security.CmsRole;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -52,7 +53,7 @@ import junit.framework.TestSuite;
  * Tests exporting/import VFS data with nonexistent users.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.12.8.2 $
+ * @version $Revision: 1.12.8.3 $
  */
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
@@ -118,7 +119,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             // create a temporary user for this test case
             cms.createUser(username, password, "Temporary user for import/export test case", null);
             // add this user to the project managers user group
-            cms.addUserToGroup(username, OpenCms.getDefaultUsers().getGroupProjectmanagers());
+            cms.addUserToGroup(username, CmsRole.PROJECT_MANAGER.getGroupName());
             
             // switch to the temporary user, offline project and default site
             cms.loginUser(username, password);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestCmsPrincipal.java,v $
- * Date   : $Date: 2007/01/08 14:03:04 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2007/01/15 18:48:35 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.security;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsOrganizationalUnit;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
@@ -104,7 +103,7 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         assertFalse(principal.isGroup());
         assertEquals(prefixedName, principal.getPrefixedName());
 
-        prefixedName = CmsPrincipal.getPrefixedGroup(CmsOrganizationalUnit.appendFqn(null, OpenCms.getDefaultUsers().getGroupAdministrators()));
+        prefixedName = CmsPrincipal.getPrefixedGroup(CmsRole.ROOT_ADMIN.getGroupName());
         principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);
         assertFalse(principal.isUser());
         assertTrue(principal.isGroup());

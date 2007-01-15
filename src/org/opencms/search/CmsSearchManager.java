@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2006/12/14 11:09:45 $
- * Version: $Revision: 1.55.4.8 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.55.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.8 $ 
+ * @version $Revision: 1.55.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -566,11 +566,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @param cms the cms object
      * 
-     * @throws CmsRoleViolationException in case the given opencms object does not have <code>{@link CmsRole#SEARCH_MANAGER}</code> permissions
+     * @throws CmsRoleViolationException in case the given opencms object does not have <code>{@link CmsRole#WORKPLACE_MANAGER}</code> permissions
      */
     public void initialize(CmsObject cms) throws CmsRoleViolationException {
 
-        cms.checkRole(CmsRole.SEARCH_MANAGER);
+        cms.checkRole(CmsRole.WORKPLACE_MANAGER);
         try {
             // store the Admin cms to index Cms resources
             m_adminCms = OpenCms.initCmsObject(cms);

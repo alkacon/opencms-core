@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/01/08 14:03:03 $
- * Version: $Revision: 1.146.4.18 $
+ * Date   : $Date: 2007/01/15 18:48:33 $
+ * Version: $Revision: 1.146.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
@@ -89,7 +90,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.18 $
+ * @version $Revision: 1.146.4.19 $
  * 
  * @since 6.0.0 
  */
@@ -301,16 +302,53 @@ public final class CmsObject {
     }
 
     /**
-     * Checks if the user of this OpenCms context 
-     * is a member of at last one of the roles in the given role set.<p>
+     * Checks if the user of this OpenCms context is a member of the given role.<p>
      *  
-     * @param roles the roles to check
+     * This method can only be used for roles that are not organizational unit dependent.<p>
+     *  
+     * @param role the role to check
+     * 
+     * @throws CmsRoleViolationException if the user does not have the required role permissions
+     * 
+     * @see CmsRole#isOrganizationalUnitIndependent()
+     */
+    public void checkRole(CmsRole role) throws CmsRoleViolationException {
+
+        m_securityManager.checkRole(m_context, role);
+    }
+
+    /**
+     * Checks if the user of this OpenCms context is a member of the given role
+     * for the given organizational unit.<p>
+     * 
+     * The user must have the given role in at least one parent organizational unit.<p>
+     * 
+     * @param role the role to check
+     * @param ouFqn the fully qualified name of the organizational unit to check the role for
      * 
      * @throws CmsRoleViolationException if the user does not have the required role permissions
      */
-    public void checkRole(CmsRole roles) throws CmsRoleViolationException {
+    public void checkRoleForOrgUnit(CmsRole role, String ouFqn) throws CmsRoleViolationException {
 
-        m_securityManager.checkRole(m_context, roles);
+        m_securityManager.checkRole(m_context, role, ouFqn);
+    }
+
+    /**
+     * Checks if the user of this OpenCms context is a member of the given role
+     * for the given resource.<p>
+     * 
+     * The user must have the given role in at least one organizational unit to which this resource belongs.<p>
+     * 
+     * @param role the role to check
+     * @param resourceName the name of the resource to check the role for
+     * 
+     * @throws CmsRoleViolationException if the user does not have the required role permissions
+     * @throws CmsException if something goes wrong
+     */
+    public void checkRoleForResource(CmsRole role, String resourceName) throws CmsException, CmsRoleViolationException {
+
+        CmsResource resource = readResource(resourceName);
+        m_securityManager.checkRole(m_context, role, resource);
     }
 
     /**
@@ -712,6 +750,11 @@ public final class CmsObject {
      * Deletes an organizational unit.<p>
      *
      * Only organizational units that contain no suborganizational unit can be deleted.<p>
+     * 
+     * The organizational unit can not be delete if it is used in the reuqest context, 
+     * or if the current user belongs to it.<p>
+     * 
+     * All users and groups in the given organizational unit will be deleted.<p>
      * 
      * @param ouFqn the fully qualified name of the organizational unit to delete
      * 
@@ -1676,14 +1719,31 @@ public final class CmsObject {
      * Checks if the user of the current OpenCms context 
      * is a member of at last one of the roles in the given role set.<p>
      *  
-     * @param roles the role to check
+     * @param role the role to check
      * 
      * @return <code>true</code> if the user of the current OpenCms context is at a member of at last 
      *      one of the roles in the given role set
      */
-    public boolean hasRole(CmsRole roles) {
+    public boolean hasRole(CmsRole role) {
 
-        return m_securityManager.hasRole(m_context, roles);
+        return m_securityManager.hasRole(m_context, role, (String)null);
+    }
+
+    /**
+     * Checks if the user of the current OpenCms context 
+     * is a member of at last one of the roles in the given role set.<p>
+     *  
+     * @param role the role to check
+     * @param resourceName the name of the resoruce to check
+     * 
+     * @return <code>true</code> if the user of the current OpenCms context is at a member of at last 
+     *      one of the roles in the given role set
+     * @throws CmsException if something goes wrong
+     */
+    public boolean hasRole(CmsRole role, String resourceName) throws CmsException {
+
+        CmsResource resource = readResource(resourceName);
+        return m_securityManager.hasRole(m_context, role, resource);
     }
 
     /**
@@ -1778,15 +1838,15 @@ public final class CmsObject {
     }
 
     /**
-     * Checks if the current user has role access to <code>{@link CmsRole#ADMINISTRATOR}</code>.<p>
+     * Checks if the current user has role access to <code>{@link CmsRole#ROOT_ADMIN}</code>.<p>
      *
-     * @return <code>true</code>, if the current user has role access to <code>{@link CmsRole#ADMINISTRATOR}</code>
+     * @return <code>true</code>, if the current user has role access to <code>{@link CmsRole#ROOT_ADMIN}</code>
      * 
      * @deprecated use <code>{@link #hasRole(CmsRole)}</code> or <code>{@link #checkRole(CmsRole)}</code> instead
      */
     public boolean isAdmin() {
 
-        return hasRole(CmsRole.ADMINISTRATOR);
+        return hasRole(CmsRole.ROOT_ADMIN);
     }
 
     /**
@@ -3141,8 +3201,8 @@ public final class CmsObject {
     public void removeResourceFromOrgUnit(String ouFqn, String resourceName) throws CmsException {
 
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
-        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
-        m_securityManager.removeResourceFromOrgUnit(m_context, orgUnit, resource);
+        // do not read the resource to allow to remove deleted resources
+        m_securityManager.removeResourceFromOrgUnit(m_context, orgUnit, addSiteRoot(resourceName));
     }
 
     /**

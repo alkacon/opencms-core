@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2006/12/06 16:12:47 $
- * Version: $Revision: 1.8.4.4 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.8.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -54,7 +55,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.4.4 $
+ * @version $Revision: 1.8.4.5 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -117,7 +118,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.createGroup("Testgroup", "A test group", 0, null);
         CmsGroup testGroup = cms.readGroup("Testgroup");
         // set a child
-        cms.setParentGroup(OpenCms.getDefaultUsers().getGroupUsers(), testGroup.getName());
+        cms.setParentGroup(CmsRole.WORKPLACE_USER.getGroupName(), testGroup.getName());
         // create test user
         cms.createUser("testuser1", "test1", "A test user 1", null);
         cms.addUserToGroup("testuser1", "Testgroup");
@@ -171,7 +172,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
         // restore the previous state
         cms.deleteUser(testUser1.getId());
-        cms.setParentGroup(OpenCms.getDefaultUsers().getGroupUsers(), null);
+        cms.setParentGroup(CmsRole.WORKPLACE_USER.getGroupName(), null);
         cms.deleteGroup(testGroup2.getName());
     }
 

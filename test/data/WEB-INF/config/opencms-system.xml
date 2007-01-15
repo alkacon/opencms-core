@@ -52,9 +52,6 @@
 			<user-admin>Admin</user-admin>
 			<user-guest>Guest</user-guest>
 			<user-export>Export</user-export>
-			<group-administrators>Administrators</group-administrators>
-			<group-projectmanagers>Projectmanagers</group-projectmanagers>
-			<group-users>Users</group-users>
 			<group-guests>Guests</group-guests>
 		</defaultusers>	
 		<defaultcontentencoding>ISO-8859-1</defaultcontentencoding>	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsOnlyAdminToolHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.5.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsRole;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,6 +58,6 @@ public class CmsOnlyAdminToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.ADMINISTRATOR);
+        return cms.hasRole(CmsRole.ROOT_ADMIN);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2006/12/14 12:23:30 $
- * Version: $Revision: 1.45.4.9 $
+ * Date   : $Date: 2007/01/15 18:48:35 $
+ * Version: $Revision: 1.45.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.9 $
+ * @version $Revision: 1.45.4.10 $
  * 
  * @since 6.0.0 
  */
@@ -370,9 +370,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** Flag to indicate that this is an internal resource, that can't be accessed directly. */
     public static final int FLAG_INTERNAL = 512;
-
-    /** Flag to indicate that this ressource is assigned to a workflow project. */
-    public static final int FLAG_INWORKFLOW = 256;
 
     /** The resource is linked inside a site folder specified in the OpenCms configuration. */
     public static final int FLAG_LABELED = 2;

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Attic/CmsImportToolHandler.java,v $
- * Date   : $Date: 2006/07/20 10:46:14 $
- * Version: $Revision: 1.2.8.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseToolHandler.java,v $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,33 +33,33 @@ package org.opencms.workplace.tools.database;
 
 import org.opencms.file.CmsObject;
 import org.opencms.security.CmsRole;
-import org.opencms.workplace.tools.CmsOfflineToolHandler;
+import org.opencms.workplace.tools.A_CmsToolHandler;
 
 /**
- * Import tool handler that hides the import tools if the current user
+ * Export tool handler that hides the export tools if the current user
  * has not the needed privileges.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2.8.2 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsImportToolHandler extends CmsOfflineToolHandler {
+public class CmsDatabaseToolHandler extends A_CmsToolHandler {
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
     public boolean isEnabled(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.IMPORT_DATABASE) && super.isEnabled(cms);
+        return cms.hasRole(CmsRole.DATABASE_MANAGER);
     }
-    
+
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */
     public boolean isVisible(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.IMPORT_DATABASE);
+        return cms.hasRole(CmsRole.DATABASE_MANAGER);
     }
 }

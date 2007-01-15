@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/01/08 14:03:04 $
- * Version: $Revision: 1.84.4.6 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.84.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.6 $ 
+ * @version $Revision: 1.84.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -219,7 +219,7 @@ public class CmsExport {
         setExportFileName(exportFile);
 
         // check if the user has the required permissions
-        cms.checkRole(CmsRole.EXPORT_DATABASE);
+        cms.checkRole(CmsRole.DATABASE_MANAGER);
 
         m_includeSystem = includeSystem;
         m_includeUnchanged = includeUnchanged;

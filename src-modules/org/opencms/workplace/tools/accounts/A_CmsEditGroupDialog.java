@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditGroupDialog.java,v $
- * Date   : $Date: 2006/12/14 12:41:30 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3.4.1 $ 
+ * @version $Revision: 1.3.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,8 +126,8 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
                     m_group.getDescription(),
                     m_group.isEnabled() ? I_CmsPrincipal.FLAG_ENABLED : I_CmsPrincipal.FLAG_DISABLED,
                     getParentGroup());
-                newGroup.setProjectManager(m_group.getProjectManager());
-                newGroup.setProjectCoWorker(m_group.getProjectCoWorker());
+                newGroup.setProjectManager(m_group.isProjectManager());
+                newGroup.setProjectCoWorker(m_group.isProjectCoWorker());
                 m_group = newGroup;
             } else {
                 if (getParentGroup() != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultAuthorizationHandler.java,v $
- * Date   : $Date: 2006/11/29 14:57:00 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/01/15 18:48:35 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.4 
  */
@@ -125,13 +125,8 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
                 password = token.substring(pos + 1);
             }
             // authentication in the DB
-            try {
-                // try to login as a user first ...
-                cms.loginUser(username, password);
-            } catch (CmsException exc) {
-                // login as user failed, try as webuser ...
-                cms.loginWebUser(username, password);
-            }
+            cms.loginUser(username, password);
+            
             // authentification was successful create a session
             req.getSession(true);
             return cms;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/01/08 14:02:57 $
- * Version: $Revision: 1.241.4.16 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.241.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,6 +65,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsStringUtil;
@@ -91,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.16 $
+ * @version $Revision: 1.241.4.17 $
  * 
  * @since 6.0.0 
  */
@@ -455,13 +456,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
         CmsUser admin = m_driverManager.readUser(dbc, adminUser);
 
-        String administratorsGroup = OpenCms.getDefaultUsers().getGroupAdministrators();
+        String administratorsGroup = CmsRole.ROOT_ADMIN.getGroupName();
         CmsGroup administrators = m_driverManager.readGroup(dbc, administratorsGroup);
 
-        String usersGroup = OpenCms.getDefaultUsers().getGroupUsers();
+        String usersGroup = CmsRole.WORKPLACE_USER.getGroupName();
         CmsGroup users = m_driverManager.readGroup(dbc, usersGroup);
 
-        String projectmanagersGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
+        String projectmanagersGroup = CmsRole.PROJECT_MANAGER.getGroupName();
         CmsGroup projectmanager = m_driverManager.readGroup(dbc, projectmanagersGroup);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -555,7 +556,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             setupProject,
             rootFolder,
             null);
-        
+
         offlineRootFolder.setState(CmsResource.STATE_UNCHANGED);
 
         m_driverManager.getVfsDriver().writeResource(dbc, setupProject, offlineRootFolder, CmsDriverManager.UPDATE_ALL);
@@ -573,10 +574,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             setupProject,
             systemFolder,
             null);
-        
+
         offlineSystemFolder.setState(CmsResource.STATE_UNCHANGED);
 
-        m_driverManager.getVfsDriver().writeResource(dbc, setupProject, offlineSystemFolder, CmsDriverManager.UPDATE_ALL);
+        m_driverManager.getVfsDriver().writeResource(
+            dbc,
+            setupProject,
+            offlineSystemFolder,
+            CmsDriverManager.UPDATE_ALL);
     }
 
     /**
@@ -2156,7 +2161,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsRelationFilter filter = CmsRelationFilter.TARGETS;
         filter = filter.filterStructureId(onlineResource.getStructureId());
         filter = filter.filterPath(onlineResource.getRootPath());
-        m_driverManager.getVfsDriver().deleteRelations(dbc, onlineProject.getId(), filter);
+        m_driverManager.getVfsDriver().deleteRelations(dbc, onlineProject.getId(), null, filter);
 
         // move the online resource to the new position
         m_driverManager.getVfsDriver().moveResource(
@@ -2527,6 +2532,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         m_driverManager.getVfsDriver().deleteRelations(
             dbc,
             onlineProject.getId(),
+            null,
             CmsRelationFilter.TARGETS.filterResource(offlineResource));
     }
 
@@ -2674,6 +2680,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         m_driverManager.getVfsDriver().deleteRelations(
             dbc,
             onlineProject.getId(),
+            null,
             CmsRelationFilter.TARGETS.filterResource(offlineResource));
         Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
             dbc,

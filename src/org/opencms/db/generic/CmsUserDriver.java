@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/08 14:02:57 $
- * Version: $Revision: 1.110.2.4 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.110.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,26 +40,34 @@ import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
+import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsUserDriver;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsOrganizationalUnit;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordEncryptionException;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -94,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.4 $
+ * @version $Revision: 1.110.2.5 $
  * 
  * @since 6.0.0 
  */
@@ -108,12 +116,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** Property for the organizational unit description. */
     private static final String ORGUNIT_PROPERTY_DESCRIPTION = CmsPropertyDefinition.PROPERTY_DESCRIPTION;
-
-    /** Property for the organizational unit flags. */
-    private static final String ORGUNIT_PROPERTY_FLAGS = CmsPropertyDefinition.PROPERTY_NAVPOS;
-
-    /** Property for the organizational unit vfs paths. */
-    private static final String ORGUNIT_PROPERTY_VFS_PATHS = CmsPropertyDefinition.PROPERTY_TEMPLATE;
 
     /** The root organizational unit name. */
     private static final String ORGUNIT_ROOT_NAME = "root";
@@ -134,7 +136,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#addResourceToOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.file.CmsOrganizationalUnit, org.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsUserDriver#addResourceToOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, org.opencms.file.CmsResource)
      */
     public void addResourceToOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsDataAccessException {
@@ -148,7 +150,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 internalValidateResourceForOrgUnit(dbc, parentOu, resource.getRootPath());
             }
 
-            // read the representing resource
+            // read the resource representing the organizational unit
             CmsResource ouResource = m_driverManager.readResource(dbc, orgUnit.getId(), CmsResourceFilter.ALL);
 
             // get the associated resources
@@ -167,15 +169,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
 
             // add the new resource
-            vfsPaths.add(resource.getRootPath());
-            CmsProperty property = new CmsProperty(ORGUNIT_PROPERTY_VFS_PATHS, null, null);
-            property.setStructureValueList(vfsPaths);
-
-            // write the property
-            internalWriteOrgUnitProperty(dbc, ouResource, property);
-
-            // set the permissions
-            internalSetOrganizationalUnitDefaultPermissions(dbc, orgUnit, resource);
+            CmsRelation relation = new CmsRelation(ouResource, resource, CmsRelationType.OU_RESOURCE);
+            m_driverManager.getVfsDriver().createRelation(dbc, dbc.currentProject().getId(), relation);
+            m_driverManager.getVfsDriver().createRelation(dbc, CmsProject.ONLINE_PROJECT_ID, relation);
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
@@ -248,7 +244,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             // get the id of the parent group if necessary
             if (CmsStringUtil.isNotEmpty(parentGroupFqn)) {
-                if (!CmsOrganizationalUnit.getParentFqn(parentGroupFqn).equals(
+                CmsGroup parentGroup = readGroup(dbc, parentGroupFqn);
+                if (!parentGroup.isRole() && !CmsOrganizationalUnit.getParentFqn(parentGroupFqn).equals(
                     CmsOrganizationalUnit.getParentFqn(groupFqn))) {
                     throw new CmsDataAccessException(Messages.get().container(
                         Messages.ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3,
@@ -256,7 +253,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                         CmsOrganizationalUnit.getParentFqn(groupFqn),
                         parentGroupFqn));
                 }
-                parentId = readGroup(dbc, parentGroupFqn).getId();
+                parentId = parentGroup.getId();
             }
 
             conn = getSqlManager().getConnection(dbc);
@@ -290,7 +287,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createOrganizationalUnit(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, int, org.opencms.file.CmsOrganizationalUnit, String)
+     * @see org.opencms.db.I_CmsUserDriver#createOrganizationalUnit(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, int, org.opencms.security.CmsOrganizationalUnit, String)
      */
     public CmsOrganizationalUnit createOrganizationalUnit(
         CmsDbContext dbc,
@@ -312,13 +309,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // get the parent ou folder
             CmsResource parentFolder = internalOrgUnitFolder(dbc, parent);
 
-            // set the default property
-            List properties = new ArrayList(4);
-            properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_INTERNAL, Boolean.TRUE.toString(), null));
-
-            // set ou properties
-            properties.add(new CmsProperty(ORGUNIT_PROPERTY_DESCRIPTION, description, null));
-            properties.add(new CmsProperty(ORGUNIT_PROPERTY_FLAGS, String.valueOf(flags), null));
             // check that the associated resource exists and if is a folder
             CmsResource resource = m_driverManager.readFolder(dbc, associatedResource, CmsResourceFilter.ALL);
 
@@ -330,21 +320,19 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     resource.getRootPath());
             }
             // create the resource
-            CmsResource ouFolder = internalCreateResourceForOrgUnit(dbc, parentFolder.getRootPath() + name);
+            CmsResource ouFolder = internalCreateResourceForOrgUnit(dbc, parentFolder.getRootPath() + name, flags);
 
-            // write properties
-            Iterator it = properties.iterator();
-            while (it.hasNext()) {
-                CmsProperty property = (CmsProperty)it.next();
-                internalWriteOrgUnitProperty(dbc, ouFolder, property);
-            }
+            // write description property
+            internalWriteOrgUnitProperty(
+                dbc,
+                ouFolder,
+                new CmsProperty(ORGUNIT_PROPERTY_DESCRIPTION, description, null));
 
             // create the ou object
             CmsOrganizationalUnit ou = internalCreateOrgUnitFromResource(dbc, ouFolder);
 
-            // check the root organizational unit
             if (name.equals(ORGUNIT_ROOT_NAME)) {
-                // collect all groups and users
+                // check the root organizational unit during updating an OpenCms 6.x system
                 List principals = new ArrayList(m_driverManager.getUsers(dbc));
                 principals.addAll(m_driverManager.getGroups(dbc));
                 // put them in the root organizational unit
@@ -353,8 +341,26 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     I_CmsPrincipal principal = (I_CmsPrincipal)itPrincipals.next();
                     setPrincipalsOrganizationalUnit(dbc, ou, principal);
                 }
+            } else {
+                // if not the root ou, create roles
+                // the roles of the root ou, are created in #fillDefaults
+                Iterator itRoles = CmsRole.getSystemRoles().iterator();
+                while (itRoles.hasNext()) {
+                    CmsRole role = (CmsRole)itRoles.next();
+                    if (!role.isOrganizationalUnitIndependent()) {
+                        String groupName = ou.appendFqn(role.getGroupName());
+                        flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
+                        if ((role == CmsRole.WORKPLACE_USER) || (role == CmsRole.PROJECT_MANAGER)) {
+                            flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
+                        }
+                        if (role == CmsRole.PROJECT_MANAGER) {
+                            flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
+                        }
+                        String parentGroupFqn = CmsOrganizationalUnit.appendFqn(ou.getParentFqn(), role.getGroupName());
+                        createGroup(dbc, CmsUUID.getConstantUUID(groupName), groupName, "A system role group", flags, parentGroupFqn);
+                    }
+                }
             }
-            internalCreateOrganizationalUnitDefaultPrincipals(dbc, ou);
             m_driverManager.addResourceToOrgUnit(dbc, ou, resource);
             return ou;
         } catch (CmsException e) {
@@ -371,7 +377,33 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             readOrganizationalUnit(dbc, "/");
         } catch (CmsException e) {
             try {
-                createOrganizationalUnit(dbc, "", "The root organizational unit", 0, null, "/");
+                CmsProject onlineProject = dbc.currentProject();
+                CmsProject setupProject = onlineProject;
+                // get the right offline project
+                try {
+                    // this if setting up OpenCms
+                    setupProject = m_driverManager.readProject(
+                        new CmsDbContext(),
+                        I_CmsProjectDriver.SETUP_PROJECT_NAME);
+                } catch (CmsException exc) {
+                    // this if updating OpenCms
+                    try {
+                        setupProject = m_driverManager.readProject(new CmsDbContext(), "Offline");
+                    } catch (CmsException exc2) {
+                        // if no offline project found
+                    }
+                }
+                dbc.getRequestContext().setCurrentProject(setupProject);
+                try {
+                    try {
+                        m_driverManager.readResource(dbc, ORGUNIT_BASE_FOLDER, CmsResourceFilter.ALL);
+                    } catch (CmsVfsResourceNotFoundException exc) {
+                        internalCreateResourceForOrgUnit(dbc, ORGUNIT_BASE_FOLDER, 0);
+                    }
+                    createOrganizationalUnit(dbc, "", "The root organizational unit", 0, null, "/");
+                } finally {
+                    dbc.getRequestContext().setCurrentProject(onlineProject);
+                }
                 if (CmsLog.INIT.isInfoEnabled()) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ROOT_ORGUNIT_DEFAULTS_INITIALIZED_0));
                 }
@@ -533,7 +565,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#deleteOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.file.CmsOrganizationalUnit)
+     * @see org.opencms.db.I_CmsUserDriver#deleteOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit)
      */
     public void deleteOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit)
     throws CmsDataAccessException {
@@ -692,21 +724,137 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     public void fillDefaults(CmsDbContext dbc) throws CmsInitException {
 
+        String administratorsGroup = CmsRole.ROOT_ADMIN.getGroupName();
+
         try {
-            internalCreateOrganizationalUnitDefaultPrincipals(dbc, null);
+            // only do something if really needed
+            if (existsGroup(dbc, administratorsGroup)) {
+                return;
+            }
+
+            Iterator itRoles = CmsRole.getSystemRoles().iterator();
+            while (itRoles.hasNext()) {
+                CmsRole role = (CmsRole)itRoles.next();
+                String groupName = role.getGroupName();
+                if (!role.isOrganizationalUnitIndependent()) {
+                    groupName = "/" + groupName;
+                }
+                int flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
+                if ((role == CmsRole.WORKPLACE_USER) || (role == CmsRole.PROJECT_MANAGER)) {
+                    flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
+                }
+                if (role == CmsRole.PROJECT_MANAGER) {
+                    flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
+                }
+                createGroup(dbc, CmsUUID.getConstantUUID(groupName), groupName, "A system role group", flags, null);
+            }
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ROOT_ORGUNIT_DEFAULTS_INITIALIZED_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATED_0));
             }
         } catch (CmsException e) {
             if (CmsLog.INIT.isErrorEnabled()) {
-                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_ROOT_ORGUNIT_INITIALIZATION_FAILED_0), e);
+                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATION_FAILED_0), e);
+            }
+            throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), e);
+        }
+
+        try {
+            String guestGroup = OpenCms.getDefaultUsers().getGroupGuests();
+            String deleteUser = OpenCms.getDefaultUsers().getUserDeletedResource();
+            String guestUser = OpenCms.getDefaultUsers().getUserGuest();
+            String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
+            String exportUser = OpenCms.getDefaultUsers().getUserExport();
+
+            CmsGroup guests = createGroup(
+                dbc,
+                CmsUUID.getConstantUUID(guestGroup),
+                guestGroup,
+                "The guest group",
+                I_CmsPrincipal.FLAG_ENABLED,
+                null);
+
+            CmsUser guest = createUser(
+                dbc,
+                CmsUUID.getConstantUUID(guestUser),
+                guestUser,
+                OpenCms.getPasswordHandler().digest(""),
+                "The guest user",
+                " ",
+                " ",
+                " ",
+                0,
+                I_CmsPrincipal.FLAG_ENABLED,
+                new Hashtable(),
+                " ");
+            CmsUser admin = createUser(
+                dbc,
+                CmsUUID.getConstantUUID(adminUser),
+                adminUser,
+                OpenCms.getPasswordHandler().digest("admin"),
+                "The admin user",
+                " ",
+                " ",
+                " ",
+                0,
+                I_CmsPrincipal.FLAG_ENABLED,
+                new Hashtable(),
+                " ");
+
+            CmsGroup administrators = readGroup(dbc, CmsRole.ROOT_ADMIN.getGroupName());
+            createUserInGroup(dbc, guest.getId(), guests.getId());
+            createUserInGroup(dbc, admin.getId(), administrators.getId());
+
+            if (!exportUser.equals(OpenCms.getDefaultUsers().getUserAdmin())
+                && !exportUser.equals(OpenCms.getDefaultUsers().getUserGuest())) {
+
+                CmsUser export = createUser(
+                    dbc,
+                    CmsUUID.getConstantUUID(exportUser),
+                    exportUser,
+                    OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
+                    "The static export user",
+                    " ",
+                    " ",
+                    " ",
+                    0,
+                    I_CmsPrincipal.FLAG_ENABLED,
+                    Collections.EMPTY_MAP,
+                    " ");
+                createUserInGroup(dbc, export.getId(), guests.getId());
+            }
+
+            if (!deleteUser.equals(OpenCms.getDefaultUsers().getUserAdmin())
+                && !deleteUser.equals(OpenCms.getDefaultUsers().getUserGuest())
+                && !deleteUser.equals(OpenCms.getDefaultUsers().getUserExport())) {
+
+                createUser(
+                    dbc,
+                    CmsUUID.getConstantUUID(deleteUser),
+                    deleteUser,
+                    OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
+                    "The default user for deleted resources",
+                    " ",
+                    " ",
+                    " ",
+                    0,
+                    I_CmsPrincipal.FLAG_ENABLED,
+                    Collections.EMPTY_MAP,
+                    " ");
+            }
+
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USERS_CREATED_0));
+            }
+        } catch (CmsException e) {
+            if (CmsLog.INIT.isErrorEnabled()) {
+                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USERS_CREATION_FAILED_0), e);
             }
             throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), e);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#getGroupsForOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.file.CmsOrganizationalUnit, boolean)
+     * @see org.opencms.db.I_CmsUserDriver#getGroupsForOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, boolean)
      */
     public List getGroupsForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
     throws CmsDataAccessException {
@@ -744,7 +892,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#getOrganizationalUnits(org.opencms.db.CmsDbContext, org.opencms.file.CmsOrganizationalUnit, boolean)
+     * @see org.opencms.db.I_CmsUserDriver#getOrganizationalUnits(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, boolean)
      */
     public List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChilds)
     throws CmsDataAccessException {
@@ -768,7 +916,41 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#getResourcesForOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.file.CmsOrganizationalUnit)
+     * @see org.opencms.db.I_CmsUserDriver#getOrganizationalUnitsForResource(CmsDbContext, CmsResource)
+     */
+    public List getOrganizationalUnitsForResource(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
+
+        List orgUnits = new ArrayList();
+        CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.OU_RESOURCE);
+
+        // get the starting folder
+        CmsResource parent = resource;
+        if (resource.isFile()) {
+            parent = m_driverManager.getVfsDriver().readParentFolder(
+                dbc,
+                dbc.currentProject().getId(),
+                resource.getStructureId());
+        }
+        while (parent != null) {
+            Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
+                dbc,
+                dbc.currentProject().getId(),
+                filter.filterResource(parent)).iterator();
+            while (itRelations.hasNext()) {
+                CmsRelation relation = (CmsRelation)itRelations.next();
+                String ouFqn = relation.getSourcePath().substring((ORGUNIT_BASE_FOLDER + ORGUNIT_ROOT_NAME).length());
+                orgUnits.add(ouFqn);
+            }
+            parent = m_driverManager.getVfsDriver().readParentFolder(
+                dbc,
+                dbc.currentProject().getId(),
+                parent.getStructureId());
+        }
+        return orgUnits;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#getResourcesForOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit)
      */
     public List getResourcesForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit)
     throws CmsDataAccessException {
@@ -796,7 +978,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#getUsersForOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.file.CmsOrganizationalUnit, boolean)
+     * @see org.opencms.db.I_CmsUserDriver#getUsersForOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, boolean)
      */
     public List getUsersForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
     throws CmsDataAccessException {
@@ -1557,12 +1739,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#removeResourceFromOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.file.CmsOrganizationalUnit, org.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsUserDriver#removeResourceFromOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, String)
      */
     public void removeResourceFromOrganizationalUnit(
         CmsDbContext dbc,
         CmsOrganizationalUnit orgUnit,
-        CmsResource resource) throws CmsDataAccessException {
+        String resourceName) throws CmsDataAccessException {
 
         try {
             // read the representing resource
@@ -1571,31 +1753,35 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // get the associated resources
             List vfsPaths = new ArrayList(internalResourcesForOrgUnit(dbc, ouResource));
 
+            if (!resourceName.endsWith("/")) {
+                resourceName += "/";
+            }
+
             // check if associated
-            if (!vfsPaths.contains(resource.getRootPath())) {
+            if (!vfsPaths.contains(resourceName)) {
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_ORGUNIT_DOESNOT_CONTAINS_RESOURCE_2,
                     orgUnit.getName(),
-                    dbc.removeSiteRoot(resource.getRootPath())));
+                    dbc.removeSiteRoot(resourceName)));
+            }
+            if (vfsPaths.size() == 1) {
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_ORGUNIT_REMOVE_LAST_RESOURCE_2,
+                    orgUnit.getName(),
+                    dbc.removeSiteRoot(resourceName)));
             }
 
             // remove the resource
-            vfsPaths.remove(resource.getRootPath());
-            CmsProperty property = new CmsProperty(ORGUNIT_PROPERTY_VFS_PATHS, null, null);
-            property.setStructureValueList(vfsPaths);
-
-            // write the modified property
-            internalWriteOrgUnitProperty(dbc, ouResource, property);
-
-            // remove the permissions
-            internalRemoveOrganizationalUnitDefaultPermissions(dbc, orgUnit, resource);
+            CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterPath(resourceName);
+            m_driverManager.getVfsDriver().deleteRelations(dbc, dbc.currentProject().getId(), ouResource, filter);
+            m_driverManager.getVfsDriver().deleteRelations(dbc, CmsProject.ONLINE_PROJECT_ID, ouResource, filter);
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#setPrincipalsOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.file.CmsOrganizationalUnit, org.opencms.security.I_CmsPrincipal)
+     * @see org.opencms.db.I_CmsUserDriver#setPrincipalsOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, org.opencms.security.I_CmsPrincipal)
      */
     public void setPrincipalsOrganizationalUnit(
         CmsDbContext dbc,
@@ -1713,16 +1899,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.file.CmsOrganizationalUnit)
+     * @see org.opencms.db.I_CmsUserDriver#writeOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit)
      */
     public void writeOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit)
     throws CmsDataAccessException {
 
-        // check that the root org unit does not get modified
-        if (organizationalUnit.getParentFqn() == null) {
-            throw new CmsDataAccessException(org.opencms.file.Messages.get().container(
-                org.opencms.file.Messages.ERR_ORGUNIT_ROOT_EDITION_0));
-        }
         try {
             CmsResource resource = m_driverManager.readResource(
                 dbc,
@@ -1734,10 +1915,27 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 ORGUNIT_PROPERTY_DESCRIPTION,
                 organizationalUnit.getDescription(),
                 null));
-            internalWriteOrgUnitProperty(dbc, resource, new CmsProperty(
-                ORGUNIT_PROPERTY_FLAGS,
-                String.valueOf(organizationalUnit.getFlags()),
-                null));
+
+            // update the resource flags
+            resource.setFlags(organizationalUnit.getFlags() | CmsResource.FLAG_INTERNAL);
+            m_driverManager.writeResource(dbc, resource);
+            resource.setState(CmsResource.STATE_UNCHANGED);
+            m_driverManager.getVfsDriver().writeResource(
+                dbc,
+                dbc.currentProject(),
+                resource,
+                CmsDriverManager.NOTHING_CHANGED);
+
+            if (!dbc.currentProject().isOnlineProject()) {
+                // online persistence
+                CmsProject onlineProject = m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
+                resource.setState(CmsResource.STATE_UNCHANGED);
+                m_driverManager.getVfsDriver().writeResource(
+                    dbc,
+                    onlineProject,
+                    resource,
+                    CmsDriverManager.NOTHING_CHANGED);
+            }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
@@ -1841,13 +2039,13 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             return CmsOrganizationalUnit.appendFqn(null, name);
         }
         // check the ou, but not during initialization
-        if (m_driverManager.getVfsDriver() != null && m_driverManager.getUserDriver() != null) {
+        if (dbc.getRequestContext() != null) {
             // check the ou, but not during set up
             boolean check = false;
             try {
                 m_driverManager.readResource(dbc, ORGUNIT_BASE_FOLDER, CmsResourceFilter.ALL);
                 check = true;
-            } catch (Exception e) {
+            } catch (CmsException e) {
                 // ignore
             }
             if (check) {
@@ -1912,131 +2110,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * Initializes the default users and groups for the given organizational unit.<p>
-     * 
-     * @param dbc the current database context
-     * @param orgUnit the organizational unit to create the default principals for
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     * @throws CmsPasswordEncryptionException if a password of a default user could not be encrypted
-     */
-    protected void internalCreateOrganizationalUnitDefaultPrincipals(CmsDbContext dbc, CmsOrganizationalUnit orgUnit)
-    throws CmsDataAccessException, CmsPasswordEncryptionException {
-
-        String guestGroup;
-        String administratorsGroup;
-        String usersGroup;
-        String projectmanagersGroup;
-        String guestUser;
-        String adminUser;
-        String exportUser;
-
-        if (orgUnit != null) {
-            guestGroup = orgUnit.getDefaultUsers().getGroupGuests();
-            administratorsGroup = orgUnit.getDefaultUsers().getGroupAdministrators();
-            usersGroup = orgUnit.getDefaultUsers().getGroupUsers();
-            projectmanagersGroup = orgUnit.getDefaultUsers().getGroupProjectmanagers();
-            guestUser = orgUnit.getDefaultUsers().getUserGuest();
-            adminUser = orgUnit.getDefaultUsers().getUserAdmin();
-            exportUser = orgUnit.getDefaultUsers().getUserExport();
-        } else {
-            // it may be null during setup
-            guestGroup = OpenCms.getDefaultUsers().getGroupGuests();
-            administratorsGroup = OpenCms.getDefaultUsers().getGroupAdministrators();
-            usersGroup = OpenCms.getDefaultUsers().getGroupUsers();
-            projectmanagersGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
-            guestUser = OpenCms.getDefaultUsers().getUserGuest();
-            adminUser = OpenCms.getDefaultUsers().getUserAdmin();
-            exportUser = OpenCms.getDefaultUsers().getUserExport();
-        }
-
-        // only do something if really needed
-        if (existsGroup(dbc, administratorsGroup)) {
-            return;
-        }
-
-        CmsGroup guests = createGroup(
-            dbc,
-            CmsUUID.getConstantUUID(guestGroup),
-            guestGroup,
-            "The guest group",
-            I_CmsPrincipal.FLAG_ENABLED,
-            null);
-        CmsGroup administrators = createGroup(
-            dbc,
-            CmsUUID.getConstantUUID(administratorsGroup),
-            administratorsGroup,
-            "The administrators group",
-            I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER,
-            null);
-        CmsGroup users = createGroup(
-            dbc,
-            CmsUUID.getConstantUUID(usersGroup),
-            usersGroup,
-            "The users group",
-            I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER,
-            null);
-        createGroup(
-            dbc,
-            CmsUUID.getConstantUUID(projectmanagersGroup),
-            projectmanagersGroup,
-            "The projectmanager group",
-            I_CmsPrincipal.FLAG_ENABLED
-                | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER
-                | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER,
-            users.getName());
-
-        CmsUser guest = createUser(
-            dbc,
-            CmsUUID.getConstantUUID(guestUser),
-            guestUser,
-            OpenCms.getPasswordHandler().digest(""),
-            "The guest user",
-            " ",
-            " ",
-            " ",
-            0,
-            I_CmsPrincipal.FLAG_ENABLED,
-            new Hashtable(),
-            " ");
-        CmsUser admin = createUser(
-            dbc,
-            CmsUUID.getConstantUUID(adminUser),
-            adminUser,
-            OpenCms.getPasswordHandler().digest("admin"),
-            "The admin user",
-            " ",
-            " ",
-            " ",
-            0,
-            I_CmsPrincipal.FLAG_ENABLED,
-            new Hashtable(),
-            " ");
-
-        createUserInGroup(dbc, guest.getId(), guests.getId());
-        createUserInGroup(dbc, admin.getId(), administrators.getId());
-
-        if (!exportUser.equals(OpenCms.getDefaultUsers().getUserAdmin())
-            && !exportUser.equals(OpenCms.getDefaultUsers().getUserGuest())) {
-
-            CmsUser export = createUser(
-                dbc,
-                CmsUUID.getConstantUUID(exportUser),
-                exportUser,
-                OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
-                "The static export user",
-                " ",
-                " ",
-                " ",
-                0,
-                I_CmsPrincipal.FLAG_ENABLED,
-                Collections.EMPTY_MAP,
-                " ");
-            createUserInGroup(dbc, export.getId(), guests.getId());
-        }
-    }
-
-    /**
      * Returns the organizational unit represented by the given resource.<p>
      * 
      * @param dbc the current db context
@@ -2074,7 +2147,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         }
         String description = m_driverManager.readPropertyObject(dbc, resource, ORGUNIT_PROPERTY_DESCRIPTION, false).getStructureValue();
-        int flags = Integer.parseInt(m_driverManager.readPropertyObject(dbc, resource, ORGUNIT_PROPERTY_FLAGS, false).getStructureValue());
+        int flags = (resource.getFlags() & ~CmsResource.FLAG_INTERNAL); // remove the internal flag
         // create the object
         return new CmsOrganizationalUnit(resource.getStructureId(), parentFqn, name, description, flags);
     }
@@ -2084,12 +2157,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * 
      * @param dbc the current database context
      * @param path the path to create the folder
+     * @param flags the resource flags
      * 
      * @return the new created offline folder
      * 
      * @throws CmsException if something goes wrong
      */
-    protected CmsResource internalCreateResourceForOrgUnit(CmsDbContext dbc, String path) throws CmsException {
+    protected CmsResource internalCreateResourceForOrgUnit(CmsDbContext dbc, String path, int flags)
+    throws CmsException {
 
         // create the offline folder 
         CmsResource resource = new CmsFolder(
@@ -2097,7 +2172,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             new CmsUUID(),
             path,
             CmsResourceTypeFolder.RESOURCE_TYPE_ID,
-            0,
+            (CmsResource.FLAG_INTERNAL | flags),
             dbc.currentProject().getId(),
             CmsResource.STATE_NEW,
             0,
@@ -2110,14 +2185,19 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         m_driverManager.getVfsDriver().createResource(dbc, dbc.currentProject(), resource, null);
         resource.setState(CmsResource.STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeResource(dbc, dbc.currentProject(), resource, CmsDriverManager.UPDATE_ALL);
+        m_driverManager.getVfsDriver().writeResource(
+            dbc,
+            dbc.currentProject(),
+            resource,
+            CmsDriverManager.NOTHING_CHANGED);
 
-        // online persistence
-        CmsProject onlineProject = m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
-        m_driverManager.getVfsDriver().createResource(dbc, onlineProject, resource, null);
-        resource.setState(CmsResource.STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeResource(dbc, onlineProject, resource, CmsDriverManager.UPDATE_ALL);
-
+        if (!dbc.currentProject().isOnlineProject()) {
+            // online persistence
+            CmsProject onlineProject = m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
+            m_driverManager.getVfsDriver().createResource(dbc, onlineProject, resource, null);
+            resource.setState(CmsResource.STATE_UNCHANGED);
+            m_driverManager.getVfsDriver().writeResource(dbc, onlineProject, resource, CmsDriverManager.NOTHING_CHANGED);
+        }
         return resource;
     }
 
@@ -2178,16 +2258,65 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     protected void internalDeleteOrgUnitResource(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        m_driverManager.deleteResource(dbc, resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterResource(resource);
 
-        // online persistence
-        CmsProject project = dbc.currentProject();
-        dbc.getRequestContext().setCurrentProject(m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID));
-        try {
-            m_driverManager.deleteResource(dbc, resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        } finally {
-            dbc.getRequestContext().setCurrentProject(project);
+        // first the online version
+        if (!dbc.currentProject().isOnlineProject()) {
+            // online persistence
+            CmsProject project = dbc.currentProject();
+            dbc.getRequestContext().setCurrentProject(m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID));
+
+            try {
+                // delete properties
+                m_driverManager.getVfsDriver().deletePropertyObjects(
+                    dbc,
+                    CmsProject.ONLINE_PROJECT_ID,
+                    resource,
+                    CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+
+                // remove the online folder only if it is really deleted offline
+                m_driverManager.getVfsDriver().removeFolder(dbc, dbc.currentProject(), resource);
+
+                // remove ACL
+                m_driverManager.getUserDriver().removeAccessControlEntries(
+                    dbc,
+                    dbc.currentProject(),
+                    resource.getResourceId());
+
+                // delete relations
+                m_driverManager.getVfsDriver().deleteRelations(
+                    dbc,
+                    dbc.getRequestContext().currentProject().getId(),
+                    null,
+                    filter);
+            } finally {
+                dbc.getRequestContext().setCurrentProject(project);
+            }
         }
+        // delete properties
+        m_driverManager.getVfsDriver().deletePropertyObjects(
+            dbc,
+            CmsProject.ONLINE_PROJECT_ID,
+            resource,
+            CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+
+        // remove the online folder only if it is really deleted offline
+        m_driverManager.getVfsDriver().removeFolder(dbc, dbc.currentProject(), resource);
+
+        // remove ACL
+        m_driverManager.getUserDriver().removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
+
+        // delete relations
+        m_driverManager.getVfsDriver().deleteRelations(
+            dbc,
+            dbc.getRequestContext().currentProject().getId(),
+            null,
+            filter);
+        
+        // fire event
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap(
+            "resources",
+            Collections.singletonList(resource))));        
     }
 
     /**
@@ -2212,7 +2341,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 return m_driverManager.readFolder(dbc, ORGUNIT_BASE_FOLDER, CmsResourceFilter.DEFAULT);
             } catch (Exception e) {
                 // if fails, try to create it
-                CmsResource resource = internalCreateResourceForOrgUnit(dbc, ORGUNIT_BASE_FOLDER);
+                CmsResource resource = internalCreateResourceForOrgUnit(dbc, ORGUNIT_BASE_FOLDER, 0);
 
                 // write property
                 internalWriteOrgUnitProperty(dbc, resource, new CmsProperty(
@@ -2226,61 +2355,23 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * Removes the default permissions for the default users and groups of the given organizational unit.<p>
-     * 
-     * @param dbc the current database context
-     * @param orgUnit the organizational unit to remove the default permissions from
-     * @param resource the the resource to remove the permissions from
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected void internalRemoveOrganizationalUnitDefaultPermissions(
-        CmsDbContext dbc,
-        CmsOrganizationalUnit orgUnit,
-        CmsResource resource) throws CmsException {
-
-        String guestGroup = orgUnit.getDefaultUsers().getGroupGuests();
-        String administratorsGroup = orgUnit.getDefaultUsers().getGroupAdministrators();
-        String usersGroup = orgUnit.getDefaultUsers().getGroupUsers();
-        String projectmanagersGroup = orgUnit.getDefaultUsers().getGroupProjectmanagers();
-
-        CmsGroup guests = readGroup(dbc, guestGroup);
-        CmsGroup administrators = readGroup(dbc, administratorsGroup);
-        CmsGroup users = readGroup(dbc, usersGroup);
-        CmsGroup projectmanagers = readGroup(dbc, projectmanagersGroup);
-
-        // chacc "/" "group" "/Administrators" "+v+w+r+c+d+i"
-        m_driverManager.removeAccessControlEntry(dbc, resource, administrators.getId());
-
-        // chacc "/" "group" "/Projectmanagers" "+v+w+r+c+d+i"
-        m_driverManager.removeAccessControlEntry(dbc, resource, projectmanagers.getId());
-
-        // chacc "/" "group" "/Users" "+v+w+r+c+i"
-        m_driverManager.removeAccessControlEntry(dbc, resource, users.getId());
-
-        // chacc "/" "group" "/Guests" "+v+r+i"
-        m_driverManager.removeAccessControlEntry(dbc, resource, guests.getId());
-
-        // update the "last modified" information
-        m_driverManager.setDateLastModified(dbc, resource, resource.getDateLastModified());
-    }
-
-    /**
      * Returns the list of root paths associated to the organizational unit represented by the given resource.<p>
      * 
      * @param dbc the current db context
      * @param ouResource the resource that represents the organizational unit to get the resources for
      * 
-     * @return the list of associated root paths 
+     * @return the list of associated resource names
      * 
      * @throws CmsException if something goes wrong
      */
     protected List internalResourcesForOrgUnit(CmsDbContext dbc, CmsResource ouResource) throws CmsException {
 
-        // read the property with the associated resources
-        List paths = m_driverManager.readPropertyObject(dbc, ouResource, ORGUNIT_PROPERTY_VFS_PATHS, false).getStructureValueList();
-        if (paths == null) {
-            return Collections.EMPTY_LIST;
+        List relations = m_driverManager.getRelationsForResource(dbc, ouResource, CmsRelationFilter.TARGETS);
+        List paths = new ArrayList();
+        Iterator it = relations.iterator();
+        while (it.hasNext()) {
+            CmsRelation relation = (CmsRelation)it.next();
+            paths.add(relation.getTargetPath());
         }
         return paths;
     }
@@ -2301,57 +2392,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         oout.close();
 
         return bout.toByteArray();
-    }
-
-    /**
-     * Sets the default permissions for the default users and groups of the given organizational unit.<p>
-     * 
-     * @param dbc the current database context
-     * @param orgUnit the organizational unit to set the default permissions for
-     * @param resource the the resource to set the permissions for
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected void internalSetOrganizationalUnitDefaultPermissions(
-        CmsDbContext dbc,
-        CmsOrganizationalUnit orgUnit,
-        CmsResource resource) throws CmsDataAccessException {
-
-        String guestGroup = orgUnit.getDefaultUsers().getGroupGuests();
-        String administratorsGroup = orgUnit.getDefaultUsers().getGroupAdministrators();
-        String usersGroup = orgUnit.getDefaultUsers().getGroupUsers();
-        String projectmanagersGroup = orgUnit.getDefaultUsers().getGroupProjectmanagers();
-
-        CmsGroup guests = readGroup(dbc, guestGroup);
-        CmsGroup administrators = readGroup(dbc, administratorsGroup);
-        CmsGroup users = readGroup(dbc, usersGroup);
-        CmsGroup projectmanagers = readGroup(dbc, projectmanagersGroup);
-
-        // chacc "/" "group" "/Administrators" "+v+w+r+c+d+i"
-        CmsAccessControlEntry acEntry = new CmsAccessControlEntry(
-            resource.getResourceId(),
-            administrators.getId(),
-            "+v+w+r+c+d+i");
-        acEntry.setFlagsForPrincipal(administrators);
-        writeAccessControlEntry(dbc, dbc.currentProject(), acEntry);
-
-        // chacc "/" "group" "/Projectmanagers" "+v+w+r+c+d+i"
-        acEntry = new CmsAccessControlEntry(resource.getResourceId(), projectmanagers.getId(), "+v+w+r+c+d+i");
-        acEntry.setFlagsForPrincipal(projectmanagers);
-        writeAccessControlEntry(dbc, dbc.currentProject(), acEntry);
-
-        // chacc "/" "group" "/Users" "+v+w+r+c+i"
-        acEntry = new CmsAccessControlEntry(resource.getResourceId(), users.getId(), "+v+w+r+c+i");
-        acEntry.setFlagsForPrincipal(users);
-        writeAccessControlEntry(dbc, dbc.currentProject(), acEntry);
-
-        // chacc "/" "group" "/Guests" "+v+r+i"
-        acEntry = new CmsAccessControlEntry(resource.getResourceId(), guests.getId(), "+v+r+i");
-        acEntry.setFlagsForPrincipal(guests);
-        writeAccessControlEntry(dbc, dbc.currentProject(), acEntry);
-
-        // update the "last modified" information
-        m_driverManager.setDateLastModified(dbc, resource, resource.getDateLastModified());
     }
 
     /**
@@ -2443,7 +2483,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         // write the property
         m_driverManager.writePropertyObject(dbc, resource, property);
         resource.setState(CmsResource.STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeResource(dbc, dbc.currentProject(), resource, CmsDriverManager.UPDATE_ALL);
+        m_driverManager.getVfsDriver().writeResource(
+            dbc,
+            dbc.currentProject(),
+            resource,
+            CmsDriverManager.NOTHING_CHANGED);
 
         // online persistence
         CmsProject project = dbc.currentProject();
@@ -2455,7 +2499,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 dbc,
                 dbc.currentProject(),
                 resource,
-                CmsDriverManager.UPDATE_ALL);
+                CmsDriverManager.NOTHING_CHANGED);
         } finally {
             dbc.getRequestContext().setCurrentProject(project);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2007/01/08 14:03:03 $
- * Version: $Revision: 1.83.4.7 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.83.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83.4.7 $ 
+ * @version $Revision: 1.83.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -203,19 +203,18 @@ class CmsShellCommands implements I_CmsShellCommands {
         String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
         try {
             m_cms.getRequestContext().setSiteRoot("/");
-
             CmsProject project = m_cms.createProject(
                 name,
                 description,
-                OpenCms.getDefaultUsers().getGroupUsers(),
-                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                CmsRole.WORKPLACE_USER.getGroupName(),
+                CmsRole.PROJECT_MANAGER.getGroupName(),
                 CmsProject.PROJECT_TYPE_NORMAL);
             m_cms.getRequestContext().setCurrentProject(project);
             m_cms.copyResourceToProject("/");
         } finally {
             m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
-        if (m_cms.hasRole(CmsRole.SEARCH_MANAGER)) {
+        if (m_cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
             // re-initialize the search indexes after default project generation
             OpenCms.getSearchManager().initialize(m_cms);
         }
@@ -659,8 +658,8 @@ class CmsShellCommands implements I_CmsShellCommands {
         CmsProject project = m_cms.createProject(
             "SystemUpdate",
             getMessages().key(Messages.GUI_SHELL_IMPORT_TEMP_PROJECT_NAME_0),
-            OpenCms.getDefaultUsers().getGroupAdministrators(),
-            OpenCms.getDefaultUsers().getGroupAdministrators(),
+            CmsRole.ROOT_ADMIN.getGroupName(),
+            CmsRole.ROOT_ADMIN.getGroupName(),
             CmsProject.PROJECT_TYPE_TEMPORARY);
         int id = project.getId();
         m_cms.getRequestContext().setCurrentProject(project);
@@ -674,7 +673,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         m_cms.publishProject();
         OpenCms.getPublishManager().waitWhileRunning();
     }
-    
+
     /**
      * @see org.opencms.main.I_CmsShellCommands#initShellCmsObject(org.opencms.file.CmsObject, org.opencms.main.CmsShell)
      */
@@ -852,7 +851,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @throws Exception if something goes wrong
      */
     public void publishProjectAndWait() throws Exception {
-        
+
         m_cms.publishProject();
         OpenCms.getPublishManager().waitWhileRunning();
     }

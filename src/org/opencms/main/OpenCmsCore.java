@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/01/08 14:03:03 $
- * Version: $Revision: 1.218.4.19 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.218.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -136,7 +136,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.19 $ 
+ * @version $Revision: 1.218.4.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -739,7 +739,7 @@ public final class OpenCmsCore {
 
         String userName = contextInfo.getUserName();
 
-        if ((adminCms == null) || !adminCms.hasRole(CmsRole.ADMINISTRATOR)) {
+        if ((adminCms == null) || !adminCms.hasRole(CmsRole.ROOT_ADMIN)) {
             if (!userName.endsWith(getDefaultUsers().getUserGuest())
                 && !userName.endsWith(getDefaultUsers().getUserExport())) {
 
@@ -906,16 +906,6 @@ public final class OpenCmsCore {
 
         // read the default user configuration
         m_defaultUsers = systemConfiguration.getCmsDefaultUsers();
-
-        try {
-            // initialize the group names for the system roles 
-            CmsRole.initialize(m_defaultUsers);
-        } catch (CmsSecurityException e) {
-            // this should never happen
-            throw new CmsInitException(
-                Messages.get().container(Messages.ERR_CRITICAL_INIT_GENERIC_1, e.getMessage()),
-                e);
-        }
 
         // get the site manager from the configuration
         m_siteManager = systemConfiguration.getSiteManager();
@@ -1713,18 +1703,13 @@ public final class OpenCmsCore {
         res.setStatus(status);
 
         try {
-            isNotGuest = isNotGuest
-                || ((cms != null)
-                    && (cms.getRequestContext().currentUser() != null)
-                    && (!OpenCms.getDefaultUsers().getUserGuest().equals(
-                        cms.getRequestContext().currentUser().getName())) && ((cms.userInGroup(
-                    cms.getRequestContext().currentUser().getName(),
-                    OpenCms.getDefaultUsers().getGroupUsers()))
-                    || (cms.userInGroup(
+            if (cms != null && cms.getRequestContext().currentUser() != null) {
+                isNotGuest = isNotGuest && (!cms.getRequestContext().currentUser().isGuestUser());
+                isNotGuest = isNotGuest
+                    && (!cms.userInGroup(
                         cms.getRequestContext().currentUser().getName(),
-                        OpenCms.getDefaultUsers().getGroupProjectmanagers())) || (cms.userInGroup(
-                    cms.getRequestContext().currentUser().getName(),
-                    OpenCms.getDefaultUsers().getGroupAdministrators()))));
+                        OpenCms.getDefaultUsers().getGroupGuests()));
+            }
         } catch (CmsException e) {
             // result is false
         }
@@ -1958,7 +1943,7 @@ public final class OpenCmsCore {
                     m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
                     site.getSiteRoot(),
                     CmsProject.ONLINE_PROJECT_ID,
-                    null);
+                    "/");
             }
         }
         // return the initialized cms user context object

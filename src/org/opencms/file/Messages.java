@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Messages.java,v $
- * Date   : $Date: 2007/01/08 14:03:04 $
- * Version: $Revision: 1.20.4.4 $
+ * Date   : $Date: 2007/01/15 18:48:34 $
+ * Version: $Revision: 1.20.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.20.4.4 $
+ * @version $Revision: 1.20.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -84,9 +84,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0 = "ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_ORGUNIT_ROOT_EDITION_0 = "ERR_ORGUNIT_ROOT_EDITION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_OVERWRITE_RESOURCE_2 = "ERR_OVERWRITE_RESOURCE_2";

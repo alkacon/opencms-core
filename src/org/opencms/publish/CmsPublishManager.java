@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2006/12/20 14:01:20 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.5
  */
@@ -80,7 +80,7 @@ public class CmsPublishManager {
     public void abortPublishJob(CmsObject cms, CmsPublishJobEnqueued publishJob)
     throws CmsException, CmsSecurityException, CmsPublishException {
 
-        if (!cms.hasRole(CmsRole.ADMINISTRATOR)
+        if (!cms.hasRole(CmsRole.ROOT_ADMIN)
             && !cms.getRequestContext().currentUser().getName().equals(publishJob.getUserName())) {
             // Can only be executed by somebody with the role CmsRole#PROJECT_MANAGER or the owner of the job
             throw new CmsSecurityException(Messages.get().container(

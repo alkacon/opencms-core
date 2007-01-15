@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/01/08 14:03:01 $
- * Version: $Revision: 1.43.4.11 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.43.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.11 $
+ * @version $Revision: 1.43.4.12 $
  * 
  * @since 6.0.0 
  */
@@ -65,9 +65,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_WEB_1 = "ERR_ADD_USER_WEB_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_ADMIN_REMOVED_FROM_ADMINISTRATORS_0 = "ERR_ADMIN_REMOVED_FROM_ADMINISTRATORS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BACKUP_PROJECT_4 = "ERR_BACKUP_PROJECT_4";
@@ -110,9 +107,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CLOSE_VFS_DRIVER_0 = "ERR_CLOSE_VFS_DRIVER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CONSTRAINT_DELETE_GROUP_DEFAULT_1 = "ERR_CONSTRAINT_DELETE_GROUP_DEFAULT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_ACE_2 = "ERR_COPY_ACE_2";
@@ -193,6 +187,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_DELETE_RESOURCE_1 = "ERR_DELETE_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_ROLE_GROUP_1 = "ERR_DELETE_ROLE_GROUP_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_STATEXP_PUBLISHED_RESOURCES_0 = "ERR_DELETE_STATEXP_PUBLISHED_RESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -271,6 +268,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_GET_RESOURCES_IN_TIME_RANGE_3 = "ERR_GET_RESOURCES_IN_TIME_RANGE_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_GET_ROLES_OF_USER_IN_ORGUNIT_2 = "ERR_GET_ROLES_OF_USER_IN_ORGUNIT_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_TASK_PARAM_2 = "ERR_GET_TASK_PARAM_2";
 
     /** Message constant for key in the resource bundle. */
@@ -338,6 +338,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ONLINE_RESOURCE_EXISTS_2 = "ERR_ONLINE_RESOURCE_EXISTS_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ORGUNIT_DELETE_CURRENT_USER_1 = "ERR_ORGUNIT_DELETE_CURRENT_USER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ORGUNIT_DELETE_GROUPS_1 = "ERR_ORGUNIT_DELETE_GROUPS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ORGUNIT_DELETE_IN_CONTEXT_1 = "ERR_ORGUNIT_DELETE_IN_CONTEXT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ORGUNIT_DELETE_SUB_ORGUNITS_1 = "ERR_ORGUNIT_DELETE_SUB_ORGUNITS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ORGUNIT_DELETE_USERS_1 = "ERR_ORGUNIT_DELETE_USERS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ORGUNIT_MOVE_GROUP_3 = "ERR_ORGUNIT_MOVE_GROUP_3";
@@ -566,6 +581,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESTORE_RESOURCE_2 = "ERR_RESTORE_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ROLE_IS_ORGUNIT_DEPENDENT_1 = "ERR_ROLE_IS_ORGUNIT_DEPENDENT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_DATE_EXPIRED_2 = "ERR_SET_DATE_EXPIRED_2";

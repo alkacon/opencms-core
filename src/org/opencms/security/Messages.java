@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2007/01/08 14:02:58 $
- * Version: $Revision: 1.20.4.5 $
+ * Date   : $Date: 2007/01/15 18:48:35 $
+ * Version: $Revision: 1.20.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.5 $ 
+ * @version $Revision: 1.20.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,10 +109,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_NO_PERMISSION_RESOURCE_1 = "ERR_NO_PERMISSION_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_NOT_IN_ROLE_2 = "ERR_NOT_IN_ROLE_2";
+    public static final String ERR_NOT_MANAGER_OF_PROJECT_2 = "ERR_NOT_MANAGER_OF_PROJECT_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_NOT_MANAGER_OF_PROJECT_2 = "ERR_NOT_MANAGER_OF_PROJECT_2";
+    public static final String ERR_ORGUNIT_ROOT_EDITION_0 = "ERR_ORGUNIT_ROOT_EDITION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PASSWORD_TOO_SHORT_1 = "ERR_PASSWORD_TOO_SHORT_1";
@@ -133,6 +133,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UNSUPPORTED_PASSWORD_ENCODING_1 = "ERR_UNSUPPORTED_PASSWORD_ENCODING_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_USER_NOT_IN_ROLE_2 = "ERR_USER_NOT_IN_ROLE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_USER_NOT_IN_ROLE_FOR_ORGUNIT_3 = "ERR_USER_NOT_IN_ROLE_FOR_ORGUNIT_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_USER_NOT_IN_ROLE_FOR_RESOURCE_3 = "ERR_USER_NOT_IN_ROLE_FOR_RESOURCE_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_ZIPCODE_VALIDATION_1 = "ERR_ZIPCODE_VALIDATION_1";
 
     /** Message constant for key in the resource bundle. */
@@ -142,46 +151,25 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLENAME_ADMINISTRATOR_0 = "GUI_ROLENAME_ADMINISTRATOR_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLENAME_DATABASE_MANAGER_0 = "GUI_ROLENAME_DATABASE_MANAGER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_DEVELOPER_0 = "GUI_ROLENAME_DEVELOPER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_EXPORT_DATABASE_0 = "GUI_ROLENAME_EXPORT_DATABASE_0";
+    public static final String GUI_ROLENAME_DIRECT_EDIT_USER_0 = "GUI_ROLENAME_DIRECT_EDIT_USER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_HISTORY_MANAGER_0 = "GUI_ROLENAME_HISTORY_MANAGER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_IMPORT_DATABASE_0 = "GUI_ROLENAME_IMPORT_DATABASE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_MODULE_MANAGER_0 = "GUI_ROLENAME_MODULE_MANAGER_0";
+    public static final String GUI_ROLENAME_ORGUNIT_MANAGER_0 = "GUI_ROLENAME_ORGUNIT_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_PROJECT_MANAGER_0 = "GUI_ROLENAME_PROJECT_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_PROPERTY_MANAGER_0 = "GUI_ROLENAME_PROPERTY_MANAGER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_RESOURCE_TYPE_MANAGER_0 = "GUI_ROLENAME_RESOURCE_TYPE_MANAGER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_ROOT_FOLDER_ACCESS_0 = "GUI_ROLENAME_ROOT_FOLDER_ACCESS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_SCHEDULER_MANAGER_0 = "GUI_ROLENAME_SCHEDULER_MANAGER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_SEARCH_MANAGER_0 = "GUI_ROLENAME_SEARCH_MANAGER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_SYSTEM_USER_0 = "GUI_ROLENAME_SYSTEM_USER_0";
+    public static final String GUI_ROLENAME_ROOT_ADMIN_0 = "GUI_ROLENAME_ROOT_ADMIN_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_VFS_MANAGER_0 = "GUI_ROLENAME_VFS_MANAGER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_WORKFLOW_MANAGER_0 = "GUI_ROLENAME_WORKFLOW_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_WORKPLACE_MANAGER_0 = "GUI_ROLENAME_WORKPLACE_MANAGER_0";

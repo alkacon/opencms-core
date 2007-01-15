@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Attic/CmsRfsFileDownloadServlet.java,v $
- * Date   : $Date: 2006/07/20 09:46:57 $
- * Version: $Revision: 1.11.4.1 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.11.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.11.4.1 $ 
+ * @version $Revision: 1.11.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,7 +121,7 @@ public final class CmsRfsFileDownloadServlet extends HttpServlet {
         if (CmsStringUtil.isEmpty(fileToFind)) {
             throw new ServletException(Messages.get().getBundle().key(Messages.ERR_DOWNLOAD_SERVLET_FILE_ARG_0));
         } else {
-            
+
             CmsFlexController controller = CmsFlexController.getController(req);
             try {
                 // check if the current user is allowed to download files
@@ -129,16 +129,17 @@ public final class CmsRfsFileDownloadServlet extends HttpServlet {
             } catch (CmsRoleViolationException e) {
                 // user is not allowed, throw exception
                 CmsObject cms = controller.getCmsObject();
-                CmsException exc = CmsRole.WORKPLACE_MANAGER.createRoleViolationException(cms.getRequestContext());
+                CmsException exc = CmsRole.WORKPLACE_MANAGER.createRoleViolationException(
+                    cms.getRequestContext(),
+                    (String)null);
                 throw new ServletException(exc.getLocalizedMessage(cms.getRequestContext().getLocale()));
             }
-            
+
             File downloadFile = new File(fileToFind);
             res.setHeader("Content-Disposition", new StringBuffer("attachment; filename=\"").append(
                 downloadFile.getName()).append("\"").toString());
             res.setContentLength((int)downloadFile.length());
 
-            
             res = controller.getTopResponse();
             res.setContentType("application/octet-stream");
 

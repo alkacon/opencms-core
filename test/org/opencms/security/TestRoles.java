@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/01/15 18:48:35 $
+ * Version: $Revision: 1.4.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,12 +28,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.security;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -52,11 +51,12 @@ public class TestRoles extends OpenCmsTestCase {
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestRoles(String arg0) {
+
         super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * Setup is done without importing vfs data.
@@ -64,44 +64,49 @@ public class TestRoles extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestRoles.class.getName());
 
         suite.addTest(new TestRoles("testRoleExceptionMessages"));
-        
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms(null, null, false);
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
-    } 
-    
+    }
+
     /**
      * Tests if all keys in the system roles exception messages can be resolved.<p>
      * 
      * @throws Exception if the test fails
      */
     public void testRoleExceptionMessages() throws Exception {
-        
+
         echo("Testing role exception messages");
-        CmsObject cms = getCmsObject();     
-        
+        CmsObject cms = getCmsObject();
+
         String message;
-        
+
         // check the system roles
         Iterator i = CmsRole.getSystemRoles().iterator();
         while (i.hasNext()) {
             CmsRole role = (CmsRole)i.next();
-            CmsRoleViolationException ex = role.createRoleViolationException(cms.getRequestContext());
+            CmsRoleViolationException ex = role.createRoleViolationException(
+                cms.getRequestContext(),
+                (String)null);
             message = ex.getMessage();
             System.out.println(message);
             // check if a key could not be resolved
@@ -109,16 +114,16 @@ public class TestRoles extends OpenCmsTestCase {
             // very simple check if message still containes unresolved '{n}'
             assertFalse(message.indexOf('{') >= 0);
         }
-        
+
         // check a user defined role
         String roleName = "MY_VERY_SPECIAL_ROLE";
-        CmsRole myRole = new CmsRole(roleName, OpenCms.getDefaultUsers().getGroupAdministrators(), new CmsRole[0]);
-        message = myRole.createRoleViolationException(cms.getRequestContext()).getMessage();
-        
+        CmsRole myRole = new CmsRole(roleName, null, CmsRole.ROOT_ADMIN.getGroupName(), true);
+        message = myRole.createRoleViolationException(cms.getRequestContext(), (String)null).getMessage();
+
         System.out.println(message);
         // check if a key could not be resolved
         assertFalse(message.indexOf(CmsMessages.UNKNOWN_KEY_EXTENSION) >= 0);
         // very simple check if message still containes unresolved '{n}'
-        assertFalse(message.indexOf('{') >= 0);        
-    }    
+        assertFalse(message.indexOf('{') >= 0);
+    }
 }

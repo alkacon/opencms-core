@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/workflow/Attic/CmsWorkflowToolHandler.java,v $
- * Date   : $Date: 2006/08/25 14:00:41 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,6 +60,6 @@ public class CmsWorkflowToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.SYSTEM_USER);
+        return cms.hasRole(CmsRole.WORKPLACE_MANAGER);
     }
 }

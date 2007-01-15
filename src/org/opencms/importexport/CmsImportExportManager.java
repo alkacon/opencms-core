@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2006/08/19 13:40:37 $
- * Version: $Revision: 1.30.4.1 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.30.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30.4.1 $ 
+ * @version $Revision: 1.30.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -458,7 +458,7 @@ public class CmsImportExportManager {
     public void exportData(CmsObject cms, I_CmsImportExportHandler handler, I_CmsReport report)
     throws CmsConfigurationException, CmsImportExportException, CmsRoleViolationException {
 
-        cms.checkRole(CmsRole.EXPORT_DATABASE);
+        cms.checkRole(CmsRole.DATABASE_MANAGER);
         handler.exportData(cms, report);
     }
 
@@ -606,7 +606,7 @@ public class CmsImportExportManager {
     throws CmsImportExportException, CmsXmlException, CmsRoleViolationException, CmsException {
 
         // check the required role permissions
-        cms.checkRole(CmsRole.IMPORT_DATABASE);
+        cms.checkRole(CmsRole.DATABASE_MANAGER);
 
         try {
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));

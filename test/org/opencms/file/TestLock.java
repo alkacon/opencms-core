@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2006/12/21 15:32:11 $
- * Version: $Revision: 1.20.4.5 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.20.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,10 @@ package org.opencms.file;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockType;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.5 $
+ * @version $Revision: 1.20.4.6 $
  */
 public class TestLock extends OpenCmsTestCase {
 
@@ -610,7 +610,7 @@ public class TestLock extends OpenCmsTestCase {
             cms.chacc(
                 source,
                 I_CmsPrincipal.PRINCIPAL_GROUP,
-                OpenCms.getDefaultUsers().getGroupAdministrators(),
+                CmsRole.ROOT_ADMIN.getGroupName(),
                 permissions.getAllowedPermissions(),
                 permissions.getDeniedPermissions(),
                 CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);

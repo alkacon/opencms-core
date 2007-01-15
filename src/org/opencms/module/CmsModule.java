@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2007/01/15 18:48:35 $
+ * Version: $Revision: 1.30.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.30.4.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -1026,13 +1026,13 @@ public class CmsModule implements Comparable {
      * 
      * @param cms an initialized OpenCms user context
      * 
-     * @throws CmsRoleViolationException if the given users does not have the <code>{@link CmsRole#MODULE_MANAGER}</code> role 
+     * @throws CmsRoleViolationException if the given users does not have the <code>{@link CmsRole#DATABASE_MANAGER}</code> role 
      */
     protected void initialize(CmsObject cms) throws CmsRoleViolationException {
 
         checkFrozen();
         // check if the user has the required permissions
-        cms.checkRole(CmsRole.MODULE_MANAGER);
+        cms.checkRole(CmsRole.DATABASE_MANAGER);
 
         m_frozen = true;
         m_resources = Collections.unmodifiableList(m_resources);

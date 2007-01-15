@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsStaticExportToolHandler.java,v $
- * Date   : $Date: 2005/06/25 14:28:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/01/15 18:48:36 $
+ * Version: $Revision: 1.6.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,11 +40,11 @@ import org.opencms.main.OpenCms;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.8.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsStaticExportToolHandler extends CmsExportToolHandler {
+public class CmsStaticExportToolHandler extends CmsDatabaseToolHandler {
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)

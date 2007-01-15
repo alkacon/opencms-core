@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/01/08 14:03:01 $
- * Version: $Revision: 1.570.2.44 $
+ * Date   : $Date: 2007/01/15 18:48:32 $
+ * Version: $Revision: 1.570.2.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsOrganizationalUnit;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -68,7 +67,6 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsMultiException;
@@ -85,6 +83,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsAuthentificationException;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
@@ -730,12 +729,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // duplicate logic from CmsSecurityManager#hasPermissions() because lock state can't be ignored
         // if another user has locked the file, the current user can never get WRITE permissions with the default check
         int denied = 0;
+
         // check if the current user is admin
-        boolean canIgnorePermissions = m_securityManager.hasRole(dbc, CmsRole.VFS_MANAGER);
+        boolean canIgnorePermissions = m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.VFS_MANAGER, resource);
         // if the resource type is jsp
         // write is only allowed for administrators
         if (!canIgnorePermissions && (resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId())) {
-            if (!m_securityManager.hasRole(dbc, CmsRole.DEVELOPER)) {
+            if (!m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.DEVELOPER, resource)) {
                 denied |= CmsPermissionSet.PERMISSION_WRITE;
             }
         }
@@ -1890,8 +1890,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsProject createTempfileProject(CmsDbContext dbc) throws CmsException {
 
         // read the needed groups from the cms
-        CmsGroup projectUserGroup = readGroup(dbc, OpenCms.getDefaultUsers().getGroupUsers());
-        CmsGroup projectManagerGroup = readGroup(dbc, OpenCms.getDefaultUsers().getGroupAdministrators());
+        CmsGroup projectUserGroup = readGroup(dbc, dbc.currentProject().getGroupId());
+        CmsGroup projectManagerGroup = readGroup(dbc, dbc.currentProject().getManagerGroupId());
 
         CmsProject tempProject = m_projectDriver.createProject(
             dbc,
@@ -2165,25 +2165,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Deletes a user group.<p>
-     *
-     * Only groups that contain no subgroups can be deleted.<p>
-     * 
-     * @param dbc the current database context
-     * @param name the name of the group that is to be deleted
-     *
-     * @throws CmsException if operation was not succesfull
-     * @throws CmsDataAccessException if group to be deleted contains user
-     */
-    public void deleteGroup(CmsDbContext dbc, String name) throws CmsDataAccessException, CmsException {
-
-        deleteGroup(dbc, readGroup(dbc, name), null);
-    }
-
-    /**
      * Deletes an organizational unit.<p>
      *
      * Only organizational units that contain no suborganizational unit can be deleted.<p>
+     * 
+     * The organizational unit can not be delete if it is used in the reuqest context, 
+     * or if the current user belongs to it.<p>
+     * 
+     * All users and groups in the given organizational unit will be deleted.<p>
      * 
      * @param dbc the current db context
      * @param organizationalUnit the organizational unit to delete
@@ -2195,18 +2184,45 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void deleteOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit)
     throws CmsException {
 
-        // get online project
-        CmsProject onlineProject = readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
-        // remove the aces
-        m_userDriver.removeAccessControlEntriesForPrincipal(
-            dbc,
-            dbc.currentProject(),
-            onlineProject,
-            organizationalUnit.getId());
+        // check organizational unit in context
+        if (dbc.getRequestContext().getOuFqn().equals(organizationalUnit.getFqn())) {
+            throw new CmsDbConsistencyException(Messages.get().container(
+                Messages.ERR_ORGUNIT_DELETE_IN_CONTEXT_1,
+                organizationalUnit.getFqn()));
+        }
+        // check organizational unit for user
+        if (dbc.currentUser().getOrganizationalUnitFqn().equals(organizationalUnit.getFqn())) {
+            throw new CmsDbConsistencyException(Messages.get().container(
+                Messages.ERR_ORGUNIT_DELETE_CURRENT_USER_1,
+                organizationalUnit.getFqn()));
+        }
+        // check sub organizational units
+        if (!getOrganizationalUnits(dbc, organizationalUnit, true).isEmpty()) {
+            throw new CmsDbConsistencyException(Messages.get().container(
+                Messages.ERR_ORGUNIT_DELETE_SUB_ORGUNITS_1,
+                organizationalUnit.getFqn()));
+        }
+        // check groups
+        if (!getGroupsForOrganizationalUnit(dbc, organizationalUnit, false).isEmpty()) {
+            throw new CmsDbConsistencyException(Messages.get().container(
+                Messages.ERR_ORGUNIT_DELETE_GROUPS_1,
+                organizationalUnit.getFqn()));
+        }
+        // check users
+        if (!getUsersForOrganizationalUnit(dbc, organizationalUnit, false).isEmpty()) {
+            throw new CmsDbConsistencyException(Messages.get().container(
+                Messages.ERR_ORGUNIT_DELETE_USERS_1,
+                organizationalUnit.getFqn()));
+        }
+
         // remove the organizational unit itself
         m_userDriver.deleteOrganizationalUnit(dbc, organizationalUnit);
         // remove it from the cache
         m_orgUnitCache.remove(new CacheId(organizationalUnit));
+        // flush all caches
+        clearAccessControlListCache();
+        m_propertyCache.clear();
+
     }
 
     /**
@@ -2386,7 +2402,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             filter = filter.filterStructureId(resource.getStructureId());
             filter = filter.filterPath(resource.getRootPath());
         }
-        m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getId(), filter);
+        m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getId(), null, filter);
     }
 
     /**
@@ -2480,6 +2496,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             StringBuffer errorResNames = new StringBuffer(128);
             while (childResources.hasNext()) {
                 CmsResource errorRes = (CmsResource)childResources.next();
+                if (errorRes.getState().isDeleted()) {
+                    continue;
+                }
                 // if deleting offline, or not moved, or just renamed inside the deleted folder
                 // so, it may remain some orphan online entries for moved resources
                 // which will be fixed during the publishing of the moved resources
@@ -2653,10 +2672,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             withACEs = false;
             replacementUser = readUser(dbc, OpenCms.getDefaultUsers().getUserDeletedResource());
         }
+
+        boolean isVfsManager = m_securityManager.hasRole(dbc, replacementUser, CmsRole.VFS_MANAGER, (String)null);
         Iterator itGroups = getGroupsOfUser(dbc, username).iterator();
         while (itGroups.hasNext()) {
             CmsGroup group = (CmsGroup)itGroups.next();
-            if (!m_securityManager.hasRole(dbc, replacementUser, CmsRole.VFS_MANAGER)) {
+            if (!isVfsManager) {
                 // add replacement user to user groups
                 if (!userInGroup(dbc, replacementUser.getName(), group.getName())) {
                     addUserToGroup(dbc, replacementUser.getName(), group.getName());
@@ -3043,7 +3064,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List getAllAccessibleProjects(CmsDbContext dbc) throws CmsException {
 
-        if (m_securityManager.hasRole(dbc, CmsRole.PROJECT_MANAGER)) {
+        if (m_securityManager.hasRole(dbc, CmsRole.PROJECT_MANAGER, null)) {
             // user is allowed to access all existing projects
             return m_projectDriver.readProjects(dbc, CmsProject.PROJECT_STATE_UNLOCKED);
         }
@@ -3095,12 +3116,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // the result set
         Set projects = new HashSet();
 
-        if (m_securityManager.hasRole(dbc, CmsRole.PROJECT_MANAGER)) {
-
+        if (m_securityManager.hasRole(dbc, CmsRole.PROJECT_MANAGER, null)) {
             // user is allowed to access all existing projects
             projects.addAll(m_projectDriver.readProjects(dbc, CmsProject.PROJECT_STATE_UNLOCKED));
         } else {
-
             // add all projects which are owned by the user
             projects.addAll(m_projectDriver.readProjectsForUser(dbc, dbc.currentUser()));
 
@@ -3112,7 +3131,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 projects.addAll(m_projectDriver.readProjectsForManagerGroup(dbc, (CmsGroup)groups.get(i)));
             }
         }
-
         // remove the online-project, it is not manageable!
         projects.remove(readProject(dbc, CmsProject.ONLINE_PROJECT_ID));
 
@@ -3547,6 +3565,29 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the list of all user roles for the given organizational unit.<p>
+     * 
+     * @param dbc the current database context
+     * @param user the user to get the roles for
+     * @param orgUnit the organizational unit to get the roles for, may be <code>null</code>
+     * @param recursive if set to <code>true</code> also roles for higher organizational unit are considered
+     * @param includeChildRoles if set to <code>true</code> all roles are expanded
+     * 
+     * @return a list of {@link CmsRole} objects for the given user
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getRolesOfUserInOrganizationalUnit(
+        CmsDbContext dbc,
+        CmsUser user,
+        CmsOrganizationalUnit orgUnit,
+        boolean recursive,
+        boolean includeChildRoles) throws CmsException {
+
+        return new ArrayList();
+    }
+
+    /**
      * Returns the security manager this driver manager belongs to.<p>
      * 
      * @return the security manager this driver manager belongs to
@@ -3798,17 +3839,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_concurrentCreateResourceLocks = new Vector();
 
         // fills the defaults if needed
-        CmsDbContext dbc = new CmsDbContext();
-        getUserDriver().fillDefaults(dbc);
-        getProjectDriver().fillDefaults(dbc);
+        getUserDriver().fillDefaults(new CmsDbContext());
+        getProjectDriver().fillDefaults(new CmsDbContext());
 
         // create the root organizational unit if needed
-        getUserDriver().createRootOrganizationalUnit(
-            new CmsDbContext(new CmsRequestContext(readUser(
-                new CmsDbContext(),
-                OpenCms.getDefaultUsers().getUserAdmin()), readProject(
-                new CmsDbContext(),
-                I_CmsProjectDriver.SETUP_PROJECT_NAME), null, "/", null, null, null, 0, null, null, null)));
+        CmsDbContext dbc = new CmsDbContext(new CmsRequestContext(
+            readUser(new CmsDbContext(), OpenCms.getDefaultUsers().getUserAdmin()),
+            readProject(new CmsDbContext(), CmsProject.ONLINE_PROJECT_ID),
+            null,
+            "/",
+            null,
+            null,
+            null,
+            0,
+            null,
+            null,
+            null));
+        getUserDriver().createRootOrganizationalUnit(dbc);
     }
 
     /**
@@ -3848,20 +3895,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public boolean isTempfileProject(CmsProject project) {
 
         return project.getName().equals("tempFileProject");
-    }
-
-    /**
-     * Determines if the user is a member of the default users group.<p>
-     *
-     * All users are granted.
-     *
-     * @param dbc the current database context
-     * @return true, if the users current group is the projectleader-group, else it returns false
-     * @throws CmsException if operation was not succesful
-     */
-    public boolean isUser(CmsDbContext dbc) throws CmsException {
-
-        return userInGroup(dbc, dbc.currentUser().getName(), OpenCms.getDefaultUsers().getGroupUsers());
     }
 
     /**
@@ -4111,7 +4144,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             OpenCms.getLoginManager().removeInvalidLogins(userName, remoteAddress);
         }
 
-        if (!m_securityManager.hasRole(dbc, newUser, CmsRole.ADMINISTRATOR)) {
+        if (!m_securityManager.hasRole(dbc, newUser, CmsRole.ADMINISTRATOR, dbc.getRequestContext().getOuFqn())) {
             // new user is not Administrator, check if login is currently allowed
             OpenCms.getLoginManager().checkLoginAllowed();
         }
@@ -5873,17 +5906,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the current db context
      * @param orgUnit the organizational unit to remove the resource from
-     * @param resource the resource that is to be removed from the organizational unit
+     * @param resourceName the root path of the resource that is to be removed from the organizational unit
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#addResourceToOrgUnit(String, String)
      * @see CmsObject#addResourceToOrgUnit(String, String)
      */
-    public void removeResourceFromOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
+    public void removeResourceFromOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, String resourceName)
     throws CmsException {
 
-        m_userDriver.removeResourceFromOrganizationalUnit(dbc, orgUnit, resource);
+        m_userDriver.removeResourceFromOrganizationalUnit(dbc, orgUnit, resourceName);
     }
 
     /**
@@ -5948,12 +5981,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 groupname));
         }
 
-        if (username.equals(OpenCms.getDefaultUsers().getUserAdmin())
-            && groupname.equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
-            // the admin user cannot be removed from the administrators group, throw exception
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_ADMIN_REMOVED_FROM_ADMINISTRATORS_0));
-        }
         CmsUser user;
         CmsGroup group;
 
@@ -6608,7 +6635,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             siblings = new ArrayList();
             siblings.add(resource);
         }
-        // create the relations in content for all siblings 
+        // clean the relations in content for all siblings 
         Iterator it = siblings.iterator();
         while (it.hasNext()) {
             CmsResource sibling = (CmsResource)it.next();
@@ -7127,7 +7154,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_STATE);
 
-        // make sure the written resource has the state corretly set
+        // make sure the written resource has the state correctly set
         if (resource.getState().isUnchanged()) {
             resource.setState(CmsResource.STATE_CHANGED);
         }
@@ -7263,12 +7290,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     protected boolean isWebgroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
 
-        CmsUUID user = m_userDriver.readGroup(dbc, OpenCms.getDefaultUsers().getGroupUsers()).getId();
-        CmsUUID admin = m_userDriver.readGroup(dbc, OpenCms.getDefaultUsers().getGroupAdministrators()).getId();
-        CmsUUID manager = m_userDriver.readGroup(dbc, OpenCms.getDefaultUsers().getGroupProjectmanagers()).getId();
-
-        if ((group.getId().equals(user)) || (group.getId().equals(admin)) || (group.getId().equals(manager))) {
-            return false;
+        if (OpenCms.getDefaultUsers().isGroupGuests(group.getName())) {
+            return true;
         } else {
             // check if the group belongs to Users, Administrators or Projectmanager
             if (!group.getParentId().isNullUUID()) {
@@ -7276,7 +7299,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 return isWebgroup(dbc, m_userDriver.readGroup(dbc, group.getParentId()));
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -8309,5 +8332,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // update the structure state
             m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE_STATE);
         }
+    }
+
+    /**
+     * Returns all deepest organizational units that contains the given resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to look for
+     * 
+     * @return a list of organizational units that contains the given resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    public List getOrganizationalUnitsForResource(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
+
+        List orgUnits = new ArrayList();
+        Iterator itOuFqns = m_userDriver.getOrganizationalUnitsForResource(dbc, resource).iterator();
+        while (itOuFqns.hasNext()) {
+            String ouFqn = (String)itOuFqns.next();
+            orgUnits.add(ouFqn);
+        }
+        return orgUnits;
     }
 }
