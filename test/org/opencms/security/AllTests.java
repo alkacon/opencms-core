@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/AllTests.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/01/16 09:50:47 $
+ * Version: $Revision: 1.11.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
  * Main test suite for the package <code>{@link org.opencms.security}</code>.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.11.4.1 $
  * 
  * @since 6.0
  */
@@ -66,6 +66,7 @@ public final class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(TestCmsPrincipal.suite());
         suite.addTest(TestLoginAndPasswordHandler.suite());
+        suite.addTest(TestOrganizationalUnits.suite());
         suite.addTest(TestRoles.suite());
         //$JUnit-END$
         return suite;

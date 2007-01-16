@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.218.4.20 $
+ * Date   : $Date: 2007/01/16 09:50:47 $
+ * Version: $Revision: 1.218.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,6 +72,7 @@ import org.opencms.publish.CmsPublishManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsAuthorizationHandler;
@@ -136,7 +137,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.20 $ 
+ * @version $Revision: 1.218.4.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,6 +208,9 @@ public final class OpenCmsCore {
 
     /** The resource manager. */
     private CmsResourceManager m_resourceManager;
+
+    /** The role manager. */
+    private CmsRoleManager m_roleManager;
 
     /** The runlevel of this OpenCmsCore object instance. */
     private int m_runLevel;
@@ -317,6 +321,16 @@ public final class OpenCmsCore {
                 new Integer(m_instance.getRunLevel()),
                 errorCondition.key()));
         }
+    }
+
+    /**
+     * Returns the role manager.<p>
+     * 
+     * @return the role manager
+     */
+    public CmsRoleManager getRoleManager() {
+
+        return m_roleManager;
     }
 
     /**
@@ -1006,6 +1020,9 @@ public final class OpenCmsCore {
             m_configurationManager,
             systemConfiguration.getRuntimeInfoFactory(),
             m_publishEngine);
+        
+        // initialize the role manager
+        m_roleManager = new CmsRoleManager(m_securityManager);
 
         // initialize the Thread store
         m_threadStore = new CmsThreadStore(m_securityManager);
@@ -2101,4 +2118,5 @@ public final class OpenCmsCore {
             m_instance.m_runLevel = level;
         }
     }
+
 }

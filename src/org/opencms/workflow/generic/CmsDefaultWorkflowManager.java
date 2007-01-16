@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/01/16 09:50:47 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.11 $ 
+ * @version $Revision: 1.1.2.12 $ 
  * 
  * @since 7.0.0
  */
@@ -586,7 +586,10 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         try {
             CmsLock lock = m_cms.getSystemLock(m_cms.readResource(rootPath, CmsResourceFilter.ALL));
             if (lock.isWorkflow()) {
-                if (m_cms.hasRole(CmsRole.VFS_MANAGER, m_cms.getRequestContext().removeSiteRoot(rootPath))) {
+                if (OpenCms.getRoleManager().hasRoleForResource(
+                    m_cms,
+                    CmsRole.VFS_MANAGER,
+                    m_cms.getRequestContext().removeSiteRoot(rootPath))) {
                     // VFS managers may lock resources in a workflow anyway
                     return true;
                 }

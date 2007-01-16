@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/01/15 18:48:33 $
- * Version: $Revision: 1.146.4.19 $
+ * Date   : $Date: 2007/01/16 09:50:46 $
+ * Version: $Revision: 1.146.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.19 $
+ * @version $Revision: 1.146.4.20 $
  * 
  * @since 6.0.0 
  */
@@ -311,44 +311,12 @@ public final class CmsObject {
      * @throws CmsRoleViolationException if the user does not have the required role permissions
      * 
      * @see CmsRole#isOrganizationalUnitIndependent()
+     *      
+     * @deprecated use {@link OpenCms#getRoleManager()} methods instead
      */
     public void checkRole(CmsRole role) throws CmsRoleViolationException {
 
-        m_securityManager.checkRole(m_context, role);
-    }
-
-    /**
-     * Checks if the user of this OpenCms context is a member of the given role
-     * for the given organizational unit.<p>
-     * 
-     * The user must have the given role in at least one parent organizational unit.<p>
-     * 
-     * @param role the role to check
-     * @param ouFqn the fully qualified name of the organizational unit to check the role for
-     * 
-     * @throws CmsRoleViolationException if the user does not have the required role permissions
-     */
-    public void checkRoleForOrgUnit(CmsRole role, String ouFqn) throws CmsRoleViolationException {
-
-        m_securityManager.checkRole(m_context, role, ouFqn);
-    }
-
-    /**
-     * Checks if the user of this OpenCms context is a member of the given role
-     * for the given resource.<p>
-     * 
-     * The user must have the given role in at least one organizational unit to which this resource belongs.<p>
-     * 
-     * @param role the role to check
-     * @param resourceName the name of the resource to check the role for
-     * 
-     * @throws CmsRoleViolationException if the user does not have the required role permissions
-     * @throws CmsException if something goes wrong
-     */
-    public void checkRoleForResource(CmsRole role, String resourceName) throws CmsException, CmsRoleViolationException {
-
-        CmsResource resource = readResource(resourceName);
-        m_securityManager.checkRole(m_context, role, resource);
+        OpenCms.getRoleManager().checkRole(this, role);
     }
 
     /**
@@ -1723,27 +1691,12 @@ public final class CmsObject {
      * 
      * @return <code>true</code> if the user of the current OpenCms context is at a member of at last 
      *      one of the roles in the given role set
+     *      
+     * @deprecated use {@link OpenCms#getRoleManager()} methods instead
      */
     public boolean hasRole(CmsRole role) {
 
-        return m_securityManager.hasRole(m_context, role, (String)null);
-    }
-
-    /**
-     * Checks if the user of the current OpenCms context 
-     * is a member of at last one of the roles in the given role set.<p>
-     *  
-     * @param role the role to check
-     * @param resourceName the name of the resoruce to check
-     * 
-     * @return <code>true</code> if the user of the current OpenCms context is at a member of at last 
-     *      one of the roles in the given role set
-     * @throws CmsException if something goes wrong
-     */
-    public boolean hasRole(CmsRole role, String resourceName) throws CmsException {
-
-        CmsResource resource = readResource(resourceName);
-        return m_securityManager.hasRole(m_context, role, resource);
+        return OpenCms.getRoleManager().hasRole(this, role);
     }
 
     /**
