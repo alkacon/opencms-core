@@ -43,7 +43,7 @@ function checkRequestState(state) {
 
 /* shows the gallery select box */
 function showGallerySelectBox() {
-	makeRequest(vfsPathGalleryJsp + "?<%= CmsDialog.PARAM_ACTION %>=<%= CmsFCKEditorDialogImage.DIALOG_GETGALLERIES %>", "getGalleries");
+	makeRequest(vfsPathGalleryJsp, "<%= CmsDialog.PARAM_ACTION %>=<%= CmsFCKEditorDialogImage.DIALOG_GETGALLERIES %>", "getGalleries");
 }
 
 /* generates the html to show for the gallery selection */
@@ -61,7 +61,7 @@ function showGalleryItems() {
 	var elem = document.forms["galleryform"].elements[0];
 	if (elem != null) {
 		var val = elem.value;
-		makeRequest(vfsPathGalleryJsp + "?<%= A_CmsGallery.PARAM_GALLERYPATH %>=" + val +"&<%= CmsDialog.PARAM_ACTION %>=<%= A_CmsGallery.DIALOG_LIST %>", "getGalleryItems");
+		makeRequest(vfsPathGalleryJsp, "<%= A_CmsGallery.PARAM_GALLERYPATH %>=" + val +"&<%= CmsDialog.PARAM_ACTION %>=<%= A_CmsGallery.DIALOG_LIST %>", "getGalleryItems");
 	} else {
 		setTimeout("showGalleryItems()", 500);
 	}
@@ -108,7 +108,7 @@ function setActiveImage(imgIndex, imgUrl) {
 		updateImageInfo();
 	} else {
 		// no index given, call comes from UpdateImage function (use timeout to avoid Mozilla AJAX problems!)
-		setTimeout("makeRequest('" + vfsPathGalleryJsp + "?<%= CmsFCKEditorDialogImage.PARAM_IMGURL %>=" + imgUrl +"&<%= CmsDialog.PARAM_ACTION %>=<%= CmsFCKEditorDialogImage.DIALOG_GETACTIVEIMAGE %>', 'getActiveImageFromServer');", 0);
+	    setTimeout("makeRequest('" + vfsPathGalleryJsp + "','" + "<%= CmsFCKEditorDialogImage.PARAM_IMGURL %>=" + imgUrl +"&<%= CmsDialog.PARAM_ACTION %>=<%= CmsFCKEditorDialogImage.DIALOG_GETACTIVEIMAGE %>', 'getActiveImageFromServer');", 0);
 	}
 }
 

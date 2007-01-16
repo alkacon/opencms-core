@@ -79,7 +79,7 @@ function showBrokenLinks(show){
 function reloadDialog(deleteSiblings) {
 
    document.forms["main"].<%=CmsDelete.PARAM_DELETE_SIBLINGS%>.value=deleteSiblings;   
-   makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-brokenrelations.jsp") %>?<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsDelete.PARAM_DELETE_SIBLINGS%>=' + deleteSiblings, 'doReportUpdate');
+   makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-brokenrelations.jsp") %>', '<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsDelete.PARAM_DELETE_SIBLINGS%>=' + deleteSiblings, 'doReportUpdate');
 }
 
 var cnfMsgTxt = '';
@@ -169,7 +169,7 @@ if (wp.isMultiOperation()) {
 <script type="text/javascript">
 <!--
 cnfMsgTxt = document.getElementById('conf-msg').innerHTML;
-makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-brokenrelations.jsp") %>?<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsDelete.PARAM_DELETE_SIBLINGS%>=<%=wp.getParamDeleteSiblings()%>', 'doReportUpdate');
+makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-brokenrelations.jsp") %>', '<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsDelete.PARAM_DELETE_SIBLINGS%>=<%=wp.getParamDeleteSiblings()%>', 'doReportUpdate');
 //-->
 </script>
 <%= wp.htmlEnd() %>

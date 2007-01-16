@@ -21,7 +21,8 @@
     }
     String resourceParam = CmsDialog.PARAM_RESOURCE;
     if(wp.isMultiOperation()) {
-      resourceParam = CmsMultiDialog.PARAM_RESOURCELIST;
+      // resourceParam = CmsMultiDialog.PARAM_RESOURCELIST;
+	  resourceParam = null;
     }
 
 
@@ -554,7 +555,8 @@ function submitActionRefresh(para1, para2, para3) {
   <tr><td>
     <iframe src="<%= wp.getDialogRealUri() %>?<%= CmsToolDialog.PARAM_STYLE%>=<%=wp.getParamStyle()%>&<%= CmsDialog.PARAM_ACTION %>=<%= CmsDialog.REPORT_UPDATE %>&<%= 
      CmsDialog.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= CmsReport.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= CmsDialog.PARAM_THREAD_HASNEXT %>=<%= 
-     wp.getParamThreadHasNext() %>&<%= resourceParam %>=<%= wp.getResourceListAsParam() %>" name="updateWin" style="width:20px; height:20px; margin: 0px;" marginwidth="0" 
+     wp.getParamThreadHasNext() %><%=
+		(resourceParam != null) ? "&" + resourceParam + "=" + wp.getResourceListAsParam() : "" %>" name="updateWin" style="width:20px; height:20px; margin: 0px;" marginwidth="0" 
      marginheight="0" frameborder="0" framespacing="0" scrolling="no" class='hide'></iframe>
   </td></tr>
 </table>

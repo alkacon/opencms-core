@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/ajax.js,v $
- * Date   : $Date: 2006/10/25 13:15:26 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/16 09:19:47 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,15 @@
 
 /**
  * This method executes an AJAX request to the given url.<p>
+ * Params are passed as content using a post request.<p>
  *
  * The given method is used to communicate the result of the request.<p>
  *
  * The method needs to have following signature:<br>
- * <code>method(result, state);</code><p>
+ * <code>method(result, params, state);</code><p>
  *
  * Normally you have to call this method using following syntax:<br>
- * <code>makeRequest('url', 'method')</code><p>
+ * <code>makeRequest('url', 'param1=value1&...','method')</code><p>
  *
  * Where the <code>state</code> can have following values:<br>
  * <code>'ok'</code>   : Everything went fine and the result of the request is given in the <code>result</code> parameter.<br>
@@ -47,7 +48,7 @@
  * <code>'error'</code>: The AJAX request was successfully send, but the response status was not ok (code 200), 
  *                       The <code>result</code> parameter is the received status code.<br>
  */
-function makeRequest(url, method) {
+function makeRequest(url, params, method) {
 
    var http_request = false;
    if (window.XMLHttpRequest) { // Mozilla, Safari, ...
@@ -71,13 +72,15 @@ function makeRequest(url, method) {
    updateContents('wait', eval(method));
    http_request.onreadystatechange = function() { updateContents(http_request, eval(method)); };
    http_request.open('POST', url, true);
-   http_request.send('');
+   http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+   http_request.setRequestHeader("Content-length", params.length);
+   http_request.send(params);
 }
 
 /**
  * Help method for AJAX request.<p>
  *
- * see #makeRequest(url, method)
+ * see #makeRequest(url, params, method)
  */
 function updateContents(http_request, method) {
 

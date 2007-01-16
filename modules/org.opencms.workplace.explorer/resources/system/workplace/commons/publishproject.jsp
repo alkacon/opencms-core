@@ -83,7 +83,7 @@ function reloadDialog(publishSiblings, publishSubresources) {
 
    document.forms["main"].<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>.value=publishSiblings;   
    document.forms["main"].<%=CmsPublishProject.PARAM_SUBRESOURCES%>.value=publishSubresources;   
-   makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>?<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=' + publishSiblings + '&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=' + publishSubresources, 'doReportUpdate');
+   makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>', '<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=' + publishSiblings + '&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=' + publishSubresources, 'doReportUpdate');
 }
 
 // -->
@@ -118,7 +118,7 @@ function reloadDialog(publishSiblings, publishSubresources) {
 <script type="text/javascript">
 <!--
 cnfMsgTxt = document.getElementById('conf-msg').innerHTML;
-makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>?<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=<%=wp.getParamPublishsiblings()%>&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=<%=wp.getParamSubresources()%>', 'doReportUpdate');
+makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>','<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=<%=wp.getParamPublishsiblings()%>&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=<%=wp.getParamSubresources()%>', 'doReportUpdate');
 // -->
 </script>
 <%= wp.htmlEnd() %>
@@ -248,7 +248,7 @@ function doReportUpdate(msg, state) {
 <script type="text/javascript">
 <!--
 cnfMsgTxt = document.getElementById('conf-msg').innerHTML;
-makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-potentialbrokenrelations.jsp") %>?<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=<%=wp.getParamPublishsiblings()%>&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=<%=wp.getParamSubresources()%>', 'doReportUpdate');
+makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-potentialbrokenrelations.jsp") %>','<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=<%=wp.getParamPublishsiblings()%>&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=<%=wp.getParamSubresources()%>', 'doReportUpdate');
 // -->
 </script>
 <%= wp.htmlEnd() %>

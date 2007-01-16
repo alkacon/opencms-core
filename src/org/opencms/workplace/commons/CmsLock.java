@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2006/12/06 16:11:12 $
- * Version: $Revision: 1.16.4.11 $
+ * Date   : $Date: 2007/01/16 09:24:24 $
+ * Version: $Revision: 1.16.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.11 $ 
+ * @version $Revision: 1.16.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -377,7 +377,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append("<script type='text/javascript'><!--\n");
         html.append("makeRequest('");
         html.append(getJsp().link("/system/workplace/commons/report-locks.jsp"));
-        html.append("?");
+        html.append("', '");
         html.append(CmsMultiDialog.PARAM_RESOURCELIST);
         html.append("=");
         html.append(getParamResourcelist());
