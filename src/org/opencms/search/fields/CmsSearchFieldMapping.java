@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMapping.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/16 09:38:04 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.0.0 
  */
@@ -138,7 +138,9 @@ public class CmsSearchFieldMapping {
         String content = null;
         switch (getType().getMode()) {
             case 0: // content
-                content = extractionResult.getContent();
+                if (extractionResult != null) {
+                    content = extractionResult.getContent();
+                }
                 break;
             case 1: // property
             case 2: // property-search
@@ -152,7 +154,7 @@ public class CmsSearchFieldMapping {
                 }
                 break;
             case 3: // item
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
+                if (extractionResult != null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
                     content = (String)extractionResult.getContentItems().get(getParam());
                 }
                 break;
