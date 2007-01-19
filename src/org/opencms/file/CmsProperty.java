@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.34.4.3 $
+ * Date   : $Date: 2007/01/19 10:02:38 $
+ * Version: $Revision: 1.34.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.4.3 $
+ * @version $Revision: 1.34.4.4 $
  * 
  * @since 6.0.0 
  */
@@ -521,8 +521,13 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * Two property objecs are equal if their names are equal.<p>
      * 
+     * In case you want to compare the values as well as the name, 
+     * use {@link #isIdentical(CmsProperty)} instead.<p>
+     * 
      * @param obj another object
      * @return true, if the specified object is equal to this CmsProperty object
+     * 
+     * @see #isIdentical(CmsProperty)
      */
     public boolean equals(Object obj) {
 
@@ -694,19 +699,18 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
+     * Returns the hash code of the property, which is based only on the property name, not on the values.<p>
+     * 
+     * The resource and structure values are not taken into consideration for the hashcode generation 
+     * because the {@link #equals(Object)} implementation also does not take these into consideration.<p>
+     *
+     * @return the hash code of the property
+     * 
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
 
-        StringBuffer strBuf = new StringBuffer();
-
-        strBuf.append(m_name);
-        strBuf.append("_");
-        strBuf.append(m_structureValue);
-        strBuf.append("_");
-        strBuf.append(m_resourceValue);
-
-        return strBuf.toString().hashCode();
+        return m_name.hashCode();
     }
 
     /**
