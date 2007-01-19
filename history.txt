@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/12/28 10:02:55 $
- * Version: $Revision: 1.717.2.121 $
+ * Date   : $Date: 2007/01/19 14:21:12 $
+ * Version: $Revision: 1.717.2.122 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,13 +19,13 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.5.5 - xxx, 2007
+OpenCms 6.5.6 - xxx, 2007
 
 ! Upload applet preselects the file filter of the file chooser in dependency of the folder type (gallery)
 ! Upload applet shows potential overwrites of files on the server and offers to avoid them
 * Upload applet file chooser uses workplace language localization
 ! Added new event EVENT_FULLSTATIC_EXPORT fired by CmsStaticExportThread and CmsStaticExportJob
-- Undelete operation now really only undeletes and do not undo changes (overwrite with Online content)
+! Improved undelete operation, now the last offline status is recovered, not longer just overwrite from Online
 ! Upload applet remembers the local folder the client used last time (if still present)
 
 OpenCms 6.5.5 - 14. December, 2006
@@ -33,22 +33,21 @@ OpenCms 6.5.5 - 14. December, 2006
 ! The Lucene search index fields generated from the OpenCms content are now fully configurable
 ! Text extraction results for the full text search are now cached and reused to speed up index generation
 - Simplified some of the search index API's
+! Extended Search configuration GUI tool to configure the field configuration in the Administration view
+- Improved workplace search feature making the used search index and the search result view configurable
 - The deprecated legacy / compatibility packages have been removed from the distribution
-! Redesigned publish process. With a publish job queue and publish locks.
-  The publish queue makes it possible to continue working without waiting for the publish job to finish and 
-  the publish locks prevent that a file that is waiting to be published can be modified before it really gets published.
+! Redesigned publish process, adding a publish job queue and publish locks
+! The publish queue makes it possible to continue working without waiting for the publish job to finish and 
+  the publish locks prevent that a file that is waiting to be published can be modified before it really gets published
 - Improved direct and project publish dialogs to fit the new publish process semantics
 ! The static export performance has been improved, by first writting to a temporary folder
 ! New interface added to allow the distribution of the user session information across a cluster
 * Fixed issue #1275: Recursive copy of folders allowed
-! New interface added to configure the field configuration out of the admin view
 * Static export works with links containing a "&amp;"
-! Extended Search index configuration tool to configure the field configuration out of the admin view
-- Improved workplace search feature making the used search index and the search result view configurable
 ! New configuration node added to define how unlocking is handled during the indexing process
-- Removed no more used folders: /system/bodies and /channels folders
-- Removed group workflow role flag
-! Added option in export to export only those files modifed in the current project
+- Removed unused v5 folders from the distribution: /system/bodies and /channels
+- Removed unused v5 group workflow role flag
+! Added option in database export GUI to export only those files modifed in the current project
 
 OpenCms 6.5.4 - November 27, 2006
 * Fixed error when searching in sites with uppercase letters in site path
