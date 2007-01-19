@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2007/01/15 18:48:35 $
- * Version: $Revision: 1.4.8.1 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.4.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,9 +104,7 @@ public class TestRoles extends OpenCmsTestCase {
         Iterator i = CmsRole.getSystemRoles().iterator();
         while (i.hasNext()) {
             CmsRole role = (CmsRole)i.next();
-            CmsRoleViolationException ex = role.createRoleViolationException(
-                cms.getRequestContext(),
-                (String)null);
+            CmsRoleViolationException ex = role.createRoleViolationException(cms.getRequestContext());
             message = ex.getMessage();
             System.out.println(message);
             // check if a key could not be resolved
@@ -118,7 +116,7 @@ public class TestRoles extends OpenCmsTestCase {
         // check a user defined role
         String roleName = "MY_VERY_SPECIAL_ROLE";
         CmsRole myRole = new CmsRole(roleName, null, CmsRole.ROOT_ADMIN.getGroupName(), true);
-        message = myRole.createRoleViolationException(cms.getRequestContext(), (String)null).getMessage();
+        message = myRole.createRoleViolationException(cms.getRequestContext()).getMessage();
 
         System.out.println(message);
         // check if a key could not be resolved

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.12.4.1 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.12.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12.4.1 $ 
+ * @version $Revision: 1.12.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,7 +161,7 @@ public class CmsExplorerTypeAccess {
         CmsUser user = cms.getRequestContext().currentUser();
         List groups = null;
         try {
-            groups = cms.getGroupsOfUser(user.getName());
+            groups = cms.getGroupsOfUser(user.getName(), false);
         } catch (CmsException e) {
             // error reading the groups of the current user
             LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()));

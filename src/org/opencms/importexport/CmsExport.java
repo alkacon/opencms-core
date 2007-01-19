@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.84.4.7 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.84.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.7 $ 
+ * @version $Revision: 1.84.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -219,7 +219,7 @@ public class CmsExport {
         setExportFileName(exportFile);
 
         // check if the user has the required permissions
-        cms.checkRole(CmsRole.DATABASE_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         m_includeSystem = includeSystem;
         m_includeUnchanged = includeUnchanged;
@@ -1222,7 +1222,7 @@ public class CmsExport {
 
         try {
             I_CmsReport report = getReport();
-            List allGroups = getCms().getGroups();
+            List allGroups = OpenCms.getOrgUnitManager().getGroups(getCms(), "/", true);
             for (int i = 0, l = allGroups.size(); i < l; i++) {
                 CmsGroup group = (CmsGroup)allGroups.get(i);
                 report.print(org.opencms.report.Messages.get().container(
@@ -1240,17 +1240,12 @@ public class CmsExport {
                     I_CmsReport.FORMAT_OK);
             }
         } catch (CmsImportExportException e) {
-
             throw e;
         } catch (CmsException e) {
-
-            CmsMessageContainer message = org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_GET_GROUPS_0);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message.key(), e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
-
-            throw new CmsImportExportException(message, e);
+            throw new CmsImportExportException(e.getMessageContainer(), e);
         }
     }
 
@@ -1302,7 +1297,7 @@ public class CmsExport {
                 }
             }
             // append the node for groups of user
-            List userGroups = getCms().getDirectGroupsOfUser(user.getName());
+            List userGroups = getCms().getGroupsOfUser(user.getName(), true);
             Element g = e.addElement(CmsImportExportManager.N_USERGROUPS);
             for (int i = 0; i < userGroups.size(); i++) {
                 String groupName = ((CmsGroup)userGroups.get(i)).getName();
@@ -1312,15 +1307,11 @@ public class CmsExport {
             // write the XML
             digestElement(parent, e);
         } catch (CmsException e) {
-
-            CmsMessageContainer message = org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_GET_GROUPS_OF_USER_1,
-                user.getName());
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message.key(), e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
 
-            throw new CmsImportExportException(message, e);
+            throw new CmsImportExportException(e.getMessageContainer(), e);
         }
     }
 
@@ -1338,7 +1329,7 @@ public class CmsExport {
             List allUsers = new ArrayList();
             if (m_exportUserdata) {
                 // add system users
-                allUsers.addAll(getCms().getUsers());
+                allUsers.addAll(OpenCms.getOrgUnitManager().getUsers(getCms(), "/", true));
             }
             for (int i = 0, l = allUsers.size(); i < l; i++) {
                 CmsUser user = (CmsUser)allUsers.get(i);
@@ -1357,17 +1348,12 @@ public class CmsExport {
                     I_CmsReport.FORMAT_OK);
             }
         } catch (CmsImportExportException e) {
-
             throw e;
         } catch (CmsException e) {
-
-            CmsMessageContainer message = org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_GET_USERS_0);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message.key(), e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
-
-            throw new CmsImportExportException(message, e);
+            throw new CmsImportExportException(e.getMessageContainer(), e);
         }
     }
 

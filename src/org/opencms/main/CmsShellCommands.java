@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.83.4.8 $
+ * Date   : $Date: 2007/01/19 16:53:53 $
+ * Version: $Revision: 1.83.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83.4.8 $ 
+ * @version $Revision: 1.83.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -214,7 +214,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         } finally {
             m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
-        if (m_cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
+        if (OpenCms.getRoleManager().hasRole(m_cms, CmsRole.WORKPLACE_MANAGER)) {
             // re-initialize the search indexes after default project generation
             OpenCms.getSearchManager().initialize(m_cms);
         }
@@ -670,7 +670,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             "/",
             new CmsShellReport(m_cms.getRequestContext().getLocale()));
         m_cms.unlockProject(id);
-        m_cms.publishProject();
+        OpenCms.getPublishManager().publishProject(m_cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -852,7 +852,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void publishProjectAndWait() throws Exception {
 
-        m_cms.publishProject();
+        OpenCms.getPublishManager().publishProject(m_cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 

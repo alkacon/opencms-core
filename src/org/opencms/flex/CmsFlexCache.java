@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2006/10/27 12:08:09 $
- * Version: $Revision: 1.52.4.4 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.52.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.52.4.4 $ 
+ * @version $Revision: 1.52.4.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -388,7 +388,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public CmsFlexCacheKey getCachedKey(String key, CmsObject cms) {
 
-        if (!isEnabled() || !cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
+        if (!isEnabled() || !OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)) {
             return null;
         }
         Object o = m_keyCache.get(key);
@@ -411,7 +411,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public Set getCachedResources(CmsObject cms) {
 
-        if (!isEnabled() || !cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
+        if (!isEnabled() || !OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)) {
             return null;
         }
         return m_keyCache.keySet();
@@ -433,7 +433,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public Set getCachedVariations(String key, CmsObject cms) {
 
-        if (!isEnabled() || !cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
+        if (!isEnabled() || !OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)) {
             return null;
         }
         Object o = m_keyCache.get(key);

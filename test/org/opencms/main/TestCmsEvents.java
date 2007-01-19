@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsEvents.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.3.4.4 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.3.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3.4.4 $
+ * @version $Revision: 1.3.4.5 $
  */
 public class TestCmsEvents extends OpenCmsTestCase {
 
@@ -127,7 +127,7 @@ public class TestCmsEvents extends OpenCmsTestCase {
         CmsProject current = cms.readProject(projectName);
         cms.getRequestContext().setCurrentProject(current);
 
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertTrue(handler.hasRecievedEvent(I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT));

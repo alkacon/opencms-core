@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.22.8.3 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.22.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.8.3 $
+ * @version $Revision: 1.22.8.4 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -145,7 +145,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         try {
-            cms.getPublishList(cms.readResource(resource), false);
+            OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
             fail("Publish permissions available but should not be available for user test1");
         } catch (Exception e) {
             // ok, continue
@@ -154,7 +154,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         try {
-            cms.getPublishList(cms.readResource(resource), false);
+            OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
         } catch (Exception e) {
             fail("Publish permissions unavailable but should be available for user test2");
         }
@@ -162,26 +162,26 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         try {
-            cms.getPublishList(cms.readResource(resource), false);
+            OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
         } catch (Exception e) {
             fail("Publish permissions unavailable but should be available for user Admin");
         }
 
         // add user "test1" to project manager group
-        cms.addUserToGroup("test1", CmsRole.PROJECT_MANAGER.getGroupName());
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.PROJECT_MANAGER, "/", "test1");
 
         cms.loginUser("test1", "test1");
         // first check in "online" project
         assertEquals(CmsProject.ONLINE_PROJECT_ID, cms.getRequestContext().currentProject().getId());
         try {
-            cms.getPublishList(cms.readResource(resource), false);
+            OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
             fail("Publish permissions available but should not be available for user test1 in online project");
         } catch (Exception e) {
             // ok, ignore
         }
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         try {
-            cms.getPublishList(cms.readResource(resource), false);
+            OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
         } catch (Exception e) {
             fail("Publish permissions unavailable but should be available for user test1 because he is a project manager");
         }
@@ -235,7 +235,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         try {
-            cms.getPublishList(cms.readResource(resource), false);
+            OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
             fail("Publish permissions available but should not be available for user test1");
         } catch (Exception e) {
             // ok, ignore
@@ -244,20 +244,20 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         try {
-            cms.getPublishList(cms.readResource(resource), false);
+            OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
             fail("Publish permissions available but should be unavailable for user test2 because the parent folder is new");
         } catch (Exception e) {
             // ok, ignore
         }
         try {
-            cms.getPublishList(cms.readResource(folder), false);
+            OpenCms.getPublishManager().getPublishList(cms, cms.readResource(folder), false);
         } catch (Exception e) {
             fail("Publish permissions on new folder unavailable but should be available for user test2");
         }
-        cms.publishResource(folder);
+        OpenCms.getPublishManager().publishResource(cms, folder);
         OpenCms.getPublishManager().waitWhileRunning();
         try {
-            cms.getPublishList(cms.readResource(resource), false);
+            OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
         } catch (Exception e) {
             fail("Publish permissions unavailable but should be available for user test2 because the parent folder is now published");
         }
@@ -275,11 +275,11 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
 
         cms.createUser("testAdmin", "secret", "", null);
-        cms.addUserToGroup("testAdmin", CmsRole.ROOT_ADMIN.getGroupName());
+        cms.addUserToGroup("testAdmin", OpenCms.getDefaultUsers().getGroupAdministrators());
         cms.createUser("testProjectmanager", "secret", "", null);
-        cms.addUserToGroup("testProjectmanager", CmsRole.PROJECT_MANAGER.getGroupName());
+        cms.addUserToGroup("testProjectmanager", OpenCms.getDefaultUsers().getGroupProjectmanagers());
         cms.createUser("testUser", "secret", "", null);
-        cms.addUserToGroup("testUser", CmsRole.WORKPLACE_USER.getGroupName());
+        cms.addUserToGroup("testUser", OpenCms.getDefaultUsers().getGroupUsers());
         cms.createUser("testGuest", "secret", "", null);
         cms.addUserToGroup("testGuest", OpenCms.getDefaultUsers().getGroupGuests());
 

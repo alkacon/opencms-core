@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/01/15 18:48:34 $
- * Version: $Revision: 1.32.4.6 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.32.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.6 $
+ * @version $Revision: 1.32.4.7 $
  * 
  * @since 6.0.0
  * 
@@ -108,7 +108,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public CmsUser() {
 
-        this(null, "", "", null);
+        this(null, "", "");
         setAdditionalInfo(new HashMap());
     }
 
@@ -116,20 +116,19 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      * Creates a new OpenCms user principal.<p>
      *
      * @param id the unique id of the new user
-     * @param name the unique name of the new user
+     * @param name the fully qualified name of the new user
      * @param description the description of the new user
-     * @param ouFqn the fully qualified name of the associated organizational unit
      */
-    public CmsUser(CmsUUID id, String name, String description, String ouFqn) {
+    public CmsUser(CmsUUID id, String name, String description) {
 
-        this(id, name, "", description, "", "", "", CmsDbUtil.UNKNOWN_ID, I_CmsPrincipal.FLAG_ENABLED, null, "", ouFqn);
+        this(id, name, "", description, "", "", "", CmsDbUtil.UNKNOWN_ID, I_CmsPrincipal.FLAG_ENABLED, null, "");
     }
 
     /**
      * Creates a new OpenCms user principal.<p>
      * 
      * @param id the unique id of the new user
-     * @param name the unique name of the new user
+     * @param name the fully qualified name of the new user
      * @param password the password of the user
      * @param description the description of the new user
      * @param firstname the first name
@@ -139,7 +138,6 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      * @param flags flags
      * @param additionalInfo user related information
      * @param address the address
-     * @param ouFqn the fully qualified name of the associated organizational unit
      */
     public CmsUser(
         CmsUUID id,
@@ -152,8 +150,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
         long lastlogin,
         int flags,
         Map additionalInfo,
-        String address,
-        String ouFqn) {
+        String address) {
 
         m_id = id;
         m_name = name;
@@ -166,7 +163,6 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
         m_flags = flags;
         m_additionalInfo = additionalInfo;
         m_address = address;
-        m_ouFqn = ouFqn;
     }
 
     /**
@@ -264,8 +260,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
             m_lastlogin,
             m_flags,
             m_additionalInfo != null ? new HashMap(m_additionalInfo) : null,
-            m_address,
-            m_ouFqn);
+            m_address);
     }
 
     /**

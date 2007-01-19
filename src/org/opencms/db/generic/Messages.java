@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.25.2.5 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.25.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25.2.5 $
+ * @version $Revision: 1.25.2.6 $
  * 
  * @since 6.0.0 
  */
@@ -144,6 +144,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ORGUNIT_REMOVE_LAST_RESOURCE_2 = "ERR_ORGUNIT_REMOVE_LAST_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ORGUNIT_RESOURCE_IS_NOT_FOLDER_2 = "ERR_ORGUNIT_RESOURCE_IS_NOT_FOLDER_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_OUT_OF_MEMORY_0 = "ERR_OUT_OF_MEMORY_0";

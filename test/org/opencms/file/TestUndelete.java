@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndelete.java,v $
- * Date   : $Date: 2006/12/21 15:32:11 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  *  
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  */
 public class TestUndelete extends OpenCmsTestCase {
 
@@ -335,7 +335,7 @@ public class TestUndelete extends OpenCmsTestCase {
         cms.copyResource(resourceName, siblingName, CmsResource.COPY_AS_SIBLING);
         cms.unlockResource(siblingName);
 
-        cms.publishResource(siblingName);
+        OpenCms.getPublishManager().publishResource(cms, siblingName);
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.lockResource(resourceName);

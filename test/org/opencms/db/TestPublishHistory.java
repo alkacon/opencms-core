@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/db/TestPublishHistory.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  */
 public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventListener {
 
@@ -200,7 +200,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
         cms.lockResource(RESOURCENAME);
         cms.setDateLastModified(RESOURCENAME, System.currentTimeMillis(), false);
         cms.unlockResource(RESOURCENAME);
-        cms.publishResource(RESOURCENAME);
+        OpenCms.getPublishManager().publishResource(cms, RESOURCENAME);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -220,7 +220,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
         cms.lockResource(RESOURCENAME_MOVED);
         cms.deleteResource(RESOURCENAME_MOVED, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(RESOURCENAME_MOVED);
-        cms.publishResource(RESOURCENAME_MOVED);
+        OpenCms.getPublishManager().publishResource(cms, RESOURCENAME_MOVED);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -240,7 +240,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
         cms.lockResource(RESOURCENAME);
         cms.moveResource(RESOURCENAME, RESOURCENAME_MOVED);
         cms.unlockResource(RESOURCENAME_MOVED);
-        cms.publishResource(RESOURCENAME_MOVED);
+        OpenCms.getPublishManager().publishResource(cms, RESOURCENAME_MOVED);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -262,7 +262,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
 
         cms.createResource(RESOURCENAME, CmsResourceTypePlain.getStaticTypeId());
         cms.unlockResource(RESOURCENAME);
-        cms.publishResource(RESOURCENAME);
+        OpenCms.getPublishManager().publishResource(cms, RESOURCENAME);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 }

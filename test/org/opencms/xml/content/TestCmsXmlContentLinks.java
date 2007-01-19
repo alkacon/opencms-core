@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentLinks.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  */
 public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
@@ -296,7 +296,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         cms.setDateReleased(FILENAME, System.currentTimeMillis() + 1000000, false);
         cms.setDateExpired(FILENAME, System.currentTimeMillis() + 2000000, false);
         cms.unlockResource(FILENAME);
-        cms.publishResource(FILENAME);
+        OpenCms.getPublishManager().publishResource(cms, FILENAME);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check offline, without link checking.
@@ -384,7 +384,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         cms.lockResource(FILENAME);
         cms.deleteResource(FILENAME, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(FILENAME);
-        cms.publishResource(FILENAME);
+        OpenCms.getPublishManager().publishResource(cms, FILENAME);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check offline, without link checking.
@@ -471,7 +471,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         // recreate the file for the next test case
         cms.createResource(FILENAME, CmsResourceTypePlain.getStaticTypeId());
         cms.unlockResource(FILENAME);
-        cms.publishResource(FILENAME);
+        OpenCms.getPublishManager().publishResource(cms, FILENAME);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -512,7 +512,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         cms.setDateReleased(FILENAME, System.currentTimeMillis() + 1000000, false);
         cms.setDateExpired(FILENAME, System.currentTimeMillis() + 2000000, false);
         cms.unlockResource(FILENAME);
-        cms.publishResource(FILENAME);
+        OpenCms.getPublishManager().publishResource(cms, FILENAME);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check offline, without link checking.
@@ -601,7 +601,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         cms.lockResource(FILENAME);
         cms.deleteResource(FILENAME, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(FILENAME);
-        cms.publishResource(FILENAME);
+        OpenCms.getPublishManager().publishResource(cms, FILENAME);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check offline, without link checking.
@@ -689,7 +689,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         // recreate the file for the next test case
         cms.createResource(FILENAME, CmsResourceTypePlain.getStaticTypeId());
         cms.unlockResource(FILENAME);
-        cms.publishResource(FILENAME);
+        OpenCms.getPublishManager().publishResource(cms, FILENAME);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -729,7 +729,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         // create a new one in place
         CmsResource res = cms.createResource(FILENAME, CmsResourceTypePlain.getStaticTypeId());
         cms.unlockResource(FILENAME);
-        cms.publishResource(FILENAME);
+        OpenCms.getPublishManager().publishResource(cms, FILENAME);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // read the content again
@@ -783,7 +783,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         cms.lockResource(FILENAME);
         cms.moveResource(FILENAME, FILENAME2);
         cms.unlockResource(FILENAME2);
-        cms.publishResource(FILENAME2);
+        OpenCms.getPublishManager().publishResource(cms, FILENAME2);
         OpenCms.getPublishManager().waitWhileRunning();
 
         CmsResource resMoved = cms.readResource(FILENAME2);
@@ -815,7 +815,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         cms.lockResource(FILENAME2);
         cms.deleteResource(FILENAME2, CmsResource.DELETE_REMOVE_SIBLINGS);
         cms.unlockResource(FILENAME2);
-        cms.publishResource(FILENAME2);
+        OpenCms.getPublishManager().publishResource(cms, FILENAME2);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -889,7 +889,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         // delete the link
         cms.lockResource(FILENAME);
         cms.deleteResource(FILENAME, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        cms.publishResource(FILENAME);
+        OpenCms.getPublishManager().publishResource(cms, FILENAME);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // store the current content, this is important since the original content had no ids

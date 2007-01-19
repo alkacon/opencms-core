@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2006/12/21 15:32:11 $
- * Version: $Revision: 1.16.8.4 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.16.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16.8.4 $
+ * @version $Revision: 1.16.8.5 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
 
@@ -263,7 +263,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -502,7 +502,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.deleteResource(deletedFolder, CmsResource.DELETE_PRESERVE_SIBLINGS);
 
         cms.unlockResource(deletedFolder);
-        cms.publishResource(deletedFolder);
+        OpenCms.getPublishManager().publishResource(cms, deletedFolder);
         OpenCms.getPublishManager().waitWhileRunning();
 
         try {
@@ -514,7 +514,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         }
 
         cms.unlockResource(destination);
-        cms.publishResource(destination);
+        OpenCms.getPublishManager().publishResource(cms, destination);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 }

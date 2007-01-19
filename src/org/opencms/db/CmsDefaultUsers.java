@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.32.4.3 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.32.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.db;
 
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsStringUtil;
 
 /**
@@ -41,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.32.4.3 $
+ * @version $Revision: 1.32.4.4 $
  * 
  * @since 6.0.0
  */
@@ -50,8 +49,17 @@ public class CmsDefaultUsers {
     /** Default name for the "Deleted Resource" user. */
     public static final String DEFAULT_USER_DELETED_RESOURCE = "Admin";
 
+    /** Default name for the "Administrators" group. */
+    protected static final String DEFAULT_GROUP_ADMINISTRATORS = "Administrators";
+
     /** Default name for the "Guests" group. */
     protected static final String DEFAULT_GROUP_GUESTS = "Guests";
+
+    /** Default name for the "Projectmanagers" group. */
+    protected static final String DEFAULT_GROUP_PROJECTMANAGERS = "Projectmanagers";
+
+    /** Default name for the "Users" group. */
+    protected static final String DEFAULT_GROUP_USERS = "Users";
 
     /** Default name for the "Admin" user. */
     protected static final String DEFAULT_USER_ADMIN = "Admin";
@@ -62,8 +70,17 @@ public class CmsDefaultUsers {
     /** Default name for the "Guest" user. */
     protected static final String DEFAULT_USER_GUEST = "Guest";
 
+    /** Administrators group name. */
+    private String m_groupAdministrators;
+
     /** Guests group name. */
     private String m_groupGuests;
+
+    /** Project Managers group name. */
+    private String m_groupProjectmanagers;
+
+    /** System Users group name. */
+    private String m_groupUsers;
 
     /** Administrator user name. */
     private String m_userAdmin;
@@ -88,6 +105,9 @@ public class CmsDefaultUsers {
         m_userGuest = DEFAULT_USER_GUEST;
         m_userExport = DEFAULT_USER_EXPORT;
         m_userDeletedResource = DEFAULT_USER_DELETED_RESOURCE;
+        m_groupAdministrators = DEFAULT_GROUP_ADMINISTRATORS;
+        m_groupProjectmanagers = DEFAULT_GROUP_PROJECTMANAGERS;
+        m_groupUsers = DEFAULT_GROUP_USERS;
         m_groupGuests = DEFAULT_GROUP_GUESTS;
     }
 
@@ -98,6 +118,9 @@ public class CmsDefaultUsers {
      * @param userGuest the name of the guest user
      * @param userExport the name of the export user
      * @param userDeletedResource the name of the deleted resource user, can be <code>null</code>
+     * @param groupAdministrators the name of the administrators group
+     * @param groupProjectmanagers the name of the project managers group
+     * @param groupUsers the name of the users group
      * @param groupGuests the name of the guests group
      */
     public CmsDefaultUsers(
@@ -105,9 +128,30 @@ public class CmsDefaultUsers {
         String userGuest,
         String userExport,
         String userDeletedResource,
+        String groupAdministrators,
+        String groupProjectmanagers,
+        String groupUsers,
         String groupGuests) {
 
-        init(userAdmin, userGuest, userExport, userDeletedResource, groupGuests);
+        init(
+            userAdmin,
+            userGuest,
+            userExport,
+            userDeletedResource,
+            groupAdministrators,
+            groupProjectmanagers,
+            groupUsers,
+            groupGuests);
+    }
+
+    /**
+     * Returns the name of the administrators group.<p>
+     * 
+     * @return the name of the administrators group
+     */
+    public String getGroupAdministrators() {
+
+        return m_groupAdministrators;
     }
 
     /**
@@ -118,6 +162,26 @@ public class CmsDefaultUsers {
     public String getGroupGuests() {
 
         return m_groupGuests;
+    }
+
+    /**
+     * Returns the name of the project managers group.<p>
+     * 
+     * @return the name of the project managers group
+     */
+    public String getGroupProjectmanagers() {
+
+        return m_groupProjectmanagers;
+    }
+
+    /**
+     * Returns the name of the users group.<p>
+     * 
+     * @return the name of the users group
+     */
+    public String getGroupUsers() {
+
+        return m_groupUsers;
     }
 
     /**
@@ -161,6 +225,30 @@ public class CmsDefaultUsers {
     }
 
     /**
+     * Checks if a given group name is the name of one of the OpenCms default groups.<p>
+     *
+     * @param groupName the group name to check
+     * @return <code>true</code> if group name is one of OpenCms default groups, <code>false</code> if it is not
+     * or if <code>groupName</code> is <code>null</code> or an empty string (no trim)
+     * 
+     * @see #getGroupAdministrators()
+     * @see #getGroupProjectmanagers()
+     * @see #getGroupUsers()
+     * @see #getGroupGuests()
+     */
+    public boolean isDefaultGroup(String groupName) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(groupName)) {
+            return false;
+        }
+
+        return m_groupAdministrators.equals(groupName)
+            || m_groupProjectmanagers.equals(groupName)
+            || m_groupUsers.equals(groupName)
+            || m_groupGuests.equals(groupName);
+    }
+
+    /**
      * Checks if a given user name is the name of one of the OpenCms default users.<p>
      *
      * @param userName the group name to check
@@ -186,10 +274,10 @@ public class CmsDefaultUsers {
         isDefault = isDefault || m_userDeletedResource.equals(userName);
 
         // now check with ou prefix
-        isDefault = isDefault || userName.endsWith(CmsOrganizationalUnit.appendFqn(null, m_userAdmin));
-        isDefault = isDefault || userName.endsWith(CmsOrganizationalUnit.appendFqn(null, m_userGuest));
-        isDefault = isDefault || userName.endsWith(CmsOrganizationalUnit.appendFqn(null, m_userExport));
-        isDefault = isDefault || userName.endsWith(CmsOrganizationalUnit.appendFqn(null, m_userDeletedResource));
+        isDefault = isDefault || userName.equals("/" + m_userAdmin);
+        isDefault = isDefault || userName.equals("/" + m_userGuest);
+        isDefault = isDefault || userName.equals("/" + m_userExport);
+        isDefault = isDefault || userName.equals("/" + m_userDeletedResource);
 
         return isDefault;
     }
@@ -206,8 +294,7 @@ public class CmsDefaultUsers {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(groupName)) {
             return false;
         }
-        return m_groupGuests.equals(groupName)
-            || groupName.endsWith(CmsOrganizationalUnit.appendFqn(null, m_groupGuests));
+        return m_groupGuests.equals(groupName) || groupName.endsWith("/" + m_groupGuests);
     }
 
     /**
@@ -222,7 +309,7 @@ public class CmsDefaultUsers {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
             return false;
         }
-        return m_userAdmin.equals(userName) || userName.endsWith(CmsOrganizationalUnit.appendFqn(null, m_userAdmin));
+        return m_userAdmin.equals(userName) || userName.equals("/" + m_userAdmin);
     }
 
     /**
@@ -237,7 +324,7 @@ public class CmsDefaultUsers {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
             return false;
         }
-        return m_userExport.equals(userName) || userName.endsWith(CmsOrganizationalUnit.appendFqn(null, m_userExport));
+        return m_userExport.equals(userName) || userName.equals("/" + m_userExport);
     }
 
     /**
@@ -252,7 +339,7 @@ public class CmsDefaultUsers {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
             return false;
         }
-        return m_userGuest.equals(userName) || userName.endsWith(CmsOrganizationalUnit.appendFqn(null, m_userGuest));
+        return m_userGuest.equals(userName) || userName.equals("/" + m_userGuest);
     }
 
     /**
@@ -262,6 +349,9 @@ public class CmsDefaultUsers {
      * @param userGuest the name of the guest user
      * @param userExport the name of the export user
      * @param userDeletedResource the name of the deleted resource user, can be <code>null</code>
+     * @param groupAdministrators the name of the administrators group
+     * @param groupProjectmanagers the name of the project managers group
+     * @param groupUsers the name of the users group
      * @param groupGuests the name of the guests group
      */
     protected void init(
@@ -269,12 +359,18 @@ public class CmsDefaultUsers {
         String userGuest,
         String userExport,
         String userDeletedResource,
+        String groupAdministrators,
+        String groupProjectmanagers,
+        String groupUsers,
         String groupGuests) {
 
         // check if all required user and group names are not null or empty
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userAdmin)
             || CmsStringUtil.isEmptyOrWhitespaceOnly(userGuest)
             || CmsStringUtil.isEmptyOrWhitespaceOnly(userExport)
+            || CmsStringUtil.isEmptyOrWhitespaceOnly(groupAdministrators)
+            || CmsStringUtil.isEmptyOrWhitespaceOnly(groupProjectmanagers)
+            || CmsStringUtil.isEmptyOrWhitespaceOnly(groupUsers)
             || CmsStringUtil.isEmptyOrWhitespaceOnly(groupGuests)) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_USER_GROUP_NAMES_EMPTY_0));
         }
@@ -287,6 +383,9 @@ public class CmsDefaultUsers {
         } else {
             m_userDeletedResource = userDeletedResource.trim();
         }
+        m_groupAdministrators = groupAdministrators.trim();
+        m_groupProjectmanagers = groupProjectmanagers.trim();
+        m_groupUsers = groupUsers.trim();
         m_groupGuests = groupGuests.trim();
     }
 }

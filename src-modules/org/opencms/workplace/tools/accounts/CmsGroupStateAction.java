@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupStateAction.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.11.4.2 $
+ * Date   : $Date: 2007/01/19 16:53:53 $
+ * Version: $Revision: 1.11.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.11.4.2 $ 
+ * @version $Revision: 1.11.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +126,7 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
 
         try {
             String groupName = (String)getItem().get(A_CmsUserGroupsList.LIST_COLUMN_NAME);
-            List dGroups = getCms().getDirectGroupsOfUser(getUserName());
+            List dGroups = getCms().getGroupsOfUser(getUserName(), true);
             CmsGroup group = getCms().readGroup(groupName);
             if (isDirect()) {
                 return dGroups.contains(group);

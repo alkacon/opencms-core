@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/01/16 09:50:46 $
- * Version: $Revision: 1.146.4.20 $
+ * Date   : $Date: 2007/01/19 16:53:56 $
+ * Version: $Revision: 1.146.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.20 $
+ * @version $Revision: 1.146.4.21 $
  * 
  * @since 6.0.0 
  */
@@ -118,21 +118,6 @@ public final class CmsObject {
     }
 
     /**
-     * Adds a resource to the given organizational unit.<p>
-     * 
-     * @param ouFqn the full qualified name of the organizational unit to add the resource to
-     * @param resourceName the name of the resource that is to be added to the organizational unit
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void addResourceToOrgUnit(String ouFqn, String resourceName) throws CmsException {
-
-        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
-        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
-        m_securityManager.addResourceToOrgUnit(m_context, orgUnit, resource);
-    }
-
-    /**
      * Adds a user to a group.<p>
      * 
      * @param username the name of the user that is to be added to the group
@@ -142,7 +127,7 @@ public final class CmsObject {
      */
     public void addUserToGroup(String username, String groupname) throws CmsException {
 
-        m_securityManager.addUserToGroup(m_context, username, groupname);
+        m_securityManager.addUserToGroup(m_context, username, groupname, false);
     }
 
     /**
@@ -170,7 +155,7 @@ public final class CmsObject {
     throws CmsException {
 
         CmsUser user = m_securityManager.createUser(m_context, name, password, description, additionalInfos);
-        m_securityManager.addUserToGroup(m_context, name, group);
+        addUserToGroup(name, group);
         return user;
     }
 
@@ -460,7 +445,7 @@ public final class CmsObject {
     /**
      * Creates a new user group.<p>
      * 
-     * @param name the name of the new group
+     * @param groupFqn the name of the new group
      * @param description the description of the new group
      * @param flags the flags for the new group
      * @param parent the parent group (or <code>null</code>)
@@ -469,34 +454,9 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      */
-    public CmsGroup createGroup(String name, String description, int flags, String parent) throws CmsException {
+    public CmsGroup createGroup(String groupFqn, String description, int flags, String parent) throws CmsException {
 
-        return m_securityManager.createGroup(m_context, name, description, flags, parent);
-    }
-
-    /**
-     * Creates a new organizational unit.<p>
-     * 
-     * The parent structure must exist.<p>
-     * 
-     * @param ouFqn the fully qualified name of the new organizational unit
-     * @param description the description of the new organizational unit
-     * @param flags the flags for the new organizational unit
-     * @param resourceName the first associated resource
-     *
-     * @return a <code>{@link CmsOrganizationalUnit}</code> object representing 
-     *          the newly created organizational unit
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public CmsOrganizationalUnit createOrganizationalUnit(
-        String ouFqn,
-        String description,
-        int flags,
-        String resourceName) throws CmsException {
-
-        CmsResource resource = readResource(resourceName);
-        return m_securityManager.createOrganizationalUnit(m_context, ouFqn, description, flags, resource);
+        return m_securityManager.createGroup(m_context, groupFqn, description, flags, parent);
     }
 
     /**
@@ -638,7 +598,7 @@ public final class CmsObject {
     /**
      * Creates a new user.<p>
      * 
-     * @param name the name for the new user
+     * @param userFqn the name for the new user
      * @param password the password for the new user
      * @param description the description for the new user
      * @param additionalInfos the additional infos for the user
@@ -647,10 +607,10 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsUser createUser(String name, String password, String description, Map additionalInfos)
+    public CmsUser createUser(String userFqn, String password, String description, Map additionalInfos)
     throws CmsException {
 
-        return m_securityManager.createUser(m_context, name, password, description, additionalInfos);
+        return m_securityManager.createUser(m_context, userFqn, password, description, additionalInfos);
     }
 
     /**
@@ -712,26 +672,6 @@ public final class CmsObject {
     public void deleteGroup(String group) throws CmsException {
 
         m_securityManager.deleteGroup(m_context, group);
-    }
-
-    /**
-     * Deletes an organizational unit.<p>
-     *
-     * Only organizational units that contain no suborganizational unit can be deleted.<p>
-     * 
-     * The organizational unit can not be delete if it is used in the reuqest context, 
-     * or if the current user belongs to it.<p>
-     * 
-     * All users and groups in the given organizational unit will be deleted.<p>
-     * 
-     * @param ouFqn the fully qualified name of the organizational unit to delete
-     * 
-     * @throws CmsException if operation was not successful
-     */
-    public void deleteOrganizationalUnit(String ouFqn) throws CmsException {
-
-        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
-        m_securityManager.deleteOrganizationalUnit(m_context, orgUnit);
     }
 
     /**
@@ -1070,10 +1010,12 @@ public final class CmsObject {
      * @return a list of <code>{@link CmsGroup}</code> objects
      *
      * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link #getGroupsOfUser(String, boolean)} instead
      */
     public List getDirectGroupsOfUser(String username) throws CmsException {
 
-        return (m_securityManager.getDirectGroupsOfUser(m_context, username));
+        return getGroupsOfUser(username, true);
     }
 
     /**
@@ -1121,26 +1063,12 @@ public final class CmsObject {
      * @return a list of all <code>{@link CmsGroup}</code> objects
      *
      * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link org.opencms.security.CmsOrgUnitManager#getGroups(CmsObject, String, boolean) OpenCms.getOrgUnitManager().getGroupsForOrganizationalUnit(CmsObject, String, boolean)} instead
      */
     public List getGroups() throws CmsException {
 
-        return m_securityManager.getGroups(m_context);
-    }
-
-    /**
-     * Returns all groups of the given organizational unit.<p>
-     *
-     * @param ouFqn the fully qualified name of the organizational unit to get all principals for
-     * @param recursive if all groups of sub-organizational units should be retrieved too
-     * 
-     * @return all <code>{@link CmsGroup}</code> objects in the organizational unit
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public List getGroupsForOrganizationalUnit(String ouFqn, boolean recursive) throws CmsException {
-
-        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
-        return (m_securityManager.getGroupsForOrganizationalUnit(m_context, orgUnit, recursive));
+        return OpenCms.getOrgUnitManager().getGroups(this, "/", true);
     }
 
     /**
@@ -1151,25 +1079,43 @@ public final class CmsObject {
      * @return a list of <code>{@link CmsGroup}</code> objects
      * 
      * @throws CmsException if operation was not succesful
+     * 
+     * @deprecated use {@link #getGroupsOfUser(String, boolean)} instead
      */
     public List getGroupsOfUser(String username) throws CmsException {
 
-        return getGroupsOfUser(username, m_context.getRemoteAddress());
+        return getGroupsOfUser(username, false, m_context.getRemoteAddress());
+    }
+
+    /**
+     * Returns all the groups the given user belongs to.<p>
+     *
+     * @param username the name of the user
+     * @param directGroupsOnly if set only the direct assigned groups will be returned, if not also indirect roles
+     * 
+     * @return a list of <code>{@link CmsGroup}</code> objects
+     * 
+     * @throws CmsException if operation was not succesful
+     */
+    public List getGroupsOfUser(String username, boolean directGroupsOnly) throws CmsException {
+
+        return getGroupsOfUser(username, directGroupsOnly, m_context.getRemoteAddress());
     }
 
     /**
      * Returns the groups of a user filtered by the specified IP address.<p>
      *
      * @param username the name of the user
+     * @param directGroupsOnly if set only the direct assigned groups will be returned, if not also indirect roles
      * @param remoteAddress the IP address to filter the groups in the result list
      * 
      * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address
      * 
      * @throws CmsException if operation was not succesful
      */
-    public List getGroupsOfUser(String username, String remoteAddress) throws CmsException {
+    public List getGroupsOfUser(String username, boolean directGroupsOnly, String remoteAddress) throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(m_context, username, remoteAddress);
+        return m_securityManager.getGroupsOfUser(m_context, username, "/", true, false, directGroupsOnly, remoteAddress);
     }
 
     /**
@@ -1242,23 +1188,6 @@ public final class CmsObject {
     }
 
     /**
-     * Returns all child organizational units of the given parent organizational unit including 
-     * hierarchical deeper organization units if needed.<p>
-     *
-     * @param ouFqn the fully qualified name of the parent organizational unit
-     * @param includeChilds if hierarchical deeper organization units should also be returned
-     * 
-     * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public List getOrganizationalUnits(String ouFqn, boolean includeChilds) throws CmsException {
-
-        CmsOrganizationalUnit parent = readOrganizationalUnit(ouFqn);
-        return m_securityManager.getOrganizationalUnits(m_context, parent, includeChilds);
-    }
-
-    /**
      * Returns the parent group of a group.<p>
      *
      * @param groupname the name of the group
@@ -1304,7 +1233,7 @@ public final class CmsObject {
 
         CmsAccessControlList acList = getAccessControlList(resourceName);
         CmsUser user = readUser(userName);
-        return acList.getPermissions(user, getGroupsOfUser(userName));
+        return acList.getPermissions(user, getGroupsOfUser(userName, false));
     }
 
     /**
@@ -1314,6 +1243,8 @@ public final class CmsObject {
      * @return a publish list
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject) getPublishList(CmsObject)}</code> instead
      */
     public CmsPublishList getPublishList() throws CmsException {
 
@@ -1331,6 +1262,8 @@ public final class CmsObject {
      * @return a publish list
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject, CmsResource, boolean) getPublishList(CmsObject, CmsResource, boolean)}</code> instead
      */
     public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings)
     throws CmsException {
@@ -1351,11 +1284,13 @@ public final class CmsObject {
      * @return a publish list
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject, List, boolean) getPublishList(CmsObject, List, boolean)}</code> instead
      */
     public CmsPublishList getPublishList(List directPublishResources, boolean directPublishSiblings)
     throws CmsException {
 
-        return getPublishList(directPublishResources, directPublishSiblings, true);
+        return OpenCms.getPublishManager().getPublishList(this, directPublishResources, directPublishSiblings, true);
     }
 
     /**
@@ -1370,6 +1305,8 @@ public final class CmsObject {
      * @return a publish list
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject, List, boolean, boolean) getPublishList(CmsObject, List, boolean, boolean)}</code> instead
      */
     public CmsPublishList getPublishList(
         List directPublishResources,
@@ -1417,21 +1354,6 @@ public final class CmsObject {
     public CmsRequestContext getRequestContext() {
 
         return m_context;
-    }
-
-    /**
-     * Returns all resources of the given organizational unit.<p>
-     *
-     * @param ouFqn the fully qualified name of the organizational unit to get all resources for
-     * 
-     * @return all <code>{@link CmsResource}</code> objects in the organizational unit
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public List getResourcesForOrganizationalUnit(String ouFqn) throws CmsException {
-
-        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
-        return m_securityManager.getResourcesForOrganizationalUnit(m_context, orgUnit);
     }
 
     /**
@@ -1597,26 +1519,12 @@ public final class CmsObject {
      * @return a list of all <code>{@link CmsUser}</code> objects
      * 
      * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link org.opencms.security.CmsOrgUnitManager#getUsers(CmsObject, String, boolean) OpenCms.getOrgUnitManager().getUsersForOrganizationalUnit(CmsObject, String, boolean)} instead
      */
     public List getUsers() throws CmsException {
 
-        return m_securityManager.getUsers(m_context);
-    }
-
-    /**
-     * Returns all users of the given organizational unit.<p>
-     *
-     * @param ouFqn the fully qualified name of the organizational unit to get all principals for
-     * @param recursive if all users of sub-organizational units should be retrieved too
-     * 
-     * @return all <code>{@link CmsUser}</code> objects in the organizational unit
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public List getUsersForOrganizationalUnit(String ouFqn, boolean recursive) throws CmsException {
-
-        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
-        return (m_securityManager.getUsersForOrganizationalUnit(m_context, orgUnit, recursive));
+        return OpenCms.getOrgUnitManager().getUsers(this, "/", true);
     }
 
     /**
@@ -1632,7 +1540,7 @@ public final class CmsObject {
      */
     public List getUsersOfGroup(String groupname) throws CmsException {
 
-        return (m_securityManager.getUsersOfGroup(m_context, groupname));
+        return (m_securityManager.getUsersOfGroup(m_context, groupname, true, false, false));
     }
 
     /**
@@ -1996,10 +1904,12 @@ public final class CmsObject {
      * @throws Exception if something goes wrong
      * 
      * @see CmsShellReport
+     * 
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishProject(CmsObject) publishProject(CmsObject)}</code> instead
      */
     public CmsUUID publishProject() throws Exception {
 
-        return publishProject(new CmsShellReport(m_context.getLocale()));
+        return OpenCms.getPublishManager().publishProject(this, new CmsShellReport(m_context.getLocale()));
     }
 
     /**
@@ -2010,10 +1920,12 @@ public final class CmsObject {
      * @return the publish history id of the published project
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishProject(CmsObject, I_CmsReport) publishProject(CmsObject, I_CmsReport)}</code> instead
      */
     public CmsUUID publishProject(I_CmsReport report) throws CmsException {
 
-        return publishProject(report, getPublishList());
+        return OpenCms.getPublishManager().publishProject(this, report, OpenCms.getPublishManager().getPublishList(this));
     }
 
     /**
@@ -2029,10 +1941,12 @@ public final class CmsObject {
      * @see #getPublishList()
      * @see #getPublishList(CmsResource, boolean)
      * @see #getPublishList(List, boolean)
+     * 
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishProject(CmsObject, I_CmsReport, CmsPublishList) publishProject(CmsObject, I_CmsReport, CmsPublishList)}</code> instead
      */
     public CmsUUID publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
 
-        return m_securityManager.publishProject(this, publishList, report);
+        return OpenCms.getPublishManager().publishProject(this, report, publishList);
     }
 
     /**
@@ -2051,11 +1965,16 @@ public final class CmsObject {
      * 
      * @see #publishResource(String)
      * @see #publishResource(String, boolean, I_CmsReport)
+     * 
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishProject(CmsObject, I_CmsReport, CmsResource, boolean) publishProject(CmsObject, I_CmsReport, CmsResource, boolean)}</code> instead
      */
     public CmsUUID publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings)
     throws CmsException {
 
-        return publishProject(report, getPublishList(directPublishResource, directPublishSiblings));
+        return OpenCms.getPublishManager().publishProject(this, report, OpenCms.getPublishManager().getPublishList(
+            this,
+            directPublishResource,
+            directPublishSiblings));
     }
 
     /**
@@ -2070,10 +1989,12 @@ public final class CmsObject {
      * @throws Exception if something goes wrong
      * 
      * @see CmsShellReport
+     * 
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishResource(CmsObject, String) publishResource(CmsObject, String)}</code> instead
      */
     public CmsUUID publishResource(String resourcename) throws Exception {
 
-        return publishResource(resourcename, false, new CmsShellReport(m_context.getLocale()));
+        return OpenCms.getPublishManager().publishResource(this, resourcename, false, new CmsShellReport(m_context.getLocale()));
     }
 
     /**
@@ -2086,11 +2007,13 @@ public final class CmsObject {
      * @return the publish history id of the published project
      * 
      * @throws Exception if something goes wrong
+     * 
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishResource(CmsObject, String, boolean, I_CmsReport) publishResource(CmsObject, String, boolean, I_CmsReport)}</code> instead
      */
     public CmsUUID publishResource(String resourcename, boolean publishSiblings, I_CmsReport report) throws Exception {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        return publishProject(report, resource, publishSiblings);
+        return OpenCms.getPublishManager().publishProject(this, report, resource, publishSiblings);
     }
 
     /**
@@ -2417,20 +2340,6 @@ public final class CmsObject {
     public CmsGroup readManagerGroup(CmsProject project) {
 
         return m_securityManager.readManagerGroup(m_context, project);
-    }
-
-    /**
-     * Reads an organizational Unit based on its fully qualified name.<p>
-     *
-     * @param ouFqn the fully qualified name of the organizational Unit to be read
-     * 
-     * @return the organizational Unit with the provided fully qualified name
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsOrganizationalUnit readOrganizationalUnit(String ouFqn) throws CmsException {
-
-        return m_securityManager.readOrganizationalUnit(m_context, ouFqn);
     }
 
     /**
@@ -3144,21 +3053,6 @@ public final class CmsObject {
     }
 
     /**
-     * Removes a resource from the given organizational unit.<p>
-     * 
-     * @param ouFqn the fully qualified name of the organizational unit to remove the resource from
-     * @param resourceName the name of the resource that is to be removed from the organizational unit
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void removeResourceFromOrgUnit(String ouFqn, String resourceName) throws CmsException {
-
-        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
-        // do not read the resource to allow to remove deleted resources
-        m_securityManager.removeResourceFromOrgUnit(m_context, orgUnit, addSiteRoot(resourceName));
-    }
-
-    /**
      * Removes a resource from the current project of the user.<p>
      * 
      * This is used to reduce the current users project with the
@@ -3186,7 +3080,7 @@ public final class CmsObject {
      */
     public void removeUserFromGroup(String username, String groupname) throws CmsException {
 
-        m_securityManager.removeUserFromGroup(m_context, username, groupname);
+        m_securityManager.removeUserFromGroup(m_context, username, groupname, false);
     }
 
     /**
@@ -3359,23 +3253,6 @@ public final class CmsObject {
     public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
 
         m_securityManager.resetPassword(m_context, username, oldPassword, newPassword);
-    }
-
-    /**
-     * Adds an user or group to the given organizational unit.<p>
-     * 
-     * @param ouFqn the full qualified name of the organizational unit to add the principal to
-     * @param principalType the type of the principal that is to be added to the organizational unit
-     * @param principalName the name of the principal that is to be added to the organizational unit
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void setPrincipalsOrganizationalUnit(String ouFqn, String principalType, String principalName)
-    throws CmsException {
-
-        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(ouFqn);
-        I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
-        m_securityManager.setPrincipalsOrganizationalUnit(m_context, orgUnit, principal);
     }
 
     /**
@@ -3575,22 +3452,6 @@ public final class CmsObject {
     public void writeGroup(CmsGroup group) throws CmsException {
 
         m_securityManager.writeGroup(m_context, group);
-    }
-
-    /**
-     * Writes an already existing organizational unit.<p>
-     *
-     * The organizational unit has to be a valid OpenCms organizational unit.<br>
-     * 
-     * The organizational unit will be completely overriden by the given data.<p>
-     *
-     * @param organizationalUnit the organizational unit that should be written
-     * 
-     * @throws CmsException if operation was not successful
-     */
-    public void writeOrganizationalUnit(CmsOrganizationalUnit organizationalUnit) throws CmsException {
-
-        m_securityManager.writeOrganizationalUnit(m_context, organizationalUnit);
     }
 
     /**

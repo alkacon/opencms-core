@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.15.8.4 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.15.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
-import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestServletRequest;
@@ -58,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.15.8.4 $
+ * @version $Revision: 1.15.8.5 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
@@ -155,13 +154,13 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
         // test creation of "Guest" user CmsObject
         cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        if (!cms.getRequestContext().currentUser().getName().equals(CmsOrganizationalUnit.appendFqn(null, OpenCms.getDefaultUsers().getUserGuest()))) {
+        if (!OpenCms.getDefaultUsers().isUserGuest(cms.getRequestContext().currentUser().getName())) {
             fail("'Guest' user could not be properly initialized!");
         }
 
         // test creation of "Export" user CmsObject
         cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-        if (!cms.getRequestContext().currentUser().getName().equals(CmsOrganizationalUnit.appendFqn(null, OpenCms.getDefaultUsers().getUserExport()))) {
+        if (!OpenCms.getDefaultUsers().isUserExport(cms.getRequestContext().currentUser().getName())) {
             fail("'Export' user could not be properly initialized!");
         }
 
@@ -208,7 +207,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
             fail("'Admin' user creation with valid Admin context didn't work!");
             return;
         }
-        if (!cms.getRequestContext().currentUser().getName().equals(CmsOrganizationalUnit.appendFqn(null, OpenCms.getDefaultUsers().getUserAdmin()))) {
+        if (!OpenCms.getDefaultUsers().isUserAdmin(cms.getRequestContext().currentUser().getName())) {
             fail("'Admin' user could not be properly initialized with valid Admin context!");
         }
         if (cms == getCmsObject()) {

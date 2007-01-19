@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2007/01/08 14:03:05 $
- * Version: $Revision: 1.75.4.4 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.75.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.75.4.4 $ 
+ * @version $Revision: 1.75.4.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -128,7 +128,7 @@ public class CmsImportVersion3 extends A_CmsImport {
         m_linkPropertyStorage = new HashMap();
         try {
             // first import the user information
-            if (cms.hasRole(CmsRole.ACCOUNT_MANAGER)) {
+            if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)) {
                 importGroups();
                 importUsers();
             }

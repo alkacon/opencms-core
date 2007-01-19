@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2007/01/15 18:48:35 $
- * Version: $Revision: 1.33.4.5 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.33.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33.4.5 $ 
+ * @version $Revision: 1.33.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -197,7 +197,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
     throws CmsConfigurationException, CmsImportExportException, CmsRoleViolationException {
 
         // check if the user has the required permissions
-        cms.checkRole(CmsRole.DATABASE_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         report.print(Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
         if (report instanceof CmsHtmlReport) {
@@ -358,7 +358,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
             // now unlock and publish the project
             cms.unlockProject(importProject.getId());
-            cms.publishProject(report);
+            OpenCms.getPublishManager().publishProject(cms, report);
             OpenCms.getPublishManager().waitWhileRunning();
 
             report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0), I_CmsReport.FORMAT_HEADLINE);
@@ -469,7 +469,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
     throws CmsSecurityException, CmsConfigurationException, CmsException {
 
         // check if the user has the required permissions
-        cms.checkRole(CmsRole.DATABASE_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         // read the module from the import file
         CmsModule importedModule = readModuleFromImport(importResource);

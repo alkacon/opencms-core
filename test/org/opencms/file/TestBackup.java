@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestBackup.java,v $
- * Date   : $Date: 2006/12/14 09:56:37 $
- * Version: $Revision: 1.7.8.5 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.7.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit tests for backup operation.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.7.8.5 $
+ * @version $Revision: 1.7.8.6 $
  */
 public class TestBackup extends OpenCmsTestCase {
 
@@ -122,14 +122,14 @@ public class TestBackup extends OpenCmsTestCase {
                 String contentStr = "content version " + i;
                 cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);
                 cms.unlockResource(filename);
-                cms.publishResource(filename);
+                OpenCms.getPublishManager().publishResource(cms, filename);
                 OpenCms.getPublishManager().waitWhileRunning();
 
                 // delete the resource again
                 cms.lockResource(filename);
                 cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 cms.unlockResource(filename);
-                cms.publishResource(filename);
+                OpenCms.getPublishManager().publishResource(cms, filename);
                 OpenCms.getPublishManager().waitWhileRunning();
             }
 
@@ -205,14 +205,14 @@ public class TestBackup extends OpenCmsTestCase {
                 property = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "RootTitle" + i, null);
                 cms.writePropertyObject(filename, property);
                 cms.unlockResource(filename);
-                cms.publishResource(filename);
+                OpenCms.getPublishManager().publishResource(cms, filename);
                 OpenCms.getPublishManager().waitWhileRunning();
             }
 
             // create a sibling
             cms.copyResource(filename, siblingname, CmsResource.COPY_AS_SIBLING);
             cms.unlockResource(siblingname);
-            cms.publishResource(siblingname);
+            OpenCms.getPublishManager().publishResource(cms, siblingname);
             OpenCms.getPublishManager().waitWhileRunning();
 
             for (int i = 1; i <= counterSibl; i++) {
@@ -226,14 +226,14 @@ public class TestBackup extends OpenCmsTestCase {
                 property = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "SiblingTitle" + i, null);
                 cms.writePropertyObject(siblingname, property);
                 cms.unlockResource(siblingname);
-                cms.publishResource(siblingname);
+                OpenCms.getPublishManager().publishResource(cms, siblingname);
                 OpenCms.getPublishManager().waitWhileRunning();
             }
 
             // create a sibling2
             cms.copyResource(filename, siblingname2, CmsResource.COPY_AS_SIBLING);
             cms.unlockResource(siblingname2);
-            cms.publishResource(siblingname2);
+            OpenCms.getPublishManager().publishResource(cms, siblingname2);
             OpenCms.getPublishManager().waitWhileRunning();
 
             for (int i = 1; i <= counterSibl2; i++) {
@@ -247,7 +247,7 @@ public class TestBackup extends OpenCmsTestCase {
                 property = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Sibling2Title" + i, null);
                 cms.writePropertyObject(siblingname2, property);
                 cms.unlockResource(siblingname2);
-                cms.publishResource(siblingname2);
+                OpenCms.getPublishManager().publishResource(cms, siblingname2);
                 OpenCms.getPublishManager().waitWhileRunning();
             }
 
@@ -255,14 +255,14 @@ public class TestBackup extends OpenCmsTestCase {
             cms.lockResource(filename);
             cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
             cms.unlockResource(filename);
-            cms.publishResource(filename);
+            OpenCms.getPublishManager().publishResource(cms, filename);
             OpenCms.getPublishManager().waitWhileRunning();
 
             //          now delete and publish sibling     
             cms.lockResource(siblingname2);
             cms.deleteResource(siblingname2, CmsResource.DELETE_PRESERVE_SIBLINGS);
             cms.unlockResource(siblingname2);
-            cms.publishResource(siblingname2);
+            OpenCms.getPublishManager().publishResource(cms, siblingname2);
             OpenCms.getPublishManager().waitWhileRunning();
 
             //Delete backups, keep only 3 latest versions. 
@@ -353,7 +353,7 @@ public class TestBackup extends OpenCmsTestCase {
                 property = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "RootTitle" + i, null);
                 cms.writePropertyObject(filename, property);
                 cms.unlockResource(filename);
-                cms.publishResource(filename);
+                OpenCms.getPublishManager().publishResource(cms, filename);
                 OpenCms.getPublishManager().waitWhileRunning();
                 Thread.sleep(1500);
                 //create Sibling and publish it 6 times. 
@@ -363,7 +363,7 @@ public class TestBackup extends OpenCmsTestCase {
                     // create a sibling
                     cms.copyResource(filename, siblingname, CmsResource.COPY_AS_SIBLING);
                     cms.unlockResource(siblingname);
-                    cms.publishResource(siblingname);
+                    OpenCms.getPublishManager().publishResource(cms, siblingname);
                     OpenCms.getPublishManager().waitWhileRunning();
 
                     for (int j = 1; j <= counterSibl; j++) {
@@ -377,7 +377,7 @@ public class TestBackup extends OpenCmsTestCase {
                         property = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "SiblingTitle" + i, null);
                         cms.writePropertyObject(siblingname, property);
                         cms.unlockResource(siblingname);
-                        cms.publishResource(siblingname);
+                        OpenCms.getPublishManager().publishResource(cms, siblingname);
                         OpenCms.getPublishManager().waitWhileRunning();
                         Thread.sleep(1500);
 
@@ -392,7 +392,7 @@ public class TestBackup extends OpenCmsTestCase {
             cms.lockResource(filename);
             cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
             cms.unlockResource(filename);
-            cms.publishResource(filename);
+            OpenCms.getPublishManager().publishResource(cms, filename);
             OpenCms.getPublishManager().waitWhileRunning();
             Thread.sleep(1500);
 
@@ -400,7 +400,7 @@ public class TestBackup extends OpenCmsTestCase {
             cms.lockResource(siblingname);
             cms.deleteResource(siblingname, CmsResource.DELETE_PRESERVE_SIBLINGS);
             cms.unlockResource(siblingname);
-            cms.publishResource(siblingname);
+            OpenCms.getPublishManager().publishResource(cms, siblingname);
             OpenCms.getPublishManager().waitWhileRunning();
 
             //Deleted backups
@@ -486,14 +486,14 @@ public class TestBackup extends OpenCmsTestCase {
                 cms.lockResource(filename);
                 cms.writeFile(file);
                 cms.unlockResource(filename);
-                cms.publishResource(filename);
+                OpenCms.getPublishManager().publishResource(cms, filename);
                 OpenCms.getPublishManager().waitWhileRunning();
             }
 
             // create a sibling
             cms.copyResource(filename, siblingname, CmsResource.COPY_AS_SIBLING);
             cms.unlockResource(siblingname);
-            cms.publishResource(siblingname);
+            OpenCms.getPublishManager().publishResource(cms, siblingname);
             OpenCms.getPublishManager().waitWhileRunning();
 
             for (int i = 1; i <= counter; i++) {
@@ -505,7 +505,7 @@ public class TestBackup extends OpenCmsTestCase {
                 cms.lockResource(siblingname);
                 cms.writeFile(file);
                 cms.unlockResource(siblingname);
-                cms.publishResource(siblingname);
+                OpenCms.getPublishManager().publishResource(cms, siblingname);
                 OpenCms.getPublishManager().waitWhileRunning();
             }
 

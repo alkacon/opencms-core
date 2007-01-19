@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsStaticExportManager.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.11.4.1 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.11.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11.4.1 $
+ * @version $Revision: 1.11.4.2 $
  * 
- * @version $Revision: 1.11.4.1 $
+ * @version $Revision: 1.11.4.2 $
  * 
  * @since 6.0.0
  */
@@ -148,7 +148,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.writePropertyObject(folder, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "testfolder", null));
         cms.unlockResource(folder);
         // publish the changes
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
@@ -188,7 +188,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.writePropertyObject(vfsName, exportProp);
         cms.unlockResource(vfsName);
         // publish the changes
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(cms.getRequestContext().getSiteRoot() +  folder);
@@ -207,7 +207,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.writePropertyObject(folder, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "myfolder", null));
         cms.unlockResource(folder);
         // publish the changes
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         expected = rfsPrefix + "/myfolder/jsp.jsp.html";
@@ -221,7 +221,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.writePropertyObject(vfsName, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTSUFFIX, ".txt", null));
         cms.unlockResource(vfsName);
         // publish the changes
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         expected = rfsPrefix + "/myfolder/jsp.jsp.txt";
@@ -241,7 +241,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.writePropertyObject(vfsName, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTSUFFIX, ".pdf", null));
         cms.unlockResource(vfsName);
         // publish the changes
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         expected = rfsPrefix + cms.getRequestContext().getSiteRoot() + vfsName + ".pdf";

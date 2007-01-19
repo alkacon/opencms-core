@@ -35,6 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDefaultJsAction;
@@ -216,9 +217,9 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
 
         List ret = new ArrayList();
         if (getParamUser() != null) {
-            ret.addAll(getCms().getGroupsOfUser(getParamUser()));
+            ret.addAll(getCms().getGroupsOfUser(getParamUser(), false));
         } else {
-            ret.addAll(getCms().getGroups());
+            ret.addAll(OpenCms.getOrgUnitManager().getGroups(getCms(), "/", true));
         }
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());

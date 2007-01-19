@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserGroupsList.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.10.4.1 $
+ * Date   : $Date: 2007/01/19 16:53:53 $
+ * Version: $Revision: 1.10.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10.4.1 $ 
+ * @version $Revision: 1.10.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,7 +125,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
                 String groupName = (String)listItem.get(LIST_COLUMN_NAME);
                 boolean directGroup = false;
                 try {
-                    Iterator it = getCms().getDirectGroupsOfUser(getParamUsername()).iterator();
+                    Iterator it = getCms().getGroupsOfUser(getParamUsername(), true).iterator();
                     while (it.hasNext()) {
                         CmsGroup group = (CmsGroup)it.next();
                         if (group.getName().equals(groupName)) {
@@ -170,7 +170,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
      */
     protected List getGroups() throws CmsException {
 
-        return getCms().getGroupsOfUser(getParamUsername());
+        return getCms().getGroupsOfUser(getParamUsername(), false);
     }
 
     /**

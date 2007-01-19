@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2007/01/08 14:02:56 $
- * Version: $Revision: 1.8.4.2 $
+ * Date   : $Date: 2007/01/19 16:53:53 $
+ * Version: $Revision: 1.8.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8.4.2 $ 
+ * @version $Revision: 1.8.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,7 +63,7 @@ public class CmsAccountsToolHandler extends A_CmsToolHandler {
      */
     public boolean isEnabled(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.ACCOUNT_MANAGER);
+        return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
     }
 
     /**
@@ -75,7 +75,7 @@ public class CmsAccountsToolHandler extends A_CmsToolHandler {
             return false;
         }
         if (getVisibilityFlag().equals(VISIBILITY_ALL)) {
-            return cms.hasRole(CmsRole.ACCOUNT_MANAGER);
+            return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
         }
         return true;
     }

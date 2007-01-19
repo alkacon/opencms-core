@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/workflow/Attic/CmsWorkflowList.java,v $
- * Date   : $Date: 2006/08/25 14:00:41 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/01/19 16:54:01 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.0 
  */
@@ -213,7 +213,7 @@ public class CmsWorkflowList extends A_CmsListDialog {
                 myWf = true;
             } else {
                 try {
-                    List groups = getCms().getGroupsOfUser(curUser.getName());
+                    List groups = getCms().getGroupsOfUser(curUser.getName(), false);
                     // if the current user is member of the agent group
                     myWf = groups.contains(agent);
                 } catch (Exception e) {

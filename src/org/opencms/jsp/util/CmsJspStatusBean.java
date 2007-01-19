@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStatusBean.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.10.8.1 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.10.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10.8.1 $
+ * @version $Revision: 1.10.8.2 $
  * 
  * @since 6.0
  */
@@ -421,7 +421,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
      */
     public boolean showException() {
 
-        return getCmsObject().hasRole(CmsRole.DEVELOPER);
+        return OpenCms.getRoleManager().hasRole(getCmsObject(), CmsRole.DEVELOPER);
     }
 
     /**

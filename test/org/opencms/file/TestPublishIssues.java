@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.21.4.6 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.21.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.4.6 $
+ * @version $Revision: 1.21.4.7 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -133,7 +133,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.unlockResource("/folder1/");
 
         // publish the project (this did cause an exception because of primary key violation!)
-        CmsUUID publishId = cms.publishResource("/folder1/", true, new CmsShellReport(
+        CmsUUID publishId = OpenCms.getPublishManager().publishResource(cms, "/folder1/", true, new CmsShellReport(
             cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -317,7 +317,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(project2);
 
         // get the publish list
-        CmsPublishList publishList = cms.getPublishList();
+        CmsPublishList publishList = OpenCms.getPublishManager().getPublishList(cms);
         assertEquals(1, publishList.getFileList().size());
 
         // project should have no locked resources 
@@ -325,7 +325,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         assertEquals(0, resourceProjectCount);
 
         // unlock the project
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // ensure the file was published - state must be "unchanged" 
@@ -369,7 +369,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         // now publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check if the setup was created as planned
@@ -425,7 +425,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.setDateLastModified("/folder1/subfolder11/index.html", touchTime, false);
 
         cms.unlockResource("/folder1/");
-        cms.publishResource("/folder1/");
+        OpenCms.getPublishManager().publishResource(cms, "/folder1/");
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, "/folder1/", CmsResource.STATE_UNCHANGED);
@@ -439,7 +439,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createResource("/folder_a/folder_b/file_b.txt", CmsResourceTypePlain.getStaticTypeId());
 
         cms.unlockResource("/folder_a/");
-        cms.publishResource("/folder_a/");
+        OpenCms.getPublishManager().publishResource(cms, "/folder_a/");
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, "/folder_a/", CmsResource.STATE_UNCHANGED);
@@ -475,7 +475,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         // direct publish the new folder
         cms.unlockResource("/folder2/folder1/");
-        cms.publishResource("/folder2/folder1/");
+        OpenCms.getPublishManager().publishResource(cms, "/folder2/folder1/");
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check the state of all resources
@@ -513,7 +513,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         // publish
         cms.unlockResource("/test");
-        cms.publishResource("/test");
+        OpenCms.getPublishManager().publishResource(cms, "/test");
         OpenCms.getPublishManager().waitWhileRunning();
 
         // lock sibling 
@@ -533,7 +533,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.unlockResource("/test/subtest");
 
         // publish
-        cms.publishResource("/test");
+        OpenCms.getPublishManager().publishResource(cms, "/test");
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -562,7 +562,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createSibling(sibA, sibB, null);
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, "shared");
@@ -573,7 +573,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         assertState(cms, sibB, CmsResource.STATE_CHANGED);
         
         cms.unlockResource(sibA);
-        cms.publishResource(sibA, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().publishResource(cms, sibA, false, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
         
         assertState(cms, sibA, CmsResource.STATE_UNCHANGED);
@@ -605,7 +605,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createSibling(sib1, sib2, null);
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         CmsFile file = cms.readFile(sib1);
@@ -617,7 +617,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         assertState(cms, sib2, CmsResource.STATE_CHANGED);
         
         cms.unlockResource(sib1);
-        cms.publishResource(sib1, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().publishResource(cms, sib1, false, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
         
         assertState(cms, sib1, CmsResource.STATE_UNCHANGED);
@@ -650,7 +650,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createSibling(sibX, sibY, null);
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         CmsProperty propX = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "individual X", null);
@@ -668,13 +668,13 @@ public class TestPublishIssues extends OpenCmsTestCase {
         assertState(cms, sibY, CmsResource.STATE_CHANGED);
         
         cms.unlockResource(sibX);
-        cms.publishResource(sibX, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().publishResource(cms, sibX, false, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
         
         assertState(cms, sibX, CmsResource.STATE_UNCHANGED);
         assertState(cms, sibY, CmsResource.STATE_CHANGED);
 
-        cms.publishResource(sibY, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().publishResource(cms, sibY, false, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, sibX, CmsResource.STATE_UNCHANGED);

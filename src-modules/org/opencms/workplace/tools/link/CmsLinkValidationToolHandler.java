@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsLinkValidationToolHandler.java,v $
- * Date   : $Date: 2006/10/04 16:01:51 $
- * Version: $Revision: 1.1.8.1 $
+ * Date   : $Date: 2007/01/19 16:53:56 $
+ * Version: $Revision: 1.1.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.link;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.workplace.tools.A_CmsToolHandler;
 
@@ -41,7 +42,7 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.8.1 $ 
+ * @version $Revision: 1.1.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,7 +53,7 @@ public class CmsLinkValidationToolHandler extends A_CmsToolHandler {
      */
     public boolean isEnabled(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.WORKPLACE_USER);
+        return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_USER);
     }
 
     /**
@@ -60,6 +61,6 @@ public class CmsLinkValidationToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.WORKPLACE_USER);
+        return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_USER);
     }
 }

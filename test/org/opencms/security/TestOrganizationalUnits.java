@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/01/16 09:50:47 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -135,49 +135,60 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         echo("Testing handling with a deeper level ou");
 
         // check the root ou
-        CmsOrganizationalUnit rootOu = cms.readOrganizationalUnit("");
-        CmsOrganizationalUnit ou = cms.readOrganizationalUnit("/test");
+        CmsOrganizationalUnit rootOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "");
+        CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test");
 
         // create a deeper ou
-        CmsOrganizationalUnit ou2 = cms.createOrganizationalUnit(ou.getFqn() + "/test2", "my test ou2", 0, "/folder1");
+        CmsOrganizationalUnit ou2 = OpenCms.getOrgUnitManager().createOrganizationalUnit(
+            cms,
+            ou.getName() + "test2/",
+            "my test ou2",
+            0,
+            "/folder1");
 
         // check the ou attributes
         assertEquals(0, ou2.getFlags());
-        assertEquals("/test", ou2.getParentFqn());
-        assertEquals("test2", ou2.getName());
-        assertEquals("/test/test2", ou2.getFqn());
-        assertEquals(cms.readFolder("/system/orgunits/root/test/test2").getStructureId(), ou2.getId());
+        assertEquals("/test/", ou2.getParentFqn());
+        assertEquals("/test/test2/", ou2.getName());
+        assertEquals(cms.readFolder("/system/orgunits/test/test2").getStructureId(), ou2.getId());
 
         // check ou resources
-        assertEquals(1, cms.getResourcesForOrganizationalUnit(ou2.getFqn()).size());
-        assertTrue(cms.getResourcesForOrganizationalUnit(ou2.getFqn()).contains(cms.readResource("/folder1")));
+        List ou2Resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName());
+        assertEquals(1, ou2Resources.size());
+        assertTrue(ou2Resources.contains(cms.readResource("/folder1")));
 
         // check the ous
-        assertEquals(1, cms.getOrganizationalUnits(rootOu.getFqn(), false).size());
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), false).contains(ou));
+        List rootOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), false);
+        assertEquals(1, rootOus.size());
+        assertTrue(rootOus.contains(ou));
 
-        assertEquals(1, cms.getOrganizationalUnits(ou.getFqn(), false).size());
-        assertTrue(cms.getOrganizationalUnits(ou.getFqn(), false).contains(ou2));
+        List ouOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ou.getName(), false);
+        assertEquals(1, ouOus.size());
+        assertTrue(ouOus.contains(ou2));
 
-        assertTrue(cms.getOrganizationalUnits(ou2.getFqn(), false).isEmpty());
+        List ou2Ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ou2.getName(), false);
+        assertTrue(ou2Ous.isEmpty());
 
-        assertEquals(2, cms.getOrganizationalUnits(rootOu.getFqn(), true).size());
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou));
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou2));
+        List rootSubOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), true);
+        assertEquals(2, rootSubOus.size());
+        assertTrue(rootSubOus.contains(ou));
+        assertTrue(rootSubOus.contains(ou2));
 
-        assertEquals(1, cms.getOrganizationalUnits(ou.getFqn(), true).size());
-        assertTrue(cms.getOrganizationalUnits(ou.getFqn(), true).contains(ou2));
+        List ouSubOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ou.getName(), true);
+        assertEquals(1, ouSubOus.size());
+        assertTrue(ouSubOus.contains(ou2));
 
-        assertTrue(cms.getOrganizationalUnits(ou2.getFqn(), true).isEmpty());
+        List ou2SubOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ou2.getName(), true);
+        assertTrue(ou2SubOus.isEmpty());
 
-        cms.readOrganizationalUnit(ou.getFqn());
+        OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou.getName());
         try {
-            cms.deleteOrganizationalUnit(ou.getFqn());
+            OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, ou.getName());
             fail("should not be possible to delete a ou having sub-ous");
         } catch (CmsDataAccessException e) {
             // ok, ignore
         }
-        cms.readOrganizationalUnit(ou.getFqn());
+        OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou.getName());
     }
 
     /**
@@ -191,7 +202,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         echo("Testing handling with a first level ou");
 
         // check the root ou
-        CmsOrganizationalUnit rootOu = cms.readOrganizationalUnit("");
+        CmsOrganizationalUnit rootOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "");
 
         cms.addUserToGroup("/test1", "/Administrators");
         cms.loginUser("/test1", "test1");
@@ -202,136 +213,165 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
         // create a first level ou
-        CmsOrganizationalUnit ou = cms.createOrganizationalUnit("/test", "my test ou", 0, "/");
+        CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().createOrganizationalUnit(
+            cms,
+            "/test/",
+            "my test ou",
+            0,
+            "/");
 
         // check the ou attributes
         assertEquals(0, ou.getFlags());
-        assertEquals("", ou.getParentFqn());
+        assertEquals("/", ou.getParentFqn());
         assertEquals("my test ou", ou.getDescription());
-        assertEquals("test", ou.getName());
-        assertEquals("/test", ou.getFqn());
-        assertEquals(cms.readFolder("/system/orgunits/root/test").getStructureId(), ou.getId());
+        assertEquals("/test/", ou.getName());
+        assertEquals(cms.readFolder("/system/orgunits/test").getStructureId(), ou.getId());
 
         // check ou resources
-        assertEquals(1, cms.getResourcesForOrganizationalUnit(ou.getFqn()).size());
-        assertTrue(cms.getResourcesForOrganizationalUnit(ou.getFqn()).contains(cms.readResource("/")));
+        List ouResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName());
+        assertEquals(1, ouResources.size());
+        assertTrue(ouResources.contains(cms.readResource("/")));
 
         // check the ous
-        assertEquals(1, cms.getOrganizationalUnits(rootOu.getFqn(), false).size());
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), false).contains(ou));
-        assertTrue(cms.getOrganizationalUnits(ou.getFqn(), false).isEmpty());
+        List rootOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), false);
+        assertEquals(1, rootOus.size());
+        assertTrue(rootOus.contains(ou));
 
-        assertEquals(1, cms.getOrganizationalUnits(rootOu.getFqn(), true).size());
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou));
-        assertTrue(cms.getOrganizationalUnits(ou.getFqn(), true).isEmpty());
+        List ouOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ou.getName(), false);
+        assertTrue(ouOus.isEmpty());
+
+        List rootSubOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), true);
+        assertEquals(1, rootSubOus.size());
+        assertTrue(rootSubOus.contains(ou));
+
+        List ouSubOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ou.getName(), true);
+        assertTrue(ouSubOus.isEmpty());
 
         // test to update ou attributes
         ou.setDescription("new ou description");
         ou.setFlags(123);
-        cms.writeOrganizationalUnit(ou);
+        OpenCms.getOrgUnitManager().writeOrganizationalUnit(cms, ou);
 
-        ou = cms.readOrganizationalUnit(ou.getFqn());
+        ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou.getName());
         // check the ou attributes again
         assertEquals(123, ou.getFlags());
-        assertEquals("", ou.getParentFqn());
+        assertEquals("/", ou.getParentFqn());
         assertEquals("new ou description", ou.getDescription());
-        assertEquals("test", ou.getName());
-        assertEquals("/test", ou.getFqn());
-        assertEquals(cms.readFolder("/system/orgunits/root/test").getStructureId(), ou.getId());
-        assertTrue(cms.readFolder("/system/orgunits/root/test").isInternal());
+        assertEquals("/test/", ou.getName());
+        assertEquals(cms.readFolder("/system/orgunits/test").getStructureId(), ou.getId());
+        assertTrue(cms.readFolder("/system/orgunits/test").isInternal());
 
         ou.setFlags(0);
-        cms.writeOrganizationalUnit(ou);
+        OpenCms.getOrgUnitManager().writeOrganizationalUnit(cms, ou);
 
-        ou = cms.readOrganizationalUnit(ou.getFqn());
+        ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou.getName());
         assertEquals(0, ou.getFlags());
-        assertTrue(cms.readFolder("/system/orgunits/root/test").isInternal());
+        assertTrue(cms.readFolder("/system/orgunits/test").isInternal());
 
         // create a first level ou
-        CmsOrganizationalUnit ou2 = cms.createOrganizationalUnit("/test2", "my test ou2", 0, "/");
+        CmsOrganizationalUnit ou2 = OpenCms.getOrgUnitManager().createOrganizationalUnit(
+            cms,
+            "/test2/",
+            "my test ou2 in the root",
+            0,
+            "/");
 
         // check the ou attributes
         assertEquals(0, ou2.getFlags());
-        assertEquals("", ou2.getParentFqn());
-        assertEquals("my test ou2", ou2.getDescription());
-        assertEquals("test2", ou2.getName());
-        assertEquals("/test2", ou2.getFqn());
-        assertEquals(cms.readFolder("/system/orgunits/root/test2").getStructureId(), ou2.getId());
+        assertEquals("/", ou2.getParentFqn());
+        assertEquals("my test ou2 in the root", ou2.getDescription());
+        assertEquals("/test2/", ou2.getName());
+        assertEquals(cms.readFolder("/system/orgunits/test2").getStructureId(), ou2.getId());
 
         // check ou resources
-        assertEquals(1, cms.getResourcesForOrganizationalUnit(ou2.getFqn()).size());
-        assertTrue(cms.getResourcesForOrganizationalUnit(ou2.getFqn()).contains(cms.readResource("/")));
+        List ou2Resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName());
+        assertEquals(1, ou2Resources.size());
+        assertTrue(ou2Resources.contains(cms.readResource("/")));
 
         // check the ous
-        assertEquals(2, cms.getOrganizationalUnits(rootOu.getFqn(), false).size());
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), false).contains(ou));
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), false).contains(ou2));
-        assertTrue(cms.getOrganizationalUnits(ou2.getFqn(), false).isEmpty());
+        rootOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), false);
+        assertEquals(2, rootOus.size());
+        assertTrue(rootOus.contains(ou));
+        assertTrue(rootOus.contains(ou2));
 
-        assertEquals(2, cms.getOrganizationalUnits(rootOu.getFqn(), true).size());
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou));
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou2));
-        assertTrue(cms.getOrganizationalUnits(ou.getFqn(), true).isEmpty());
+        List ou2Ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ou2.getName(), false);
+        assertTrue(ou2Ous.isEmpty());
+
+        rootSubOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), true);
+        assertEquals(2, rootSubOus.size());
+        assertTrue(rootSubOus.contains(ou));
+        assertTrue(rootSubOus.contains(ou2));
+
+        List ou2SubOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ou2.getName(), true);
+        assertTrue(ou2SubOus.isEmpty());
 
         // delete 2nd ou
-        cms.deleteOrganizationalUnit(ou2.getFqn());
+        OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, ou2.getName());
 
         try {
-            cms.readOrganizationalUnit(ou2.getFqn());
+            OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou2.getName());
             fail("it should not be possible to read the deleted ou");
         } catch (CmsDataAccessException e) {
             // ok, ignore
         }
 
         // check the ous again
-        assertEquals(1, cms.getOrganizationalUnits(rootOu.getFqn(), false).size());
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), false).contains(ou));
-        assertTrue(cms.getOrganizationalUnits(ou.getFqn(), false).isEmpty());
+        rootOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), false);
+        assertEquals(1, rootOus.size());
+        assertTrue(rootOus.contains(ou));
 
-        assertEquals(1, cms.getOrganizationalUnits(rootOu.getFqn(), true).size());
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou));
-        assertTrue(cms.getOrganizationalUnits(ou.getFqn(), true).isEmpty());
+        ouOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ou.getName(), false);
+        assertTrue(ouOus.isEmpty());
+
+        rootSubOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), true);
+        assertEquals(1, rootSubOus.size());
+        assertTrue(rootSubOus.contains(ou));
+
+        List ouSubous = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ou.getName(), true);
+        assertTrue(ouSubous.isEmpty());
 
         // check default users & groups for the new ou
-        assertEquals(0, cms.getGroupsForOrganizationalUnit(ou.getFqn(), false).size());
-        assertEquals(0, cms.getGroupsForOrganizationalUnit(ou.getFqn(), true).size());
-        assertEquals(0, cms.getUsersForOrganizationalUnit(ou.getFqn(), false).size());
-        assertEquals(0, cms.getUsersForOrganizationalUnit(ou.getFqn(), true).size());
+        assertTrue(OpenCms.getOrgUnitManager().getGroups(cms, ou.getName(), false).isEmpty());
+        assertTrue(OpenCms.getOrgUnitManager().getGroups(cms, ou.getName(), true).isEmpty());
+        assertTrue(OpenCms.getOrgUnitManager().getUsers(cms, ou.getName(), false).isEmpty());
+        assertTrue(OpenCms.getOrgUnitManager().getUsers(cms, ou.getName(), true).isEmpty());
 
         // check the root ou principals again
-        assertEquals(4, cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).size());
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).contains(
-            cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readGroup("/group1")));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readGroup("/group2")));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readGroup("/group3")));
+        List rootGroups = OpenCms.getOrgUnitManager().getGroups(cms, rootOu.getName(), false);
+        assertEquals(7, rootGroups.size());
+        assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupAdministrators())));
+        assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers())));
+        assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers())));
+        assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
+        assertTrue(rootGroups.contains(cms.readGroup("/group1")));
+        assertTrue(rootGroups.contains(cms.readGroup("/group2")));
+        assertTrue(rootGroups.contains(cms.readGroup("/group3")));
 
-        assertEquals(4, cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).size());
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).contains(
-            cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readGroup("/group1")));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readGroup("/group2")));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readGroup("/group3")));
+        List rootSubGroups = OpenCms.getOrgUnitManager().getGroups(cms, rootOu.getName(), true);
+        assertEquals(7, rootSubGroups.size());
+        assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupAdministrators())));
+        assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers())));
+        assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers())));
+        assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
+        assertTrue(rootSubGroups.contains(cms.readGroup("/group1")));
+        assertTrue(rootSubGroups.contains(cms.readGroup("/group2")));
+        assertTrue(rootSubGroups.contains(cms.readGroup("/group3")));
 
-        assertEquals(5, cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).size());
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserAdmin())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserExport())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserGuest())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readUser("/test1")));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readUser("/test2")));
+        List rootUsers = OpenCms.getOrgUnitManager().getUsers(cms, rootOu.getName(), false);
+        assertEquals(5, rootUsers.size());
+        assertTrue(rootUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserAdmin())));
+        assertTrue(rootUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserExport())));
+        assertTrue(rootUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserGuest())));
+        assertTrue(rootUsers.contains(cms.readUser("/test1")));
+        assertTrue(rootUsers.contains(cms.readUser("/test2")));
 
-        assertEquals(5, cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).size());
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserAdmin())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserExport())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserGuest())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readUser("/test1")));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readUser("/test2")));
+        List rootSubUsers = OpenCms.getOrgUnitManager().getUsers(cms, rootOu.getName(), true);
+        assertEquals(5, rootSubUsers.size());
+        assertTrue(rootSubUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserAdmin())));
+        assertTrue(rootSubUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserExport())));
+        assertTrue(rootSubUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserGuest())));
+        assertTrue(rootSubUsers.contains(cms.readUser("/test1")));
+        assertTrue(rootSubUsers.contains(cms.readUser("/test2")));
 
         cms.removeUserFromGroup("/test1", "/Administrators");
         assertLock(cms, "/system/", CmsLockType.EXCLUSIVE, cms.readUser("/test1"));
@@ -350,117 +390,83 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         echo("Testing handling principal associations");
 
         // read the ous
-        CmsOrganizationalUnit rootOu = cms.readOrganizationalUnit("");
-        CmsOrganizationalUnit ou = cms.readOrganizationalUnit("/test");
-        CmsOrganizationalUnit ou2 = cms.readOrganizationalUnit(ou.getFqn() + "/test2");
+        CmsOrganizationalUnit rootOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "");
+        CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test");
+        CmsOrganizationalUnit ou2 = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou.getName() + "test2");
 
         try {
-            // move to move /test1 to /test/test1 
-            cms.setPrincipalsOrganizationalUnit(ou.getFqn(), I_CmsPrincipal.PRINCIPAL_USER, "/test1");
+            // try move to move /test1 to /test/test1 
+            OpenCms.getOrgUnitManager().setUsersOrganizationalUnit(cms, ou.getName(), "/test1");
             fail("it should not be possible to move the user to other ou (since it is still member of a group)");
         } catch (CmsDbConsistencyException e) {
             // ok, ignore
         }
-        try {
-            // move to move /group1 to /test/group1 
-            cms.setPrincipalsOrganizationalUnit(ou.getFqn(), I_CmsPrincipal.PRINCIPAL_GROUP, "/group1");
-            fail("it should not be possible to move the group to other ou (since a member is still member of other group)");
-        } catch (CmsDbConsistencyException e) {
-            // ok, ignore
-        }
         cms.removeUserFromGroup("/test1", "/Users");
+        cms.removeUserFromGroup("/test1", "/group1");
+        // move to move /test1 to /test/test1 
+        OpenCms.getOrgUnitManager().setUsersOrganizationalUnit(cms, ou.getName(), "/test1");
 
-        // move /group1 to /test/group1 
-        cms.setPrincipalsOrganizationalUnit(ou.getFqn(), I_CmsPrincipal.PRINCIPAL_GROUP, "/group1");
-        try {
-            cms.readGroup("/group1");
-            fail("it should not be possible to read the group in the old ou");
-        } catch (CmsDbEntryNotFoundException e) {
-            // ok, ignore
-        }
         try {
             cms.readUser("/test1");
             fail("it should not be possible to read the user in the old ou");
         } catch (CmsDbEntryNotFoundException e) {
             // ok, ignore
         }
-        cms.readGroup("/test/group1");
         cms.readUser("/test/test1");
-        assertEquals(1, cms.getGroupsOfUser("/test/test1").size());
-        assertTrue(cms.getGroupsOfUser("/test/test1").contains(cms.readGroup("/test/group1")));
-        assertEquals(1, cms.getUsersOfGroup("/test/group1").size());
-        assertTrue(cms.getUsersOfGroup("/test/group1").contains(cms.readUser("/test/test1")));
+        assertTrue(cms.getGroupsOfUser("/test/test1", false).isEmpty());
 
-        assertEquals(3, cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).size());
-        assertFalse(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readGroup("/test/group1")));
-        assertEquals(4, cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).size());
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readGroup("/test/group1")));
+        List rootUsers = OpenCms.getOrgUnitManager().getUsers(cms, rootOu.getName(), false);
+        assertEquals(4, rootUsers.size());
+        assertFalse(rootUsers.contains(cms.readUser("/test/test1")));
+        List rootSubusers = OpenCms.getOrgUnitManager().getUsers(cms, rootOu.getName(), true);
+        assertEquals(5, rootSubusers.size());
+        assertTrue(rootSubusers.contains(cms.readUser("/test/test1")));
 
-        assertEquals(4, cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).size());
-        assertFalse(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readUser("/test/test1")));
-        assertEquals(5, cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).size());
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readUser("/test/test1")));
-
-        assertEquals(1, cms.getGroupsForOrganizationalUnit(ou.getFqn(), false).size());
-        assertTrue(cms.getGroupsForOrganizationalUnit(ou.getFqn(), false).contains(cms.readGroup("/test/group1")));
-        assertEquals(1, cms.getGroupsForOrganizationalUnit(ou.getFqn(), true).size());
-        assertTrue(cms.getGroupsForOrganizationalUnit(ou.getFqn(), true).contains(cms.readGroup("/test/group1")));
-
-        assertEquals(1, cms.getUsersForOrganizationalUnit(ou.getFqn(), false).size());
-        assertTrue(cms.getUsersForOrganizationalUnit(ou.getFqn(), false).contains(cms.readUser("/test/test1")));
-        assertEquals(1, cms.getUsersForOrganizationalUnit(ou.getFqn(), true).size());
-        assertTrue(cms.getUsersForOrganizationalUnit(ou.getFqn(), true).contains(cms.readUser("/test/test1")));
+        List ouUsers = OpenCms.getOrgUnitManager().getUsers(cms, ou.getName(), false);
+        assertEquals(1, ouUsers.size());
+        assertTrue(ouUsers.contains(cms.readUser("/test/test1")));
+        List ouSubusers = OpenCms.getOrgUnitManager().getUsers(cms, ou.getName(), true);
+        assertEquals(1, ouSubusers.size());
+        assertTrue(ouSubusers.contains(cms.readUser("/test/test1")));
 
         cms.removeUserFromGroup("/test2", "/Users");
-        // move /group2 to /test/test2/group2 
-        cms.setPrincipalsOrganizationalUnit(ou2.getFqn(), I_CmsPrincipal.PRINCIPAL_GROUP, "/group2");
-        try {
-            cms.readGroup("/group2");
-            fail("it should not be possible to read the group in the old ou");
-        } catch (CmsDbEntryNotFoundException e) {
-            // ok, ignore
-        }
+        cms.removeUserFromGroup("/test2", "/group2");
+        // move to move /test2 to /test/test2/test2 
+        OpenCms.getOrgUnitManager().setUsersOrganizationalUnit(cms, ou2.getName(), "/test2");
+        
         try {
             cms.readUser("/test2");
             fail("it should not be possible to read the user in the old ou");
         } catch (CmsDbEntryNotFoundException e) {
             // ok, ignore
         }
-        cms.readGroup("/test/test2/group2");
         cms.readUser("/test/test2/test2");
-        assertEquals(1, cms.getGroupsOfUser("/test/test2/test2").size());
-        assertTrue(cms.getGroupsOfUser("/test/test2/test2").contains(cms.readGroup("/test/test2/group2")));
-        assertEquals(1, cms.getUsersOfGroup("/test/test2/group2").size());
-        assertTrue(cms.getUsersOfGroup("/test/test2/group2").contains(cms.readUser("/test/test2/test2")));
+        assertTrue(cms.getGroupsOfUser("/test/test2/test2", false).isEmpty());
 
-        assertEquals(2, cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).size());
-        assertFalse(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readGroup("/test/group1")));
-        assertFalse(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).contains(
-            cms.readGroup("/test/test2/group2")));
-        assertEquals(4, cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).size());
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readGroup("/test/group1")));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).contains(
-            cms.readGroup("/test/test2/group2")));
+        rootUsers = OpenCms.getOrgUnitManager().getUsers(cms, rootOu.getName(), false);
+        assertEquals(3, rootUsers.size());
+        assertFalse(rootUsers.contains(cms.readUser("/test/test1")));
+        assertFalse(rootUsers.contains(cms.readUser("/test/test2/test2")));
 
-        assertEquals(3, cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).size());
-        assertFalse(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readUser("/test/test1")));
-        assertFalse(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(
-            cms.readUser("/test/test2/test2")));
-        assertEquals(5, cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).size());
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readUser("/test/test1")));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readUser("/test/test2/test2")));
+        rootSubusers = OpenCms.getOrgUnitManager().getUsers(cms, rootOu.getName(), true);
+        assertEquals(5, rootSubusers.size());
+        assertTrue(rootSubusers.contains(cms.readUser("/test/test1")));
+        assertTrue(rootSubusers.contains(cms.readUser("/test/test2/test2")));
 
-        assertEquals(1, cms.getGroupsForOrganizationalUnit(ou.getFqn(), false).size());
-        assertTrue(cms.getGroupsForOrganizationalUnit(ou.getFqn(), false).contains(cms.readGroup("/test/group1")));
-        assertEquals(2, cms.getGroupsForOrganizationalUnit(ou.getFqn(), true).size());
-        assertTrue(cms.getGroupsForOrganizationalUnit(ou.getFqn(), true).contains(cms.readGroup("/test/group1")));
-        assertTrue(cms.getGroupsForOrganizationalUnit(ou.getFqn(), true).contains(cms.readGroup("/test/test2/group2")));
+        List ouGroups = OpenCms.getOrgUnitManager().getGroups(cms, ou.getName(), false);
+        assertTrue(ouGroups.isEmpty());
 
-        assertEquals(1, cms.getUsersForOrganizationalUnit(ou.getFqn(), false).size());
-        assertTrue(cms.getUsersForOrganizationalUnit(ou.getFqn(), false).contains(cms.readUser("/test/test1")));
-        assertEquals(2, cms.getUsersForOrganizationalUnit(ou.getFqn(), true).size());
-        assertTrue(cms.getUsersForOrganizationalUnit(ou.getFqn(), true).contains(cms.readUser("/test/test1")));
-        assertTrue(cms.getUsersForOrganizationalUnit(ou.getFqn(), true).contains(cms.readUser("/test/test2/test2")));
+        List ouSubgroups = OpenCms.getOrgUnitManager().getGroups(cms, ou.getName(), true);
+        assertTrue(ouSubgroups.isEmpty());
+
+        ouUsers = OpenCms.getOrgUnitManager().getUsers(cms, ou.getName(), false);
+        assertEquals(1, ouUsers.size());
+        assertTrue(ouUsers.contains(cms.readUser("/test/test1")));
+
+        ouSubusers = OpenCms.getOrgUnitManager().getUsers(cms, ou.getName(), true);
+        assertEquals(2, ouSubusers.size());
+        assertTrue(ouSubusers.contains(cms.readUser("/test/test1")));
+        assertTrue(ouSubusers.contains(cms.readUser("/test/test2/test2")));
     }
 
     /**
@@ -474,111 +480,117 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         echo("Testing handling with resource associations");
 
         // read the ous
-        CmsOrganizationalUnit rootOu = cms.readOrganizationalUnit("");
-        CmsOrganizationalUnit ou = cms.readOrganizationalUnit("/test");
-        CmsOrganizationalUnit ou2 = cms.readOrganizationalUnit("/test/test2");
-
-        // creation tests
-        try {
-            cms.createOrganizationalUnit("test2", "my test ou2", 0, "/");
-            fail("should not be possible to create an ou at root level");
-        } catch (CmsDataAccessException e) {
-            // ok, just be sure
-            assertEquals(2, cms.getOrganizationalUnits(rootOu.getFqn(), true).size());
-            assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou));
-            assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou2));
-        }
+        CmsOrganizationalUnit rootOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "");
+        CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test");
+        CmsOrganizationalUnit ou2 = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test/test2");
 
         try {
-            cms.createOrganizationalUnit("/doesnotexist/test2", "my test ou2", 0, "/");
+            OpenCms.getOrgUnitManager().createOrganizationalUnit(cms, "/doesnotexist/test2/", "my test ou2", 0, "/");
             fail("should not be possible to create a new ou with a not valid parent");
         } catch (CmsDataAccessException e) {
             // ok, just be sure the ou has not been created
-            assertEquals(2, cms.getOrganizationalUnits(rootOu.getFqn(), true).size());
-            assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou));
-            assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou2));
+            assertEquals(2, OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), true).size());
+            assertTrue(OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), true).contains(ou));
+            assertTrue(OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), true).contains(ou2));
         }
 
         try {
-            cms.createOrganizationalUnit(ou2.getFqn() + "/test3", "my test ou3", 0, "/folder2");
+            OpenCms.getOrgUnitManager().createOrganizationalUnit(
+                cms,
+                ou2.getName() + "test3/",
+                "my test ou3",
+                0,
+                "/folder2");
             fail("should not be possible to create a new ou with a resource out of the parent scope");
         } catch (CmsDataAccessException e) {
             // ok, just be sure the ou has not been created
-            assertEquals(2, cms.getOrganizationalUnits(rootOu.getFqn(), true).size());
-            assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou));
-            assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).contains(ou2));
+            assertEquals(2, OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), true).size());
+            assertTrue(OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), true).contains(ou));
+            assertTrue(OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), true).contains(ou2));
         }
 
         // test adding the same resource as a parent ou resource
-        assertEquals(1, cms.getResourcesForOrganizationalUnit(ou2.getFqn()).size());
-        assertTrue(cms.getResourcesForOrganizationalUnit(ou2.getFqn()).contains(cms.readResource("/folder1")));
-        CmsOrganizationalUnit ou3 = cms.createOrganizationalUnit(
-            CmsOrganizationalUnit.appendFqn(ou2.getFqn(), "test3"),
+        assertEquals(1, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).size());
+        assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).contains(
+            cms.readResource("/folder1")));
+        CmsOrganizationalUnit ou3 = OpenCms.getOrgUnitManager().createOrganizationalUnit(
+            cms,
+            ou2.getName() + "test3",
             "it will not last too long",
             0,
             "/folder1");
-        assertEquals(1, cms.getResourcesForOrganizationalUnit(ou3.getFqn()).size());
-        assertTrue(cms.getResourcesForOrganizationalUnit(ou3.getFqn()).contains(cms.readResource("/folder1")));
-        cms.deleteOrganizationalUnit(ou3.getFqn());
+        assertEquals(1, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou3.getName()).size());
+        assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou3.getName()).contains(
+            cms.readResource("/folder1")));
+        OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, ou3.getName());
 
         // test removing all resources
-        assertEquals(1, cms.getResourcesForOrganizationalUnit(ou2.getFqn()).size());
-        assertTrue(cms.getResourcesForOrganizationalUnit(ou2.getFqn()).contains(cms.readResource("/folder1")));
+        assertEquals(1, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).size());
+        assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).contains(
+            cms.readResource("/folder1")));
         try {
             // remove a resource
-            cms.removeResourceFromOrgUnit(ou2.getFqn(), "/folder1");
+            OpenCms.getOrgUnitManager().removeResourceFromOrgUnit(cms, ou2.getName(), "/folder1");
             fail("it should not be possible to remove all resources");
         } catch (CmsDataAccessException e) {
             assertEquals(
                 ((CmsDataAccessException)e.getCause()).getMessageContainer().getKey(),
                 org.opencms.db.generic.Messages.ERR_ORGUNIT_REMOVE_LAST_RESOURCE_2);
             // ok, check again just to be sure
-            assertEquals(1, cms.getResourcesForOrganizationalUnit(ou2.getFqn()).size());
-            assertTrue(cms.getResourcesForOrganizationalUnit(ou2.getFqn()).contains(cms.readResource("/folder1")));
+            assertEquals(1, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).size());
+            assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).contains(
+                cms.readResource("/folder1")));
         }
 
         // resource addition tests
         try {
-            cms.addResourceToOrgUnit(ou.getFqn(), "/folder1");
+            OpenCms.getOrgUnitManager().addResourceToOrgUnit(cms, ou.getName(), "/folder1");
             fail("it should not be possible to add a resource that is contained in another ou resource");
         } catch (CmsDataAccessException e) {
             // ok, just check again to be sure
-            assertEquals(1, cms.getResourcesForOrganizationalUnit(ou.getFqn()).size());
-            assertTrue(cms.getResourcesForOrganizationalUnit(ou.getFqn()).contains(cms.readResource("/")));
+            assertEquals(1, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).size());
+            assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).contains(
+                cms.readResource("/")));
         }
 
         try {
-            cms.addResourceToOrgUnit(ou.getFqn(), "/sites/doesnotexist");
+            OpenCms.getOrgUnitManager().addResourceToOrgUnit(cms, ou.getName(), "/sites/doesnotexist");
             fail("should not be possible to add an unexistent resource to an ou");
         } catch (CmsDataAccessException e) {
             // ok, just be sure
-            assertEquals(1, cms.getResourcesForOrganizationalUnit(ou.getFqn()).size());
-            assertTrue(cms.getResourcesForOrganizationalUnit(ou.getFqn()).contains(cms.readResource("/")));
+            assertEquals(1, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).size());
+            assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).contains(
+                cms.readResource("/")));
         }
 
         // add an additional resource
-        cms.addResourceToOrgUnit(ou2.getFqn(), "/folder2");
+        OpenCms.getOrgUnitManager().addResourceToOrgUnit(cms, ou2.getName(), "/folder2");
         // check ou resources again
-        assertEquals(2, cms.getResourcesForOrganizationalUnit(ou2.getFqn()).size());
-        assertTrue(cms.getResourcesForOrganizationalUnit(ou2.getFqn()).contains(cms.readResource("/folder1")));
-        assertTrue(cms.getResourcesForOrganizationalUnit(ou2.getFqn()).contains(cms.readResource("/folder2")));
+        assertEquals(2, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).size());
+        assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).contains(
+            cms.readResource("/folder1")));
+        assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).contains(
+            cms.readResource("/folder2")));
 
         // resource remotion tests
         try {
-            cms.removeResourceFromOrgUnit(ou2.getFqn(), "/folder1/index.html");
+            OpenCms.getOrgUnitManager().removeResourceFromOrgUnit(cms, ou2.getName(), "/folder1/index.html");
             fail("should not be possible to remove an not associated resource from an ou");
         } catch (CmsDataAccessException e) {
             // ok, just be sure
-            assertEquals(2, cms.getResourcesForOrganizationalUnit(ou2.getFqn()).size());
-            assertTrue(cms.getResourcesForOrganizationalUnit(ou2.getFqn()).contains(cms.readResource("/folder1")));
-            assertTrue(cms.getResourcesForOrganizationalUnit(ou2.getFqn()).contains(cms.readResource("/folder2")));
+            assertEquals(2, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).size());
+            assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).contains(
+                cms.readResource("/folder1")));
+            assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).contains(
+                cms.readResource("/folder2")));
         }
 
         // remove a resource
-        cms.removeResourceFromOrgUnit(ou2.getFqn(), "/folder1");
+        OpenCms.getOrgUnitManager().removeResourceFromOrgUnit(cms, ou2.getName(), "/folder1");
         // check ou resource
-        assertEquals(1, cms.getResourcesForOrganizationalUnit(ou2.getFqn()).size());
-        assertTrue(cms.getResourcesForOrganizationalUnit(ou2.getFqn()).contains(cms.readResource("/folder2")));
+        assertEquals(1, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).size());
+        assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).contains(
+            cms.readResource("/folder2")));
     }
 
     /**
@@ -592,9 +604,9 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         echo("Testing handling with default organizational unit resources permissions");
 
         // check the root ou
-        CmsOrganizationalUnit rootOu = cms.readOrganizationalUnit("");
-        CmsOrganizationalUnit ou = cms.readOrganizationalUnit("/test");
-        CmsOrganizationalUnit ou2 = cms.readOrganizationalUnit(ou.getFqn() + "/test2");
+        CmsOrganizationalUnit rootOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "");
+        CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test");
+        CmsOrganizationalUnit ou2 = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou.getName() + "test2");
 
     }
 
@@ -609,72 +621,77 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         echo("Testing the automatic creation of the root organizational units");
 
         // check the root ou
-        CmsOrganizationalUnit rootOu = cms.readOrganizationalUnit("");
+        CmsOrganizationalUnit rootOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "");
 
         // check all the ous
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), false).isEmpty());
-        assertTrue(cms.getOrganizationalUnits(rootOu.getFqn(), true).isEmpty());
+        assertTrue(OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), false).isEmpty());
+        assertTrue(OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), true).isEmpty());
 
         // check the root ou attributes
         assertEquals(0, rootOu.getFlags());
         assertNull(rootOu.getParentFqn());
         assertEquals("The root organizational unit", rootOu.getDescription());
-        assertEquals("", rootOu.getName());
-        assertEquals("", rootOu.getFqn());
-        assertEquals(cms.readFolder("/system/orgunits/root").getStructureId(), rootOu.getId());
+        assertEquals("/", rootOu.getName());
+        assertEquals(cms.readFolder("/system/orgunits").getStructureId(), rootOu.getId());
 
         // check root ou resources
-        assertEquals(1, cms.getResourcesForOrganizationalUnit(rootOu.getFqn()).size());
+        List rootResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, rootOu.getName());
+        assertEquals(1, rootResources.size());
         String site = cms.getRequestContext().getSiteRoot();
         cms.getRequestContext().setSiteRoot("/");
-        assertTrue(cms.getResourcesForOrganizationalUnit(rootOu.getFqn()).contains(cms.readResource("/")));
+        assertTrue(rootResources.contains(cms.readResource("/")));
         cms.getRequestContext().setSiteRoot(site);
 
         // check the root ou principals
-        assertEquals(4, cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).size());
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).contains(
-            cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readGroup("/group1")));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readGroup("/group2")));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readGroup("/group3")));
-        assertEquals(4, cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).size());
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).contains(
-            cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readGroup("/group1")));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readGroup("/group2")));
-        assertTrue(cms.getGroupsForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readGroup("/group3")));
-        assertEquals(5, cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).size());
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserAdmin())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserExport())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserGuest())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readUser("/test1")));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), false).contains(cms.readUser("/test2")));
-        assertEquals(5, cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).size());
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserAdmin())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserExport())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(
-            cms.readUser(OpenCms.getDefaultUsers().getUserGuest())));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readUser("/test1")));
-        assertTrue(cms.getUsersForOrganizationalUnit(rootOu.getFqn(), true).contains(cms.readUser("/test2")));
+        List rootGroups = OpenCms.getOrgUnitManager().getGroups(cms, rootOu.getName(), false);
+        assertEquals(7, rootGroups.size());
+        assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupAdministrators())));
+        assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers())));
+        assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers())));
+        assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
+        assertTrue(rootGroups.contains(cms.readGroup("/group1")));
+        assertTrue(rootGroups.contains(cms.readGroup("/group2")));
+        assertTrue(rootGroups.contains(cms.readGroup("/group3")));
+
+        List rootSubGroups = OpenCms.getOrgUnitManager().getGroups(cms, rootOu.getName(), true);
+        assertEquals(7, rootSubGroups.size());
+        assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupAdministrators())));
+        assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers())));
+        assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers())));
+        assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
+        assertTrue(rootSubGroups.contains(cms.readGroup("/group1")));
+        assertTrue(rootSubGroups.contains(cms.readGroup("/group2")));
+        assertTrue(rootSubGroups.contains(cms.readGroup("/group3")));
+
+        List rootUsers = OpenCms.getOrgUnitManager().getUsers(cms, rootOu.getName(), false);
+        assertEquals(5, rootUsers.size());
+        assertTrue(rootUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserAdmin())));
+        assertTrue(rootUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserExport())));
+        assertTrue(rootUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserGuest())));
+        assertTrue(rootUsers.contains(cms.readUser("/test1")));
+        assertTrue(rootUsers.contains(cms.readUser("/test2")));
+
+        List rootSubUsers = OpenCms.getOrgUnitManager().getUsers(cms, rootOu.getName(), true);
+        assertEquals(5, rootSubUsers.size());
+        assertTrue(rootSubUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserAdmin())));
+        assertTrue(rootSubUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserExport())));
+        assertTrue(rootSubUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserGuest())));
+        assertTrue(rootSubUsers.contains(cms.readUser("/test1")));
+        assertTrue(rootSubUsers.contains(cms.readUser("/test2")));
 
         rootOu.setDescription("new description");
-        cms.writeOrganizationalUnit(rootOu);
+        OpenCms.getOrgUnitManager().writeOrganizationalUnit(cms, rootOu);
 
         try {
-            rootOu.setParentFqn(rootOu.getFqn());
-            cms.writeOrganizationalUnit(rootOu);
+            rootOu.setName("abc");
+            OpenCms.getOrgUnitManager().writeOrganizationalUnit(cms, rootOu);
             fail("should not be able to edit the root ou");
         } catch (CmsIllegalStateException e) {
             // ok, ignore
         }
 
         try {
-            cms.deleteOrganizationalUnit(rootOu.getFqn());
+            OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, rootOu.getName());
             fail("should not be able to delete the root ou");
         } catch (CmsDbConsistencyException e) {
             // ok, ignore
@@ -693,15 +710,15 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
 
         // login users in respective ous
         cms.loginUser("/test/test1", "test1");
-        assertEquals("/test", cms.getRequestContext().getOuFqn());
+        assertEquals("/test/", cms.getRequestContext().getOuFqn());
         assertEquals("/test/test1", cms.getRequestContext().currentUser().getName());
         cms.loginUser("/test/test2/test2", "test2");
-        assertEquals("/test/test2", cms.getRequestContext().getOuFqn());
+        assertEquals("/test/test2/", cms.getRequestContext().getOuFqn());
         assertEquals("/test/test2/test2", cms.getRequestContext().currentUser().getName());
 
         // login user in deeper ou
         cms.loginUser("/test/test2/test1", "test1");
-        assertEquals("/test/test2", cms.getRequestContext().getOuFqn());
+        assertEquals("/test/test2/", cms.getRequestContext().getOuFqn());
         assertEquals("/test/test1", cms.getRequestContext().currentUser().getName());
 
         try {
@@ -723,11 +740,11 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing deleting organizational units");
 
-        cms.addUserToGroup("/test/test1", "/Administrators");
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ROOT_ADMIN, "/", "/test/test1");
         cms.loginUser("/test/test2/test1", "test1");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         try {
-            cms.deleteOrganizationalUnit(cms.getRequestContext().getOuFqn());
+            OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, cms.getRequestContext().getOuFqn());
             fail("it should not be possible to delete an organizational unit that is used in the current request context");
         } catch (CmsDbConsistencyException e) {
             // ok, now check the error message
@@ -736,7 +753,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
                 org.opencms.db.Messages.ERR_ORGUNIT_DELETE_IN_CONTEXT_1);
         }
         try {
-            cms.deleteOrganizationalUnit(cms.getRequestContext().currentUser().getOrganizationalUnitFqn());
+            OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, cms.getRequestContext().currentUser().getOuFqn());
             fail("it should not be possible to delete an organizational unit that is used by the current user");
         } catch (CmsDbConsistencyException e) {
             // ok, now check the error message
@@ -747,7 +764,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         cms.loginUser("/Admin", "admin");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         try {
-            cms.deleteOrganizationalUnit("/test");
+            OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, "/test");
             fail("it should not be possible to delete an organizational unit that has sub-organizational units");
         } catch (CmsDbConsistencyException e) {
             // ok, now check the error message
@@ -755,9 +772,11 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
                 ((CmsDbConsistencyException)e.getCause()).getMessageContainer().getKey(),
                 org.opencms.db.Messages.ERR_ORGUNIT_DELETE_SUB_ORGUNITS_1);
         }
-        CmsOrganizationalUnit ou2 = cms.readOrganizationalUnit("/test/test2");
+        
+        CmsOrganizationalUnit ou2 = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test/test2");
+        cms.createGroup(ou2.getName() + "group2", "test group", 0, null);
         try {
-            cms.deleteOrganizationalUnit(ou2.getFqn());
+            OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, ou2.getName());
             fail("it should not be possible to delete an organizational unit that has groups & users units");
         } catch (CmsDbConsistencyException e) {
             // ok, now check the error message
@@ -766,15 +785,15 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
                 org.opencms.db.Messages.ERR_ORGUNIT_DELETE_GROUPS_1);
         }
 
-        Iterator itGroups = cms.getGroupsForOrganizationalUnit(ou2.getFqn(), false).iterator();
+        Iterator itGroups = OpenCms.getOrgUnitManager().getGroups(cms, ou2.getName(), false).iterator();
         while (itGroups.hasNext()) {
             CmsGroup group = (CmsGroup)itGroups.next();
             cms.deleteGroup(group.getName());
         }
-        assertTrue(cms.getGroupsForOrganizationalUnit(ou2.getFqn(), true).isEmpty());
+        assertTrue(OpenCms.getOrgUnitManager().getGroups(cms, ou2.getName(), true).isEmpty());
 
         try {
-            cms.deleteOrganizationalUnit(ou2.getFqn());
+            OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, ou2.getName());
             fail("it should not be possible to delete an organizational unit that has users units");
         } catch (CmsDbConsistencyException e) {
             // ok, now check the error message
@@ -783,14 +802,14 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
                 org.opencms.db.Messages.ERR_ORGUNIT_DELETE_USERS_1);
         }
 
-        Iterator itUsers = cms.getUsersForOrganizationalUnit(ou2.getFqn(), false).iterator();
+        Iterator itUsers = OpenCms.getOrgUnitManager().getUsers(cms, ou2.getName(), false).iterator();
         while (itUsers.hasNext()) {
             CmsUser user = (CmsUser)itUsers.next();
             cms.deleteUser(user.getName());
         }
-        assertTrue(cms.getUsersForOrganizationalUnit(ou2.getFqn(), true).isEmpty());
+        assertTrue(OpenCms.getOrgUnitManager().getUsers(cms, ou2.getName(), true).isEmpty());
 
-        cms.deleteOrganizationalUnit(ou2.getFqn());
+        OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, ou2.getName());
 
         // check persistence
         try {
@@ -820,12 +839,12 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         echo("Testing organizational units persistence");
 
         // check the root ou
-        CmsOrganizationalUnit rootOu = cms.readOrganizationalUnit("");
-        CmsOrganizationalUnit ou = cms.readOrganizationalUnit("/test");
-        CmsOrganizationalUnit ou2 = cms.readOrganizationalUnit(ou.getFqn() + "/test2");
+        CmsOrganizationalUnit rootOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "");
+        CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test");
+        CmsOrganizationalUnit ou2 = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou.getName() + "test2");
 
         // check offline project
-        CmsFolder rootOuFolder = cms.readFolder("/system/orgunits/root/");
+        CmsFolder rootOuFolder = cms.readFolder("/system/orgunits/");
         assertEquals(rootOu.getId(), rootOuFolder.getStructureId());
         assertEquals(rootOu.getFlags(), rootOuFolder.getFlags() & ~CmsResource.FLAG_INTERNAL);
         assertTrue(rootOuFolder.getState().isUnchanged());
@@ -836,7 +855,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             false).getValue());
         assertOrgUnitResources(cms, rootOu);
 
-        CmsFolder ouFolder = cms.readFolder("/system/orgunits/root/test");
+        CmsFolder ouFolder = cms.readFolder("/system/orgunits/test");
         assertEquals(ou.getId(), ouFolder.getStructureId());
         assertEquals(ou.getFlags(), ouFolder.getFlags() & ~CmsResource.FLAG_INTERNAL);
         assertTrue(ouFolder.getState().isUnchanged());
@@ -847,7 +866,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             false).getValue());
         assertOrgUnitResources(cms, ou);
 
-        CmsFolder ou2Folder = cms.readFolder("/system/orgunits/root/test/test2");
+        CmsFolder ou2Folder = cms.readFolder("/system/orgunits/test/test2");
         assertEquals(ou2.getId(), ou2Folder.getStructureId());
         assertEquals(ou2.getFlags(), ou2Folder.getFlags() & ~CmsResource.FLAG_INTERNAL);
         assertTrue(ou2Folder.getState().isUnchanged());
@@ -860,7 +879,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
 
         // now check the online project
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
-        rootOuFolder = cms.readFolder("/system/orgunits/root/");
+        rootOuFolder = cms.readFolder("/system/orgunits/");
         assertEquals(rootOu.getId(), rootOuFolder.getStructureId());
         assertEquals(rootOu.getFlags(), rootOuFolder.getFlags() & ~CmsResource.FLAG_INTERNAL);
         assertTrue(rootOuFolder.getState().isUnchanged());
@@ -871,7 +890,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             false).getValue());
         assertOrgUnitResources(cms, rootOu);
 
-        ouFolder = cms.readFolder("/system/orgunits/root/test");
+        ouFolder = cms.readFolder("/system/orgunits/test");
         assertEquals(ou.getId(), ouFolder.getStructureId());
         assertEquals(ou.getFlags(), ouFolder.getFlags() & ~CmsResource.FLAG_INTERNAL);
         assertTrue(ouFolder.getState().isUnchanged());
@@ -882,7 +901,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             false).getValue());
         assertOrgUnitResources(cms, ou);
 
-        ou2Folder = cms.readFolder("/system/orgunits/root/test/test2");
+        ou2Folder = cms.readFolder("/system/orgunits/test/test2");
         assertEquals(ou2.getId(), ou2Folder.getStructureId());
         assertEquals(ou2.getFlags(), ou2Folder.getFlags() & ~CmsResource.FLAG_INTERNAL);
         assertTrue(ou2Folder.getState().isUnchanged());
@@ -905,7 +924,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
     private void assertOrgUnitResources(CmsObject cms, CmsOrganizationalUnit ou) throws CmsException {
 
         List resourceList = new ArrayList();
-        Iterator itResources = cms.getResourcesForOrganizationalUnit(ou.getFqn()).iterator();
+        Iterator itResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).iterator();
         while (itResources.hasNext()) {
             CmsResource resource = (CmsResource)itResources.next();
             resourceList.add(resource.getRootPath());
@@ -934,16 +953,16 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         // this is the current situation:
         // /test/test1 is member of /test/group1 in the /test ou
 
-        assertEquals(3, cms.getUsersForOrganizationalUnit("/", false).size());
-        assertEquals(5, cms.getUsersForOrganizationalUnit("/", true).size());
+        assertEquals(3, OpenCms.getOrgUnitManager().getUsers(cms, "/", false).size());
+        assertEquals(5, OpenCms.getOrgUnitManager().getUsers(cms, "/", true).size());
         // try to create another user 'test1' in the root ou 
         cms.createUser("/test1", "test1", "test user", null);
 
-        assertEquals(4, cms.getUsersForOrganizationalUnit("/", false).size());
-        assertEquals(6, cms.getUsersForOrganizationalUnit("/", true).size());
+        assertEquals(4, OpenCms.getOrgUnitManager().getUsers(cms, "/", false).size());
+        assertEquals(6, OpenCms.getOrgUnitManager().getUsers(cms, "/", true).size());
 
-        assertEquals(1, cms.getUsersForOrganizationalUnit("/test", false).size());
-        assertEquals(2, cms.getUsersForOrganizationalUnit("/test", true).size());
+        assertEquals(1, OpenCms.getOrgUnitManager().getUsers(cms, "/test", false).size());
+        assertEquals(2, OpenCms.getOrgUnitManager().getUsers(cms, "/test", true).size());
         try {
             // try to create another user 'test1' in the /test ou 
             cms.createUser("/test/test1", "test1", "test user", null);
@@ -951,19 +970,19 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         } catch (CmsVfsException e) {
             // ok, ignore
         }
-        assertEquals(1, cms.getUsersForOrganizationalUnit("/test", false).size());
-        assertEquals(2, cms.getUsersForOrganizationalUnit("/test", true).size());
+        assertEquals(1, OpenCms.getOrgUnitManager().getUsers(cms, "/test/", false).size());
+        assertEquals(2, OpenCms.getOrgUnitManager().getUsers(cms, "/test/", true).size());
 
-        assertEquals(2, cms.getGroupsForOrganizationalUnit("/", false).size());
-        assertEquals(4, cms.getGroupsForOrganizationalUnit("/", true).size());
-        // try to create another group 'group1' in the root ou 
-        cms.createGroup("/group1", "test group", 0, null);
+        assertEquals(0, OpenCms.getOrgUnitManager().getGroups(cms, "/test/", false).size());
+        assertEquals(0, OpenCms.getOrgUnitManager().getGroups(cms, "/test/", true).size());
+        // try to create another group 'group1' in the test ou 
+        cms.createGroup("/test/group1", "test group", 0, null);
 
-        assertEquals(3, cms.getGroupsForOrganizationalUnit("/", false).size());
-        assertEquals(5, cms.getGroupsForOrganizationalUnit("/", true).size());
+        assertEquals(7, OpenCms.getOrgUnitManager().getGroups(cms, "/", false).size());
+        assertEquals(8, OpenCms.getOrgUnitManager().getGroups(cms, "/", true).size());
 
-        assertEquals(1, cms.getGroupsForOrganizationalUnit("/test", false).size());
-        assertEquals(2, cms.getGroupsForOrganizationalUnit("/test", true).size());
+        assertEquals(1, OpenCms.getOrgUnitManager().getGroups(cms, "/test", false).size());
+        assertEquals(1, OpenCms.getOrgUnitManager().getGroups(cms, "/test", true).size());
         try {
             // try to create another group 'group1' in the /test ou 
             cms.createGroup("/test/group1", "test group", 0, null);
@@ -971,29 +990,31 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         } catch (CmsVfsException e) {
             // ok, ignore
         }
-        assertEquals(1, cms.getGroupsForOrganizationalUnit("/test", false).size());
-        assertEquals(2, cms.getGroupsForOrganizationalUnit("/test", true).size());
+        assertEquals(1, OpenCms.getOrgUnitManager().getGroups(cms, "/test", false).size());
+        assertEquals(1, OpenCms.getOrgUnitManager().getGroups(cms, "/test", true).size());
 
+        cms.addUserToGroup("/test/test1", "/test/group1");
+        
         assertEquals(1, cms.getUsersOfGroup("/test/group1").size());
         assertTrue(cms.getUsersOfGroup("/test/group1").contains(cms.readUser("/test/test1")));
-        assertTrue(cms.getGroupsOfUser("/test1").isEmpty());
+        assertTrue(cms.getGroupsOfUser("/test1", false).isEmpty());
         // add user of root ou to group of 1st level ou
         cms.addUserToGroup("/test1", "/test/group1");
         assertEquals(2, cms.getUsersOfGroup("/test/group1").size());
         assertTrue(cms.getUsersOfGroup("/test/group1").contains(cms.readUser("/test/test1")));
         assertTrue(cms.getUsersOfGroup("/test/group1").contains(cms.readUser("/test1")));
-        assertEquals(1, cms.getGroupsOfUser("/test1").size());
-        assertTrue(cms.getGroupsOfUser("/test1").contains(cms.readGroup("/test/group1")));
+        assertEquals(1, cms.getGroupsOfUser("/test1", false).size());
+        assertTrue(cms.getGroupsOfUser("/test1", false).contains(cms.readGroup("/test/group1")));
 
         assertTrue(cms.getUsersOfGroup("/group1").isEmpty());
-        assertEquals(1, cms.getGroupsOfUser("/test/test1").size());
-        assertTrue(cms.getGroupsOfUser("/test/test1").contains(cms.readGroup("/test/group1")));
+        assertEquals(1, cms.getGroupsOfUser("/test/test1", false).size());
+        assertTrue(cms.getGroupsOfUser("/test/test1", false).contains(cms.readGroup("/test/group1")));
         // add user of 1st level ou to group of root ou
         cms.addUserToGroup("/test/test1", "/group1");
         assertEquals(1, cms.getUsersOfGroup("/group1").size());
         assertTrue(cms.getUsersOfGroup("/group1").contains(cms.readUser("/test/test1")));
-        assertEquals(2, cms.getGroupsOfUser("/test/test1").size());
-        assertTrue(cms.getGroupsOfUser("/test/test1").contains(cms.readGroup("/test/group1")));
-        assertTrue(cms.getGroupsOfUser("/test/test1").contains(cms.readGroup("/group1")));
+        assertEquals(2, cms.getGroupsOfUser("/test/test1", false).size());
+        assertTrue(cms.getGroupsOfUser("/test/test1", false).contains(cms.readGroup("/test/group1")));
+        assertTrue(cms.getGroupsOfUser("/test/test1", false).contains(cms.readGroup("/group1")));
     }
 }

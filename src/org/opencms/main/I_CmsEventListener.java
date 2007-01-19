@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2006/12/21 15:18:39 $
- * Version: $Revision: 1.29.4.3 $
+ * Date   : $Date: 2007/01/19 16:53:53 $
+ * Version: $Revision: 1.29.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.29.4.3 $ 
+ * @version $Revision: 1.29.4.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -112,7 +112,7 @@ public interface I_CmsEventListener {
      * <li><code>{@link #KEY_DBCONTEXT}</code>: the current users database context</li>
      * </ul>
      * 
-     * @see org.opencms.file.CmsObject#publishProject()
+     * @see org.opencms.publish.CmsPublishManager#publishProject(org.opencms.file.CmsObject)
      * @see #EVENT_BEFORE_PUBLISH_PROJECT
      */
     int EVENT_PUBLISH_PROJECT = 2;
@@ -128,7 +128,7 @@ public interface I_CmsEventListener {
      * <li><code>{@link #KEY_DBCONTEXT}</code>: the current users database context</li>
      * </ul>
      * 
-     * @see org.opencms.file.CmsObject#publishProject()
+     * @see org.opencms.publish.CmsPublishManager#publishProject(org.opencms.file.CmsObject)
      * @see #EVENT_PUBLISH_PROJECT
      */
     int EVENT_BEFORE_PUBLISH_PROJECT = 3;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsLoginManager.java,v $
- * Date   : $Date: 2007/01/15 18:48:33 $
- * Version: $Revision: 1.6.8.2 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.6.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Hashtable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6.8.2 $
+ * @version $Revision: 1.6.8.3 $
  * 
  * @since 6.0.0
  */
@@ -279,7 +279,7 @@ public class CmsLoginManager {
      */
     public void removeLoginMessage(CmsObject cms) throws CmsRoleViolationException {
 
-        cms.checkRole(CmsRole.ROOT_ADMIN);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
         m_loginMessage = null;
     }
 
@@ -297,7 +297,7 @@ public class CmsLoginManager {
 
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // during configuration phase no permission check id required
-            cms.checkRole(CmsRole.ROOT_ADMIN);
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
         }
         m_loginMessage = message;
         if (m_loginMessage != null) {

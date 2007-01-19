@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementContentToolHandler.java,v $
- * Date   : $Date: 2005/06/26 10:56:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.2.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.content;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.workplace.tools.CmsOfflineToolHandler;
 
@@ -41,7 +42,7 @@ import org.opencms.workplace.tools.CmsOfflineToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,6 +53,6 @@ public class CmsElementContentToolHandler extends CmsOfflineToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.DEVELOPER);
+        return OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER);
     }
 }

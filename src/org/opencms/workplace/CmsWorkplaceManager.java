@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.76.4.7 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.76.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.7 $ 
+ * @version $Revision: 1.76.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -539,7 +539,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         int maxFileSize = getFileMaxUploadSize();
         long maxFileSizeBytes = maxFileSize * 1024;
         // check if current user belongs to Admin group, if so no file upload limit
-        if ((maxFileSize <= 0) || cms.hasRole(CmsRole.VFS_MANAGER)) {
+        if ((maxFileSize <= 0) || OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER)) {
             maxFileSizeBytes = -1;
         }
         return maxFileSizeBytes;
@@ -772,7 +772,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         try {
             // ensure that the current user has permissions to initialize the workplace
-            cms.checkRole(CmsRole.WORKPLACE_MANAGER);
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.WORKPLACE_MANAGER);
 
             // set the workplace encoding
             m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
@@ -1106,7 +1106,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public void setFileViewSettings(CmsObject cms, CmsRfsFileViewer fileViewSettings) throws CmsRoleViolationException {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
-            cms.checkRole(CmsRole.ROOT_ADMIN);
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
         }
         m_fileViewSettings = fileViewSettings;
         // disallow modifications of this "new original"

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2007/01/15 18:48:35 $
- * Version: $Revision: 1.35.4.2 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.35.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35.4.2 $ 
+ * @version $Revision: 1.35.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -336,7 +336,7 @@ public class CmsModuleManager {
     throws CmsSecurityException, CmsConfigurationException {
 
         // check the role permissions
-        cms.checkRole(CmsRole.DATABASE_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         if (m_modules.containsKey(module.getName())) {
             // module is currently configured, no create possible
@@ -476,7 +476,7 @@ public class CmsModuleManager {
     throws CmsRoleViolationException, CmsConfigurationException {
 
         // check for module manager role permissions
-        cms.checkRole(CmsRole.DATABASE_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         if (!m_modules.containsKey(moduleName)) {
             // module is not currently configured, no update possible
@@ -611,7 +611,7 @@ public class CmsModuleManager {
 
             // now unlock and publish the project
             cms.unlockProject(deleteProject.getId());
-            cms.publishProject(report);
+            OpenCms.getPublishManager().publishProject(cms, report);
             OpenCms.getPublishManager().waitWhileRunning();
 
             report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0), I_CmsReport.FORMAT_HEADLINE);
@@ -703,7 +703,7 @@ public class CmsModuleManager {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // certain test cases won't have an OpenCms context
-            cms.checkRole(CmsRole.DATABASE_MANAGER);
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
         }
 
         Iterator it;
@@ -816,7 +816,7 @@ public class CmsModuleManager {
     throws CmsRoleViolationException, CmsConfigurationException {
 
         // check for module manager role permissions
-        cms.checkRole(CmsRole.DATABASE_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         CmsModule oldModule = (CmsModule)m_modules.get(module.getName());
 

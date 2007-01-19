@@ -35,6 +35,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -138,7 +139,7 @@ public class CmsListDemo4 extends A_CmsListDialog {
 
         List ret = new ArrayList();
         // get content
-        List users = getCms().getUsers();
+        List users = OpenCms.getOrgUnitManager().getUsers(getCms(), "/", true);
         Iterator itUsers = users.iterator();
         while (itUsers.hasNext()) {
             CmsUser user = (CmsUser)itUsers.next();

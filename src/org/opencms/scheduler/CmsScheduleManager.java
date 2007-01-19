@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.27.4.3 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.27.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.27.4.3 $ 
+ * @version $Revision: 1.27.4.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -237,7 +237,7 @@ public class CmsScheduleManager implements Job {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // simple unit tests will have runlevel 1 and no CmsObject
-            adminCms.checkRole(CmsRole.WORKPLACE_MANAGER);
+            OpenCms.getRoleManager().checkRole(adminCms, CmsRole.WORKPLACE_MANAGER);
         }
 
         // the list of job entries
@@ -313,7 +313,7 @@ public class CmsScheduleManager implements Job {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // simple unit tests will have runlevel 1 and no CmsObject
-            cms.checkRole(CmsRole.WORKPLACE_MANAGER);
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.WORKPLACE_MANAGER);
         }
 
         if ((jobInfo == null) || (jobInfo.getClassName() == null)) {
@@ -510,7 +510,7 @@ public class CmsScheduleManager implements Job {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // simple unit tests will have runlevel 1 and no CmsObject
-            cms.checkRole(CmsRole.WORKPLACE_MANAGER);
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.WORKPLACE_MANAGER);
         }
 
         CmsScheduledJobInfo jobInfo = null;

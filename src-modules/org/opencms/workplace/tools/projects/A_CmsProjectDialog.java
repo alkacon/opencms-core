@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/A_CmsProjectDialog.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.7.8.1 $
+ * Date   : $Date: 2007/01/19 16:53:53 $
+ * Version: $Revision: 1.7.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -50,7 +51,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7.8.1 $ 
+ * @version $Revision: 1.7.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,7 +146,7 @@ public abstract class A_CmsProjectDialog extends CmsWidgetDialog {
             }
         }
         try {
-            Iterator itGroups = getCms().getGroups().iterator();
+            Iterator itGroups = OpenCms.getOrgUnitManager().getGroups(getCms(), "/", true).iterator();
             while (itGroups.hasNext()) {
                 CmsGroup group = (CmsGroup)itGroups.next();
                 if (!pManager || group.isProjectManager()) {

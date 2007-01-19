@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2006/11/29 15:04:06 $
- * Version: $Revision: 1.15.8.2 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.15.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.15.8.2 $
+ * @version $Revision: 1.15.8.3 $
  */
 public class TestChacc extends OpenCmsTestCase {
   
@@ -292,7 +292,7 @@ public class TestChacc extends OpenCmsTestCase {
         cms.chacc(resName, I_CmsPrincipal.PRINCIPAL_USER, testUser.getName(), "+r+w+v+i");
         cms.chacc(resName, I_CmsPrincipal.PRINCIPAL_GROUP, testGroup.getName(), "+r+v+i");
         cms.unlockResource(resName);
-        cms.publishProject(); 
+        OpenCms.getPublishManager().publishProject(cms); 
         OpenCms.getPublishManager().waitWhileRunning();
         
         CmsPermissionSet permissions = new CmsPermissionSet(CmsPermissionSet.PERMISSION_READ
@@ -323,7 +323,7 @@ public class TestChacc extends OpenCmsTestCase {
         cms.lockResource(resName);
         cms.rmacc(resName, I_CmsPrincipal.PRINCIPAL_USER, testUser.getName());
         cms.unlockResource(resName);
-        cms.publishProject();         
+        OpenCms.getPublishManager().publishProject(cms);         
         OpenCms.getPublishManager().waitWhileRunning();
         
         cms.loginUser("testuser", "test");        
@@ -335,7 +335,7 @@ public class TestChacc extends OpenCmsTestCase {
         cms.lockResource(resName);
         cms.rmacc(resName, I_CmsPrincipal.PRINCIPAL_GROUP, testGroup.getName());
         cms.unlockResource(resName);
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
         
         // re-check permissions of test user after removing ACE

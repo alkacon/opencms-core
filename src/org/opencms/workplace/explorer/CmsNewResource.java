@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2006/12/05 15:26:51 $
- * Version: $Revision: 1.26.4.3 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.26.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.26.4.3 $ 
+ * @version $Revision: 1.26.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -426,7 +426,7 @@ public class CmsNewResource extends CmsDialog {
      */
     public String dialogButtonsAdvancedNextCancel(String advancedAttrs, String nextAttrs, String cancelAttrs) {
 
-        if (m_limitedRestypes && getCms().hasRole(CmsRole.VFS_MANAGER)) {
+        if (m_limitedRestypes && OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
             return dialogButtons(new int[] {BUTTON_ADVANCED, BUTTON_NEXT, BUTTON_CANCEL}, new String[] {
                 advancedAttrs,
                 nextAttrs,

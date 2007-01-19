@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2007/01/15 18:48:35 $
- * Version: $Revision: 1.20.4.6 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.20.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.6 $ 
+ * @version $Revision: 1.20.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,6 +145,36 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ZIPCODE_VALIDATION_1 = "ERR_ZIPCODE_VALIDATION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_ACCOUNT_MANAGER_0 = "GUI_ROLE_DESCRIPTION_ACCOUNT_MANAGER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_ADMINISTRATOR_0 = "GUI_ROLE_DESCRIPTION_ADMINISTRATOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_DATABASE_MANAGER_0 = "GUI_ROLE_DESCRIPTION_DATABASE_MANAGER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_DEVELOPER_0 = "GUI_ROLE_DESCRIPTION_DEVELOPER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_DIRECT_EDIT_USER_0 = "GUI_ROLE_DESCRIPTION_DIRECT_EDIT_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_PROJECT_MANAGER_0 = "GUI_ROLE_DESCRIPTION_PROJECT_MANAGER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_ROOT_ADMIN_0 = "GUI_ROLE_DESCRIPTION_ROOT_ADMIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_VFS_MANAGER_0 = "GUI_ROLE_DESCRIPTION_VFS_MANAGER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_WORKPLACE_MANAGER_0 = "GUI_ROLE_DESCRIPTION_WORKPLACE_MANAGER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_WORKPLACE_USER_0 = "GUI_ROLE_DESCRIPTION_WORKPLACE_USER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_ACCOUNT_MANAGER_0 = "GUI_ROLENAME_ACCOUNT_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -158,9 +188,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_DIRECT_EDIT_USER_0 = "GUI_ROLENAME_DIRECT_EDIT_USER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_ORGUNIT_MANAGER_0 = "GUI_ROLENAME_ORGUNIT_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_PROJECT_MANAGER_0 = "GUI_ROLENAME_PROJECT_MANAGER_0";

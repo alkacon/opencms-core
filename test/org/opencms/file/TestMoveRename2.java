@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename2.java,v $
- * Date   : $Date: 2006/11/29 15:04:05 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  */
 public class TestMoveRename2 extends OpenCmsTestCase {
 
@@ -165,7 +165,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         cms.createResource(folder + file, CmsResourceTypePlain.getStaticTypeId());
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.createResource(folder + newFile, CmsResourceTypePlain.getStaticTypeId());
@@ -242,7 +242,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         cms.writeFile(file);
 
         cms.unlockResource(filename);
-        cms.publishResource(filename);
+        OpenCms.getPublishManager().publishResource(cms, filename);
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.lockResource(filename);
@@ -286,7 +286,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         cms.lockResource("/");
         cms.setDateLastModified("/", System.currentTimeMillis(), true);
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.lockResource(deletedFile);
@@ -342,12 +342,12 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         // publish the deleted folder
         cms.unlockResource(folderDest);
-        cms.publishResource(folderDest);
+        OpenCms.getPublishManager().publishResource(cms, folderDest);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // publish the moved file
         cms.unlockResource(destination);
-        cms.publishResource(destination);
+        OpenCms.getPublishManager().publishResource(cms, destination);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -440,7 +440,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         assertSiblingCount(cms, destination, 1);
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -500,7 +500,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         assertFalse(cms.getLockedResources(newFolder2, CmsLockFilter.FILTER_ALL).contains(newFolder2 + source));
 
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestCmsPrincipal.java,v $
- * Date   : $Date: 2007/01/15 18:48:35 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,7 +97,7 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         I_CmsPrincipal principal;
         String prefixedName;
 
-        prefixedName = CmsPrincipal.getPrefixedUser(CmsOrganizationalUnit.appendFqn(null, OpenCms.getDefaultUsers().getUserAdmin()));
+        prefixedName = CmsPrincipal.getPrefixedUser("/" + OpenCms.getDefaultUsers().getUserAdmin());
         principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);
         assertTrue(principal.isUser());
         assertFalse(principal.isGroup());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestExists.java,v $
- * Date   : $Date: 2006/11/29 15:04:06 $
- * Version: $Revision: 1.7.8.1 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.7.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7.8.1 $
+ * @version $Revision: 1.7.8.2 $
  */
 public class TestExists extends OpenCmsTestCase {
   
@@ -137,7 +137,7 @@ public class TestExists extends OpenCmsTestCase {
         cms.chacc(resName, I_CmsPrincipal.PRINCIPAL_GROUP, testGroup.getName(), "-r-w-v-c-i");
         cms.chacc(resName, I_CmsPrincipal.PRINCIPAL_USER, testUser.getName(), "-r-w-v-c-i");
         cms.unlockResource(resName);
-        cms.publishProject(); 
+        OpenCms.getPublishManager().publishProject(cms); 
         OpenCms.getPublishManager().waitWhileRunning();
         
         cms.loginUser("testuser", "test");

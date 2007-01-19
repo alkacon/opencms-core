@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueList.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.5
  */
@@ -257,9 +257,12 @@ public class CmsPublishQueueList extends A_CmsListDialog {
         while (itPublishJobs.hasNext()) {
             CmsListItem item = (CmsListItem)itPublishJobs.next();
             int state = ((Integer)item.get(LIST_COLUMN_STATE)).intValue();
-            boolean enabled = ((state == STATE_PROCEED) && (getCms().hasRole(CmsRole.ROOT_ADMIN) || getCms().getRequestContext().currentUser().getName().equals(
+            boolean enabled = ((state == STATE_PROCEED) && (OpenCms.getRoleManager().hasRole(
+                getCms(),
+                CmsRole.ROOT_ADMIN) || getCms().getRequestContext().currentUser().getName().equals(
                 item.get(LIST_COLUMN_USER))));
-            enabled = enabled || (getCms().hasRole(CmsRole.ROOT_ADMIN) || (state == STATE_OWN));
+            enabled = enabled
+                || (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ROOT_ADMIN) || (state == STATE_OWN));
             if (!enabled) {
                 continue;
             }
@@ -358,7 +361,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
              */
             public boolean isEnabled() {
 
-                return (getWp().getCms().hasRole(CmsRole.ROOT_ADMIN) || getWp().getCms().getRequestContext().currentUser().getName().equals(
+                return (OpenCms.getRoleManager().hasRole(getWp().getCms(), CmsRole.ROOT_ADMIN) || getWp().getCms().getRequestContext().currentUser().getName().equals(
                     getItem().get(LIST_COLUMN_USER)));
             }
 
@@ -385,7 +388,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             public boolean isEnabled() {
 
                 int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
-                return (getWp().getCms().hasRole(CmsRole.ROOT_ADMIN) || (state == STATE_OWN));
+                return (OpenCms.getRoleManager().hasRole(getWp().getCms(), CmsRole.ROOT_ADMIN) || (state == STATE_OWN));
             }
 
             /**
@@ -457,7 +460,9 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             public boolean isEnabled() {
 
                 int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
-                return ((state == STATE_PROCEED) && (getWp().getCms().hasRole(CmsRole.ROOT_ADMIN) || getWp().getCms().getRequestContext().currentUser().getName().equals(
+                return ((state == STATE_PROCEED) && (OpenCms.getRoleManager().hasRole(
+                    getWp().getCms(),
+                    CmsRole.ROOT_ADMIN) || getWp().getCms().getRequestContext().currentUser().getName().equals(
                     getItem().get(LIST_COLUMN_USER))));
             }
         }

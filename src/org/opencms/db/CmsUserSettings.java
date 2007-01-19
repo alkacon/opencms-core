@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.36.4.13 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.36.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
@@ -51,13 +52,15 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Object to conveniently access and modify the users workplace settings.<p>
  *
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.13 $
+ * @version $Revision: 1.36.4.14 $
  * 
  * @since 6.0.0
  */
@@ -739,6 +742,9 @@ public class CmsUserSettings {
         return m_workplaceSearchViewStyle;
     }
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDriverManager.class);
+
     /**
      * Initializes the user settings with the given users setting parameters.<p>
      * 
@@ -981,6 +987,9 @@ public class CmsUserSettings {
                 m_projectSettings.setUserGroup(cms.readGroup(CmsRole.PROJECT_MANAGER.getGroupName()).getId());
             } catch (Exception e) {
                 // ignore
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
             }
             m_projectSettings.setProjectFilesMode(CmsProjectResourcesDisplayMode.ALL_CHANGES);
         }
@@ -990,7 +999,10 @@ public class CmsUserSettings {
         try {
             save(null);
         } catch (CmsException e) {
-            // do nothing here            
+            // ignore
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
         }
     }
 

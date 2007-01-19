@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2006/11/29 15:04:07 $
- * Version: $Revision: 1.21.4.2 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.21.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.2 $
+ * @version $Revision: 1.21.4.3 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -155,7 +155,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // publish a modified resource without siblings
         //
-        cms.publishResource(resource1);
+        OpenCms.getPublishManager().publishResource(cms, resource1);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // the online file must the offline changes
@@ -173,7 +173,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // publish a modified resource with siblings, but keeping the siblings unpublished
         //
-        cms.publishResource(resource2);
+        OpenCms.getPublishManager().publishResource(cms, resource2);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // the online file must the offline changes
@@ -202,7 +202,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // publish a modified resource with siblings, publish the siblings as well
         //
-        cms.publishResource(resource3, true, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().publishResource(cms, resource3, true, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
         // the online file must the offline changes
@@ -252,7 +252,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.deleteResource(resource1, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(resource1);
 
-        cms.publishResource(resource1);
+        OpenCms.getPublishManager().publishResource(cms, resource1);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // the online file must be deleted
@@ -277,7 +277,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.unlockResource(resource2);
 
         // this test makes only sense when siblings are published
-        cms.publishResource(resource2, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().publishResource(cms, resource2, false, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
         // the online file must be deleted
@@ -309,7 +309,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // publish a deleted resource with siblings, delete the siblings
         //
-        cms.publishResource(resource3, true, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().publishResource(cms, resource3, true, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
         // the online files must be deleted
@@ -376,7 +376,7 @@ public class TestPublishing extends OpenCmsTestCase {
         storeResources(cms, resource2);
 
         // publish a modified resource without siblings
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // ensure that all changed resources are still changed in the offline project
@@ -430,8 +430,8 @@ public class TestPublishing extends OpenCmsTestCase {
         storeResources(cms, target1);
 
         // publish it
-        CmsPublishList publishList = cms.getPublishList(cms.readResource(target1), false);
-        cms.publishProject(new CmsShellReport(cms.getRequestContext().getLocale()), publishList);
+        CmsPublishList publishList = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(target1), false);
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()), publishList);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check publish resource state
@@ -520,7 +520,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // publish a new resource
         //
-        cms.publishResource(destination1);
+        OpenCms.getPublishManager().publishResource(cms, destination1);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // the file must be now available in the online project
@@ -538,7 +538,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // publish a sibling without publishing other siblings
         //
-        cms.publishResource(destination2);
+        OpenCms.getPublishManager().publishResource(cms, destination2);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // the file must be now available in the online project
@@ -577,7 +577,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // publish a sibling and all other siblings of it
         //
-        cms.publishResource(destination3, true, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().publishResource(cms, destination3, true, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
         // the file and its siblings must be now available in the online project
         cms.getRequestContext().setCurrentProject(onlineProject);
@@ -638,7 +638,7 @@ public class TestPublishing extends OpenCmsTestCase {
         try {
             // this will generate an error in the log, ensure the test still continues
             OpenCmsTestLogAppender.setBreakOnError(false);
-            cms.publishResource(newFile);
+            OpenCms.getPublishManager().publishResource(cms, newFile);
             OpenCms.getPublishManager().waitWhileRunning();
         } catch (CmsMultiException e) {
             CmsVfsException ex = (CmsVfsException)e.getExceptions().get(0);
@@ -662,13 +662,13 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.unlockResource(source);
 
         storeResources(cms, newSibling);
-        cms.publishResource(source, true, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().publishResource(cms, source, true, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
         assertFilter(cms, newSibling, OpenCmsTestResourceFilter.FILTER_EQUAL);
 
         // publishing the test project will not publish the new file or the new sibling
         echo("Publishing the test project");
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertFilter(cms, newFile, OpenCmsTestResourceFilter.FILTER_EQUAL);
@@ -678,7 +678,7 @@ public class TestPublishing extends OpenCmsTestCase {
         echo("Publishing the offline project");
 
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertFilter(cms, newFolder, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
@@ -690,7 +690,7 @@ public class TestPublishing extends OpenCmsTestCase {
         // publishing the test proejct again will now publish the resources
         echo("Publishing the test project again");
         cms.getRequestContext().setCurrentProject(project);
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertFilter(cms, newFile, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
@@ -739,7 +739,7 @@ public class TestPublishing extends OpenCmsTestCase {
         storeResources(cms, res2);
 
         // when the project is published, only the second resource will be published
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
@@ -767,7 +767,7 @@ public class TestPublishing extends OpenCmsTestCase {
         // publish the test project
         cms.getRequestContext().setCurrentProject(project);
         cms.unlockProject(project.getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // the resource inside the test project must not be published (not in test project)
@@ -777,7 +777,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertState(cms, res4, CmsResource.STATE_NEW);
 
         // publish the root folder of the test project within the test project
-        cms.publishResource(path, true, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().publishResource(cms, path, true, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
         // the resource inside the test project must not be published (still not in test project)
@@ -817,7 +817,7 @@ public class TestPublishing extends OpenCmsTestCase {
         storeResources(cms, source);
         storeResources(cms, sibling);
 
-        List pubList = cms.getPublishList().getFileList();
+        List pubList = OpenCms.getPublishManager().getPublishList(cms).getFileList();
         assertEquals(pubList.size(), 2);
         assertEquals(((CmsResource)pubList.get(0)).getRootPath(), cms.getRequestContext().addSiteRoot(source));
         assertEquals(((CmsResource)pubList.get(1)).getRootPath(), cms.getRequestContext().addSiteRoot(sibling));
@@ -825,7 +825,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertFilter(cms, cms.readResource(source), OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, cms.readResource(sibling), OpenCmsTestResourceFilter.FILTER_EQUAL);
 
-        cms.publishResource(source);
+        OpenCms.getPublishManager().publishResource(cms, source);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
@@ -833,7 +833,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         storeResources(cms, source);
 
-        assertTrue(cms.getPublishList().getFileList().isEmpty());
+        assertTrue(OpenCms.getPublishManager().getPublishList(cms).getFileList().isEmpty());
     }
 
     /**
@@ -871,7 +871,7 @@ public class TestPublishing extends OpenCmsTestCase {
         storeResources(cms, source);
         storeResources(cms, sibling);
 
-        List pubList = cms.getPublishList().getFileList();
+        List pubList = OpenCms.getPublishManager().getPublishList(cms).getFileList();
         assertEquals(pubList.size(), 2);
         assertEquals(((CmsResource)pubList.get(0)).getRootPath(), cms.getRequestContext().addSiteRoot(source));
         assertEquals(((CmsResource)pubList.get(1)).getRootPath(), cms.getRequestContext().addSiteRoot(sibling));
@@ -879,7 +879,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertFilter(cms, cms.readResource(source), OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, cms.readResource(sibling), OpenCmsTestResourceFilter.FILTER_EQUAL);
 
-        cms.publishResource(source);
+        OpenCms.getPublishManager().publishResource(cms, source);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
@@ -887,12 +887,12 @@ public class TestPublishing extends OpenCmsTestCase {
 
         storeResources(cms, source);
 
-        pubList = cms.getPublishList().getFileList();
+        pubList = OpenCms.getPublishManager().getPublishList(cms).getFileList();
         assertEquals(pubList.size(), 1);
         assertEquals(((CmsResource)pubList.get(0)).getRootPath(), cms.getRequestContext().addSiteRoot(sibling));
         assertFilter(cms, cms.readResource(sibling), OpenCmsTestResourceFilter.FILTER_EQUAL);
 
-        cms.publishResource(sibling);
+        OpenCms.getPublishManager().publishResource(cms, sibling);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertFilter(cms, sibling, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
@@ -920,7 +920,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // be sure everything is published
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         storeResources(cms, source);
@@ -936,12 +936,12 @@ public class TestPublishing extends OpenCmsTestCase {
         storeResources(cms, source);
         storeResources(cms, sibling);
 
-        List pubList = cms.getPublishList().getFileList();
+        List pubList = OpenCms.getPublishManager().getPublishList(cms).getFileList();
         assertEquals(pubList.size(), 1);
         assertEquals(((CmsResource)pubList.get(0)).getRootPath(), cms.getRequestContext().addSiteRoot(sibling));
         assertFilter(cms, cms.readResource(sibling), OpenCmsTestResourceFilter.FILTER_EQUAL);
 
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertFilter(cms, sibling, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
@@ -980,7 +980,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.readResource(source);
 
         //publish the project
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // now try to read the resource

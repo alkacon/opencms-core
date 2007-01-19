@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.43.4.5 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.43.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.43.4.5 $ 
+ * @version $Revision: 1.43.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,7 +140,7 @@ public class CmsImport {
     throws CmsRoleViolationException {
 
         // check the role permissions
-        cms.checkRole(CmsRole.DATABASE_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         // set member variables
         m_cms = cms;

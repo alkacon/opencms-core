@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsPublishProjectReport.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.9.4.3 $
+ * Date   : $Date: 2007/01/19 16:53:53 $
+ * Version: $Revision: 1.9.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsReport;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.9.4.3 $ 
+ * @version $Revision: 1.9.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +127,7 @@ public class CmsPublishProjectReport extends CmsReport {
                     CmsProject currentProject = getCms().getRequestContext().currentProject();
                     getCms().getRequestContext().setCurrentProject(
                         getCms().readProject(new Integer(getParamProjectid()).intValue()));
-                    list = getCms().getPublishList();
+                    list = OpenCms.getPublishManager().getPublishList(getCms());
                     getCms().getRequestContext().setCurrentProject(currentProject);
                 } catch (CmsException e) {
                     throw new CmsRuntimeException(e.getMessageContainer(), e);
@@ -194,7 +195,7 @@ public class CmsPublishProjectReport extends CmsReport {
         // create a publish thread from the current publish list
         CmsPublishList publishList = getSettings().getPublishList();
         try {
-            getCms().publishProject(new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot()), publishList);
+            OpenCms.getPublishManager().publishProject(getCms(), new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot()), publishList);
         } catch (CmsException e) {
             throw new CmsRuntimeException(e.getMessageContainer());
         }

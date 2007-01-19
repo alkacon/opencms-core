@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.570.2.45 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.570.2.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -167,7 +167,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
          */
         public CacheId(CmsOrganizationalUnit orgUnit) {
 
-            m_name = ORGUNIT_PREFIX + orgUnit.getFqn();
+            m_name = ORGUNIT_PREFIX + orgUnit.getName();
             m_uuid = orgUnit.getId();
         }
 
@@ -632,8 +632,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#addResourceToOrgUnit(String, String)
-     * @see CmsObject#addResourceToOrgUnit(String, String)
+     * @see org.opencms.security.CmsOrgUnitManager#addResourceToOrgUnit(CmsObject, String, String)
+     * @see org.opencms.security.CmsOrgUnitManager#addResourceToOrgUnit(CmsObject, String, String)
      */
     public void addResourceToOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsException {
@@ -647,22 +647,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param username the name of the user that is to be added to the group
      * @param groupname the name of the group
+     * @param readRoles if reading roles or groups
      *
      * @throws CmsException if operation was not succesfull
      * @throws CmsDbEntryNotFoundException if the given user or the given group was not found 
      */
-    public void addUserToGroup(CmsDbContext dbc, String username, String groupname)
+    public void addUserToGroup(CmsDbContext dbc, String username, String groupname, boolean readRoles)
     throws CmsException, CmsDbEntryNotFoundException {
 
         if (!userInGroup(dbc, username, groupname)) {
             CmsUser user = readUser(dbc, username);
             //check if the user exists
             if (user != null) {
-                // web user can not be members of:
-                // Administrators, Projectmanagers or Users
                 CmsGroup group = readGroup(dbc, groupname);
                 //check if group exists
-                if (group != null) {
+                if ((group != null) && ((!readRoles && !group.isRole()) || (readRoles && group.isRole()))) {
                     //add this user to the group
                     m_userDriver.createUserInGroup(dbc, user.getId(), group.getId());
                     // update the cache
@@ -731,11 +730,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         int denied = 0;
 
         // check if the current user is admin
-        boolean canIgnorePermissions = m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.VFS_MANAGER, resource);
+        boolean canIgnorePermissions = m_securityManager.hasRoleForResource(
+            dbc,
+            dbc.currentUser(),
+            CmsRole.VFS_MANAGER,
+            resource);
         // if the resource type is jsp
         // write is only allowed for administrators
         if (!canIgnorePermissions && (resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId())) {
-            if (!m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.DEVELOPER, resource)) {
+            if (!m_securityManager.hasRoleForResource(dbc, dbc.currentUser(), CmsRole.DEVELOPER, resource)) {
                 denied |= CmsPermissionSet.PERMISSION_WRITE;
             }
         }
@@ -1244,7 +1247,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @throws CmsException if operation was not successful
      * 
-     * @see CmsObject#createOrganizationalUnit(String, String, int, String)
+     * @see org.opencms.security.CmsOrgUnitManager#createOrganizationalUnit(CmsObject, String, String, int, String)
      */
     public CmsOrganizationalUnit createOrganizationalUnit(
         CmsDbContext dbc,
@@ -1253,20 +1256,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         int flags,
         CmsResource resource) throws CmsException {
 
-        String name;
-        CmsOrganizationalUnit parent;
-        if (ouFqn.equals("")) {
-            // root ou case
-            parent = null;
-            name = ouFqn;
-        } else {
-            // normal case
-            int pos = ouFqn.lastIndexOf('/');
-            parent = readOrganizationalUnit(dbc, ouFqn.substring(0, pos));
-            name = ouFqn.substring(pos + 1);
-            // check the name
-            OpenCms.getValidationHandler().checkOrganizationalUnitName(name);
-        }
+        // normal case
+        CmsOrganizationalUnit parent = readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(ouFqn));
+        String name = CmsOrganizationalUnit.getSimpleName(ouFqn);
+        // check the name
+        OpenCms.getValidationHandler().checkOrganizationalUnitName(name);
+
         // trim the name
         name = name.trim();
         // create the organizational unit
@@ -1934,7 +1929,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // no space before or after the name
         name = name.trim();
-        String userName = CmsOrganizationalUnit.getLastNameFromFqn(name);
+        String userName = CmsOrganizationalUnit.getSimpleName(name);
         // check the username
         OpenCms.getValidationHandler().checkUserName(userName);
         // check the password
@@ -2117,7 +2112,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // get all child groups of the group
         List childs = getChild(dbc, group);
         // get all users in this group
-        List users = getUsersOfGroup(dbc, group.getName());
+        List users = getUsersOfGroup(dbc, group.getName(), true, false, group.isRole());
         // get online project
         CmsProject onlineProject = readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
         if (replacementGroup == null) {
@@ -2125,7 +2120,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             Iterator itUsers = users.iterator();
             while (itUsers.hasNext()) {
                 CmsUser user = (CmsUser)itUsers.next();
-                removeUserFromGroup(dbc, user.getName(), group.getName());
+                removeUserFromGroup(dbc, user.getName(), group.getName(), group.isRole());
             }
             // transfer childs to grandfather if possible
             CmsUUID parentId = group.getParentId();
@@ -2150,8 +2145,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             Iterator itUsers = users.iterator();
             while (itUsers.hasNext()) {
                 CmsUser user = (CmsUser)itUsers.next();
-                addUserToGroup(dbc, user.getName(), replacementGroup.getName());
-                removeUserFromGroup(dbc, user.getName(), group.getName());
+                addUserToGroup(dbc, user.getName(), replacementGroup.getName(), group.isRole());
+                removeUserFromGroup(dbc, user.getName(), group.getName(), group.isRole());
             }
             // transfer for offline
             transferPrincipalResources(dbc, dbc.currentProject(), group.getId(), replacementId, true);
@@ -2179,50 +2174,57 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if operation was not successful
      * 
-     * @see CmsObject#deleteOrganizationalUnit(String)
+     * @see org.opencms.security.CmsOrgUnitManager#deleteOrganizationalUnit(CmsObject, String)
      */
     public void deleteOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit)
     throws CmsException {
 
         // check organizational unit in context
-        if (dbc.getRequestContext().getOuFqn().equals(organizationalUnit.getFqn())) {
+        if (dbc.getRequestContext().getOuFqn().equals(organizationalUnit.getName())) {
             throw new CmsDbConsistencyException(Messages.get().container(
                 Messages.ERR_ORGUNIT_DELETE_IN_CONTEXT_1,
-                organizationalUnit.getFqn()));
+                organizationalUnit.getName()));
         }
         // check organizational unit for user
-        if (dbc.currentUser().getOrganizationalUnitFqn().equals(organizationalUnit.getFqn())) {
+        if (dbc.currentUser().getOuFqn().equals(organizationalUnit.getName())) {
             throw new CmsDbConsistencyException(Messages.get().container(
                 Messages.ERR_ORGUNIT_DELETE_CURRENT_USER_1,
-                organizationalUnit.getFqn()));
+                organizationalUnit.getName()));
         }
         // check sub organizational units
         if (!getOrganizationalUnits(dbc, organizationalUnit, true).isEmpty()) {
             throw new CmsDbConsistencyException(Messages.get().container(
                 Messages.ERR_ORGUNIT_DELETE_SUB_ORGUNITS_1,
-                organizationalUnit.getFqn()));
+                organizationalUnit.getName()));
         }
         // check groups
-        if (!getGroupsForOrganizationalUnit(dbc, organizationalUnit, false).isEmpty()) {
+        if (!getGroups(dbc, organizationalUnit, true, false).isEmpty()) {
             throw new CmsDbConsistencyException(Messages.get().container(
                 Messages.ERR_ORGUNIT_DELETE_GROUPS_1,
-                organizationalUnit.getFqn()));
+                organizationalUnit.getName()));
         }
         // check users
-        if (!getUsersForOrganizationalUnit(dbc, organizationalUnit, false).isEmpty()) {
+        if (!getUsers(dbc, organizationalUnit, false).isEmpty()) {
             throw new CmsDbConsistencyException(Messages.get().container(
                 Messages.ERR_ORGUNIT_DELETE_USERS_1,
-                organizationalUnit.getFqn()));
+                organizationalUnit.getName()));
+        }
+
+        // delete roles
+        Iterator itRoles = getGroups(dbc, organizationalUnit, true, true).iterator();
+        while (itRoles.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoles.next();
+            deleteGroup(dbc, role, null);
         }
 
         // remove the organizational unit itself
         m_userDriver.deleteOrganizationalUnit(dbc, organizationalUnit);
+
         // remove it from the cache
         m_orgUnitCache.remove(new CacheId(organizationalUnit));
         // flush all caches
         clearAccessControlListCache();
         m_propertyCache.clear();
-
     }
 
     /**
@@ -2673,19 +2675,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
             replacementUser = readUser(dbc, OpenCms.getDefaultUsers().getUserDeletedResource());
         }
 
-        boolean isVfsManager = m_securityManager.hasRole(dbc, replacementUser, CmsRole.VFS_MANAGER, (String)null);
-        Iterator itGroups = getGroupsOfUser(dbc, username).iterator();
+        boolean isVfsManager = m_securityManager.hasRoleForOrgUnit(
+            dbc,
+            replacementUser,
+            CmsRole.VFS_MANAGER,
+            (String)null);
+        Iterator itGroups = getGroupsOfUser(
+            dbc,
+            username,
+            "/",
+            true,
+            false,
+            false,
+            dbc.getRequestContext().getRemoteAddress()).iterator();
         while (itGroups.hasNext()) {
             CmsGroup group = (CmsGroup)itGroups.next();
             if (!isVfsManager) {
                 // add replacement user to user groups
                 if (!userInGroup(dbc, replacementUser.getName(), group.getName())) {
-                    addUserToGroup(dbc, replacementUser.getName(), group.getName());
+                    addUserToGroup(dbc, replacementUser.getName(), group.getName(), false);
                 }
             }
             // remove user from groups
             if (userInGroup(dbc, username, group.getName())) {
-                removeUserFromGroup(dbc, username, group.getName());
+                removeUserFromGroup(dbc, username, group.getName(), false);
             }
         }
 
@@ -3064,13 +3077,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List getAllAccessibleProjects(CmsDbContext dbc) throws CmsException {
 
-        if (m_securityManager.hasRole(dbc, CmsRole.PROJECT_MANAGER, null)) {
+        if (m_securityManager.hasRoleForOrgUnit(dbc, dbc.currentUser(), CmsRole.PROJECT_MANAGER, null)) {
             // user is allowed to access all existing projects
             return m_projectDriver.readProjects(dbc, CmsProject.PROJECT_STATE_UNLOCKED);
         }
 
         // get all groups of the user
-        List groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
+        List groups = getGroupsOfUser(
+            dbc,
+            dbc.currentUser().getName(),
+            "/",
+            true,
+            false,
+            false,
+            dbc.getRequestContext().getRemoteAddress());
 
         // add all projects which are owned by the user
         Set projects = new HashSet(m_projectDriver.readProjectsForUser(dbc, dbc.currentUser()));
@@ -3116,7 +3136,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // the result set
         Set projects = new HashSet();
 
-        if (m_securityManager.hasRole(dbc, CmsRole.PROJECT_MANAGER, null)) {
+        if (m_securityManager.hasRoleForOrgUnit(dbc, dbc.currentUser(), CmsRole.PROJECT_MANAGER, null)) {
             // user is allowed to access all existing projects
             projects.addAll(m_projectDriver.readProjects(dbc, CmsProject.PROJECT_STATE_UNLOCKED));
         } else {
@@ -3136,6 +3156,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // return the list of projects
         return new ArrayList(projects);
+    }
+
+    /**
+     * Returns the groups of an user filtered by the specified IP address.<p>
+     * 
+     * @param dbc the current database context
+     * @param username the name of the user
+     * 
+     * @return the groups of the given user, as a list of {@link CmsGroup} objects
+     * 
+     * @throws CmsException 
+     */
+    public List getGroupsOfUser(CmsDbContext dbc, String username) throws CmsException {
+
+        return getGroupsOfUser(dbc, username, "/", true, false, false, dbc.getRequestContext().getRemoteAddress());
     }
 
     /**
@@ -3203,109 +3238,111 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the list of groups to which the user directly belongs to.<p>
-     *
-     * @param dbc the current database context
-     * @param username The name of the user
-     * 
-     * @return a list of <code>{@link CmsGroup}</code> objects
-     * 
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public List getDirectGroupsOfUser(CmsDbContext dbc, String username) throws CmsException {
-
-        CmsUser user = readUser(dbc, username);
-        return m_userDriver.readGroupsOfUser(dbc, user.getId(), dbc.getRequestContext().getRemoteAddress());
-    }
-
-    /**
-     * Returns all available groups.<p>
-     *
-     * @param dbc the current database context
-     * 
-     * @return a list of all available <code>{@link CmsGroup}</code> objects
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public List getGroups(CmsDbContext dbc) throws CmsException {
-
-        return m_userDriver.readGroups(dbc);
-    }
-
-    /**
      * Returns all groups of the given organizational unit.<p>
      *
      * @param dbc the current db context
      * @param orgUnit the organizational unit to get the groups for
-     * @param recursive if all groups of sub-organizational units should be retrieved too
+     * @param includeSubOus if all groups of sub-organizational units should be retrieved too
+     * @param readRoles if to read roles or groups
      * 
      * @return all <code>{@link CmsGroup}</code> objects in the organizational unit
      *
      * @throws CmsException if operation was not successful
      * 
-     * @see CmsObject#getResourcesForOrganizationalUnit(String)
-     * @see CmsObject#getGroupsForOrganizationalUnit(String, boolean)
+     * @see org.opencms.security.CmsOrgUnitManager#getResourcesForOrganizationalUnit(CmsObject, String)
+     * @see org.opencms.security.CmsOrgUnitManager#getGroups(CmsObject, String, boolean)
      */
-    public List getGroupsForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
-    throws CmsException {
+    public List getGroups(
+        CmsDbContext dbc,
+        CmsOrganizationalUnit orgUnit,
+        boolean includeSubOus,
+        boolean readRoles) throws CmsException {
 
-        return m_userDriver.getGroupsForOrganizationalUnit(dbc, orgUnit, recursive);
+        return m_userDriver.getGroups(dbc, orgUnit, includeSubOus, readRoles);
     }
 
     /**
-     * Returns the groups of a user.<p>
+     * Returns the groups of an user filtered by the specified IP address.<p>
      * 
      * @param dbc the current database context
      * @param username the name of the user
+     * @param ouFqn the fully qualified name of the organizational unit to restrict the result set for
+     * @param includeChildOus include groups of child organizational units
+     * @param readRoles if to read roles or groups
+     * @param directGroupsOnly if set only the direct assigned groups will be returned, if not also indirect groups
+     * @param remoteAddress the IP address to filter the groups in the result list 
      *
      * @return a list of <code>{@link CmsGroup}</code> objects
      * 
      * @throws CmsException if operation was not succesful
      */
-    public List getGroupsOfUser(CmsDbContext dbc, String username) throws CmsException {
-
-        return getGroupsOfUser(dbc, username, dbc.getRequestContext().getRemoteAddress());
-    }
-
-    /**
-     * Returns the groups of a Cms user filtered by the specified IP address.<p>
-     * 
-     * @param dbc the current database context
-     * @param username the name of the user
-     * @param remoteAddress the IP address to filter the groups in the result list
-     *
-     * @return a list of <code>{@link CmsGroup}</code> objects
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public List getGroupsOfUser(CmsDbContext dbc, String username, String remoteAddress) throws CmsException {
+    public List getGroupsOfUser(
+        CmsDbContext dbc,
+        String username,
+        String ouFqn,
+        boolean includeChildOus,
+        boolean readRoles,
+        boolean directGroupsOnly,
+        String remoteAddress) throws CmsException {
 
         CmsUser user = readUser(dbc, username);
-        String cacheKey = m_keyGenerator.getCacheKeyForUserGroups(remoteAddress, dbc, user);
-
-        List allGroups = (List)m_userGroupsCache.get(cacheKey);
-        if (allGroups == null) {
-
+        String prefix = ouFqn + "_" + includeChildOus + "_" + directGroupsOnly + "_" + readRoles + "_" + remoteAddress;
+        String cacheKey = m_keyGenerator.getCacheKeyForUserGroups(prefix, dbc, user);
+        List groups = (List)m_userGroupsCache.get(cacheKey);
+        if (groups == null) {
             // get all groups of the user
-            List groups = m_userDriver.readGroupsOfUser(dbc, user.getId(), remoteAddress);
-            allGroups = new ArrayList(groups);
-            // now get all parents of the groups
-            for (int i = 0; i < groups.size(); i++) {
-
-                CmsGroup parent = getParent(dbc, ((CmsGroup)groups.get(i)).getName());
-                while ((parent != null) && (!allGroups.contains(parent))) {
-
-                    allGroups.add(parent);
-                    // read next parent group
-                    parent = getParent(dbc, parent.getName());
+            List directGroups = m_userDriver.readGroupsOfUser(
+                dbc,
+                user.getId(),
+                ouFqn,
+                includeChildOus,
+                remoteAddress,
+                readRoles);
+            Set allGroups = new HashSet(directGroups);
+            if (!directGroupsOnly) {
+                if (!readRoles) {
+                    // now get all parents of the groups
+                    for (int i = 0; i < directGroups.size(); i++) {
+                        CmsGroup parent = getParent(dbc, ((CmsGroup)directGroups.get(i)).getName());
+                        while ((parent != null) && (!allGroups.contains(parent))) {
+                            allGroups.add(parent);
+                            // read next parent group
+                            parent = getParent(dbc, parent.getName());
+                        }
+                    }
+                } else {
+                    // now get all child roles
+                    for (int i = 0; i < directGroups.size(); i++) {
+                        CmsGroup group = (CmsGroup)directGroups.get(i);
+                        CmsRole role = CmsRole.valueOf(group.getName());
+                        Iterator itChildRoles = role.getChilds(true).iterator();
+                        while (itChildRoles.hasNext()) {
+                            CmsRole childRole = (CmsRole)itChildRoles.next();
+                            allGroups.add(childRole.getGroupName(group.getOuFqn()));
+                        }
+                        if (includeChildOus) {
+                            Iterator itSubOus = getOrganizationalUnits(
+                                dbc,
+                                readOrganizationalUnit(dbc, group.getOuFqn()),
+                                true).iterator();
+                            while (itSubOus.hasNext()) {
+                                CmsOrganizationalUnit subOu = (CmsOrganizationalUnit)itSubOus.next();
+                                itChildRoles = role.getChilds(true).iterator();
+                                while (itChildRoles.hasNext()) {
+                                    CmsRole childRole = (CmsRole)itChildRoles.next();
+                                    allGroups.add(childRole.getGroupName(subOu.getName()));
+                                }
+                            }
+                        }
+                    }
                 }
             }
             // make group list unmodifiable for caching
-            allGroups = Collections.unmodifiableList(allGroups);
-            m_userGroupsCache.put(cacheKey, allGroups);
+            groups = Collections.unmodifiableList(new ArrayList(allGroups));
+            m_userGroupsCache.put(cacheKey, groups);
         }
 
-        return allGroups;
+        return groups;
     }
 
     /** 
@@ -3389,7 +3426,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if operation was not succesful
      * 
-     * @see CmsObject#getOrganizationalUnits(String, boolean)
+     * @see org.opencms.security.CmsOrgUnitManager#getOrganizationalUnits(CmsObject, String, boolean)
      */
     public List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChilds)
     throws CmsException {
@@ -3499,9 +3536,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @throws CmsException if operation was not successful
      * 
-     * @see CmsObject#getResourcesForOrganizationalUnit(String)
-     * @see CmsObject#getUsersForOrganizationalUnit(String, boolean)
-     * @see CmsObject#getGroupsForOrganizationalUnit(String, boolean)
+     * @see org.opencms.security.CmsOrgUnitManager#getResourcesForOrganizationalUnit(CmsObject, String)
+     * @see org.opencms.security.CmsOrgUnitManager#getUsers(CmsObject, String, boolean)
+     * @see org.opencms.security.CmsOrgUnitManager#getGroups(CmsObject, String, boolean)
      */
     public List getResourcesForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit) throws CmsException {
 
@@ -3565,29 +3602,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the list of all user roles for the given organizational unit.<p>
-     * 
-     * @param dbc the current database context
-     * @param user the user to get the roles for
-     * @param orgUnit the organizational unit to get the roles for, may be <code>null</code>
-     * @param recursive if set to <code>true</code> also roles for higher organizational unit are considered
-     * @param includeChildRoles if set to <code>true</code> all roles are expanded
-     * 
-     * @return a list of {@link CmsRole} objects for the given user
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List getRolesOfUserInOrganizationalUnit(
-        CmsDbContext dbc,
-        CmsUser user,
-        CmsOrganizationalUnit orgUnit,
-        boolean recursive,
-        boolean includeChildRoles) throws CmsException {
-
-        return new ArrayList();
-    }
-
-    /**
      * Returns the security manager this driver manager belongs to.<p>
      * 
      * @return the security manager this driver manager belongs to
@@ -3618,20 +3632,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns all available users.<p>
-     *
-     * @param dbc the current database context
-     * 
-     * @return a list of all available <code>{@link CmsUser}</code> objects
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public List getUsers(CmsDbContext dbc) throws CmsException {
-
-        return m_userDriver.readUsers(dbc);
-    }
-
-    /**
      * Returns all direct users of the given organizational unit.<p>
      *
      * @param dbc the current db context
@@ -3642,13 +3642,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @throws CmsException if operation was not successful
      * 
-     * @see CmsObject#getResourcesForOrganizationalUnit(String)
-     * @see CmsObject#getUsersForOrganizationalUnit(String, boolean)
+     * @see org.opencms.security.CmsOrgUnitManager#getResourcesForOrganizationalUnit(CmsObject, String)
+     * @see org.opencms.security.CmsOrgUnitManager#getUsers(CmsObject, String, boolean)
      */
-    public List getUsersForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
+    public List getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
     throws CmsException {
 
-        return m_userDriver.getUsersForOrganizationalUnit(dbc, orgUnit, recursive);
+        return m_userDriver.getUsers(dbc, orgUnit, recursive);
     }
 
     /**
@@ -3656,15 +3656,40 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @param dbc the current database context
      * @param groupname the name of the group to list users from
+     * @param includeOtherOuUsers include users of other organizational units
+     * @param directUsersOnly if set only the direct assigned users will be returned, 
+     *                          if not also indirect users, ie. members of child groups
+     * @param readRoles if to read roles or groups
      * 
      * @return all <code>{@link CmsUser}</code> objects in the group
      * 
      * @throws CmsException if operation was not succesful
      */
-    public List getUsersOfGroup(CmsDbContext dbc, String groupname) throws CmsException {
+    public List getUsersOfGroup(
+        CmsDbContext dbc,
+        String groupname,
+        boolean includeOtherOuUsers,
+        boolean directUsersOnly,
+        boolean readRoles) throws CmsException {
 
-        readGroup(dbc, groupname); // check that the group really exists
-        return m_userDriver.readUsersOfGroup(dbc, groupname);
+        CmsGroup group = readGroup(dbc, groupname); // check that the group really exists
+        if ((group != null) && ((!readRoles && !group.isRole()) || (readRoles && group.isRole()))) {
+            String prefix = "_" + includeOtherOuUsers + "_" + directUsersOnly;
+            String cacheKey = m_keyGenerator.getCacheKeyForGroupUsers(prefix, dbc, group);
+            List allUsers = (List)m_userGroupsCache.get(cacheKey);
+            if (allUsers == null) {
+                // TODO: do something with the directUsersOnly param
+                int todo;
+
+                allUsers = m_userDriver.readUsersOfGroup(dbc, groupname, includeOtherOuUsers);
+                // make user list unmodifiable for caching
+                allUsers = Collections.unmodifiableList(allUsers);
+                m_userGroupsCache.put(cacheKey, allUsers);
+            }
+            return allUsers;
+        } else {
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+        }
     }
 
     /**
@@ -4117,8 +4142,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     String parentOu = CmsOrganizationalUnit.getParentFqn(userOu);
                     if (parentOu != null) {
                         // try a higher level ou
-                        String uName = CmsOrganizationalUnit.getLastNameFromFqn(userName);
-                        return loginUser(dbc, CmsOrganizationalUnit.appendFqn(parentOu, uName), password, remoteAddress);
+                        String uName = CmsOrganizationalUnit.getSimpleName(userName);
+                        return loginUser(dbc, parentOu + uName, password, remoteAddress);
                     }
                 }
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
@@ -4144,7 +4169,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
             OpenCms.getLoginManager().removeInvalidLogins(userName, remoteAddress);
         }
 
-        if (!m_securityManager.hasRole(dbc, newUser, CmsRole.ADMINISTRATOR, dbc.getRequestContext().getOuFqn())) {
+        if (!m_securityManager.hasRoleForOrgUnit(
+            dbc,
+            newUser,
+            CmsRole.ADMINISTRATOR,
+            dbc.getRequestContext().getOuFqn())) {
             // new user is not Administrator, check if login is currently allowed
             OpenCms.getLoginManager().checkLoginAllowed();
         }
@@ -4999,8 +5028,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsUUID.getNullUUID(),
                 project.getGroupId() + "",
                 "deleted group",
-                0,
-                null);
+                0);
         }
     }
 
@@ -5079,8 +5107,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsUUID.getNullUUID(),
                 project.getManagerGroupId() + "",
                 "deleted group",
-                0,
-                null);
+                0);
         }
     }
 
@@ -5741,7 +5768,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             I_CmsPrincipal principal = (I_CmsPrincipal)principals.next();
             if (principal instanceof CmsGroup) {
                 try {
-                    result.addAll(getUsersOfGroup(dbc, principal.getName()));
+                    result.addAll(getUsersOfGroup(dbc, principal.getName(), true, false, false));
                 } catch (CmsException e) {
                     if (LOG.isInfoEnabled()) {
                         LOG.info(e);
@@ -5910,8 +5937,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#addResourceToOrgUnit(String, String)
-     * @see CmsObject#addResourceToOrgUnit(String, String)
+     * @see org.opencms.security.CmsOrgUnitManager#addResourceToOrgUnit(CmsObject, String, String)
+     * @see org.opencms.security.CmsOrgUnitManager#addResourceToOrgUnit(CmsObject, String, String)
      */
     public void removeResourceFromOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, String resourceName)
     throws CmsException {
@@ -5963,13 +5990,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param username the name of the user that is to be removed from the group
      * @param groupname the name of the group
+     * @param readRoles if to read roles or groups
      *
      * @throws CmsException if operation was not succesful
      * @throws CmsIllegalArgumentException if the given user was not member in the given group
      * @throws CmsDbEntryNotFoundException if the given group was not found 
      * @throws CmsSecurityException if the given user was <b>read as 'null' from the database</b>
      */
-    public void removeUserFromGroup(CmsDbContext dbc, String username, String groupname)
+    public void removeUserFromGroup(CmsDbContext dbc, String username, String groupname, boolean readRoles)
     throws CmsException, CmsIllegalArgumentException, CmsDbEntryNotFoundException, CmsSecurityException {
 
         // test if this user is existing in the group
@@ -5990,7 +6018,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (user != null) {
             group = readGroup(dbc, groupname);
             //check if group exists
-            if (group != null) {
+            if ((group != null) && ((!readRoles && !group.isRole()) || (readRoles && group.isRole()))) {
                 m_userDriver.deleteUserInGroup(dbc, user.getId(), group.getId());
                 m_userGroupsCache.clear();
             } else {
@@ -6310,60 +6338,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Adds an user or group to the given organizational unit.<p>
+     * Moves an user to the given organizational unit.<p>
      * 
      * @param dbc the current db context
      * @param orgUnit the organizational unit to add the resource to
-     * @param principal the principal that is to be added to the organizational unit
+     * @param user the user that is to be moved to the organizational unit
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#setPrincipalsOrganizationalUnit(String, String, String)
+     * @see org.opencms.security.CmsOrgUnitManager#setUsersOrganizationalUnit(CmsObject, String, String)
      */
-    public void setPrincipalsOrganizationalUnit(
-        CmsDbContext dbc,
-        CmsOrganizationalUnit orgUnit,
-        I_CmsPrincipal principal) throws CmsException {
+    public void setUsersOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsUser user)
+    throws CmsException {
 
-        if (principal.isGroup()) {
-            // check if all users can also be moved
-            List users = m_userDriver.readUsersOfGroup(dbc, principal.getName());
-            Iterator itUsers = users.iterator();
-            while (itUsers.hasNext()) {
-                CmsUser user = (CmsUser)itUsers.next();
-                if (m_userDriver.readGroupsOfUser(dbc, user.getId(), dbc.getRequestContext().getRemoteAddress()).size() != 1) {
-                    throw new CmsDbConsistencyException(Messages.get().container(
-                        Messages.ERR_ORGUNIT_MOVE_GROUP_3,
-                        orgUnit.getFqn(),
-                        principal.getName(),
-                        user.getName()));
-                }
-            }
-            // move all the users
-            itUsers = users.iterator();
-            while (itUsers.hasNext()) {
-                CmsUser user = (CmsUser)itUsers.next();
-                // move user
-                m_userDriver.setPrincipalsOrganizationalUnit(dbc, orgUnit, user);
-                // remove user from cache
-                clearUserCache(user);
-            }
-        } else if (principal.isUser()) {
-            if (!m_userDriver.readGroupsOfUser(dbc, principal.getId(), dbc.getRequestContext().getRemoteAddress()).isEmpty()) {
-                throw new CmsDbConsistencyException(Messages.get().container(
-                    Messages.ERR_ORGUNIT_MOVE_USER_2,
-                    orgUnit.getFqn(),
-                    principal.getName()));
-            }
+        if (!getGroupsOfUser(dbc, user.getName()).isEmpty()) {
+            throw new CmsDbConsistencyException(Messages.get().container(
+                Messages.ERR_ORGUNIT_MOVE_USER_2,
+                orgUnit.getName(),
+                user.getName()));
         }
+
         // move the principal
-        m_userDriver.setPrincipalsOrganizationalUnit(dbc, orgUnit, principal);
+        m_userDriver.setUsersOrganizationalUnit(dbc, orgUnit, user);
         // remove the principal from cache
-        if (principal.isGroup()) {
-            m_groupCache.remove(new CacheId((CmsGroup)principal));
-        } else if (principal.isUser()) {
-            clearUserCache((CmsUser)principal);
-        }
+        clearUserCache(user);
     }
 
     /**
@@ -6999,7 +6997,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if operation was not successful
      * 
-     * @see CmsObject#writeOrganizationalUnit(CmsOrganizationalUnit)
+     * @see org.opencms.security.CmsOrgUnitManager#writeOrganizationalUnit(CmsObject, CmsOrganizationalUnit)
      */
     public void writeOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit) throws CmsException {
 
@@ -8346,8 +8344,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List getOrganizationalUnitsForResource(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
 
+        CmsFolder folder;
+        // get the folder since ou can only be associated to folders
+        if (resource.isFile()) {
+            folder = getVfsDriver().readParentFolder(dbc, dbc.currentProject().getId(), resource.getStructureId());
+        } else {
+            folder = new CmsFolder(resource);
+        }
         List orgUnits = new ArrayList();
-        Iterator itOuFqns = m_userDriver.getOrganizationalUnitsForResource(dbc, resource).iterator();
+        Iterator itOuFqns = m_userDriver.getOrganizationalUnitsForFolder(dbc, folder).iterator();
         while (itOuFqns.hasNext()) {
             String ouFqn = (String)itOuFqns.next();
             orgUnits.add(ouFqn);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2007/01/16 09:50:47 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.12 $ 
+ * @version $Revision: 1.1.2.13 $ 
  * 
  * @since 7.0.0
  */
@@ -133,8 +133,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                 wfProject.getName()));
         }
         // ensure that only administrators and workflow project managers are allowed to abort a task
+        boolean accept = cms.hasRole(CmsRole.VFS_MANAGER);
         I_CmsPrincipal manager = getTaskManager(wfProject);
-        boolean accept = cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
+        accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
         accept |= wfProject.getOwnerId().equals(cms.getRequestContext().currentUser().getId());
         if (accept) {
             m_workflowEngine.abort(wfProject, message);
@@ -161,8 +162,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         if (lock.isNullLock() || (lock.isExclusiveOwnedBy(cms.getRequestContext().currentUser()))) {
 
             // ensure that only workflow managers, workflow project managers and agents are allowed to add a resource
+            boolean accept = cms.hasRole(CmsRole.VFS_MANAGER);
             I_CmsPrincipal agent = getTaskAgent(wfProject);
-            boolean accept = cms.userInGroup(cms.getRequestContext().currentUser().getName(), agent.getName());
+            accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), agent.getName());
             I_CmsPrincipal manager = getTaskManager(wfProject);
             accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
 
@@ -513,8 +515,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         I_CmsWorkflowAction action = null;
 
         // ensure that only workflow managers, workflow project managers and agents are allowed to init a workflow
+        boolean accept = cms.hasRole(CmsRole.VFS_MANAGER);
         I_CmsPrincipal agent = getAgent(type);
-        boolean accept = cms.userInGroup(cms.getRequestContext().currentUser().getName(), agent.getName());
+        accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), agent.getName());
         I_CmsPrincipal manager = getManager(type);
         accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
 
@@ -579,22 +582,17 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
      */
     public boolean isLockableInWorkflow(CmsUser user, String rootPath, boolean managersOnly) {
 
-        // TODO: there are no workplace managers any longer
-        int todo;
-
         boolean isLockable = false;
         try {
             CmsLock lock = m_cms.getSystemLock(m_cms.readResource(rootPath, CmsResourceFilter.ALL));
             if (lock.isWorkflow()) {
-                if (OpenCms.getRoleManager().hasRoleForResource(
-                    m_cms,
-                    CmsRole.VFS_MANAGER,
-                    m_cms.getRequestContext().removeSiteRoot(rootPath))) {
+                if (OpenCms.getRoleManager().hasRoleForResource(m_cms, user.getName(), CmsRole.VFS_MANAGER, rootPath)) {
                     // VFS managers may lock resources in a workflow anyway
                     return true;
                 }
                 CmsProject project = lock.getProject();
-                if (!isLockable && !managersOnly) {
+                isLockable = false;
+                if (!managersOnly) {
                     I_CmsPrincipal agents = getTaskAgent(project);
                     if (agents.isGroup()) {
                         isLockable = m_cms.userInGroup(user.getName(), agents.getName());
@@ -605,7 +603,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                 if (!isLockable) {
                     I_CmsPrincipal managers = getTaskManager(project);
                     if (managers.isGroup()) {
-                        isLockable = m_cms.userInGroup(user.getName(), managers.getName());
+                        isLockable = m_cms.userInGroup(
+                            user.getName(),
+                            managers.getName());
                     } else {
                         isLockable = (user.getId().equals(managers.getId()));
                     }
@@ -628,8 +628,10 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                 wfProject.getName()));
         }
         // ensure that only workflow managers and workflow project managers are allowed to publish a task
+        boolean accept = cms.hasRole(CmsRole.VFS_MANAGER);
         I_CmsPrincipal manager = getTaskManager(wfProject);
-        boolean accept = cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
+        accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
+
         if (accept) {
             publishWorkflowProject(wfProject);
         } else {
@@ -663,8 +665,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                 wfProject.getName()));
         }
         // ensure that only workflow managers, workflow project managers and agents are allowed to send a signal
+        boolean accept = cms.hasRole(CmsRole.VFS_MANAGER);
         I_CmsPrincipal agent = getTaskAgent(wfProject);
-        boolean accept = cms.userInGroup(cms.getRequestContext().currentUser().getName(), agent.getName());
+        accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), agent.getName());
         I_CmsPrincipal manager = getTaskManager(wfProject);
         accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
 
@@ -706,8 +709,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
                 wfProject.getName()));
         }
         // ensure that only workflow managers and workflow project managers are allowed to undo a task
+        boolean accept = cms.hasRole(CmsRole.VFS_MANAGER);
         I_CmsPrincipal manager = getTaskManager(wfProject);
-        boolean accept = cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
+        accept |= cms.userInGroup(cms.getRequestContext().currentUser().getName(), manager.getName());
 
         if (accept) {
             // send an undo signal to the workflow engine
@@ -785,8 +789,8 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         CmsProject wfProject = m_cms.createProject(
             name,
             description,
-            CmsRole.WORKPLACE_USER.getGroupName(),
-            CmsRole.PROJECT_MANAGER.getGroupName(),
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
             CmsProject.PROJECT_TYPE_WORKFLOW);
 
         wfProject.setOwnerId(user.getId());
@@ -833,22 +837,16 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
             String resourceName = (String)i.next();
             CmsResource resource = m_cms.readResource(resourceName);
             m_cms.unlockResource(resourceName);
-            m_securityManager.getLockManager().removeResource(
-                new CmsDbContext(m_cms.getRequestContext()),
-                resource,
-                true,
-                true);
+            m_securityManager.getLockManager().removeResource(new CmsDbContext(m_cms.getRequestContext()), resource, true, true);
             if (!resource.getState().isUnchanged()) {
                 resourcesToPublish.add(resource);
             }
         }
         // check this
         m_cms.getRequestContext().setCurrentProject(m_cms.readProject("Offline"));
-
+        
         CmsPublishList pubList = m_cms.getPublishList(resourcesToPublish, false, false);
-        m_cms.publishProject(new CmsHtmlReport(
-            m_cms.getRequestContext().getLocale(),
-            m_cms.getRequestContext().getSiteRoot()), pubList);
+        m_cms.publishProject(new CmsHtmlReport(m_cms.getRequestContext().getLocale(), m_cms.getRequestContext().getSiteRoot()), pubList);
         OpenCms.getPublishManager().waitWhileRunning();
 
         m_cms.deleteProject(wfProject.getId());

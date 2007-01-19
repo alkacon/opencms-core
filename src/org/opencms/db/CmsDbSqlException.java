@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbSqlException.java,v $
- * Date   : $Date: 2007/01/08 14:03:03 $
- * Version: $Revision: 1.7.8.1 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.7.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,21 +33,26 @@ package org.opencms.db;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 
 import java.sql.Statement;
 
 import org.apache.commons.dbcp.DelegatingPreparedStatement;
+import org.apache.commons.logging.Log;
 
 /**
  * Used to signal sql related issues.<p> 
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7.8.1 $
+ * @version $Revision: 1.7.8.2 $
  * 
  * @since 6.0.0
  */
 public class CmsDbSqlException extends CmsDbException {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDriverManager.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -286617872967617367L;
@@ -60,6 +65,10 @@ public class CmsDbSqlException extends CmsDbException {
     public CmsDbSqlException(CmsMessageContainer container) {
 
         super(container);
+        // log all sql exceptions
+        if (LOG.isWarnEnabled()) {
+            LOG.warn(container.key(), this);
+        }
     }
 
     /**
@@ -71,6 +80,10 @@ public class CmsDbSqlException extends CmsDbException {
     public CmsDbSqlException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
+        // log all sql exceptions
+        if (LOG.isWarnEnabled()) {
+            LOG.warn(container.key(), this);
+        }
     }
 
     /**

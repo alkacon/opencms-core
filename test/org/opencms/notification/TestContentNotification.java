@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/notification/TestContentNotification.java,v $
- * Date   : $Date: 2006/11/29 15:04:15 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * Unit test for the OpenCms content notification.<p>
  * 
  * @author Jan Baudisch 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  */
 public class TestContentNotification extends OpenCmsTestCase {
   
@@ -166,7 +166,7 @@ public class TestContentNotification extends OpenCmsTestCase {
         cms.writePropertyObject(folder, new CmsProperty(
             CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION, CmsStringUtil.TRUE, CmsStringUtil.TRUE));
         cms.unlockResource(folder);
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
         Iterator notifications = new CmsNotificationCandidates(cms).getContentNotifications().iterator();
         // there should be exactly one notification

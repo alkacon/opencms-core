@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsRelationsValidatorThread.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -45,7 +46,7 @@ import org.apache.commons.logging.Log;
 /**
  * A report thread for the relations validator.<p>
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,7 +104,7 @@ public class CmsRelationsValidatorThread extends A_CmsReportThread {
         m_publishList = publishList;
         if (m_publishList == null) {
             try {
-                m_publishList = cms.getPublishList();
+                m_publishList = OpenCms.getPublishManager().getPublishList(cms);
             } catch (CmsException e) {
                 // ignore
             }

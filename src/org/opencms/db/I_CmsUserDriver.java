@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.58.8.4 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.58.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
+import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -41,7 +42,6 @@ import org.opencms.main.CmsInitException;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordEncryptionException;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.58.8.4 $
+ * @version $Revision: 1.58.8.5 $
  * 
  * @since 6.0.0 
  */
@@ -73,7 +73,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      */
     void addResourceToOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsDataAccessException;
-    
+
     /**
      * Creates an access control entry.<p>
      * 
@@ -294,27 +294,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @param dbc the current db context
      * @param orgUnit the organizational unit to get all groups for
-     * @param recursive flag to signalize the retrieval of groups of sub-organizational units too
+     * @param includeSubOus flag to signalize the retrieval of groups of sub-organizational units too
+     * @param readRoles if to read roles or groups
      * 
      * @return all <code>{@link CmsGroup}</code> objects in the organizational unit
      *
      * @throws CmsDataAccessException if operation was not successful
      */
-    List getGroupsForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
-    throws CmsDataAccessException;
-
-    /**
-     * Returns all deepest organizational units that contains the given resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the resource to look for
-     * 
-     * @return a list of organizational units fully qualified names that contains the given resource
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
-     */
-    List getOrganizationalUnitsForResource(CmsDbContext dbc, CmsResource resource)
-    throws CmsDataAccessException;
+    List getGroups(
+        CmsDbContext dbc,
+        CmsOrganizationalUnit orgUnit,
+        boolean includeSubOus,
+        boolean readRoles) throws CmsDataAccessException;
 
     /**
      * Returns all child organizational units of the given parent organizational unit including 
@@ -330,6 +321,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      */
     List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChilds)
     throws CmsDataAccessException;
+
+    /**
+     * Returns all deepest organizational units that contains the given folder.<p>
+     * 
+     * @param dbc the current database context
+     * @param folder the folder to look for
+     * 
+     * @return a list of organizational units fully qualified names that contains the given folder
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    List getOrganizationalUnitsForFolder(CmsDbContext dbc, CmsFolder folder) throws CmsDataAccessException;
 
     /**
      * Returns all resources of the given organizational unit.<p>
@@ -362,7 +365,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @throws CmsDataAccessException if operation was not successful
      */
-    List getUsersForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
+    List getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
     throws CmsDataAccessException;
 
     /**
@@ -468,28 +471,21 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     CmsGroup readGroup(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException;
 
     /**
-     * Reads all existing groups.<p>
-     *
-     * @param dbc the current database context
-     * 
-     * @return a list of all <code>{@link CmsGroup}</code> objects
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    List readGroups(CmsDbContext dbc) throws CmsDataAccessException;
-
-    /**
      * Reads all groups the given user is a member in.<p>
      *
      * @param dbc the current database context
      * @param userId the id of the user
+     * @param ouFqn the fully qualified name of the organizational unit to restrict the result set for
+     * @param includeChildOus include groups of child organizational units
      * @param remoteAddress the IP address to filter the groups in the result list
+     * @param readRoles if to read roles or groups
      * 
      * @return a list of <code>{@link CmsGroup}</code> objects
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String remoteAddress) throws CmsDataAccessException;
+    List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String ouFqn, boolean includeChildOus, String remoteAddress, boolean readRoles)
+    throws CmsDataAccessException;
 
     /**
      * Reads an organizational Unit based on its fully qualified name.<p>
@@ -544,27 +540,17 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     throws CmsDataAccessException, CmsPasswordEncryptionException;
 
     /**
-     * Reads all existing users.<p>
-     *
-     * @param dbc the current database context
-     * 
-     * @return a list of all <code>{@link CmsUser}</code> objects
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    List readUsers(CmsDbContext dbc) throws CmsDataAccessException;
-
-    /**
      * Reads all users that are members of the given group.<p>
      *
      * @param dbc the current database context
      * @param groupFqn the fully qualified name of the group to read the users from
+     * @param includeOtherOuUsers include users of other organizational units
      * 
      * @return all <code>{@link CmsUser}</code> objects in the group
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readUsersOfGroup(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException;
+    List readUsersOfGroup(CmsDbContext dbc, String groupFqn, boolean includeOtherOuUsers) throws CmsDataAccessException;
 
     /**
      * Removes all access control entries belonging to a resource.<p>
@@ -620,15 +606,15 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     throws CmsDataAccessException;
 
     /**
-     * Adds an user or group to the given organizational unit.<p>
+     * Moves an user to the given organizational unit.<p>
      * 
      * @param dbc the current db context
-     * @param orgUnit the organizational unit to add the resource to
-     * @param principal the principal that is to be added to the organizational unit
+     * @param orgUnit the organizational unit to move the user to
+     * @param user the user that is to be moved to the given organizational unit
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void setPrincipalsOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, I_CmsPrincipal principal)
+    void setUsersOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsUser user)
     throws CmsDataAccessException;
 
     /**

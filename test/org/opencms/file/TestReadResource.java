@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReadResource.java,v $
- * Date   : $Date: 2006/11/29 15:04:07 $
- * Version: $Revision: 1.8.8.2 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.8.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
  * Unit test for the "readFileHeader" method of the CmsObject to test the release and expiration date.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.8.8.2 $
+ * @version $Revision: 1.8.8.3 $
  */
 public class TestReadResource extends OpenCmsTestCase {
 
@@ -366,7 +366,7 @@ public class TestReadResource extends OpenCmsTestCase {
 
         cms.readFile(path, CmsResourceFilter.ALL);
         cms.unlockResource(path);
-        cms.publishResource(path);
+        OpenCms.getPublishManager().publishResource(cms, path);
         OpenCms.getPublishManager().waitWhileRunning();
         try {
             cms.readFile(path, CmsResourceFilter.ALL);

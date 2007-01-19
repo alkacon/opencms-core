@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2006/11/29 15:04:05 $
- * Version: $Revision: 1.17.8.4 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.17.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17.8.4 $
+ * @version $Revision: 1.17.8.5 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -372,7 +372,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
             cms.unlockResource("/sites/default");
             cms.unlockResource("/system");
-            cms.publishProject();
+            OpenCms.getPublishManager().publishProject(cms);
             OpenCms.getPublishManager().waitWhileRunning();
         } finally {
 

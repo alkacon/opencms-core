@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2007/01/15 18:48:35 $
- * Version: $Revision: 1.30.4.1 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.30.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.module;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsFileUtil;
@@ -57,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30.4.1 $ 
+ * @version $Revision: 1.30.4.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -1032,7 +1033,7 @@ public class CmsModule implements Comparable {
 
         checkFrozen();
         // check if the user has the required permissions
-        cms.checkRole(CmsRole.DATABASE_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         m_frozen = true;
         m_resources = Collections.unmodifiableList(m_resources);

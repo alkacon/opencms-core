@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.258.4.12 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.258.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,26 +85,11 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.12 $
+ * @version $Revision: 1.258.4.13 $
  * 
  * @since 6.0.0 
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
-
-    /** Operator to concatenate exclude conditions. */
-    protected static final String BEGIN_EXCLUDE_CONDITION = " AND NOT (";
-
-    /** Operator to concatenate include conditions. */
-    protected static final String BEGIN_INCLUDE_CONDITION = " AND (";
-
-    /** String to end a single condition. */
-    protected static final String END_CONDITION = ") ";
-
-    /** Operator to concatenate or conditions. */
-    protected static final String OR_CONDITION = " OR ";
-
-    /** Operator to concatenate or conditions. */
-    protected static final String AND_CONDITION = " AND ";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsVfsDriver.class);

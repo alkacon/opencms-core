@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/01/08 14:02:59 $
- * Version: $Revision: 1.24.4.5 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.24.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24.4.5 $ 
+ * @version $Revision: 1.24.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -652,7 +653,7 @@ public class CmsChacc extends CmsDialog {
         // check the current users permission to change access control entries
         if ((!getCms().getRequestContext().currentProject().isOnlineProject() && getCms().isInsideCurrentProject(
             resName))
-            && (getCms().hasRole(CmsRole.VFS_MANAGER) || (((m_curPermissions.getAllowedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0) && !((m_curPermissions.getDeniedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0)))) {
+            && (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER) || (((m_curPermissions.getAllowedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0) && !((m_curPermissions.getDeniedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0)))) {
             setEditable(true);
         }
     }

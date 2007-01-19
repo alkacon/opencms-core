@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.17.4.16 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.17.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17.4.16 $ 
+ * @version $Revision: 1.17.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -287,7 +287,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     public boolean isCanDelete() {
 
         return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
-            || getCms().hasRole(CmsRole.VFS_MANAGER);
+            || OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER);
     }
 
     /**

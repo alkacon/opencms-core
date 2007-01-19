@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2006/11/29 15:04:15 $
- * Version: $Revision: 1.22.4.1 $
+ * Date   : $Date: 2007/01/19 16:54:01 $
+ * Version: $Revision: 1.22.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.4.1 $
+ * @version $Revision: 1.22.4.2 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -151,7 +151,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         TestModuleActionImpl.m_publishProject = false;
 
         // publish the current project
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
         assertEquals(true, TestModuleActionImpl.m_publishProject);
         assertTrue(TestModuleActionImpl.m_cmsEvent == I_CmsEventListener.EVENT_PUBLISH_PROJECT);
@@ -191,7 +191,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         TestModuleActionImpl.m_publishProject = false;
 
         // publish the current project 
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
         // since module was uninstalled, no update on action class must have happend
         assertEquals(false, TestModuleActionImpl.m_publishProject);
@@ -408,7 +408,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         OpenCms.getModuleManager().deleteModule(cms, dep2.getName(), false, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // publish the current project
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 

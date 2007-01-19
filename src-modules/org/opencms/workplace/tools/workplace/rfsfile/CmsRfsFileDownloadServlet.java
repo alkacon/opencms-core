@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Attic/CmsRfsFileDownloadServlet.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.11.4.2 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.11.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.workplace.tools.workplace.rfsfile;
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.BufferedInputStream;
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.11.4.2 $ 
+ * @version $Revision: 1.11.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,15 +123,11 @@ public final class CmsRfsFileDownloadServlet extends HttpServlet {
         } else {
 
             CmsFlexController controller = CmsFlexController.getController(req);
-            try {
-                // check if the current user is allowed to download files
-                controller.getCmsObject().checkRole(CmsRole.WORKPLACE_MANAGER);
-            } catch (CmsRoleViolationException e) {
+            // check if the current user is allowed to download files
+            if (!OpenCms.getRoleManager().hasRole(controller.getCmsObject(), CmsRole.WORKPLACE_MANAGER)) {
                 // user is not allowed, throw exception
                 CmsObject cms = controller.getCmsObject();
-                CmsException exc = CmsRole.WORKPLACE_MANAGER.createRoleViolationException(
-                    cms.getRequestContext(),
-                    (String)null);
+                CmsException exc = CmsRole.WORKPLACE_MANAGER.createRoleViolationException(cms.getRequestContext());
                 throw new ServletException(exc.getLocalizedMessage(cms.getRequestContext().getLocale()));
             }
 

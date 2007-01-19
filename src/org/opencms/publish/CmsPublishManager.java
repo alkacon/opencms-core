@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,16 @@
 
 package org.opencms.publish;
 
+import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsUUID;
@@ -47,24 +54,31 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.5.5
  */
 public class CmsPublishManager {
 
+    /** Milliseconds in a second. */
     private static final int MS_ONE_SECOND = 1000;
+    
     /** The underlying publish engine. */
     private final CmsPublishEngine m_publishEngine;
+    
+    /** The security manager. */
+    private CmsSecurityManager m_securityManager;
 
     /**
      * Default constructor.<p>
      * 
      * @param engine the underlying publish engine
+     * @param securityManager the security manager
      */
-    public CmsPublishManager(CmsPublishEngine engine) {
+    public CmsPublishManager(CmsPublishEngine engine, CmsSecurityManager securityManager) {
 
         m_publishEngine = engine;
+        m_securityManager = securityManager;
     }
 
     /**
@@ -80,7 +94,7 @@ public class CmsPublishManager {
     public void abortPublishJob(CmsObject cms, CmsPublishJobEnqueued publishJob)
     throws CmsException, CmsSecurityException, CmsPublishException {
 
-        if (!cms.hasRole(CmsRole.ROOT_ADMIN)
+        if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN)
             && !cms.getRequestContext().currentUser().getName().equals(publishJob.getUserName())) {
             // Can only be executed by somebody with the role CmsRole#PROJECT_MANAGER or the owner of the job
             throw new CmsSecurityException(Messages.get().container(
@@ -158,6 +172,88 @@ public class CmsPublishManager {
     }
 
     /**
+     * Returns a publish list with all new/changed/deleted resources of the current (offline)
+     * project that actually get published.<p>
+     * 
+     * @param cms the cms request context
+     * 
+     * @return a publish list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList getPublishList(CmsObject cms) throws CmsException {
+
+        return m_securityManager.fillPublishList(cms.getRequestContext(), new CmsPublishList(
+            cms.getRequestContext().currentProject()));
+    }
+
+    /**
+     * Returns a publish list with all new/changed/deleted resources of the current (offline)
+     * project that actually get published for a direct publish of a single resource.<p>
+     * 
+     * @param cms the cms request context
+     * @param directPublishResource the resource which will be directly published
+     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
+     *                      published resource should also get published.
+     * 
+     * @return a publish list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList getPublishList(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings)
+    throws CmsException {
+
+        return m_securityManager.fillPublishList(cms.getRequestContext(), new CmsPublishList(
+            directPublishResource,
+            directPublishSiblings));
+    }
+
+    /**
+     * Returns a publish list with all new/changed/deleted resources of the current (offline)
+     * project that actually get published for a direct publish of a List of resources.<p>
+     * 
+     * @param cms the cms request context
+     * @param directPublishResources the resources which will be directly published
+     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
+     *                      published resources should also get published.
+     * 
+     * @return a publish list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList getPublishList(CmsObject cms, List directPublishResources, boolean directPublishSiblings)
+    throws CmsException {
+
+        return getPublishList(cms, directPublishResources, directPublishSiblings, true);
+    }
+
+    /**
+     * Returns a publish list with all new/changed/deleted resources of the current (offline)
+     * project that actually get published for a direct publish of a List of resources.<p>
+     * 
+     * @param cms the cms request context
+     * @param directPublishResources the {@link CmsResource} objects which will be directly published
+     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
+     *                      published resources should also get published.
+     * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
+     * 
+     * @return a publish list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList getPublishList(
+        CmsObject cms,
+        List directPublishResources,
+        boolean directPublishSiblings,
+        boolean publishSubResources) throws CmsException {
+
+        return m_securityManager.fillPublishList(cms.getRequestContext(), new CmsPublishList(
+            directPublishResources,
+            directPublishSiblings,
+            publishSubResources));
+    }
+
+    /**
      * Returns the queue with still waiting publish jobs.<p>
      * 
      * @return a list of {@link CmsPublishJobEnqueued} objects
@@ -177,6 +273,119 @@ public class CmsPublishManager {
     public boolean isRunning() {
 
         return m_publishEngine.isRunning();
+    }
+
+    /**
+     /**
+     * Publishes the current project, printing messages to a shell report.<p>
+     *
+     * @param cms the cms request context
+     * @return the publish history id of the published project
+     * 
+     * @throws Exception if something goes wrong
+     * 
+     * @see CmsShellReport
+     */
+    public CmsUUID publishProject(CmsObject cms) throws Exception {
+
+        return publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Publishes the current project.<p>
+     *
+     * @param cms the cms request context
+     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
+     * 
+     * @return the publish history id of the published project
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUUID publishProject(CmsObject cms, I_CmsReport report) throws CmsException {
+
+        return publishProject(cms, report, getPublishList(cms));
+    }
+
+    /**
+     * Publishes the resources of a specified publish list.<p>
+     * 
+     * @param cms the cms request context
+     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
+     * @param publishList a publish list
+     * 
+     * @return the publish history id of the published project
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #getPublishList(CmsObject)
+     * @see #getPublishList(CmsObject, CmsResource, boolean)
+     * @see #getPublishList(CmsObject, List, boolean)
+     */
+    public CmsUUID publishProject(CmsObject cms, I_CmsReport report, CmsPublishList publishList) throws CmsException {
+
+        return m_securityManager.publishProject(cms, publishList, report);
+    }
+
+    /**
+     * Direct publishes a specified resource.<p>
+     * 
+     * @param cms the cms request context
+     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
+     * @param directPublishResource a <code>{@link CmsResource}</code> that gets directly published; 
+     *                          or <code>null</code> if an entire project gets published.
+     * @param directPublishSiblings if a <code>{@link CmsResource}</code> that should get published directly is 
+     *                          provided as an argument, all eventual siblings of this resource 
+     *                          get publish too, if this flag is <code>true</code>.
+     * 
+     * @return the publish history id of the published project
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUUID publishProject(
+        CmsObject cms,
+        I_CmsReport report,
+        CmsResource directPublishResource,
+        boolean directPublishSiblings) throws CmsException {
+
+        return publishProject(cms, report, getPublishList(cms, directPublishResource, directPublishSiblings));
+    }
+
+    /**
+     * Publishes a single resource, printing messages to a shell report.<p>
+     * 
+     * The siblings of the resource will not be published.<p>
+     *
+     * @param cms the cms request context
+     * @param resourcename the name of the resource to be published
+     * 
+     * @return the publish history id of the published project
+     * 
+     * @throws Exception if something goes wrong
+     * 
+     * @see CmsShellReport
+     */
+    public CmsUUID publishResource(CmsObject cms, String resourcename) throws Exception {
+
+        return publishResource(cms, resourcename, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Publishes a single resource.<p>
+     * 
+     * @param cms the cms request context
+     * @param resourcename the name of the resource to be published
+     * @param publishSiblings if <code>true</code>, all siblings of the resource are also published
+     * @param report the report to write the progress information to
+     * 
+     * @return the publish history id of the published project
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public CmsUUID publishResource(CmsObject cms, String resourcename, boolean publishSiblings, I_CmsReport report)
+    throws Exception {
+
+        CmsResource resource = cms.readResource(resourcename, CmsResourceFilter.ALL);
+        return publishProject(cms, report, resource, publishSiblings);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/01/16 09:50:47 $
- * Version: $Revision: 1.218.4.21 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.218.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,6 +71,7 @@ import org.opencms.publish.CmsPublishEngine;
 import org.opencms.publish.CmsPublishManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.security.CmsOrgUnitManager;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsRoleViolationException;
@@ -137,7 +138,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.21 $ 
+ * @version $Revision: 1.218.4.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,6 +191,9 @@ public final class OpenCmsCore {
 
     /** The module manager. */
     private CmsModuleManager m_moduleManager;
+
+    /** The organizational unit manager. */
+    private CmsOrgUnitManager m_orgUnitManager;
 
     /** The password handler used to digest and validate passwords. */
     private I_CmsPasswordHandler m_passwordHandler;
@@ -312,7 +316,7 @@ public final class OpenCmsCore {
                     Messages.LOG_INIT_FAILURE_MESSAGE_1,
                     errorCondition.key()));
             }
-            LOG.error(errorCondition.key());
+            LOG.error(errorCondition.key(), new CmsException(errorCondition));
             m_instance = null;
         } else if (m_instance != null) {
             // OpenCms already was successfull initialized
@@ -321,6 +325,16 @@ public final class OpenCmsCore {
                 new Integer(m_instance.getRunLevel()),
                 errorCondition.key()));
         }
+    }
+
+    /**
+     * Returns the organizational unit manager.<p>
+     * 
+     * @return the organizational unit manager
+     */
+    public CmsOrgUnitManager getOrgUnitManager() {
+
+        return m_orgUnitManager;
     }
 
     /**
@@ -753,7 +767,7 @@ public final class OpenCmsCore {
 
         String userName = contextInfo.getUserName();
 
-        if ((adminCms == null) || !adminCms.hasRole(CmsRole.ROOT_ADMIN)) {
+        if ((adminCms == null) || !m_roleManager.hasRole(adminCms, CmsRole.ROOT_ADMIN)) {
             if (!userName.endsWith(getDefaultUsers().getUserGuest())
                 && !userName.endsWith(getDefaultUsers().getUserExport())) {
 
@@ -1012,17 +1026,21 @@ public final class OpenCmsCore {
             systemConfiguration.getRuntimeInfoFactory(),
             pubHistoryRepository,
             pubHistorySize);
-        // initialize the publish manager
-        m_publishManager = new CmsPublishManager(m_publishEngine);
 
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(
             m_configurationManager,
             systemConfiguration.getRuntimeInfoFactory(),
             m_publishEngine);
-        
+
+        // initialize the publish manager
+        m_publishManager = new CmsPublishManager(m_publishEngine, m_securityManager);
+
         // initialize the role manager
         m_roleManager = new CmsRoleManager(m_securityManager);
+
+        // initialize the organizational unit manager
+        m_orgUnitManager = new CmsOrgUnitManager(m_securityManager);
 
         // initialize the Thread store
         m_threadStore = new CmsThreadStore(m_securityManager);
@@ -2004,6 +2022,10 @@ public final class OpenCmsCore {
         if (siteroot == null) {
             siteroot = "/";
         }
+        // backward ou compatibility
+        if (!user.startsWith("/")) {
+            user = "/" + user;
+        }
         CmsObject cms = initCmsObject(
             req,
             m_securityManager.readUser(null, user),
@@ -2011,7 +2033,7 @@ public final class OpenCmsCore {
             CmsProject.ONLINE_PROJECT_ID,
             ouFqn);
         // login the user if different from Guest and password was provided
-        if ((password != null) && !user.endsWith(getDefaultUsers().getUserGuest())) {
+        if ((password != null) && !getDefaultUsers().isUserGuest(user)) {
             cms.loginUser(user, password, CmsContextInfo.LOCALHOST);
         }
         return cms;

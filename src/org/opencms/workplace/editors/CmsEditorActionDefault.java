@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2006/11/29 15:04:05 $
- * Version: $Revision: 1.19.4.4 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.19.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.editors;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsFrameset;
@@ -47,7 +48,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19.4.4 $ 
+ * @version $Revision: 1.19.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,7 +133,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     public boolean isButtonActive(CmsJspActionElement jsp, String resourceName) {
 
         try {
-            jsp.getCmsObject().getPublishList(jsp.getCmsObject().readResource(resourceName), false);
+            OpenCms.getPublishManager().getPublishList(jsp.getCmsObject(), jsp.getCmsObject().readResource(resourceName), false);
             return true;
         } catch (Exception e) {
             return false;

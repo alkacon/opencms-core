@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.43.4.12 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.43.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.12 $
+ * @version $Revision: 1.43.4.13 $
  * 
  * @since 6.0.0 
  */
@@ -235,15 +235,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_GET_CONNECTION_1 = "ERR_GET_CONNECTION_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_GET_DIRECT_GROUP_OF_USER_1 = "ERR_GET_DIRECT_GROUP_OF_USER_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_GET_GROUPS_0 = "ERR_GET_GROUPS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_GET_GROUPS_OF_USER_1 = "ERR_GET_GROUPS_OF_USER_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_GROUPS_OF_USER_2 = "ERR_GET_GROUPS_OF_USER_2";
 
     /** Message constant for key in the resource bundle. */
@@ -268,16 +259,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_GET_RESOURCES_IN_TIME_RANGE_3 = "ERR_GET_RESOURCES_IN_TIME_RANGE_3";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_GET_ROLES_OF_USER_IN_ORGUNIT_2 = "ERR_GET_ROLES_OF_USER_IN_ORGUNIT_2";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_TASK_PARAM_2 = "ERR_GET_TASK_PARAM_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_TASK_TYPE_1 = "ERR_GET_TASK_TYPE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_GET_USERS_0 = "ERR_GET_USERS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_USERS_OF_GROUP_1 = "ERR_GET_USERS_OF_GROUP_1";
@@ -353,9 +338,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ORGUNIT_DELETE_USERS_1 = "ERR_ORGUNIT_DELETE_USERS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_ORGUNIT_MOVE_GROUP_3 = "ERR_ORGUNIT_MOVE_GROUP_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ORGUNIT_MOVE_USER_2 = "ERR_ORGUNIT_MOVE_USER_2";
@@ -601,9 +583,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SET_PASSWORD_1 = "ERR_SET_PASSWORD_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_SET_PRINCIPALS_ORGUNIT_2 = "ERR_SET_PRINCIPALS_ORGUNIT_2";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_PROJECT_LAST_MODIFIED_2 = "ERR_SET_PROJECT_LAST_MODIFIED_2";
 
     /** Message constant for key in the resource bundle. */
@@ -617,6 +596,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_TASK_TIMEOUT_2 = "ERR_SET_TASK_TIMEOUT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SET_USERS_ORGUNIT_2 = "ERR_SET_USERS_ORGUNIT_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TEST_CHANGED_CONTENT_1 = "ERR_TEST_CHANGED_CONTENT_1";

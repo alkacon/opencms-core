@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishManager.java,v $
- * Date   : $Date: 2006/11/29 15:33:26 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestPublishManager extends OpenCmsTestCase {
 
@@ -118,7 +118,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         int max = 10;
         for (int i = 0; i < max; i++) {
             cms.copyResource(source, destination + (i + 1) + ".gif", CmsResource.COPY_AS_NEW);
-            cms.publishResource(destination + (i + 1) + ".gif");
+            OpenCms.getPublishManager().publishResource(cms, destination + (i + 1) + ".gif");
         }
 
         // get the last enqueued publish job
@@ -207,7 +207,7 @@ public class TestPublishManager extends OpenCmsTestCase {
 
         // publish n new resources
         for (int i = 0; i < max; i++) {
-            cms.publishResource(destination + (i + 1) + ".gif");
+            OpenCms.getPublishManager().publishResource(cms, destination + (i + 1) + ".gif");
         }
 
         // get the last enqueued publish job
@@ -265,7 +265,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         cms.copyResource(source, destination4, CmsResource.COPY_AS_SIBLING);
 
         assertFalse(OpenCms.getPublishManager().isRunning());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
 
         /////////////////////////////////////////////////////////////////////////////
         // README:
@@ -334,7 +334,7 @@ public class TestPublishManager extends OpenCmsTestCase {
 
         // copy and publish a new resource 
         cms.copyResource(source, destination1, CmsResource.COPY_AS_NEW);
-        cms.publishResource(destination1);
+        OpenCms.getPublishManager().publishResource(cms, destination1);
 
         // stop the publish engine
         long startTime = System.currentTimeMillis() + 1000;
@@ -344,7 +344,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         // copy and publish a new resource 
         cms.copyResource(source, destination2, CmsResource.COPY_AS_NEW);
         // should still work since i am the admin
-        cms.publishResource(destination2);
+        OpenCms.getPublishManager().publishResource(cms, destination2);
 
         // create new resources
         cms.copyResource(source, destination3, CmsResource.COPY_AS_NEW);
@@ -370,7 +370,7 @@ public class TestPublishManager extends OpenCmsTestCase {
 
         // publish a new resource 
         try {
-            cms.publishResource(destination3);
+            OpenCms.getPublishManager().publishResource(cms, destination3);
             fail("a user without administration rights should not be able to publish when the publish engine is disabled");
         } catch (CmsPublishException e) {
             // ok, ignore
@@ -382,6 +382,6 @@ public class TestPublishManager extends OpenCmsTestCase {
         }
 
         // try again, it should work now
-        cms.publishResource(destination4);
+        OpenCms.getPublishManager().publishResource(cms, destination4);
     }
 }

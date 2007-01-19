@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2006/12/14 15:41:27 $
- * Version: $Revision: 1.27.4.11 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.27.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.11 $ 
+ * @version $Revision: 1.27.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -471,17 +471,14 @@ public class CmsPublishProject extends CmsMultiDialog {
             }
             try {
                 // create publish list for direct publish
-                publishList = getCms().getPublishList(
-                    publishResources,
-                    Boolean.valueOf(getParamPublishsiblings()).booleanValue(),
-                    publishSubResources);
+                publishList = OpenCms.getPublishManager().getPublishList(getCms(), publishResources, Boolean.valueOf(getParamPublishsiblings()).booleanValue(), publishSubResources);
             } catch (CmsException e) {
                 addMultiOperationException(e);
             }
         } else {
             try {
                 // be careful #getParamProjectid() is always the current project
-                publishList = getCms().getPublishList();
+                publishList = OpenCms.getPublishManager().getPublishList(getCms());
             } catch (CmsException e) {
                 addMultiOperationException(e);
             }
@@ -520,7 +517,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     public boolean isCanPublish() {
 
         return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
-            || getCms().hasRole(CmsRole.VFS_MANAGER);
+            || OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER);
     }
 
     /**
@@ -702,7 +699,7 @@ public class CmsPublishProject extends CmsMultiDialog {
                 org.opencms.db.Messages.ERR_GET_PUBLISH_LIST_PROJECT_1,
                 getProjectname()));
         }
-        getCms().publishProject(new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot()), publishList);
+        OpenCms.getPublishManager().publishProject(getCms(), new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot()), publishList);
         // wait 2 seconds, may be it is already done
         OpenCms.getPublishManager().waitWhileRunning(1500);
         return true;

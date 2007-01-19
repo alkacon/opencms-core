@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestSecure.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.9.8.1 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.9.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9.8.1 $
+ * @version $Revision: 1.9.8.2 $
  * 
  * @since 6.0.0
  */
@@ -212,7 +212,7 @@ public class TestSecure extends OpenCmsTestCase {
         cms.copyResource("/sites/default/folder1/page1.html", "/sites/testsite/page1.html");
         cms.unlockResource("/sites/testsite/page1.html");
 
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         CmsProject onlineProject = cms.readProject("Online");

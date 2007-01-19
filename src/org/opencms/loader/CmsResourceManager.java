@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.36.4.6 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.36.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.6 $ 
+ * @version $Revision: 1.36.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -693,7 +693,7 @@ public class CmsResourceManager {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // some simple test cases don't require this check       
-            cms.checkRole(CmsRole.DATABASE_MANAGER);
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
         }
 
         // initalize the resource types

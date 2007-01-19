@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestLoginAndPasswordHandler.java,v $
- * Date   : $Date: 2007/01/15 18:48:35 $
- * Version: $Revision: 1.7.4.3 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.7.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Tests login and password related functions.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.7.4.3 $
+ * @version $Revision: 1.7.4.4 $
  * 
  * @since 6.0
  */
@@ -186,11 +186,11 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         // this will be initialized as "Admin"
         CmsObject cms = getCmsObject();
         
-        String adminUser = CmsOrganizationalUnit.appendFqn(null, OpenCms.getDefaultUsers().getUserAdmin());
+        String adminUser = "/" + OpenCms.getDefaultUsers().getUserAdmin();
         
         // stupid test to just make sure everything is set up correctly
         cms.loginUser(adminUser, "admin");
-        assertEquals(adminUser, cms.getRequestContext().currentUser().getName());
+        assertTrue(OpenCms.getDefaultUsers().isUserAdmin(cms.getRequestContext().currentUser().getName()));
         
         CmsException error = null;
         try {

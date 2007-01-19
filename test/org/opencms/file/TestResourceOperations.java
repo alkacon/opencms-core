@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestResourceOperations.java,v $
- * Date   : $Date: 2006/11/29 15:04:06 $
- * Version: $Revision: 1.14.8.2 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.14.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14.8.2 $
+ * @version $Revision: 1.14.8.3 $
  */
 public class TestResourceOperations extends OpenCmsTestCase {
   
@@ -356,7 +356,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         cms.unlockResource("/file2");
         
         // now publish the file
-        cms.publishResource("/file2");
+        OpenCms.getPublishManager().publishResource(cms, "/file2");
         OpenCms.getPublishManager().waitWhileRunning();
         
         // change the project to online

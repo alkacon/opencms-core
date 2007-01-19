@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2006/11/29 15:04:15 $
- * Version: $Revision: 1.22.4.2 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.22.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.4.2 $
+ * @version $Revision: 1.22.4.3 $
  * 
  * @since 6.0.0
  */
@@ -280,7 +280,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         // delete and recreate the file
         cms.deleteResource(destination, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(destination);
-        cms.publishResource(destination);
+        OpenCms.getPublishManager().publishResource(cms, destination);
         OpenCms.getPublishManager().waitWhileRunning();
         CmsResource newRes = cms.createResource(
             destination,
@@ -352,7 +352,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         cms.writeFile(file);
 
         cms.unlockResource(resourcename);
-        cms.publishResource(resourcename);
+        OpenCms.getPublishManager().publishResource(cms, resourcename);
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.lockResource(resourcename);

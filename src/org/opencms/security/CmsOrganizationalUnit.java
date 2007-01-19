@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/01/15 18:48:35 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,14 +33,15 @@ package org.opencms.security;
 
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 /**
- * An organizational unit in the OpenCms permission system.<p>
+ * An organizational unit in OpenCms.<p>
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6 
  */
@@ -55,60 +56,23 @@ public class CmsOrganizationalUnit {
     /** The unique id of this organizational unit. */
     private CmsUUID m_id;
 
-    /** The name of this organizational unit. */
+    /** The fully qualified name of this organizational unit. */
     private String m_name;
-
-    /** The parent organizational units full qualified name. */
-    private String m_parentFqn;
 
     /**
      * Creates a new OpenCms organizational unit principal.
      * 
      * @param id the unique id of the organizational unit
-     * @param parentFqn the fully qualified name of the parent organizational unit (should end with slash)
-     * @param name the name of the organizational unit
+     * @param fqn the fully qualified name of the this organizational unit (should end with slash)
      * @param description the description of the organizational unit
      * @param flags the flags of the organizational unit
      */
-    public CmsOrganizationalUnit(CmsUUID id, String parentFqn, String name, String description, int flags) {
+    public CmsOrganizationalUnit(CmsUUID id, String fqn, String description, int flags) {
 
         m_id = id;
-        m_parentFqn = parentFqn;
-        m_name = name;
+        m_name = fqn;
         m_description = description;
         m_flags = flags;
-    }
-
-    /**
-     * Returns the new fully qualified name.<p>
-     * 
-     * @param prefix the prefix fully qualified name
-     * @param name the name to append
-     * 
-     * @return the new fully qualified name
-     */
-    public static final String appendFqn(String prefix, String name) {
-
-        if (prefix == null) {
-            prefix = "";
-        }
-        return prefix + "/" + name;
-    }
-
-    /**
-     * Returns the last name of the given fully qualified name.<p>
-     * 
-     * @param fqn the fully qualified name to get the last name from
-     * 
-     * @return the last name of the given fully qualified name
-     */
-    public static final String getLastNameFromFqn(String fqn) {
-
-        int pos = fqn.lastIndexOf("/");
-        if (pos == -1) {
-            return fqn;
-        }
-        return fqn.substring(pos + 1);
     }
 
     /**
@@ -120,23 +84,37 @@ public class CmsOrganizationalUnit {
      */
     public static final String getParentFqn(String fqn) {
 
-        int pos = fqn.lastIndexOf("/");
-        if (pos == -1) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(fqn) || fqn.equals("/")) {
+            // in case of the root ou
             return null;
         }
-        return fqn.substring(0, pos);
+        int pos;
+        if (fqn.endsWith("/")) {
+            pos = fqn.substring(0, fqn.length() - 1).lastIndexOf("/");
+        } else {
+            pos = fqn.lastIndexOf("/");
+        }
+        if (pos <= 0) {
+            // in case of simple names assume root ou 
+            return "/";
+        }
+        return fqn.substring(0, pos + 1);
     }
 
     /**
-     * Returns a new fully qualified name, composed from this organizational fully qualified name and the given name.<p> 
+     * Returns the last name of the given fully qualified name.<p>
      * 
-     * @param name the name to use
+     * @param fqn the fully qualified name to get the last name from
      * 
-     * @return the new fully qualified name
+     * @return the last name of the given fully qualified name
      */
-    public String appendFqn(String name) {
+    public static final String getSimpleName(String fqn) {
 
-        return appendFqn(getFqn(), name);
+        String parentFqn = getParentFqn(fqn);
+        if (parentFqn != null) {
+            return fqn.substring(parentFqn.length());
+        }
+        return fqn;
     }
 
     /**
@@ -158,7 +136,7 @@ public class CmsOrganizationalUnit {
      */
     public Object clone() {
 
-        return new CmsOrganizationalUnit(m_id, m_parentFqn, m_name, m_description, m_flags);
+        return new CmsOrganizationalUnit(m_id, m_name, m_description, m_flags);
     }
 
     /**
@@ -202,21 +180,6 @@ public class CmsOrganizationalUnit {
     }
 
     /**
-     * Returns the fully qualified name of this organizational unit.<p>
-     * 
-     * @return the fully qualified name of this organizational unit
-     */
-    public String getFqn() {
-
-        if (m_parentFqn == null) {
-            // root ou
-            return "";
-        }
-        // general
-        return appendFqn(m_parentFqn, m_name);
-    }
-
-    /**
      * Returns the id of this organizational unit.
      *
      * @return the id of this organizational unit.
@@ -227,9 +190,9 @@ public class CmsOrganizationalUnit {
     }
 
     /**
-     * Returns the name of this organizational unit.
-     *
-     * @return the name of this organizational unit.
+     * Returns the fully qualified name of this organizational unit.<p>
+     * 
+     * @return the fully qualified name of this organizational unit
      */
     public String getName() {
 
@@ -243,7 +206,17 @@ public class CmsOrganizationalUnit {
      */
     public String getParentFqn() {
 
-        return m_parentFqn;
+        return getParentFqn(m_name);
+    }
+
+    /**
+     * Returns the simple name of this organizational unit.
+     *
+     * @return the simple name of this organizational unit.
+     */
+    public String getSimpleName() {
+
+        return getSimpleName(m_name);
     }
 
     /**
@@ -288,23 +261,10 @@ public class CmsOrganizationalUnit {
      */
     public void setName(String name) {
 
-        if (m_parentFqn == null) {
+        if (m_name.length() <= 1) {
             throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_ORGUNIT_ROOT_EDITION_0));
         }
         m_name = name;
-    }
-
-    /**
-     * Sets the full qualified name of the parent organizational unit of this organizational unit.<p>
-     *  
-     * @param parentFqn the fully qualified name of the parent organizational unit to set
-     */
-    public void setParentFqn(String parentFqn) {
-
-        if (m_parentFqn == null) {
-            throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_ORGUNIT_ROOT_EDITION_0));
-        }
-        m_parentFqn = parentFqn;
     }
 
     /**
@@ -315,7 +275,7 @@ public class CmsOrganizationalUnit {
         StringBuffer result = new StringBuffer();
         result.append("[Organizational Unit]");
         result.append(" fqn:");
-        result.append(getFqn());
+        result.append(getName());
         result.append(" id:");
         result.append(m_id);
         result.append(" description:");

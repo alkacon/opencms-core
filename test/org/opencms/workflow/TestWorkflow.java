@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workflow/Attic/TestWorkflow.java,v $
- * Date   : $Date: 2006/11/29 17:03:08 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 7.0.0
  */
@@ -228,7 +228,7 @@ public class TestWorkflow extends OpenCmsTestCase {
         // try to direct publish the folder
         try {
             cms.unlockProject(cms.getRequestContext().currentProject().getId());
-            cms.publishResource(folder, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+            OpenCms.getPublishManager().publishResource(cms, folder, false, new CmsShellReport(cms.getRequestContext().getLocale()));
             OpenCms.getPublishManager().waitWhileRunning();
         } catch (CmsLockException e) {
             fail("it should be allowed to publish a folder with resources locked in workflow");
@@ -336,9 +336,9 @@ public class TestWorkflow extends OpenCmsTestCase {
         // try to direct publish the attachment
         try {
             cms.unlockResource(attachment);
-            cms.publishResource(attachment);
+            OpenCms.getPublishManager().publishResource(cms, attachment);
             OpenCms.getPublishManager().waitWhileRunning();
-            if (!cms.getPublishList(cms.readResource(attachment), false).getFileList().isEmpty()) {
+            if (!OpenCms.getPublishManager().getPublishList(cms, cms.readResource(attachment), false).getFileList().isEmpty()) {
                 fail("should not be allowed to publish a resource locked in workflow");
             }
         } catch (CmsLockException e) {

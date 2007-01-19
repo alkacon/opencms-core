@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExportNonexistentUser.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.12.8.3 $
+ * Date   : $Date: 2007/01/19 16:54:02 $
+ * Version: $Revision: 1.12.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.security.CmsRole;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -53,7 +52,7 @@ import junit.framework.TestSuite;
  * Tests exporting/import VFS data with nonexistent users.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.12.8.3 $
+ * @version $Revision: 1.12.8.4 $
  */
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
@@ -119,7 +118,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             // create a temporary user for this test case
             cms.createUser(username, password, "Temporary user for import/export test case", null);
             // add this user to the project managers user group
-            cms.addUserToGroup(username, CmsRole.PROJECT_MANAGER.getGroupName());
+            cms.addUserToGroup(username, OpenCms.getDefaultUsers().getGroupProjectmanagers());
             
             // switch to the temporary user, offline project and default site
             cms.loginUser(username, password);
@@ -132,7 +131,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId(), content, null);
             // publish the dummy plain text file
             cms.unlockResource(filename);
-            cms.publishResource(filename);
+            OpenCms.getPublishManager().publishResource(cms, filename);
             OpenCms.getPublishManager().waitWhileRunning();
             
             // switch back to the Admin user, offline project and default site
@@ -158,7 +157,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             cms.deleteResource(filename, CmsResource.DELETE_REMOVE_SIBLINGS);
             // publish the deleted dummy plain text file
             cms.unlockResource(filename);
-            cms.publishResource(filename);
+            OpenCms.getPublishManager().publishResource(cms, filename);
             OpenCms.getPublishManager().waitWhileRunning();
             
             // re-import the exported dummy plain text file

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUsersList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/01/19 16:53:53 $
+ * Version: $Revision: 1.3.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -305,7 +305,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                     }
                 } else if (detailId.equals(LIST_DETAIL_GROUPS)) {
                     // groups
-                    Iterator itGroups = getCms().getGroupsOfUser(userName).iterator();
+                    Iterator itGroups = getCms().getGroupsOfUser(userName, false).iterator();
                     while (itGroups.hasNext()) {
                         html.append(((CmsGroup)itGroups.next()).getName());
                         if (itGroups.hasNext()) {

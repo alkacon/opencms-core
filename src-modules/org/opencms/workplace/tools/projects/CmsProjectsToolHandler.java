@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsToolHandler.java,v $
- * Date   : $Date: 2006/12/11 15:10:53 $
- * Version: $Revision: 1.5.8.3 $
+ * Date   : $Date: 2007/01/19 16:53:53 $
+ * Version: $Revision: 1.5.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.projects;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.administration.CmsAdminDialog;
@@ -47,7 +48,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5.8.3 $ 
+ * @version $Revision: 1.5.8.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,7 +63,7 @@ public class CmsProjectsToolHandler extends A_CmsToolHandler {
      */
     public Map getParameters(CmsWorkplace wp) {
 
-        if (wp.getCms().hasRole(CmsRole.PROJECT_MANAGER)) {
+        if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.PROJECT_MANAGER)) {
             return super.getParameters(wp);
         } else {
             Map argMap = new HashMap();
@@ -91,7 +92,7 @@ public class CmsProjectsToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        if (cms.hasRole(CmsRole.PROJECT_MANAGER)) {
+        if (OpenCms.getRoleManager().hasRole(cms, CmsRole.PROJECT_MANAGER)) {
             return !getLink().equals(PROJECT_OVERVIEW_FILE);
         } else {
             return getLink().equals(PROJECT_OVERVIEW_FILE);

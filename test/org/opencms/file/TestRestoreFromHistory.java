@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestRestoreFromHistory.java,v $
- * Date   : $Date: 2006/11/29 15:04:05 $
- * Version: $Revision: 1.14.8.3 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.14.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Unit tests for the history restore method.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.14.8.3 $
+ * @version $Revision: 1.14.8.4 $
  */
 public class TestRestoreFromHistory extends OpenCmsTestCase {
 
@@ -116,7 +116,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         int version;
@@ -152,7 +152,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
             cms.writeFile(update);
             this.storeResources(cms, resourcename);
             cms.unlockProject(cms.getRequestContext().currentProject().getId());
-            cms.publishProject();
+            OpenCms.getPublishManager().publishProject(cms);
             OpenCms.getPublishManager().waitWhileRunning();
         }
     }
@@ -187,7 +187,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check that there is exactly one backup file available
@@ -200,7 +200,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         cms.lockResource(resourcename);
         cms.deleteResource(resourcename, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // create a new empty resource
@@ -251,7 +251,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check that there is exactly one backup file available
@@ -264,7 +264,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         cms.lockResource(resourcename);
         cms.moveResource(resourcename, newresname);
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check that there is one backup file available, again
@@ -331,7 +331,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check that there is exactly one backup file available
@@ -361,7 +361,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check that there are exactly two backup files available

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2007/01/08 14:02:58 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -62,11 +62,8 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
     /** The unique id of this principal. */
     protected CmsUUID m_id;
 
-    /** The name of this principal. */
+    /** The fully qualified name of this principal. */
     protected String m_name;
-
-    /** The fully qualified name of the associated organizational unit. */
-    protected String m_ouFqn;
 
     /**
      * Empty constructor for subclassing.<p>
@@ -305,14 +302,15 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
     }
 
     /**
+     * Returns the fully qualified name of this principal.<p>
+     *
+     * @return the fully qualified name of this principal
+     * 
      * @see java.security.Principal#getName()
      */
     public String getName() {
 
-        if (m_ouFqn == null) {
-            return m_name;
-        }
-        return m_ouFqn + "/" + m_name;
+        return m_name;
     }
 
     /**
@@ -320,9 +318,9 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
      *
      * @return the fully qualified name of the associated organizational unit
      */
-    public String getOrganizationalUnitFqn() {
+    public String getOuFqn() {
 
-        return m_ouFqn;
+        return CmsOrganizationalUnit.getParentFqn(m_name);
     }
 
     /**
@@ -336,6 +334,16 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
             return getPrefixedGroup(getName());
         }
         return getName();
+    }
+
+    /**
+     * Returns the simple name of this organizational unit.
+     *
+     * @return the simple name of this organizational unit.
+     */
+    public String getSimpleName() {
+
+        return m_name;
     }
 
     /**
@@ -405,7 +413,11 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
      */
     public void setName(String name) {
 
-        checkName(name);
+        checkName(CmsOrganizationalUnit.getSimpleName(name));
+        // backward compatibility
+        if (!name.startsWith("/")) {
+            name = "/" + name;
+        }
         m_name = name;
     }
 }

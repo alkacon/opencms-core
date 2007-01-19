@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2006/11/29 15:04:06 $
- * Version: $Revision: 1.19.8.3 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.19.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19.8.3 $
+ * @version $Revision: 1.19.8.4 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -201,7 +201,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
@@ -262,7 +262,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
@@ -303,7 +303,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
@@ -368,7 +368,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
@@ -424,7 +424,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
@@ -483,7 +483,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
@@ -543,7 +543,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
@@ -605,7 +605,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
@@ -760,7 +760,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         assertFilter(cms, siblingname, filter);
 
         // publish the project
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, resourcename1, CmsResource.STATE_UNCHANGED);

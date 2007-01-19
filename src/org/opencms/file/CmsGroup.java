@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2007/01/15 18:48:34 $
- * Version: $Revision: 1.19.4.5 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.19.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.5 $
+ * @version $Revision: 1.19.4.6 $
  * 
  * @since 6.0.0 
  * 
@@ -66,19 +66,17 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
      * 
      * @param id the unique id of the group
      * @param parentId the is of the parent group
-     * @param name the name of the group
+     * @param name the fully qualified name of the name of the group
      * @param description the description of the group
      * @param flags the flags of the group    
-     * @param ouFqn the fully qualified name of the associated organizational unit 
      */
-    public CmsGroup(CmsUUID id, CmsUUID parentId, String name, String description, int flags, String ouFqn) {
+    public CmsGroup(CmsUUID id, CmsUUID parentId, String name, String description, int flags) {
 
         m_id = id;
         m_name = name;
         m_description = description;
         m_flags = flags;
         m_parentId = parentId;
-        m_ouFqn = ouFqn;
     }
 
     /**
@@ -101,7 +99,7 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
      */
     public Object clone() {
 
-        return new CmsGroup(m_id, m_parentId, m_name, m_description, m_flags, m_ouFqn);
+        return new CmsGroup(m_id, m_parentId, m_name, m_description, m_flags);
     }
 
     /**

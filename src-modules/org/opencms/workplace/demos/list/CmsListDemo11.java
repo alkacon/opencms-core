@@ -37,6 +37,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -244,7 +245,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
             try {
                 if (detailId.equals(LIST_DETAIL_GROUPS)) {
                     // groups
-                    Iterator itGroups = getCms().getGroupsOfUser(userName).iterator();
+                    Iterator itGroups = getCms().getGroupsOfUser(userName, false).iterator();
                     while (itGroups.hasNext()) {
                         html.append(((CmsGroup)itGroups.next()).getName());
                         if (itGroups.hasNext()) {
@@ -269,7 +270,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
 
         List ret = new ArrayList();
         // get content
-        List users = getCms().getUsers();
+        List users = OpenCms.getOrgUnitManager().getUsers(getCms(), "/", true);
         Iterator itUsers = users.iterator();
         while (itUsers.hasNext()) {
             CmsUser user = (CmsUser)itUsers.next();

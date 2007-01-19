@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2006/11/29 15:04:06 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/19 16:53:51 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -225,7 +225,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         cms.lockResource(resName);
         cms.deleteResource(resName, CmsResource.DELETE_REMOVE_SIBLINGS);
         cms.unlockResource(resName);
-        cms.publishResource(resName, true, report);
+        OpenCms.getPublishManager().publishResource(cms, resName, true, report);
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
@@ -246,7 +246,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         CmsBackupResource backup = (CmsBackupResource)backups.get(backups.size() - 1);
         cms.restoreResourceBackup(resName, backup.getTagId());
         cms.unlockResource(resName);
-        cms.publishResource(resName, true, report);
+        OpenCms.getPublishManager().publishResource(cms, resName, true, report);
         OpenCms.getPublishManager().waitWhileRunning();
         cms.lockResource(resName);
     }
@@ -503,7 +503,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
 
         // publish
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
-        cms.publishProject(report);
+        OpenCms.getPublishManager().publishProject(cms, report);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check links after deletion

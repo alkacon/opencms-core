@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsCacheKey.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/01/19 16:53:52 $
+ * Version: $Revision: 1.9.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.security.CmsPermissionSet;
@@ -40,18 +41,30 @@ import org.opencms.security.CmsPermissionSet;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.8.1 $
  * 
  * @since 6.0.0
  */
 public interface I_CmsCacheKey {
 
     /**
+     * Returns the cache key for the group users cache.<p>
+     * 
+     * @param prefix to distinguish keys additionally
+     * @param context the context
+     * @param group the group
+     * 
+     * @return a cache key that is unique for the set of parameters
+     */
+    String getCacheKeyForGroupUsers(String prefix, CmsDbContext context, CmsGroup group);
+
+    /**
      * Returns the cache key for the user groups cache.<p>
      * 
      * @param prefix to distinguish keys additionally
      * @param context the context
-     * @param user the resource
+     * @param user the user
+     * 
      * @return a cache key that is unique for the set of parameters
      */
     String getCacheKeyForUserGroups(String prefix, CmsDbContext context, CmsUser user);
@@ -63,6 +76,7 @@ public interface I_CmsCacheKey {
      * @param context the context
      * @param resource the resource
      * @param requiredPermissions the permissions to check
+     * 
      * @return a cache key that is unique for the set of parameters
      */
     String getCacheKeyForUserPermissions(

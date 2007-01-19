@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.37.4.2 $
+ * Date   : $Date: 2007/01/19 16:53:57 $
+ * Version: $Revision: 1.37.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37.4.2 $ 
+ * @version $Revision: 1.37.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,7 +129,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         boolean nocachepara = CmsBackupResourceHandler.isBackupRequest(req);
         boolean dorecompile = false;
         if (paras != null) {
-            if (cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
+            if (OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)) {
                 List l = Arrays.asList(paras);
                 boolean firstCall = controller.isEmptyRequestList();
                 nocachepara |= l.contains("nocache");
