@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.21.4.7 $
+ * Date   : $Date: 2007/01/22 10:22:44 $
+ * Version: $Revision: 1.21.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.4.7 $
+ * @version $Revision: 1.21.4.8 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -272,8 +272,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createProject(
             "project2",
             "Test project 2 for scenario A",
-            CmsRole.WORKPLACE_USER.getGroupName(),
-            CmsRole.WORKPLACE_USER.getGroupName());
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupUsers());
 
         CmsProject project2 = cms.readProject("project2");
         cms.getRequestContext().setCurrentProject(project2);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.22.8.4 $
+ * Date   : $Date: 2007/01/22 10:22:44 $
+ * Version: $Revision: 1.22.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.8.4 $
+ * @version $Revision: 1.22.8.5 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -129,7 +129,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.chacc(
             resource,
             I_CmsPrincipal.PRINCIPAL_GROUP,
-            CmsRole.WORKPLACE_USER.getGroupName(),
+            OpenCms.getDefaultUsers().getGroupUsers(),
             0,
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
@@ -201,7 +201,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.chacc(
             folder,
             I_CmsPrincipal.PRINCIPAL_GROUP,
-            CmsRole.WORKPLACE_USER.getGroupName(),
+            OpenCms.getDefaultUsers().getGroupUsers(),
             0,
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
@@ -209,7 +209,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.chacc(
             folder,
             I_CmsPrincipal.PRINCIPAL_GROUP,
-            CmsRole.PROJECT_MANAGER.getGroupName(),
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
             0,
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
@@ -483,7 +483,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.chacc(
             folder,
             I_CmsPrincipal.PRINCIPAL_GROUP,
-            CmsRole.WORKPLACE_USER.getGroupName(),
+            OpenCms.getDefaultUsers().getGroupUsers(),
             0,
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
@@ -491,7 +491,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.chacc(
             folder,
             I_CmsPrincipal.PRINCIPAL_GROUP,
-            CmsRole.PROJECT_MANAGER.getGroupName(),
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
             0,
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
@@ -553,7 +553,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.chacc(
             resource,
             I_CmsPrincipal.PRINCIPAL_GROUP,
-            CmsRole.WORKPLACE_USER.getGroupName(),
+            OpenCms.getDefaultUsers().getGroupUsers(),
             0,
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
@@ -561,7 +561,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.chacc(
             resource,
             I_CmsPrincipal.PRINCIPAL_GROUP,
-            CmsRole.PROJECT_MANAGER.getGroupName(),
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
             0,
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
