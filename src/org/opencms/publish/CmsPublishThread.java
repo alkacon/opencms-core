@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/23 13:03:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,16 +33,10 @@ package org.opencms.publish;
 
 import org.opencms.db.CmsDbContext;
 import org.opencms.file.CmsProject;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsSessionInfo;
-import org.opencms.main.CmsSessionManager;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
-
-import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 
@@ -51,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -129,7 +123,7 @@ final class CmsPublishThread extends A_CmsReportThread {
             } finally {
                 dbc.clear();
                 if (m_updateSessionInfo) {
-                    updateSessionInfo();
+                    OpenCms.getSessionManager().updateSessionInfos(getCms());
                 }
                 m_report.println(
                     Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_END_0),
@@ -160,37 +154,5 @@ final class CmsPublishThread extends A_CmsReportThread {
     protected I_CmsReport getReport() {
 
         return m_report;
-    }
-
-    /**
-     * Updates the project information in the user session and the workplace settings 
-     * after a temporary project is published and deleted.<p>
-     * 
-     * This is nescessary to prevent the access to a nonexisting project.<p>
-     */
-    private void updateSessionInfo() {
-
-        // get the session menager
-        CmsSessionManager sessionManager = OpenCms.getSessionManager();
-        // get all sessions
-        List userSessions = sessionManager.getSessionInfos();
-        Iterator i = userSessions.iterator();
-        while (i.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
-            // check is the project stored in this session is not existing anymore
-            // if so, set it to the online project
-            int projectId = sessionInfo.getProject();
-            try {
-                getCms().readProject(projectId);
-            } catch (CmsException e) {
-                // the project does not longer exist, update the project information with the online project
-                sessionInfo.setProject(CmsProject.ONLINE_PROJECT_ID);
-                getReport().println(
-                    Messages.get().container(
-                        Messages.RPT_PUBLISH_RESOURCE_SWITCH_PROJECT_1,
-                        getCms().getRequestContext().currentProject().getName()),
-                    I_CmsReport.FORMAT_DEFAULT);
-            }
-        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2007/01/19 16:53:53 $
- * Version: $Revision: 1.12.4.11 $
+ * Date   : $Date: 2007/01/23 13:03:20 $
+ * Version: $Revision: 1.12.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.11 $ 
+ * @version $Revision: 1.12.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -395,6 +395,32 @@ public class CmsSessionManager {
     }
 
     /**
+     * Updates all session info objects, so that invalid projects 
+     * are replaced by the Online project.<p>
+     * 
+     * @param cms the cms context
+     */
+    public void updateSessionInfos(CmsObject cms) {
+
+        // get all sessions
+        List userSessions = getSessionInfos();
+        Iterator i = userSessions.iterator();
+        while (i.hasNext()) {
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
+            // check is the project stored in this session is not existing anymore
+            // if so, set it to the online project
+            int projectId = sessionInfo.getProject();
+            try {
+                cms.readProject(projectId);
+            } catch (CmsException e) {
+                // the project does not longer exist, update the project information with the online project
+                sessionInfo.setProject(CmsProject.ONLINE_PROJECT_ID);
+                addSessionInfo(sessionInfo);
+            }
+        }
+    }
+
+    /**
      * Adds a new session info into the session storage.<p>
      *
      * @param sessionInfo the session info to store for the id
@@ -527,6 +553,7 @@ public class CmsSessionManager {
             if (sessionInfo != null) {
                 // update the users session information
                 sessionInfo.update(cms.getRequestContext());
+                addSessionInfo(sessionInfo);
             } else {
                 HttpSession session = req.getSession(false);
                 // only create session info if a session is already available 

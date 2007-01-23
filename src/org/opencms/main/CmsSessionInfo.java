@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2007/01/08 14:03:03 $
- * Version: $Revision: 1.16.4.3 $
+ * Date   : $Date: 2007/01/23 13:03:20 $
+ * Version: $Revision: 1.16.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.buffer.BoundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.3 $ 
+ * @version $Revision: 1.16.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -250,16 +250,6 @@ public class CmsSessionInfo implements Comparable, Serializable {
     }
 
     /**
-     * Sets the id of the current project of the user of this session info.<p>
-     * 
-     * @param projectId the project id to set
-     */
-    public void setProject(int projectId) {
-
-        m_projectId = projectId;
-    }
-
-    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -276,6 +266,16 @@ public class CmsSessionInfo implements Comparable, Serializable {
         str.append("ouFqn: ").append(m_ouFqn);
         str.append("]");
         return str.toString();
+    }
+
+    /**
+     * Sets the id of the current project of the user of this session info.<p>
+     * 
+     * @param projectId the project id to set
+     */
+    protected void setProject(int projectId) {
+
+        m_projectId = projectId;
     }
 
     /**
