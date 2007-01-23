@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobInfoBean.java,v $
- * Date   : $Date: 2007/01/08 14:03:03 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/23 15:22:49 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.File;
@@ -56,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.5
  */
@@ -271,8 +270,7 @@ final class CmsPublishJobInfoBean {
             // initialize the report path
             m_reportFilePath += File.separator + CmsPublishJobBase.REPORT_FILENAME_PREFIX;
             m_reportFilePath += getProjectName(m_locale) + CmsPublishJobBase.REPORT_FILENAME_SEPARATOR;
-            m_reportFilePath += CmsStringUtil.substitute(getUser().getName(), "/", "_")
-                + CmsPublishJobBase.REPORT_FILENAME_SEPARATOR;
+            m_reportFilePath += getUser().getSimpleName() + CmsPublishJobBase.REPORT_FILENAME_SEPARATOR;
             m_reportFilePath += m_enqueueTime + CmsPublishJobBase.REPORT_FILENAME_POSTFIX;
         }
         return m_reportFilePath;
