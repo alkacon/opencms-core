@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/01/12 17:24:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/23 16:58:11 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,7 @@
 package org.opencms.webdav;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.webdav.tomcat.WebDavHandler;
 import org.opencms.webdav.util.MD5Encoder;
 
 import java.io.BufferedInputStream;
@@ -93,89 +91,161 @@ import org.xml.sax.InputSource;
  * are handled by the DefaultServlet.
  *
  * @author Remy Maucherat
- * @version $Revision: 1.1.2.1 $ $Date: 2007/01/12 17:24:42 $
+ * @version $Revision: 1.1.2.2 $ $Date: 2007/01/23 16:58:11 $
  */
 public class CmsWebdavServlet extends HttpServlet {
 
     /** Size of file transfer buffer in bytes. */
     public static final int BUFFER_SIZE = 4096;
-
-    /** Default depth is infinite. */
-    public static final int INFINITY = 3; // To limit tree browsing a bit
-
+    
     /** Date format for the last modified date. */
     protected static final DateFormat HTTP_DATE_FORMAT;
-
+    
     /** Date format for the creation date. */
     protected static final DateFormat ISO8601_FORMAT;
-
-    /** WebDAV method: COPY. */
-    protected static final String METHOD_COPY = "COPY";
-
-    /** WebDAV method: LOCK. */
-    protected static final String METHOD_LOCK = "LOCK";
-
-    /** WebDAV method: MKCOL. */
-    protected static final String METHOD_MKCOL = "MKCOL";
-
-    /** WebDAV method: MOVE. */
-    protected static final String METHOD_MOVE = "MOVE";
-
-    /** WebDAV method: PROPFIND. */
-    protected static final String METHOD_PROPFIND = "PROPFIND";
-
-    /** WebDAV method: PROPPATCH. */
-    protected static final String METHOD_PROPPATCH = "PROPPATCH";
-
-    /** WebDAV method: UNLOCK. */
-    protected static final String METHOD_UNLOCK = "UNLOCK";
-
-    /** MIME multipart separation string. */
-    protected static final String MIME_SEPARATION = "CATALINA_MIME_BOUNDARY";
-
-    /** Chars which are safe for urls. */
-    protected static final BitSet URL_SAFE_CHARS;
-
-    /** Default namespace. */
-    private static final String DEFAULT_NAMESPACE = "DAV:";
-
-    /** Default lock timeout value. */
-    private static final int DEFAULT_TIMEOUT = 3600;
-
-    /** PROPFIND - Display all properties. */
-    private static final int FIND_ALL_PROP = 1;
-
-    /** PROPFIND - Specify a property mask. */
-    private static final int FIND_BY_PROPERTY = 0;
-
-    /** PROPFIND - Return property names. */
-    private static final int FIND_PROPERTY_NAMES = 2;
-
-    /** Full range marker. */
-    private static ArrayList FULL_RANGE = new ArrayList();
-
-    /** Create a new lock. */
-    private static final int LOCK_CREATION = 0;
-
-    /** Refresh lock. */
-    private static final int LOCK_REFRESH = 1;
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsWebdavServlet.class);
-
-    /** Keeps the handler for the webdav requests. Temporary solution. */
-    private static WebDavHandler m_handler = null;
-
-    /** The MD5 helper object for this class. */
-    protected static final MD5Encoder MD5_ENCODER = new MD5Encoder();
-
-    /** Maximum lock timeout. */
-    private static final int MAX_TIMEOUT = 604800;
-
-    private static final long serialVersionUID = -122598983283724306L;
-
+    
     /** MD5 message digest provider. */
     protected static MessageDigest m_md5Helper;
+    
+    /** The MD5 helper object for this class. */
+    protected static final MD5Encoder MD5_ENCODER = new MD5Encoder();
+    
+    /** WebDAV method: COPY. */
+    protected static final String METHOD_COPY = "COPY";
+    
+    /** WebDAV method: LOCK. */
+    protected static final String METHOD_LOCK = "LOCK";
+    
+    /** WebDAV method: MKCOL. */
+    protected static final String METHOD_MKCOL = "MKCOL";
+    
+    /** WebDAV method: MOVE. */
+    protected static final String METHOD_MOVE = "MOVE";
+    
+    /** WebDAV method: PROPFIND. */
+    protected static final String METHOD_PROPFIND = "PROPFIND";
+    
+    /** WebDAV method: PROPPATCH. */
+    protected static final String METHOD_PROPPATCH = "PROPPATCH";
+    
+    /** WebDAV method: UNLOCK. */
+    protected static final String METHOD_UNLOCK = "UNLOCK";
+    
+    /** MIME multipart separation string. */
+    protected static final String MIME_SEPARATION = "CATALINA_MIME_BOUNDARY";
+    
+    /** Chars which are safe for urls. */
+    protected static final BitSet URL_SAFE_CHARS;
+    
+    private static final String ATT_SERVLET_TEMPDIR = "javax.servlet.context.tempdir";
+    
+    /** Default namespace. */
+    private static final String DEFAULT_NAMESPACE = "DAV:";
+    
+    /** PROPFIND - Display all properties. */
+    private static final int FIND_ALL_PROP = 1;
+    
+    /** PROPFIND - Specify a property mask. */
+    private static final int FIND_BY_PROPERTY = 0;
+    
+    /** PROPFIND - Return property names. */
+    private static final int FIND_PROPERTY_NAMES = 2;
+    
+    /** Full range marker. */
+    private static ArrayList FULL_RANGE = new ArrayList();
+    
+    private static final String HEADER_ALLOW = "Allow";
+    
+    private static final String HEADER_CONTENTLENGTH = "content-length";
+    
+    private static final String HEADER_CONTENTRANGE = "Content-Range";
+    
+    private static final String HEADER_DEPTH = "Depth";
+    
+    private static final String HEADER_DESTINATION = "Destination";
+    
+    private static final String HEADER_ETAG = "ETag";
+    
+    private static final String HEADER_IF = "If";
+    
+    private static final String HEADER_LASTMODIFIED = "Last-Modified";
+    
+    private static final String HEADER_LOCKTOKEN = "Lock-Token";
+    
+    private static final String HEADER_OVERWRITE = "Overwrite";
+    
+    private static final String INIT_PARAM_LIST = "listings";
+    
+    private static final String INIT_PARAM_READONLY = "readonly";
+    
+    /** Create a new lock. */
+    private static final int LOCK_CREATION = 0;
+    
+    /** Refresh lock. */
+    private static final int LOCK_REFRESH = 1;
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWebdavServlet.class);
+    
+    /** The session wich handles the action made with WebDAV. */
+    private static I_CmsWebdavSession m_session;
+    
+    private static final long serialVersionUID = -122598983283724306L;
+    
+    /** The name of the init-param where the session handler class is defined. */
+    private static final String SESSION_HANDLER_PARAM = "SessionHandler";
+    
+    private static final String TAG_ACTIVELOCK = "activelock";
+    
+    private static final String TAG_COLLECTION = "collection";
+
+    private static final String TAG_CONTENTLANGUAGE = "getcontentlanguage";
+
+    private static final String TAG_CONTENTLENGTH = "getcontentlength";
+
+    private static final String TAG_CONTENTTYPE = "getcontenttype";
+
+    private static final String TAG_CREATIONDATE = "creationdate";
+
+    private static final String TAG_DEPTH = "depth";
+
+    private static final String TAG_DISPLAYNAME = "displayname";
+
+    private static final String TAG_ETAG = "getetag";
+
+    private static final String TAG_HREF = "href";
+
+    private static final String TAG_LASTMODIFIED = "getlastmodified";
+
+    private static final String TAG_LOCKDISCOVERY = "lockdiscovery";
+
+    private static final String TAG_LOCKENTRY = "lockentry";
+
+    private static final String TAG_LOCKSCOPE = "lockscope";
+
+    private static final String TAG_LOCKTOKEN = "locktoken";
+
+    private static final String TAG_LOCKTYPE = "locktype";
+
+    private static final String TAG_MULTISTATUS = "multistatus";
+
+    private static final String TAG_OWNER = "owner";
+
+    private static final String TAG_PROP = "prop";
+
+    private static final String TAG_PROPSTAT = "propstat";
+
+    private static final String TAG_RESOURCETYPE = "resourcetype";
+
+    private static final String TAG_RESPONSE = "response";
+
+    private static final String TAG_SOURCE = "source";
+
+    private static final String TAG_STATUS = "status";
+
+    private static final String TAG_SUPPORTEDLOCK = "supportedlock";
+
+    private static final String TAG_TIMEOUT = "timeout";
 
     /** The input buffer size to use when serving resources. */
     protected int m_input = 2048;
@@ -191,9 +261,6 @@ public class CmsWebdavServlet extends HttpServlet {
 
     /** Secret information used to generate reasonably secure lock ids. */
     private String m_secret = "catalina";
-
-    /** The session wich handles the action made with WebDAV. */
-    private I_CmsWebdavSession m_session;
 
     static {
         URL_SAFE_CHARS = new BitSet();
@@ -215,6 +282,19 @@ public class CmsWebdavServlet extends HttpServlet {
     }
 
     /**
+     * Adds an xml element to the given parent and sets the appropriate namespace and 
+     * prefix.
+     * 
+     * @param parent The parent node to add the element
+     * @param name The name of the new element
+     * @return the created element with the given name which was added to the given parent
+     */
+    public static Element addElement(Element parent, String name) {
+
+        return parent.addElement(new QName(name, Namespace.get("D", DEFAULT_NAMESPACE)));
+    }
+
+    /**
      * Initialize this servlet.
      * 
      * @throws ServletException if something went wrong
@@ -223,7 +303,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
         String value = null;
         try {
-            value = getServletConfig().getInitParameter("listings");
+            value = getServletConfig().getInitParameter(INIT_PARAM_LIST);
             if (value != null) {
                 m_listings = (new Boolean(value)).booleanValue();
             }
@@ -234,7 +314,7 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         try {
-            value = getServletConfig().getInitParameter("readonly");
+            value = getServletConfig().getInitParameter(INIT_PARAM_READONLY);
             if (value != null) {
                 m_readOnly = (new Boolean(value)).booleanValue();
             }
@@ -251,8 +331,23 @@ public class CmsWebdavServlet extends HttpServlet {
             throw new UnavailableException("No MD5");
         }
 
-        m_handler = new WebDavHandler();
-        m_handler.init(getServletContext());
+        // Instantiate session handler from init-param
+        String sessionClassname = getInitParameter(SESSION_HANDLER_PARAM);
+        if (sessionClassname == null) {
+            throw new ServletException("The \"" + SESSION_HANDLER_PARAM + "\" init-param is missing.");
+        }
+
+        try {
+            Class sessionClass = Class.forName(sessionClassname);
+            m_session = (I_CmsWebdavSession)sessionClass.newInstance();
+            m_session.init(getServletContext());
+        } catch (ClassNotFoundException e) {
+            throw new ServletException("Unable to find session class: " + sessionClassname, e);
+        } catch (IllegalAccessException e) {
+            throw new ServletException("Unable to construct the session class: " + e.getMessage(), e);
+        } catch (InstantiationException e) {
+            throw new ServletException("Unable to instantiate the session class: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -286,7 +381,9 @@ public class CmsWebdavServlet extends HttpServlet {
         try {
             reader.close();
         } catch (Exception e) {
-            log("DefaultServlet.copy: exception closing reader: " + e.getMessage());
+            if (LOG.isErrorEnabled()) {
+                LOG.error("DefaultServlet.copy: exception closing reader: " + e.getMessage());
+            }
         }
 
         // Rethrow any exception that has occurred
@@ -333,7 +430,43 @@ public class CmsWebdavServlet extends HttpServlet {
         try {
             istream.close();
         } catch (Exception e) {
-            log("DefaultServlet.copy: exception closing input stream: " + e.getMessage());
+            if (LOG.isErrorEnabled()) {
+                LOG.error("DefaultServlet.copy: exception closing input stream: " + e.getMessage());
+            }
+        }
+
+        // Rethrow any exception that has occurred
+        if (exception != null) {
+            throw exception;
+        }
+    }
+
+    /**
+     * Copy the contents of the specified input stream to the specified
+     * output stream, and ensure that both streams are closed before returning
+     * (even in the face of an exception).
+     *
+     * @param item The WebdavItem
+     * @param writer The writer to write to
+     * @param range Range the client wanted to retrieve
+     * @exception IOException if an input/output error occurs
+     */
+    protected void copy(I_CmsWebdavItem item, PrintWriter writer, CmsWebdavRange range) throws IOException {
+
+        IOException exception = null;
+
+        InputStream resourceInputStream = item.getStreamContent();
+
+        Reader reader = new InputStreamReader(resourceInputStream);
+        exception = copyRange(reader, writer, range.getStart(), range.getEnd());
+
+        // Clean up the input stream
+        try {
+            reader.close();
+        } catch (Exception e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error("DefaultServlet.copy: exception closing reader: " + e.getMessage());
+            }
         }
 
         // Rethrow any exception that has occurred
@@ -385,7 +518,9 @@ public class CmsWebdavServlet extends HttpServlet {
             try {
                 reader.close();
             } catch (Exception e) {
-                log("DefaultServlet.copy: exception closing reader: " + e.getMessage());
+                if (LOG.isErrorEnabled()) {
+                    LOG.error("DefaultServlet.copy: exception closing reader: " + e.getMessage());
+                }
             }
 
         }
@@ -405,24 +540,25 @@ public class CmsWebdavServlet extends HttpServlet {
      * (even in the face of an exception).
      *
      * @param item The WebdavItem
-     * @param writer The writer to write to
+     * @param ostream The output stream to write to
      * @param range Range the client wanted to retrieve
-     * @exception IOException if an input/output error occurs
+     * @throws IOException if an input/output error occurs
      */
-    protected void copy(I_CmsWebdavItem item, PrintWriter writer, CmsWebdavRange range) throws IOException {
+    protected void copy(I_CmsWebdavItem item, ServletOutputStream ostream, CmsWebdavRange range) throws IOException {
 
         IOException exception = null;
 
         InputStream resourceInputStream = item.getStreamContent();
-
-        Reader reader = new InputStreamReader(resourceInputStream);
-        exception = copyRange(reader, writer, range.getStart(), range.getEnd());
+        InputStream istream = new BufferedInputStream(resourceInputStream, m_input);
+        exception = copyRange(istream, ostream, range.getStart(), range.getEnd());
 
         // Clean up the input stream
         try {
-            reader.close();
+            istream.close();
         } catch (Exception e) {
-            log("DefaultServlet.copy: exception closing reader: " + e.getMessage());
+            if (LOG.isErrorEnabled()) {
+                LOG.error("DefaultServlet.copy: exception closing input stream: " + e.getMessage());
+            }
         }
 
         // Rethrow any exception that has occurred
@@ -474,44 +610,15 @@ public class CmsWebdavServlet extends HttpServlet {
             try {
                 istream.close();
             } catch (Exception e) {
-                log("DefaultServlet.copy: exception closing input stream: " + e.getMessage());
+                if (LOG.isErrorEnabled()) {
+                    LOG.error("DefaultServlet.copy: exception closing input stream: " + e.getMessage());
+                }
             }
 
         }
 
         ostream.println();
         ostream.print("--" + MIME_SEPARATION + "--");
-
-        // Rethrow any exception that has occurred
-        if (exception != null) {
-            throw exception;
-        }
-    }
-
-    /**
-     * Copy the contents of the specified input stream to the specified
-     * output stream, and ensure that both streams are closed before returning
-     * (even in the face of an exception).
-     *
-     * @param item The WebdavItem
-     * @param ostream The output stream to write to
-     * @param range Range the client wanted to retrieve
-     * @throws IOException if an input/output error occurs
-     */
-    protected void copy(I_CmsWebdavItem item, ServletOutputStream ostream, CmsWebdavRange range) throws IOException {
-
-        IOException exception = null;
-
-        InputStream resourceInputStream = item.getStreamContent();
-        InputStream istream = new BufferedInputStream(resourceInputStream, m_input);
-        exception = copyRange(istream, ostream, range.getStart(), range.getEnd());
-
-        // Clean up the input stream
-        try {
-            istream.close();
-        } catch (Exception e) {
-            log("DefaultServlet.copy: exception closing input stream: " + e.getMessage());
-        }
 
         // Rethrow any exception that has occurred
         if (exception != null) {
@@ -690,12 +797,93 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     protected void doCopy(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        // Check if webdav is set to read only
         if (m_readOnly) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("WebDav is set to read only");
+            }
+
             resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
             return;
         }
 
-        copyResource(req, resp);
+        // Get the source path to copy
+        String src = getRelativePath(req);
+
+        // Check if source exists
+        if (!m_session.exists(src)) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Could not find source path: " + src);
+            }
+
+            resp.sendError(CmsWebdavStatus.SC_NOT_FOUND);
+            return;
+        }
+
+        // Get the destination path to copy to
+        String dest = parseDestinationHeader(req, resp);
+        if (dest == null) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Could not parse destination header");
+            }
+
+            resp.sendError(CmsWebdavStatus.SC_BAD_REQUEST);
+            return;
+        }
+
+        // source and destination are the same
+        if (dest.equals(src)) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Source and destination are the same");
+            }
+
+            resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
+            return;
+        }
+
+        // Parsing overwrite header
+        boolean overwrite = parseOverwriteHeader(req);
+
+        // If the destination exists, then it's a conflict
+        if ((m_session.exists(dest)) && (!overwrite)) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Destination path already exists and should not be overwritten");
+            }
+
+            resp.sendError(CmsWebdavStatus.SC_PRECONDITION_FAILED);
+            return;
+        }
+
+        if ((!m_session.exists(dest)) && (overwrite)) {
+            resp.setStatus(CmsWebdavStatus.SC_CREATED);
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Copy: " + src + " to: " + dest);
+        }
+
+        // Copying source to destination
+        try {
+            m_session.copy(src, dest, overwrite);
+        } catch (CmsWebdavPermissionException pex) {
+            resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
+            return;
+        } catch (CmsWebdavItemAlreadyExistsException iaeex) {
+            resp.sendError(CmsWebdavStatus.SC_PRECONDITION_FAILED);
+            return;
+        } catch (CmsWebdavItemNotFoundException infex) {
+            resp.sendError(CmsWebdavStatus.SC_NOT_FOUND);
+            return;
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Copied resource successfully");
+        }
     }
 
     /**
@@ -709,17 +897,69 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        // Get the path to delete
+        String path = getRelativePath(req);
+
+        // Check if webdav is set to read only
         if (m_readOnly) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("WebDav is set to read only");
+            }
+
             resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
             return;
         }
 
+        // Check if path exists
+        boolean exists = m_session.exists(path);
+        if (!exists) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Could not find path: " + path);
+            }
+
+            resp.sendError(CmsWebdavStatus.SC_NOT_FOUND);
+            return;
+        }
+
+        // Check if resource is locked
         if (isLocked(req)) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Resource is locked");
+            }
+
             resp.sendError(CmsWebdavStatus.SC_LOCKED);
             return;
         }
 
-        deleteResource(getRelativePath(req), req, resp, true);
+        // Check if resources found in the tree of the path are locked
+        Hashtable errorList = new Hashtable();
+
+        // TODO: put this check in session handler
+        checkChildLocks(req, path, errorList);
+        if (!errorList.isEmpty()) {
+            sendReport(req, resp, errorList);
+            return;
+        }
+
+        // Delete the resource
+        try {
+            m_session.delete(path);
+        } catch (CmsWebdavItemNotFoundException infex) {
+            resp.sendError(CmsWebdavStatus.SC_NOT_FOUND);
+            return;
+        } catch (CmsWebdavPermissionException pex) {
+            resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
+            return;
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Deleted resource successfully");
+        }
+
+        resp.setStatus(CmsWebdavStatus.SC_NO_CONTENT);
     }
 
     /**
@@ -764,12 +1004,26 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     protected void doLock(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        String path = getRelativePath(req);
+
+        // Check if webdav is set to read only
         if (m_readOnly) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("WebDav is set to read only");
+            }
+
             resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
             return;
         }
 
+        // Check if resource is locked
         if (isLocked(req)) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Resource is locked");
+            }
+
             resp.sendError(CmsWebdavStatus.SC_LOCKED);
             return;
         }
@@ -777,49 +1031,19 @@ public class CmsWebdavServlet extends HttpServlet {
         CmsWebdavLockInfo lock = new CmsWebdavLockInfo();
 
         // Parsing depth header
-        String depthStr = req.getHeader("Depth");
+        String depthStr = req.getHeader(HEADER_DEPTH);
         if (depthStr == null) {
-            lock.setDepth(INFINITY);
+            lock.setDepth(CmsWebdavLockInfo.DEPTH_INFINITY);
         } else {
             if (depthStr.equals("0")) {
                 lock.setDepth(0);
             } else {
-                lock.setDepth(INFINITY);
+                lock.setDepth(CmsWebdavLockInfo.DEPTH_INFINITY);
             }
         }
 
         // Parsing timeout header
-        int lockDuration = DEFAULT_TIMEOUT;
-        String lockDurationStr = req.getHeader("Timeout");
-        if (lockDurationStr == null) {
-            lockDuration = DEFAULT_TIMEOUT;
-        } else {
-            int commaPos = lockDurationStr.indexOf(",");
-
-            // If multiple timeouts, just use the first
-            if (commaPos != -1) {
-                lockDurationStr = lockDurationStr.substring(0, commaPos);
-            }
-            if (lockDurationStr.startsWith("Second-")) {
-                lockDuration = (new Integer(lockDurationStr.substring(7))).intValue();
-            } else {
-                if (lockDurationStr.equalsIgnoreCase("infinity")) {
-                    lockDuration = MAX_TIMEOUT;
-                } else {
-                    try {
-                        lockDuration = (new Integer(lockDurationStr)).intValue();
-                    } catch (NumberFormatException e) {
-                        lockDuration = MAX_TIMEOUT;
-                    }
-                }
-            }
-            if (lockDuration == 0) {
-                lockDuration = DEFAULT_TIMEOUT;
-            }
-            if (lockDuration > MAX_TIMEOUT) {
-                lockDuration = MAX_TIMEOUT;
-            }
-        }
+        int lockDuration = CmsWebdavLockInfo.DEFAULT_TIMEOUT;
         lock.setExpiresAt(System.currentTimeMillis() + (lockDuration * 1000));
 
         int lockRequestType = LOCK_CREATION;
@@ -964,97 +1188,47 @@ public class CmsWebdavServlet extends HttpServlet {
 
         }
 
-        String path = getRelativePath(req);
         lock.setPath(path);
+
+        if (lockRequestType == LOCK_REFRESH) {
+
+            CmsWebdavLockInfo currentLock = m_session.getLock(path);
+            if (currentLock == null) {
+                lockRequestType = LOCK_CREATION;
+            }
+        }
 
         if (lockRequestType == LOCK_CREATION) {
 
             try {
-                // Generating lock id
-                String lockTokenStr = req.getServletPath()
-                    + "-"
-                    + lock.getType()
-                    + "-"
-                    + lock.getScope()
-                    + "-"
-                    + req.getUserPrincipal()
-                    + "-"
-                    + lock.getDepth()
-                    + "-"
-                    + lock.getOwner()
-                    + "-"
-                    + lock.getTokens()
-                    + "-"
-                    + lock.getExpiresAt()
-                    + "-"
-                    + System.currentTimeMillis()
-                    + "-"
-                    + m_secret;
-
-                String lockToken = MD5_ENCODER.encode(m_md5Helper.digest(lockTokenStr.getBytes()));
-                ArrayList errorLocks = new ArrayList();
-                boolean result = m_session.lock(path, lock, lockToken, errorLocks);
+                boolean result = m_session.lock(path, lock);
                 if (result) {
 
                     // Add the Lock-Token header as by RFC 2518 8.10.1
                     // - only do this for newly created locks
-                    resp.addHeader("Lock-Token", "<opaquelocktoken:" + lockToken + ">");
+                    resp.addHeader(HEADER_LOCKTOKEN, "<opaquelocktoken:" + generateLockToken(req, lock) + ">");
 
                 } else {
 
-                    if (!errorLocks.isEmpty()) {
-                        
-                        resp.setStatus(CmsWebdavStatus.SC_CONFLICT);
-                        
-                        // One of the child paths was locked
-                        // We generate a multistatus LockException
-                        CmsWebdavLockException lockEx = new CmsWebdavLockException(CmsWebdavStatus.SC_CONFLICT, true);
-
-                        Document doc = DocumentHelper.createDocument();
-                        Element multiStatusElem = doc.addElement(new QName("multistatus", Namespace.get(DEFAULT_NAMESPACE)));
-
-                        Iterator iter = errorLocks.iterator();
-                        while (iter.hasNext()) {
-                            String href = (String)iter.next();
-
-                            Element responseElem = addElement(multiStatusElem, "response");
-                            responseElem.addElement("href").addText(href);
-                            responseElem.addElement("status").addText(
-                                "HTTP/1.1 " + CmsWebdavStatus.SC_LOCKED + " " + CmsWebdavStatus.getStatusText(CmsWebdavStatus.SC_LOCKED));
-                        }
-                        
-                        Writer writer = resp.getWriter();
-                        doc.write(writer);
-                        writer.close();
-
-                        return;
-                    }
+                    resp.sendError(CmsWebdavStatus.SC_LOCKED);
+                    return;
                 }
-
-            } catch (CmsException e) {
-
-                // TODO: fix that
-
+            } catch (CmsWebdavItemNotFoundException infex) {
+                resp.sendError(CmsWebdavStatus.SC_NOT_FOUND);
+                return;
+            } catch (CmsWebdavPermissionException pex) {
+                resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
+                return;
             }
-        }
-
-        if (lockRequestType == LOCK_REFRESH) {
-
-            String ifHeader = req.getHeader("If");
-            if (ifHeader == null) {
-                ifHeader = "";
-            }
-
-            m_handler.renewLock(lock, path, ifHeader);
         }
 
         // Set the status, then generate the XML response containing
         // the lock information
         Document doc = DocumentHelper.createDocument();
-        Element propElem = doc.addElement(new QName("prop", Namespace.get(DEFAULT_NAMESPACE)));
+        Element propElem = doc.addElement(new QName(TAG_PROP, Namespace.get(DEFAULT_NAMESPACE)));
 
-        Element lockElem = addElement(propElem, "lockdiscovery");
-        lock.toXML(lockElem);
+        Element lockElem = addElement(propElem, TAG_LOCKDISCOVERY);
+        addLockElement(lock, lockElem, generateLockToken(req, lock));
 
         resp.setStatus(CmsWebdavStatus.SC_OK);
         resp.setContentType("text/xml; charset=UTF-8");
@@ -1075,19 +1249,27 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     protected void doMkcol(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        if (m_readOnly) {
-            resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
-            return;
-        }
-
-        if (isLocked(req)) {
-            resp.sendError(CmsWebdavStatus.SC_LOCKED);
-            return;
-        }
-
         String path = getRelativePath(req);
-        if ((path.toUpperCase().startsWith("/WEB-INF")) || (path.toUpperCase().startsWith("/META-INF"))) {
+
+        // Check if Webdav is read only
+        if (m_readOnly) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("WebDav is set to read only");
+            }
+
             resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
+            return;
+        }
+
+        // Check if resource is locked
+        if (isLocked(req)) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Resource is locked");
+            }
+
+            resp.sendError(CmsWebdavStatus.SC_LOCKED);
             return;
         }
 
@@ -1096,11 +1278,13 @@ public class CmsWebdavServlet extends HttpServlet {
         // Can't create a collection if a resource already exists at the given path
         if (exists) {
 
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Collection already exists");
+            }
+
             // Get allowed methods
             StringBuffer methodsAllowed = determineMethodsAllowed(getRelativePath(req));
-
-            resp.addHeader("Allow", methodsAllowed.toString());
-
+            resp.addHeader(HEADER_ALLOW, methodsAllowed.toString());
             resp.sendError(CmsWebdavStatus.SC_METHOD_NOT_ALLOWED);
             return;
         }
@@ -1120,18 +1304,22 @@ public class CmsWebdavServlet extends HttpServlet {
             }
         }
 
-        boolean result = true;
+        // call session to create collection
         try {
             m_session.create(path);
-        } catch (CmsException e) {
-            result = false;
+        } catch (CmsWebdavItemAlreadyExistsException iaeex) {
+            resp.sendError(CmsWebdavStatus.SC_PRECONDITION_FAILED);
+            return;
+        } catch (CmsWebdavPermissionException pex) {
+            resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
+            return;
         }
 
-        if (!result) {
-            resp.sendError(CmsWebdavStatus.SC_CONFLICT, CmsWebdavStatus.getStatusText(CmsWebdavStatus.SC_CONFLICT));
-        } else {
-            resp.setStatus(CmsWebdavStatus.SC_CREATED);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Collection created successfully");
         }
+
+        resp.setStatus(CmsWebdavStatus.SC_CREATED);
     }
 
     /**
@@ -1145,20 +1333,104 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     protected void doMove(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        // Check if Webdav is read only
         if (m_readOnly) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("WebDav is set to read only");
+            }
+
             resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
             return;
         }
 
+        // Check if resource is locked
         if (isLocked(req)) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Resource is locked");
+            }
+
             resp.sendError(CmsWebdavStatus.SC_LOCKED);
             return;
         }
 
-        String path = getRelativePath(req);
+        // Parsing destination header
+        String dest = parseDestinationHeader(req, resp);
+        if (dest == null) {
 
-        if (copyResource(req, resp)) {
-            deleteResource(path, req, resp, false);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Could not parse destination header");
+            }
+
+            resp.sendError(CmsWebdavStatus.SC_BAD_REQUEST);
+            return;
+        }
+
+        // Get source path
+        String src = getRelativePath(req);
+
+        // source and destination are the same
+        if (dest.equals(src)) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Source and destination are the same");
+            }
+
+            resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
+            return;
+        }
+
+        // Parsing overwrite header
+        boolean overwrite = parseOverwriteHeader(req);
+
+        // Check if source exists
+        if (!m_session.exists(src)) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Could not find source path: " + src);
+            }
+
+            resp.sendError(CmsWebdavStatus.SC_NOT_FOUND);
+            return;
+        }
+
+        // If the destination exists, then it's a conflict
+        if ((m_session.exists(dest)) && (!overwrite)) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Destination path already exists and should not be overwritten");
+            }
+
+            resp.sendError(CmsWebdavStatus.SC_PRECONDITION_FAILED);
+            return;
+        }
+
+        if ((!m_session.exists(dest)) && (overwrite)) {
+            resp.setStatus(CmsWebdavStatus.SC_CREATED);
+        }
+
+        // Moving source to destination
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Move: " + src + " to: " + dest);
+        }
+
+        // trigger move in session handler
+        try {
+            m_session.move(src, dest, overwrite);
+        } catch (CmsWebdavItemNotFoundException infex) {
+            resp.sendError(CmsWebdavStatus.SC_NOT_FOUND);
+            return;
+        } catch (CmsWebdavPermissionException pex) {
+            resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
+            return;
+        } catch (CmsWebdavItemAlreadyExistsException iaeex) {
+            resp.sendError(CmsWebdavStatus.SC_PRECONDITION_FAILED);
+            return;
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Resource moved successfully");
         }
     }
 
@@ -1177,7 +1449,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
         StringBuffer methodsAllowed = determineMethodsAllowed(getRelativePath(req));
 
-        resp.addHeader("Allow", methodsAllowed.toString());
+        resp.addHeader(HEADER_ALLOW, methodsAllowed.toString());
         resp.addHeader("MS-Author-Via", "DAV");
     }
 
@@ -1192,46 +1464,42 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     protected void doPropfind(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        String path = getRelativePath(req);
+
         if (!m_listings) {
 
             // Get allowed methods
             StringBuffer methodsAllowed = determineMethodsAllowed(getRelativePath(req));
 
-            resp.addHeader("Allow", methodsAllowed.toString());
+            resp.addHeader(HEADER_ALLOW, methodsAllowed.toString());
             resp.sendError(CmsWebdavStatus.SC_METHOD_NOT_ALLOWED);
             return;
         }
 
-        String path = getRelativePath(req);
         if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
-        }
-
-        if ((path.toUpperCase().startsWith("/WEB-INF")) || (path.toUpperCase().startsWith("/META-INF"))) {
-            resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
-            return;
         }
 
         // Properties which are to be displayed.
         List properties = null;
 
         // Propfind depth
-        int depth = INFINITY;
+        int depth = CmsWebdavLockInfo.DEPTH_INFINITY;
 
         // Propfind type
         int type = FIND_ALL_PROP;
 
-        String depthStr = req.getHeader("Depth");
+        String depthStr = req.getHeader(HEADER_DEPTH);
 
         if (depthStr == null) {
-            depth = INFINITY;
+            depth = CmsWebdavLockInfo.DEPTH_INFINITY;
         } else {
             if (depthStr.equals("0")) {
                 depth = 0;
             } else if (depthStr.equals("1")) {
                 depth = 1;
             } else if (depthStr.equals("infinity")) {
-                depth = INFINITY;
+                depth = CmsWebdavLockInfo.DEPTH_INFINITY;
             }
         }
 
@@ -1300,6 +1568,11 @@ public class CmsWebdavServlet extends HttpServlet {
 
         boolean exists = m_session.exists(path);
         if (!exists) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Resource not found");
+            }
+
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, path);
             return;
         }
@@ -1309,7 +1582,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
         // Create multistatus object
         Document doc = DocumentHelper.createDocument();
-        Element multiStatusElem = doc.addElement(new QName("multistatus", Namespace.get(DEFAULT_NAMESPACE)));
+        Element multiStatusElem = doc.addElement(new QName(TAG_MULTISTATUS, Namespace.get("D", DEFAULT_NAMESPACE)));
 
         if (depth == 0) {
             parseProperties(req, multiStatusElem, path, type, properties);
@@ -1329,7 +1602,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 I_CmsWebdavItem item;
                 try {
                     item = m_session.getItem(currentPath);
-                } catch (CmsException e) {
+                } catch (CmsWebdavException e) {
                     continue;
                 }
 
@@ -1348,7 +1621,7 @@ public class CmsWebdavServlet extends HttpServlet {
                             stackBelow.push(newPath);
                         }
 
-                    } catch (CmsException e) {
+                    } catch (CmsWebdavException e) {
                         if (LOG.isErrorEnabled()) {
                             LOG.error("WebdavServlet: naming exception processing " + currentPath);
                         }
@@ -1406,17 +1679,29 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        if (isLocked(req)) {
-            resp.sendError(CmsWebdavStatus.SC_LOCKED);
-            return;
-        }
+        String path = getRelativePath(req);
 
+        // Check if webdav is set to read only
         if (m_readOnly) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("WebDav is set to read only");
+            }
+
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 
-        String path = getRelativePath(req);
+        // Check if resource is locked
+        if (isLocked(req)) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Resource is locked");
+            }
+
+            resp.sendError(CmsWebdavStatus.SC_LOCKED);
+            return;
+        }
 
         boolean exists = m_session.exists(path);
         boolean result = true;
@@ -1442,7 +1727,7 @@ public class CmsWebdavServlet extends HttpServlet {
         try {
             // FIXME: Add attributes
             m_session.create(path, resourceInputStream, exists);
-        } catch (CmsException e) {
+        } catch (CmsWebdavException e) {
             result = false;
         }
 
@@ -1490,13 +1775,7 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         String path = getRelativePath(req);
-
-        String lockTokenHeader = req.getHeader("Lock-Token");
-        if (lockTokenHeader == null) {
-            lockTokenHeader = "";
-        }
-
-        m_handler.unlock(path, lockTokenHeader);
+        m_session.unlock(path);
 
         resp.setStatus(CmsWebdavStatus.SC_NO_CONTENT);
     }
@@ -1518,7 +1797,7 @@ public class CmsWebdavServlet extends HttpServlet {
         // Append data specified in ranges to existing content for this
         // resource - create a temp. file on the local filesystem to
         // perform this operation
-        File tempDir = (File)getServletContext().getAttribute("javax.servlet.context.tempdir");
+        File tempDir = (File)getServletContext().getAttribute(ATT_SERVLET_TEMPDIR);
 
         // Convert all '/' characters to '.' in resourcePath
         String convertedResourcePath = path.replace('/', '.');
@@ -1529,8 +1808,10 @@ public class CmsWebdavServlet extends HttpServlet {
 
         InputStream oldResourceStream = null;
         try {
-            oldResourceStream = m_handler.getStreamContent(path);
-        } catch (CmsWebdavResourceException e) {
+            I_CmsWebdavItem item = m_session.getItem(path);
+
+            oldResourceStream = item.getStreamContent();
+        } catch (CmsWebdavException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error("DefaultServlet.executePartialPut: couldn't find resource at " + path);
             }
@@ -1655,7 +1936,7 @@ public class CmsWebdavServlet extends HttpServlet {
         // bytes is the only range unit supported (and I don't see the point
         // of adding new ones).
         if (!rangeHeader.startsWith("bytes")) {
-            response.addHeader("Content-Range", "bytes */" + fileLength);
+            response.addHeader(HEADER_CONTENTRANGE, "bytes */" + fileLength);
             response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
             return null;
         }
@@ -1676,7 +1957,7 @@ public class CmsWebdavServlet extends HttpServlet {
             int dashPos = rangeDefinition.indexOf('-');
 
             if (dashPos == -1) {
-                response.addHeader("Content-Range", "bytes */" + fileLength);
+                response.addHeader(HEADER_CONTENTRANGE, "bytes */" + fileLength);
                 response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
                 return null;
             }
@@ -1688,7 +1969,7 @@ public class CmsWebdavServlet extends HttpServlet {
                     currentRange.setStart(fileLength + offset);
                     currentRange.setEnd(fileLength - 1);
                 } catch (NumberFormatException e) {
-                    response.addHeader("Content-Range", "bytes */" + fileLength);
+                    response.addHeader(HEADER_CONTENTRANGE, "bytes */" + fileLength);
                     response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
                     return null;
                 }
@@ -1705,7 +1986,7 @@ public class CmsWebdavServlet extends HttpServlet {
                         currentRange.setEnd(fileLength - 1);
                     }
                 } catch (NumberFormatException e) {
-                    response.addHeader("Content-Range", "bytes */" + fileLength);
+                    response.addHeader(HEADER_CONTENTRANGE, "bytes */" + fileLength);
                     response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
                     return null;
                 }
@@ -1713,7 +1994,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             if (!currentRange.validate()) {
-                response.addHeader("Content-Range", "bytes */" + fileLength);
+                response.addHeader(HEADER_CONTENTRANGE, "bytes */" + fileLength);
                 response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
                 return null;
             }
@@ -1841,7 +2122,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 I_CmsWebdavItem childItem = null;
                 try {
                     childItem = m_session.getItem(path + resourceName);
-                } catch (CmsException ex) {
+                } catch (CmsWebdavException ex) {
                     continue;
                 }
 
@@ -1882,7 +2163,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 sb.append("</tr>\r\n");
             }
 
-        } catch (CmsException e) {
+        } catch (CmsWebdavException e) {
 
             // Something went wrong
             e.printStackTrace();
@@ -1957,7 +2238,7 @@ public class CmsWebdavServlet extends HttpServlet {
         I_CmsWebdavItem item = null;
         try {
             item = m_session.getItem(path);
-        } catch (CmsException ex) {
+        } catch (CmsWebdavException ex) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, request.getRequestURI());
             return;
         }
@@ -2011,10 +2292,10 @@ public class CmsWebdavServlet extends HttpServlet {
             ranges = parseRange(request, response, item);
 
             // ETag header
-            response.setHeader("ETag", getETag(item));
+            response.setHeader(HEADER_ETAG, getETag(item));
 
             // Last-Modified header
-            response.setHeader("Last-Modified", HTTP_DATE_FORMAT.format(new Date(item.getLastModifiedDate())));
+            response.setHeader(HEADER_LASTMODIFIED, HTTP_DATE_FORMAT.format(new Date(item.getLastModifiedDate())));
 
             // Get content length
             contentLength = item.getContentLength();
@@ -2070,7 +2351,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 } else {
 
                     // Set the content-length as String to be able to use a long
-                    response.setHeader("content-length", "" + contentLength);
+                    response.setHeader(HEADER_CONTENTLENGTH, "" + contentLength);
                 }
             }
 
@@ -2110,7 +2391,7 @@ public class CmsWebdavServlet extends HttpServlet {
             if (ranges.size() == 1) {
 
                 CmsWebdavRange range = (CmsWebdavRange)ranges.get(0);
-                response.addHeader("Content-Range", "bytes "
+                response.addHeader(HEADER_CONTENTRANGE, "bytes "
                     + range.getStart()
                     + "-"
                     + range.getEnd()
@@ -2121,7 +2402,7 @@ public class CmsWebdavServlet extends HttpServlet {
                     response.setContentLength((int)length);
                 } else {
                     // Set the content-length as String to be able to use a long
-                    response.setHeader("content-length", "" + length);
+                    response.setHeader(HEADER_CONTENTLENGTH, "" + length);
                 }
 
                 if (contentType != null) {
@@ -2197,7 +2478,7 @@ public class CmsWebdavServlet extends HttpServlet {
         } else if (method.equals(METHOD_LOCK)) {
             doLock(req, resp);
         } else if (method.equals(METHOD_UNLOCK)) {
-            //doUnlock(req, resp);
+            doUnlock(req, resp);
         } else {
 
             // DefaultServlet processing
@@ -2205,156 +2486,49 @@ public class CmsWebdavServlet extends HttpServlet {
         }
     }
 
-    private Element addElement(Element parent, String name) {
-
-        return parent.addElement(new QName(name, Namespace.get(DEFAULT_NAMESPACE)));
-    }
-
     /**
-     * Copy a resource.
-     *
-     * @param req Servlet request
-     * @param resp Servlet response
-     * @return boolean true if the copy is successful
+     * Generate a dom element from the given information with all needed subelements to
+     * add to the parent.
+     * 
+     * @param lock The lock with the information to create the subelements
+     * @param parent The parent element where to add the created element
+     * @param lockToken The lock token to use
      */
-    private boolean copyResource(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void addLockElement(CmsWebdavLockInfo lock, Element parent, String lockToken) {
 
-        // Parsing destination header
-        String destinationPath = req.getHeader("Destination");
+        Element activeLockElem = addElement(parent, TAG_ACTIVELOCK);
+        addElement(addElement(activeLockElem, TAG_LOCKTYPE), lock.getType());
+        addElement(addElement(activeLockElem, TAG_LOCKSCOPE), lock.getScope());
 
-        if (destinationPath == null) {
-            resp.sendError(CmsWebdavStatus.SC_BAD_REQUEST);
-            return false;
-        }
-
-        // Remove url encoding from destination
-        destinationPath = CmsEncoder.decode(destinationPath, "UTF8");
-
-        int protocolIndex = destinationPath.indexOf("://");
-        if (protocolIndex >= 0) {
-
-            // if the Destination URL contains the protocol, we can safely
-            // trim everything upto the first "/" character after "://"
-            int firstSeparator = destinationPath.indexOf("/", protocolIndex + 4);
-            if (firstSeparator < 0) {
-                destinationPath = "/";
-            } else {
-                destinationPath = destinationPath.substring(firstSeparator);
-            }
+        if (lock.getDepth() == CmsWebdavLockInfo.DEPTH_INFINITY) {
+            addElement(activeLockElem, TAG_DEPTH).addText("Infinity");
         } else {
-            String hostName = req.getServerName();
-            if ((hostName != null) && (destinationPath.startsWith(hostName))) {
-                destinationPath = destinationPath.substring(hostName.length());
-            }
-
-            int portIndex = destinationPath.indexOf(":");
-            if (portIndex >= 0) {
-                destinationPath = destinationPath.substring(portIndex);
-            }
-
-            if (destinationPath.startsWith(":")) {
-                int firstSeparator = destinationPath.indexOf("/");
-                if (firstSeparator < 0) {
-                    destinationPath = "/";
-                } else {
-                    destinationPath = destinationPath.substring(firstSeparator);
-                }
-            }
+            addElement(activeLockElem, TAG_DEPTH).addText("0");
         }
 
-        // Normalise destination path (remove '.' and '..')
-        destinationPath = normalize(destinationPath);
+        Element ownerElem = addElement(activeLockElem, TAG_OWNER);
+        addElement(ownerElem, TAG_HREF).addText(lock.getOwner());
 
-        String contextPath = req.getContextPath();
-        if ((contextPath != null) && (destinationPath.startsWith(contextPath))) {
-            destinationPath = destinationPath.substring(contextPath.length());
-        }
+        long timeout = (lock.getExpiresAt() - System.currentTimeMillis()) / 1000;
+        addElement(activeLockElem, TAG_TIMEOUT).addText("Second-" + timeout);
 
-        String pathInfo = req.getPathInfo();
-        if (pathInfo != null) {
-            String servletPath = req.getServletPath();
-            if ((servletPath != null) && (destinationPath.startsWith(servletPath))) {
-                destinationPath = destinationPath.substring(servletPath.length());
-            }
-        }
-
-        if ((destinationPath.toUpperCase().startsWith("/WEB-INF"))
-            || (destinationPath.toUpperCase().startsWith("/META-INF"))) {
-            resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
-            return false;
-        }
-
-        String path = getRelativePath(req);
-
-        if ((path.toUpperCase().startsWith("/WEB-INF")) || (path.toUpperCase().startsWith("/META-INF"))) {
-            resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
-            return false;
-        }
-
-        // source and destination are the same
-        if (destinationPath.equals(path)) {
-            resp.sendError(CmsWebdavStatus.SC_FORBIDDEN);
-            return false;
-        }
-
-        // Parsing overwrite header
-        boolean overwrite = true;
-        String overwriteHeader = req.getHeader("Overwrite");
-
-        if (overwriteHeader != null) {
-            if (overwriteHeader.equalsIgnoreCase("T")) {
-                overwrite = true;
-            } else {
-                overwrite = false;
-            }
-        }
-
-        // Check if source exists
-        if (!m_session.exists(path)) {
-            resp.sendError(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
-            return false;
-        }
-
-        // If the destination exists, then it's a conflict
-        if ((m_session.exists(destinationPath)) && (!overwrite)) {
-            resp.sendError(CmsWebdavStatus.SC_PRECONDITION_FAILED);
-            return false;
-        }
-
-        if ((!m_session.exists(destinationPath)) && (overwrite)) {
-            resp.setStatus(CmsWebdavStatus.SC_CREATED);
-        }
-
-        // Copying source to destination
-        Hashtable errorList = new Hashtable();
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Copy: " + path + " To: " + destinationPath);
-        }
-
-        boolean result = m_session.copy(path, destinationPath, overwrite, errorList);
-        if ((!result) || (!errorList.isEmpty())) {
-
-            sendReport(req, resp, errorList);
-            return false;
-        }
-
-        return true;
+        Element lockTokenElem = addElement(activeLockElem, TAG_LOCKTOKEN);
+        addElement(lockTokenElem, TAG_HREF).addText("opaquelocktoken:" + lockToken);
     }
 
     /**
      * Checks if the items in the path or in a subpath are locked.
      * 
-     * @param path The path to check the items for locks
      * @param lockTokens The lock tokens to use for the check
+     * @param path The path to check the items for locks
      * @param errorList The error list where to put the found errors
      */
-    private void checkChildLocks(String path, String lockTokens, Hashtable errorList) {
+    private void checkChildLocks(HttpServletRequest req, String path, Hashtable errorList) {
 
         List list = null;
         try {
             list = m_session.list(path);
-        } catch (CmsException e) {
+        } catch (CmsWebdavException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error("WebdavServlet: naming exception listing resources for " + path);
             }
@@ -2371,15 +2545,15 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             childName += element;
-            if (m_session.isLocked(childName, lockTokens)) {
+            if (isLocked(req, childName)) {
                 errorList.put(childName, new Integer(CmsWebdavStatus.SC_LOCKED));
             } else {
                 try {
                     I_CmsWebdavItem item = m_session.getItem(childName);
                     if (item.isCollection()) {
-                        checkChildLocks(childName, lockTokens, errorList);
+                        checkChildLocks(req, childName, errorList);
                     }
-                } catch (CmsException e) {
+                } catch (CmsWebdavException e) {
                     errorList.put(childName, new Integer(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR));
                 }
             }
@@ -2387,61 +2561,10 @@ public class CmsWebdavServlet extends HttpServlet {
     }
 
     /**
-     * Delete a resource.
-     *
-     * @param path Path of the resource which is to be deleted
-     * @param req Servlet request
-     * @param resp Servlet response
-     * @param setStatus Should the response status be set on successful
-     *                  completion
-     */
-    private boolean deleteResource(String path, HttpServletRequest req, HttpServletResponse resp, boolean setStatus)
-    throws ServletException, IOException {
-
-        String ifHeader = req.getHeader("If");
-        if (ifHeader == null) {
-            ifHeader = "";
-        }
-
-        String lockTokenHeader = req.getHeader("Lock-Token");
-        if (lockTokenHeader == null) {
-            lockTokenHeader = "";
-        }
-
-        boolean exists = m_session.exists(path);
-        if (!exists) {
-            resp.sendError(CmsWebdavStatus.SC_NOT_FOUND);
-            return false;
-        }
-
-        Hashtable errorList = new Hashtable();
-        checkChildLocks(path, ifHeader + lockTokenHeader, errorList);
-        if (!errorList.isEmpty()) {
-            sendReport(req, resp, errorList);
-            return false;
-        }
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Delete:" + path);
-        }
-
-        boolean result = m_session.delete(path, errorList);
-        if ((!result) || (!errorList.isEmpty())) {
-
-            sendReport(req, resp, errorList);
-            return false;
-        }
-
-        if (setStatus) {
-            resp.setStatus(CmsWebdavStatus.SC_NO_CONTENT);
-        }
-
-        return true;
-    }
-
-    /**
      * Determines the methods normally allowed for the resource.
      *
+     * @param path The path to the resource
+     * @return a StringBuffer with the WebDAV methods allowed for the resource at the given path
      */
     private StringBuffer determineMethodsAllowed(String path) {
 
@@ -2450,7 +2573,7 @@ public class CmsWebdavServlet extends HttpServlet {
         I_CmsWebdavItem item = null;
         try {
             item = m_session.getItem(path);
-        } catch (CmsException e) {
+        } catch (CmsWebdavException e) {
             exists = false;
         }
 
@@ -2476,23 +2599,20 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Print the lock discovery information associated with a path.
      *
-     * @param path Path
-     * @param generatedXML XML data to which the locks info will be appended
+     * @param path The path to the resource
+     * @param elem The dom element where to add the lock discovery elements
+     * @param req The servlet request we are processing
      * @return true if at least one lock was displayed
      */
-    private boolean generateLockDiscovery(String path, Element elem) {
+    private boolean generateLockDiscovery(String path, Element elem, HttpServletRequest req) {
 
-        List locks = m_handler.getLocks(path);
+        CmsWebdavLockInfo lock = m_session.getLock(path);
 
-        if (locks.size() > 0) {
+        if (lock != null) {
 
-            Element lockElem = addElement(elem, "lockdiscovery");
+            Element lockElem = addElement(elem, TAG_LOCKDISCOVERY);
+            addLockElement(lock, lockElem, generateLockToken(req, lock));
 
-            Iterator iter = locks.iterator();
-            while (iter.hasNext()) {
-                CmsWebdavLockInfo current = (CmsWebdavLockInfo)iter.next();
-                current.toXML(lockElem);
-            }
             return true;
         }
 
@@ -2500,9 +2620,33 @@ public class CmsWebdavServlet extends HttpServlet {
     }
 
     /**
+     * Generates a lock token out of the lock and some information out of the
+     * request to make it unique.
+     * 
+     * @param req The servlet request we are processing
+     * @param lock The lock with the information for the lock token
+     * @return the generated lock token
+     */
+    private String generateLockToken(HttpServletRequest req, CmsWebdavLockInfo lock) {
+
+        String lockTokenStr = req.getServletPath()
+            + "-"
+            + req.getUserPrincipal()
+            + "-"
+            + lock.getOwner()
+            + "-"
+            + lock.getPath()
+            + "-"
+            + m_secret;
+
+        return MD5_ENCODER.encode(m_md5Helper.digest(lockTokenStr.getBytes()));
+    }
+
+    /**
      * Return the relative path associated with this servlet.
      *
      * @param request The servlet request we are processing
+     * @return the relative path of the resource
      */
     private String getRelativePath(HttpServletRequest request) {
 
@@ -2528,19 +2672,35 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     private boolean isLocked(HttpServletRequest req) {
 
-        String path = getRelativePath(req);
+        return isLocked(req, getRelativePath(req));
+    }
 
-        String ifHeader = req.getHeader("If");
-        if (ifHeader == null) {
-            ifHeader = "";
+    /**
+     * Check to see if a resource is currently write locked. The method
+     * will look at the "If" header to make sure the client
+     * has give the appropriate lock tokens.
+     *
+     * @param req Servlet request
+     * @param path The path where to find the resource to check the lock
+     * @return boolean true if the resource is locked (and no appropriate
+     * lock token has been found for at least one of the non-shared locks which
+     * are present on the resource).
+     */
+    private boolean isLocked(HttpServletRequest req, String path) {
+
+        // get lock for path
+        CmsWebdavLockInfo lock = m_session.getLock(path);
+        if (lock == null) {
+            return false;
         }
 
-        String lockTokenHeader = req.getHeader("Lock-Token");
-        if (lockTokenHeader == null) {
-            lockTokenHeader = "";
+        // check if found lock fits to the lock token from request
+        String currentToken = "<opaquelocktoken:" + generateLockToken(req, lock) + ">";
+        if (currentToken.equals(parseLockTokenHeader(req))) {
+            return false;
         }
 
-        return m_handler.isLocked(path, ifHeader + lockTokenHeader);
+        return true;
     }
 
     /**
@@ -2551,6 +2711,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * are present), return <code>null</code> instead.
      *
      * @param path Path to be normalized
+     * @return the normalized path
      */
     private String normalize(String path) {
 
@@ -2621,7 +2782,7 @@ public class CmsWebdavServlet extends HttpServlet {
     throws IOException {
 
         // Retrieving the content-range header (if any is specified
-        String rangeHeader = request.getHeader("Content-Range");
+        String rangeHeader = request.getHeader(HEADER_CONTENTRANGE);
 
         if (rangeHeader == null) {
             return null;
@@ -2668,11 +2829,126 @@ public class CmsWebdavServlet extends HttpServlet {
     }
 
     /**
+     * Reads the information about a destination path out of the header of the
+     * request.
+     * 
+     * @param req The servlet request we are processing
+     * @param resp The servlet response we are processing
+     * @return the destination path
+     */
+    private String parseDestinationHeader(HttpServletRequest req, HttpServletResponse resp) {
+
+        // Parsing destination header
+        String destinationPath = req.getHeader(HEADER_DESTINATION);
+
+        if (destinationPath == null) {
+            return null;
+        }
+
+        // Remove url encoding from destination
+        destinationPath = CmsEncoder.decode(destinationPath, "UTF8");
+
+        int protocolIndex = destinationPath.indexOf("://");
+        if (protocolIndex >= 0) {
+
+            // if the Destination URL contains the protocol, we can safely
+            // trim everything upto the first "/" character after "://"
+            int firstSeparator = destinationPath.indexOf("/", protocolIndex + 4);
+            if (firstSeparator < 0) {
+                destinationPath = "/";
+            } else {
+                destinationPath = destinationPath.substring(firstSeparator);
+            }
+        } else {
+            String hostName = req.getServerName();
+            if ((hostName != null) && (destinationPath.startsWith(hostName))) {
+                destinationPath = destinationPath.substring(hostName.length());
+            }
+
+            int portIndex = destinationPath.indexOf(":");
+            if (portIndex >= 0) {
+                destinationPath = destinationPath.substring(portIndex);
+            }
+
+            if (destinationPath.startsWith(":")) {
+                int firstSeparator = destinationPath.indexOf("/");
+                if (firstSeparator < 0) {
+                    destinationPath = "/";
+                } else {
+                    destinationPath = destinationPath.substring(firstSeparator);
+                }
+            }
+        }
+
+        // Normalise destination path (remove '.' and '..')
+        destinationPath = normalize(destinationPath);
+
+        String contextPath = req.getContextPath();
+        if ((contextPath != null) && (destinationPath.startsWith(contextPath))) {
+            destinationPath = destinationPath.substring(contextPath.length());
+        }
+
+        String pathInfo = req.getPathInfo();
+        if (pathInfo != null) {
+            String servletPath = req.getServletPath();
+            if ((servletPath != null) && (destinationPath.startsWith(servletPath))) {
+                destinationPath = destinationPath.substring(servletPath.length());
+            }
+        }
+
+        return destinationPath;
+    }
+
+    /**
+     * Reads the lock token out of the header of the request.
+     * 
+     * @param req The servlet request we are processing
+     * @return the lock token found in the header of the request
+     */
+    private String parseLockTokenHeader(HttpServletRequest req) {
+
+        String ifHeader = req.getHeader(HEADER_IF);
+        if (ifHeader == null) {
+            ifHeader = "";
+        }
+
+        String lockTokenHeader = req.getHeader(HEADER_LOCKTOKEN);
+        if (lockTokenHeader == null) {
+            lockTokenHeader = "";
+        }
+
+        return ifHeader + lockTokenHeader;
+    }
+
+    /**
+     * Reads the information about overwriting out of the header of the
+     * request.
+     * 
+     * @param req The servlet request we are processing
+     * @return true if overwrite was set in the header otherwise false
+     */
+    private boolean parseOverwriteHeader(HttpServletRequest req) {
+
+        boolean overwrite = true;
+        String overwriteHeader = req.getHeader(HEADER_OVERWRITE);
+
+        if (overwriteHeader != null) {
+            if (overwriteHeader.equalsIgnoreCase("T")) {
+                overwrite = true;
+            } else {
+                overwrite = false;
+            }
+        }
+
+        return overwrite;
+    }
+
+    /**
      * Propfind helper method.
      *
      * @param req The servlet request
      * @param resources Resources object associated with this context
-     * @param generatedXML XML response to the Propfind request
+     * @param elem the parent element where to add the generated subelements
      * @param path Path of the current resource
      * @param type Propfind type
      * @param propertiesVector If the propfind type is find properties by
@@ -2681,20 +2957,14 @@ public class CmsWebdavServlet extends HttpServlet {
     private void parseProperties(HttpServletRequest req, Element elem, String path, int type, List propertiesVector)
     throws IOException {
 
-        // Exclude any resource in the /WEB-INF and /META-INF subdirectories
-        // (the "toUpperCase()" avoids problems on Windows systems)
-        if (path.toUpperCase().startsWith("/WEB-INF") || path.toUpperCase().startsWith("/META-INF")) {
-            return;
-        }
-
         I_CmsWebdavItem item = null;
         try {
             item = m_session.getItem(path);
-        } catch (CmsException e) {
+        } catch (CmsWebdavException e) {
             return;
         }
 
-        Element responseElem = addElement(elem, "response");
+        Element responseElem = addElement(elem, TAG_RESPONSE);
 
         String status = new String("HTTP/1.1 "
             + CmsWebdavStatus.SC_OK
@@ -2702,7 +2972,7 @@ public class CmsWebdavServlet extends HttpServlet {
             + CmsWebdavStatus.getStatusText(CmsWebdavStatus.SC_OK));
 
         // Generating href element
-        Element hrefElem = addElement(responseElem, "href");
+        Element hrefElem = addElement(responseElem, TAG_HREF);
 
         String href = req.getContextPath() + req.getServletPath();
         if ((href.endsWith("/")) && (path.startsWith("/"))) {
@@ -2723,67 +2993,71 @@ public class CmsWebdavServlet extends HttpServlet {
             resourceName = resourceName.substring(lastSlash + 1);
         }
 
-        Element propstatElem = addElement(responseElem, "propstat");
-        Element propElem = propstatElem.addElement("prop");
+        if ((item.isCollection()) && (!path.endsWith("/"))) {
+            path += "/";
+        }
+
+        Element propstatElem = addElement(responseElem, TAG_PROPSTAT);
+        Element propElem = addElement(propstatElem, TAG_PROP);
 
         switch (type) {
 
             case FIND_ALL_PROP:
 
-                addElement(propElem, "creationdate").addText(ISO8601_FORMAT.format(new Date(item.getCreationDate())));
-                addElement(propElem, "displayname").addCDATA(resourceName);
+                addElement(propElem, TAG_CREATIONDATE).addText(ISO8601_FORMAT.format(new Date(item.getCreationDate())));
+                addElement(propElem, TAG_DISPLAYNAME).addCDATA(resourceName);
 
                 // properties only for files (no collections)
                 if (!item.isCollection()) {
 
-                    addElement(propElem, "getlastmodified").addText(
+                    addElement(propElem, TAG_LASTMODIFIED).addText(
                         HTTP_DATE_FORMAT.format(new Date(item.getLastModifiedDate())));
 
-                    addElement(propElem, "getcontentlength").addText(String.valueOf(item.getContentLength()));
+                    addElement(propElem, TAG_CONTENTLENGTH).addText(String.valueOf(item.getContentLength()));
 
                     String contentType = getServletContext().getMimeType(item.getName());
                     if (contentType != null) {
-                        addElement(propElem, "getcontenttype").addText(contentType);
+                        addElement(propElem, TAG_CONTENTTYPE).addText(contentType);
                     }
-                    addElement(propElem, "getetag").addText(getETag(item));
-                    addElement(propElem, "resourcetype");
+                    addElement(propElem, TAG_ETAG).addText(getETag(item));
+                    addElement(propElem, TAG_RESOURCETYPE);
                 } else {
-                    addElement(addElement(propElem, "resourcetype"), "collection");
+                    addElement(addElement(propElem, TAG_RESOURCETYPE), TAG_COLLECTION);
                 }
 
-                addElement(propElem, "source").addText("");
+                addElement(propElem, TAG_SOURCE).addText("");
 
-                Element suppLockElem = addElement(propElem, "supportedlock");
-                Element lockEntryElem = addElement(suppLockElem, "lockentry");
-                addElement(addElement(lockEntryElem, "lockscope"), "exclusive");
-                addElement(addElement(lockEntryElem, "locktype"), "write");
-                lockEntryElem = addElement(suppLockElem, "lockentry");
-                addElement(addElement(lockEntryElem, "lockscope"), "shared");
-                addElement(addElement(lockEntryElem, "locktype"), "write");
+                Element suppLockElem = addElement(propElem, TAG_SUPPORTEDLOCK);
+                Element lockEntryElem = addElement(suppLockElem, TAG_LOCKENTRY);
+                addElement(addElement(lockEntryElem, TAG_LOCKSCOPE), CmsWebdavLockInfo.SCOPE_EXCLUSIVE);
+                addElement(addElement(lockEntryElem, TAG_LOCKTYPE), CmsWebdavLockInfo.TYPE_WRITE);
+                lockEntryElem = addElement(suppLockElem, TAG_LOCKENTRY);
+                addElement(addElement(lockEntryElem, TAG_LOCKSCOPE), CmsWebdavLockInfo.SCOPE_SHARED);
+                addElement(addElement(lockEntryElem, TAG_LOCKTYPE), CmsWebdavLockInfo.TYPE_WRITE);
 
-                generateLockDiscovery(path, propElem);
+                generateLockDiscovery(path, propElem, req);
 
-                addElement(propstatElem, "status").addText(status);
+                addElement(propstatElem, TAG_STATUS).addText(status);
 
                 break;
 
             case FIND_PROPERTY_NAMES:
 
-                addElement(propElem, "creationdate");
-                addElement(propElem, "displayname");
+                addElement(propElem, TAG_CREATIONDATE);
+                addElement(propElem, TAG_DISPLAYNAME);
                 if (!item.isCollection()) {
 
-                    addElement(propElem, "getcontentlanguage");
-                    addElement(propElem, "getcontentlength");
-                    addElement(propElem, "getcontenttype");
-                    addElement(propElem, "getetag");
-                    addElement(propElem, "getlastmodified");
+                    addElement(propElem, TAG_CONTENTLANGUAGE);
+                    addElement(propElem, TAG_CONTENTLENGTH);
+                    addElement(propElem, TAG_CONTENTTYPE);
+                    addElement(propElem, TAG_ETAG);
+                    addElement(propElem, TAG_LASTMODIFIED);
                 }
-                addElement(propElem, "resourcetype");
-                addElement(propElem, "source");
-                addElement(propElem, "lockdiscovery");
+                addElement(propElem, TAG_RESOURCETYPE);
+                addElement(propElem, TAG_SOURCE);
+                addElement(propElem, TAG_LOCKDISCOVERY);
 
-                addElement(propstatElem, "status").addText(status);
+                addElement(propstatElem, TAG_STATUS).addText(status);
 
                 break;
 
@@ -2796,69 +3070,71 @@ public class CmsWebdavServlet extends HttpServlet {
                 while (iter.hasNext()) {
                     String property = (String)iter.next();
 
-                    if (property.equals("creationdate")) {
-                        addElement(propElem, "creationdate").addText(
+                    if (property.equals(TAG_CREATIONDATE)) {
+                        addElement(propElem, TAG_CREATIONDATE).addText(
                             ISO8601_FORMAT.format(new Date(item.getCreationDate())));
-                    } else if (property.equals("displayname")) {
-                        addElement(propElem, "displayname").addCDATA(resourceName);
-                    } else if (property.equals("getcontentlanguage")) {
+                    } else if (property.equals(TAG_DISPLAYNAME)) {
+                        addElement(propElem, TAG_DISPLAYNAME).addCDATA(resourceName);
+                    } else if (property.equals(TAG_CONTENTLANGUAGE)) {
                         if (item.isCollection()) {
                             propertiesNotFound.add(property);
                         } else {
-                            addElement(propElem, "getcontentlanguage");
+                            addElement(propElem, TAG_CONTENTLANGUAGE);
                         }
-                    } else if (property.equals("getcontentlength")) {
+                    } else if (property.equals(TAG_CONTENTLENGTH)) {
                         if (item.isCollection()) {
                             propertiesNotFound.add(property);
                         } else {
-                            addElement(propElem, "getcontentlength").addText((String.valueOf(item.getContentLength())));
+                            addElement(propElem, TAG_CONTENTLENGTH).addText((String.valueOf(item.getContentLength())));
                         }
-                    } else if (property.equals("getcontenttype")) {
+                    } else if (property.equals(TAG_CONTENTTYPE)) {
                         if (item.isCollection()) {
                             propertiesNotFound.add(property);
                         } else {
-                            addElement(propElem, "getcontenttype").addText(
-                                getServletContext().getMimeType(item.getName()));
+                            String contentType = getServletContext().getMimeType(item.getName());
+                            if (contentType != null) {
+                                addElement(propElem, TAG_CONTENTTYPE).addText(contentType);
+                            }
                         }
-                    } else if (property.equals("getetag")) {
+                    } else if (property.equals(TAG_ETAG)) {
                         if (item.isCollection()) {
                             propertiesNotFound.add(property);
                         } else {
-                            addElement(propElem, "getetag").addText(getETag(item));
+                            addElement(propElem, TAG_ETAG).addText(getETag(item));
                         }
-                    } else if (property.equals("getlastmodified")) {
+                    } else if (property.equals(TAG_LASTMODIFIED)) {
                         if (item.isCollection()) {
                             propertiesNotFound.add(property);
                         } else {
-                            addElement(propElem, "getlastmodified").addText(
+                            addElement(propElem, TAG_LASTMODIFIED).addText(
                                 HTTP_DATE_FORMAT.format(new Date(item.getLastModifiedDate())));
                         }
-                    } else if (property.equals("resourcetype")) {
+                    } else if (property.equals(TAG_RESOURCETYPE)) {
                         if (item.isCollection()) {
-                            addElement(addElement(propElem, "resourcetype"), "collection");
+                            addElement(addElement(propElem, TAG_RESOURCETYPE), TAG_COLLECTION);
                         } else {
-                            addElement(propElem, "resourcetype");
+                            addElement(propElem, TAG_RESOURCETYPE);
                         }
-                    } else if (property.equals("source")) {
-                        addElement(propElem, "source").addText("");
-                    } else if (property.equals("supportedlock")) {
-                        suppLockElem = addElement(propElem, "supportedlock");
-                        lockEntryElem = addElement(suppLockElem, "lockentry");
-                        addElement(addElement(lockEntryElem, "lockscope"), "exclusive");
-                        addElement(addElement(lockEntryElem, "locktype"), "write");
-                        lockEntryElem = addElement(suppLockElem, "lockentry");
-                        addElement(addElement(lockEntryElem, "lockscope"), "shared");
-                        addElement(addElement(lockEntryElem, "locktype"), "write");
-                    } else if (property.equals("lockdiscovery")) {
-                        if (!generateLockDiscovery(path, propElem)) {
-                            propertiesNotFound.add(property);
+                    } else if (property.equals(TAG_SOURCE)) {
+                        addElement(propElem, TAG_SOURCE).addText("");
+                    } else if (property.equals(TAG_SUPPORTEDLOCK)) {
+                        suppLockElem = addElement(propElem, TAG_SUPPORTEDLOCK);
+                        lockEntryElem = addElement(suppLockElem, TAG_LOCKENTRY);
+                        addElement(addElement(lockEntryElem, TAG_LOCKSCOPE), CmsWebdavLockInfo.SCOPE_EXCLUSIVE);
+                        addElement(addElement(lockEntryElem, TAG_LOCKTYPE), CmsWebdavLockInfo.TYPE_WRITE);
+                        lockEntryElem = addElement(suppLockElem, TAG_LOCKENTRY);
+                        addElement(addElement(lockEntryElem, TAG_LOCKSCOPE), CmsWebdavLockInfo.SCOPE_SHARED);
+                        addElement(addElement(lockEntryElem, TAG_LOCKTYPE), CmsWebdavLockInfo.TYPE_WRITE);
+                    } else if (property.equals(TAG_LOCKDISCOVERY)) {
+                        if (!generateLockDiscovery(path, propElem, req)) {
+                            addElement(propElem, TAG_LOCKDISCOVERY);
                         }
                     } else {
                         propertiesNotFound.add(property);
                     }
                 }
 
-                addElement(propstatElem, "status").addText(status);
+                addElement(propstatElem, TAG_STATUS).addText(status);
 
                 if (propertiesNotFound.size() > 0) {
                     status = new String("HTTP/1.1 "
@@ -2866,15 +3142,15 @@ public class CmsWebdavServlet extends HttpServlet {
                         + " "
                         + CmsWebdavStatus.getStatusText(CmsWebdavStatus.SC_NOT_FOUND));
 
-                    propstatElem = addElement(responseElem, "propstat");
-                    propElem = addElement(propstatElem, "prop");
+                    propstatElem = addElement(responseElem, TAG_PROPSTAT);
+                    propElem = addElement(propstatElem, TAG_PROP);
 
                     Iterator notFoundIter = propertiesNotFound.iterator();
                     while (notFoundIter.hasNext()) {
                         addElement(propElem, (String)notFoundIter.next());
                     }
 
-                    addElement(propstatElem, "status").addText(status);
+                    addElement(propstatElem, TAG_STATUS).addText(status);
                 }
 
                 break;
@@ -2890,8 +3166,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * Send a multistatus element containing a complete error report to the
      * client.
      *
-     * @param req Servlet request
-     * @param resp Servlet response
+     * @param req The servlet request we are processing
+     * @param resp The servlet response we are processing
      * @param errors The errors to be displayed
      */
     private void sendReport(HttpServletRequest req, HttpServletResponse resp, Map errors)
@@ -2903,21 +3179,21 @@ public class CmsWebdavServlet extends HttpServlet {
         String relativePath = getRelativePath(req);
 
         Document doc = DocumentHelper.createDocument();
-        Element multiStatusElem = doc.addElement(new QName("multistatus", Namespace.get(DEFAULT_NAMESPACE)));
+        Element multiStatusElem = doc.addElement(new QName(TAG_MULTISTATUS, Namespace.get(DEFAULT_NAMESPACE)));
 
         Iterator iter = errors.keySet().iterator();
         while (iter.hasNext()) {
             String errorPath = (String)iter.next();
             int errorCode = ((Integer)errors.get(errorPath)).intValue();
 
-            Element responseElem = addElement(multiStatusElem, "response");
+            Element responseElem = addElement(multiStatusElem, TAG_RESPONSE);
 
             String toAppend = errorPath.substring(relativePath.length());
             if (!toAppend.startsWith("/")) {
                 toAppend = "/" + toAppend;
             }
-            addElement(responseElem, "href").addText(absoluteUri + toAppend);
-            addElement(responseElem, "status").addText(
+            addElement(responseElem, TAG_HREF).addText(absoluteUri + toAppend);
+            addElement(responseElem, TAG_STATUS).addText(
                 "HTTP/1.1 " + errorCode + " " + CmsWebdavStatus.getStatusText(errorCode));
         }
 

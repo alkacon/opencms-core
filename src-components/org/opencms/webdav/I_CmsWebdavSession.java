@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/I_CmsWebdavSession.java,v $
- * Date   : $Date: 2007/01/12 17:24:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/23 16:58:11 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.webdav;
 
-import org.opencms.main.CmsException;
-
 import java.io.InputStream;
-import java.util.Hashtable;
 import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 /**
  * A session for WebDAV to handle the actions.
@@ -49,21 +49,23 @@ public interface I_CmsWebdavSession {
      * 
      * @param src The path of the item which should be copied
      * @param dest The destination path where to copy to
-     * @param overwrite Should any existing item should be overwritten
-     * @param errorList a table where all the errors occuring are entered. The key
-     * is the path and the value is a CmsWebdavStatus.
-     * @return the status of the copy action: true if successful otherwise false
+     * @param overwrite Should any existing item be overwritten
+     * @throws CmsWebdavItemNotFoundException if the source path could not be found
+     * @throws CmsWebdavPermissionException if there is a permission issue
+     * @throws CmsWebdavItemAlreadyExistsException if the resource already exists
      */
-    boolean copy(String src, String dest, boolean overwrite, Hashtable errorList);
+    void copy(String src, String dest, boolean overwrite)
+    throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException, CmsWebdavItemAlreadyExistsException;
 
     /**
      * Creates a new item at the given path. In this case this should
      * be a collection (directory).
      * 
      * @param path The complete path of the new collection
-     * @throws CmsException if item at the path already exists
+     * @throws CmsWebdavItemAlreadyExistsException if the resource already exists
+     * @throws CmsWebdavPermissionException if there is a permission issue
      */
-    void create(String path) throws CmsException;
+    void create(String path) throws CmsWebdavItemAlreadyExistsException, CmsWebdavPermissionException;
 
     /**
      * Creates a new item at the given path. This creates a new single
@@ -72,19 +74,20 @@ public interface I_CmsWebdavSession {
      * @param path The complete path of the new item
      * @param inputStream The content of the item
      * @param overwrite Should an existing item at the path be overwritten
-     * @throws CmsException if the resource already exists and should not be overwritten
+     * @throws CmsWebdavItemAlreadyExistsException if the resource already exists and should not be overwritten
+     * @throws CmsWebdavPermissionException if there is a permission issue
      */
-    void create(String path, InputStream inputStream, boolean overwrite) throws CmsException;
+    void create(String path, InputStream inputStream, boolean overwrite)
+    throws CmsWebdavItemAlreadyExistsException, CmsWebdavPermissionException;
 
     /**
      * Deletes the item at the given path.
      * 
      * @param path The complete path of the item to delete
-     * @param errorList a table where all the errors occuring are entered. The key
-     * is the path and the value is a CmsWebdavStatus.
-     * @return the status of the copy action: true if successful otherwise false
+     * @throws CmsWebdavItemNotFoundException if the source path could not be found
+     * @throws CmsWebdavPermissionException if there is a permission issue
      */
-    boolean delete(String path, Hashtable errorList);
+    void delete(String path) throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException;
 
     /**
      * Returns if an item exists at the given path.
@@ -99,46 +102,36 @@ public interface I_CmsWebdavSession {
      * 
      * @param path The complete path of the item to return
      * @return the item found at the path
-     * @throws CmsException if item at the path could not be found
+     * @throws CmsWebdavItemNotFoundException if the source path could not be found
+     * @throws CmsWebdavPermissionException if there is a permission issue
      */
-    I_CmsWebdavItem getItem(String path) throws CmsException;
+    I_CmsWebdavItem getItem(String path) throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException;
 
     /**
-     * Because it is possible in WebDAV to create shared locks, there is the
-     * chance to have a lock on an item with multiple lock tokens. This should
-     * return a list of locks (CmsWebdavLockInfo) found at the given path. This
-     * includes inherited locks from parent items.
+     * Returns the lock for the resource at the given path.
      * 
-     * @param path The complete path where to return the locks for
-     * @return a list with all found locks (CmsWebdavLockInfo) at the path
+     * @param path The complete path where to return the lock for
+     * @return the found lock as CmsWebdavLockInfo or null if not found
      */
-    List getLocks(String path);
+    CmsWebdavLockInfo getLock(String path);
 
     /**
-     * Returns the content of the item found at the given path as an input stream.
+     * Initialize the session with the servlet context.
      * 
-     * @param path The complete path where to find the item
-     * @return the content of the resource as an input stream
+     * @param servletContext The servlet context
+     * @throws ServletException if something goes wrong
      */
-    InputStream getStreamContent(String path);
-
-    /**
-     * Checks if the item at the path is locked. 
-     * 
-     * @param path The complete path of the item to check the lock for
-     * @param lockTokens The existing lock tokens sent by the client
-     * @return true if the item is locked otherwise false
-     */
-    boolean isLocked(String path, String lockTokens);
+    void init(ServletContext servletContext) throws ServletException;
 
     /**
      * Returns a list with all items found directly in the given path.
      * 
      * @param path The complete path from which to return the items
      * @return a list with (I_CmsWebdavItem) found in the path
-     * @throws CmsException if item at the path could not be found
+     * @throws CmsWebdavItemNotFoundException if the source path could not be found
+     * @throws CmsWebdavPermissionException if there is a permission issue
      */
-    List list(String path) throws CmsException;
+    List list(String path) throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException;
 
     /**
      * Creates a new lock on the item with the path with the given information 
@@ -146,11 +139,12 @@ public interface I_CmsWebdavSession {
      * 
      * @param path The complete path of the item
      * @param lock The information about the lock to create
-     * @param lockToken The lock token to add
-     * @param errorLocks List which should be filled with items that are already locked
      * @return if the lock token was successfully added
+     * @throws CmsWebdavItemNotFoundException if the source path could not be found
+     * @throws CmsWebdavPermissionException if there is a permission issue
      */
-    boolean lock(String path, CmsWebdavLockInfo lock, String lockToken, List errorLocks) throws CmsException;
+    boolean lock(String path, CmsWebdavLockInfo lock)
+    throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException;
 
     /**
      * Moves an item from a source path to a destination path.
@@ -158,15 +152,18 @@ public interface I_CmsWebdavSession {
      * @param src The complete path to the item which should be copied
      * @param dest The complete destination path where to copy to
      * @param overwrite Should any existing item should be overwritten
+     * @throws CmsWebdavItemNotFoundException if the source path could not be found
+     * @throws CmsWebdavPermissionException if there is a permission issue
+     * @throws CmsWebdavItemAlreadyExistsException if the resource already exists and should not be overwritten
      */
-    void move(String src, String dest, boolean overwrite);
+    void move(String src, String dest, boolean overwrite)
+    throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException, CmsWebdavItemAlreadyExistsException;
 
     /**
      * Unlocks the item found at the path. Should remove the lock token
      * from the existing lock found at the path.
      * 
      * @param path The complete path of the item to unlock
-     * @param lockTokens The lock tokens sent by the client to remove from the lock
      */
-    void unlock(String path, String lockTokens);
+    void unlock(String path);
 }

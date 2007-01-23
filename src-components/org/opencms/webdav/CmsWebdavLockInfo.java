@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavLockInfo.java,v $
- * Date   : $Date: 2007/01/12 17:24:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/23 16:58:11 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.dom4j.Element;
-
 /**
  * The class represents a lock to a resource with all information
  * a lock needs for WebDAV.
@@ -46,15 +44,50 @@ import org.dom4j.Element;
  */
 public class CmsWebdavLockInfo {
 
+    /** The default lock timeout. */
+    public static final int DEFAULT_TIMEOUT = 604800;
+    
+    /** Default depth is infinite. */
+    public static final int DEPTH_INFINITY = 3; // To limit tree browsing a bit
+    
+    /** The lock scope "exclusive". */
+    public static final String SCOPE_EXCLUSIVE = "exclusive";
+    
+    /** The lock scope "shared". */
+    public static final String SCOPE_SHARED = "shared";
+    
+    /** The lock type "write". */
+    public static final String TYPE_WRITE = "write";
+
+    /** The default scope for locks. */
+    public static final String DEFAULT_SCOPE = SCOPE_EXCLUSIVE;
+    
+    /** The default type for locks. */
+    public static final String DEFAULT_TYPE = TYPE_WRITE;
+    
+    /** The creation date of the lock. */
     private Date m_creationDate = new Date();
 
+    /** The depth the lock is valid for (0 for the resource or "Infinity" for inheriting). */
     private int m_depth = 0;
-    private long m_expiresAt = 0;
+
+    /** The time when the lock expires. */
+    private long m_expiresAt = DEFAULT_TIMEOUT;
+
+    /** The owner of the lock (submitted while creation). */
     private String m_owner = "";
+    
+    /** The path of the resource item the lock belongs to. */
     private String m_path = "/";
-    private String m_scope = "exclusive";
+
+    /** The scope of the lock (shared or exclusive). */
+    private String m_scope = DEFAULT_SCOPE;
+
+    /** The list of token belonging to the lock. */
     private List m_tokens = new Vector();
-    private String m_type = "write";
+
+    /** The type of the lock (write or read). */
+    private String m_type = DEFAULT_TYPE;
 
     /**
      * Constructor.
@@ -243,34 +276,6 @@ public class CmsWebdavLockInfo {
             result += "Token:" + iter.next() + "\n";
         }
         return result;
-    }
-
-    /**
-     * Get an XML representation of this lock token. This method will
-     * append an XML fragment to the given XML writer.
-     * 
-     * @param elem The parent element where to add the lock info
-     */
-    public void toXML(Element elem) {
-
-        Element activeLockElem = elem.addElement("activelock");
-        activeLockElem.addElement("locktype").addElement(m_type);
-        activeLockElem.addElement("lockscope").addElement(m_scope);
-        if (m_depth == CmsWebdavServlet.INFINITY) {
-            activeLockElem.addElement("depth").addText("Infinity");
-        } else {
-            activeLockElem.addElement("depth").addText("0");
-        }
-
-        activeLockElem.addElement("owner").addText(m_owner);
-        long timeout = (m_expiresAt - System.currentTimeMillis()) / 1000;
-        activeLockElem.addElement("timeout").addText("Second-" + timeout);
-
-        Element lockTokenElem = activeLockElem.addElement("locktoken");
-        Iterator iter = m_tokens.iterator();
-        while (iter.hasNext()) {
-            lockTokenElem.addElement("href").addText("opaquelocktoken:" + iter.next());
-        }
     }
 
 }

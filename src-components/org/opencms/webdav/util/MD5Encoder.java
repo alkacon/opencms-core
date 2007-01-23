@@ -25,11 +25,11 @@ package org.opencms.webdav.util;
  * of the digest.
  *
  * @author Remy Maucherat
- * @version $Revision: 1.1.2.1 $ $Date: 2007/01/12 17:24:42 $
+ * @version $Revision: 1.1.2.2 $ $Date: 2007/01/23 16:58:11 $
  */
 public final class MD5Encoder {
 
-    private static final char[] hexadecimal =
+    private static final char[] HEXADECIMAL =
     {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
      'a', 'b', 'c', 'd', 'e', 'f'};
 
@@ -39,18 +39,19 @@ public final class MD5Encoder {
      * @param binaryData Array containing the digest
      * @return Encoded MD5, or null if encoding failed
      */
-    public String encode(byte[] binaryData ) {
+    public String encode(byte[] binaryData) {
 
-        if (binaryData.length != 16)
+        if (binaryData.length != 16) {
             return null;
+        }
 
         char[] buffer = new char[32];
 
         for (int i=0; i<16; i++) {
             int low = (int) (binaryData[i] & 0x0f);
             int high = (int) ((binaryData[i] & 0xf0) >> 4);
-            buffer[i*2] = hexadecimal[high];
-            buffer[i*2 + 1] = hexadecimal[low];
+            buffer[i*2] = HEXADECIMAL[high];
+            buffer[i*2 + 1] = HEXADECIMAL[low];
         }
 
         return new String(buffer);

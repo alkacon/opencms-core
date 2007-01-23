@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/tomcat/Attic/WebDavHandler.java,v $
- * Date   : $Date: 2007/01/12 17:24:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/23 16:58:11 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,14 @@
 
 package org.opencms.webdav.tomcat;
 
-import org.opencms.main.CmsException;
-import org.opencms.webdav.CmsWebdavLockException;
+import org.opencms.webdav.CmsWebdavItemAlreadyExistsException;
+import org.opencms.webdav.CmsWebdavItemNotFoundException;
 import org.opencms.webdav.CmsWebdavLockInfo;
-import org.opencms.webdav.CmsWebdavResourceException;
-import org.opencms.webdav.CmsWebdavServlet;
+import org.opencms.webdav.CmsWebdavPermissionException;
 import org.opencms.webdav.CmsWebdavStatus;
 import org.opencms.webdav.I_CmsWebdavItem;
-import org.opencms.webdav.Messages;
+import org.opencms.webdav.I_CmsWebdavSession;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,12 +53,10 @@ import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.DirContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 
-import org.apache.catalina.Globals;
 import org.apache.naming.resources.CacheEntry;
 import org.apache.naming.resources.ProxyDirContext;
 import org.apache.naming.resources.Resource;
@@ -73,7 +68,7 @@ import org.apache.naming.resources.Resource;
  * 
  * @author Peter Bonrad
  */
-public class WebDavHandler {
+public class WebDavHandler implements I_CmsWebdavSession {
 
     /** JNDI resources name. */
     private static final String RESOURCES_JNDI_NAME = "java:/comp/Resources";
@@ -85,16 +80,6 @@ public class WebDavHandler {
      * Value : LockInfo
      */
     private List m_collectionLocks = new Vector();
-
-    /**
-     * Repository of the lock-null resources.
-     * <p>
-     * Key : path of the collection containing the lock-null resource<br>
-     * Value : Vector of lock-null resource which are members of the
-     * collection. Each element of the Vector is the path associated with
-     * the lock-null resource.
-     */
-    private Map m_lockNullResources = new Hashtable();
 
     /**
      * Repository of the locks put on single resources.
@@ -119,15 +104,14 @@ public class WebDavHandler {
     /**
      * @see org.opencms.webdav.I_CmsWebdavSession#copy(String, String, boolean, Hashtable)
      */
-    public boolean copy(String source, String dest, boolean overwrite, Hashtable errorList) {
+    public void copy(String source, String dest, boolean overwrite)
+    throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException, CmsWebdavItemAlreadyExistsException {
 
-        I_CmsWebdavItem item = null;
-        try {
-            item = getItem(source);
-        } catch (CmsException ex) {
-            errorList.put(source, new Integer(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR));
-            return false;
+        if ((dest.toUpperCase().startsWith("/WEB-INF")) || (dest.toUpperCase().startsWith("/META-INF"))) {
+            throw new CmsWebdavPermissionException();
         }
+
+        I_CmsWebdavItem item = getItem(source);
 
         // Overwriting the destination
         boolean exists = exists(dest);
@@ -135,211 +119,70 @@ public class WebDavHandler {
 
             // Delete destination resource, if it exists
             if (exists) {
-                if (!delete(dest, errorList)) {
-                    return false;
-                }
+                delete(dest);
             }
         }
 
         if (item.isCollection()) {
 
-            try {
-                create(dest);
-            } catch (CmsException e) {
-                errorList.put(dest, new Integer(CmsWebdavStatus.SC_CONFLICT));
-                return false;
-            }
+            create(dest);
 
-            try {
-                List list = list(source);
-                Iterator iter = list.iterator();
-                while (iter.hasNext()) {
-                    String element = (String)iter.next();
+            List list = list(source);
+            Iterator iter = list.iterator();
+            while (iter.hasNext()) {
+                String element = (String)iter.next();
 
-                    String childDest = dest;
-                    if (!childDest.equals("/")) {
-                        childDest += "/";
-                    }
-                    childDest += element;
-
-                    String childSrc = source;
-                    if (!childSrc.equals("/")) {
-                        childSrc += "/";
-                    }
-                    childSrc += element;
-
-                    copy(childSrc, childDest, overwrite, errorList);
+                String childDest = dest;
+                if (!childDest.equals("/")) {
+                    childDest += "/";
                 }
+                childDest += element;
 
-            } catch (CmsException e) {
-                errorList.put(dest, new Integer(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR));
-                return false;
+                String childSrc = source;
+                if (!childSrc.equals("/")) {
+                    childSrc += "/";
+                }
+                childSrc += element;
+
+                copy(childSrc, childDest, overwrite);
             }
 
         } else {
 
             try {
-                boolean save = saveResource(dest, item);
-                if (!save) {
-                    errorList.put(source, new Integer(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR));
-                    return false;
-                }
-            } catch (CmsWebdavResourceException e) {
-                errorList.put(source, new Integer(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR));
-                return false;
+                saveResource(dest, item);
+            } catch (NamingException e) {
+                throw new CmsWebdavItemAlreadyExistsException();
             }
 
         }
-
-        return true;
     }
 
     /**
      * @see org.opencms.webdav.I_CmsWebdavSession#create(String)
      */
-    public void create(String path) throws CmsException {
+    public void create(String path) throws CmsWebdavItemAlreadyExistsException, CmsWebdavPermissionException {
+
+        if ((path.toUpperCase().startsWith("/WEB-INF")) || (path.toUpperCase().startsWith("/META-INF"))) {
+            throw new CmsWebdavPermissionException();
+        }
 
         try {
             m_resources.createSubcontext(path);
         } catch (NamingException e) {
-            throw new CmsException(Messages.get().container(Messages.EXISTING_RESOURCE_1, path));
+            throw new CmsWebdavItemAlreadyExistsException();
         }
-    }
-
-    /**
-     * @see org.opencms.webdav.I_CmsWebdavSession#lock(String, CmsWebdavLockInfo, String)
-     */
-    public boolean lock(String path, CmsWebdavLockInfo lock, String lockToken, List errorLocks) throws CmsException {
-
-        boolean exists = true;
-        I_CmsWebdavItem item = null;
-        try {
-            item = getItem(path);
-        } catch (CmsException e) {
-            exists = false;
-        }
-
-        if ((exists) && (item.isCollection()) && (lock.getDepth() == CmsWebdavServlet.INFINITY)) {
-
-            // Locking a collection (and all its member resources)
-
-            // Checking if a child resource of this collection is already locked
-            Iterator iter = m_collectionLocks.iterator();
-            while (iter.hasNext()) {
-                CmsWebdavLockInfo currentLock = (CmsWebdavLockInfo)iter.next();
-                if (currentLock.hasExpired()) {
-                    m_resourceLocks.remove(currentLock.getPath());
-                    continue;
-                }
-                if ((currentLock.getPath().startsWith(lock.getPath()))
-                    && ((currentLock.isExclusive()) || (lock.isExclusive()))) {
-
-                    // A child collection of this collection is locked
-                    errorLocks.add(currentLock.getPath());
-                }
-            }
-
-            // Yikes: modifying the collection not by the iterator's object,
-            // but by one of its attributes.  That means we can't use a
-            // normal java.util.Iterator here, because Iterator is fail-fast. ;(
-            Enumeration locksList = Collections.enumeration(m_resourceLocks.values());
-            while (locksList.hasMoreElements()) {
-                CmsWebdavLockInfo currentLock = (CmsWebdavLockInfo)locksList.nextElement();
-                if (currentLock.hasExpired()) {
-                    m_resourceLocks.remove(currentLock.getPath());
-                    continue;
-                }
-                if ((currentLock.getPath().startsWith(lock.getPath()))
-                    && ((currentLock.isExclusive()) || (lock.isExclusive()))) {
-
-                    // A child resource of this collection is locked
-                    errorLocks.add(currentLock.getPath());
-                }
-            }
-
-            if (!errorLocks.isEmpty()) {
-                return false;
-            }
-
-            boolean addLock = true;
-
-            // Checking if there is already a shared lock on this path
-            iter = m_collectionLocks.iterator();
-            while (iter.hasNext()) {
-                CmsWebdavLockInfo currentLock = (CmsWebdavLockInfo)iter.next();
-                if (currentLock.getPath().equals(lock.getPath())) {
-                    if (currentLock.isExclusive()) {
-                        // TODO: fix that
-                        //throw new CmsWebdavLockException(CmsWebdavStatus.SC_LOCKED);
-                    } else {
-                        if (lock.isExclusive()) {
-                            // TODO: fix that
-                            //throw new CmsWebdavLockException(CmsWebdavStatus.SC_LOCKED);
-                        }
-                    }
-
-                    currentLock.getTokens().add(lockToken);
-                    lock = currentLock;
-                    addLock = false;
-                }
-            }
-
-            if (addLock) {
-                lock.getTokens().add(lockToken);
-                m_collectionLocks.add(lock);
-            }
-
-        } else {
-
-            // Locking a single resource
-
-            // Retrieving an already existing lock on that resource
-            CmsWebdavLockInfo presentLock = (CmsWebdavLockInfo)m_resourceLocks.get(lock.getPath());
-            if (presentLock != null) {
-
-                if ((presentLock.isExclusive()) || (lock.isExclusive())) {
-
-                    // If either lock is exclusive, the lock can't be granted
-                    // TODO: fix that
-                    //throw new CmsWebdavLockException(CmsWebdavStatus.SC_PRECONDITION_FAILED);
-                } else {
-                    presentLock.getTokens().add(lockToken);
-                    lock = presentLock;
-                }
-
-            } else {
-
-                lock.getTokens().add(lockToken);
-                m_resourceLocks.put(lock.getPath(), lock);
-
-                if (!exists) {
-
-                    // "Creating" a lock-null resource
-                    int slash = lock.getPath().lastIndexOf('/');
-                    String parentPath = lock.getPath().substring(0, slash);
-
-                    List lockNulls = (List)m_lockNullResources.get(parentPath);
-                    if (lockNulls == null) {
-                        lockNulls = new Vector();
-                        m_lockNullResources.put(parentPath, lockNulls);
-                    }
-
-                    lockNulls.add(lock.getPath());
-
-                }
-
-                return true;
-            }
-        }
-       
-        return false;
     }
 
     /**
      * @see org.opencms.webdav.I_CmsWebdavSession#create(String, InputStream, boolean)
      */
-    public void create(String path, InputStream inputStream, boolean overwrite) 
-    throws CmsException {
+    public void create(String path, InputStream inputStream, boolean overwrite)
+    throws CmsWebdavItemAlreadyExistsException, CmsWebdavPermissionException {
+
+        if ((path.toUpperCase().startsWith("/WEB-INF")) || (path.toUpperCase().startsWith("/META-INF"))) {
+            throw new CmsWebdavPermissionException();
+        }
 
         try {
             if (overwrite) {
@@ -348,43 +191,27 @@ public class WebDavHandler {
                 m_resources.bind(path, new Resource(inputStream));
             }
         } catch (NamingException e) {
-            throw new CmsException(Messages.get().container(Messages.EXISTING_RESOURCE_1, path));
+            throw new CmsWebdavItemAlreadyExistsException();
         }
     }
 
     /**
      * @see org.opencms.webdav.I_CmsWebdavSession#delete(String)
      */
-    public boolean delete(String path, Hashtable errorList) {
+    public void delete(String path) throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException {
 
-        if ((path.toUpperCase().startsWith("/WEB-INF")) || (path.toUpperCase().startsWith("/META-INF"))) {
-            errorList.put(path, new Integer(CmsWebdavStatus.SC_FORBIDDEN));
-            return false;
-        }
-
-        I_CmsWebdavItem item = null;
-        try {
-            item = getItem(path);
-        } catch (CmsException e) {
-            errorList.put(path, new Integer(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR));
-            return false;
-        }
+        I_CmsWebdavItem item = getItem(path);
 
         boolean collection = item.isCollection();
-        if (!collection) {
-            try {
-                m_resources.unbind(path);
-            } catch (NamingException  e) {
-                errorList.put(path, new Integer(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR));
-                return false;
-            }
-        } else {
-
-            deleteCollection(path, errorList);
-            delete(path, errorList);
+        if (collection) {
+            deleteCollection(path);
         }
-        
-        return true;
+
+        try {
+            m_resources.unbind(path);
+        } catch (NamingException e) {
+            throw new CmsWebdavItemNotFoundException();
+        }
     }
 
     /**
@@ -403,11 +230,16 @@ public class WebDavHandler {
     /**
      * @see org.opencms.webdav.I_CmsWebdavSession#getItem(String)
      */
-    public I_CmsWebdavItem getItem(String path) throws CmsException {
+    public I_CmsWebdavItem getItem(String path) throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException {
+
+        if ((path.toUpperCase().startsWith("/WEB-INF")) || (path.toUpperCase().startsWith("/META-INF"))) {
+            throw new CmsWebdavPermissionException();
+        }
 
         if (!exists(path)) {
-            throw new CmsException(Messages.get().container(Messages.MISSING_RESOURCE_1, path));
+            throw new CmsWebdavItemNotFoundException();
         }
+
         WebdavItem ret = new WebdavItem();
         CacheEntry entry = m_resources.lookupCache(path);
 
@@ -425,81 +257,21 @@ public class WebDavHandler {
     }
 
     /**
-     * Returns the lock for the given resource. This does not include the
-     * possible locks inherited from a parent.
-     * 
-     * @param path the path where the resource can be found
-     * @return the lock if the resource was found or null if it was not found
+     * @see org.opencms.webdav.I_CmsWebdavSession#getLock(String)
      */
     public CmsWebdavLockInfo getLock(String path) {
 
-        return (CmsWebdavLockInfo)m_resourceLocks.get(path);
-    }
-
-    /**
-     * Returns all found locks for the resource found at the given path. This
-     * includes all locks inherited by a parent.
-     * 
-     * @param path the path where to find the resource
-     * @return all found locks on this resource
-     */
-    public List getLocks(String path) {
-
-        ArrayList ret = new ArrayList();
-
         CmsWebdavLockInfo resourceLock = (CmsWebdavLockInfo)m_resourceLocks.get(path);
         if (resourceLock != null) {
-            ret.add(resourceLock);
+            return resourceLock;
         }
 
         Iterator iter = m_collectionLocks.iterator();
         while (iter.hasNext()) {
             CmsWebdavLockInfo currentLock = (CmsWebdavLockInfo)iter.next();
             if (path.startsWith(currentLock.getPath())) {
-                ret.add(currentLock);
+                return currentLock;
             }
-        }
-
-        return ret;
-    }
-
-    /**
-     * Returns a resource for the given path.
-     * 
-     * @param path the path where to find the resource
-     * @return the found resource for the given path
-     * @throws CmsWebdavResourceException if the resource could not be found
-     */
-    public Object getResource(String path) throws CmsWebdavResourceException {
-
-        Object object = null;
-        try {
-            object = m_resources.lookup(path);
-        } catch (NamingException e) {
-            throw new CmsWebdavResourceException("Resource at path \"" + path + "\" not found.");
-        }
-        return object;
-    }
-
-    /**
-     * Returns the content of the resource found at the given path as an input stream.
-     * 
-     * @param path the path where to find the resource
-     * @return the content of the resource as an input stream
-     * @throws CmsWebdavResourceException if the resource could not be found
-     * @throws IOException if an error while reading the content occurs
-     */
-    public InputStream getStreamContent(String path) throws CmsWebdavResourceException, IOException {
-
-        Resource oldResource = null;
-        Object obj = getResource(path);
-        if (obj instanceof Resource) {
-            oldResource = (Resource)obj;
-        }
-
-        // Copy data in oldRevisionContent to contentFile
-        if (oldResource != null) {
-            return new BufferedInputStream(oldResource.streamContent(), CmsWebdavServlet.BUFFER_SIZE);
         }
 
         return null;
@@ -513,20 +285,9 @@ public class WebDavHandler {
      */
     public void init(ServletContext servletContext) throws ServletException {
 
-        // Set our properties from the initialization parameters
-        //        String value = null;
-        //        try {
-        //            value = servlet.getServletConfig().getInitParameter("secret");
-        //            if (value != null) {
-        //                secret = value;
-        //            }
-        //        } catch (Exception e) {
-        //            servlet.log("WebdavServlet.init: error reading secret from " + value);
-        //        }
-
         // Load the proxy dir context.
         try {
-            m_resources = (ProxyDirContext)servletContext.getAttribute(Globals.RESOURCES_ATTR);
+            m_resources = (ProxyDirContext)servletContext.getAttribute("org.apache.catalina.resources");
         } catch (ClassCastException e) {
             // Failed : Not the right type
         }
@@ -548,71 +309,13 @@ public class WebDavHandler {
     }
 
     /**
-     * Returns if the resource is a collection.
-     * 
-     * @param object the resource to check
-     * @return true if the resource is a collection otherwise false
-     */
-    public boolean isCollection(Object object) {
-
-        return object instanceof DirContext;
-    }
-
-    /**
-     * @see org.opencms.webdav.I_CmsWebdavSession#isLocked(String, String)
-     */
-    public boolean isLocked(String path, String lockTokens) {
-
-        // Checking resource locks
-        CmsWebdavLockInfo lock = (CmsWebdavLockInfo)m_resourceLocks.get(path);
-        if ((lock != null) && (lock.hasExpired())) {
-            m_resourceLocks.remove(path);
-        } else if (lock != null) {
-
-            // At least one of the tokens of the locks must have been given
-            Iterator iter = lock.getTokens().iterator();
-            boolean tokenMatch = false;
-            while (iter.hasNext()) {
-                String token = (String)iter.next();
-                if (lockTokens.indexOf(token) != -1) {
-                    tokenMatch = true;
-                }
-            }
-
-            if (!tokenMatch) {
-                return true;
-            }
-        }
-
-        // Checking inheritable collection locks
-        Iterator iter = m_collectionLocks.iterator();
-        while (iter.hasNext()) {
-            lock = (CmsWebdavLockInfo)iter.next();
-            if (lock.hasExpired()) {
-                iter.remove();
-            } else if (path.startsWith(lock.getPath())) {
-                Iterator tokenIter = lock.getTokens().iterator();
-                boolean tokenMatch = false;
-                while (tokenIter.hasNext()) {
-                    String token = (String)tokenIter.next();
-                    if (lockTokens.indexOf(token) != -1) {
-                        tokenMatch = true;
-                    }
-                }
-
-                if (!tokenMatch) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * @see org.opencms.webdav.I_CmsWebdavSession#list(String)
      */
-    public List list(String path) throws CmsException {
+    public List list(String path) throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException {
+
+        if ((path.toUpperCase().startsWith("/WEB-INF")) || (path.toUpperCase().startsWith("/META-INF"))) {
+            throw new CmsWebdavPermissionException();
+        }
 
         List ret = new ArrayList();
 
@@ -623,91 +326,99 @@ public class WebDavHandler {
                 ret.add(ncPair.getName());
             }
         } catch (NamingException e) {
-            throw new CmsException(Messages.get().container(Messages.MISSING_RESOURCE_1, path));
+            throw new CmsWebdavItemNotFoundException();
         }
 
         return ret;
     }
 
     /**
-     * Returns a cache entry of the resource at the given path.
-     * Has to be replaced later.
-     * 
-     * @param path The path where to find the resource at
-     * @return The cache entry with all information of the resource
+     * @see org.opencms.webdav.I_CmsWebdavSession#lock(String, CmsWebdavLockInfo)
      */
-    public CacheEntry lookupCache(String path) {
+    public boolean lock(String path, CmsWebdavLockInfo lock)
+    throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException {
 
-        return m_resources.lookupCache(path);
-    }
+        I_CmsWebdavItem item = getItem(path);
 
-    /**
-     * Renews an existing lock. Extends the time the lock expires.
-     * 
-     * @param lock all information about the new lock
-     * @param path the path where to find the resource to renew the lock
-     * @param ifHeader the ifHeader found in the request
-     */
-    public void renewLock(CmsWebdavLockInfo lock, String path, String ifHeader) {
+        if ((item.isCollection()) && (lock.getDepth() == CmsWebdavLockInfo.DEPTH_INFINITY)) {
 
-        // Checking resource locks
-        CmsWebdavLockInfo toRenew = (CmsWebdavLockInfo)m_resourceLocks.get(path);
-        if (lock != null) {
-
-            // At least one of the tokens of the locks must have been given
-            Iterator iter = toRenew.getTokens().iterator();
+            // Locking a collection (and all its member resources)
+            // Checking if a child resource of this collection is already locked
+            Iterator iter = m_collectionLocks.iterator();
             while (iter.hasNext()) {
-                String token = (String)iter.next();
-                if (ifHeader.indexOf(token) != -1) {
-                    toRenew.setExpiresAt(lock.getExpiresAt());
-                    lock = toRenew;
+                CmsWebdavLockInfo currentLock = (CmsWebdavLockInfo)iter.next();
+                if (currentLock.hasExpired()) {
+                    m_collectionLocks.remove(currentLock.getPath());
+                    continue;
+                }
+                if ((currentLock.getPath().startsWith(lock.getPath()))
+                    && ((currentLock.isExclusive()) || (lock.isExclusive()))) {
+
+                    // A child collection of this collection is locked
+                    return false;
                 }
             }
 
-        }
+            // Yikes: modifying the collection not by the iterator's object,
+            // but by one of its attributes.  That means we can't use a
+            // normal java.util.Iterator here, because Iterator is fail-fast. ;(
+            Enumeration locksList = Collections.enumeration(m_resourceLocks.values());
+            while (locksList.hasMoreElements()) {
+                CmsWebdavLockInfo currentLock = (CmsWebdavLockInfo)locksList.nextElement();
+                if (currentLock.hasExpired()) {
+                    m_resourceLocks.remove(currentLock.getPath());
+                    continue;
+                }
+                if ((currentLock.getPath().startsWith(lock.getPath()))
+                    && ((currentLock.isExclusive()) || (lock.isExclusive()))) {
 
-        // Checking inheritable collection locks
-        Iterator iter = m_collectionLocks.iterator();
-        while (iter.hasNext()) {
-            toRenew = (CmsWebdavLockInfo)iter.next();
-            if (path.equals(toRenew.getPath())) {
-                Iterator tokenIter = toRenew.getTokens().iterator();
-                while (tokenIter.hasNext()) {
-                    String token = (String)tokenIter.next();
-                    if (ifHeader.indexOf(token) != -1) {
-                        toRenew.setExpiresAt(lock.getExpiresAt());
-                        lock = toRenew;
-                    }
+                    // A child resource of this collection is locked
+                    return false;
                 }
             }
-        }
 
+            m_collectionLocks.add(lock);
+            return true;
+
+        } else {
+
+            // Locking a single resource
+            // Retrieving an already existing lock on that resource
+            CmsWebdavLockInfo presentLock = (CmsWebdavLockInfo)m_resourceLocks.get(lock.getPath());
+            if (presentLock != null) {
+
+                return false;
+
+            } else {
+
+                m_resourceLocks.put(lock.getPath(), lock);
+                return true;
+            }
+        }
     }
 
     /**
-     * @see org.opencms.webdav.I_CmsWebdavSession#unlock(String, String)
+     * @see org.opencms.webdav.I_CmsWebdavSession#move(java.lang.String, java.lang.String, boolean)
      */
-    public void unlock(String path, String lockTokens) {
+    public void move(String src, String dest, boolean overwrite)
+    throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException, CmsWebdavItemAlreadyExistsException {
+
+        copy(src, dest, overwrite);
+        delete(src);
+    }
+
+    /**
+     * @see org.opencms.webdav.I_CmsWebdavSession#unlock(String)
+     */
+    public void unlock(String path) {
 
         // Checking resource locks
         CmsWebdavLockInfo lock = (CmsWebdavLockInfo)m_resourceLocks.get(path);
         Iterator iter = null;
         if (lock != null) {
 
-            // At least one of the tokens of the locks must have been given
-            iter = lock.getTokens().iterator();
-            while (iter.hasNext()) {
-                String token = (String)iter.next();
-                if (lockTokens.indexOf(token) != -1) {
-                    iter.remove();
-                }
-            }
-
             if (lock.getTokens().isEmpty()) {
                 m_resourceLocks.remove(path);
-
-                // Removing any lock-null resource which would be present
-                m_lockNullResources.remove(path);
             }
         }
 
@@ -716,20 +427,9 @@ public class WebDavHandler {
         while (iter.hasNext()) {
             lock = (CmsWebdavLockInfo)iter.next();
             if (path.equals(lock.getPath())) {
-                Iterator tokenIter = lock.getTokens().iterator();
-                while (tokenIter.hasNext()) {
-                    String token = (String)tokenIter.next();
-                    if (lockTokens.indexOf(token) != -1) {
-                        tokenIter.remove();
-                        break;
-                    }
-                }
 
                 if (lock.getTokens().isEmpty()) {
                     iter.remove();
-
-                    // Removing any lock-null resource which would be present
-                    m_lockNullResources.remove(path);
                 }
             }
         }
@@ -740,22 +440,14 @@ public class WebDavHandler {
      *
      * @param resources Resources implementation associated with the context
      * @param path Path to the collection to be deleted
-     * @param errorList Contains the list of the errors which occurred
      */
-    private void deleteCollection(String path, Hashtable errorList) {
+    private int deleteCollection(String path) throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException {
 
         if ((path.toUpperCase().startsWith("/WEB-INF")) || (path.toUpperCase().startsWith("/META-INF"))) {
-            errorList.put(path, new Integer(CmsWebdavStatus.SC_FORBIDDEN));
-            return;
+            return CmsWebdavStatus.SC_FORBIDDEN;
         }
 
-        List list = null;
-        try {
-            list = list(path);
-        } catch (CmsException e) {
-            errorList.put(path, new Integer(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR));
-            return;
-        }
+        List list = list(path);
 
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
@@ -766,8 +458,10 @@ public class WebDavHandler {
             }
 
             childName += element;
-            delete(childName, errorList);
+            delete(childName);
         }
+
+        return CmsWebdavStatus.SC_OK;
     }
 
     /**
@@ -775,20 +469,12 @@ public class WebDavHandler {
      * 
      * @param dest the destination path where to save the resource
      * @param object the resource to save
-     * @return true if the resource was saved successfully otherwise false
-     * @throws CmsWebdavResourceException if the path where to save the resource already exists
+     * @throws NamingException if the path where to save the resource already exists
      */
-    private boolean saveResource(String dest, Object object) throws CmsWebdavResourceException {
+    private void saveResource(String dest, I_CmsWebdavItem item) throws NamingException {
 
-        if (object instanceof Resource) {
-            try {
-                m_resources.bind(dest, object);
-                return true;
-            } catch (NamingException e) {
-                throw new CmsWebdavResourceException("Resource at path \"" + dest + "\" already exists.");
-            }
-        }
-
-        return false;
+        Resource res = (Resource)m_resources.lookup(item.getName());
+        res.setContent(item.getStreamContent());
+        m_resources.bind(dest, res);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/tomcat/Attic/WebdavItem.java,v $
- * Date   : $Date: 2007/01/12 17:24:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/23 16:58:11 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,12 @@ import org.opencms.webdav.I_CmsWebdavItem;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+/**
+ * This class represents a WebDAV resource item to work with the Tomcat to write
+ * to the hard drive.
+ * 
+ * @author Peter Bonrad
+ */
 public class WebdavItem implements I_CmsWebdavItem {
 
     private boolean m_collection;

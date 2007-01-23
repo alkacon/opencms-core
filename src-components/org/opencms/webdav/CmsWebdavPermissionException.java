@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavResourceException.java,v $
- * Date   : $Date: 2007/01/12 17:24:42 $
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavPermissionException.java,v $
+ * Date   : $Date: 2007/01/23 16:58:11 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -32,30 +32,12 @@
 package org.opencms.webdav;
 
 /**
- * Exception thrown if something goes wrong while handling resources
- * in the WebDAV context.
+ * Exception thrown if the current has no permissions to the request action.
  * 
  * @author Peter Bonrad
- * 
  */
-public class CmsWebdavResourceException extends Exception {
+public class CmsWebdavPermissionException extends CmsWebdavException {
 
-    private static final long serialVersionUID = -6314870187716252282L;
+    private static final long serialVersionUID = 7118799302072844144L;
 
-    /**
-     * Default empty default constructor.
-     *
-     */
-    public CmsWebdavResourceException() {
-        // empty
-    }
-    
-    /**
-     * Constructor with a message to set for the exception.
-     * 
-     * @param message The message for the exception
-     */
-    public CmsWebdavResourceException(String message) {
-        super(message);
-    }
 }
