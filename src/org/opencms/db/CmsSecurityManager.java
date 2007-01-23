@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.97.4.27 $
+ * Date   : $Date: 2007/01/23 13:04:13 $
+ * Version: $Revision: 1.97.4.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1833,6 +1833,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
+            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, ouFqn);
             result = m_driverManager.getGroupsOfUser(
                 dbc,
                 username,

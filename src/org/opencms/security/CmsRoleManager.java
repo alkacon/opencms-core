@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/23 13:04:44 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -248,14 +248,14 @@ public class CmsRoleManager {
         boolean includeChildOus,
         boolean directRolesOnly) throws CmsException {
 
-        return (m_securityManager.getGroupsOfUser(
+        return m_securityManager.getGroupsOfUser(
             cms.getRequestContext(),
             username,
             ouFqn,
             includeChildOus,
-            directRolesOnly,
             true,
-            cms.getRequestContext().getRemoteAddress()));
+            directRolesOnly,
+            cms.getRequestContext().getRemoteAddress());
     }
 
     /**
