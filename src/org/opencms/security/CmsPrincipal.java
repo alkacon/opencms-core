@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2007/01/23 15:22:30 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2.4.3 $ 
+ * @version $Revision: 1.2.4.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -343,7 +343,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
      */
     public String getSimpleName() {
 
-        return m_name;
+        return CmsOrganizationalUnit.getSimpleName(m_name);
     }
 
     /**
