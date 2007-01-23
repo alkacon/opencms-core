@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.570.2.46 $
+ * Date   : $Date: 2007/01/23 14:22:46 $
+ * Version: $Revision: 1.570.2.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3318,7 +3318,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         Iterator itChildRoles = role.getChilds(true).iterator();
                         while (itChildRoles.hasNext()) {
                             CmsRole childRole = (CmsRole)itChildRoles.next();
-                            allGroups.add(childRole.getGroupName(group.getOuFqn()));
+                            allGroups.add(readGroup(dbc, childRole.getGroupName(group.getOuFqn())));
                         }
                         if (includeChildOus) {
                             Iterator itSubOus = getOrganizationalUnits(
@@ -3330,7 +3330,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 itChildRoles = role.getChilds(true).iterator();
                                 while (itChildRoles.hasNext()) {
                                     CmsRole childRole = (CmsRole)itChildRoles.next();
-                                    allGroups.add(childRole.getGroupName(subOu.getName()));
+                                    allGroups.add(readGroup(dbc, childRole.getGroupName(subOu.getName())));
                                 }
                             }
                         }
@@ -5665,8 +5665,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     : CmsDriverManager.READMODE_ONLY_FILES)
                     : 0));
 
-            // apply permission filter
-            resourceList = filterPermissions(dbc, resourceList, filter);
+            // HACK: do not take care of permissions if reading organizational units
+            if (!parent.getRootPath().startsWith("/system/orgunits/")) {
+                // apply permission filter
+                resourceList = filterPermissions(dbc, resourceList, filter);
+            }
             // store the result in the resourceList cache
             m_resourceListCache.put(cacheKey, resourceList);
         }
