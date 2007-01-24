@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/I_CmsRepository.java,v $
- * Date   : $Date: 2007/01/24 09:50:38 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/24 10:04:26 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6
  */
@@ -50,27 +50,29 @@ public interface I_CmsRepository {
      * Login a user given the session data.<p> 
      * 
      * @param request the user request
-     * @param site the site
-     * @param project the project
+     * @param siteName the site
+     * @param projectName the project
      * 
      * @return the authenticated session
      * 
      * @throws CmsRepositoryAuthorizationException if something goes wrong 
      */
-    I_CmsRepositorySession login(HttpServletRequest request, String site, String project) throws CmsRepositoryAuthorizationException;
+    I_CmsRepositorySession login(HttpServletRequest request, String siteName, String projectName)
+    throws CmsRepositoryAuthorizationException;
 
     /**
      * Login a user given the session data.<p> 
      * 
      * @param userName the user name
      * @param password the user's password
-     * @param site the site
-     * @param project the project
+     * @param siteName the site
+     * @param projectName the project
      * 
      * @return the authenticated session
      * 
      * @throws CmsRepositoryAuthorizationException if something goes wrong 
      */
-    I_CmsRepositorySession login(String userName, String password, String site, String project) throws CmsRepositoryAuthorizationException;
+    I_CmsRepositorySession login(String userName, String password, String siteName, String projectName)
+    throws CmsRepositoryAuthorizationException;
 
 }
