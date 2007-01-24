@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/CmsRepositoryException.java,v $
- * Date   : $Date: 2007/01/24 09:50:38 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/24 14:55:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,13 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
- * Super class for all thrown exceptions in the webdav package.
+ * Super class for all thrown exceptions in the webdav package.<p>
  * 
  * @author Peter Bonrad
+ * 
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 6.5.6
  */
 public class CmsRepositoryException extends Exception {
 

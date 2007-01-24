@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/I_CmsRepositoryItem.java,v $
- * Date   : $Date: 2007/01/24 09:50:38 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/24 14:55:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,16 @@
 
 package org.opencms.repository;
 
-import java.io.InputStream;
 
 /**
  * This class represents items for the WebDAV interface. This can be
- * files or folders (collections). 
+ * files or folders (collections). <p>
  * 
  * @author Peter Bonrad
+ * 
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 6.5.6
  */
 public interface I_CmsRepositoryItem {
 
@@ -82,13 +85,6 @@ public interface I_CmsRepositoryItem {
      * @return the name of this item
      */
     String getName();
-
-    /**
-     * Returns the content if this item as a stream.
-     * 
-     * @return the stream content of this item as a InputStream
-     */
-    InputStream getStreamContent();
 
     /**
      * Checks if this item is a collection.

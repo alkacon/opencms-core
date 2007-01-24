@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.opencms.webdav.util;
+package org.opencms.webdav;
 
 /**
  * Encode an MD5 digest into a String.
@@ -25,9 +25,9 @@ package org.opencms.webdav.util;
  * of the digest.
  *
  * @author Remy Maucherat
- * @version $Revision: 1.1.2.2 $ $Date: 2007/01/23 16:58:11 $
+ * @version $Revision: 1.1.2.1 $ $Date: 2007/01/24 14:55:05 $
  */
-public final class MD5Encoder {
+public final class CmsMD5Encoder {
 
     private static final char[] HEXADECIMAL =
     {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',

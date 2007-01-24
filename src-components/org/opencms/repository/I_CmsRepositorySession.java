@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/I_CmsRepositorySession.java,v $
- * Date   : $Date: 2007/01/24 09:50:38 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/24 14:55:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,14 @@ package org.opencms.repository;
 import java.io.InputStream;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-
 /**
- * A session for WebDAV to handle the actions.
+ * A session for WebDAV to handle the actions.<p>
  * 
  * @author Peter Bonrad
+ * 
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 6.5.6
  */
 public interface I_CmsRepositorySession {
 
@@ -114,14 +115,6 @@ public interface I_CmsRepositorySession {
      * @return the found lock as CmsWebdavLockInfo or null if not found
      */
     CmsRepositoryLockInfo getLock(String path);
-
-    /**
-     * Initialize the session with the servlet context.
-     * 
-     * @param servletContext The servlet context
-     * @throws ServletException if something goes wrong
-     */
-    void init(ServletContext servletContext) throws ServletException;
 
     /**
      * Returns a list with all items found directly in the given path.

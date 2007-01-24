@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavRange.java,v $
- * Date   : $Date: 2007/01/12 17:24:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/24 14:55:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,23 @@
 package org.opencms.webdav;
 
 /**
- * Helper class for the WebDAV servlet. Holds values for a range.
+ * Helper class for the WebDAV servlet. Holds values for a range.<p>
  * 
  * @author Peter Bonrad
+ * 
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 6.5.6
  */
 public class CmsWebdavRange {
 
+    /** The end of the range. */
     private long m_end;
+
+    /** The length of the range. */
     private long m_length;
+    
+    /** The start of the range. */
     private long m_start;
 
     /**
@@ -73,7 +82,7 @@ public class CmsWebdavRange {
     }
 
     /**
-     * Resets this range.
+     * Resets this range.<p>
      *
      */
     public void recycle() {
@@ -114,7 +123,7 @@ public class CmsWebdavRange {
     }
 
     /**
-     * Validate range.
+     * Validate range.<p>
      * 
      * @return true if the actual range is valid otherwise false
      */

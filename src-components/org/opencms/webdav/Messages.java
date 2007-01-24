@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/Messages.java,v $
- * Date   : $Date: 2007/01/12 17:24:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/24 14:55:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.webdav;
 
 import org.opencms.i18n.A_CmsMessageBundle;
@@ -39,8 +39,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Peter Bonrad 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $
  * 
+ * @since 6.5.6
  */
 public final class Messages extends A_CmsMessageBundle {
 
@@ -60,10 +61,88 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String DIRECTORY_TITLE_1 = "DIRECTORY_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String EXISTING_RESOURCE_1 = "EXISTING_RESOURCE_1";
+    public static final String ERR_CLOSE_INPUT_STREAM_0 = "ERR_CLOSE_INPUT_STREAM_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String MISSING_RESOURCE_1 = "MISSING_RESOURCE_1";
+    public static final String ERR_CLOSE_READER_0 = "ERR_CLOSE_READER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_TEMP_FILE_0 = "ERR_DELETE_TEMP_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DEST_PATH_EXISTS_1 = "ERR_DEST_PATH_EXISTS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INIT_PARAM_MISSING_1 = "ERR_INIT_PARAM_MISSING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LIST_ITEMS_1 = "ERR_LIST_ITEMS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MD5_NOT_AVAILABLE_0 = "ERR_MD5_NOT_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PARSE_DEST_HEADER_0 = "ERR_PARSE_DEST_HEADER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_INIT_PARAM_2 = "ERR_READ_INIT_PARAM_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REP_CLASS_CONSTRUCT_1 = "ERR_REP_CLASS_CONSTRUCT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REP_CLASS_INSTANTIATE_1 = "ERR_REP_CLASS_INSTANTIATE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REP_CLASS_NOT_FOUND_1 = "ERR_REP_CLASS_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SRC_DEST_EQUALS_0 = "ERR_SRC_DEST_EQUALS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_COPY_2 = "LOG_COPY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_COPY_SUCCESS_0 = "LOG_COPY_SUCCESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_CREATE_SUCCESS_0 = "LOG_CREATE_SUCCESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DELETE_SUCCESS_0 = "LOG_DELETE_SUCCESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ITEM_EXISTS_1 = "LOG_ITEM_EXISTS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ITEM_LOCKED_1 = "LOG_ITEM_LOCKED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ITEM_NOT_FOUND_1 = "LOG_ITEM_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_MOVE_2 = "LOG_MOVE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_MOVE_SUCCESS_0 = "LOG_MOVE_SUCCESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SERVE_BYTES_2 = "LOG_SERVE_BYTES_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SERVE_ITEM_1 = "LOG_SERVE_ITEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SERVE_ITEM_CONTENT_LENGTH_1 = "LOG_SERVE_ITEM_CONTENT_LENGTH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SERVE_ITEM_CONTENT_TYPE_1 = "LOG_SERVE_ITEM_CONTENT_TYPE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SERVE_ITEM_HEADER_1 = "LOG_SERVE_ITEM_HEADER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WEBDAV_READ_ONLY_0 = "LOG_WEBDAV_READ_ONLY_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.webdav.messages";
@@ -90,7 +169,7 @@ public final class Messages extends A_CmsMessageBundle {
 
         return INSTANCE;
     }
-    
+
     /**
      * Returns the bundle name for this OpenCms package.
      * <p>

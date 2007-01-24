@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/CmsRepositoryItemAlreadyExistsException.java,v $
- * Date   : $Date: 2007/01/24 09:50:38 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/24 14:55:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,14 @@ package org.opencms.repository;
  * exists and should not be overwritten.<p>
  * 
  * @author Peter Bonrad
+ * 
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 6.5.6
  */
 public class CmsRepositoryItemAlreadyExistsException extends CmsRepositoryException {
 
+    /** The unique serial id for this class. */
     private static final long serialVersionUID = 7359376378942475776L;
 
     /**

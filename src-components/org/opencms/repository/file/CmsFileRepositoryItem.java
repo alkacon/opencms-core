@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/tomcat/Attic/WebdavItem.java,v $
- * Date   : $Date: 2007/01/23 16:58:11 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/file/Attic/CmsFileRepositoryItem.java,v $
+ * Date   : $Date: 2007/01/24 14:55:05 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,37 +29,45 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.webdav.tomcat;
+package org.opencms.repository.file;
 
-import org.opencms.webdav.I_CmsWebdavItem;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import org.opencms.repository.I_CmsRepositoryItem;
 
 /**
  * This class represents a WebDAV resource item to work with the Tomcat to write
- * to the hard drive.
+ * to the hard drive.<p>
  * 
  * @author Peter Bonrad
+ * 
+ * @version $Revision: 1.1.2.1 $
+ * 
+ * @since 6.5.6
  */
-public class WebdavItem implements I_CmsWebdavItem {
+public class CmsFileRepositoryItem implements I_CmsRepositoryItem {
 
+    /** Is the item a collection? */
     private boolean m_collection;
 
+    /** The content of the item as a byte array. */
     private byte[] m_content;
 
+    /** The length of the content of the item. */
     private long m_contentLength;
 
+    /** The creation date of the item. */
     private long m_creationDate;
 
+    /** The date of the last modification of the item. */
     private long m_lastModifiedDate;
 
+    /** The mime type of the item. */
     private String m_mimeType;
 
+    /** The name of the item. */
     private String m_name;
 
     /**
-     * @see org.opencms.webdav.I_CmsWebdavItem#getContent()
+     * @see org.opencms.repository.I_CmsRepositoryItem#getContent()
      */
     public byte[] getContent() {
 
@@ -67,7 +75,7 @@ public class WebdavItem implements I_CmsWebdavItem {
     }
 
     /**
-     * @see org.opencms.webdav.I_CmsWebdavItem#getContentLength()
+     * @see org.opencms.repository.I_CmsRepositoryItem#getContentLength()
      */
     public long getContentLength() {
 
@@ -75,7 +83,7 @@ public class WebdavItem implements I_CmsWebdavItem {
     }
 
     /**
-     * @see org.opencms.webdav.I_CmsWebdavItem#getCreationDate()
+     * @see org.opencms.repository.I_CmsRepositoryItem#getCreationDate()
      */
     public long getCreationDate() {
 
@@ -83,7 +91,7 @@ public class WebdavItem implements I_CmsWebdavItem {
     }
 
     /**
-     * @see org.opencms.webdav.I_CmsWebdavItem#getLastModifiedDate()
+     * @see org.opencms.repository.I_CmsRepositoryItem#getLastModifiedDate()
      */
     public long getLastModifiedDate() {
 
@@ -91,7 +99,7 @@ public class WebdavItem implements I_CmsWebdavItem {
     }
 
     /**
-     * @see org.opencms.webdav.I_CmsWebdavItem#getMimeType()
+     * @see org.opencms.repository.I_CmsRepositoryItem#getMimeType()
      */
     public String getMimeType() {
 
@@ -99,7 +107,7 @@ public class WebdavItem implements I_CmsWebdavItem {
     }
 
     /**
-     * @see org.opencms.webdav.I_CmsWebdavItem#getName()
+     * @see org.opencms.repository.I_CmsRepositoryItem#getName()
      */
     public String getName() {
 
@@ -107,15 +115,7 @@ public class WebdavItem implements I_CmsWebdavItem {
     }
 
     /**
-     * @see org.opencms.webdav.I_CmsWebdavItem#getStreamContent()
-     */
-    public InputStream getStreamContent() {
-
-        return new ByteArrayInputStream(m_content);
-    }
-
-    /**
-     * @see org.opencms.webdav.I_CmsWebdavItem#isCollection()
+     * @see org.opencms.repository.I_CmsRepositoryItem#isCollection()
      */
     public boolean isCollection() {
 
