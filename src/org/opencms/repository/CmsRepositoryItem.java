@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsRepositoryItem.java,v $
- * Date   : $Date: 2007/01/24 10:04:26 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryItem.java,v $
+ * Date   : $Date: 2007/01/24 15:07:24 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.main;
+package org.opencms.repository;
 
 import org.opencms.repository.I_CmsRepositoryItem;
 
