@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavLockInfo.java,v $
- * Date   : $Date: 2007/01/23 16:58:11 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/CmsRepositoryLockInfo.java,v $
+ * Date   : $Date: 2007/01/24 09:50:38 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.webdav;
+package org.opencms.repository;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -42,29 +42,29 @@ import java.util.Vector;
  * 
  * @author Peter Bonrad
  */
-public class CmsWebdavLockInfo {
+public class CmsRepositoryLockInfo {
 
     /** The default lock timeout. */
     public static final int DEFAULT_TIMEOUT = 604800;
-    
+
     /** Default depth is infinite. */
     public static final int DEPTH_INFINITY = 3; // To limit tree browsing a bit
-    
+
     /** The lock scope "exclusive". */
     public static final String SCOPE_EXCLUSIVE = "exclusive";
-    
+
     /** The lock scope "shared". */
     public static final String SCOPE_SHARED = "shared";
-    
+
     /** The lock type "write". */
     public static final String TYPE_WRITE = "write";
 
     /** The default scope for locks. */
     public static final String DEFAULT_SCOPE = SCOPE_EXCLUSIVE;
-    
+
     /** The default type for locks. */
     public static final String DEFAULT_TYPE = TYPE_WRITE;
-    
+
     /** The creation date of the lock. */
     private Date m_creationDate = new Date();
 
@@ -76,7 +76,7 @@ public class CmsWebdavLockInfo {
 
     /** The owner of the lock (submitted while creation). */
     private String m_owner = "";
-    
+
     /** The path of the resource item the lock belongs to. */
     private String m_path = "/";
 
@@ -92,7 +92,7 @@ public class CmsWebdavLockInfo {
     /**
      * Constructor.
      */
-    public CmsWebdavLockInfo() {
+    public CmsRepositoryLockInfo() {
 
         // empty default constructor
     }
@@ -269,7 +269,7 @@ public class CmsWebdavLockInfo {
         result += "Scope:" + m_scope + "\n";
         result += "Depth:" + m_depth + "\n";
         result += "Owner:" + m_owner + "\n";
-        result += "Expiration:" + CmsWebdavServlet.HTTP_DATE_FORMAT.format(new Date(m_expiresAt)) + "\n";
+        result += "Expiration:" + new Date(m_expiresAt) + "\n";
 
         Iterator iter = m_tokens.iterator();
         while (iter.hasNext()) {
@@ -277,5 +277,4 @@ public class CmsWebdavLockInfo {
         }
         return result;
     }
-
 }

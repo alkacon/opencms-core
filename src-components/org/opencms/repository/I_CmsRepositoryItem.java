@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/I_CmsWebdavItem.java,v $
- * Date   : $Date: 2007/01/23 16:58:11 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/I_CmsRepositoryItem.java,v $
+ * Date   : $Date: 2007/01/24 09:50:38 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.webdav;
+package org.opencms.repository;
 
 import java.io.InputStream;
 
@@ -39,7 +39,7 @@ import java.io.InputStream;
  * 
  * @author Peter Bonrad
  */
-public interface I_CmsWebdavItem {
+public interface I_CmsRepositoryItem {
 
     /**
      * Returns the content of this item as a byte array.

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/I_CmsWebdavSession.java,v $
- * Date   : $Date: 2007/01/23 16:58:11 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/I_CmsRepositorySession.java,v $
+ * Date   : $Date: 2007/01/24 09:50:38 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.webdav;
+package org.opencms.repository;
 
 import java.io.InputStream;
 import java.util.List;
@@ -42,7 +42,7 @@ import javax.servlet.ServletException;
  * 
  * @author Peter Bonrad
  */
-public interface I_CmsWebdavSession {
+public interface I_CmsRepositorySession {
 
     /**
      * Copies the item found at the source path to the destination path.
@@ -50,22 +50,22 @@ public interface I_CmsWebdavSession {
      * @param src The path of the item which should be copied
      * @param dest The destination path where to copy to
      * @param overwrite Should any existing item be overwritten
-     * @throws CmsWebdavItemNotFoundException if the source path could not be found
-     * @throws CmsWebdavPermissionException if there is a permission issue
-     * @throws CmsWebdavItemAlreadyExistsException if the resource already exists
+     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
+     * @throws CmsRepositoryPermissionException if there is a permission issue
+     * @throws CmsRepositoryItemAlreadyExistsException if the resource already exists
      */
     void copy(String src, String dest, boolean overwrite)
-    throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException, CmsWebdavItemAlreadyExistsException;
+    throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException, CmsRepositoryItemAlreadyExistsException;
 
     /**
      * Creates a new item at the given path. In this case this should
      * be a collection (directory).
      * 
      * @param path The complete path of the new collection
-     * @throws CmsWebdavItemAlreadyExistsException if the resource already exists
-     * @throws CmsWebdavPermissionException if there is a permission issue
+     * @throws CmsRepositoryItemAlreadyExistsException if the resource already exists
+     * @throws CmsRepositoryPermissionException if there is a permission issue
      */
-    void create(String path) throws CmsWebdavItemAlreadyExistsException, CmsWebdavPermissionException;
+    void create(String path) throws CmsRepositoryItemAlreadyExistsException, CmsRepositoryPermissionException;
 
     /**
      * Creates a new item at the given path. This creates a new single
@@ -74,20 +74,20 @@ public interface I_CmsWebdavSession {
      * @param path The complete path of the new item
      * @param inputStream The content of the item
      * @param overwrite Should an existing item at the path be overwritten
-     * @throws CmsWebdavItemAlreadyExistsException if the resource already exists and should not be overwritten
-     * @throws CmsWebdavPermissionException if there is a permission issue
+     * @throws CmsRepositoryItemAlreadyExistsException if the resource already exists and should not be overwritten
+     * @throws CmsRepositoryPermissionException if there is a permission issue
      */
     void create(String path, InputStream inputStream, boolean overwrite)
-    throws CmsWebdavItemAlreadyExistsException, CmsWebdavPermissionException;
+    throws CmsRepositoryItemAlreadyExistsException, CmsRepositoryPermissionException;
 
     /**
      * Deletes the item at the given path.
      * 
      * @param path The complete path of the item to delete
-     * @throws CmsWebdavItemNotFoundException if the source path could not be found
-     * @throws CmsWebdavPermissionException if there is a permission issue
+     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
+     * @throws CmsRepositoryPermissionException if there is a permission issue
      */
-    void delete(String path) throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException;
+    void delete(String path) throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException;
 
     /**
      * Returns if an item exists at the given path.
@@ -102,10 +102,10 @@ public interface I_CmsWebdavSession {
      * 
      * @param path The complete path of the item to return
      * @return the item found at the path
-     * @throws CmsWebdavItemNotFoundException if the source path could not be found
-     * @throws CmsWebdavPermissionException if there is a permission issue
+     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
+     * @throws CmsRepositoryPermissionException if there is a permission issue
      */
-    I_CmsWebdavItem getItem(String path) throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException;
+    I_CmsRepositoryItem getItem(String path) throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException;
 
     /**
      * Returns the lock for the resource at the given path.
@@ -113,7 +113,7 @@ public interface I_CmsWebdavSession {
      * @param path The complete path where to return the lock for
      * @return the found lock as CmsWebdavLockInfo or null if not found
      */
-    CmsWebdavLockInfo getLock(String path);
+    CmsRepositoryLockInfo getLock(String path);
 
     /**
      * Initialize the session with the servlet context.
@@ -128,10 +128,10 @@ public interface I_CmsWebdavSession {
      * 
      * @param path The complete path from which to return the items
      * @return a list with (I_CmsWebdavItem) found in the path
-     * @throws CmsWebdavItemNotFoundException if the source path could not be found
-     * @throws CmsWebdavPermissionException if there is a permission issue
+     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
+     * @throws CmsRepositoryPermissionException if there is a permission issue
      */
-    List list(String path) throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException;
+    List list(String path) throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException;
 
     /**
      * Creates a new lock on the item with the path with the given information 
@@ -140,11 +140,11 @@ public interface I_CmsWebdavSession {
      * @param path The complete path of the item
      * @param lock The information about the lock to create
      * @return if the lock token was successfully added
-     * @throws CmsWebdavItemNotFoundException if the source path could not be found
-     * @throws CmsWebdavPermissionException if there is a permission issue
+     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
+     * @throws CmsRepositoryPermissionException if there is a permission issue
      */
-    boolean lock(String path, CmsWebdavLockInfo lock)
-    throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException;
+    boolean lock(String path, CmsRepositoryLockInfo lock)
+    throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException;
 
     /**
      * Moves an item from a source path to a destination path.
@@ -152,12 +152,12 @@ public interface I_CmsWebdavSession {
      * @param src The complete path to the item which should be copied
      * @param dest The complete destination path where to copy to
      * @param overwrite Should any existing item should be overwritten
-     * @throws CmsWebdavItemNotFoundException if the source path could not be found
-     * @throws CmsWebdavPermissionException if there is a permission issue
-     * @throws CmsWebdavItemAlreadyExistsException if the resource already exists and should not be overwritten
+     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
+     * @throws CmsRepositoryPermissionException if there is a permission issue
+     * @throws CmsRepositoryItemAlreadyExistsException if the resource already exists and should not be overwritten
      */
     void move(String src, String dest, boolean overwrite)
-    throws CmsWebdavItemNotFoundException, CmsWebdavPermissionException, CmsWebdavItemAlreadyExistsException;
+    throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException, CmsRepositoryItemAlreadyExistsException;
 
     /**
      * Unlocks the item found at the path. Should remove the lock token
