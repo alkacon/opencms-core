@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/01/23 13:04:13 $
- * Version: $Revision: 1.97.4.28 $
+ * Date   : $Date: 2007/01/24 08:55:17 $
+ * Version: $Revision: 1.97.4.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4611,7 +4611,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         boolean result = false;
         try {
-            result = m_driverManager.userInGroup(dbc, username, groupname);
+            result = m_driverManager.userInGroup(dbc, username, groupname, false);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_USER_IN_GROUP_2, username, groupname), e);
         } finally {

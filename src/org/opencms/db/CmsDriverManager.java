@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/01/23 14:22:46 $
- * Version: $Revision: 1.570.2.47 $
+ * Date   : $Date: 2007/01/24 08:55:17 $
+ * Version: $Revision: 1.570.2.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -655,26 +655,58 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void addUserToGroup(CmsDbContext dbc, String username, String groupname, boolean readRoles)
     throws CmsException, CmsDbEntryNotFoundException {
 
-        if (!userInGroup(dbc, username, groupname)) {
-            CmsUser user = readUser(dbc, username);
-            //check if the user exists
-            if (user != null) {
-                CmsGroup group = readGroup(dbc, groupname);
-                //check if group exists
-                if ((group != null) && ((!readRoles && !group.isRole()) || (readRoles && group.isRole()))) {
-                    //add this user to the group
-                    m_userDriver.createUserInGroup(dbc, user.getId(), group.getId());
-                    // update the cache
-                    m_userGroupsCache.clear();
-                } else {
-                    throw new CmsDbEntryNotFoundException(Messages.get().container(
-                        Messages.ERR_UNKNOWN_GROUP_1,
-                        groupname));
+        if (userInGroup(dbc, username, groupname, readRoles)) {
+            // the user is already member of the group
+            return;
+        }
+        //check if the user exists
+        CmsUser user = readUser(dbc, username);
+        if (user == null) {
+            // the user does not exists
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, username));
+        }
+        //check if group exists
+        CmsGroup group = readGroup(dbc, groupname);
+        if (group == null) {
+            // the group does not exists
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+        }
+        if ((readRoles && !group.isRole()) || (!readRoles && group.isRole())) {
+            // we want a role but we got a group, or the other way
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+        }
+
+        // if add a user to a role
+        if (readRoles) {
+            CmsRole role = CmsRole.valueOf(groupname);
+            // now we check if we already have the role 
+            if (m_securityManager.hasRoleForOrgUnit(dbc, user, role, group.getOuFqn())) {
+                // do nothing
+                return;
+            }
+            // and now we need to remove all possible child-roles
+            List childs = role.getChilds(true);
+            Iterator itUserGroups = getGroupsOfUser(
+                dbc,
+                username,
+                group.getOuFqn(),
+                true,
+                true,
+                true,
+                dbc.getRequestContext().getRemoteAddress()).iterator();
+            while (itUserGroups.hasNext()) {
+                CmsGroup roleGroup = (CmsGroup)itUserGroups.next();
+                if (childs.contains(CmsRole.valueOf(roleGroup.getName()))) {
+                    // remove only child roles
+                    removeUserFromGroup(dbc, username, roleGroup.getName(), true);
                 }
-            } else {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, username));
             }
         }
+
+        //add this user to the group
+        m_userDriver.createUserInGroup(dbc, user.getId(), group.getId());
+        // update the cache
+        m_userGroupsCache.clear();
     }
 
     /**
@@ -2680,25 +2712,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
             replacementUser,
             CmsRole.VFS_MANAGER,
             (String)null);
-        Iterator itGroups = getGroupsOfUser(
-            dbc,
-            username,
-            "/",
-            true,
-            false,
-            false,
-            dbc.getRequestContext().getRemoteAddress()).iterator();
-        while (itGroups.hasNext()) {
-            CmsGroup group = (CmsGroup)itGroups.next();
-            if (!isVfsManager) {
-                // add replacement user to user groups
-                if (!userInGroup(dbc, replacementUser.getName(), group.getName())) {
-                    addUserToGroup(dbc, replacementUser.getName(), group.getName(), false);
+
+        for (boolean readRoles = false; !readRoles; readRoles = !readRoles) {
+            Iterator itGroups = getGroupsOfUser(dbc, username, readRoles).iterator();
+            while (itGroups.hasNext()) {
+                CmsGroup group = (CmsGroup)itGroups.next();
+                if (!isVfsManager) {
+                    // add replacement user to user groups
+                    if (!userInGroup(dbc, replacementUser.getName(), group.getName(), false)) {
+                        addUserToGroup(dbc, replacementUser.getName(), group.getName(), false);
+                    }
                 }
-            }
-            // remove user from groups
-            if (userInGroup(dbc, username, group.getName())) {
-                removeUserFromGroup(dbc, username, group.getName(), false);
+                // remove user from groups
+                if (userInGroup(dbc, username, group.getName(), readRoles)) {
+                    removeUserFromGroup(dbc, username, group.getName(), readRoles);
+                }
             }
         }
 
@@ -3144,7 +3172,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             projects.addAll(m_projectDriver.readProjectsForUser(dbc, dbc.currentUser()));
 
             // get all groups of the user
-            List groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
+            List groups = getGroupsOfUser(dbc, dbc.currentUser().getName(), false);
 
             // add all projects, that the user can access with his groups
             for (int i = 0, n = groups.size(); i < n; i++) {
@@ -3163,14 +3191,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the current database context
      * @param username the name of the user
+     * @param readRoles if to read roles or groups
      * 
      * @return the groups of the given user, as a list of {@link CmsGroup} objects
      * 
      * @throws CmsException 
      */
-    public List getGroupsOfUser(CmsDbContext dbc, String username) throws CmsException {
+    public List getGroupsOfUser(CmsDbContext dbc, String username, boolean readRoles) throws CmsException {
 
-        return getGroupsOfUser(dbc, username, "/", true, false, false, dbc.getRequestContext().getRemoteAddress());
+        return getGroupsOfUser(dbc, username, "/", true, readRoles, false, dbc.getRequestContext().getRemoteAddress());
     }
 
     /**
@@ -3252,11 +3281,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @see org.opencms.security.CmsOrgUnitManager#getResourcesForOrganizationalUnit(CmsObject, String)
      * @see org.opencms.security.CmsOrgUnitManager#getGroups(CmsObject, String, boolean)
      */
-    public List getGroups(
-        CmsDbContext dbc,
-        CmsOrganizationalUnit orgUnit,
-        boolean includeSubOus,
-        boolean readRoles) throws CmsException {
+    public List getGroups(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean includeSubOus, boolean readRoles)
+    throws CmsException {
 
         return m_userDriver.getGroups(dbc, orgUnit, includeSubOus, readRoles);
     }
@@ -3478,7 +3504,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         CmsAccessControlList acList = getAccessControlList(dbc, resource, false);
-        return acList.getPermissions(user, getGroupsOfUser(dbc, user.getName()));
+        return acList.getPermissions(user, getGroupsOfUser(dbc, user.getName(), false));
     }
 
     /**
@@ -3645,8 +3671,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @see org.opencms.security.CmsOrgUnitManager#getResourcesForOrganizationalUnit(CmsObject, String)
      * @see org.opencms.security.CmsOrgUnitManager#getUsers(CmsObject, String, boolean)
      */
-    public List getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
-    throws CmsException {
+    public List getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive) throws CmsException {
 
         return m_userDriver.getUsers(dbc, orgUnit, recursive);
     }
@@ -6004,7 +6029,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException, CmsIllegalArgumentException, CmsDbEntryNotFoundException, CmsSecurityException {
 
         // test if this user is existing in the group
-        if (!userInGroup(dbc, username, groupname)) {
+        if (!userInGroup(dbc, username, groupname, readRoles)) {
             // user is not in the group, throw exception
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_USER_NOT_IN_GROUP_2,
@@ -6354,7 +6379,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void setUsersOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsUser user)
     throws CmsException {
 
-        if (!getGroupsOfUser(dbc, user.getName()).isEmpty()) {
+        if (!getGroupsOfUser(dbc, user.getName(), false).isEmpty()) {
             throw new CmsDbConsistencyException(Messages.get().container(
                 Messages.ERR_ORGUNIT_MOVE_USER_2,
                 orgUnit.getName(),
@@ -6713,14 +6738,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param username the name of the user to check
      * @param groupname the name of the group to check
+     * @param readRoles if to read roles or groups
      *
      * @return <code>true</code>, if the user is in the group, <code>false</code> otherwise
      * 
      * @throws CmsException if something goes wrong
      */
-    public boolean userInGroup(CmsDbContext dbc, String username, String groupname) throws CmsException {
+    public boolean userInGroup(CmsDbContext dbc, String username, String groupname, boolean readRoles)
+    throws CmsException {
 
-        List groups = getGroupsOfUser(dbc, username);
+        List groups = getGroupsOfUser(dbc, username, readRoles);
         for (int i = 0; i < groups.size(); i++) {
             if (groupname.equals(((CmsGroup)groups.get(i)).getName())) {
                 return true;
