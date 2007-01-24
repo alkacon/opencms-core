@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2007/01/23 13:04:44 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/24 08:30:27 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.security;
 
 import org.opencms.db.CmsSecurityManager;
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
@@ -47,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.6
  */
@@ -236,6 +237,7 @@ public class CmsRoleManager {
      * @param ouFqn the fully qualified name of the organizational unit to restrict the search to
      * @param includeChildOus include roles of child organizational units
      * @param directRolesOnly if set only the direct assigned roles will be returned, if not also indirect roles
+     * @param recursive if this is set, also roles of higher organizational unit are considered
      * 
      * @return a list of <code>{@link org.opencms.file.CmsGroup}</code> objects
      *
@@ -246,16 +248,38 @@ public class CmsRoleManager {
         String username,
         String ouFqn,
         boolean includeChildOus,
-        boolean directRolesOnly) throws CmsException {
+        boolean directRolesOnly,
+        boolean recursive) throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(
+        if (!recursive) {
+            return m_securityManager.getGroupsOfUser(
+                cms.getRequestContext(),
+                username,
+                ouFqn,
+                includeChildOus,
+                true,
+                directRolesOnly,
+                cms.getRequestContext().getRemoteAddress());
+        }
+        List roles = new ArrayList();
+        Iterator itAllRoles = m_securityManager.getGroupsOfUser(
             cms.getRequestContext(),
             username,
-            ouFqn,
-            includeChildOus,
+            "/",
+            true,
             true,
             directRolesOnly,
-            cms.getRequestContext().getRemoteAddress());
+            cms.getRequestContext().getRemoteAddress()).iterator();
+        while (itAllRoles.hasNext()) {
+            CmsGroup role = (CmsGroup)itAllRoles.next();
+            if (!includeChildOus && role.getOuFqn().equals(ouFqn)) {
+                roles.add(role);
+            }
+            if (includeChildOus && role.getOuFqn().startsWith(ouFqn)) {
+                roles.add(role);
+            }
+        }
+        return roles;
     }
 
     /**
@@ -301,7 +325,11 @@ public class CmsRoleManager {
      */
     public boolean hasRole(CmsObject cms, CmsRole role) {
 
-        return m_securityManager.hasRoleForOrgUnit(cms.getRequestContext(), cms.getRequestContext().currentUser(), role, null);
+        return m_securityManager.hasRoleForOrgUnit(
+            cms.getRequestContext(),
+            cms.getRequestContext().currentUser(),
+            role,
+            null);
     }
 
     /**
@@ -315,7 +343,11 @@ public class CmsRoleManager {
      */
     public boolean hasRoleForOrgUnit(CmsObject cms, CmsRole role, String ouFqn) {
 
-        return m_securityManager.hasRoleForOrgUnit(cms.getRequestContext(), cms.getRequestContext().currentUser(), role, ouFqn);
+        return m_securityManager.hasRoleForOrgUnit(
+            cms.getRequestContext(),
+            cms.getRequestContext().currentUser(),
+            role,
+            ouFqn);
     }
 
     /**
@@ -358,7 +390,11 @@ public class CmsRoleManager {
             // ignore
             return false;
         }
-        return m_securityManager.hasRoleForResource(cms.getRequestContext(), cms.getRequestContext().currentUser(), role, resource);
+        return m_securityManager.hasRoleForResource(
+            cms.getRequestContext(),
+            cms.getRequestContext().currentUser(),
+            role,
+            resource);
     }
 
     /**

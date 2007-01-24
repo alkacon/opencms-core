@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/24 08:30:27 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,14 +66,17 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
-    int m_todo5; // default groups/users check, in special CmsUser#isGuest
-    int m_todo6; // role check
-    int m_todo7; // db creation scripts
-    int m_todo8; // localization
+    int m_todo2; // remove subroles during addusertorole!?
+    int m_todo3; // test case for getresourceforou
+    int m_todo4; // change ou name/parent, 1day
+    int m_todo5; // user additional info clean up, 1.5days
+    int m_todo6; // virtual groups, 1.5days
+    int m_todo7; // db creation scripts, 0.5day
+    int m_todo8; // localization, 0.5day
 
     /**
      * Default JUnit constructor.<p>
@@ -98,11 +101,15 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         suite.setName(TestOrganizationalUnits.class.getName());
 
         suite.addTest(new TestOrganizationalUnits("testRootOu"));
+        suite.addTest(new TestOrganizationalUnits("testRootRoles"));
         suite.addTest(new TestOrganizationalUnits("testFirstLevelOu"));
+        suite.addTest(new TestOrganizationalUnits("testFirstLevelRoles"));
         suite.addTest(new TestOrganizationalUnits("testDeeperLevelOu"));
+        suite.addTest(new TestOrganizationalUnits("testDeeperLevelRoles"));
         suite.addTest(new TestOrganizationalUnits("testResourceAssociations"));
         suite.addTest(new TestOrganizationalUnits("testPrincipalAssociations"));
-        suite.addTest(new TestOrganizationalUnits("testResourcePermissions"));
+        suite.addTest(new TestOrganizationalUnits("testRoleInheritance"));
+        suite.addTest(new TestOrganizationalUnits("testParallelRoles"));
         suite.addTest(new TestOrganizationalUnits("testUserLogin"));
         suite.addTest(new TestOrganizationalUnits("testMembership"));
         suite.addTest(new TestOrganizationalUnits("testPersistence"));
@@ -380,6 +387,231 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
     }
 
     /**
+     * Tests system roles in first level ou.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testFirstLevelRoles() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing system roles in first level ou");
+
+        // check the ous
+        CmsOrganizationalUnit rootOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/");
+        CmsOrganizationalUnit flOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test/");
+
+        // check just the roles of the root ou
+        List roleGroups = OpenCms.getRoleManager().getRoles(cms, rootOu.getName(), false);
+        assertEquals(CmsRole.getSystemRoles().size(), roleGroups.size());
+        List roles = new ArrayList(roleGroups.size());
+        Iterator itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            assertEquals(rootOu.getName(), role.getOuFqn());
+            roles.add(CmsRole.valueOf(role.getName()));
+        }
+        for (int i = 0; i < roles.size(); i++) {
+            assertTrue(CmsRole.getSystemRoles().contains(roles.get(i)));
+            assertTrue(roles.contains(CmsRole.getSystemRoles().get(i)));
+        }
+        // check all roles
+        roleGroups = OpenCms.getRoleManager().getRoles(cms, rootOu.getName(), true);
+        assertEquals(CmsRole.getSystemRoles().size() + getOuRoles().size(), roleGroups.size());
+        List rootRoles = new ArrayList(CmsRole.getSystemRoles().size());
+        List flRoles = new ArrayList(getOuRoles().size());
+        itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            if (role.getOuFqn().equals(rootOu.getName())) {
+                rootRoles.add(CmsRole.valueOf(role.getName()));
+            } else {
+                assertEquals(flOu.getName(), role.getOuFqn());
+                flRoles.add(CmsRole.valueOf(role.getName()));
+            }
+        }
+        for (int i = 0; i < rootRoles.size(); i++) {
+            assertTrue(CmsRole.getSystemRoles().contains(rootRoles.get(i)));
+            assertTrue(rootRoles.contains(CmsRole.getSystemRoles().get(i)));
+        }
+        for (int i = 0; i < flRoles.size(); i++) {
+            assertTrue(getOuRoles().contains(flRoles.get(i)));
+            assertTrue(flRoles.contains(getOuRoles().get(i)));
+        }
+        // check just the roles of the first level ou
+        roleGroups = OpenCms.getRoleManager().getRoles(cms, flOu.getName(), false);
+        assertEquals(getOuRoles().size(), roleGroups.size());
+        roles = new ArrayList(roleGroups.size());
+        itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            assertEquals(flOu.getName(), role.getOuFqn());
+            roles.add(CmsRole.valueOf(role.getName()));
+        }
+        for (int i = 0; i < roles.size(); i++) {
+            assertTrue(getOuRoles().contains(roles.get(i)));
+            assertTrue(roles.contains(getOuRoles().get(i)));
+        }
+        // check again including (missing) sub-ous
+        roleGroups = OpenCms.getRoleManager().getRoles(cms, flOu.getName(), true);
+        assertEquals(getOuRoles().size(), roleGroups.size());
+        roles = new ArrayList(roleGroups.size());
+        itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            assertEquals(flOu.getName(), role.getOuFqn());
+            roles.add(CmsRole.valueOf(role.getName()));
+        }
+        for (int i = 0; i < roles.size(); i++) {
+            assertTrue(getOuRoles().contains(roles.get(i)));
+            assertTrue(roles.contains(getOuRoles().get(i)));
+        }
+    }
+
+    /**
+     * Tests system roles in a deeper level ou.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testDeeperLevelRoles() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing system roles in a deeper level ou");
+
+        // check the ous
+        CmsOrganizationalUnit rootOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/");
+        CmsOrganizationalUnit flOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test/");
+        CmsOrganizationalUnit dlOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test/test2/");
+
+        // check just the roles of the root ou
+        List roleGroups = OpenCms.getRoleManager().getRoles(cms, rootOu.getName(), false);
+        assertEquals(CmsRole.getSystemRoles().size(), roleGroups.size());
+        List roles = new ArrayList(roleGroups.size());
+        Iterator itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            assertEquals(rootOu.getName(), role.getOuFqn());
+            roles.add(CmsRole.valueOf(role.getName()));
+        }
+        for (int i = 0; i < roles.size(); i++) {
+            assertTrue(CmsRole.getSystemRoles().contains(roles.get(i)));
+            assertTrue(roles.contains(CmsRole.getSystemRoles().get(i)));
+        }
+        // check all roles
+        roleGroups = OpenCms.getRoleManager().getRoles(cms, rootOu.getName(), true);
+        assertEquals(CmsRole.getSystemRoles().size() + getOuRoles().size() * 2, roleGroups.size());
+        List rootRoles = new ArrayList(CmsRole.getSystemRoles().size());
+        List flRoles = new ArrayList(getOuRoles().size());
+        List dlRoles = new ArrayList(getOuRoles().size());
+        itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            if (role.getOuFqn().equals(rootOu.getName())) {
+                rootRoles.add(CmsRole.valueOf(role.getName()));
+            } else if (role.getOuFqn().equals(flOu.getName())) {
+                flRoles.add(CmsRole.valueOf(role.getName()));
+            } else {
+                assertEquals(dlOu.getName(), role.getOuFqn());
+                dlRoles.add(CmsRole.valueOf(role.getName()));
+            }
+        }
+        for (int i = 0; i < rootRoles.size(); i++) {
+            assertTrue(CmsRole.getSystemRoles().contains(rootRoles.get(i)));
+            assertTrue(rootRoles.contains(CmsRole.getSystemRoles().get(i)));
+        }
+        for (int i = 0; i < flRoles.size(); i++) {
+            assertTrue(getOuRoles().contains(flRoles.get(i)));
+            assertTrue(flRoles.contains(getOuRoles().get(i)));
+        }
+        for (int i = 0; i < dlRoles.size(); i++) {
+            assertTrue(getOuRoles().contains(dlRoles.get(i)));
+            assertTrue(dlRoles.contains(getOuRoles().get(i)));
+        }
+        // check just the roles of the first level ou
+        roleGroups = OpenCms.getRoleManager().getRoles(cms, flOu.getName(), false);
+        assertEquals(getOuRoles().size(), roleGroups.size());
+        roles = new ArrayList(roleGroups.size());
+        itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            assertEquals(flOu.getName(), role.getOuFqn());
+            roles.add(CmsRole.valueOf(role.getName()));
+        }
+        for (int i = 0; i < roles.size(); i++) {
+            assertTrue(getOuRoles().contains(roles.get(i)));
+            assertTrue(roles.contains(getOuRoles().get(i)));
+        }
+        // check all roles in the first level ou and deeper
+        roleGroups = OpenCms.getRoleManager().getRoles(cms, flOu.getName(), true);
+        assertEquals(getOuRoles().size() * 2, roleGroups.size());
+        flRoles = new ArrayList(getOuRoles().size());
+        dlRoles = new ArrayList(getOuRoles().size());
+        itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            if (role.getOuFqn().equals(flOu.getName())) {
+                flRoles.add(CmsRole.valueOf(role.getName()));
+            } else {
+                assertEquals(dlOu.getName(), role.getOuFqn());
+                dlRoles.add(CmsRole.valueOf(role.getName()));
+            }
+        }
+        for (int i = 0; i < flRoles.size(); i++) {
+            assertTrue(getOuRoles().contains(flRoles.get(i)));
+            assertTrue(flRoles.contains(getOuRoles().get(i)));
+        }
+        for (int i = 0; i < dlRoles.size(); i++) {
+            assertTrue(getOuRoles().contains(dlRoles.get(i)));
+            assertTrue(dlRoles.contains(getOuRoles().get(i)));
+        }
+        // check just the roles of the deeper level ou
+        roleGroups = OpenCms.getRoleManager().getRoles(cms, dlOu.getName(), false);
+        assertEquals(getOuRoles().size(), roleGroups.size());
+        roles = new ArrayList(roleGroups.size());
+        itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            assertEquals(dlOu.getName(), role.getOuFqn());
+            roles.add(CmsRole.valueOf(role.getName()));
+        }
+        for (int i = 0; i < roles.size(); i++) {
+            assertTrue(getOuRoles().contains(roles.get(i)));
+            assertTrue(roles.contains(getOuRoles().get(i)));
+        }
+        // check again including (missing) sub-ous
+        roleGroups = OpenCms.getRoleManager().getRoles(cms, dlOu.getName(), true);
+        assertEquals(getOuRoles().size(), roleGroups.size());
+        roles = new ArrayList(roleGroups.size());
+        itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            assertEquals(dlOu.getName(), role.getOuFqn());
+            roles.add(CmsRole.valueOf(role.getName()));
+        }
+        for (int i = 0; i < roles.size(); i++) {
+            assertTrue(getOuRoles().contains(roles.get(i)));
+            assertTrue(roles.contains(getOuRoles().get(i)));
+        }
+    }
+
+    /**
+     * Returns all organizational unit dependent roles.<p>
+     * 
+     * @return all organizational unit dependent roles
+     */
+    public static List getOuRoles() {
+
+        List roles = new ArrayList();
+        Iterator itRoles = CmsRole.getSystemRoles().iterator();
+        while (itRoles.hasNext()) {
+            CmsRole role = (CmsRole)itRoles.next();
+            if (!role.isOrganizationalUnitIndependent()) {
+                roles.add(role);
+            }
+        }
+        return roles;
+    }
+
+    /**
      * Tests handling with a deeper level ou.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -433,7 +665,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         cms.removeUserFromGroup("/test2", "/group2");
         // move to move /test2 to /test/test2/test2 
         OpenCms.getOrgUnitManager().setUsersOrganizationalUnit(cms, ou2.getName(), "/test2");
-        
+
         try {
             cms.readUser("/test2");
             fail("it should not be possible to read the user in the old ou");
@@ -594,20 +826,114 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
     }
 
     /**
-     * Tests handling with default organizational unit resources permissions.<p>
+     * Tests the inheritance of role memberships.<p>
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testResourcePermissions() throws Throwable {
+    public void testRoleInheritance() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        echo("Testing handling with default organizational unit resources permissions");
+        echo("Testing the inheritance of role memberships");
 
+        cms.getRequestContext().setSiteRoot("");
+
+        CmsRoleManager roleMan = OpenCms.getRoleManager();
+        CmsOrgUnitManager ouMan = OpenCms.getOrgUnitManager();
         // check the root ou
-        CmsOrganizationalUnit rootOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "");
-        CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test");
-        CmsOrganizationalUnit ou2 = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou.getName() + "test2");
+        CmsOrganizationalUnit rootOu = ouMan.readOrganizationalUnit(cms, "");
+        CmsResource rootRes = (CmsResource)(ouMan.getResourcesForOrganizationalUnit(cms, rootOu.getName()).get(0)); // /
+        CmsOrganizationalUnit ou = ouMan.readOrganizationalUnit(cms, "/test");
+        CmsResource ouRes = (CmsResource)(ouMan.getResourcesForOrganizationalUnit(cms, ou.getName()).get(0)); // /sites/default/
+        CmsOrganizationalUnit ou2 = ouMan.readOrganizationalUnit(cms, ou.getName() + "test2");
+        CmsResource ou2Res = (CmsResource)(ouMan.getResourcesForOrganizationalUnit(cms, ou2.getName()).get(0)); // /sites/default/folder2/
+        CmsUser user = cms.readUser("/test/test1");
+        // check preconditions
+        assertFalse(roleMan.hasRoleForResource(
+            cms,
+            user.getName(),
+            CmsRole.ACCOUNT_MANAGER,
+            cms.getRequestContext().getSitePath(rootRes)));
+        assertFalse(roleMan.hasRoleForResource(
+            cms,
+            user.getName(),
+            CmsRole.ACCOUNT_MANAGER,
+            cms.getRequestContext().getSitePath(ouRes)));
+        assertFalse(roleMan.hasRoleForResource(
+            cms,
+            user.getName(),
+            CmsRole.ACCOUNT_MANAGER,
+            cms.getRequestContext().getSitePath(ou2Res)));
 
+        assertTrue(roleMan.hasRoleForResource(
+            cms,
+            CmsRole.ACCOUNT_MANAGER,
+            cms.getRequestContext().getSitePath(rootRes)));
+        assertTrue(roleMan.hasRoleForResource(cms, CmsRole.ACCOUNT_MANAGER, cms.getRequestContext().getSitePath(ouRes)));
+        assertTrue(roleMan.hasRoleForResource(cms, CmsRole.ACCOUNT_MANAGER, cms.getRequestContext().getSitePath(ou2Res)));
+
+        assertFalse(roleMan.hasRoleForOrgUnit(cms, user.getName(), CmsRole.ACCOUNT_MANAGER, ou.getName()));
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).isEmpty());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou.getName(), true, false).isEmpty());
+        // add user to role
+        roleMan.addUserToRole(cms, CmsRole.ACCOUNT_MANAGER, ou.getName(), user.getName());
+        // check role in the given ou
+        assertTrue(roleMan.hasRoleForOrgUnit(cms, user.getName(), CmsRole.ACCOUNT_MANAGER, ou.getName()));
+        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, false, false).size());
+        assertTrue(((CmsGroup)roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, false, false).get(0)).getName().equals(
+            CmsRole.ACCOUNT_MANAGER.getGroupName(ou.getName())));
+        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, true, false).size());
+        assertTrue(((CmsGroup)roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, true, false).get(0)).getName().equals(
+            CmsRole.ACCOUNT_MANAGER.getGroupName(ou.getName())));
+        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).size());
+        assertTrue(((CmsGroup)roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).get(0)).getName().equals(
+            CmsRole.ACCOUNT_MANAGER.getGroupName(ou.getName())));
+        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, true, false).size());
+        assertTrue(((CmsGroup)roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, true, false).get(0)).getName().equals(
+            CmsRole.ACCOUNT_MANAGER.getGroupName(ou.getName())));
+        assertEquals(1, roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou.getName(), false, false).size());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou.getName(), false, false).contains(user));
+        assertEquals(1, roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou.getName(), false, true).size());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou.getName(), false, true).contains(user));
+        assertEquals(1, roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou.getName(), true, false).size());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou.getName(), true, false).contains(user));
+        assertEquals(1, roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou.getName(), true, true).size());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou.getName(), true, false).contains(user));
+        // check role in deeper ou
+        assertTrue(roleMan.hasRoleForOrgUnit(cms, user.getName(), CmsRole.ACCOUNT_MANAGER, ou2.getName()));
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), false, false, false).isEmpty());
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), false, true, false).isEmpty());
+        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), true, false, false).size());
+        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), true, true, false).size());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou2.getName(), false, false).isEmpty());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou2.getName(), false, true).isEmpty());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou2.getName(), true, false).isEmpty());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, ou2.getName(), true, true).isEmpty());
+        // check role in higher ou
+        assertFalse(roleMan.hasRoleForOrgUnit(cms, user.getName(), CmsRole.ACCOUNT_MANAGER, rootOu.getName()));
+        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).size());
+        assertTrue(((CmsGroup)roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).get(0)).getName().equals(
+            CmsRole.ACCOUNT_MANAGER.getGroupName(ou.getName())));
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), false, false, false).isEmpty());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, rootOu.getName(), true, false).isEmpty());
+
+        // check resources
+        assertFalse(roleMan.hasRoleForResource(
+            cms,
+            user.getName(),
+            CmsRole.ACCOUNT_MANAGER,
+            cms.getRequestContext().getSitePath(rootRes)));
+        assertTrue(roleMan.hasRoleForResource(
+            cms,
+            user.getName(),
+            CmsRole.ACCOUNT_MANAGER,
+            cms.getRequestContext().getSitePath(ouRes)));
+        assertTrue(roleMan.hasRoleForResource(
+            cms,
+            user.getName(),
+            CmsRole.ACCOUNT_MANAGER,
+            cms.getRequestContext().getSitePath(ou2Res)));
+
+        int todo; // remove the user role
     }
 
     /**
@@ -699,6 +1025,94 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
     }
 
     /**
+     * Tests system roles in root ou.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testRootRoles() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing system roles in root ou");
+
+        // check just the roles of the root ou
+        List roleGroups = OpenCms.getRoleManager().getRoles(cms, "/", false);
+        assertEquals(CmsRole.getSystemRoles().size(), roleGroups.size());
+        List roles = new ArrayList(roleGroups.size());
+        Iterator itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            assertEquals("/", role.getOuFqn());
+            roles.add(CmsRole.valueOf(role.getName()));
+        }
+        for (int i = 0; i < roles.size(); i++) {
+            assertTrue(CmsRole.getSystemRoles().contains(roles.get(i)));
+            assertTrue(roles.contains(CmsRole.getSystemRoles().get(i)));
+        }
+        // check all roles (but since there are no more ous, it is the same as before)
+        roleGroups = OpenCms.getRoleManager().getRoles(cms, "/", true);
+        assertEquals(CmsRole.getSystemRoles().size(), roleGroups.size());
+        roles = new ArrayList(roleGroups.size());
+        itRoleGroups = roleGroups.iterator();
+        while (itRoleGroups.hasNext()) {
+            CmsGroup role = (CmsGroup)itRoleGroups.next();
+            assertEquals("/", role.getOuFqn());
+            roles.add(CmsRole.valueOf(role.getName()));
+        }
+        for (int i = 0; i < roles.size(); i++) {
+            assertTrue(CmsRole.getSystemRoles().contains(roles.get(i)));
+            assertTrue(roles.contains(CmsRole.getSystemRoles().get(i)));
+        }
+    }
+
+    /**
+     * Tests roles on parallel ous.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testParallelRoles() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing roles on parallel ous");
+
+        CmsUser user = cms.readUser("/test/test1");
+
+        // check preconditions
+        assertEquals(3, OpenCms.getRoleManager().getManageableOrgUnits(cms, "/", true).size());
+
+        cms.loginUser(user.getName(), "test1");
+        List ous = OpenCms.getRoleManager().getManageableOrgUnits(cms, "/", true);
+        assertTrue(ous.isEmpty());
+
+        // create a new ou
+        cms = getCmsObject();
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ADMINISTRATOR, "/test/", user.getName());
+
+        // check it
+        cms.loginUser(user.getName(), "test1");
+        ous = OpenCms.getRoleManager().getManageableOrgUnits(cms, "/", true);
+        assertEquals(2, ous.size());
+        assertTrue(ous.contains(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test")));
+        assertTrue(ous.contains(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test/test2")));
+
+        // create a new ou
+        cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("");
+        OpenCms.getOrgUnitManager().createOrganizationalUnit(cms, "/test3", "test3", 0, "/system/");
+        // set it up
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ADMINISTRATOR, "/test3/", user.getName());
+
+        // check the result
+        assertEquals(4, OpenCms.getRoleManager().getManageableOrgUnits(cms, "/", true).size());
+
+        cms.loginUser(user.getName(), "test1");
+        ous = OpenCms.getRoleManager().getManageableOrgUnits(cms, "/", true);
+        assertEquals(3, ous.size());
+        assertTrue(ous.contains(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test")));
+        assertTrue(ous.contains(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test/test2")));
+        assertTrue(ous.contains(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test3")));
+    }
+
+    /**
      * Tests login.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -772,7 +1186,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
                 ((CmsDbConsistencyException)e.getCause()).getMessageContainer().getKey(),
                 org.opencms.db.Messages.ERR_ORGUNIT_DELETE_SUB_ORGUNITS_1);
         }
-        
+
         CmsOrganizationalUnit ou2 = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/test/test2");
         cms.createGroup(ou2.getName() + "group2", "test group", 0, null);
         try {
@@ -994,7 +1408,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertEquals(1, OpenCms.getOrgUnitManager().getGroups(cms, "/test", true).size());
 
         cms.addUserToGroup("/test/test1", "/test/group1");
-        
+
         assertEquals(1, cms.getUsersOfGroup("/test/group1").size());
         assertTrue(cms.getUsersOfGroup("/test/group1").contains(cms.readUser("/test/test1")));
         assertTrue(cms.getGroupsOfUser("/test1", false).isEmpty());

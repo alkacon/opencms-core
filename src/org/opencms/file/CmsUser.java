@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.32.4.7 $
+ * Date   : $Date: 2007/01/24 08:30:27 $
+ * Version: $Revision: 1.32.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
@@ -69,7 +68,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.7 $
+ * @version $Revision: 1.32.4.8 $
  * 
  * @since 6.0.0
  * 
@@ -415,16 +414,6 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public String getLastname() {
 
         return m_lastname;
-    }
-
-    /**
-     * Returns the fully qualified name of this user's organizational unit.<p>
-     * 
-     * @return the fully qualified name of this user's organizational unit
-     */
-    public String getOrgUnitFqn() {
-
-        return CmsOrganizationalUnit.getParentFqn(getName());
     }
 
     /**
