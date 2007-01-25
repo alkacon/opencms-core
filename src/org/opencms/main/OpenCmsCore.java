@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.218.4.22 $
+ * Date   : $Date: 2007/01/25 09:22:22 $
+ * Version: $Revision: 1.218.4.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -138,7 +138,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.22 $ 
+ * @version $Revision: 1.218.4.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -328,26 +328,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Returns the organizational unit manager.<p>
-     * 
-     * @return the organizational unit manager
-     */
-    public CmsOrgUnitManager getOrgUnitManager() {
-
-        return m_orgUnitManager;
-    }
-
-    /**
-     * Returns the role manager.<p>
-     * 
-     * @return the role manager
-     */
-    public CmsRoleManager getRoleManager() {
-
-        return m_roleManager;
-    }
-
-    /**
      * Adds the specified request handler to the Map of OpenCms request handlers. <p>
      * 
      * @param handler the handler to add
@@ -507,6 +487,16 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns the organizational unit manager.<p>
+     * 
+     * @return the organizational unit manager
+     */
+    protected CmsOrgUnitManager getOrgUnitManager() {
+
+        return m_orgUnitManager;
+    }
+
+    /**
      * Return the password handler.<p>
      * 
      * @return the password handler
@@ -546,6 +536,16 @@ public final class OpenCmsCore {
     protected CmsResourceManager getResourceManager() {
 
         return m_resourceManager;
+    }
+
+    /**
+     * Returns the role manager.<p>
+     * 
+     * @return the role manager
+     */
+    protected CmsRoleManager getRoleManager() {
+
+        return m_roleManager;
     }
 
     /** 
@@ -809,6 +809,52 @@ public final class OpenCmsCore {
     protected CmsObject initCmsObject(String user) throws CmsException {
 
         return initCmsObject(null, new CmsContextInfo(user));
+    }
+
+    /**
+     * Initializes a new cms object from the session data of the request.<p>
+     * 
+     * If no session data is found, <code>null</code> is returned.<p>
+     * 
+     * @param req the request
+     * 
+     * @return the new initialized cms object
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsObject initCmsObjectFromSession(HttpServletRequest req) throws CmsException {
+
+        // try to get an OpenCms user session info object for this request
+        CmsSessionInfo sessionInfo = m_sessionManager.getSessionInfo(req);
+
+        if (sessionInfo == null) {
+            return null;
+        }
+
+        // initialize the requested site root
+        CmsSite site = getSiteManager().matchRequest(req);
+
+        // a user name is found in the session manager, reuse this user information
+        int project = sessionInfo.getProject();
+
+        // initialize site root from request
+        String siteroot = null;
+
+        // a dedicated workplace site is configured
+        if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
+            // if no dedicated workplace site is configured, 
+            // or for the dedicated workplace site, use the site root from the session attribute
+            siteroot = sessionInfo.getSiteRoot();
+        }
+        if (siteroot == null) {
+            siteroot = site.getSiteRoot();
+        }
+        return initCmsObject(
+            req,
+            m_securityManager.readUser(null, sessionInfo.getUserId()),
+            siteroot,
+            project,
+            sessionInfo.getOrganizationalUnitFqn());
     }
 
     /**
@@ -1940,47 +1986,26 @@ public final class OpenCmsCore {
      */
     private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
 
-        CmsObject cms;
-
-        // try to get an OpenCms user session info object for this request
-        CmsSessionInfo sessionInfo = m_sessionManager.getSessionInfo(req);
+        // first try to restore a stored session
+        CmsObject cms = initCmsObjectFromSession(req);
+        if (cms != null) {
+            return cms;
+        }
+        // if does not work, try to authorizate the request
+        cms = m_authorizationHandler.initCmsObject(req);
+        if (cms != null) {
+            return cms;
+        }
         // initialize the requested site root
         CmsSite site = getSiteManager().matchRequest(req);
-
-        if (sessionInfo != null) {
-            // a user name is found in the session manager, reuse this user information
-            int project = sessionInfo.getProject();
-
-            // initialize site root from request
-            String siteroot = null;
-            // a dedicated workplace site is configured
-            if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
-                // if no dedicated workplace site is configured, 
-                // or for the dedicated workplace site, use the site root from the session attribute
-                siteroot = sessionInfo.getSiteRoot();
-            }
-            if (siteroot == null) {
-                siteroot = site.getSiteRoot();
-            }
-            cms = initCmsObject(
-                req,
-                m_securityManager.readUser(null, sessionInfo.getUserId()),
-                siteroot,
-                project,
-                sessionInfo.getOrganizationalUnitFqn());
-        } else {
-            cms = m_authorizationHandler.initCmsObject(req);
-            if (cms == null) {
-                // authentification failed, so display a login screen
-                requestAuthorization(req, res);
-                cms = initCmsObject(
-                    req,
-                    m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
-                    site.getSiteRoot(),
-                    CmsProject.ONLINE_PROJECT_ID,
-                    "/");
-            }
-        }
+        // authentification failed, so display a login screen
+        requestAuthorization(req, res);
+        cms = initCmsObject(
+            req,
+            m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
+            site.getSiteRoot(),
+            CmsProject.ONLINE_PROJECT_ID,
+            "/");
         // return the initialized cms user context object
         return cms;
     }

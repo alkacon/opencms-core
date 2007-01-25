@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultAuthorizationHandler.java,v $
- * Date   : $Date: 2007/01/15 18:48:35 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/01/25 09:22:21 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.4 
  */
@@ -84,8 +84,13 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
      */
     public CmsObject initCmsObject(HttpServletRequest request, String userName, String pwd) throws CmsException {
 
+        // first, try to validate the session
+        CmsObject cms = initCmsObjectFromSession(request);
+        if (cms != null) {
+            return cms;
+        }
         // try to login with the given credentials
-        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
         // this will throw an exception if login fails
         cms.loginUser(userName, pwd);
         // register the session into OpenCms and       

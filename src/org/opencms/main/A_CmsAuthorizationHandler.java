@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/A_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/01/25 09:22:21 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.util.CmsUUID;
 
@@ -42,11 +43,28 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.4 
  */
 public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHandler {
+
+    /**
+     * Initializes a new cms object from the session data of the request.<p>
+     * 
+     * If no session data is found, <code>null</code> is returned.<p>
+     * 
+     * @param request the request
+     * 
+     * @return the new initialized cms object
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsObject initCmsObjectFromSession(HttpServletRequest request) throws CmsException {
+
+        // try to get an OpenCms user session info object for this request
+        return OpenCmsCore.getInstance().initCmsObjectFromSession(request);
+    }
 
     /**
      * Registers the current session with OpenCms.<p>
@@ -63,19 +81,16 @@ public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHan
         // update the request context
         cms = OpenCmsCore.getInstance().updateContext(request, cms);
 
-        if (!cms.getRequestContext().currentUser().isGuestUser()
-            && !OpenCms.getDefaultUsers().isUserExport(cms.getRequestContext().currentUser().getName())) {
-            
+        CmsUser user = cms.getRequestContext().currentUser();
+        if (!user.isGuestUser() && !OpenCms.getDefaultUsers().isUserExport(user.getName())) {
             // create the session info object, only for 'real' users
             CmsSessionInfo sessionInfo = new CmsSessionInfo(
                 cms.getRequestContext(),
                 new CmsUUID(),
                 request.getSession().getMaxInactiveInterval());
-
             // register the updated cms object in the session manager
             OpenCmsCore.getInstance().getSessionManager().addSessionInfo(sessionInfo);
         }
-
         // return the updated cms object
         return cms;
     }
