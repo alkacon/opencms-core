@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.24.4.4 $
+ * Date   : $Date: 2007/01/25 13:19:40 $
+ * Version: $Revision: 1.24.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.24.4.4 $ 
+ * @version $Revision: 1.24.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,7 +109,7 @@ public class CmsTool {
      */
     public String buttonHtml(CmsWorkplace wp) {
 
-        if (!m_handler.isVisible(wp.getCms())) {
+        if (!m_handler.isVisible(wp)) {
             return "";
         }
         String link = CmsToolManager.linkForToolPath(
@@ -121,8 +121,8 @@ public class CmsTool {
             CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT,
             getId(),
             m_handler.getShortName(),
-            m_handler.isEnabled(wp.getCms()) ? m_handler.getHelpText() : m_handler.getDisabledHelpText(),
-            m_handler.isEnabled(wp.getCms()),
+            m_handler.isEnabled(wp) ? m_handler.getHelpText() : m_handler.getDisabledHelpText(),
+            m_handler.isEnabled(wp),
             m_handler.getIconPath(),
             m_handler.getConfirmationMessage(),
             onClic);

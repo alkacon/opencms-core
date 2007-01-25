@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.18.4.1 $
+ * Date   : $Date: 2007/01/25 13:19:39 $
+ * Version: $Revision: 1.18.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.18.4.1 $ 
+ * @version $Revision: 1.18.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,6 +153,24 @@ public interface I_CmsToolHandler {
      * @return <code>true</code> if visible
      */
     boolean isVisible(CmsObject cms);
+
+    /**
+     * Returns the state of the admin tool for a given workplace context.<p>
+     * 
+     * @param wp the workplace context
+     * 
+     * @return <code>true</code> if enabled
+     */
+    boolean isEnabled(CmsWorkplace wp);
+
+    /**
+     * Returns the visibility flag for a given workplace context.<p>
+     * 
+     * @param wp the workplace context
+     * 
+     * @return <code>true</code> if visible
+     */
+    boolean isVisible(CmsWorkplace wp);
 
     /**
      * Main method that somehow setups the admin tool handler.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.33.4.5 $
+ * Date   : $Date: 2007/01/25 13:19:40 $
+ * Version: $Revision: 1.33.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.33.4.5 $ 
+ * @version $Revision: 1.33.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -343,7 +343,7 @@ public class CmsToolDialog extends CmsWorkplace {
             // ignore
         }
 
-        if (!getToolManager().getCurrentTool(this).getHandler().isEnabled(getCms())) {
+        if (!getToolManager().getCurrentTool(this).getHandler().isEnabled(this)) {
             throw new CmsRoleViolationException(Messages.get().container(Messages.ERR_ADMIN_INSUFFICIENT_RIGHTS_0));
         }
 

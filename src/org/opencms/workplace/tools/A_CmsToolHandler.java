@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2006/11/29 14:59:27 $
- * Version: $Revision: 1.23.4.3 $
+ * Date   : $Date: 2007/01/25 13:19:39 $
+ * Version: $Revision: 1.23.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.23.4.3 $ 
+ * @version $Revision: 1.23.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -227,6 +227,22 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     public String getSmallIconPath() {
 
         return m_smallIconPath;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.workplace.CmsWorkplace)
+     */
+    public boolean isEnabled(CmsWorkplace wp) {
+
+        return isEnabled(wp.getCms());
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isVisible(org.opencms.workplace.CmsWorkplace)
+     */
+    public boolean isVisible(CmsWorkplace wp) {
+
+        return isVisible(wp.getCms());
     }
 
     /**

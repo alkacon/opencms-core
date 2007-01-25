@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2006/11/08 09:28:54 $
- * Version: $Revision: 1.13.4.2 $
+ * Date   : $Date: 2007/01/25 13:19:40 $
+ * Version: $Revision: 1.13.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.13.4.2 $ 
+ * @version $Revision: 1.13.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -208,7 +208,7 @@ public class CmsAdminMenu extends CmsToolDialog {
             if (link.indexOf("?") > 0) {
                 link = link.substring(0, link.indexOf("?"));
             }
-            if (!getCms().existsResource(link) || !tool.getHandler().isVisible(getCms())) {
+            if (!getCms().existsResource(link) || !tool.getHandler().isVisible(this)) {
                 continue;
             }
 
@@ -228,9 +228,9 @@ public class CmsAdminMenu extends CmsToolDialog {
                     tool.getHandler().getShortName(),
                     tool.getHandler().getSmallIconPath(),
                     CmsToolManager.linkForToolPath(getJsp(), tool.getHandler().getPath()),
-                    tool.getHandler().isEnabled(getCms()) ? tool.getHandler().getHelpText()
+                    tool.getHandler().isEnabled(this) ? tool.getHandler().getHelpText()
                     : tool.getHandler().getDisabledHelpText(),
-                    tool.getHandler().isEnabled(getCms()),
+                    tool.getHandler().isEnabled(this),
                     tool.getHandler().getPosition(),
                     CmsAdminMenu.DEFAULT_TARGET);
             }

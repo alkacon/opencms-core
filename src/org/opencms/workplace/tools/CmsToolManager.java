@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2006/11/29 15:04:16 $
- * Version: $Revision: 1.44.4.7 $
+ * Date   : $Date: 2007/01/25 13:19:40 $
+ * Version: $Revision: 1.44.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.44.4.7 $ 
+ * @version $Revision: 1.44.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -795,7 +795,7 @@ public class CmsToolManager {
 
         // navegate until to reach an enabled path
         CmsTool aTool = resolveAdminTool(rootKey, path);
-        while (!aTool.getHandler().isEnabled(wp.getCms())) {
+        while (!aTool.getHandler().isEnabled(wp)) {
             if (aTool.getHandler().getLink().equals(VIEW_JSPPAGE_LOCATION)) {
                 // just grouping
                 break;

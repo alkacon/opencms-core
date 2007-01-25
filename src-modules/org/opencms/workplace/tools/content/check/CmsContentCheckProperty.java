@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckProperty.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2007/01/25 13:19:40 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.tools.I_CmsToolHandler;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -63,11 +62,11 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.3.4.1 $ 
+ * @version $Revision: 1.3.4.2 $ 
  * 
  * @since 6.1.2
  */
-public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsContentCheck, I_CmsToolHandler {
+public class CmsContentCheckProperty extends A_CmsContentCheck {
 
     /** Path to the configuration file. */
     private static final String CONFIGURATION = CmsContentCheck.VFS_PATH_PLUGIN_FOLDER
