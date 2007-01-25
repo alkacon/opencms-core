@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepository.java,v $
- * Date   : $Date: 2007/01/24 15:07:24 $
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/cms/Attic/CmsRepository.java,v $
+ * Date   : $Date: 2007/01/25 09:09:27 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,11 +29,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.repository;
+package org.opencms.repository.cms;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.repository.CmsRepositoryAuthorizationException;
+import org.opencms.repository.I_CmsRepository;
+import org.opencms.repository.I_CmsRepositorySession;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -49,6 +52,14 @@ public class CmsRepository implements I_CmsRepository {
     public CmsRepository() {
 
         // TODO Auto-generated constructor stub
+    }
+
+    /**
+     * @see org.opencms.repository.I_CmsRepository#init(javax.servlet.ServletConfig)
+     */
+    public void init(ServletConfig servletConfig) throws ServletException {
+
+        // TODO Auto-generated method stub
     }
 
     /**
@@ -71,13 +82,5 @@ public class CmsRepository implements I_CmsRepository {
             throw new CmsRepositoryAuthorizationException(e.getLocalizedMessage());
         }
         return new CmsRepositorySession(cms);
-    }
-
-    /**
-     * @see org.opencms.repository.I_CmsRepository#init(javax.servlet.ServletConfig)
-     */
-    public void init(ServletConfig servletConfig) throws ServletException {
-
-        // TODO Auto-generated method stub
     }
 }

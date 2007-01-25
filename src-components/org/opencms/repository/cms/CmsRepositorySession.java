@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/01/24 15:07:24 $
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/cms/Attic/CmsRepositorySession.java,v $
+ * Date   : $Date: 2007/01/25 09:09:27 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,9 +29,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.repository;
+package org.opencms.repository.cms;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.main.CmsException;
 import org.opencms.repository.CmsRepositoryItemAlreadyExistsException;
 import org.opencms.repository.CmsRepositoryItemNotFoundException;
 import org.opencms.repository.CmsRepositoryLockInfo;
@@ -40,21 +44,22 @@ import org.opencms.repository.I_CmsRepositoryItem;
 import org.opencms.repository.I_CmsRepositorySession;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 /**
  *
  */
 public class CmsRepositorySession implements I_CmsRepositorySession {
 
-    /**      */
+    /** The initialized CmsObject. */
     private final CmsObject m_cms;
 
     /**
-     * @param cms 
+     * Constructor with an initialized CmsObject to use.<p>
+     * 
+     * @param cms The initialized CmsObject
      */
     public CmsRepositorySession(CmsObject cms) {
 
@@ -68,8 +73,19 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException,
     CmsRepositoryItemAlreadyExistsException {
 
-        // TODO Auto-generated method stub
+        try {
 
+            if (exists(dest)) {
+                if (overwrite) {
+                    delete(dest);
+                } else {
+                    throw new CmsRepositoryItemAlreadyExistsException();
+                }
+            }
+            m_cms.copyResource(src, dest);
+        } catch (CmsException ex) {
+            throw new CmsRepositoryItemNotFoundException();
+        }
     }
 
     /**
@@ -77,7 +93,12 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      */
     public void create(String path) throws CmsRepositoryItemAlreadyExistsException, CmsRepositoryPermissionException {
 
-        // TODO Auto-generated method stub
+        try {
+            path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
+            m_cms.createResource(path, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        } catch (CmsException ex) {
+            throw new CmsRepositoryItemAlreadyExistsException();
+        }
 
     }
 
@@ -96,7 +117,11 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      */
     public void delete(String path) throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException {
 
-        // TODO Auto-generated method stub
+        try {
+            m_cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        } catch (CmsException ex) {
+            throw new CmsRepositoryItemNotFoundException();
+        }
 
     }
 
@@ -105,8 +130,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      */
     public boolean exists(String path) {
 
-        // TODO Auto-generated method stub
-        return false;
+        return m_cms.existsResource(path);
     }
 
     /**
@@ -115,8 +139,20 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     public I_CmsRepositoryItem getItem(String path)
     throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException {
 
-        // TODO Auto-generated method stub
-        return null;
+        CmsRepositoryItem item = new CmsRepositoryItem();
+        try {
+            CmsResource res = m_cms.readResource(path);
+
+            item.setCollection(res.isFolder());
+            item.setContentLength(res.getLength());
+            item.setCreationDate(res.getDateCreated());
+            item.setLastModifiedDate(res.getDateLastModified());
+            item.setName(m_cms.getRequestContext().removeSiteRoot(res.getRootPath()));
+
+            return item;
+        } catch (CmsException ex) {
+            throw new CmsRepositoryItemNotFoundException();
+        }
     }
 
     /**
@@ -129,21 +165,32 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     }
 
     /**
-     * @see org.opencms.repository.I_CmsRepositorySession#init(javax.servlet.ServletContext)
-     */
-    public void init(ServletContext servletContext) throws ServletException {
-
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
      * @see org.opencms.repository.I_CmsRepositorySession#list(java.lang.String)
      */
     public List list(String path) throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException {
 
-        // TODO Auto-generated method stub
-        return null;
+        List ret = new ArrayList();
+
+        try {
+
+            // return empty list if resource is not a folder
+            CmsResource folder = m_cms.readResource(path);
+            if ((folder == null) || (!folder.isFolder())) {
+                return ret;
+            }
+
+            List resources = m_cms.readResources(path, CmsResourceFilter.DEFAULT, false);
+            Iterator iter = resources.iterator();
+            while (iter.hasNext()) {
+                CmsResource res = (CmsResource)iter.next();
+                ret.add(res.getName());
+            }
+
+        } catch (CmsException ex) {
+            throw new CmsRepositoryItemNotFoundException();
+        }
+
+        return ret;
     }
 
     /**
@@ -152,7 +199,12 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     public boolean lock(String path, CmsRepositoryLockInfo lock)
     throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException {
 
-        // TODO Auto-generated method stub
+        try {
+            m_cms.lockResource(path);
+        } catch (CmsException ex) {
+            throw new CmsRepositoryItemNotFoundException();
+        }
+
         return false;
     }
 
@@ -163,8 +215,18 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException,
     CmsRepositoryItemAlreadyExistsException {
 
-        // TODO Auto-generated method stub
-
+        try {
+            if (exists(dest)) {
+                if (overwrite) {
+                    delete(dest);
+                } else {
+                    throw new CmsRepositoryItemAlreadyExistsException();
+                }
+            }
+            m_cms.moveResource(src, dest);
+        } catch (CmsException ex) {
+            throw new CmsRepositoryItemNotFoundException();
+        }
     }
 
     /**

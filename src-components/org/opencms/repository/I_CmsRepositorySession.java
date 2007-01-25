@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/I_CmsRepositorySession.java,v $
- * Date   : $Date: 2007/01/24 14:55:05 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/25 09:09:27 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -132,7 +132,7 @@ public interface I_CmsRepositorySession {
      * 
      * @param path The complete path of the item
      * @param lock The information about the lock to create
-     * @return if the lock token was successfully added
+     * @return if the lock was successfully
      * @throws CmsRepositoryItemNotFoundException if the source path could not be found
      * @throws CmsRepositoryPermissionException if there is a permission issue
      */

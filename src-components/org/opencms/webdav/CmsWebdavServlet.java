@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/01/24 14:55:05 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/01/25 09:09:27 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.xml.sax.InputSource;
  *
  * @author Remy Maucherat
  * 
- * @version $Revision: 1.1.2.4 $ $Date: 2007/01/24 14:55:05 $
+ * @version $Revision: 1.1.2.5 $ $Date: 2007/01/25 09:09:27 $
  */
 public class CmsWebdavServlet extends HttpServlet {
 
@@ -749,7 +749,7 @@ public class CmsWebdavServlet extends HttpServlet {
     protected IOException copyRange(InputStream istream, ServletOutputStream ostream, long start, long end) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SERVE_BYTES_2, start, end));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SERVE_BYTES_2, new Long(start), new Long(end)));
         }
 
         try {
@@ -2218,9 +2218,6 @@ public class CmsWebdavServlet extends HttpServlet {
 
                 String resourceName = (String)iter.next();
                 String trimmed = resourceName/*.substring(trim)*/;
-                if (trimmed.equalsIgnoreCase("WEB-INF") || trimmed.equalsIgnoreCase("META-INF")) {
-                    continue;
-                }
 
                 I_CmsRepositoryItem childItem = null;
                 try {
@@ -2444,7 +2441,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
             if ((!item.isCollection()) && (contentLength >= 0)) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_SERVE_ITEM_CONTENT_LENGTH_1, contentLength));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_SERVE_ITEM_CONTENT_LENGTH_1, new Long(contentLength)));
                 }
 
                 if (contentLength < Integer.MAX_VALUE) {
@@ -2461,7 +2458,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
                 if (content) {
                     // Serve the directory browser
-                    renderResult = renderHtml(request.getContextPath(), item.getName());
+                    renderResult = renderHtml(request.getContextPath() + request.getServletPath(), item.getName());
                 }
 
             }
@@ -2590,7 +2587,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
         // get session
         try {
-            m_session = m_repository.login(username, password, "/sites/default", "offline");
+            m_session = m_repository.login(username, password, "/sites/default", "Offline");
         } catch (CmsRepositoryAuthorizationException ex) {
             // noop
         }
@@ -2785,9 +2782,13 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     private String getRelativePath(HttpServletRequest request) {
 
+        LOG.debug("pathInfo: " + request.getPathInfo());
+        LOG.debug("servletPath: " + request.getServletPath());
+        LOG.debug("contextPath: " + request.getContextPath());
+        
         String result = request.getPathInfo();
         if (result == null) {
-            result = request.getServletPath();
+            //result = request.getServletPath();
         }
         if ((result == null) || (result.equals(""))) {
             result = "/";
