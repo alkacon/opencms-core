@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/01/19 14:21:12 $
- * Version: $Revision: 1.717.2.122 $
+ * Date   : $Date: 2007/01/25 10:30:25 $
+ * Version: $Revision: 1.717.2.123 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,6 +27,9 @@ OpenCms 6.5.6 - xxx, 2007
 ! Added new event EVENT_FULLSTATIC_EXPORT fired by CmsStaticExportThread and CmsStaticExportJob
 ! Improved undelete operation, now the last offline status is recovered, not longer just overwrite from Online
 ! Upload applet remembers the local folder the client used last time (if still present)
+- Removed support for webusers, CmsUsers has no longer a type attribute.
+! New account management concept based on Organizational Units and Roles.
+  New CmsOrgUnitManager and CmsRoleManager classes, accessible through OpenCms.getXXXManager() methods
 
 OpenCms 6.5.5 - 14. December, 2006
 * Improved logic in new dialog to decide if default .html suffix should be appended
