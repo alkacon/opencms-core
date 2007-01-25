@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.11.4.5 $
+ * Date   : $Date: 2007/01/25 12:38:21 $
+ * Version: $Revision: 1.11.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.5 $ 
+ * @version $Revision: 1.11.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -210,6 +210,20 @@ public final class CmsRole {
     }
 
     /**
+     * Returns the role which is represented by the given virtual group flags.<p>
+     * 
+     * @param flags group flags
+     * 
+     * @return the role which is represented
+     */
+    public static CmsRole valueOf(int flags) {
+
+        int index = (flags & (I_CmsPrincipal.FLAG_CORE_LIMIT - 1));
+        index = index / (I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 3);
+        return (CmsRole)getSystemRoles().get(index);
+    }
+
+    /**
      * Returns the role for the given group name.<p>
      * 
      * @param groupName a group name to check for role representation
@@ -222,11 +236,11 @@ public final class CmsRole {
         while (it.hasNext()) {
             CmsRole role = (CmsRole)it.next();
             if (role.isOrganizationalUnitIndependent()) {
-                if (groupName.equals(role.getGroupName())) {
+                if (groupName.equals(role.getGroupName().substring(1))) {
                     return role;
                 }
             } else {
-                if (groupName.endsWith("/" + role.getGroupName())) {
+                if (groupName.endsWith("/" + role.getGroupName()) || groupName.equals(role.getGroupName())) {
                     return role;
                 }
             }
@@ -415,6 +429,16 @@ public final class CmsRole {
     public String getRoleName() {
 
         return m_roleName;
+    }
+
+    /**
+     * Returns the flags needed for a group to emulate this role.<p>
+     * 
+     * @return the flags needed for a group to emulate this role
+     */
+    public int getVirtualGroupFlags() {
+
+        return I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 3 * getSystemRoles().indexOf(this);
     }
 
     /**

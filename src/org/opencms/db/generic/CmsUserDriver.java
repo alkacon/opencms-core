@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.110.2.7 $
+ * Date   : $Date: 2007/01/25 12:38:21 $
+ * Version: $Revision: 1.110.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.7 $
+ * @version $Revision: 1.110.2.8 $
  * 
  * @since 6.0.0 
  */
@@ -913,35 +913,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * Returns a sql query to select groups.<p>
-     * 
-     * @param mainQuery the main select sql query
-     * @param includeSubOus if groups in sub-ous should be included in the selection
-     * @param readRoles if groups or roles whould be selected
-     * 
-     * @return a sql query to select groups
-     */
-    private String createRoleQuery(String mainQuery, boolean includeSubOus, boolean readRoles) {
-
-        String sqlQuery = m_sqlManager.readQuery(mainQuery);
-        sqlQuery += " ";
-        if (includeSubOus) {
-            sqlQuery += m_sqlManager.readQuery("C_GROUPS_GROUP_OU_LIKE_1");
-        } else {
-            sqlQuery += m_sqlManager.readQuery("C_GROUPS_GROUP_OU_EQUALS_1");
-        }
-        sqlQuery += AND_CONDITION;
-        if (readRoles) {
-            sqlQuery += m_sqlManager.readQuery("C_GROUPS_SELECT_ROLES_1");
-        } else {
-            sqlQuery += m_sqlManager.readQuery("C_GROUPS_SELECT_GROUPS_1");
-        }
-        sqlQuery += " ";
-        sqlQuery += m_sqlManager.readQuery("C_GROUPS_ORDER_0");
-        return sqlQuery;
-    }
-
-    /**
      * @see org.opencms.db.I_CmsUserDriver#getOrganizationalUnits(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, boolean)
      */
     public List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChilds)
@@ -1416,17 +1387,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         // execute it
         List groups = new ArrayList();
-        // if recursive first get the given ou, and then the rest
-        // this is to correctly handle the case of having 2 ous: /a and /ab (just a like op does not work!)
-        if (includeChildOus) {
-            groups.addAll(m_driverManager.getUserDriver().readGroupsOfUser(
-                dbc,
-                userId,
-                ouFqn,
-                false,
-                remoteAddress,
-                readRoles));
-        }
 
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1910,20 +1870,34 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     public void writeOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit)
     throws CmsDataAccessException {
 
-        // TODO: handle changed name/fqn
-        int todo;
-
-        // check if new parent/name is valid
-        // move all user/group ous
-        // move offline/online relations
-        // move offline/online resource
-
         try {
             CmsResource resource = m_driverManager.readResource(
                 dbc,
                 organizationalUnit.getId(),
                 CmsResourceFilter.DEFAULT);
+            CmsOrganizationalUnit oldOu = internalCreateOrgUnitFromResource(dbc, resource);
 
+            if (!oldOu.getName().equals(organizationalUnit.getName())) {
+
+                // check if new parent/name is valid
+                m_driverManager.readOrganizationalUnit(dbc, organizationalUnit.getParentFqn());
+                boolean exists = true;
+                try {
+                    m_driverManager.readOrganizationalUnit(dbc, organizationalUnit.getName());
+                } catch (CmsException e) {
+                    exists = false;
+                }
+                if (exists) {
+                    throw new CmsDbEntryAlreadyExistsException(Messages.get().container(
+                        Messages.ERR_ORGUNIT_WITH_NAME_ALREADY_EXISTS_1,
+                        organizationalUnit.getName()));
+                }
+                // new name is valid so move the org unit
+                m_driverManager.moveOrgUnit(dbc, resource.getRootPath(), ORGUNIT_BASE_FOLDER
+                    + organizationalUnit.getName());
+                // update the other fields on the moved resources
+                resource = m_driverManager.readResource(dbc, organizationalUnit.getId(), CmsResourceFilter.DEFAULT);
+            }
             // write the properties
             internalWriteOrgUnitProperty(dbc, resource, new CmsProperty(
                 ORGUNIT_PROPERTY_DESCRIPTION,
@@ -2063,7 +2037,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 // ignore
             }
             if (check) {
-                readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name)).getName();
+                try {
+                    m_driverManager.readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name)).getName();
+                } catch (CmsException e) {
+                    throw new CmsDataAccessException(e.getMessageContainer());
+                }
             }
         }
         return name;
@@ -2497,5 +2475,34 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } finally {
             dbc.getRequestContext().setCurrentProject(project);
         }
+    }
+
+    /**
+     * Returns a sql query to select groups.<p>
+     * 
+     * @param mainQuery the main select sql query
+     * @param includeSubOus if groups in sub-ous should be included in the selection
+     * @param readRoles if groups or roles whould be selected
+     * 
+     * @return a sql query to select groups
+     */
+    private String createRoleQuery(String mainQuery, boolean includeSubOus, boolean readRoles) {
+
+        String sqlQuery = m_sqlManager.readQuery(mainQuery);
+        sqlQuery += " ";
+        if (includeSubOus) {
+            sqlQuery += m_sqlManager.readQuery("C_GROUPS_GROUP_OU_LIKE_1");
+        } else {
+            sqlQuery += m_sqlManager.readQuery("C_GROUPS_GROUP_OU_EQUALS_1");
+        }
+        sqlQuery += AND_CONDITION;
+        if (readRoles) {
+            sqlQuery += m_sqlManager.readQuery("C_GROUPS_SELECT_ROLES_1");
+        } else {
+            sqlQuery += m_sqlManager.readQuery("C_GROUPS_SELECT_GROUPS_1");
+        }
+        sqlQuery += " ";
+        sqlQuery += m_sqlManager.readQuery("C_GROUPS_ORDER_0");
+        return sqlQuery;
     }
 }

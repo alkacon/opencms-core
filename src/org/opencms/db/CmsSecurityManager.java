@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/01/24 08:55:17 $
- * Version: $Revision: 1.97.4.29 $
+ * Date   : $Date: 2007/01/25 12:38:21 $
+ * Version: $Revision: 1.97.4.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -5431,21 +5431,18 @@ public final class CmsSecurityManager {
                 if (distictGroupName.startsWith("/")) {
                     // this is a ou independent role 
                     // we need an exact match, and we ignore the ou param
-                    if (groupName.equals(distictGroupName)) {
+                    if (groupName.equals(distictGroupName.substring(1))) {
                         return true;
                     }
                 } else {
-                    distictGroupName = "/" + distictGroupName;
-                    // this is a ou dependent role
-                    if (orgUnitFqn == null) {
-                        // ou param is null, so the user needs to have the role in at least one ou does not matter which
-                        if (groupName.endsWith(distictGroupName)) {
+                    // first check if the user has the role at all
+                    if (groupName.endsWith("/" + distictGroupName) || groupName.equals(distictGroupName)) {
+                        // this is a ou dependent role
+                        if (orgUnitFqn == null) {
+                            // ou param is null, so the user needs to have the role in at least one ou does not matter which
                             return true;
-                        }
-                    } else {
-                        // the user needs to have the role in the given ou or in a parent ou
-                        // first check if it has the role at all
-                        if (groupName.endsWith(distictGroupName)) {
+                        } else {
+                            // the user needs to have the role in the given ou or in a parent ou
                             // now check that the ou matches
                             String groupFqn = CmsOrganizationalUnit.getParentFqn(groupName);
                             if (orgUnitFqn.startsWith(groupFqn)) {

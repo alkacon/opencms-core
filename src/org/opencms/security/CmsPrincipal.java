@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2007/01/23 15:22:30 $
- * Version: $Revision: 1.2.4.4 $
+ * Date   : $Date: 2007/01/25 12:38:21 $
+ * Version: $Revision: 1.2.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2.4.4 $ 
+ * @version $Revision: 1.2.4.5 $ 
  * 
  * @since 6.2.0 
  */
@@ -310,6 +310,9 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
      */
     public String getName() {
 
+        if (m_name.startsWith("/")) {
+            return m_name.substring(1);
+        }
         return m_name;
     }
 

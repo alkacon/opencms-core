@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/01/24 08:30:27 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/25 12:38:21 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,17 +66,21 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
-    int m_todo2; // remove subroles during addusertorole!?
+    int m_todo1; // change ou name/parent, 1day
+
+    int m_todo2; // test case for addusertorole!?
     int m_todo3; // test case for getresourceforou
-    int m_todo4; // change ou name/parent, 1day
-    int m_todo5; // user additional info clean up, 1.5days
-    int m_todo6; // virtual groups, 1.5days
+    int m_todo4; // test case for writeou
+    int m_todo5; // test case virtual groups
+    
+    int m_todo6; // user additional info clean up (import/export, compatibility), 3days
     int m_todo7; // db creation scripts, 0.5day
     int m_todo8; // localization, 0.5day
+    int m_todo9; // publishmanager, oumanager and rolemanager methods should be accessible from the shell
 
     /**
      * Default JUnit constructor.<p>

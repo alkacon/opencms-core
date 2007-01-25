@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2007/01/15 18:48:35 $
- * Version: $Revision: 1.15.4.3 $
+ * Date   : $Date: 2007/01/25 12:38:21 $
+ * Version: $Revision: 1.15.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.security.Principal;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.15.4.3 $ 
+ * @version $Revision: 1.15.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,6 +65,12 @@ public interface I_CmsPrincipal extends Principal {
 
     /** Flag to indicate a role group. */
     int FLAG_GROUP_ROLE = 1048576; // 2^20 >> FLAG_CORE_LIMIT 
+
+    /**
+     * Flag to indicate a virtual group role, after this bit we need to encode a number between 0 and 
+     * <code>{@link CmsRole#getSystemRoles()}.size()-1</code> so we will need up to 4 more bits. 
+     */
+    int FLAG_GROUP_VIRTUAL = 1048576; // 2^8 << FLAG_CORE_LIMIT 
 
     /** Identifier for group principals. */
     String PRINCIPAL_GROUP = "GROUP";

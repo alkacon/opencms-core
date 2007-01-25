@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2007/01/24 08:30:27 $
- * Version: $Revision: 1.4.8.3 $
+ * Date   : $Date: 2007/01/25 12:38:21 $
+ * Version: $Revision: 1.4.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -78,6 +79,7 @@ public class TestRoles extends OpenCmsTestCase {
         suite.addTest(new TestRoles("testRoleExceptionMessages"));
         suite.addTest(new TestRoles("testRoleAssignments"));
         suite.addTest(new TestRoles("testSubRoles"));
+        suite.addTest(new TestRoles("testVirtualRoleGroups"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -166,6 +168,41 @@ public class TestRoles extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Tests virtual role groups.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testVirtualRoleGroups() throws Exception {
+
+        echo("Testing virtual role groups");
+        
+        CmsObject cms = getCmsObject();
+        CmsGroup group = cms.createGroup("/mytest", "account managers", CmsRole.ACCOUNT_MANAGER.getVirtualGroupFlags(), null);
+
+        List roleUsers = OpenCms.getRoleManager().getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, "/", true, false);
+        List groupUsers = cms.getUsersOfGroup(group.getName()); 
+        assertEquals(roleUsers, groupUsers);
+
+        try {
+            cms.addUserToGroup("/Guest", group.getName());
+            fail("it should not be possible to directly manipulate a virtual group");
+        } catch (CmsException e) {
+            e.printStackTrace();
+            // ok, ignore
+        }
+
+        try {
+            cms.removeUserFromGroup(((CmsUser)groupUsers.get(0)).getName(), group.getName());
+            fail("it should not be possible to directly manipulate a virtual group");
+        } catch (CmsException e) {
+            e.printStackTrace();
+            // ok, ignore
+        }
+
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ACCOUNT_MANAGER, "/", "/Guest");
+    }
+    
     /**
      * Tests role assignments.<p>
      * 

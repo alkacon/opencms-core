@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/01/24 08:55:17 $
- * Version: $Revision: 1.570.2.48 $
+ * Date   : $Date: 2007/01/25 12:38:20 $
+ * Version: $Revision: 1.570.2.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -675,8 +675,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // we want a role but we got a group, or the other way
             throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
         }
+        if (group.isVirtual()) {
+            // the group is virtual
+            //            throw new CmsException(Messages.get().container(
+            //                Messages.ERR_VIRTUAL_GROUP_CANNOT_BE_EDITED_1,
+            //                group.getName()));
+        }
 
-        // if add a user to a role
+        // if adding an user to a role
         if (readRoles) {
             CmsRole role = CmsRole.valueOf(groupname);
             // now we check if we already have the role 
@@ -700,6 +706,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // remove only child roles
                     removeUserFromGroup(dbc, username, roleGroup.getName(), true);
                 }
+            }
+            // update virtual groups
+            Iterator it = getVirtualGroupsForRole(dbc, group.getOuFqn(), role).iterator();
+            while (it.hasNext()) {
+                CmsGroup virtualGroup = (CmsGroup)it.next();
+                addUserToGroup(dbc, username, virtualGroup.getName(), false);
             }
         }
 
@@ -1259,6 +1271,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // create the group
         CmsGroup group = m_userDriver.createGroup(dbc, id, name, description, flags, parent);
+        
+        // if group is virtualizing a role, initialize it
+        if (group.isVirtual()) {
+            // get all users that have the given role
+            CmsRole role = CmsRole.valueOf(group.getFlags());
+            Iterator it = getUsersOfGroup(dbc, role.getGroupName(group.getOuFqn()), true, false, true).iterator();
+            while (it.hasNext()) {
+                CmsUser user = (CmsUser)it.next();
+                // put them in the new group
+                addUserToGroup(dbc, user.getName(), group.getName(), false);
+            }
+        }
+        
         // put it into the cache
         m_groupCache.put(new CacheId(group), group);
         // return it
@@ -3187,22 +3212,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the groups of an user filtered by the specified IP address.<p>
-     * 
-     * @param dbc the current database context
-     * @param username the name of the user
-     * @param readRoles if to read roles or groups
-     * 
-     * @return the groups of the given user, as a list of {@link CmsGroup} objects
-     * 
-     * @throws CmsException 
-     */
-    public List getGroupsOfUser(CmsDbContext dbc, String username, boolean readRoles) throws CmsException {
-
-        return getGroupsOfUser(dbc, username, "/", true, readRoles, false, dbc.getRequestContext().getRemoteAddress());
-    }
-
-    /**
      * Returns the backup driver.<p>
      * 
      * @return the backup driver
@@ -3285,6 +3294,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         return m_userDriver.getGroups(dbc, orgUnit, includeSubOus, readRoles);
+    }
+
+    /**
+     * Returns the groups of an user filtered by the specified IP address.<p>
+     * 
+     * @param dbc the current database context
+     * @param username the name of the user
+     * @param readRoles if to read roles or groups
+     * 
+     * @return the groups of the given user, as a list of {@link CmsGroup} objects
+     * 
+     * @throws CmsException 
+     */
+    public List getGroupsOfUser(CmsDbContext dbc, String username, boolean readRoles) throws CmsException {
+
+        return getGroupsOfUser(dbc, username, "/", true, readRoles, false, dbc.getRequestContext().getRemoteAddress());
     }
 
     /**
@@ -3461,6 +3486,34 @@ public final class CmsDriverManager implements I_CmsEventListener {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PARENT_ORGUNIT_NULL_0));
         }
         return m_userDriver.getOrganizationalUnits(dbc, parent, includeChilds);
+    }
+
+    /**
+     * Returns all deepest organizational units that contains the given resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to look for
+     * 
+     * @return a list of organizational units that contains the given resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    public List getOrganizationalUnitsForResource(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
+
+        CmsFolder folder;
+        // get the folder since ou can only be associated to folders
+        if (resource.isFile()) {
+            folder = getVfsDriver().readParentFolder(dbc, dbc.currentProject().getId(), resource.getStructureId());
+        } else {
+            folder = new CmsFolder(resource);
+        }
+        List orgUnits = new ArrayList();
+        Iterator itOuFqns = m_userDriver.getOrganizationalUnitsForFolder(dbc, folder).iterator();
+        while (itOuFqns.hasNext()) {
+            String ouFqn = (String)itOuFqns.next();
+            orgUnits.add(ouFqn);
+        }
+        return orgUnits;
     }
 
     /**
@@ -4284,6 +4337,46 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         return null;
+    }
+
+    /**
+     * Renames an organizational unit.<p> 
+     * 
+     * @param dbc the current database context
+     * @param srcRootPath the root path of the resource representing the organizational unit to move
+     * @param dstRootPath the root path of the resource representing the destination organizational unit
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void moveOrgUnit(CmsDbContext dbc, String srcRootPath, String dstRootPath) throws CmsException {
+
+        // collect sources
+        CmsFolder src = readFolder(dbc, CmsResource.getParentFolder(srcRootPath), CmsResourceFilter.ALL);
+        List resources = new ArrayList(readResources(dbc, src, CmsResourceFilter.ALL, true));
+        resources.add(src);
+
+        // TODO: move org unit
+        int todoMoveOrgUnit;
+
+        // move all user/group ous
+        //        m_userDriver.moveUsers(dbc, srcRootPath, dstRootPath);
+        // move offline/online relations
+        //        m_vfsDriver.moveRelations(dbc, srcRootPath, dstRootPath);
+        // move offline/online resource
+        //        m_vfsDriver.moveResources(dbc, srcRootPath, dstRootPath);
+
+        // collect destinations
+        CmsFolder dst = readFolder(dbc, CmsResource.getParentFolder(dstRootPath), CmsResourceFilter.ALL);
+        resources.addAll(readResources(dbc, dst, CmsResourceFilter.ALL, true));
+        resources.add(dst);
+
+        // fire the events
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MOVED, Collections.singletonMap(
+            "resources",
+            resources)));
+
+        // flush all caches
+        clearcache(false);
     }
 
     /**
@@ -6037,27 +6130,42 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 groupname));
         }
 
-        CmsUser user;
-        CmsGroup group;
-
-        user = readUser(dbc, username);
-
+        CmsUser user = readUser(dbc, username);
         //check if the user exists
-        if (user != null) {
-            group = readGroup(dbc, groupname);
-            //check if group exists
-            if ((group != null) && ((!readRoles && !group.isRole()) || (readRoles && group.isRole()))) {
-                m_userDriver.deleteUserInGroup(dbc, user.getId(), group.getId());
-                m_userGroupsCache.clear();
-            } else {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
-            }
-        } else {
+        if (user == null) {
+            // the user does not exists
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_USER_NOT_IN_GROUP_2,
                 username,
                 groupname));
         }
+        CmsGroup group = readGroup(dbc, groupname);
+        //check if group exists
+        if (group == null) {
+            // the group does not exists
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+        }
+        if (group.isVirtual()) {
+            // the group is virtual
+            //            throw new CmsException(Messages.get().container(
+            //                Messages.ERR_VIRTUAL_GROUP_CANNOT_BE_EDITED_1,
+            //                group.getName()));
+        }
+        if ((readRoles && !group.isRole()) || (!readRoles && group.isRole())) {
+            // we want a role but we got a group, or the other way
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+        }
+
+        if (readRoles) {
+            // update virtual groups
+            Iterator it = getVirtualGroupsForRole(dbc, group.getOuFqn(), CmsRole.valueOf(groupname)).iterator();
+            while (it.hasNext()) {
+                CmsGroup virtualGroup = (CmsGroup)it.next();
+                removeUserFromGroup(dbc, username, virtualGroup.getName(), false);
+            }
+        }
+        m_userDriver.deleteUserInGroup(dbc, user.getId(), group.getId());
+        m_userGroupsCache.clear();
     }
 
     /**
@@ -7901,6 +8009,48 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns all groups that are virtualizing the given role in the given ou and all sub-ous.<p>
+     * 
+     * @param dbc the database context
+     * @param ouFqn the organizational unit
+     * @param role the role
+     * 
+     * @return all groups that are virtualizing the given role (or a child of it)
+     * 
+     * @throws CmsException if soemthing goes wrong 
+     */
+    private List getVirtualGroupsForRole(CmsDbContext dbc, String ouFqn, CmsRole role) throws CmsException {
+
+        Set roleFlags = new HashSet();
+        // add role flag
+        Integer flags = new Integer(I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2 * CmsRole.getSystemRoles().indexOf(role));
+        roleFlags.add(flags);
+        // add child role flags
+        Iterator itChildRoles = role.getChilds(true).iterator();
+        while (itChildRoles.hasNext()) {
+            CmsRole child = (CmsRole)itChildRoles.next();
+            flags = new Integer(I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2 * CmsRole.getSystemRoles().indexOf(child));
+            roleFlags.add(flags);
+        }
+        // iterate all groups matching the flags
+        List groups = new ArrayList();
+        Iterator it = getGroups(dbc, readOrganizationalUnit(dbc, ouFqn), true, false).iterator();
+        while (it.hasNext()) {
+            CmsGroup group = (CmsGroup)it.next();
+            if (group.isVirtual()) {
+                Iterator itFlags = roleFlags.iterator();
+                while (itFlags.hasNext()) {
+                    flags = (Integer)itFlags.next();
+                    if ((group.getFlags() & flags.intValue()) == flags.intValue()) {
+                        groups.add(group);
+                    }
+                }
+            }
+        }
+        return groups;
+    }
+
+    /**
      * Stores a user in the user cache.<p>
      * 
      * @param user the user to be stored in the cache
@@ -8360,33 +8510,5 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // update the structure state
             m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE_STATE);
         }
-    }
-
-    /**
-     * Returns all deepest organizational units that contains the given resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the resource to look for
-     * 
-     * @return a list of organizational units that contains the given resource
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
-     */
-    public List getOrganizationalUnitsForResource(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
-
-        CmsFolder folder;
-        // get the folder since ou can only be associated to folders
-        if (resource.isFile()) {
-            folder = getVfsDriver().readParentFolder(dbc, dbc.currentProject().getId(), resource.getStructureId());
-        } else {
-            folder = new CmsFolder(resource);
-        }
-        List orgUnits = new ArrayList();
-        Iterator itOuFqns = m_userDriver.getOrganizationalUnitsForFolder(dbc, folder).iterator();
-        while (itOuFqns.hasNext()) {
-            String ouFqn = (String)itOuFqns.next();
-            orgUnits.add(ouFqn);
-        }
-        return orgUnits;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.19.4.6 $
+ * Date   : $Date: 2007/01/25 12:38:20 $
+ * Version: $Revision: 1.19.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.6 $
+ * @version $Revision: 1.19.4.7 $
  * 
  * @since 6.0.0 
  * 
@@ -125,6 +125,14 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
     }
 
     /**
+     * @see org.opencms.security.I_CmsPrincipal#isGroup()
+     */
+    public boolean isGroup() {
+
+        return true;
+    }
+
+    /**
      * Returns <code>true</code> if this group is enabled as a project user group.<p> 
      * 
      * @return <code>true</code> if this group is enabled as a project user group 
@@ -145,11 +153,13 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
     }
 
     /**
-     * @see org.opencms.security.I_CmsPrincipal#isGroup()
+     * Checks if this group is a role group.<p>
+     * 
+     * @return <code>true</code> if this group is a role group
      */
-    public boolean isGroup() {
+    public boolean isRole() {
 
-        return true;
+        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_ROLE) == I_CmsPrincipal.FLAG_GROUP_ROLE;
     }
 
     /**
@@ -158,6 +168,16 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
     public boolean isUser() {
 
         return false;
+    }
+
+    /**
+     * Checks if this group is a virtual group, emulating a role.<p>
+     * 
+     * @return if this group is a virtual group
+     */
+    public boolean isVirtual() {
+
+        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_VIRTUAL) == I_CmsPrincipal.FLAG_GROUP_VIRTUAL;
     }
 
     /**
@@ -228,15 +248,5 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
         result.append(" description:");
         result.append(m_description);
         return result.toString();
-    }
-
-    /**
-     * Checks if this group is a role group.<p>
-     * 
-     * @return <code>true</code> if this group is a role group
-     */
-    public boolean isRole() {
-
-        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_ROLE) == I_CmsPrincipal.FLAG_GROUP_ROLE;
     }
 }
