@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/01/25 12:38:21 $
- * Version: $Revision: 1.97.4.30 $
+ * Date   : $Date: 2007/01/26 09:47:38 $
+ * Version: $Revision: 1.97.4.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1833,7 +1833,6 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, ouFqn);
             result = m_driverManager.getGroupsOfUser(
                 dbc,
                 username,
@@ -5445,7 +5444,7 @@ public final class CmsSecurityManager {
                             // the user needs to have the role in the given ou or in a parent ou
                             // now check that the ou matches
                             String groupFqn = CmsOrganizationalUnit.getParentFqn(groupName);
-                            if (orgUnitFqn.startsWith(groupFqn)) {
+                            if (orgUnitFqn.startsWith(groupFqn) || orgUnitFqn.startsWith("/" + groupFqn)) {
                                 return true;
                             }
                         }
