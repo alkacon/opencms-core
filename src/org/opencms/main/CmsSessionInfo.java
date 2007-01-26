@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2007/01/23 13:03:20 $
- * Version: $Revision: 1.16.4.4 $
+ * Date   : $Date: 2007/01/26 13:50:46 $
+ * Version: $Revision: 1.16.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.buffer.BoundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.4 $ 
+ * @version $Revision: 1.16.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,7 +92,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
 
     /** The time this session info was last updated. */
     private long m_timeUpdated;
-    
+
     /** The id of user to which this session info belongs. */
     private CmsUUID m_userId;
 
@@ -110,7 +110,6 @@ public class CmsSessionInfo implements Comparable, Serializable {
         m_maxInactiveInterval = maxInactiveInterval;
         m_userId = context.currentUser().getId();
         update(context);
-        m_broadcastQueue = BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(QUEUE_SIZE));
     }
 
     /**
@@ -136,6 +135,9 @@ public class CmsSessionInfo implements Comparable, Serializable {
      */
     public Buffer getBroadcastQueue() {
 
+        if (m_broadcastQueue == null) {
+            m_broadcastQueue = BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(QUEUE_SIZE));
+        }
         return m_broadcastQueue;
     }
 
