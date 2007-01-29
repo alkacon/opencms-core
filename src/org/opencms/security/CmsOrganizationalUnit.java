@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/01/29 09:44:54 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/29 10:52:11 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.6 
  */
@@ -114,7 +114,7 @@ public class CmsOrganizationalUnit {
     public static final String getSimpleName(String fqn) {
 
         String parentFqn = getParentFqn(fqn);
-        if (parentFqn != null) {
+        if ((parentFqn != null) && fqn.startsWith(parentFqn)) {
             return fqn.substring(parentFqn.length());
         }
         return fqn;
