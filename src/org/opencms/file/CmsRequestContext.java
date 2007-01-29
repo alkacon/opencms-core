@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2007/01/15 18:48:34 $
- * Version: $Revision: 1.29.4.8 $
+ * Date   : $Date: 2007/01/29 14:27:04 $
+ * Version: $Revision: 1.29.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29.4.8 $
+ * @version $Revision: 1.29.4.9 $
  * 
  * @since 6.0.0 
  */
@@ -581,7 +581,7 @@ public final class CmsRequestContext {
 
         String userOu = CmsOrganizationalUnit.getParentFqn(m_user.getName());
         if (ouFqn != null) {
-            if (!ouFqn.startsWith(userOu)) {
+            if (!ouFqn.startsWith(userOu) && !ouFqn.substring(1).startsWith(userOu)) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.ERR_BAD_ORGUNIT_2,
                     ouFqn,

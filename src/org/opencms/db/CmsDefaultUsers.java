@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2007/01/29 09:44:53 $
- * Version: $Revision: 1.32.4.5 $
+ * Date   : $Date: 2007/01/29 14:27:04 $
+ * Version: $Revision: 1.32.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.32.4.5 $
+ * @version $Revision: 1.32.4.6 $
  * 
  * @since 6.0.0
  */
@@ -243,10 +243,19 @@ public class CmsDefaultUsers {
             return false;
         }
 
-        return m_groupAdministrators.equals(groupName)
-            || m_groupProjectmanagers.equals(groupName)
-            || m_groupUsers.equals(groupName)
-            || m_groupGuests.equals(groupName);
+        // first check without ou prefix, to stay backwards compatible
+        boolean isDefault = m_groupAdministrators.equals(groupName);
+        isDefault = isDefault || m_groupGuests.equals(groupName);
+        isDefault = isDefault || m_groupProjectmanagers.equals(groupName);
+        isDefault = isDefault || m_groupUsers.equals(groupName);
+
+        // now check with ou prefix
+        isDefault = isDefault || groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + m_groupAdministrators);
+        isDefault = isDefault || groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + m_groupGuests);
+        isDefault = isDefault || groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + m_groupProjectmanagers);
+        isDefault = isDefault || groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + m_groupUsers);
+
+        return isDefault;
     }
 
     /**

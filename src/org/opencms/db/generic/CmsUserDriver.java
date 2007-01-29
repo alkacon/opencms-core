@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/29 10:13:50 $
- * Version: $Revision: 1.110.2.10 $
+ * Date   : $Date: 2007/01/29 14:27:04 $
+ * Version: $Revision: 1.110.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.10 $
+ * @version $Revision: 1.110.2.11 $
  * 
  * @since 6.0.0 
  */
@@ -1233,10 +1233,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     groupFqn);
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(message.key());
+                } else if (LOG.isDebugEnabled()) {
+                    LOG.debug(message.key(), new Exception());
                 }
                 throw new CmsDbEntryNotFoundException(message);
             }
-
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2007/01/29 09:44:55 $
- * Version: $Revision: 1.4.8.5 $
+ * Date   : $Date: 2007/01/29 14:27:10 $
+ * Version: $Revision: 1.4.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -166,7 +165,9 @@ public class TestRoles extends OpenCmsTestCase {
             CmsRole.WORKPLACE_MANAGER,
             CmsOrganizationalUnit.SEPARATOR));
 
-        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, false, false).isEmpty());
+        assertEquals(
+            2,
+            roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, false, false).size());
         assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR, true, false).contains(
             user));
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR, true, false).contains(
@@ -290,15 +291,22 @@ public class TestRoles extends OpenCmsTestCase {
         assertTrue(((CmsGroup)adminRoles.get(0)).getName().equals(CmsRole.ROOT_ADMIN.getGroupName().substring(1)));
 
         CmsUser user = cms.readUser("/test2");
-        roleMan.addUserToRole(cms, CmsRole.VFS_MANAGER, user.getOuFqn(), user.getName());
-
         List roles = roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, true, false);
         assertEquals(1, roles.size());
+        assertTrue(roles.contains(cms.readGroup(CmsRole.WORKPLACE_USER.getGroupName(user.getOuFqn()))));
+
+        roleMan.addUserToRole(cms, CmsRole.VFS_MANAGER, user.getOuFqn(), user.getName());
+
+        roles = roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, true, false);
+        assertEquals(2, roles.size());
         assertTrue(roles.contains(cms.readGroup(CmsRole.VFS_MANAGER.getGroupName(user.getOuFqn()))));
+        assertTrue(roles.contains(cms.readGroup(CmsRole.WORKPLACE_USER.getGroupName(user.getOuFqn()))));
 
         roles = roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, false, false);
         List childs = CmsRole.VFS_MANAGER.getChilds(true);
         childs.add(CmsRole.VFS_MANAGER);
+        childs.addAll(CmsRole.WORKPLACE_USER.getChilds(true));
+        childs.add(CmsRole.WORKPLACE_USER);
         assertEquals(childs.size(), roles.size());
         Iterator it = roles.iterator();
         while (it.hasNext()) {
@@ -345,20 +353,6 @@ public class TestRoles extends OpenCmsTestCase {
         List groupUsers = cms.getUsersOfGroup(group.getName());
         assertEquals(new HashSet(roleUsers), new HashSet(groupUsers));
 
-        try {
-            cms.addUserToGroup("/Guest", group.getName());
-            fail("it should not be possible to directly manipulate a virtual group");
-        } catch (CmsException e) {
-            // ok, ignore
-        }
-
-        try {
-            cms.removeUserFromGroup(((CmsUser)groupUsers.get(0)).getName(), group.getName());
-            fail("it should not be possible to directly manipulate a virtual group");
-        } catch (CmsException e) {
-            // ok, ignore
-        }
-
         // try out a child role
         OpenCms.getRoleManager().addUserToRole(cms, CmsRole.DEVELOPER, CmsOrganizationalUnit.SEPARATOR, "/Guest");
         // nothing should change
@@ -381,5 +375,11 @@ public class TestRoles extends OpenCmsTestCase {
         // remove the virtual group
         cms.deleteGroup(group.getName());
         assertFalse(OpenCms.getOrgUnitManager().getGroups(cms, CmsOrganizationalUnit.SEPARATOR, true).contains(group));
+
+        // try to add a role by adding a user to the group
+        group = cms.createGroup("/mytest", "vfs managers", CmsRole.VFS_MANAGER.getVirtualGroupFlags(), null);
+        assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "/Guest", "/", true, true, true).isEmpty());
+        cms.addUserToGroup("/Guest", group.getName());
+        assertEquals(1, OpenCms.getRoleManager().getRolesOfUser(cms, "/Guest", "/", true, true, true).size());
     }
 }
