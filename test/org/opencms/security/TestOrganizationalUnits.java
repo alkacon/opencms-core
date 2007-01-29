@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/01/29 14:27:10 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/01/29 14:40:33 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -1441,15 +1441,15 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertEquals(2, OpenCms.getOrgUnitManager().getUsers(cms, "/test/", true).size());
 
         assertEquals(4, OpenCms.getOrgUnitManager().getGroups(cms, "/test/", false).size());
-        assertEquals(4, OpenCms.getOrgUnitManager().getGroups(cms, "/test/", true).size());
+        assertEquals(8, OpenCms.getOrgUnitManager().getGroups(cms, "/test/", true).size());
         // try to create another group 'group1' in the test ou 
         cms.createGroup("/test/group1", "test group", 0, null);
 
-        assertEquals(11, OpenCms.getOrgUnitManager().getGroups(cms, CmsOrganizationalUnit.SEPARATOR, false).size());
-        assertEquals(16, OpenCms.getOrgUnitManager().getGroups(cms, CmsOrganizationalUnit.SEPARATOR, true).size());
+        assertEquals(7, OpenCms.getOrgUnitManager().getGroups(cms, CmsOrganizationalUnit.SEPARATOR, false).size());
+        assertEquals(20, OpenCms.getOrgUnitManager().getGroups(cms, CmsOrganizationalUnit.SEPARATOR, true).size());
 
-        assertEquals(1, OpenCms.getOrgUnitManager().getGroups(cms, "/test", false).size());
-        assertEquals(5, OpenCms.getOrgUnitManager().getGroups(cms, "/test", true).size());
+        assertEquals(5, OpenCms.getOrgUnitManager().getGroups(cms, "/test", false).size());
+        assertEquals(9, OpenCms.getOrgUnitManager().getGroups(cms, "/test", true).size());
         try {
             // try to create another group 'group1' in the /test ou 
             cms.createGroup("/test/group1", "test group", 0, null);
@@ -1474,14 +1474,14 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertTrue(cms.getGroupsOfUser("/test1", false).contains(cms.readGroup("/test/group1")));
 
         assertTrue(cms.getUsersOfGroup("/group1").isEmpty());
-        assertEquals(1, cms.getGroupsOfUser("/test/test1", false).size());
-        assertTrue(cms.getGroupsOfUser("/test/test1", false).contains(cms.readGroup("/test/group1")));
+        assertEquals(7, cms.getGroupsOfUser("/test/test1", true).size());
+        assertTrue(cms.getGroupsOfUser("/test/test1", true).contains(cms.readGroup("/test/group1")));
         // add user of 1st level ou to group of root ou
         cms.addUserToGroup("/test/test1", "/group1");
         assertEquals(1, cms.getUsersOfGroup("/group1").size());
         assertTrue(cms.getUsersOfGroup("/group1").contains(cms.readUser("/test/test1")));
-        assertEquals(2, cms.getGroupsOfUser("/test/test1", false).size());
-        assertTrue(cms.getGroupsOfUser("/test/test1", false).contains(cms.readGroup("/test/group1")));
-        assertTrue(cms.getGroupsOfUser("/test/test1", false).contains(cms.readGroup("/group1")));
+        assertEquals(8, cms.getGroupsOfUser("/test/test1", true).size());
+        assertTrue(cms.getGroupsOfUser("/test/test1", true).contains(cms.readGroup("/test/group1")));
+        assertTrue(cms.getGroupsOfUser("/test/test1", true).contains(cms.readGroup("/group1")));
     }
 }
