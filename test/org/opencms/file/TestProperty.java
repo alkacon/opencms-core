@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.23.4.5 $
+ * Date   : $Date: 2007/01/29 09:44:54 $
+ * Version: $Revision: 1.23.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.23.4.5 $
+ * @version $Revision: 1.23.4.6 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -567,7 +567,7 @@ public class TestProperty extends OpenCmsTestCase {
         property2 = cms.readPropertyObject(resourcename, "template-elements", false);
         assertTrue(property1.isIdentical(property2));        
 
-        property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, null, "/Admin_/folder1/article_test.html_/sites/default/folder1/article_test.html");
+        property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, null, "Admin_/folder1/article_test.html_/sites/default/folder1/article_test.html");
         property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         assertTrue(property1.isIdentical(property2));        
         

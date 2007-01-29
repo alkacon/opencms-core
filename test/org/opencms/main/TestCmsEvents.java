@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsEvents.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.3.4.5 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.3.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.main;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
-import org.opencms.security.CmsRole;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -46,7 +45,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3.4.5 $
+ * @version $Revision: 1.3.4.6 $
  */
 public class TestCmsEvents extends OpenCmsTestCase {
 
@@ -109,8 +108,8 @@ public class TestCmsEvents extends OpenCmsTestCase {
             CmsProject project = cms.createProject(
                 projectName,
                 "Unit test project for publish events",
-                CmsRole.WORKPLACE_USER.getGroupName(),
-                CmsRole.PROJECT_MANAGER.getGroupName(),
+                OpenCms.getDefaultUsers().getGroupUsers(),
+                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
                 CmsProject.PROJECT_TYPE_NORMAL);
             cms.getRequestContext().setCurrentProject(project);
             cms.copyResourceToProject("/sites/default/");

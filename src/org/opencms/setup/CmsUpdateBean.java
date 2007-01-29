@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.6.4.9 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.6.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import org.opencms.module.CmsModuleVersion;
 import org.opencms.module.CmsModuleXmlHandler;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlException;
@@ -73,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.9 $ 
+ * @version $Revision: 1.6.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -629,8 +628,8 @@ public class CmsUpdateBean extends CmsSetupBean {
                 unlockProject = cms.createProject(
                     unlockProjectName,
                     unlockProjectName,
-                    CmsRole.ROOT_ADMIN.getGroupName(),
-                    CmsRole.ROOT_ADMIN.getGroupName(),
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
                     CmsProject.PROJECT_TYPE_TEMPORARY);
             }
 

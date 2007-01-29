@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/01/19 16:53:56 $
- * Version: $Revision: 1.146.4.21 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.146.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.21 $
+ * @version $Revision: 1.146.4.22 $
  * 
  * @since 6.0.0 
  */
@@ -1068,7 +1068,7 @@ public final class CmsObject {
      */
     public List getGroups() throws CmsException {
 
-        return OpenCms.getOrgUnitManager().getGroups(this, "/", true);
+        return OpenCms.getOrgUnitManager().getGroups(this, CmsOrganizationalUnit.SEPARATOR, true);
     }
 
     /**
@@ -1115,7 +1115,7 @@ public final class CmsObject {
      */
     public List getGroupsOfUser(String username, boolean directGroupsOnly, String remoteAddress) throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(m_context, username, "/", true, false, directGroupsOnly, remoteAddress);
+        return m_securityManager.getGroupsOfUser(m_context, username, CmsOrganizationalUnit.SEPARATOR, true, false, directGroupsOnly, remoteAddress);
     }
 
     /**
@@ -1524,7 +1524,7 @@ public final class CmsObject {
      */
     public List getUsers() throws CmsException {
 
-        return OpenCms.getOrgUnitManager().getUsers(this, "/", true);
+        return OpenCms.getOrgUnitManager().getUsers(this, CmsOrganizationalUnit.SEPARATOR, true);
     }
 
     /**
@@ -2850,7 +2850,7 @@ public final class CmsObject {
      */
     public List readResourcesWithProperty(String propertyDefinition) throws CmsException {
 
-        return readResourcesWithProperty("/", propertyDefinition);
+        return readResourcesWithProperty(CmsOrganizationalUnit.SEPARATOR, propertyDefinition);
     }
 
     /**

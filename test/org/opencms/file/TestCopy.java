@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.16.8.7 $
+ * Date   : $Date: 2007/01/29 09:44:54 $
+ * Version: $Revision: 1.16.8.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
@@ -52,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.8.7 $
+ * @version $Revision: 1.16.8.8 $
  */
 public class TestCopy extends OpenCmsTestCase {
 
@@ -420,7 +421,7 @@ public class TestCopy extends OpenCmsTestCase {
         // create a project for all tests in this suite
         cms.createProject("testproject", "a test project", "Users", "Users", CmsProject.PROJECT_TYPE_NORMAL);
         cms.copyResourceToProject("/");
-        cms.addUserToGroup("test1", OpenCms.getDefaultUsers().getGroupAdministrators());
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ROOT_ADMIN, "/", "test1");
 
         cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(cms.readProject("testproject"));

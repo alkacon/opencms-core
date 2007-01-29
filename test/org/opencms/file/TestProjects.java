@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.16.4.4 $
+ * Date   : $Date: 2007/01/29 09:44:54 $
+ * Version: $Revision: 1.16.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.security.CmsRole;
+import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.4 $
+ * @version $Revision: 1.16.4.5 $
  */
 public class TestProjects extends OpenCmsTestCase {
 
@@ -114,8 +114,8 @@ public class TestProjects extends OpenCmsTestCase {
         CmsProject project = cms.createProject(
             projectName,
             "Unit test project 2",
-            CmsRole.WORKPLACE_USER.getGroupName(),
-            CmsRole.PROJECT_MANAGER.getGroupName(),
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
             CmsProject.PROJECT_TYPE_NORMAL);
 
         // some basic project tests
@@ -175,8 +175,8 @@ public class TestProjects extends OpenCmsTestCase {
         CmsProject project = cms.createProject(
             projectName,
             "Unit test project 3",
-            CmsRole.WORKPLACE_USER.getGroupName(),
-            CmsRole.PROJECT_MANAGER.getGroupName(),
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
             CmsProject.PROJECT_TYPE_NORMAL);
 
         // use the main folder as start folder for the project
@@ -246,8 +246,8 @@ public class TestProjects extends OpenCmsTestCase {
             CmsProject project = cms.createProject(
                 projectName,
                 "Unit test project 1",
-                CmsRole.WORKPLACE_USER.getGroupName(),
-                CmsRole.PROJECT_MANAGER.getGroupName(),
+                OpenCms.getDefaultUsers().getGroupUsers(),
+                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
                 CmsProject.PROJECT_TYPE_NORMAL);
             cms.getRequestContext().setCurrentProject(project);
             cms.copyResourceToProject("/sites/default/index.html");
@@ -292,8 +292,8 @@ public class TestProjects extends OpenCmsTestCase {
             CmsProject project = cms.createProject(
                 projectName,
                 "Unit test project 4",
-                CmsRole.WORKPLACE_USER.getGroupName(),
-                CmsRole.PROJECT_MANAGER.getGroupName(),
+                OpenCms.getDefaultUsers().getGroupUsers(),
+                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
                 CmsProject.PROJECT_TYPE_NORMAL);
             cms.getRequestContext().setCurrentProject(project);
             cms.copyResourceToProject("/sites/default/index.html");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.8.4.6 $
+ * Date   : $Date: 2007/01/29 09:44:54 $
+ * Version: $Revision: 1.8.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsRole;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.4.6 $
+ * @version $Revision: 1.8.4.7 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -118,7 +118,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.createGroup("Testgroup", "A test group", 0, null);
         CmsGroup testGroup = cms.readGroup("Testgroup");
         // set a child
-        cms.setParentGroup(CmsRole.WORKPLACE_USER.getGroupName(), testGroup.getName());
+        cms.setParentGroup(OpenCms.getDefaultUsers().getGroupUsers(), testGroup.getName());
         // create test user
         cms.createUser("testuser1", "test1", "A test user 1", null);
         cms.addUserToGroup("testuser1", "Testgroup");
@@ -172,7 +172,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
         // restore the previous state
         cms.deleteUser(testUser1.getId());
-        cms.setParentGroup(CmsRole.WORKPLACE_USER.getGroupName(), null);
+        cms.setParentGroup(OpenCms.getDefaultUsers().getGroupUsers(), null);
         cms.deleteGroup(testGroup2.getName());
     }
 
@@ -204,7 +204,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.changeLock(folder + file);
         assertLock(cms, file, CmsLockType.SHARED_EXCLUSIVE);
         assertLock(cms, folder + file, CmsLockType.EXCLUSIVE);
-        
+
         // switch back
         CmsUser user = cms.getRequestContext().currentUser();
         cms = getCmsObject();
@@ -216,7 +216,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.lockResource(folder);
         assertLock(cms, folder + file, CmsLockType.INHERITED);
         assertLock(cms, file, CmsLockType.UNLOCKED);
-        
+
         cms.deleteResource(folder, CmsResource.DELETE_PRESERVE_SIBLINGS);
     }
 
@@ -313,7 +313,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
         String groupname = "deleteGroup";
 
-        List expected = OpenCms.getOrgUnitManager().getGroups(cms, "/", true);
+        List expected = OpenCms.getOrgUnitManager().getGroups(cms, CmsOrganizationalUnit.SEPARATOR, true);
 
         // create group
         cms.createGroup(groupname, "deleteMe", I_CmsPrincipal.FLAG_ENABLED, "Users");
@@ -321,7 +321,7 @@ public class TestDeletion extends OpenCmsTestCase {
         // now delete the group again
         cms.deleteGroup(groupname);
 
-        List actual = OpenCms.getOrgUnitManager().getGroups(cms, "/", true);
+        List actual = OpenCms.getOrgUnitManager().getGroups(cms, CmsOrganizationalUnit.SEPARATOR, true);
 
         assertEquals(expected, actual);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/01/24 08:30:27 $
- * Version: $Revision: 1.32.4.8 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.32.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
@@ -68,7 +69,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.8 $
+ * @version $Revision: 1.32.4.9 $
  * 
  * @since 6.0.0
  * 
@@ -153,6 +154,9 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
 
         m_id = id;
         m_name = name;
+        if (m_name.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
+            m_name = m_name.substring(1);
+        }
         m_password = password;
         m_description = description;
         m_firstname = firstname;

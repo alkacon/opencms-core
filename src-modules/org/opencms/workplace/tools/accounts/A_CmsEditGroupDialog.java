@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditGroupDialog.java,v $
- * Date   : $Date: 2007/01/19 16:53:53 $
- * Version: $Revision: 1.3.4.3 $
+ * Date   : $Date: 2007/01/29 09:44:53 $
+ * Version: $Revision: 1.3.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -64,7 +65,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3.4.3 $ 
+ * @version $Revision: 1.3.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -370,7 +371,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
         List retVal = new ArrayList();
         retVal.add(new CmsSelectWidgetOption("none", true));
         try {
-            Iterator itGroups = OpenCms.getOrgUnitManager().getGroups(getCms(), "/", true).iterator();
+            Iterator itGroups = OpenCms.getOrgUnitManager().getGroups(getCms(), CmsOrganizationalUnit.SEPARATOR, true).iterator();
             while (itGroups.hasNext()) {
                 CmsGroup group = (CmsGroup)itGroups.next();
                 if (group.getId().equals(m_group.getId())) {

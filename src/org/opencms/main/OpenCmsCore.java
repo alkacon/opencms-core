@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/01/25 09:22:22 $
- * Version: $Revision: 1.218.4.23 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.218.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,6 +72,7 @@ import org.opencms.publish.CmsPublishManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsOrgUnitManager;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsRoleViolationException;
@@ -138,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.23 $ 
+ * @version $Revision: 1.218.4.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -2005,7 +2006,7 @@ public final class OpenCmsCore {
             m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
             site.getSiteRoot(),
             CmsProject.ONLINE_PROJECT_ID,
-            "/");
+            CmsOrganizationalUnit.SEPARATOR);
         // return the initialized cms user context object
         return cms;
     }
@@ -2046,10 +2047,6 @@ public final class OpenCmsCore {
         }
         if (siteroot == null) {
             siteroot = "/";
-        }
-        // backward ou compatibility
-        if (!user.startsWith("/")) {
-            user = "/" + user;
         }
         CmsObject cms = initCmsObject(
             req,

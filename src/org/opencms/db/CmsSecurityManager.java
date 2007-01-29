@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/01/26 09:47:38 $
- * Version: $Revision: 1.97.4.31 $
+ * Date   : $Date: 2007/01/29 09:44:54 $
+ * Version: $Revision: 1.97.4.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2202,7 +2202,7 @@ public final class CmsSecurityManager {
             groups = m_driverManager.getGroupsOfUser(
                 dbc,
                 dbc.currentUser().getName(),
-                "/",
+                CmsOrganizationalUnit.SEPARATOR,
                 true,
                 false,
                 false,
@@ -2313,7 +2313,7 @@ public final class CmsSecurityManager {
             roles = m_driverManager.getGroupsOfUser(
                 dbc,
                 user.getName(),
-                "/",
+                CmsOrganizationalUnit.SEPARATOR,
                 true,
                 true,
                 true,
@@ -5395,7 +5395,7 @@ public final class CmsSecurityManager {
 
         String ouFqn = CmsOrganizationalUnit.getParentFqn(fqn);
         if (ouFqn == null) {
-            ouFqn = "/";
+            ouFqn = CmsOrganizationalUnit.SEPARATOR;
         }
         return ouFqn;
     }
@@ -5427,15 +5427,16 @@ public final class CmsSecurityManager {
             Iterator itDistinctGroupNames = role.getDistinctGroupNames().iterator();
             while (itDistinctGroupNames.hasNext()) {
                 String distictGroupName = (String)itDistinctGroupNames.next();
-                if (distictGroupName.startsWith("/")) {
+                if (distictGroupName.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
                     // this is a ou independent role 
                     // we need an exact match, and we ignore the ou param
-                    if (groupName.equals(distictGroupName.substring(1))) {
+                    if (groupName.equals(distictGroupName.substring(1)) || groupName.equals(distictGroupName)) {
                         return true;
                     }
                 } else {
                     // first check if the user has the role at all
-                    if (groupName.endsWith("/" + distictGroupName) || groupName.equals(distictGroupName)) {
+                    if (groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + distictGroupName)
+                        || groupName.equals(distictGroupName)) {
                         // this is a ou dependent role
                         if (orgUnitFqn == null) {
                             // ou param is null, so the user needs to have the role in at least one ou does not matter which
@@ -5444,7 +5445,8 @@ public final class CmsSecurityManager {
                             // the user needs to have the role in the given ou or in a parent ou
                             // now check that the ou matches
                             String groupFqn = CmsOrganizationalUnit.getParentFqn(groupName);
-                            if (orgUnitFqn.startsWith(groupFqn) || orgUnitFqn.startsWith("/" + groupFqn)) {
+                            if (orgUnitFqn.startsWith(groupFqn)
+                                || orgUnitFqn.startsWith(CmsOrganizationalUnit.SEPARATOR + groupFqn)) {
                                 return true;
                             }
                         }

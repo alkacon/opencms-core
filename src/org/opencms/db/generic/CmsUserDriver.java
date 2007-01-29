@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/25 12:38:21 $
- * Version: $Revision: 1.110.2.8 $
+ * Date   : $Date: 2007/01/29 09:44:54 $
+ * Version: $Revision: 1.110.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.8 $
+ * @version $Revision: 1.110.2.9 $
  * 
  * @since 6.0.0 
  */
@@ -297,7 +297,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         String associatedResource) throws CmsDataAccessException {
 
         // check the parent
-        if ((parent == null) && !name.equals("/")) {
+        if ((parent == null) && !name.equals(CmsOrganizationalUnit.SEPARATOR)) {
             throw new CmsDataAccessException(org.opencms.db.Messages.get().container(
                 org.opencms.db.Messages.ERR_PARENT_ORGUNIT_NULL_0));
         }
@@ -353,6 +353,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                             null);
                     }
                 }
+                // create default groups
+                internalCreateDefaultGroups(dbc, ou.getName());
             }
             m_driverManager.addResourceToOrgUnit(dbc, ou, resource);
             return ou;
@@ -367,7 +369,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     public void createRootOrganizationalUnit(CmsDbContext dbc) {
 
         try {
-            readOrganizationalUnit(dbc, "/");
+            readOrganizationalUnit(dbc, CmsOrganizationalUnit.SEPARATOR);
         } catch (CmsException e) {
             try {
                 CmsProject onlineProject = dbc.currentProject();
@@ -388,7 +390,13 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 }
                 dbc.getRequestContext().setCurrentProject(setupProject);
                 try {
-                    createOrganizationalUnit(dbc, "/", "The root organizational unit", 0, null, "/");
+                    createOrganizationalUnit(
+                        dbc,
+                        CmsOrganizationalUnit.SEPARATOR,
+                        "The root organizational unit",
+                        0,
+                        null,
+                        "/");
                 } finally {
                     dbc.getRequestContext().setCurrentProject(onlineProject);
                 }
@@ -714,12 +722,13 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             // only do something if really needed
             if (!existsGroup(dbc, rootAdminRole)) {
+                // create the roles in the root ou
                 Iterator itRoles = CmsRole.getSystemRoles().iterator();
                 while (itRoles.hasNext()) {
                     CmsRole role = (CmsRole)itRoles.next();
                     String groupName = role.getGroupName();
                     if (!role.isOrganizationalUnitIndependent()) {
-                        groupName = "/" + groupName;
+                        groupName = CmsOrganizationalUnit.SEPARATOR + groupName;
                     }
                     int flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
                     if ((role == CmsRole.WORKPLACE_USER) || (role == CmsRole.PROJECT_MANAGER)) {
@@ -742,125 +751,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         try {
-            String administratorsGroup = OpenCms.getDefaultUsers().getGroupAdministrators();
-            String guestGroup = OpenCms.getDefaultUsers().getGroupGuests();
-            String usersGroup = OpenCms.getDefaultUsers().getGroupUsers();
-            String projectmanagersGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
-            String guestUser = OpenCms.getDefaultUsers().getUserGuest();
-            String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
-            String exportUser = OpenCms.getDefaultUsers().getUserExport();
-            String deleteUser = OpenCms.getDefaultUsers().getUserDeletedResource();
-
-            if (!existsGroup(dbc, administratorsGroup)) {
-                CmsGroup guests = createGroup(
-                    dbc,
-                    CmsUUID.getConstantUUID(guestGroup),
-                    guestGroup,
-                    "The guest group",
-                    I_CmsPrincipal.FLAG_ENABLED,
-                    null);
-                CmsGroup administrators = createGroup(
-                    dbc,
-                    CmsUUID.getConstantUUID(administratorsGroup),
-                    administratorsGroup,
-                    "The administrators group",
-                    I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER,
-                    null);
-                CmsGroup users = createGroup(
-                    dbc,
-                    CmsUUID.getConstantUUID(usersGroup),
-                    usersGroup,
-                    "The users group",
-                    I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER,
-                    null);
-                createGroup(
-                    dbc,
-                    CmsUUID.getConstantUUID(projectmanagersGroup),
-                    projectmanagersGroup,
-                    "The projectmanager group",
-                    I_CmsPrincipal.FLAG_ENABLED
-                        | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER
-                        | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER,
-                    users.getName());
-
-                CmsUser guest = createUser(
-                    dbc,
-                    CmsUUID.getConstantUUID(guestUser),
-                    guestUser,
-                    OpenCms.getPasswordHandler().digest(""),
-                    "The guest user",
-                    " ",
-                    " ",
-                    " ",
-                    0,
-                    I_CmsPrincipal.FLAG_ENABLED,
-                    new Hashtable(),
-                    " ");
-                CmsUser admin = createUser(
-                    dbc,
-                    CmsUUID.getConstantUUID(adminUser),
-                    adminUser,
-                    OpenCms.getPasswordHandler().digest("admin"),
-                    "The admin user",
-                    " ",
-                    " ",
-                    " ",
-                    0,
-                    I_CmsPrincipal.FLAG_ENABLED,
-                    new Hashtable(),
-                    " ");
-
-                createUserInGroup(dbc, guest.getId(), guests.getId());
-                createUserInGroup(dbc, admin.getId(), administrators.getId());
-
-                if (!exportUser.equals(OpenCms.getDefaultUsers().getUserAdmin())
-                    && !exportUser.equals(OpenCms.getDefaultUsers().getUserGuest())) {
-
-                    CmsUser export = createUser(
-                        dbc,
-                        CmsUUID.getConstantUUID(exportUser),
-                        exportUser,
-                        OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
-                        "The static export user",
-                        " ",
-                        " ",
-                        " ",
-                        0,
-                        I_CmsPrincipal.FLAG_ENABLED,
-                        Collections.EMPTY_MAP,
-                        " ");
-                    createUserInGroup(dbc, export.getId(), guests.getId());
-                }
-
-                if (!deleteUser.equals(OpenCms.getDefaultUsers().getUserAdmin())
-                    && !deleteUser.equals(OpenCms.getDefaultUsers().getUserGuest())
-                    && !deleteUser.equals(OpenCms.getDefaultUsers().getUserExport())) {
-
-                    createUser(
-                        dbc,
-                        CmsUUID.getConstantUUID(deleteUser),
-                        deleteUser,
-                        OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
-                        "The default user for deleted resources",
-                        " ",
-                        " ",
-                        " ",
-                        0,
-                        I_CmsPrincipal.FLAG_ENABLED,
-                        Collections.EMPTY_MAP,
-                        " ");
-                }
-
-                if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USERS_CREATED_0));
-                }
-            }
-            try {
-                createUserInGroup(dbc, CmsUUID.getConstantUUID(adminUser), CmsUUID.getConstantUUID(rootAdminRole));
-            } catch (Exception e) {
-                // ignore
-            }
-
+            internalCreateDefaultGroups(dbc, CmsOrganizationalUnit.SEPARATOR);
         } catch (CmsException e) {
             if (CmsLog.INIT.isErrorEnabled()) {
                 CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USERS_CREATION_FAILED_0), e);
@@ -1994,6 +1885,35 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
+     * Returns a sql query to select groups.<p>
+     * 
+     * @param mainQuery the main select sql query
+     * @param includeSubOus if groups in sub-ous should be included in the selection
+     * @param readRoles if groups or roles whould be selected
+     * 
+     * @return a sql query to select groups
+     */
+    protected String createRoleQuery(String mainQuery, boolean includeSubOus, boolean readRoles) {
+
+        String sqlQuery = m_sqlManager.readQuery(mainQuery);
+        sqlQuery += " ";
+        if (includeSubOus) {
+            sqlQuery += m_sqlManager.readQuery("C_GROUPS_GROUP_OU_LIKE_1");
+        } else {
+            sqlQuery += m_sqlManager.readQuery("C_GROUPS_GROUP_OU_EQUALS_1");
+        }
+        sqlQuery += AND_CONDITION;
+        if (readRoles) {
+            sqlQuery += m_sqlManager.readQuery("C_GROUPS_SELECT_ROLES_1");
+        } else {
+            sqlQuery += m_sqlManager.readQuery("C_GROUPS_SELECT_GROUPS_1");
+        }
+        sqlQuery += " ";
+        sqlQuery += m_sqlManager.readQuery("C_GROUPS_ORDER_0");
+        return sqlQuery;
+    }
+
+    /**
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
@@ -2023,8 +1943,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             return null;
         }
         // if no ou given, append root
-        if (!name.startsWith("/")) {
-            return "/" + name;
+        if (!name.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
+            return CmsOrganizationalUnit.SEPARATOR + name;
         }
         // check the ou, but not during initialization
         if (dbc.getRequestContext() != null) {
@@ -2082,6 +2002,171 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
+     * Creates the default groups and user for the given organizational unit.<p>
+     * 
+     * @param dbc the database context
+     * @param ouFqn the fully qualified name of the organizational unit to create the principals for
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void internalCreateDefaultGroups(CmsDbContext dbc, String ouFqn) throws CmsException {
+
+        String administratorsGroup = ouFqn + OpenCms.getDefaultUsers().getGroupAdministrators();
+        String guestGroup = ouFqn + OpenCms.getDefaultUsers().getGroupGuests();
+        String usersGroup = ouFqn + OpenCms.getDefaultUsers().getGroupUsers();
+        String projectmanagersGroup = ouFqn + OpenCms.getDefaultUsers().getGroupProjectmanagers();
+        String guestUser = ouFqn + OpenCms.getDefaultUsers().getUserGuest();
+        String adminUser = ouFqn + OpenCms.getDefaultUsers().getUserAdmin();
+        String exportUser = ouFqn + OpenCms.getDefaultUsers().getUserExport();
+        String deleteUser = ouFqn + OpenCms.getDefaultUsers().getUserDeletedResource();
+
+        if (existsGroup(dbc, administratorsGroup)) {
+            if (CmsOrganizationalUnit.getParentFqn(ouFqn) == null) {
+                // check the flags of existing groups, for compatibility checks
+                internalUpdateRoleGroup(dbc, administratorsGroup, CmsRole.ROOT_ADMIN);
+                internalUpdateRoleGroup(dbc, usersGroup, CmsRole.WORKPLACE_USER);
+                internalUpdateRoleGroup(dbc, projectmanagersGroup, CmsRole.PROJECT_MANAGER);
+            }
+            return;
+        }
+        CmsGroup guests = createGroup(
+            dbc,
+            CmsUUID.getConstantUUID(guestGroup),
+            guestGroup,
+            "The guest group",
+            I_CmsPrincipal.FLAG_ENABLED,
+            null);
+
+        String parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
+
+        int flags;
+        if (parentOu != null) {
+            // just ou admin rights
+            flags = CmsRole.ADMINISTRATOR.getVirtualGroupFlags();
+        } else {
+            // root ou admin has additional rights
+            flags = CmsRole.ROOT_ADMIN.getVirtualGroupFlags();
+        }
+        String parentGroup = null;
+        if (parentOu != null) {
+            parentGroup = parentOu + OpenCms.getDefaultUsers().getGroupAdministrators();
+        }
+        createGroup(
+            dbc,
+            CmsUUID.getConstantUUID(administratorsGroup),
+            administratorsGroup,
+            "The administrators group",
+            I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER | flags,
+            parentGroup);
+
+        if (parentOu != null) {
+            parentGroup = parentOu + OpenCms.getDefaultUsers().getGroupUsers();
+        }
+        createGroup(
+            dbc,
+            CmsUUID.getConstantUUID(usersGroup),
+            usersGroup,
+            "The users group",
+            I_CmsPrincipal.FLAG_ENABLED
+                | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
+                | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(),
+            parentGroup);
+
+        if (parentOu != null) {
+            parentGroup = parentOu + OpenCms.getDefaultUsers().getGroupProjectmanagers();
+        } else {
+            parentGroup = ouFqn + OpenCms.getDefaultUsers().getGroupUsers();
+        }
+        createGroup(
+            dbc,
+            CmsUUID.getConstantUUID(projectmanagersGroup),
+            projectmanagersGroup,
+            "The projectmanager group",
+            I_CmsPrincipal.FLAG_ENABLED
+                | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER
+                | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
+                | CmsRole.PROJECT_MANAGER.getVirtualGroupFlags(),
+            parentGroup);
+
+        if (CmsOrganizationalUnit.getParentFqn(ouFqn) != null) {
+            // default users are only for the root ou
+            return;
+        }
+
+        CmsUser guest = createUser(
+            dbc,
+            CmsUUID.getConstantUUID(guestUser),
+            guestUser,
+            OpenCms.getPasswordHandler().digest(""),
+            "The guest user",
+            " ",
+            " ",
+            " ",
+            0,
+            I_CmsPrincipal.FLAG_ENABLED,
+            new Hashtable(),
+            " ");
+        createUserInGroup(dbc, guest.getId(), guests.getId());
+
+        CmsUser admin = createUser(
+            dbc,
+            CmsUUID.getConstantUUID(adminUser),
+            adminUser,
+            OpenCms.getPasswordHandler().digest("admin"),
+            "The admin user",
+            " ",
+            " ",
+            " ",
+            0,
+            I_CmsPrincipal.FLAG_ENABLED,
+            new Hashtable(),
+            " ");
+        createUserInGroup(dbc, admin.getId(), CmsUUID.getConstantUUID(CmsRole.ROOT_ADMIN.getGroupName()));
+
+        if (!OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserAdmin())
+            && !OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserGuest())) {
+
+            CmsUser export = createUser(
+                dbc,
+                CmsUUID.getConstantUUID(exportUser),
+                exportUser,
+                OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
+                "The static export user",
+                " ",
+                " ",
+                " ",
+                0,
+                I_CmsPrincipal.FLAG_ENABLED,
+                Collections.EMPTY_MAP,
+                " ");
+            createUserInGroup(dbc, export.getId(), guests.getId());
+        }
+
+        if (!OpenCms.getDefaultUsers().getUserDeletedResource().equals(OpenCms.getDefaultUsers().getUserAdmin())
+            && !OpenCms.getDefaultUsers().getUserDeletedResource().equals(OpenCms.getDefaultUsers().getUserGuest())
+            && !OpenCms.getDefaultUsers().getUserDeletedResource().equals(OpenCms.getDefaultUsers().getUserExport())) {
+
+            createUser(
+                dbc,
+                CmsUUID.getConstantUUID(deleteUser),
+                deleteUser,
+                OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
+                "The default user for deleted resources",
+                " ",
+                " ",
+                " ",
+                0,
+                I_CmsPrincipal.FLAG_ENABLED,
+                Collections.EMPTY_MAP,
+                " ");
+        }
+
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USERS_CREATED_0));
+        }
+    }
+
+    /**
      * Semi-constructor to create a {@link CmsGroup} instance from a JDBC result set.
      * 
      * @param res the JDBC ResultSet
@@ -2095,7 +2180,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         String ou = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_OU_0"));
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(ou)) {
             // backward compatibility
-            ou = "/";
+            ou = CmsOrganizationalUnit.SEPARATOR;
         }
         return new CmsGroup(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID_0"))),
@@ -2125,8 +2210,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
         // get the data
         String name = resource.getRootPath().substring(ORGUNIT_BASE_FOLDER.length());
-        if (!name.endsWith("/")) {
-            name += "/";
+        if (!name.endsWith(CmsOrganizationalUnit.SEPARATOR)) {
+            name += CmsOrganizationalUnit.SEPARATOR;
         }
         String description = m_driverManager.readPropertyObject(dbc, resource, ORGUNIT_PROPERTY_DESCRIPTION, false).getStructureValue();
         int flags = (resource.getFlags() & ~CmsResource.FLAG_INTERNAL); // remove the internal flag
@@ -2218,7 +2303,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         String ou = res.getString(m_sqlManager.readQuery("C_USERS_USER_OU_0"));
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(ou)) {
             // backward compatibility
-            ou = "/";
+            ou = CmsOrganizationalUnit.SEPARATOR;
         }
         return new CmsUser(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID_0"))),
@@ -2367,6 +2452,35 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
+     * Updates a group to a virtual group.<p>
+     * 
+     * @param dbc the database context
+     * @param groupName the name of the group to update
+     * @param role the role for this group
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    protected void internalUpdateRoleGroup(CmsDbContext dbc, String groupName, CmsRole role)
+    throws CmsDataAccessException {
+
+        CmsGroup group = readGroup(dbc, groupName);
+        if (CmsRole.valueOf(group.getFlags()) != role) {
+            CmsGroup roleGroup = readGroup(dbc, role.getGroupName());
+            // move all users from the group to the role
+            // HINT: this could be improved with an special query like:
+            // UPDATE CMS_GROUPUSERS SET GROUP_ID = ? WHERE GROUP_ID = ?
+            Iterator it = readUsersOfGroup(dbc, groupName, false).iterator();
+            while (it.hasNext()) {
+                CmsUser user = (CmsUser)it.next();
+                deleteUserInGroup(dbc, user.getId(), group.getId());
+                createUserInGroup(dbc, user.getId(), roleGroup.getId());
+            }
+            // set the right flags
+            group.setFlags(role.getVirtualGroupFlags());
+        }
+    }
+
+    /**
      * Validates the given root path to be in the scope of the resources of the given organizational unit.<p>
      * 
      * @param dbc the current db context
@@ -2475,34 +2589,5 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } finally {
             dbc.getRequestContext().setCurrentProject(project);
         }
-    }
-
-    /**
-     * Returns a sql query to select groups.<p>
-     * 
-     * @param mainQuery the main select sql query
-     * @param includeSubOus if groups in sub-ous should be included in the selection
-     * @param readRoles if groups or roles whould be selected
-     * 
-     * @return a sql query to select groups
-     */
-    private String createRoleQuery(String mainQuery, boolean includeSubOus, boolean readRoles) {
-
-        String sqlQuery = m_sqlManager.readQuery(mainQuery);
-        sqlQuery += " ";
-        if (includeSubOus) {
-            sqlQuery += m_sqlManager.readQuery("C_GROUPS_GROUP_OU_LIKE_1");
-        } else {
-            sqlQuery += m_sqlManager.readQuery("C_GROUPS_GROUP_OU_EQUALS_1");
-        }
-        sqlQuery += AND_CONDITION;
-        if (readRoles) {
-            sqlQuery += m_sqlManager.readQuery("C_GROUPS_SELECT_ROLES_1");
-        } else {
-            sqlQuery += m_sqlManager.readQuery("C_GROUPS_SELECT_GROUPS_1");
-        }
-        sqlQuery += " ";
-        sqlQuery += m_sqlManager.readQuery("C_GROUPS_ORDER_0");
-        return sqlQuery;
     }
 }

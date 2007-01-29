@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/Messages.java,v $
- * Date   : $Date: 2006/09/01 10:28:46 $
- * Version: $Revision: 1.9.8.1 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.9.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.9.8.1 $ 
+ * @version $Revision: 1.9.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,16 +55,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_DOTS_0 = "RPT_DOTS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_EXCEPTION_0 = "RPT_EXCEPTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_FAILED_0 = "RPT_FAILED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_ERROR_0 = "RPT_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_ERROR_DETAILS_0 = "RPT_ERROR_DETAILS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXCEPTION_0 = "RPT_EXCEPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_FAILED_0 = "RPT_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IGNORED_0 = "RPT_IGNORED_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2007/01/22 10:22:44 $
- * Version: $Revision: 1.22.8.5 $
+ * Date   : $Date: 2007/01/29 09:44:54 $
+ * Version: $Revision: 1.22.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
@@ -56,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.8.5 $
+ * @version $Revision: 1.22.8.6 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -168,7 +169,7 @@ public class TestPermissions extends OpenCmsTestCase {
         }
 
         // add user "test1" to project manager group
-        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.PROJECT_MANAGER, "/", "test1");
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.PROJECT_MANAGER, CmsOrganizationalUnit.SEPARATOR, "test1");
 
         cms.loginUser("test1", "test1");
         // first check in "online" project
@@ -275,11 +276,11 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
 
         cms.createUser("testAdmin", "secret", "", null);
-        cms.addUserToGroup("testAdmin", OpenCms.getDefaultUsers().getGroupAdministrators());
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ROOT_ADMIN, "/", "testAdmin");
         cms.createUser("testProjectmanager", "secret", "", null);
-        cms.addUserToGroup("testProjectmanager", OpenCms.getDefaultUsers().getGroupProjectmanagers());
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.PROJECT_MANAGER, "/", "testProjectmanager");
         cms.createUser("testUser", "secret", "", null);
-        cms.addUserToGroup("testUser", OpenCms.getDefaultUsers().getGroupUsers());
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.WORKPLACE_USER, "/", "testUser");
         cms.createUser("testGuest", "secret", "", null);
         cms.addUserToGroup("testGuest", OpenCms.getDefaultUsers().getGroupGuests());
 

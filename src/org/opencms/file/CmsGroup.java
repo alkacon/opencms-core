@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2007/01/25 12:38:20 $
- * Version: $Revision: 1.19.4.7 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.19.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
@@ -42,7 +43,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.7 $
+ * @version $Revision: 1.19.4.8 $
  * 
  * @since 6.0.0 
  * 
@@ -74,6 +75,9 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
 
         m_id = id;
         m_name = name;
+        if (m_name.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
+            m_name = m_name.substring(1);
+        }
         m_description = description;
         m_flags = flags;
         m_parentId = parentId;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/29 09:44:54 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,14 @@ import org.opencms.util.CmsUUID;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6 
  */
 public class CmsOrganizationalUnit {
+
+    /** The character used to separate each level in a fully qualified name. */
+    public static final String SEPARATOR = "/";
 
     /** The description of this organizational unit. */
     private String m_description;
@@ -58,7 +61,7 @@ public class CmsOrganizationalUnit {
 
     /** The fully qualified name of this organizational unit. */
     private String m_name;
-
+    
     /**
      * Creates a new OpenCms organizational unit principal.
      * 
@@ -84,19 +87,19 @@ public class CmsOrganizationalUnit {
      */
     public static final String getParentFqn(String fqn) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(fqn) || fqn.equals("/")) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(fqn) || fqn.equals(CmsOrganizationalUnit.SEPARATOR)) {
             // in case of the root ou
             return null;
         }
         int pos;
-        if (fqn.endsWith("/")) {
-            pos = fqn.substring(0, fqn.length() - 1).lastIndexOf("/");
+        if (fqn.endsWith(CmsOrganizationalUnit.SEPARATOR)) {
+            pos = fqn.substring(0, fqn.length() - 1).lastIndexOf(CmsOrganizationalUnit.SEPARATOR);
         } else {
-            pos = fqn.lastIndexOf("/");
+            pos = fqn.lastIndexOf(CmsOrganizationalUnit.SEPARATOR);
         }
         if (pos <= 0) {
             // in case of simple names assume root ou 
-            return "/";
+            return CmsOrganizationalUnit.SEPARATOR;
         }
         return fqn.substring(0, pos + 1);
     }

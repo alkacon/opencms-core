@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2007/01/22 10:22:44 $
- * Version: $Revision: 1.21.4.8 $
+ * Date   : $Date: 2007/01/29 09:44:54 $
+ * Version: $Revision: 1.21.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.security.CmsRole;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
@@ -56,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.4.8 $
+ * @version $Revision: 1.21.4.9 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -168,8 +167,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createProject(
             projectName,
             "Test project",
-            CmsRole.WORKPLACE_USER.getGroupName(),
-            CmsRole.WORKPLACE_USER.getGroupName());
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupUsers());
 
         CmsProject project = cms.readProject(projectName);
         cms.getRequestContext().setCurrentProject(project);
@@ -190,8 +189,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
         CmsProject newProject = cms.createProject(
             projectName,
             "Test project 2nd time",
-            CmsRole.WORKPLACE_USER.getGroupName(),
-            CmsRole.WORKPLACE_USER.getGroupName());
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupUsers());
 
         // check if the projects have different ids
         int id1 = project.getId();
@@ -225,7 +224,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
 
         final String name = "multipleProject";
-        final String group = CmsRole.WORKPLACE_USER.getGroupName();
+        final String group = OpenCms.getDefaultUsers().getGroupUsers();
         final String description = "";
 
         // usually creating the project 20x is enough to replicate the issue
@@ -387,8 +386,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createProject(
             "projectB",
             "Test project 2 for scenario B",
-            CmsRole.WORKPLACE_USER.getGroupName(),
-            CmsRole.WORKPLACE_USER.getGroupName());
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupUsers());
 
         CmsProject projectB = cms.readProject("projectB");
         cms.getRequestContext().setCurrentProject(projectB);

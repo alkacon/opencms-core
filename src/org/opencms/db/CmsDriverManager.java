@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/01/25 12:38:20 $
- * Version: $Revision: 1.570.2.49 $
+ * Date   : $Date: 2007/01/29 09:44:53 $
+ * Version: $Revision: 1.570.2.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -114,6 +114,8 @@ import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.pool.ObjectPool;
+
+import com.sun.org.apache.regexp.internal.recompile;
 
 /**
  * The OpenCms driver manager.<p>
@@ -651,10 +653,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @throws CmsException if operation was not succesfull
      * @throws CmsDbEntryNotFoundException if the given user or the given group was not found 
+     * 
+     * @see #removeUserFromGroup(CmsDbContext, String, String, boolean)
      */
     public void addUserToGroup(CmsDbContext dbc, String username, String groupname, boolean readRoles)
     throws CmsException, CmsDbEntryNotFoundException {
 
+        //check if group exists
+        CmsGroup group = readGroup(dbc, groupname);
+        if (group == null) {
+            // the group does not exists
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+        }
+        if (group.isVirtual() && !readRoles) {
+            // if removing a user from a virtual role treat it as removing the user from the role
+            addUserToGroup(dbc, username, CmsRole.valueOf(group.getFlags()).getGroupName(group.getOuFqn()), true);
+        }
+        if (group.isVirtual()) {
+            // this is an hack so to prevent a unlimited recursive calls
+            readRoles = false;
+        }
+        if ((readRoles && !group.isRole()) || (!readRoles && group.isRole())) {
+            // we want a role but we got a group, or the other way
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+        }
         if (userInGroup(dbc, username, groupname, readRoles)) {
             // the user is already member of the group
             return;
@@ -664,22 +686,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (user == null) {
             // the user does not exists
             throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, username));
-        }
-        //check if group exists
-        CmsGroup group = readGroup(dbc, groupname);
-        if (group == null) {
-            // the group does not exists
-            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
-        }
-        if ((readRoles && !group.isRole()) || (!readRoles && group.isRole())) {
-            // we want a role but we got a group, or the other way
-            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
-        }
-        if (group.isVirtual()) {
-            // the group is virtual
-            //            throw new CmsException(Messages.get().container(
-            //                Messages.ERR_VIRTUAL_GROUP_CANNOT_BE_EDITED_1,
-            //                group.getName()));
         }
 
         // if adding an user to a role
@@ -711,7 +717,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             Iterator it = getVirtualGroupsForRole(dbc, group.getOuFqn(), role).iterator();
             while (it.hasNext()) {
                 CmsGroup virtualGroup = (CmsGroup)it.next();
-                addUserToGroup(dbc, username, virtualGroup.getName(), false);
+                // here we say readroles = true, to prevent an unlimited recursive calls
+                addUserToGroup(dbc, username, virtualGroup.getName(), true);
             }
         }
 
@@ -1271,7 +1278,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // create the group
         CmsGroup group = m_userDriver.createGroup(dbc, id, name, description, flags, parent);
-        
+
         // if group is virtualizing a role, initialize it
         if (group.isVirtual()) {
             // get all users that have the given role
@@ -1283,7 +1290,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 addUserToGroup(dbc, user.getName(), group.getName(), false);
             }
         }
-        
+
         // put it into the cache
         m_groupCache.put(new CacheId(group), group);
         // return it
@@ -3139,7 +3146,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List groups = getGroupsOfUser(
             dbc,
             dbc.currentUser().getName(),
-            "/",
+            CmsOrganizationalUnit.SEPARATOR,
             true,
             false,
             false,
@@ -3309,7 +3316,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List getGroupsOfUser(CmsDbContext dbc, String username, boolean readRoles) throws CmsException {
 
-        return getGroupsOfUser(dbc, username, "/", true, readRoles, false, dbc.getRequestContext().getRemoteAddress());
+        return getGroupsOfUser(
+            dbc,
+            username,
+            CmsOrganizationalUnit.SEPARATOR,
+            true,
+            readRoles,
+            false,
+            dbc.getRequestContext().getRemoteAddress());
     }
 
     /**
@@ -3362,16 +3376,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         }
                     }
                 } else {
-                    // now get all child roles
+                    // for each for role 
                     for (int i = 0; i < directGroups.size(); i++) {
                         CmsGroup group = (CmsGroup)directGroups.get(i);
                         CmsRole role = CmsRole.valueOf(group.getName());
+                        // get the child roles
                         Iterator itChildRoles = role.getChilds(true).iterator();
                         while (itChildRoles.hasNext()) {
                             CmsRole childRole = (CmsRole)itChildRoles.next();
                             allGroups.add(readGroup(dbc, childRole.getGroupName(group.getOuFqn())));
                         }
                         if (includeChildOus) {
+                            // if needed include the roles of child ous 
                             Iterator itSubOus = getOrganizationalUnits(
                                 dbc,
                                 readOrganizationalUnit(dbc, group.getOuFqn()),
@@ -3736,7 +3752,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param groupname the name of the group to list users from
      * @param includeOtherOuUsers include users of other organizational units
      * @param directUsersOnly if set only the direct assigned users will be returned, 
-     *                          if not also indirect users, ie. members of child groups
+     *                        if not also indirect users, ie. members of parent roles, 
+     *                        this parameter only works with roles
      * @param readRoles if to read roles or groups
      * 
      * @return all <code>{@link CmsUser}</code> objects in the group
@@ -3756,10 +3773,29 @@ public final class CmsDriverManager implements I_CmsEventListener {
             String cacheKey = m_keyGenerator.getCacheKeyForGroupUsers(prefix, dbc, group);
             List allUsers = (List)m_userGroupsCache.get(cacheKey);
             if (allUsers == null) {
-                // TODO: do something with the directUsersOnly param
-                int todo;
-
                 allUsers = m_userDriver.readUsersOfGroup(dbc, groupname, includeOtherOuUsers);
+                if (readRoles && !directUsersOnly) {
+                    CmsRole role = CmsRole.valueOf(groupname);
+                    if (role.getParentRole() != null) {
+                        // iterate the parent roles
+                        allUsers.addAll(getUsersOfGroup(
+                            dbc,
+                            role.getParentRole().getGroupName(group.getOuFqn()),
+                            includeOtherOuUsers,
+                            directUsersOnly,
+                            readRoles));
+                    }
+                    String parentOu = CmsOrganizationalUnit.getParentFqn(group.getOuFqn());
+                    if (parentOu != null) {
+                        // iterate the parent ou's
+                        allUsers.addAll(getUsersOfGroup(
+                            dbc,
+                            parentOu + group.getSimpleName(),
+                            includeOtherOuUsers,
+                            directUsersOnly,
+                            readRoles));
+                    }
+                }
                 // make user list unmodifiable for caching
                 allUsers = Collections.unmodifiableList(allUsers);
                 m_userGroupsCache.put(cacheKey, allUsers);
@@ -3950,7 +3986,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             readUser(new CmsDbContext(), OpenCms.getDefaultUsers().getUserAdmin()),
             readProject(new CmsDbContext(), CmsProject.ONLINE_PROJECT_ID),
             null,
-            "/",
+            CmsOrganizationalUnit.SEPARATOR,
             null,
             null,
             null,
@@ -4497,7 +4533,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String resourcename = dbc.removeSiteRoot(resource.getRootPath());
 
         String siteRoot = dbc.getRequestContext().getSiteRoot();
-        dbc.getRequestContext().setSiteRoot("/");
+        dbc.getRequestContext().setSiteRoot("");
         String destination = CmsDriverManager.LOST_AND_FOUND_FOLDER + resourcename;
         // create the required folders if necessary
         try {
@@ -6117,9 +6153,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsIllegalArgumentException if the given user was not member in the given group
      * @throws CmsDbEntryNotFoundException if the given group was not found 
      * @throws CmsSecurityException if the given user was <b>read as 'null' from the database</b>
+     * 
+     * @see #addUserToGroup(CmsDbContext, String, String, boolean)
      */
     public void removeUserFromGroup(CmsDbContext dbc, String username, String groupname, boolean readRoles)
     throws CmsException, CmsIllegalArgumentException, CmsDbEntryNotFoundException, CmsSecurityException {
+
+        CmsGroup group = readGroup(dbc, groupname);
+        //check if group exists
+        if (group == null) {
+            // the group does not exists
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+        }
+        if (group.isVirtual() && !readRoles) {
+            // if removing a user from a virtual role treat it as removing the user from the role
+            removeUserFromGroup(dbc, username, CmsRole.valueOf(group.getFlags()).getGroupName(group.getOuFqn()), true);
+        }
+        if (group.isVirtual()) {
+            // this is an hack so to prevent a unlimited recursive calls
+            readRoles = false;
+        }
+        if ((readRoles && !group.isRole()) || (!readRoles && group.isRole())) {
+            // we want a role but we got a group, or the other way
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+        }
 
         // test if this user is existing in the group
         if (!userInGroup(dbc, username, groupname, readRoles)) {
@@ -6139,29 +6196,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 username,
                 groupname));
         }
-        CmsGroup group = readGroup(dbc, groupname);
-        //check if group exists
-        if (group == null) {
-            // the group does not exists
-            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
-        }
-        if (group.isVirtual()) {
-            // the group is virtual
-            //            throw new CmsException(Messages.get().container(
-            //                Messages.ERR_VIRTUAL_GROUP_CANNOT_BE_EDITED_1,
-            //                group.getName()));
-        }
-        if ((readRoles && !group.isRole()) || (!readRoles && group.isRole())) {
-            // we want a role but we got a group, or the other way
-            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
-        }
 
         if (readRoles) {
             // update virtual groups
             Iterator it = getVirtualGroupsForRole(dbc, group.getOuFqn(), CmsRole.valueOf(groupname)).iterator();
             while (it.hasNext()) {
                 CmsGroup virtualGroup = (CmsGroup)it.next();
-                removeUserFromGroup(dbc, username, virtualGroup.getName(), false);
+                // here we say readroles = true, to prevent an unlimited recursive calls
+                removeUserFromGroup(dbc, username, virtualGroup.getName(), true);
             }
         }
         m_userDriver.deleteUserInGroup(dbc, user.getId(), group.getId());
@@ -6857,7 +6899,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         List groups = getGroupsOfUser(dbc, username, readRoles);
         for (int i = 0; i < groups.size(); i++) {
-            if (groupname.equals(((CmsGroup)groups.get(i)).getName())) {
+            CmsGroup group = (CmsGroup)groups.get(i);
+            if (groupname.equals(group.getName()) || groupname.substring(1).equals(group.getName())) {
                 return true;
             }
         }
@@ -8009,7 +8052,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns all groups that are virtualizing the given role in the given ou and all sub-ous.<p>
+     * Returns all groups that are virtualizing the given role in the given ou.<p>
      * 
      * @param dbc the database context
      * @param ouFqn the organizational unit
@@ -8021,31 +8064,38 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private List getVirtualGroupsForRole(CmsDbContext dbc, String ouFqn, CmsRole role) throws CmsException {
 
+        // collect all parent roles
+        //        CmsRole parent = role;
         Set roleFlags = new HashSet();
         // add role flag
-        Integer flags = new Integer(I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2 * CmsRole.getSystemRoles().indexOf(role));
+        Integer flags = new Integer(role.getVirtualGroupFlags());
         roleFlags.add(flags);
         // add child role flags
         Iterator itChildRoles = role.getChilds(true).iterator();
         while (itChildRoles.hasNext()) {
             CmsRole child = (CmsRole)itChildRoles.next();
-            flags = new Integer(I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2 * CmsRole.getSystemRoles().indexOf(child));
+            flags = new Integer(child.getVirtualGroupFlags());
             roleFlags.add(flags);
+            //        while (parent != null) {
+            //            roleFlags.add(new Integer(parent.getVirtualGroupFlags()));
+            //            parent = parent.getParentRole();
         }
         // iterate all groups matching the flags
         List groups = new ArrayList();
-        Iterator it = getGroups(dbc, readOrganizationalUnit(dbc, ouFqn), true, false).iterator();
+        Iterator it = getGroups(dbc, readOrganizationalUnit(dbc, ouFqn), false, false).iterator();
         while (it.hasNext()) {
             CmsGroup group = (CmsGroup)it.next();
             if (group.isVirtual()) {
-                Iterator itFlags = roleFlags.iterator();
-                while (itFlags.hasNext()) {
-                    flags = (Integer)itFlags.next();
-                    if ((group.getFlags() & flags.intValue()) == flags.intValue()) {
-                        groups.add(group);
-                    }
+                CmsRole r = CmsRole.valueOf(group.getFlags());
+                if (roleFlags.contains(new Integer(r.getVirtualGroupFlags()))) {
+                    groups.add(group);
                 }
             }
+        }
+        // iterate all parent ous
+        String parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
+        if (parentOu != null) {
+            groups.addAll(getVirtualGroupsForRole(dbc, parentOu, role));
         }
         return groups;
     }

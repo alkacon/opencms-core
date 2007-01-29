@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2007/01/08 14:03:04 $
- * Version: $Revision: 1.84.4.4 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.84.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.4 $ 
+ * @version $Revision: 1.84.4.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -623,7 +623,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                     try {
                         m_cms.addUserToGroup(name, (String)userGroups.get(i));
                     } catch (CmsException exc) {
-                        // ignore
+                        m_report.println(Messages.get().container(
+                            Messages.RPT_USER_COULDNT_BE_ADDED_TO_GROUP_2,
+                            name,
+                            userGroups.get(i)), I_CmsReport.FORMAT_OK);
                     }
                 }
                 m_report.println(

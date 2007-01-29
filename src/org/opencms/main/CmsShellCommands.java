@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2007/01/19 16:53:53 $
- * Version: $Revision: 1.83.4.9 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.83.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83.4.9 $ 
+ * @version $Revision: 1.83.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -206,8 +206,8 @@ class CmsShellCommands implements I_CmsShellCommands {
             CmsProject project = m_cms.createProject(
                 name,
                 description,
-                CmsRole.WORKPLACE_USER.getGroupName(),
-                CmsRole.PROJECT_MANAGER.getGroupName(),
+                OpenCms.getDefaultUsers().getGroupUsers(),
+                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
                 CmsProject.PROJECT_TYPE_NORMAL);
             m_cms.getRequestContext().setCurrentProject(project);
             m_cms.copyResourceToProject("/");
@@ -658,8 +658,8 @@ class CmsShellCommands implements I_CmsShellCommands {
         CmsProject project = m_cms.createProject(
             "SystemUpdate",
             getMessages().key(Messages.GUI_SHELL_IMPORT_TEMP_PROJECT_NAME_0),
-            CmsRole.ROOT_ADMIN.getGroupName(),
-            CmsRole.ROOT_ADMIN.getGroupName(),
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
             CmsProject.PROJECT_TYPE_TEMPORARY);
         int id = project.getId();
         m_cms.getRequestContext().setCurrentProject(project);

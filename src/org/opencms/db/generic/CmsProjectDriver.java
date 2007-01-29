@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/01/15 18:48:32 $
- * Version: $Revision: 1.241.4.17 $
+ * Date   : $Date: 2007/01/29 09:44:54 $
+ * Version: $Revision: 1.241.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.I_CmsReport;
-import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsStringUtil;
@@ -92,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.17 $
+ * @version $Revision: 1.241.4.18 $
  * 
  * @since 6.0.0 
  */
@@ -456,13 +455,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
         CmsUser admin = m_driverManager.readUser(dbc, adminUser);
 
-        String administratorsGroup = CmsRole.ROOT_ADMIN.getGroupName();
+        String administratorsGroup = OpenCms.getDefaultUsers().getGroupAdministrators();
         CmsGroup administrators = m_driverManager.readGroup(dbc, administratorsGroup);
 
-        String usersGroup = CmsRole.WORKPLACE_USER.getGroupName();
+        String usersGroup = OpenCms.getDefaultUsers().getGroupUsers();
         CmsGroup users = m_driverManager.readGroup(dbc, usersGroup);
 
-        String projectmanagersGroup = CmsRole.PROJECT_MANAGER.getGroupName();
+        String projectmanagersGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
         CmsGroup projectmanager = m_driverManager.readGroup(dbc, projectmanagersGroup);
 
         ////////////////////////////////////////////////////////////////////////////////////////////

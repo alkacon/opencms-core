@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2007/01/08 14:03:04 $
- * Version: $Revision: 1.43.4.10 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.43.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.10 $
+ * @version $Revision: 1.43.4.11 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -1037,12 +1037,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         value1 = xmlcontent.addValue(cms, "Option", Locale.ENGLISH, 0);
         assertEquals(
-            "The author is: Hans Mustermann (/Admin), Heidestraße 17, München - hans.mustermann@germany.de",
+            "The author is: Hans Mustermann (Admin), Heidestraße 17, München - hans.mustermann@germany.de",
             value1.getStringValue(cms));
 
         value1 = xmlcontent.addValue(cms, "Option", Locale.GERMAN, 0);
         assertEquals(
-            "Der Autor ist: Hans Mustermann (/Admin), Heidestraße 17, München - hans.mustermann@germany.de",
+            "Der Autor ist: Hans Mustermann (Admin), Heidestraße 17, München - hans.mustermann@germany.de",
             value1.getStringValue(cms));
 
         // output the current document

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotUserGroupsList.java,v $
- * Date   : $Date: 2007/01/19 16:53:53 $
- * Version: $Revision: 1.9.4.1 $
+ * Date   : $Date: 2007/01/29 09:44:53 $
+ * Version: $Revision: 1.9.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9.4.1 $ 
+ * @version $Revision: 1.9.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,7 +165,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
     protected List getGroups() throws CmsException {
 
         List usergroups = getCms().getGroupsOfUser(getParamUsername(), false);
-        List groups = OpenCms.getOrgUnitManager().getGroups(getCms(), "/", true);
+        List groups = OpenCms.getOrgUnitManager().getGroups(getCms(), CmsOrganizationalUnit.SEPARATOR, true);
         groups.removeAll(usergroups);
         return groups;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.34.4.12 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.34.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
@@ -69,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34.4.12 $ 
+ * @version $Revision: 1.34.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -753,11 +752,11 @@ public abstract class CmsEditor extends CmsEditorBase {
                 getCms().rmacc(
                     getParamTempfile(),
                     I_CmsPrincipal.PRINCIPAL_GROUP,
-                    CmsRole.WORKPLACE_USER.getGroupName());
+                    OpenCms.getDefaultUsers().getGroupUsers());
                 getCms().rmacc(
                     getParamTempfile(),
                     I_CmsPrincipal.PRINCIPAL_GROUP,
-                    CmsRole.PROJECT_MANAGER.getGroupName());
+                    OpenCms.getDefaultUsers().getGroupUsers());
             }
             getCms().copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
         }
@@ -820,12 +819,12 @@ public abstract class CmsEditor extends CmsEditorBase {
                 getCms().chacc(
                     temporaryFilename,
                     I_CmsPrincipal.PRINCIPAL_GROUP,
-                    CmsRole.WORKPLACE_USER.getGroupName(),
+                    OpenCms.getDefaultUsers().getGroupUsers(),
                     "-v");
                 getCms().chacc(
                     temporaryFilename,
                     I_CmsPrincipal.PRINCIPAL_GROUP,
-                    CmsRole.PROJECT_MANAGER.getGroupName(),
+                    OpenCms.getDefaultUsers().getGroupUsers(),
                     "-v");
             }
         } catch (CmsException e) {

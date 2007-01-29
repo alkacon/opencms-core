@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestCmsPrincipal.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.2.4.4 $
+ * Date   : $Date: 2007/01/29 09:44:55 $
+ * Version: $Revision: 1.2.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.security;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -51,39 +51,42 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestCmsPrincipal(String arg0) {
-        
+
         super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsPrincipal.class.getName());
 
         suite.addTest(new TestCmsPrincipal("testBasicReadOperation"));
-        
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms("simpletest", "/sites/default/");
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
-    } 
-    
+    }
+
     /**
      * Tests basic principal read operation.<p>
      * 
@@ -97,13 +100,13 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         I_CmsPrincipal principal;
         String prefixedName;
 
-        prefixedName = CmsPrincipal.getPrefixedUser("/" + OpenCms.getDefaultUsers().getUserAdmin());
+        prefixedName = CmsPrincipal.getPrefixedUser(OpenCms.getDefaultUsers().getUserAdmin());
         principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);
         assertTrue(principal.isUser());
         assertFalse(principal.isGroup());
         assertEquals(prefixedName, principal.getPrefixedName());
 
-        prefixedName = CmsPrincipal.getPrefixedGroup(CmsRole.ROOT_ADMIN.getGroupName());
+        prefixedName = CmsPrincipal.getPrefixedGroup(OpenCms.getDefaultUsers().getGroupAdministrators());
         principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);
         assertFalse(principal.isUser());
         assertTrue(principal.isGroup());
@@ -150,5 +153,5 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         if (caught != null) {
             assertSame(org.opencms.db.Messages.ERR_READ_GROUP_FOR_NAME_1, caught.getMessageContainer().getKey());
         }
-    }    
+    }
 }

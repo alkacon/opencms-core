@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.32.4.4 $
+ * Date   : $Date: 2007/01/29 09:44:53 $
+ * Version: $Revision: 1.32.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsStringUtil;
 
 /**
@@ -40,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.32.4.4 $
+ * @version $Revision: 1.32.4.5 $
  * 
  * @since 6.0.0
  */
@@ -274,10 +275,10 @@ public class CmsDefaultUsers {
         isDefault = isDefault || m_userDeletedResource.equals(userName);
 
         // now check with ou prefix
-        isDefault = isDefault || userName.equals("/" + m_userAdmin);
-        isDefault = isDefault || userName.equals("/" + m_userGuest);
-        isDefault = isDefault || userName.equals("/" + m_userExport);
-        isDefault = isDefault || userName.equals("/" + m_userDeletedResource);
+        isDefault = isDefault || userName.equals(CmsOrganizationalUnit.SEPARATOR + m_userAdmin);
+        isDefault = isDefault || userName.equals(CmsOrganizationalUnit.SEPARATOR + m_userGuest);
+        isDefault = isDefault || userName.equals(CmsOrganizationalUnit.SEPARATOR + m_userExport);
+        isDefault = isDefault || userName.equals(CmsOrganizationalUnit.SEPARATOR + m_userDeletedResource);
 
         return isDefault;
     }
@@ -294,7 +295,7 @@ public class CmsDefaultUsers {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(groupName)) {
             return false;
         }
-        return m_groupGuests.equals(groupName) || groupName.endsWith("/" + m_groupGuests);
+        return m_groupGuests.equals(groupName) || groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + m_groupGuests);
     }
 
     /**
@@ -309,7 +310,7 @@ public class CmsDefaultUsers {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
             return false;
         }
-        return m_userAdmin.equals(userName) || userName.equals("/" + m_userAdmin);
+        return m_userAdmin.equals(userName) || userName.equals(CmsOrganizationalUnit.SEPARATOR + m_userAdmin);
     }
 
     /**
@@ -324,7 +325,7 @@ public class CmsDefaultUsers {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
             return false;
         }
-        return m_userExport.equals(userName) || userName.equals("/" + m_userExport);
+        return m_userExport.equals(userName) || userName.equals(CmsOrganizationalUnit.SEPARATOR + m_userExport);
     }
 
     /**
@@ -339,7 +340,7 @@ public class CmsDefaultUsers {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
             return false;
         }
-        return m_userGuest.equals(userName) || userName.equals("/" + m_userGuest);
+        return m_userGuest.equals(userName) || userName.equals(CmsOrganizationalUnit.SEPARATOR + m_userGuest);
     }
 
     /**

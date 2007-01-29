@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/01/25 12:38:21 $
- * Version: $Revision: 1.11.4.6 $
+ * Date   : $Date: 2007/01/29 09:44:54 $
+ * Version: $Revision: 1.11.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.6 $ 
+ * @version $Revision: 1.11.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,7 +157,7 @@ public final class CmsRole {
         m_groupName = groupName;
         m_parentRole = parentRole;
         m_systemRole = true;
-        m_ouDependent = !groupName.startsWith("/");
+        m_ouDependent = !groupName.startsWith(CmsOrganizationalUnit.SEPARATOR);
         if (parentRole != null) {
             parentRole.m_childs.add(this);
         }
@@ -219,7 +219,7 @@ public final class CmsRole {
     public static CmsRole valueOf(int flags) {
 
         int index = (flags & (I_CmsPrincipal.FLAG_CORE_LIMIT - 1));
-        index = index / (I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 3);
+        index = index / (I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2);
         return (CmsRole)getSystemRoles().get(index);
     }
 
@@ -235,12 +235,18 @@ public final class CmsRole {
         Iterator it = SYSTEM_ROLES.iterator();
         while (it.hasNext()) {
             CmsRole role = (CmsRole)it.next();
+            // direct check
+            if (groupName.equals(role.getGroupName())) {
+                return role;
+            }
             if (role.isOrganizationalUnitIndependent()) {
+                // the role group name starts with "/", but the given group name not
                 if (groupName.equals(role.getGroupName().substring(1))) {
                     return role;
                 }
             } else {
-                if (groupName.endsWith("/" + role.getGroupName()) || groupName.equals(role.getGroupName())) {
+                // the role group name does not start with "/", but the given group name does 
+                if (groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + role.getGroupName())) {
                     return role;
                 }
             }
@@ -438,7 +444,9 @@ public final class CmsRole {
      */
     public int getVirtualGroupFlags() {
 
-        return I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 3 * getSystemRoles().indexOf(this);
+        int flags = I_CmsPrincipal.FLAG_GROUP_VIRTUAL;
+        flags += I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2 * getSystemRoles().indexOf(this);
+        return flags;
     }
 
     /**
