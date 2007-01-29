@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/01/29 09:44:53 $
- * Version: $Revision: 1.570.2.50 $
+ * Date   : $Date: 2007/01/29 10:13:50 $
+ * Version: $Revision: 1.570.2.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -114,8 +114,6 @@ import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.pool.ObjectPool;
-
-import com.sun.org.apache.regexp.internal.recompile;
 
 /**
  * The OpenCms driver manager.<p>
@@ -1275,6 +1273,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.getValidationHandler().checkGroupName(name);
         // trim the name
         name = name.trim();
+
+        // get the id of the parent group if necessary
+        if (CmsStringUtil.isNotEmpty(parent)) {
+            CmsGroup parentGroup = readGroup(dbc, parent);
+            if (!parentGroup.isRole()
+                && !CmsOrganizationalUnit.getParentFqn(parent).equals(CmsOrganizationalUnit.getParentFqn(name))) {
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3,
+                    CmsOrganizationalUnit.getSimpleName(name),
+                    CmsOrganizationalUnit.getParentFqn(name),
+                    parent));
+            }
+        }
 
         // create the group
         CmsGroup group = m_userDriver.createGroup(dbc, id, name, description, flags, parent);

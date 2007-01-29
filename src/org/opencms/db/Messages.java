@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/01/29 09:44:53 $
- * Version: $Revision: 1.43.4.15 $
+ * Date   : $Date: 2007/01/29 10:13:50 $
+ * Version: $Revision: 1.43.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.15 $
+ * @version $Revision: 1.43.4.16 $
  * 
  * @since 6.0.0 
  */
@@ -341,6 +341,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ORGUNIT_MOVE_USER_2 = "ERR_ORGUNIT_MOVE_USER_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3 = "ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PARENT_ORGUNIT_NULL_0 = "ERR_PARENT_ORGUNIT_NULL_0";

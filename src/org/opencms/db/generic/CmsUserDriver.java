@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/29 09:44:54 $
- * Version: $Revision: 1.110.2.9 $
+ * Date   : $Date: 2007/01/29 10:13:50 $
+ * Version: $Revision: 1.110.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.9 $
+ * @version $Revision: 1.110.2.10 $
  * 
  * @since 6.0.0 
  */
@@ -248,17 +248,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             // get the id of the parent group if necessary
             if (CmsStringUtil.isNotEmpty(parentGroupFqn)) {
-                CmsGroup parentGroup = readGroup(dbc, parentGroupFqn);
-                if (!parentGroup.isRole()
-                    && !CmsOrganizationalUnit.getParentFqn(parentGroupFqn).equals(
-                        CmsOrganizationalUnit.getParentFqn(groupFqn))) {
-                    throw new CmsDataAccessException(Messages.get().container(
-                        Messages.ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3,
-                        CmsOrganizationalUnit.getSimpleName(groupFqn),
-                        CmsOrganizationalUnit.getParentFqn(groupFqn),
-                        parentGroupFqn));
-                }
-                parentId = parentGroup.getId();
+                parentId = readGroup(dbc, parentGroupFqn).getId();
             }
 
             conn = getSqlManager().getConnection(dbc);

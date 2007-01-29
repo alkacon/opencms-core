@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2007/01/25 12:38:21 $
- * Version: $Revision: 1.25.2.7 $
+ * Date   : $Date: 2007/01/29 10:13:50 $
+ * Version: $Revision: 1.25.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25.2.7 $
+ * @version $Revision: 1.25.2.8 $
  * 
  * @since 6.0.0 
  */
@@ -159,9 +159,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PARENT_FOLDER_DELETED_1 = "ERR_PARENT_FOLDER_DELETED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3 = "ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PATH_NOT_IN_PARENT_ORGUNIT_SCOPE_2 = "ERR_PATH_NOT_IN_PARENT_ORGUNIT_SCOPE_2";
