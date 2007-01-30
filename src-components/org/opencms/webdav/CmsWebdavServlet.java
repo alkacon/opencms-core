@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/01/30 11:32:16 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -124,7 +124,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.5.6
  */
@@ -932,11 +932,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @param req The servlet request we are processing
      * @param resp The servlet response we are creating
-     * 
-     * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doCopy(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doCopy(HttpServletRequest req, HttpServletResponse resp) {
 
         // Check if webdav is set to read only
         if (m_readOnly) {
@@ -1034,9 +1031,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param resp The servlet response we are creating
      * 
      * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         // Get the path to delete
         String path = getRelativePath(req);
@@ -1110,9 +1106,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param response The servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // Serve the requested resource, including the data content
         serveResource(request, response, true);
@@ -1125,10 +1120,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param response The servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doHead(HttpServletRequest request, HttpServletResponse response)
-    throws IOException, ServletException {
+    protected void doHead(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // Serve the requested resource, without the data content
         serveResource(request, response, false);
@@ -1141,9 +1134,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param resp The servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doLock(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doLock(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         String path = getRelativePath(req);
 
@@ -1386,9 +1378,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param resp The servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doMkcol(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doMkcol(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         String path = getRelativePath(req);
 
@@ -1468,11 +1459,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @param req The servlet request we are processing
      * @param resp The servlet response we are creating
-     *
-     * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doMove(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doMove(HttpServletRequest req, HttpServletResponse resp) {
 
         // Get source path
         String src = getRelativePath(req);
@@ -1580,11 +1568,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @param req The servlet request we are processing
      * @param resp The servlet response we are creating
-     *
-     * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) {
 
         resp.addHeader("DAV", "1,2");
 
@@ -1601,9 +1586,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param resp The servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doPropfind(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPropfind(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         String path = getRelativePath(req);
 
@@ -1622,7 +1606,7 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         // Properties which are to be displayed.
-        List properties = null;
+        List properties = new Vector();
 
         // Propfind depth
         int depth = CmsRepositoryLockInfo.DEPTH_INFINITY_VALUE;
@@ -1680,31 +1664,30 @@ public class CmsWebdavServlet extends HttpServlet {
             // TODO : Enhance that !
         }
 
-        if (type == FIND_BY_PROPERTY) {
-            properties = new Vector();
-
-            Iterator iter = propNode.elementIterator();
-            while (iter.hasNext()) {
-                Element currentElem = (Element)iter.next();
-                switch (currentElem.getNodeType()) {
-                    case Node.TEXT_NODE:
-                        break;
-                    case Node.ELEMENT_NODE:
-                        String nodeName = currentElem.getName();
-                        String propertyName = null;
-                        if (nodeName.indexOf(':') != -1) {
-                            propertyName = nodeName.substring(nodeName.indexOf(':') + 1);
-                        } else {
-                            propertyName = nodeName;
-                        }
-                        // href is a live property which is handled differently
-                        properties.add(propertyName);
-                        break;
-                    default:
-                        break;
+        if (propNode != null) {
+            if (type == FIND_BY_PROPERTY) {
+                Iterator iter = propNode.elementIterator();
+                while (iter.hasNext()) {
+                    Element currentElem = (Element)iter.next();
+                    switch (currentElem.getNodeType()) {
+                        case Node.TEXT_NODE:
+                            break;
+                        case Node.ELEMENT_NODE:
+                            String nodeName = currentElem.getName();
+                            String propertyName = null;
+                            if (nodeName.indexOf(':') != -1) {
+                                propertyName = nodeName.substring(nodeName.indexOf(':') + 1);
+                            } else {
+                                propertyName = nodeName;
+                            }
+                            // href is a live property which is handled differently
+                            properties.add(propertyName);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
-
         }
 
         boolean exists = m_session.exists(path);
@@ -1713,7 +1696,7 @@ public class CmsWebdavServlet extends HttpServlet {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_ITEM_NOT_FOUND_1, path));
             }
-            
+
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
             return;
         }
@@ -1790,11 +1773,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @param req The servlet request we are processing
      * @param resp The servlet response we are creating
-     *
-     * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doProppatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doProppatch(HttpServletRequest req, HttpServletResponse resp) {
 
         // Check if Webdav is read only
         if (m_readOnly) {
@@ -1828,9 +1808,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param resp The servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         String path = getRelativePath(req);
 
@@ -1887,11 +1866,13 @@ public class CmsWebdavServlet extends HttpServlet {
         // Bugzilla 40326: at this point content file should be safe to delete
         // as it's no longer referenced.  Let's not rely on deleteOnExit because
         // it's a memory leak, as noted in this Bugzilla issue.
-        try {
-            contentFile.delete();
-        } catch (Exception e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_DELETE_TEMP_FILE_0));
+        if (contentFile != null) {
+            try {
+                contentFile.delete();
+            } catch (Exception e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_DELETE_TEMP_FILE_0));
+                }
             }
         }
 
@@ -1911,11 +1892,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @param req The servlet request we are processing
      * @param resp The servlet response we are creating
-     *
-     * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
-    protected void doUnlock(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doUnlock(HttpServletRequest req, HttpServletResponse resp) {
 
         String path = getRelativePath(req);
 
@@ -2029,11 +2007,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param response The servlet response we are creating
      * @param item The WebdavItem with the information
      * @return Vector of ranges
-     * 
-     * @throws IOException if an input/output error occurs
      */
-    protected ArrayList parseRange(HttpServletRequest request, HttpServletResponse response, I_CmsRepositoryItem item)
-    throws IOException {
+    protected ArrayList parseRange(HttpServletRequest request, HttpServletResponse response, I_CmsRepositoryItem item) {
 
         // Checking If-Range
         String headerValue = request.getHeader(HEADER_IFRANGE);
@@ -2393,10 +2368,9 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param content Should the content be included?
      *
      * @throws IOException if an input/output error occurs
-     * @throws ServletException if a servlet-specified error occurs
      */
     protected void serveResource(HttpServletRequest request, HttpServletResponse response, boolean content)
-    throws IOException, ServletException {
+    throws IOException {
 
         // Identify the requested resource path
         String path = getRelativePath(request);
@@ -2802,10 +2776,11 @@ public class CmsWebdavServlet extends HttpServlet {
             methodsAllowed.append(", ").append(METHOD_PROPFIND);
         }
 
-        if (!item.isCollection()) {
-            methodsAllowed.append(", ").append(METHOD_PUT);
+        if (item != null) {
+            if (!item.isCollection()) {
+                methodsAllowed.append(", ").append(METHOD_PUT);
+            }
         }
-
         return methodsAllowed;
     }
 
@@ -2896,8 +2871,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param req Servlet request
      * @param path The path where to find the resource to check the lock
      * @return boolean true if the resource is locked (and no appropriate
-     * lock token has been found for at least one of the non-shared locks which
-     * are present on the resource).
+     *          lock token has been found for at least one of the non-shared locks which
+     *          are present on the resource).
      */
     private boolean isLocked(HttpServletRequest req, String path) {
 
@@ -2993,11 +2968,10 @@ public class CmsWebdavServlet extends HttpServlet {
      *
      * @param request The servlet request we are processing
      * @param response The servlet response we are creating
-     * @return Range
-     * @throws IOException if errors while writing to response occurs
+     * 
+     * @return Range TODO: document me!
      */
-    private CmsWebdavRange parseContentRange(HttpServletRequest request, HttpServletResponse response)
-    throws IOException {
+    private CmsWebdavRange parseContentRange(HttpServletRequest request, HttpServletResponse response) {
 
         // Retrieving the content-range header (if any is specified
         String rangeHeader = request.getHeader(HEADER_CONTENTRANGE);
@@ -3052,6 +3026,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @param req The servlet request we are processing
      * @param resp The servlet response we are processing
+     * 
      * @return the destination path
      */
     private String parseDestinationHeader(HttpServletRequest req, HttpServletResponse resp) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsMD5Encoder.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/30 11:32:16 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.webdav;
  * @author Remy Maucherat
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -85,8 +85,8 @@ public final class CmsMD5Encoder {
         char[] buffer = new char[32];
 
         for (int i=0; i<16; i++) {
-            int low = (int) (binaryData[i] & 0x0f);
-            int high = (int) ((binaryData[i] & 0xf0) >> 4);
+            int low = (binaryData[i] & 0x0f);
+            int high = ((binaryData[i] & 0xf0) >> 4);
             buffer[i*2] = HEXADECIMAL[high];
             buffer[i*2 + 1] = HEXADECIMAL[low];
         }

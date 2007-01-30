@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/cms/Attic/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/30 11:32:16 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.repository.CmsRepositoryItemAlreadyExistsException;
 import org.opencms.repository.CmsRepositoryItemNotFoundException;
 import org.opencms.repository.CmsRepositoryLockInfo;
-import org.opencms.repository.CmsRepositoryPermissionException;
 import org.opencms.repository.I_CmsRepositoryItem;
 import org.opencms.repository.I_CmsRepositorySession;
 import org.opencms.util.CmsFileUtil;
@@ -61,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -87,8 +86,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      * @see org.opencms.repository.I_CmsRepositorySession#copy(java.lang.String, java.lang.String, boolean)
      */
     public void copy(String src, String dest, boolean overwrite)
-    throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException,
-    CmsRepositoryItemAlreadyExistsException {
+    throws CmsRepositoryItemNotFoundException, CmsRepositoryItemAlreadyExistsException {
 
         // It is only possible in OpenCms to overwrite files.
         // Folder are not possible to overwrite.
@@ -130,7 +128,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#create(java.lang.String)
      */
-    public void create(String path) throws CmsRepositoryItemAlreadyExistsException, CmsRepositoryPermissionException {
+    public void create(String path) throws CmsRepositoryItemAlreadyExistsException {
 
         try {
 
@@ -153,7 +151,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      * @see org.opencms.repository.I_CmsRepositorySession#create(java.lang.String, java.io.InputStream, boolean)
      */
     public void create(String path, InputStream inputStream, boolean overwrite)
-    throws CmsRepositoryItemAlreadyExistsException, CmsRepositoryPermissionException {
+    throws CmsRepositoryItemAlreadyExistsException {
 
         if (exists(path)) {
             if (overwrite) {
@@ -187,7 +185,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#delete(java.lang.String)
      */
-    public void delete(String path) throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException {
+    public void delete(String path) throws CmsRepositoryItemNotFoundException {
 
         try {
 
@@ -221,8 +219,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#getItem(java.lang.String)
      */
-    public I_CmsRepositoryItem getItem(String path)
-    throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException {
+    public I_CmsRepositoryItem getItem(String path) throws CmsRepositoryItemNotFoundException {
 
         try {
             CmsResource res = m_cms.readResource(path);
@@ -285,7 +282,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#list(java.lang.String)
      */
-    public List list(String path) throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException {
+    public List list(String path) throws CmsRepositoryItemNotFoundException {
 
         List ret = new ArrayList();
 
@@ -319,8 +316,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#lock(java.lang.String, org.opencms.repository.CmsRepositoryLockInfo)
      */
-    public boolean lock(String path, CmsRepositoryLockInfo lock)
-    throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException {
+    public boolean lock(String path, CmsRepositoryLockInfo lock) throws CmsRepositoryItemNotFoundException {
 
         try {
             m_cms.lockResource(path);
@@ -340,8 +336,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      * @see org.opencms.repository.I_CmsRepositorySession#move(java.lang.String, java.lang.String, boolean)
      */
     public void move(String src, String dest, boolean overwrite)
-    throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException,
-    CmsRepositoryItemAlreadyExistsException {
+    throws CmsRepositoryItemNotFoundException, CmsRepositoryItemAlreadyExistsException {
 
         // It is only possible in OpenCms to overwrite files.
         // Folder are not possible to overwrite.

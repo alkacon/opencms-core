@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/file/Attic/CmsFileRepository.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/30 11:32:16 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.repository.file;
 
-import org.opencms.repository.CmsRepositoryAuthorizationException;
 import org.opencms.repository.I_CmsRepository;
 import org.opencms.repository.I_CmsRepositorySession;
 import org.opencms.webdav.Messages;
@@ -44,7 +43,7 @@ import javax.servlet.ServletException;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -59,8 +58,7 @@ public class CmsFileRepository implements I_CmsRepository {
     /**
      * @see org.opencms.repository.I_CmsRepository#login(java.lang.String, java.lang.String)
      */
-    public I_CmsRepositorySession login(String userName, String password)
-    throws CmsRepositoryAuthorizationException {
+    public I_CmsRepositorySession login(String userName, String password) {
 
         // username and password doesnt matter in this case
         return new CmsFileRepositorySession(m_root);

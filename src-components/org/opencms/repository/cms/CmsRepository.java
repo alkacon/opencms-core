@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/cms/Attic/CmsRepository.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/30 11:32:16 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,14 +41,13 @@ import org.opencms.repository.I_CmsRepository;
 import org.opencms.repository.I_CmsRepositorySession;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 
 /**
  * Creates a repository session to access OpenCms.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -65,7 +64,7 @@ public class CmsRepository implements I_CmsRepository {
     /**
      * @see org.opencms.repository.I_CmsRepository#init(javax.servlet.ServletConfig)
      */
-    public void init(ServletConfig servletConfig) throws ServletException {
+    public void init(ServletConfig servletConfig) {
 
         // noop
     }
