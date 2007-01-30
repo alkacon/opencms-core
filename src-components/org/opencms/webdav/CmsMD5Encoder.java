@@ -1,4 +1,37 @@
 /*
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsMD5Encoder.java,v $
+ * Date   : $Date: 2007/01/30 08:31:39 $
+ * Version: $Revision: 1.1.2.2 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * This file is based on:
+ * - org.apache.catalina.util.MD5Encoder
+ * from the Apache Tomcat project.
+ * 
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,14 +51,18 @@
 package org.opencms.webdav;
 
 /**
- * Encode an MD5 digest into a String.
- * <p>
+ * Encode an MD5 digest into a String.<p>
+ * 
  * The 128 bit MD5 hash is converted into a 32 character long String.
  * Each character of the String is the hexadecimal representation of 4 bits
  * of the digest.
  *
  * @author Remy Maucherat
- * @version $Revision: 1.1.2.1 $ $Date: 2007/01/24 14:55:05 $
+ * @author Peter Bonrad
+ * 
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 6.5.6
  */
 public final class CmsMD5Encoder {
 

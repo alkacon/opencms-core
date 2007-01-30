@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/file/Attic/CmsFileRepositorySession.java,v $
- * Date   : $Date: 2007/01/24 14:55:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/30 08:31:39 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Vector;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6
  */
@@ -90,9 +90,10 @@ public class CmsFileRepositorySession implements I_CmsRepositorySession {
      * @param root The root path to use
      */
     public CmsFileRepositorySession(String root) {
+
         setRoot(root);
     }
-    
+
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#copy(java.lang.String, java.lang.String, boolean)
      */
@@ -325,7 +326,7 @@ public class CmsFileRepositorySession implements I_CmsRepositorySession {
 
         I_CmsRepositoryItem item = getItem(path);
 
-        if ((item.isCollection()) && (lock.getDepth() == CmsRepositoryLockInfo.DEPTH_INFINITY)) {
+        if ((item.isCollection()) && (lock.getDepth() == CmsRepositoryLockInfo.DEPTH_INFINITY_VALUE)) {
 
             // Locking a collection (and all its member resources)
             // Checking if a child resource of this collection is already locked
@@ -412,14 +413,12 @@ public class CmsFileRepositorySession implements I_CmsRepositorySession {
      */
     public void unlock(String path) {
 
-        //      Checking resource locks
+        // Checking resource locks
         CmsRepositoryLockInfo lock = (CmsRepositoryLockInfo)m_resourceLocks.get(path);
         Iterator iter = null;
         if (lock != null) {
 
-            if (lock.getTokens().isEmpty()) {
-                m_resourceLocks.remove(path);
-            }
+            m_resourceLocks.remove(path);
         }
 
         // Checking inheritable collection locks
@@ -428,9 +427,7 @@ public class CmsFileRepositorySession implements I_CmsRepositorySession {
             lock = (CmsRepositoryLockInfo)iter.next();
             if (path.equals(lock.getPath())) {
 
-                if (lock.getTokens().isEmpty()) {
-                    iter.remove();
-                }
+                iter.remove();
             }
         }
     }

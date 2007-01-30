@@ -376,7 +376,9 @@ ${opencms.inputlib.textextraction}
             basedir="${opencms.output.classes}"
             includes="org/opencms/**" >      
             <metainf dir="${opencms.input.warfiles}/WEB-INF" includes="opencms.tld"/>
-        </jar>        	            
+        </jar>        	     
+    	
+    	<antcall target="webdav" />
     </target>
 
 	<!-- 
@@ -865,5 +867,41 @@ ${opencms.inputlib.textextraction}
         <copy 
             todir="${opencms.input}/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/components/upload_applet/"
             file="${opencms.output}/upload/upload.jar" />
+    </target>    
+
+    <target name="webdav" depends="compile" if="libsAvailable" description="Build the webdav.jar">
+        
+        <mkdir dir="${opencms.output}/webdav/" />
+        
+        <copy todir="${opencms.output}/webdav/">
+            <fileset dir="${opencms.input}/src-components">
+            	<include name="org/opencms/webdav/*.properties" />
+            	<include name="org/opencms/repository/*.properties" />
+            </fileset>
+        </copy>              
+
+        <javac
+            srcdir="${opencms.input}/src-components/"
+            destdir="${opencms.output}/webdav"
+            classpath="${opencms.output.classes}:
+        		       ${opencms.inputlib.servlet}:
+        	           ${opencms.inputlib.dom4j}:
+        	           ${opencms.inputlib.codec}:
+        	           ${opencms.inputlib.logging}"
+            excludes="${build.excludes}"
+            debug="on"
+            optimize="on"
+            deprecation="on"
+            source="1.4"
+            target="${java.target.version}">
+            <include name="org/opencms/repository/**/*.java"/>
+            <include name="org/opencms/webdav/**/*.java"/>
+        </javac>
+ 
+        <jar
+            jarfile="${opencms.output.jars}/webdav.jar"
+            basedir="${opencms.output}/webdav/"
+            includes="org/**" >  
+        </jar>
     </target>    
 </project>

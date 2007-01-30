@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/file/Attic/CmsFileRepositoryItem.java,v $
- * Date   : $Date: 2007/01/24 14:55:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/30 08:31:39 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,12 +34,12 @@ package org.opencms.repository.file;
 import org.opencms.repository.I_CmsRepositoryItem;
 
 /**
- * This class represents a WebDAV resource item to work with the Tomcat to write
+ * This class represents a WebDAV resource item to write
  * to the hard drive.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6
  */

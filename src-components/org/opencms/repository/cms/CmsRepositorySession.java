@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/cms/Attic/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/01/25 09:09:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/30 08:31:39 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,27 +34,44 @@ package org.opencms.repository.cms;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.repository.CmsRepositoryItemAlreadyExistsException;
 import org.opencms.repository.CmsRepositoryItemNotFoundException;
 import org.opencms.repository.CmsRepositoryLockInfo;
 import org.opencms.repository.CmsRepositoryPermissionException;
 import org.opencms.repository.I_CmsRepositoryItem;
 import org.opencms.repository.I_CmsRepositorySession;
+import org.opencms.util.CmsFileUtil;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 /**
+ * This is the session class to work with OpenCms. You should get an instance
+ * of this class by calling {@link CmsRepository#login(String, String)}.<p>
  *
+ * @author Peter Bonrad
+ * 
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 6.5.6
  */
 public class CmsRepositorySession implements I_CmsRepositorySession {
 
     /** The initialized CmsObject. */
     private final CmsObject m_cms;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsRepositorySession.class);
 
     /**
      * Constructor with an initialized CmsObject to use.<p>
@@ -73,17 +90,39 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException,
     CmsRepositoryItemAlreadyExistsException {
 
+        // It is only possible in OpenCms to overwrite files.
+        // Folder are not possible to overwrite.
         try {
-
             if (exists(dest)) {
+
                 if (overwrite) {
-                    delete(dest);
+                    CmsResource srcRes = m_cms.readResource(src);
+                    CmsResource destRes = m_cms.readResource(dest);
+
+                    if ((srcRes.isFile()) && (destRes.isFile())) {
+
+                        // delete existing resource
+                        delete(dest);
+                    } else {
+                        throw new CmsRepositoryItemAlreadyExistsException();
+                    }
                 } else {
                     throw new CmsRepositoryItemAlreadyExistsException();
                 }
             }
+
+            // copy resource
             m_cms.copyResource(src, dest);
+
+            // unlock destination resource
+            m_cms.unlockResource(dest);
         } catch (CmsException ex) {
+
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getMessage());
+            }
+
+            // TODO: throw correct exception
             throw new CmsRepositoryItemNotFoundException();
         }
     }
@@ -94,9 +133,17 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     public void create(String path) throws CmsRepositoryItemAlreadyExistsException, CmsRepositoryPermissionException {
 
         try {
+
+            // Problems with spaces in new folders (default: "Neuer Ordner")
+            // Solution: translate this to a correct name.
             path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
             m_cms.createResource(path, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         } catch (CmsException ex) {
+
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getMessage());
+            }
+
             throw new CmsRepositoryItemAlreadyExistsException();
         }
 
@@ -108,8 +155,33 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     public void create(String path, InputStream inputStream, boolean overwrite)
     throws CmsRepositoryItemAlreadyExistsException, CmsRepositoryPermissionException {
 
-        // TODO Auto-generated method stub
+        if (exists(path)) {
+            if (overwrite) {
+                try {
+                    delete(path);
+                } catch (CmsRepositoryItemNotFoundException ex) {
+                    // noop
+                }
+            } else {
+                throw new CmsRepositoryItemAlreadyExistsException();
+            }
+        }
 
+        try {
+            int type = OpenCms.getResourceManager().getDefaultTypeForName(path).getTypeId();
+            byte[] content = CmsFileUtil.readFully(inputStream);
+
+            // create the file
+            m_cms.createResource(path, type, content, null);
+        } catch (Exception ex) {
+
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getMessage());
+            }
+
+            // TODO: throw correct exception
+            throw new CmsRepositoryItemAlreadyExistsException();
+        }
     }
 
     /**
@@ -118,11 +190,21 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     public void delete(String path) throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException {
 
         try {
+
+            // lock resource
+            m_cms.lockResource(path);
+
+            // delete finally
             m_cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
         } catch (CmsException ex) {
+
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getMessage());
+            }
+
+            // TODO: throw correct exception
             throw new CmsRepositoryItemNotFoundException();
         }
-
     }
 
     /**
@@ -130,6 +212,9 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      */
     public boolean exists(String path) {
 
+        // Problems with spaces in new folders (default: "Neuer Ordner")
+        // Solution: translate this to a correct name.
+        path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
         return m_cms.existsResource(path);
     }
 
@@ -139,18 +224,17 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     public I_CmsRepositoryItem getItem(String path)
     throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException {
 
-        CmsRepositoryItem item = new CmsRepositoryItem();
         try {
             CmsResource res = m_cms.readResource(path);
 
-            item.setCollection(res.isFolder());
-            item.setContentLength(res.getLength());
-            item.setCreationDate(res.getDateCreated());
-            item.setLastModifiedDate(res.getDateLastModified());
-            item.setName(m_cms.getRequestContext().removeSiteRoot(res.getRootPath()));
-
+            CmsRepositoryItem item = new CmsRepositoryItem(res, m_cms);
             return item;
         } catch (CmsException ex) {
+
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getMessage());
+            }
+
             throw new CmsRepositoryItemNotFoundException();
         }
     }
@@ -160,8 +244,42 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      */
     public CmsRepositoryLockInfo getLock(String path) {
 
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            CmsRepositoryLockInfo lockInfo = new CmsRepositoryLockInfo();
+
+            CmsResource res = m_cms.readResource(path);
+
+            // check system lock
+            CmsLock sysLock = m_cms.getSystemLock(res);
+            if (!sysLock.isUnlocked()) {
+                lockInfo.setPath(path);
+
+                CmsUser owner = m_cms.readUser(sysLock.getUserId());
+                if (owner != null) {
+                    lockInfo.setUsername(owner.getName());
+                    lockInfo.setOwner(owner.getName() + "||" + owner.getEmail());
+                }
+                return lockInfo;
+            }
+
+            // check user locks
+            CmsLock cmsLock = m_cms.getLock(res);
+            if (!cmsLock.isUnlocked()) {
+                lockInfo.setPath(path);
+
+                CmsUser owner = m_cms.readUser(cmsLock.getUserId());
+                if (owner != null) {
+                    lockInfo.setUsername(owner.getName());
+                    lockInfo.setOwner(owner.getName() + "||" + owner.getEmail());
+                }
+                return lockInfo;
+            }
+
+            return null;
+        } catch (CmsException ex) {
+
+            return null;
+        }
     }
 
     /**
@@ -187,6 +305,11 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
             }
 
         } catch (CmsException ex) {
+
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getMessage());
+            }
+
             throw new CmsRepositoryItemNotFoundException();
         }
 
@@ -201,11 +324,16 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
 
         try {
             m_cms.lockResource(path);
+            return true;
         } catch (CmsException ex) {
+
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getMessage());
+            }
+
+            // TODO: throw correct exception
             throw new CmsRepositoryItemNotFoundException();
         }
-
-        return false;
     }
 
     /**
@@ -215,16 +343,44 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException,
     CmsRepositoryItemAlreadyExistsException {
 
+        // It is only possible in OpenCms to overwrite files.
+        // Folder are not possible to overwrite.
         try {
             if (exists(dest)) {
+
                 if (overwrite) {
-                    delete(dest);
+                    CmsResource srcRes = m_cms.readResource(src);
+                    CmsResource destRes = m_cms.readResource(dest);
+
+                    if ((srcRes.isFile()) && (destRes.isFile())) {
+
+                        // delete existing resource
+                        delete(dest);
+                    } else {
+                        throw new CmsRepositoryItemAlreadyExistsException();
+                    }
                 } else {
                     throw new CmsRepositoryItemAlreadyExistsException();
                 }
             }
+
+            // lock source resource
+            m_cms.lockResource(src);
+
+            // Problems with spaces in new folders (default: "Neuer Ordner")
+            // Solution: translate this to a correct name.
+            src = m_cms.getRequestContext().getFileTranslator().translateResource(src);
             m_cms.moveResource(src, dest);
+
+            // unlock destination resource
+            m_cms.unlockResource(dest);
         } catch (CmsException ex) {
+
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getMessage());
+            }
+
+            // TODO: throw correct exception
             throw new CmsRepositoryItemNotFoundException();
         }
     }
@@ -234,8 +390,16 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      */
     public void unlock(String path) {
 
-        // TODO Auto-generated method stub
+        try {
+            m_cms.unlockResource(path);
+        } catch (CmsException ex) {
 
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getMessage());
+            }
+
+            // noop
+        }
     }
 
 }

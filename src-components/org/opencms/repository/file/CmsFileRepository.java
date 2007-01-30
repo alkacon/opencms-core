@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/file/Attic/CmsFileRepository.java,v $
- * Date   : $Date: 2007/01/24 14:55:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/30 08:31:39 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.ServletException;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6
  */
@@ -57,9 +57,9 @@ public class CmsFileRepository implements I_CmsRepository {
     private static final String INIT_PARAM_ROOT = "root";
 
     /**
-     * @see org.opencms.repository.I_CmsRepository#login(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.repository.I_CmsRepository#login(java.lang.String, java.lang.String)
      */
-    public I_CmsRepositorySession login(String userName, String password, String siteName, String projectName)
+    public I_CmsRepositorySession login(String userName, String password)
     throws CmsRepositoryAuthorizationException {
 
         // username and password doesnt matter in this case

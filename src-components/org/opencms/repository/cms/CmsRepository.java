@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/cms/Attic/CmsRepository.java,v $
- * Date   : $Date: 2007/01/25 09:09:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/30 08:31:39 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.repository.cms;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.repository.CmsRepositoryAuthorizationException;
@@ -42,16 +44,22 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
 /**
- *
+ * Creates a repository session to access OpenCms.<p>
+ * 
+ * @author Peter Bonrad
+ * 
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 6.5.6
  */
 public class CmsRepository implements I_CmsRepository {
 
     /**
-     * 
+     * Empty default constructor.<p>
      */
     public CmsRepository() {
 
-        // TODO Auto-generated constructor stub
+        // noop
     }
 
     /**
@@ -59,25 +67,25 @@ public class CmsRepository implements I_CmsRepository {
      */
     public void init(ServletConfig servletConfig) throws ServletException {
 
-        // TODO Auto-generated method stub
+        // noop
     }
 
     /**
-     * @see org.opencms.repository.I_CmsRepository#login(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.repository.I_CmsRepository#login(java.lang.String, java.lang.String)
      */
-    public I_CmsRepositorySession login(String userName, String password, String siteName, String projectName)
+    public I_CmsRepositorySession login(String userName, String password)
     throws CmsRepositoryAuthorizationException {
 
         CmsObject cms;
         try {
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             cms.loginUser(userName, password);
-            if (siteName != null) {
-                cms.getRequestContext().setSiteRoot(siteName);
-            }
-            if (projectName != null) {
-                cms.getRequestContext().setCurrentProject(cms.readProject(projectName));
-            }
+            
+            CmsUser user = cms.readUser(userName);
+            CmsUserSettings settings = new CmsUserSettings(cms, user);
+            
+            cms.getRequestContext().setSiteRoot(settings.getStartSite());
+            cms.getRequestContext().setCurrentProject(cms.readProject(settings.getStartProject()));
         } catch (CmsException e) {
             throw new CmsRepositoryAuthorizationException(e.getLocalizedMessage());
         }

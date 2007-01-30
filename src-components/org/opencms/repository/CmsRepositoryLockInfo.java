@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/CmsRepositoryLockInfo.java,v $
- * Date   : $Date: 2007/01/24 14:55:05 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/30 08:31:39 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,6 @@
 package org.opencms.repository;
 
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * The class represents a lock to a resource with all information
@@ -42,32 +39,32 @@ import java.util.Vector;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
 public class CmsRepositoryLockInfo {
 
-    /** The default lock timeout. */
-    public static final int DEFAULT_TIMEOUT = 604800;
-
-    /** Default depth is infinite. */
-    public static final int DEPTH_INFINITY = 3; // To limit tree browsing a bit
-
     /** The lock scope "exclusive". */
     public static final String SCOPE_EXCLUSIVE = "exclusive";
-
-    /** The lock scope "shared". */
-    public static final String SCOPE_SHARED = "shared";
-
-    /** The lock type "write". */
-    public static final String TYPE_WRITE = "write";
 
     /** The default scope for locks. */
     public static final String DEFAULT_SCOPE = SCOPE_EXCLUSIVE;
 
+    /** Infinite timeout for the lock. */
+    public static final int TIMEOUT_INFINITE_VALUE = -1;
+    
+    /** The lock type "write". */
+    public static final String TYPE_WRITE = "write";
+
     /** The default type for locks. */
     public static final String DEFAULT_TYPE = TYPE_WRITE;
+
+    /** Default depth is infinite. */
+    public static final int DEPTH_INFINITY_VALUE = 3; // To limit tree browsing a bit
+
+    /** The lock scope "shared". */
+    public static final String SCOPE_SHARED = "shared";
 
     /** The creation date of the lock. */
     private Date m_creationDate = new Date();
@@ -76,7 +73,7 @@ public class CmsRepositoryLockInfo {
     private int m_depth = 0;
 
     /** The time when the lock expires. */
-    private long m_expiresAt = DEFAULT_TIMEOUT;
+    private long m_expiresAt = TIMEOUT_INFINITE_VALUE;
 
     /** The owner of the lock (submitted while creation). */
     private String m_owner = "";
@@ -87,11 +84,11 @@ public class CmsRepositoryLockInfo {
     /** The scope of the lock (shared or exclusive). */
     private String m_scope = DEFAULT_SCOPE;
 
-    /** The list of token belonging to the lock. */
-    private List m_tokens = new Vector();
-
     /** The type of the lock (write or read). */
     private String m_type = DEFAULT_TYPE;
+
+    /** The login name of the current user. */
+    private String m_username = "";
 
     /**
      * Constructor.
@@ -162,16 +159,6 @@ public class CmsRepositoryLockInfo {
     }
 
     /**
-     * Returns the tokens.<p>
-     *
-     * @return the tokens
-     */
-    public List getTokens() {
-
-        return m_tokens;
-    }
-
-    /**
      * Returns the type.<p>
      *
      * @return the type
@@ -179,6 +166,16 @@ public class CmsRepositoryLockInfo {
     public String getType() {
 
         return m_type;
+    }
+
+    /**
+     * Returns the username.<p>
+     *
+     * @return the username
+     */
+    public String getUsername() {
+
+        return m_username;
     }
 
     /**
@@ -263,6 +260,16 @@ public class CmsRepositoryLockInfo {
     }
 
     /**
+     * Sets the username.<p>
+     *
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+
+        m_username = username;
+    }
+
+    /**
      * Get a String representation of this lock token.
      * 
      * @return a String representation of this lock
@@ -275,10 +282,6 @@ public class CmsRepositoryLockInfo {
         result += "Owner:" + m_owner + "\n";
         result += "Expiration:" + new Date(m_expiresAt) + "\n";
 
-        Iterator iter = m_tokens.iterator();
-        while (iter.hasNext()) {
-            result += "Token:" + iter.next() + "\n";
-        }
         return result;
     }
 }

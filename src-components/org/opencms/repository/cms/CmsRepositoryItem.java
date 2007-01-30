@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/cms/Attic/CmsRepositoryItem.java,v $
- * Date   : $Date: 2007/01/25 09:09:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/30 08:31:39 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,48 +31,69 @@
 
 package org.opencms.repository.cms;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.repository.I_CmsRepositoryItem;
 
-
 /**
- *
+ * Represents a single entry in the repository. In the context of OpenCms
+ * this means a single resource.<p>
+ * 
+ * @author Peter Bonrad
+ * 
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 6.5.6
  */
 public class CmsRepositoryItem implements I_CmsRepositoryItem {
 
-    /** Is the item a collection? */
-    private boolean m_collection;
-
     /** The content of the item as a byte array. */
-    private byte[] m_content;
-
-    /** The length of the content of the item. */
-    private long m_contentLength;
-
-    /** The creation date of the item. */
-    private long m_creationDate;
-
-    /** The date of the last modification of the item. */
-    private long m_lastModifiedDate;
+    private byte[] m_content = null;
 
     /** The mime type of the item. */
-    private String m_mimeType;
+    private String m_mimeType = null;
 
-    /** The name of the item. */
-    private String m_name;
-    
+    /** The CmsResource the CmsRepositoryItem is for. */
+    private CmsResource m_resource;
+
+    /** The actual CmsObject. */
+    private CmsObject m_cms;
+
     /**
+     * Construct a new CmsRepositoryItem initialized with the CmsResource to use
+     * and the CmsObject needed for some operations.<p>
      * 
+     * @param res The CmsResource this CmsRepositoryItem is used for
+     * @param cms The actual CmsObject
      */
-    public CmsRepositoryItem() {
+    public CmsRepositoryItem(CmsResource res, CmsObject cms) {
 
-        // TODO Auto-generated constructor stub
-
+        m_resource = res;
+        m_cms = cms;
     }
 
     /**
      * @see org.opencms.repository.I_CmsRepositoryItem#getContent()
      */
     public byte[] getContent() {
+
+        if (!m_resource.isFile()) {
+            return null;
+        }
+
+        if (m_content == null) {
+            try {
+                CmsFile file = CmsFile.upgrade(m_resource, m_cms);
+                m_content = file.getContents();
+            } catch (CmsException ex) {
+                // noop
+            }
+        }
 
         return m_content;
     }
@@ -82,7 +103,7 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
      */
     public long getContentLength() {
 
-        return m_contentLength;
+        return m_resource.getLength();
     }
 
     /**
@@ -90,7 +111,7 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
      */
     public long getCreationDate() {
 
-        return m_creationDate;
+        return m_resource.getDateCreated();
     }
 
     /**
@@ -98,13 +119,40 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
      */
     public long getLastModifiedDate() {
 
-        return m_lastModifiedDate;
+        return m_resource.getDateLastModified();
     }
 
     /**
      * @see org.opencms.repository.I_CmsRepositoryItem#getMimeType()
      */
     public String getMimeType() {
+
+        if (!m_resource.isFile()) {
+            return null;
+        }
+
+        if (m_mimeType == null) {
+            try {
+                m_mimeType = OpenCms.getResourceManager().getResourceType(m_resource.getTypeId()).getInternalMimeType();
+                String encoding = m_cms.readPropertyObject(
+                    m_resource,
+                    CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                    true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
+
+                if (m_mimeType == null) {
+                    m_mimeType = OpenCms.getResourceManager().getMimeType(
+                        m_resource.getRootPath(),
+                        encoding,
+                        I_CmsResourceType.MIME_TYPE_TEXT_PLAIN);
+                } else {
+                    if ((encoding != null) && m_mimeType.startsWith("text") && (m_mimeType.indexOf("charset") == -1)) {
+                        m_mimeType += "; charset=" + encoding;
+                    }
+                }
+            } catch (CmsException ex) {
+                // noop
+            }
+        }
 
         return m_mimeType;
     }
@@ -114,7 +162,7 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
      */
     public String getName() {
 
-        return m_name;
+        return m_cms.getRequestContext().removeSiteRoot(m_resource.getRootPath());
     }
 
     /**
@@ -122,76 +170,7 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
      */
     public boolean isCollection() {
 
-        return m_collection;
+        return m_resource.isFolder();
     }
 
-    /**
-     * Sets the collection.<p>
-     *
-     * @param collection the collection to set
-     */
-    public void setCollection(boolean collection) {
-
-        m_collection = collection;
-    }
-
-    /**
-     * Sets the content.<p>
-     *
-     * @param content the content to set
-     */
-    public void setContent(byte[] content) {
-
-        m_content = content;
-    }
-
-    /**
-     * Sets the contentLength.<p>
-     *
-     * @param contentLength the contentLength to set
-     */
-    public void setContentLength(long contentLength) {
-
-        m_contentLength = contentLength;
-    }
-
-    /**
-     * Sets the creationDate.<p>
-     *
-     * @param creationDate the creationDate to set
-     */
-    public void setCreationDate(long creationDate) {
-
-        m_creationDate = creationDate;
-    }
-
-    /**
-     * Sets the lastModifiedDate.<p>
-     *
-     * @param lastModifiedDate the lastModifiedDate to set
-     */
-    public void setLastModifiedDate(long lastModifiedDate) {
-
-        m_lastModifiedDate = lastModifiedDate;
-    }
-
-    /**
-     * Sets the mimeType.<p>
-     *
-     * @param mimeType the mimeType to set
-     */
-    public void setMimeType(String mimeType) {
-
-        m_mimeType = mimeType;
-    }
-
-    /**
-     * Sets the name.<p>
-     *
-     * @param name the name to set
-     */
-    public void setName(String name) {
-
-        m_name = name;
-    }
 }
