@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2006/04/04 15:46:20 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2007/01/30 10:18:53 $
+ * Version: $Revision: 1.111 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.110 $
+ * @version $Revision: 1.111 $
  * 
  * @since 6.0.0 
  */
@@ -1524,11 +1524,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         ByteArrayInputStream bin = new ByteArrayInputStream(m_sqlManager.getBytes(
             res,
             m_sqlManager.readQuery("C_USERS_USER_INFO")));
-        ObjectInputStream oin = new ObjectInputStream(bin);
 
         Map info;
         // ensure the user is read even if it's additional infos are defect
         try {
+            ObjectInputStream oin = new ObjectInputStream(bin);
             info = (Map)oin.readObject();
         } catch (IOException e) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_READING_ADDITIONAL_INFO_1, userName);
