@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/01/30 11:32:16 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/01/30 15:34:43 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -124,7 +124,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.5.6
  */
@@ -961,7 +961,7 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         // Get the destination path to copy to
-        String dest = parseDestinationHeader(req, resp);
+        String dest = parseDestinationHeader(req);
         if (dest == null) {
 
             if (LOG.isDebugEnabled()) {
@@ -1016,6 +1016,9 @@ public class CmsWebdavServlet extends HttpServlet {
             return;
         } catch (CmsRepositoryItemNotFoundException infex) {
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
+            return;
+        } catch (CmsRepositoryException ex) {
+            resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
             return;
         }
 
@@ -1074,7 +1077,6 @@ public class CmsWebdavServlet extends HttpServlet {
         // Check if resources found in the tree of the path are locked
         Hashtable errorList = new Hashtable();
 
-        // TODO: put this check in session handler
         checkChildLocks(req, path, errorList);
         if (!errorList.isEmpty()) {
             sendReport(req, resp, errorList);
@@ -1089,6 +1091,9 @@ public class CmsWebdavServlet extends HttpServlet {
             return;
         } catch (CmsRepositoryPermissionException pex) {
             resp.setStatus(CmsWebdavStatus.SC_FORBIDDEN);
+            return;
+        } catch (CmsRepositoryException ex) {
+            resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
             return;
         }
 
@@ -1352,6 +1357,9 @@ public class CmsWebdavServlet extends HttpServlet {
             } catch (CmsRepositoryPermissionException pex) {
                 resp.setStatus(CmsWebdavStatus.SC_FORBIDDEN);
                 return;
+            } catch (CmsRepositoryException ex) {
+                resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
+                return;
             }
         }
 
@@ -1445,6 +1453,9 @@ public class CmsWebdavServlet extends HttpServlet {
         } catch (CmsRepositoryPermissionException pex) {
             resp.setStatus(CmsWebdavStatus.SC_FORBIDDEN);
             return;
+        } catch (CmsRepositoryException ex) {
+            resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
+            return;
         }
 
         if (LOG.isDebugEnabled()) {
@@ -1488,7 +1499,7 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         // Parsing destination header
-        String dest = parseDestinationHeader(req, resp);
+        String dest = parseDestinationHeader(req);
         if (dest == null) {
 
             if (LOG.isDebugEnabled()) {
@@ -1555,6 +1566,9 @@ public class CmsWebdavServlet extends HttpServlet {
             return;
         } catch (CmsRepositoryItemAlreadyExistsException iaeex) {
             resp.setStatus(CmsWebdavStatus.SC_PRECONDITION_FAILED);
+            return;
+        } catch (CmsRepositoryException ex) {
+            resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
             return;
         }
 
@@ -2716,7 +2730,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             childName += element;
-            if (isLocked(req, childName)) {
+            if (isLocked(childName)) {
                 errorList.put(childName, new Integer(CmsWebdavStatus.SC_LOCKED));
             } else {
                 try {
@@ -2860,7 +2874,7 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     private boolean isLocked(HttpServletRequest req) {
 
-        return isLocked(req, getRelativePath(req));
+        return isLocked(getRelativePath(req));
     }
 
     /**
@@ -2868,13 +2882,12 @@ public class CmsWebdavServlet extends HttpServlet {
      * will look at the "If" header to make sure the client
      * has give the appropriate lock tokens.<p>
      *
-     * @param req Servlet request
      * @param path The path where to find the resource to check the lock
      * @return boolean true if the resource is locked (and no appropriate
      *          lock token has been found for at least one of the non-shared locks which
      *          are present on the resource).
      */
-    private boolean isLocked(HttpServletRequest req, String path) {
+    private boolean isLocked(String path) {
 
         // get lock for path
         CmsRepositoryLockInfo lock = m_session.getLock(path);
@@ -2969,7 +2982,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param request The servlet request we are processing
      * @param response The servlet response we are creating
      * 
-     * @return Range TODO: document me!
+     * @return Range the range of the content read from the header
      */
     private CmsWebdavRange parseContentRange(HttpServletRequest request, HttpServletResponse response) {
 
@@ -3025,11 +3038,10 @@ public class CmsWebdavServlet extends HttpServlet {
      * request.<p>
      * 
      * @param req The servlet request we are processing
-     * @param resp The servlet response we are processing
      * 
      * @return the destination path
      */
-    private String parseDestinationHeader(HttpServletRequest req, HttpServletResponse resp) {
+    private String parseDestinationHeader(HttpServletRequest req) {
 
         // Parsing destination header
         String destinationPath = req.getHeader(HEADER_DESTINATION);
@@ -3331,7 +3343,9 @@ public class CmsWebdavServlet extends HttpServlet {
 
             default:
 
-                // TODO: what to do here?
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_INVALID_PROPFIND_TYPE_0));
+                }
                 break;
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/Messages.java,v $
- * Date   : $Date: 2007/01/24 14:55:05 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/30 15:34:43 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Peter Bonrad 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -74,6 +74,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INIT_PARAM_MISSING_1 = "ERR_INIT_PARAM_MISSING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_PROPFIND_TYPE_0 = "ERR_INVALID_PROPFIND_TYPE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LIST_ITEMS_1 = "ERR_LIST_ITEMS_1";

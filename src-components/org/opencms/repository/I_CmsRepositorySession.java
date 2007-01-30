@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/I_CmsRepositorySession.java,v $
- * Date   : $Date: 2007/01/25 09:09:27 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/30 15:34:43 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.6
  */
@@ -51,22 +51,18 @@ public interface I_CmsRepositorySession {
      * @param src The path of the item which should be copied
      * @param dest The destination path where to copy to
      * @param overwrite Should any existing item be overwritten
-     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
-     * @throws CmsRepositoryPermissionException if there is a permission issue
-     * @throws CmsRepositoryItemAlreadyExistsException if the resource already exists
+     * @throws CmsRepositoryException if something goes wrong
      */
-    void copy(String src, String dest, boolean overwrite)
-    throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException, CmsRepositoryItemAlreadyExistsException;
+    void copy(String src, String dest, boolean overwrite) throws CmsRepositoryException;
 
     /**
      * Creates a new item at the given path. In this case this should
      * be a collection (directory).
      * 
      * @param path The complete path of the new collection
-     * @throws CmsRepositoryItemAlreadyExistsException if the resource already exists
-     * @throws CmsRepositoryPermissionException if there is a permission issue
+     * @throws CmsRepositoryException if something goes wrong
      */
-    void create(String path) throws CmsRepositoryItemAlreadyExistsException, CmsRepositoryPermissionException;
+    void create(String path) throws CmsRepositoryException;
 
     /**
      * Creates a new item at the given path. This creates a new single
@@ -75,20 +71,17 @@ public interface I_CmsRepositorySession {
      * @param path The complete path of the new item
      * @param inputStream The content of the item
      * @param overwrite Should an existing item at the path be overwritten
-     * @throws CmsRepositoryItemAlreadyExistsException if the resource already exists and should not be overwritten
-     * @throws CmsRepositoryPermissionException if there is a permission issue
+     * @throws CmsRepositoryException if something goes wrong
      */
-    void create(String path, InputStream inputStream, boolean overwrite)
-    throws CmsRepositoryItemAlreadyExistsException, CmsRepositoryPermissionException;
+    void create(String path, InputStream inputStream, boolean overwrite) throws CmsRepositoryException;
 
     /**
      * Deletes the item at the given path.
      * 
      * @param path The complete path of the item to delete
-     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
-     * @throws CmsRepositoryPermissionException if there is a permission issue
+     * @throws CmsRepositoryException if something goes wrong
      */
-    void delete(String path) throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException;
+    void delete(String path) throws CmsRepositoryException;
 
     /**
      * Returns if an item exists at the given path.
@@ -103,10 +96,9 @@ public interface I_CmsRepositorySession {
      * 
      * @param path The complete path of the item to return
      * @return the item found at the path
-     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
-     * @throws CmsRepositoryPermissionException if there is a permission issue
+     * @throws CmsRepositoryException if something goes wrong
      */
-    I_CmsRepositoryItem getItem(String path) throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException;
+    I_CmsRepositoryItem getItem(String path) throws CmsRepositoryException;
 
     /**
      * Returns the lock for the resource at the given path.
@@ -121,10 +113,9 @@ public interface I_CmsRepositorySession {
      * 
      * @param path The complete path from which to return the items
      * @return a list with (I_CmsWebdavItem) found in the path
-     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
-     * @throws CmsRepositoryPermissionException if there is a permission issue
+     * @throws CmsRepositoryException if something goes wrong
      */
-    List list(String path) throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException;
+    List list(String path) throws CmsRepositoryException;
 
     /**
      * Creates a new lock on the item with the path with the given information 
@@ -133,11 +124,9 @@ public interface I_CmsRepositorySession {
      * @param path The complete path of the item
      * @param lock The information about the lock to create
      * @return if the lock was successfully
-     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
-     * @throws CmsRepositoryPermissionException if there is a permission issue
+     * @throws CmsRepositoryException if something goes wrong
      */
-    boolean lock(String path, CmsRepositoryLockInfo lock)
-    throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException;
+    boolean lock(String path, CmsRepositoryLockInfo lock) throws CmsRepositoryException;
 
     /**
      * Moves an item from a source path to a destination path.
@@ -145,12 +134,9 @@ public interface I_CmsRepositorySession {
      * @param src The complete path to the item which should be copied
      * @param dest The complete destination path where to copy to
      * @param overwrite Should any existing item should be overwritten
-     * @throws CmsRepositoryItemNotFoundException if the source path could not be found
-     * @throws CmsRepositoryPermissionException if there is a permission issue
-     * @throws CmsRepositoryItemAlreadyExistsException if the resource already exists and should not be overwritten
+     * @throws CmsRepositoryException if something goes wrong
      */
-    void move(String src, String dest, boolean overwrite)
-    throws CmsRepositoryItemNotFoundException, CmsRepositoryPermissionException, CmsRepositoryItemAlreadyExistsException;
+    void move(String src, String dest, boolean overwrite) throws CmsRepositoryException;
 
     /**
      * Unlocks the item found at the path. Should remove the lock token

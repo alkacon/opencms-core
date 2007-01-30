@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/cms/Attic/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/01/30 11:32:16 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/30 15:34:43 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,16 +35,21 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceAlreadyExistsException;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.repository.CmsRepositoryException;
 import org.opencms.repository.CmsRepositoryItemAlreadyExistsException;
 import org.opencms.repository.CmsRepositoryItemNotFoundException;
 import org.opencms.repository.CmsRepositoryLockInfo;
+import org.opencms.repository.CmsRepositoryPermissionException;
 import org.opencms.repository.I_CmsRepositoryItem;
 import org.opencms.repository.I_CmsRepositorySession;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.InputStream;
@@ -60,17 +65,17 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.6
  */
 public class CmsRepositorySession implements I_CmsRepositorySession {
 
-    /** The initialized CmsObject. */
-    private final CmsObject m_cms;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRepositorySession.class);
+
+    /** The initialized CmsObject. */
+    private final CmsObject m_cms;
 
     /**
      * Constructor with an initialized CmsObject to use.<p>
@@ -85,8 +90,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#copy(java.lang.String, java.lang.String, boolean)
      */
-    public void copy(String src, String dest, boolean overwrite)
-    throws CmsRepositoryItemNotFoundException, CmsRepositoryItemAlreadyExistsException {
+    public void copy(String src, String dest, boolean overwrite) throws CmsRepositoryException {
 
         // It is only possible in OpenCms to overwrite files.
         // Folder are not possible to overwrite.
@@ -102,7 +106,9 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
                         // delete existing resource
                         delete(dest);
                     } else {
-                        throw new CmsRepositoryItemAlreadyExistsException();
+
+                        // internal error (not possible)
+                        throw new CmsRepositoryException();
                     }
                 } else {
                     throw new CmsRepositoryItemAlreadyExistsException();
@@ -114,21 +120,45 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
 
             // unlock destination resource
             m_cms.unlockResource(dest);
+        } catch (CmsVfsResourceNotFoundException rnfex) {
+
+            // Resource not found
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(rnfex.getMessage());
+            }
+
+            throw new CmsRepositoryItemNotFoundException();
+        } catch (CmsVfsResourceAlreadyExistsException raeex) {
+
+            // Resource already exists
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(raeex.getMessage());
+            }
+
+            throw new CmsRepositoryItemAlreadyExistsException();
+        } catch (CmsSecurityException sex) {
+
+            // Security issues
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(sex.getMessage());
+            }
+
+            throw new CmsRepositoryPermissionException();
         } catch (CmsException ex) {
 
+            // internal error
             if (LOG.isErrorEnabled()) {
                 LOG.error(ex.getMessage());
             }
 
-            // TODO: throw correct exception
-            throw new CmsRepositoryItemNotFoundException();
+            throw new CmsRepositoryException();
         }
     }
 
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#create(java.lang.String)
      */
-    public void create(String path) throws CmsRepositoryItemAlreadyExistsException {
+    public void create(String path) throws CmsRepositoryException {
 
         try {
 
@@ -136,13 +166,30 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
             // Solution: translate this to a correct name.
             path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
             m_cms.createResource(path, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        } catch (CmsVfsResourceAlreadyExistsException raeex) {
+
+            // Resource already exists
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(raeex.getMessage());
+            }
+
+            throw new CmsRepositoryItemAlreadyExistsException();
+        } catch (CmsSecurityException sex) {
+
+            // Security issues
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(sex.getMessage());
+            }
+
+            throw new CmsRepositoryPermissionException();
         } catch (CmsException ex) {
 
+            // internal error
             if (LOG.isErrorEnabled()) {
                 LOG.error(ex.getMessage());
             }
 
-            throw new CmsRepositoryItemAlreadyExistsException();
+            throw new CmsRepositoryException();
         }
 
     }
@@ -150,16 +197,11 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#create(java.lang.String, java.io.InputStream, boolean)
      */
-    public void create(String path, InputStream inputStream, boolean overwrite)
-    throws CmsRepositoryItemAlreadyExistsException {
+    public void create(String path, InputStream inputStream, boolean overwrite) throws CmsRepositoryException {
 
         if (exists(path)) {
             if (overwrite) {
-                try {
-                    delete(path);
-                } catch (CmsRepositoryItemNotFoundException ex) {
-                    // noop
-                }
+                delete(path);
             } else {
                 throw new CmsRepositoryItemAlreadyExistsException();
             }
@@ -171,21 +213,37 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
 
             // create the file
             m_cms.createResource(path, type, content, null);
+        } catch (CmsVfsResourceAlreadyExistsException raeex) {
+
+            // Resource already exists
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(raeex.getMessage());
+            }
+
+            throw new CmsRepositoryItemAlreadyExistsException();
+        } catch (CmsSecurityException sex) {
+
+            // Security issues
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(sex.getMessage());
+            }
+
+            throw new CmsRepositoryPermissionException();
         } catch (Exception ex) {
 
+            // internal error
             if (LOG.isErrorEnabled()) {
                 LOG.error(ex.getMessage());
             }
 
-            // TODO: throw correct exception
-            throw new CmsRepositoryItemAlreadyExistsException();
+            throw new CmsRepositoryException();
         }
     }
 
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#delete(java.lang.String)
      */
-    public void delete(String path) throws CmsRepositoryItemNotFoundException {
+    public void delete(String path) throws CmsRepositoryException {
 
         try {
 
@@ -194,14 +252,30 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
 
             // delete finally
             m_cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        } catch (CmsVfsResourceNotFoundException rnfex) {
+
+            // Resource not found
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(rnfex.getMessage());
+            }
+
+            throw new CmsRepositoryItemNotFoundException();
+        } catch (CmsSecurityException sex) {
+
+            // Security issues
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(sex.getMessage());
+            }
+
+            throw new CmsRepositoryPermissionException();
         } catch (CmsException ex) {
 
+            // internal error
             if (LOG.isErrorEnabled()) {
                 LOG.error(ex.getMessage());
             }
 
-            // TODO: throw correct exception
-            throw new CmsRepositoryItemNotFoundException();
+            throw new CmsRepositoryException();
         }
     }
 
@@ -219,20 +293,37 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#getItem(java.lang.String)
      */
-    public I_CmsRepositoryItem getItem(String path) throws CmsRepositoryItemNotFoundException {
+    public I_CmsRepositoryItem getItem(String path) throws CmsRepositoryException {
 
         try {
             CmsResource res = m_cms.readResource(path);
 
             CmsRepositoryItem item = new CmsRepositoryItem(res, m_cms);
             return item;
+        } catch (CmsVfsResourceNotFoundException rnfex) {
+
+            // Resource not found
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(rnfex.getMessage());
+            }
+
+            throw new CmsRepositoryItemNotFoundException();
+        } catch (CmsSecurityException sex) {
+
+            // Security issues
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(sex.getMessage());
+            }
+
+            throw new CmsRepositoryPermissionException();
         } catch (CmsException ex) {
 
+            // internal error
             if (LOG.isErrorEnabled()) {
                 LOG.error(ex.getMessage());
             }
 
-            throw new CmsRepositoryItemNotFoundException();
+            throw new CmsRepositoryException();
         }
     }
 
@@ -275,6 +366,8 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
             return null;
         } catch (CmsException ex) {
 
+            // error occured while finding locks
+            // return null (no lock found)
             return null;
         }
     }
@@ -282,7 +375,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#list(java.lang.String)
      */
-    public List list(String path) throws CmsRepositoryItemNotFoundException {
+    public List list(String path) throws CmsRepositoryException {
 
         List ret = new ArrayList();
 
@@ -301,13 +394,30 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
                 ret.add(res.getName());
             }
 
+        } catch (CmsVfsResourceNotFoundException rnfex) {
+
+            // Resource not found
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(rnfex.getMessage());
+            }
+
+            throw new CmsRepositoryItemNotFoundException();
+        } catch (CmsSecurityException sex) {
+
+            // Security issues
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(sex.getMessage());
+            }
+
+            throw new CmsRepositoryPermissionException();
         } catch (CmsException ex) {
 
+            // internal error
             if (LOG.isErrorEnabled()) {
                 LOG.error(ex.getMessage());
             }
 
-            throw new CmsRepositoryItemNotFoundException();
+            throw new CmsRepositoryException();
         }
 
         return ret;
@@ -316,27 +426,42 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#lock(java.lang.String, org.opencms.repository.CmsRepositoryLockInfo)
      */
-    public boolean lock(String path, CmsRepositoryLockInfo lock) throws CmsRepositoryItemNotFoundException {
+    public boolean lock(String path, CmsRepositoryLockInfo lock) throws CmsRepositoryException {
 
         try {
             m_cms.lockResource(path);
             return true;
+        } catch (CmsVfsResourceNotFoundException rnfex) {
+
+            // Resource not found
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(rnfex.getMessage());
+            }
+
+            throw new CmsRepositoryItemNotFoundException();
+        } catch (CmsSecurityException sex) {
+
+            // Security issues
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(sex.getMessage());
+            }
+
+            throw new CmsRepositoryPermissionException();
         } catch (CmsException ex) {
 
+            // internal error
             if (LOG.isErrorEnabled()) {
                 LOG.error(ex.getMessage());
             }
 
-            // TODO: throw correct exception
-            throw new CmsRepositoryItemNotFoundException();
+            throw new CmsRepositoryException();
         }
     }
 
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#move(java.lang.String, java.lang.String, boolean)
      */
-    public void move(String src, String dest, boolean overwrite)
-    throws CmsRepositoryItemNotFoundException, CmsRepositoryItemAlreadyExistsException {
+    public void move(String src, String dest, boolean overwrite) throws CmsRepositoryException {
 
         // It is only possible in OpenCms to overwrite files.
         // Folder are not possible to overwrite.
@@ -352,7 +477,8 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
                         // delete existing resource
                         delete(dest);
                     } else {
-                        throw new CmsRepositoryItemAlreadyExistsException();
+
+                        throw new CmsRepositoryException();
                     }
                 } else {
                     throw new CmsRepositoryItemAlreadyExistsException();
@@ -369,14 +495,30 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
 
             // unlock destination resource
             m_cms.unlockResource(dest);
+        } catch (CmsVfsResourceNotFoundException rnfex) {
+
+            // Resource not found
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(rnfex.getMessage());
+            }
+
+            throw new CmsRepositoryItemNotFoundException();
+        } catch (CmsVfsResourceAlreadyExistsException raeex) {
+
+            // Resource already exists
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(raeex.getMessage());
+            }
+
+            throw new CmsRepositoryItemAlreadyExistsException();
         } catch (CmsException ex) {
 
+            // internal error
             if (LOG.isErrorEnabled()) {
                 LOG.error(ex.getMessage());
             }
 
-            // TODO: throw correct exception
-            throw new CmsRepositoryItemNotFoundException();
+            throw new CmsRepositoryException();
         }
     }
 
@@ -392,8 +534,6 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
             if (LOG.isErrorEnabled()) {
                 LOG.error(ex.getMessage());
             }
-
-            // noop
         }
     }
 
