@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/01/03 10:18:44 $
- * Version: $Revision: 1.801 $
+ * Date   : $Date: 2007/01/30 10:20:55 $
+ * Version: $Revision: 1.802 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,8 @@ OpenCms 6.2.x
 ! Added new event EVENT_FULLSTATIC_EXPORT fired by CmsStaticExportThread and CmsStaticExportJob
 ! Added link check for xml content
 * History shows only existing resources and the icon for restoring is visible only if restoring is possible
+* Fixed issue with damaged admin user info preventing OpenCms from starting (IOException: invalid stream header)
+
 
 OpenCms 6.2.3 - November 30, 2006
 * Fixed error when searching in sites with uppercase letters in site path
