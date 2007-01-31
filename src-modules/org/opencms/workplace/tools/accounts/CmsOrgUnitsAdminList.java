@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsAdminList.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/31 15:44:18 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
@@ -126,7 +127,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
 
         String ouFqn = getSelectedItem().get(LIST_COLUMN_NAME).toString();
         if (ouFqn == null || ouFqn.equals("")) {
-            ouFqn = "/";
+            ouFqn = "";
         }
         Map params = new HashMap();
         params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ouFqn);
@@ -155,14 +156,13 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
      * 
      * @throws ServletException in case of errors during forwarding
      * @throws IOException in case of errors during forwarding
+     * @throws CmsException in case of errors during getting orgunits
      */
-    public void forwardToSingleAdminOU() throws ServletException, IOException {
+    public void forwardToSingleAdminOU() throws ServletException, IOException, CmsException {
 
-        // get the right ou the current user is allowed to administrate
-        int todo = -1;
-
+        List orgUnits = OpenCms.getRoleManager().getManageableOrgUnits(getCms(), "", true);
         Map params = new HashMap();
-        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, "/");
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ((CmsOrganizationalUnit)orgUnits.get(0)).getName());
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
         OpenCms.getWorkplaceManager().getToolManager().jspForwardTool(this, "/accounts/orgunit", params);
@@ -187,7 +187,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
      */
     public boolean hasMoreAdminOUs() throws CmsException {
 
-        List orgUnits = OpenCms.getRoleManager().getManageableOrgUnits(getCms(), "/", true);
+        List orgUnits = OpenCms.getRoleManager().getManageableOrgUnits(getCms(), "", true);
 
         if (orgUnits == null) {
             return false;
