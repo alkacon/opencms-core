@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2006/11/29 15:04:10 $
- * Version: $Revision: 1.96.4.7 $
+ * Date   : $Date: 2007/01/31 16:00:58 $
+ * Version: $Revision: 1.96.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96.4.7 $ 
+ * @version $Revision: 1.96.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,6 +80,9 @@ public class CmsDialog extends CmsToolDialog {
 
     /** Value for the action: confirmed. */
     public static final int ACTION_CONFIRMED = 1;
+
+    /** Value for the action: continue. */
+    public static final int ACTION_CONTINUE = 8;
 
     /** Value for the action: default (show initial dialog form). */
     public static final int ACTION_DEFAULT = 0;
