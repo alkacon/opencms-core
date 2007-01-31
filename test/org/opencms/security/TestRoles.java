@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2007/01/31 12:04:38 $
- * Version: $Revision: 1.4.8.7 $
+ * Date   : $Date: 2007/01/31 16:01:13 $
+ * Version: $Revision: 1.4.8.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,6 +80,7 @@ public class TestRoles extends OpenCmsTestCase {
         suite.addTest(new TestRoles("testRoleAssignments"));
         suite.addTest(new TestRoles("testSubRoles"));
         suite.addTest(new TestRoles("testVirtualRoleGroups"));
+        suite.addTest(new TestRoles("testRoleDelegating"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -111,6 +112,33 @@ public class TestRoles extends OpenCmsTestCase {
         assertFalse(message.indexOf('{') >= 0);
     }
 
+    /**
+     * Tests role delegating.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testRoleDelegating() throws Exception {
+
+        echo("Testing role delegating");
+        CmsObject cms = getCmsObject();
+
+        CmsRoleManager roleMan = OpenCms.getRoleManager();
+        
+        CmsUser user = cms.createUser("testUser", "testUser", "testUser", null);
+        roleMan.addUserToRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), user.getName());
+        
+        cms.loginUser(user.getName(), "testUser");
+        CmsUser u2 = cms.createUser("testUser2", "testUser2", "testUser2", null);
+        
+        try {
+            roleMan.addUserToRole(cms, CmsRole.DEVELOPER.forOrgUnit(""), u2.getName());
+            fail("it should not be possible to delegate a role you do not have");
+        } catch (CmsRoleViolationException e) {
+            // ok, ignore
+        }
+        roleMan.addUserToRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), u2.getName());        
+    }
+ 
     /**
      * Tests role assignments.<p>
      * 
