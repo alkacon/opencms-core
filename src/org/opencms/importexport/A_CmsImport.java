@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.84.4.6 $
+ * Date   : $Date: 2007/01/31 12:35:12 $
+ * Version: $Revision: 1.84.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -82,7 +83,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.6 $ 
+ * @version $Revision: 1.84.4.7 $ 
  * 
  * @since 6.0.0 
  * 
@@ -620,13 +621,20 @@ public abstract class A_CmsImport implements I_CmsImport {
                     userInfo);
                 // add user to all groups list
                 for (int i = 0; i < userGroups.size(); i++) {
+                    String groupName = (String)userGroups.get(i);
                     try {
-                        m_cms.addUserToGroup(name, (String)userGroups.get(i));
+                        CmsGroup group = m_cms.readGroup(groupName);
+                        if (group.isVirtual() || group.isRole()) {
+                            CmsRole role = CmsRole.valueOf(group);
+                            OpenCms.getRoleManager().addUserToRole(m_cms, role, name);
+                        } else {
+                            m_cms.addUserToGroup(name, groupName);
+                        }
                     } catch (CmsException exc) {
                         m_report.println(Messages.get().container(
                             Messages.RPT_USER_COULDNT_BE_ADDED_TO_GROUP_2,
                             name,
-                            userGroups.get(i)), I_CmsReport.FORMAT_OK);
+                            groupName), I_CmsReport.FORMAT_WARNING);
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(exc.getLocalizedMessage(), exc);
                         }

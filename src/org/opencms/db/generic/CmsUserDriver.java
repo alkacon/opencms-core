@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/31 12:04:38 $
- * Version: $Revision: 1.110.2.13 $
+ * Date   : $Date: 2007/01/31 12:35:12 $
+ * Version: $Revision: 1.110.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.13 $
+ * @version $Revision: 1.110.2.14 $
  * 
  * @since 6.0.0 
  */
@@ -1957,18 +1957,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // root ou admin has additional rights
             flags = CmsRole.ROOT_ADMIN.getVirtualGroupFlags();
         }
-        String parentGroup = null;
-        if (parentOu != null) {
-            parentGroup = parentOu + OpenCms.getDefaultUsers().getGroupAdministrators();
-        }
         createGroup(
             dbc,
             CmsUUID.getConstantUUID(administratorsGroup),
             administratorsGroup,
             "The administrators group",
             I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER | flags,
-            parentGroup);
+            null);
 
+        String parentGroup = null;
         if (parentOu != null) {
             parentGroup = parentOu + OpenCms.getDefaultUsers().getGroupUsers();
         }

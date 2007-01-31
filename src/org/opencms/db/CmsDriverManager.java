@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/01/31 12:04:37 $
- * Version: $Revision: 1.570.2.53 $
+ * Date   : $Date: 2007/01/31 12:35:12 $
+ * Version: $Revision: 1.570.2.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -690,6 +690,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // if adding an user to a role
         if (readRoles) {
             CmsRole role = CmsRole.valueOf(group);
+            // a role can only be set if the user has the given role
+            m_securityManager.checkRole(dbc, role);
             // now we check if we already have the role 
             if (m_securityManager.hasRole(dbc, user, role)) {
                 // do nothing
@@ -1299,7 +1301,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             while (it.hasNext()) {
                 CmsUser user = (CmsUser)it.next();
                 // put them in the new group
-                addUserToGroup(dbc, user.getName(), group.getName(), false);
+                addUserToGroup(dbc, user.getName(), group.getName(), true);
             }
         }
 
@@ -2200,7 +2202,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             while (itUsers.hasNext()) {
                 CmsUser user = (CmsUser)itUsers.next();
                 if (userInGroup(dbc, user.getName(), group.getName(), group.isRole())) {
-                    removeUserFromGroup(dbc, user.getName(), group.getName(), group.isRole());
+                    removeUserFromGroup(dbc, user.getName(), group.getName(), true);
                 }
             }
             // transfer childs to grandfather if possible
