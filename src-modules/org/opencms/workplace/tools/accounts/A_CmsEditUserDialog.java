@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.4.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -60,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +84,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /** The user object that is edited on this dialog. */
     protected CmsUser m_user;
+
+    /** Stores the value of the request parameter for the organizational unit fqn. */
+    private String m_paramOufqn;
 
     /** Stores the value of the request parameter for the user id. */
     private String m_paramUserid;
@@ -112,10 +116,12 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             if (CmsStringUtil.isNotEmpty(m_pwdInfo.getNewPwd())) {
                 m_pwdInfo.setConfirmation(m_pwdInfo.getConfirmation());
             }
+            // check creating of user
+            int todo = -1;
             // if new create it first
             if (m_user.getId() == null) {
                 CmsUser newUser = createUser(
-                    m_user.getName(),
+                    m_paramOufqn + m_user.getSimpleName(),
                     m_pwdInfo.getNewPwd(),
                     m_user.getDescription(),
                     m_user.getAdditionalInfo());
@@ -145,13 +151,50 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             if (getParamCloseLink() != null && getParamCloseLink().indexOf("path=" + getListRootPath()) > -1) {
                 // set closelink
                 Map argMap = new HashMap();
-                argMap.put("userid", m_user.getId());
-                argMap.put("username", m_user.getName());
+                argMap.put(PARAM_USERID, m_user.getId());
+                argMap.put("oufqn", m_paramOufqn);
                 setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getListRootPath() + "/edit", argMap));
             }
         }
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
+    }
+
+    /**
+     * Returns the description of the parent ou.<p>
+     * 
+     * @return the description of the parent ou
+     */
+    public String getAssignedOu() {
+
+        try {
+            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getDescription()
+                + " ("
+                + getParamOufqn()
+                + ")";
+        } catch (CmsException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the simple name of the user object.<p>
+     * 
+     * @return the simple name of the user object
+     */
+    public String getName() {
+
+        return m_user.getSimpleName();
+    }
+
+    /**
+     * Returns the organizational unit fqn parameter value.<p>
+     * 
+     * @return the organizational unit fqn parameter value
+     */
+    public String getParamOufqn() {
+
+        return m_paramOufqn;
     }
 
     /**
@@ -162,6 +205,26 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public String getParamUserid() {
 
         return m_paramUserid;
+    }
+
+    /**
+     * Sets the name of the user object.<p>
+     * 
+     * @param name the name of the user object
+     */
+    public void setName(String name) {
+
+        m_user.setName(name);
+    }
+
+    /**
+     * Sets the organizational unit fqn parameter value.<p>
+     * 
+     * @param ouFqn the organizational unit fqn parameter value
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        m_paramOufqn = ouFqn;
     }
 
     /**
@@ -194,20 +257,20 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_IDENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 4));
+            result.append(createDialogRowsHtml(0, 5));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_ADDRESS_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(5, 8));
+            result.append(createDialogRowsHtml(6, 9));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
             if (isPwdChangeAllowed(m_user)) {
-                result.append(createDialogRowsHtml(9, 11));
+                result.append(createDialogRowsHtml(10, 13));
             } else {
-                result.append(createDialogRowsHtml(9, 9));
+                result.append(createDialogRowsHtml(10, 11));
             }
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
@@ -243,15 +306,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
         // widgets to display
         if (m_user.getId() == null && isEditable(m_user)) {
-            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsInputWidget()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
         }
         if (isEditable(m_user)) {
             addWidget(new CmsWidgetDialogParameter(m_user, "description", "", PAGES[0], new CmsTextareaWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "address", "", PAGES[0], new CmsInputWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", "", PAGES[0], new CmsInputWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], new CmsInputWidget(), 0, 1));
@@ -261,12 +325,14 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "address", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "city", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "country", PAGES[0], new CmsDisplayWidget()));
         }
         addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_user, "selfManagement", PAGES[0], new CmsCheckboxWidget()));
         if (isPwdChangeAllowed(m_user)) {
             addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", PAGES[0], new CmsPasswordWidget()));
             addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "confirmation", PAGES[0], new CmsPasswordWidget()));
@@ -371,6 +437,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     protected abstract boolean isEditable(CmsUser user);
 
     /**
+     * Checks if the new user dialog has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the new user dialog has to be displayed
+     */
+    protected boolean isNewUser() {
+
+        return getCurrentToolPath().equals(getListRootPath() + "/new");
+    }
+
+    /**
      * Indicates if the pwd can be edited or not.<p>
      * 
      * @param user the edited cms user
@@ -401,14 +477,4 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      * @throws CmsException if something goes wrong
      */
     protected abstract void writeUser(CmsUser user) throws CmsException;
-
-    /**
-     * Checks if the new user dialog has to be displayed.<p>
-     * 
-     * @return <code>true</code> if the new user dialog has to be displayed
-     */
-    private boolean isNewUser() {
-
-        return getCurrentToolPath().equals(getListRootPath() + "/new");
-    }
 }

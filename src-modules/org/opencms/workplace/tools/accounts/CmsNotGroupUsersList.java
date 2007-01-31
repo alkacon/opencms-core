@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotGroupUsersList.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.9.4.3 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.9.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,18 +31,24 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -58,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9.4.3 $ 
+ * @version $Revision: 1.9.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,11 +76,17 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
     /** list action id constant. */
     public static final String LIST_DEFACTION_ADD = "da";
 
+    /** list item detail id constant. */
+    public static final String LIST_DETAIL_OTHEROU = "doo";
+
     /** list id constant. */
     public static final String LIST_ID = "lngu";
 
     /** list action id constant. */
     public static final String LIST_MACTION_ADD = "ma";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_ORGUNIT = "co";
 
     /** a set of action id's to use for adding. */
     protected static Set m_addActionIds = new HashSet();
@@ -164,7 +176,22 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
     protected List getUsers() throws CmsException {
 
         List groupusers = getCms().getUsersOfGroup(getParamGroupname());
-        List users = OpenCms.getOrgUnitManager().getUsers(getCms(), "", true);
+        List users = OpenCms.getRoleManager().getManageableUsers(getCms(), getParamOufqn(), false);
+        users.removeAll(groupusers);
+        return users;
+    }
+
+    /**
+     * Returns a list of users to display.<p>
+     * 
+     * @return a list of <code><{@link CmsUser}</code>s
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected List getAllUsers() throws CmsException {
+
+        List groupusers = getCms().getUsersOfGroup(getParamGroupname());
+        List users = OpenCms.getRoleManager().getManageableUsers(getCms(), CmsOrganizationalUnit.SEPARATOR, true);
         users.removeAll(groupusers);
         return users;
     }
@@ -232,5 +259,164 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
         metadata.addColumn(stateCol);
         // keep the id
         m_addActionIds.add(stateAction.getId());
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        // add user address details
+        CmsListItemDetails otherOuDetails = new CmsListItemDetails(LIST_DETAIL_OTHEROU);
+        otherOuDetails.setVisible(false);
+        otherOuDetails.setHideAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                try {
+                    List users = OpenCms.getRoleManager().getManageableUsers(
+                        getCms(),
+                        CmsOrganizationalUnit.SEPARATOR,
+                        true);
+
+                    Iterator itUsers = users.iterator();
+                    while (itUsers.hasNext()) {
+                        CmsUser user = (CmsUser)itUsers.next();
+
+                        if (!user.getOuFqn().equals(getParamOufqn())) {
+                            return true;
+                        }
+
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+                return false;
+            }
+        });
+        otherOuDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                List users = getList().getAllContent();
+                Iterator itUsers = users.iterator();
+                while (itUsers.hasNext()) {
+                    CmsListItem item = (CmsListItem)itUsers.next();
+                    String userName = item.get(LIST_COLUMN_LOGIN).toString();
+                    try {
+                        CmsUser user = getCms().readUser(userName);
+                        if (!user.getOuFqn().equals(getParamOufqn())) {
+                            return true;
+                        }
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
+                return false;
+            }
+        });
+        otherOuDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_OTHEROU_NAME_0));
+        otherOuDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_OTHEROU_HELP_0));
+        otherOuDetails.setHideActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_OTHEROU_NAME_0));
+        otherOuDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_OTHEROU_HELP_0));
+        otherOuDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_OTHEROU_NAME_0));
+        otherOuDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_USERS_DETAIL_OTHEROU_NAME_0)));
+        metadata.addItemDetails(otherOuDetails);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setColumns(CmsListMetadata metadata) {
+
+        // create column for icon display
+        CmsListColumnDefinition iconCol = new CmsListColumnDefinition(LIST_COLUMN_ICON);
+        iconCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ICON_0));
+        iconCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ICON_HELP_0));
+        iconCol.setWidth("20");
+        iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        iconCol.setSorteable(false);
+        // set icon action
+        setIconAction(iconCol);
+        // add it to the list definition
+        metadata.addColumn(iconCol);
+
+        setStateActionCol(metadata);
+
+        // create column for login
+        CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN);
+        loginCol.setVisible(false);
+        // add it to the list definition
+        metadata.addColumn(loginCol);
+
+        // create column for name
+        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
+        nameCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LOGIN_0));
+        nameCol.setWidth("35%");
+        setDefaultAction(nameCol);
+        // add it to the list definition
+        metadata.addColumn(nameCol);
+
+        // create column for orgunit
+        CmsListColumnDefinition orgunitCol = new CmsListColumnDefinition(LIST_COLUMN_ORGUNIT);
+        orgunitCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ORGUNIT_0));
+        orgunitCol.setVisible(false);
+        // add it to the list definition
+        metadata.addColumn(orgunitCol);
+
+        // create column for fullname
+        CmsListColumnDefinition fullnameCol = new CmsListColumnDefinition(LIST_COLUMN_FULLNAME);
+        fullnameCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_FULLNAME_0));
+        fullnameCol.setWidth("65%");
+        fullnameCol.setTextWrapping(true);
+        // add it to the list definition
+        metadata.addColumn(fullnameCol);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
+     */
+    protected List getListItems() throws CmsException {
+
+        List ret = new ArrayList();
+
+        // get content        
+        List users;
+        if (getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU).isVisible()) {
+            users = getAllUsers();
+        } else {
+            users = getUsers();
+        }
+        Iterator itUsers = users.iterator();
+        while (itUsers.hasNext()) {
+            CmsUser user = (CmsUser)itUsers.next();
+            CmsListItem item = getList().newItem(user.getId().toString());
+            item.set(LIST_COLUMN_LOGIN, user.getName());
+            item.set(LIST_COLUMN_NAME, user.getSimpleName());
+            item.set(LIST_COLUMN_ORGUNIT, user.getOuFqn());
+            item.set(LIST_COLUMN_FULLNAME, user.getFullName());
+            ret.add(item);
+        }
+
+        return ret;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
+     */
+    protected void initializeDetail(String detailId) {
+
+        super.initializeDetail(detailId);
+        if (detailId.equals(LIST_DETAIL_OTHEROU)) {
+            boolean visible = getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU).isVisible();
+            getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setVisible(visible);
+        }
     }
 }

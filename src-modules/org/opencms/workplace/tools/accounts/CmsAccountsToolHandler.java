@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.8.4.4 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.8.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,18 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
-import org.opencms.workplace.tools.A_CmsToolHandler;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.tools.CmsDefaultToolHandler;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Users management tool handler that hides the tool if the current user
@@ -43,11 +50,26 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8.4.4 $ 
+ * @version $Revision: 1.8.4.5 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsAccountsToolHandler extends A_CmsToolHandler {
+public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
+
+    /** Delete file path constant. */
+    private static final String DELETE_FILE = "/system/workplace/admin/accounts/unit_delete.jsp";
+
+    /** Edit file path constant. */
+    private static final String EDIT_FILE = "/system/workplace/admin/accounts/unit_edit.jsp";
+
+    /** New file path constant. */
+    private static final String NEW_FILE = "/system/workplace/admin/accounts/unit_new.jsp";
+
+    /** Overview file path constant. */
+    private static final String OVERVIEW_FILE = "/system/workplace/admin/accounts/unit_overview.jsp";
+
+    /** Assign users file path constant. */
+    private static final String ASSIGN_FILE = "/system/workplace/admin/accounts/user_assign.jsp";
 
     /** Visibility flag module parameter name. */
     private static final String PARAM_VISIBILITY_FLAG = "visibility";
@@ -59,23 +81,110 @@ public class CmsAccountsToolHandler extends A_CmsToolHandler {
     private static final String VISIBILITY_NONE = "none";
 
     /**
-     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#getDisabledHelpText()
      */
-    public boolean isEnabled(CmsObject cms) {
+    public String getDisabledHelpText() {
 
-        return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(null));
+        if (super.getDisabledHelpText().equals(DEFAULT_DISABLED_HELPTEXT)) {
+            return "${key." + Messages.GUI_ORGUNIT_ADMIN_TOOL_DISABLED_DELETE_HELP_0 + "}";
+        }
+        return super.getDisabledHelpText();
     }
 
     /**
-     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#isEnabled(org.opencms.workplace.CmsWorkplace)
      */
-    public boolean isVisible(CmsObject cms) {
+    public boolean isEnabled(CmsWorkplace wp) {
+
+        String ouFqn;
+
+        if (wp instanceof CmsOrgUnitsSubList) {
+            ouFqn = ((CmsOrgUnitsSubList)wp).getParamOufqn();
+        } else {
+            ouFqn = wp.getCms().getRequestContext().getOuFqn();
+        }
+
+        if (getLink().equals(DELETE_FILE)) {
+            try {
+                if (OpenCms.getOrgUnitManager().getUsers(wp.getCms(), ouFqn, true).size() > 0) {
+                    return false;
+                }
+                if (OpenCms.getOrgUnitManager().getGroups(wp.getCms(), ouFqn, true).size() > 0) {
+                    List groups = OpenCms.getOrgUnitManager().getGroups(wp.getCms(), ouFqn, true);
+                    Iterator itGroups = groups.iterator();
+                    while (itGroups.hasNext()) {
+                        CmsGroup group = (CmsGroup)itGroups.next();
+                        if (!OpenCms.getDefaultUsers().isDefaultGroup(group.getName())) {
+                            return false;
+                        }
+                    }
+                }
+                if (OpenCms.getOrgUnitManager().getOrganizationalUnits(wp.getCms(), ouFqn, true).size() > 0) {
+                    return false;
+                }
+            } catch (CmsException e) {
+                // noop
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.workplace.CmsWorkplace)
+     */
+    public boolean isVisible(CmsWorkplace wp) {
+
+        CmsObject cms = wp.getCms();
+        String ouFqn;
+        String parentOu;
+
+        if (wp instanceof CmsOrgUnitsSubList) {
+            ouFqn = ((CmsOrgUnitsSubList)wp).getParamOufqn();
+        } else {
+            ouFqn = cms.getRequestContext().getOuFqn();
+        }
+        parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
 
         if (getVisibilityFlag().equals(VISIBILITY_NONE)) {
             return false;
         }
         if (getVisibilityFlag().equals(VISIBILITY_ALL)) {
-            return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(null));
+            if (getLink().equals(OVERVIEW_FILE)) {
+                if (parentOu != null) {
+                    return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER) && !OpenCms.getRoleManager().hasRole(
+                        cms,
+                        CmsRole.ADMINISTRATOR));
+                }
+                return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
+            } else if (getLink().equals(EDIT_FILE)) {
+                if (parentOu != null) {
+                    return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
+                        cms,
+                        CmsRole.ADMINISTRATOR));
+                }
+                return false;
+            } else if (getLink().equals(NEW_FILE)) {
+                return OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR);
+            } else if (getLink().equals(DELETE_FILE)) {
+                if (parentOu != null) {
+                    return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
+                        cms,
+                        CmsRole.ADMINISTRATOR));
+                }
+                return false;
+            } else if (getLink().equals(ASSIGN_FILE)) {
+                try {
+                    List orgUnits = OpenCms.getRoleManager().getManageableOrgUnits(cms, "/", true);
+                    if (orgUnits.size() > 1) {
+                        return true;
+                    }
+                    return false;
+                } catch (CmsException e) {
+                    return super.isVisible(cms);
+                }
+            } else {
+                return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
+            }
         }
         return true;
     }

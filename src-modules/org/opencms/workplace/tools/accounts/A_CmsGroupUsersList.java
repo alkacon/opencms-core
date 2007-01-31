@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.16.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,7 +76,10 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     public static final String LIST_COLUMN_ICON = "ci";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_LOGIN = "cn";
+    public static final String LIST_COLUMN_LOGIN = "cl";
+    
+    /** list column id constant. */
+    public static final String LIST_COLUMN_NAME = "cn";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_STATE = "cs";
@@ -86,6 +89,29 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
 
     /** Stores the value of the request parameter for the user name. */
     private String m_paramGroupname;
+    
+    /** Stores the value of the request parameter for the organizational unit fqn. */
+    private String m_paramOufqn;
+    
+    /**
+     * Returns the organizational unit fqn parameter value.<p>
+     * 
+     * @return the organizational unit fqn parameter value
+     */
+    public String getParamOufqn() {
+
+        return m_paramOufqn;
+    }
+
+    /**
+     * Sets the organizational unit fqn parameter value.<p>
+     * 
+     * @param ouFqn the organizational unit fqn parameter value
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        m_paramOufqn = ouFqn;
+    }
 
     /**
      * Public constructor.<p>
@@ -107,7 +133,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
             listName,
             LIST_COLUMN_LOGIN,
             CmsListOrderEnum.ORDER_ASCENDING,
-            searchable ? LIST_COLUMN_LOGIN : null);
+            searchable ? LIST_COLUMN_NAME : null);
     }
 
     /**
@@ -183,6 +209,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
             CmsUser user = (CmsUser)itUsers.next();
             CmsListItem item = getList().newItem(user.getId().toString());
             item.set(LIST_COLUMN_LOGIN, user.getName());
+            item.set(LIST_COLUMN_NAME, user.getSimpleName());
             item.set(LIST_COLUMN_FULLNAME, user.getFullName());
             ret.add(item);
         }
@@ -231,12 +258,18 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
 
         // create column for login
         CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN);
-        loginCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LOGIN_0));
-        loginCol.setWidth("35%");
-        setDefaultAction(loginCol);
+        loginCol.setVisible(false);
         // add it to the list definition
         metadata.addColumn(loginCol);
 
+        // create column for name
+        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
+        nameCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LOGIN_0));
+        nameCol.setWidth("35%");
+        setDefaultAction(nameCol);
+        // add it to the list definition
+        metadata.addColumn(nameCol);
+        
         // create column for fullname
         CmsListColumnDefinition fullnameCol = new CmsListColumnDefinition(LIST_COLUMN_FULLNAME);
         fullnameCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_FULLNAME_0));

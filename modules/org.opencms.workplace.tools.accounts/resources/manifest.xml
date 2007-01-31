@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.5.0</opencms_version>
-		<createdate>Wed, 12 Jul 2006 15:20:13 GMT</createdate>
+		<opencms_version>6.5.6</opencms_version>
+		<createdate>Wed, 31 Jan 2007 13:02:22 GMT</createdate>
 		<project>Offline</project>
 		<export_version>5</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the user accounts and groups.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.5</version>
+		<version>1.2.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -38,10 +38,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>4dea53ce-64cc-11db-8713-bf6fa13020a5</uuidstructure>
-			<datelastmodified>Thu, 26 Oct 2006 10:26:00 GMT</datelastmodified>
+			<uuidstructure>0cde8e23-af83-11db-952f-ad62cbb573d3</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 26 Oct 2006 08:30:58 GMT</datecreated>
+			<datecreated>Mon, 29 Jan 2007 10:25:32 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -60,7 +60,7 @@
 			<destination>system/modules</destination>
 			<type>folder</type>
 			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Thu, 26 Oct 2006 10:26:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -110,7 +110,7 @@
 			<destination>system/workplace</destination>
 			<type>folder</type>
 			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Thu, 26 Oct 2006 10:26:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -144,7 +144,7 @@
 			<destination>system/workplace/admin</destination>
 			<type>folder</type>
 			<uuidstructure>825fb7db-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Thu, 26 Oct 2006 10:26:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -212,7 +212,7 @@
 			<type>jsp</type>
 			<uuidstructure>e94daa8c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>38b64705-d83b-11d9-9459-efaaea26ed93</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -252,7 +252,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:groupid=${param.groupid}&action=initial|path:/accounts/groups/edit/delete]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&groupid=${param.groupid}&action=initial|path:/accounts/orgunit/groups/edit/delete]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -263,19 +263,19 @@
 			<type>jsp</type>
 			<uuidstructure>e9574787-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>7d30fde9-d6a9-11d9-a49a-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -303,7 +303,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:groupid=${param.groupid}&action=initial|path:/accounts/groups/edit/group]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&groupid=${param.groupid}&action=initial|path:/accounts/orgunit/groups/edit/group]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -314,7 +314,7 @@
 			<type>jsp</type>
 			<uuidstructure>e95e7382-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6ee7e38a-d726-11d9-9ecc-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -350,7 +350,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[path:/accounts/groups/new]]></value>
+					<value><![CDATA[path:/accounts/orgunit/groups/new|params:oufqn=${param.oufqn}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -361,7 +361,7 @@
 			<type>jsp</type>
 			<uuidstructure>e9659f7c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>14bd19e6-d6a7-11d9-814d-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -401,7 +401,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:groupid=${param.groupid}&action=initial|path:/accounts/groups/edit]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&groupid=${param.groupid}&action=initial|path:/accounts/orgunit/groups/edit]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -412,7 +412,7 @@
 			<type>jsp</type>
 			<uuidstructure>e96ca367-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>37e713a1-0a6b-11da-9201-1d873b0b8abd</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 11 Aug 2005 13:24:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -435,7 +435,7 @@
 			<type>jsp</type>
 			<uuidstructure>e96f146b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>75dee83d-d6a9-11d9-a49a-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -475,7 +475,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:groupid=${param.groupid}&action=initial|path:/accounts/groups/edit/users]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&groupid=${param.groupid}&action=initial|path:/accounts/orgunit/groups/edit/users]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -485,19 +485,19 @@
 			<type>jsp</type>
 			<uuidstructure>e973cf66-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>38b64705-d83b-11d9-9459-efaaea26ed93</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -525,7 +525,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:groupid=${param.groupid}&action=initial|path:/accounts/groups/delete]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&groupid=${param.groupid}&action=initial|path:/accounts/orgunit/groups/delete]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -536,7 +536,7 @@
 			<type>jsp</type>
 			<uuidstructure>e9764070-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>54c29019-d68d-11d9-aa6d-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -548,7 +548,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[20]]></value>
+					<value><![CDATA[2]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -564,7 +564,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_GROUPS_ADMIN_TOOL_NAME_0}]]></value>
+					<value><![CDATA[${key.GUI_GROUPS_ADMIN_TOOL_NAME_0}:${key.GUI_GROUPS_ADMIN_TOOL_NAVBARNAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -572,7 +572,464 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[path:/accounts/groups]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/groups]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/index.jsp</source>
+			<destination>system/workplace/admin/accounts/index.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>491902ba-a53f-11db-886b-75cc2042336b</uuidstructure>
+			<uuidresource>491902bb-a53f-11db-886b-75cc2042336b</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 08:55:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/role_overview.jsp</source>
+			<destination>system/workplace/admin/accounts/role_overview.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>974fac97-abab-11db-ad82-c7b5ef626300</uuidstructure>
+			<uuidresource>974fac98-abab-11db-ad82-c7b5ef626300</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 24 Jan 2007 13:05:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_OVERVIEWROLE_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_OVERVIEWROLE_ADMIN_TOOL_NAME_0}:${key.GUI_OVERVIEWROLE_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Overview Role Users]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&role=${param.role}&action=initial|path:/accounts/orgunit/roles/overview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/role_users.jsp</source>
+			<destination>system/workplace/admin/accounts/role_users.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>8e76a8cc-abab-11db-ad82-c7b5ef626300</uuidstructure>
+			<uuidresource>8e76a8cd-abab-11db-ad82-c7b5ef626300</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 24 Jan 2007 13:05:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_ROLEUSERS_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_ROLEUSERS_ADMIN_TOOL_NAME_0}:${key.GUI_ROLEUSERS_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit Users for Role]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&role=${param.role}&action=initial|path:/accounts/orgunit/roles/edit]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/roles_list.jsp</source>
+			<destination>system/workplace/admin/accounts/roles_list.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>81d8087d-ab00-11db-a795-c7b5ef626300</uuidstructure>
+			<uuidresource>81d8087e-ab00-11db-a795-c7b5ef626300</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 23 Jan 2007 16:41:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_ROLES_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_ROLES_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/role.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_ROLES_ADMIN_TOOL_NAME_0}:${key.GUI_ROLES_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Role Management]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/roles]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/unit_delete.jsp</source>
+			<destination>system/workplace/admin/accounts/unit_delete.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>4453044f-a541-11db-886b-75cc2042336b</uuidstructure>
+			<uuidresource>44530450-a541-11db-886b-75cc2042336b</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 09:09:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[6]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_DELETEORGUNIT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_DELETEORGUNIT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/unit_delete.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_DELETEORGUNIT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Delete Unit]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/delete]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/unit_edit.jsp</source>
+			<destination>system/workplace/admin/accounts/unit_edit.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>56a96223-a541-11db-886b-75cc2042336b</uuidstructure>
+			<uuidresource>56a96224-a541-11db-886b-75cc2042336b</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 09:09:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EDITORGUNIT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITORGUNIT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/unit_edit.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITORGUNIT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit Unit]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/edit]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/unit_groups.jsp</source>
+			<destination>system/workplace/admin/accounts/unit_groups.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>61e275f7-a541-11db-886b-75cc2042336b</uuidstructure>
+			<uuidresource>61e275f8-a541-11db-886b-75cc2042336b</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 09:10:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPSUNIT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPSUNIT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/group.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_GROUPSUNIT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit Assigned Groups]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/accounts/orgunit/groups]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/unit_management.jsp</source>
+			<destination>system/workplace/admin/accounts/unit_management.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>7029660b-a541-11db-886b-75cc2042336b</uuidstructure>
+			<uuidresource>7029660c-a541-11db-886b-75cc2042336b</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 09:10:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_ORGUNIT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/unit_new.jsp</source>
+			<destination>system/workplace/admin/accounts/unit_new.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>79aba21f-a541-11db-886b-75cc2042336b</uuidstructure>
+			<uuidresource>79aba220-a541-11db-886b-75cc2042336b</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 09:10:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_NEWORGUNIT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_NEWORGUNIT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/unit_add.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_NEWORGUNIT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New Unit]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/new]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/unit_overview.jsp</source>
+			<destination>system/workplace/admin/accounts/unit_overview.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>61356484-a54f-11db-94ae-75cc2042336b</uuidstructure>
+			<uuidresource>61356485-a54f-11db-94ae-75cc2042336b</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 10:50:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_OVERVIEWORGUNIT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_OVERVIEWORGUNIT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/unit.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_OVERVIEWORGUNIT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Overview Unit]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial&oufqn=${param.oufqn}|path:/accounts/orgunit/overview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/user_assign.jsp</source>
+			<destination>system/workplace/admin/accounts/user_assign.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>5b51e111-a63d-11db-889b-75cc2042336b</uuidstructure>
+			<uuidresource>5b51e112-a63d-11db-889b-75cc2042336b</uuidresource>
+			<datelastmodified>Tue, 30 Jan 2007 15:18:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 17 Jan 2007 15:13:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_ASSIGNUSER_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_ASSIGNUSER_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/user.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_ASSIGNUSER_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Assign Users]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/users/assign]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -583,19 +1040,19 @@
 			<type>jsp</type>
 			<uuidstructure>e97afb6a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0a1bba28-d40e-11d9-8431-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -623,7 +1080,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:userid=${param.userid}&action=initial|path:/accounts/users/edit/delete]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&userid=${param.userid}&action=initial|path:/accounts/orgunit/users/edit/delete]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -634,19 +1091,19 @@
 			<type>jsp</type>
 			<uuidstructure>e97d6c75-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>44347be5-ac0e-11d9-80b4-733e319ca5ea</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -674,7 +1131,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:userid=${param.userid}&action=initial|path:/accounts/users/edit/user]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&userid=${param.userid}&action=initial|path:/accounts/orgunit/users/edit/user]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -685,19 +1142,19 @@
 			<type>jsp</type>
 			<uuidstructure>e9822770-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>4fb1c05b-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -725,7 +1182,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:userid=${param.userid}&action=initial|path:/accounts/users/edit/groups]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&userid=${param.userid}&action=initial|path:/accounts/orgunit/users/edit/groups]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -736,7 +1193,7 @@
 			<type>jsp</type>
 			<uuidstructure>e986e26b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>794610f3-d42a-11d9-8431-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -772,7 +1229,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[path:/accounts/users/new]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}|path:/accounts/orgunit/users/new]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -783,19 +1240,19 @@
 			<type>jsp</type>
 			<uuidstructure>e9895375-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>442ed246-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -823,20 +1280,20 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:userid=${param.userid}&action=initial|path:/accounts/users/edit]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&userid=${param.userid}&action=initial|path:/accounts/orgunit/users/edit]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/user_switch.jsp</source>
-			<destination>system/workplace/admin/accounts/user_switch.jsp</destination>
+			<source>system/workplace/admin/accounts/user_role.jsp</source>
+			<destination>system/workplace/admin/accounts/user_role.jsp</destination>
 			<type>jsp</type>
-			<uuidstructure>74bb489d-64e9-11db-8108-bf6fa13020a5</uuidstructure>
-			<uuidresource>74bb489e-64e9-11db-8108-bf6fa13020a5</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<uuidstructure>a9062dba-a79d-11db-8295-75cc2042336b</uuidstructure>
+			<uuidresource>a9062dbb-a79d-11db-8295-75cc2042336b</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 26 Oct 2006 11:59:38 GMT</datecreated>
+			<datecreated>Fri, 19 Jan 2007 09:15:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -847,6 +1304,57 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_ROLEUSER_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_ROLEUSER_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/role.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_ROLEUSER_ADMIN_TOOL_NAME_0}:${key.GUI_ROLEUSER_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit Role]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&userid=${param.userid}&action=initial|path:/accounts/orgunit/users/edit/role]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/user_switch.jsp</source>
+			<destination>system/workplace/admin/accounts/user_switch.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>74bb489d-64e9-11db-8108-bf6fa13020a5</uuidstructure>
+			<uuidresource>74bb489e-64e9-11db-8108-bf6fa13020a5</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Oct 2006 11:59:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -874,7 +1382,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:userid=${param.userid}&action=initial|path:/accounts/users/edit/switch|confirmation:${key.GUI_USERS_LIST_ACTION_SWITCH_CONF_0}]]></value>
+					<value><![CDATA[params:userid=${param.userid}&action=initial|path:/accounts/orgunit/users/edit/switch|confirmation:${key.GUI_USERS_LIST_ACTION_SWITCH_CONF_0}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -885,7 +1393,7 @@
 			<type>jsp</type>
 			<uuidstructure>e98e0e70-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6dbcc0c3-0a57-11da-81e3-1d873b0b8abd</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 11 Aug 2005 11:02:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -907,19 +1415,19 @@
 			<type>jsp</type>
 			<uuidstructure>e98e0e74-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0a1bba28-d40e-11d9-8431-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -947,7 +1455,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:userid=${param.userid}&action=initial|path:/accounts/users/delete]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&userid=${param.userid}&action=initial|path:/accounts/orgunit/users/delete]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -958,19 +1466,19 @@
 			<type>jsp</type>
 			<uuidstructure>e992c96e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fb553117-aa75-11d9-bdd4-733e319ca5ea</uuidresource>
-			<datelastmodified>Mon, 06 Nov 2006 14:29:39 GMT</datelastmodified>
+			<datelastmodified>Mon, 29 Jan 2007 10:29:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -990,7 +1498,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_USERS_ADMIN_TOOL_NAME_0}]]></value>
+					<value><![CDATA[${key.GUI_USERS_ADMIN_TOOL_NAME_0}:${key.GUI_USERS_ADMIN_TOOL_NAVBARNAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -998,7 +1506,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[path:/accounts/users]]></value>
+					<value><![CDATA[params:action=initial&oufqn=${param.oufqn}|path:/accounts/orgunit/users]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1007,7 +1515,7 @@
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
 			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Thu, 26 Oct 2006 10:26:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1090,6 +1598,25 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/orgunit.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/orgunit.png</destination>
+			<type>image</type>
+			<uuidstructure>85d8b48b-a550-11db-8449-75cc2042336b</uuidstructure>
+			<uuidresource>85d8b48c-a550-11db-8449-75cc2042336b</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2007 11:06:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 10:58:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/tools/accounts/buttons/role.png</source>
 			<destination>system/workplace/resources/tools/accounts/buttons/role.png</destination>
 			<type>image</type>
@@ -1104,6 +1631,120 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/role_child.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/role_child.png</destination>
+			<type>image</type>
+			<uuidstructure>559132d9-af8d-11db-8ecc-ad62cbb573d3</uuidstructure>
+			<uuidresource>559132da-af8d-11db-8ecc-ad62cbb573d3</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 11:39:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 29 Jan 2007 11:39:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/role_inactive.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/role_inactive.png</destination>
+			<type>image</type>
+			<uuidstructure>acca1d7c-af9b-11db-b62a-ad62cbb573d3</uuidstructure>
+			<uuidresource>acca1d7d-af9b-11db-b62a-ad62cbb573d3</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 13:49:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 29 Jan 2007 13:21:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/role_ou.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/role_ou.png</destination>
+			<type>image</type>
+			<uuidstructure>cb3227bf-af8e-11db-8ecc-ad62cbb573d3</uuidstructure>
+			<uuidresource>cb3227c0-af8e-11db-8ecc-ad62cbb573d3</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 11:50:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 29 Jan 2007 11:49:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/unit_add.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/unit_add.png</destination>
+			<type>image</type>
+			<uuidstructure>85ebc760-a550-11db-8449-75cc2042336b</uuidstructure>
+			<uuidresource>85ebc761-a550-11db-8449-75cc2042336b</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2007 10:59:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 10:58:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/unit_delete.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/unit_delete.png</destination>
+			<type>image</type>
+			<uuidstructure>85f7ae45-a550-11db-8449-75cc2042336b</uuidstructure>
+			<uuidresource>85f7ae46-a550-11db-8449-75cc2042336b</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2007 10:59:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 10:58:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/unit_edit.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/unit_edit.png</destination>
+			<type>image</type>
+			<uuidstructure>8603952a-a550-11db-8449-75cc2042336b</uuidstructure>
+			<uuidresource>8603952b-a550-11db-8449-75cc2042336b</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2007 10:59:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 10:58:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1273,6 +1914,82 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/unit.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/unit.png</destination>
+			<type>image</type>
+			<uuidstructure>31f33e54-a56b-11db-ac6f-75cc2042336b</uuidstructure>
+			<uuidresource>31f33e55-a56b-11db-ac6f-75cc2042336b</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2007 14:10:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 14:09:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/unit_add.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/unit_add.png</destination>
+			<type>image</type>
+			<uuidstructure>321963f9-a56b-11db-ac6f-75cc2042336b</uuidstructure>
+			<uuidresource>321963fa-a56b-11db-ac6f-75cc2042336b</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2007 14:10:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 14:09:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/unit_delete.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/unit_delete.png</destination>
+			<type>image</type>
+			<uuidstructure>322ec0be-a56b-11db-ac6f-75cc2042336b</uuidstructure>
+			<uuidresource>322ec0bf-a56b-11db-ac6f-75cc2042336b</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2007 14:10:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 14:09:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/unit_edit.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/unit_edit.png</destination>
+			<type>image</type>
+			<uuidstructure>32385db3-a56b-11db-ac6f-75cc2042336b</uuidstructure>
+			<uuidresource>32385db4-a56b-11db-ac6f-75cc2042336b</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2007 14:10:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 14:09:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

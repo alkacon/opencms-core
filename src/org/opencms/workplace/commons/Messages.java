@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/01/08 14:02:58 $
- * Version: $Revision: 1.15.4.14 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.15.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.14 $ 
+ * @version $Revision: 1.15.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -666,6 +666,36 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_OPERATION_NO_LOCKS_0 = "GUI_OPERATION_NO_LOCKS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNITSELECTION_INTRO_TITLE_0 = "GUI_ORGUNITSELECTION_INTRO_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNITSELECTION_LIST_ACTION_SELECT_HELP_0 = "GUI_ORGUNITSELECTION_LIST_ACTION_SELECT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNITSELECTION_LIST_ACTION_SELECT_NAME_0 = "GUI_ORGUNITSELECTION_LIST_ACTION_SELECT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNITSELECTION_LIST_COLS_DESCRIPTION_0 = "GUI_ORGUNITSELECTION_LIST_COLS_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNITSELECTION_LIST_COLS_ICON_0 = "GUI_ORGUNITSELECTION_LIST_COLS_ICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNITSELECTION_LIST_COLS_ICON_HELP_0 = "GUI_ORGUNITSELECTION_LIST_COLS_ICON_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNITSELECTION_LIST_COLS_PATH_0 = "GUI_ORGUNITSELECTION_LIST_COLS_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNITSELECTION_LIST_ICON_HELP_0 = "GUI_ORGUNITSELECTION_LIST_ICON_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNITSELECTION_LIST_ICON_NAME_0 = "GUI_ORGUNITSELECTION_LIST_ICON_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNITSELECTION_LIST_NAME_0 = "GUI_ORGUNITSELECTION_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PERMISSION_0 = "GUI_PERMISSION_0";

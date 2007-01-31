@@ -86,6 +86,9 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     /** Stores the value of the request parameter for the flags. */
     private String m_paramFlags;
 
+    /** Stores the value of the request parameter for the organizational unit fqn. */
+    private String m_paramOufqn;
+
     /** Stores the value of the request parameter for the user name. */
     private String m_paramUser;
 
@@ -169,6 +172,16 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the organizational unit fqn parameter.<p>
+     *
+     * @return the organizational unit fqn paramter
+     */
+    public String getParamOufqn() {
+
+        return m_paramOufqn;
+    }
+
+    /**
      * Returns the user name parameter.<p>
      *
      * @return the user name paramter
@@ -186,6 +199,16 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     public void setParamFlags(String flags) {
 
         m_paramFlags = flags;
+    }
+
+    /**
+     * Sets the organizational unit fqn.<p>
+     *
+     * @param ouFqn the organizational unit fqn to set
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        m_paramOufqn = ouFqn;
     }
 
     /**
@@ -216,14 +239,26 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     protected List getGroups() throws CmsException {
 
         List ret = new ArrayList();
+        List tempRet = new ArrayList();
         if (getParamUser() != null) {
-            ret.addAll(getCms().getGroupsOfUser(getParamUser(), false));
+            tempRet.addAll(getCms().getGroupsOfUser(getParamUser(), false));
         } else {
-            ret.addAll(OpenCms.getOrgUnitManager().getGroups(getCms(), "", true));
+            tempRet.addAll(OpenCms.getOrgUnitManager().getGroups(getCms(), "", true));
         }
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());
-            return CmsPrincipal.filterFlag(ret, flags);
+            tempRet = CmsPrincipal.filterFlag(ret, flags);
+        }
+        if (getParamOufqn() != null) {
+            Iterator itTempRet = tempRet.iterator();
+            while (itTempRet.hasNext()) {
+                CmsGroup group = (CmsGroup)itTempRet.next();
+                if (group.getOuFqn().equals(getParamOufqn())) {
+                    ret.add(group);
+                }
+            }
+        } else {
+            return tempRet;
         }
         return ret;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupsList.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.3.4.2 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.3.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.ServletException;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3.4.2 $ 
+ * @version $Revision: 1.3.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,6 +140,9 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
     /** a set of action id's to use for edition. */
     private static Set m_editActionIds = new HashSet();
+
+    /** Stores the value of the request parameter for the organizational unit fqn. */
+    private String m_paramOufqn;
 
     /**
      * Public constructor.<p>
@@ -224,6 +227,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
         Map params = new HashMap();
         params.put(A_CmsEditGroupDialog.PARAM_GROUPID, groupId);
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, m_paramOufqn);
+        params.put(A_CmsEditGroupDialog.PARAM_GROUPNAME, groupName);
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
@@ -258,6 +263,26 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             throwListUnsupportedActionException();
         }
         listSave();
+    }
+
+    /**
+     * Returns the organizational unit fqn parameter value.<p>
+     * 
+     * @return the organizational unit fqn parameter value
+     */
+    public String getParamOufqn() {
+
+        return m_paramOufqn;
+    }
+
+    /**
+     * Sets the organizational unit fqn parameter value.<p>
+     * 
+     * @param ouFqn the organizational unit fqn parameter value
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        m_paramOufqn = ouFqn;
     }
 
     /**
@@ -303,7 +328,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                         while (itRes.hasNext()) {
                             CmsResource resource = (CmsResource)itRes.next();
                             html.append(resource.getRootPath());
-                            
+
                             Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
                             while (itAces.hasNext()) {
                                 CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
@@ -314,7 +339,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                                     break;
                                 }
                             }
-                            
+
                             if (itRes.hasNext()) {
                                 html.append("<br>");
                             }

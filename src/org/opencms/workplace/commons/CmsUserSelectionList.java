@@ -86,11 +86,11 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /** list id constant. */
     public static final String LIST_ID = "lus";
 
-    /** Stores the value of the request parameter for the group name. */
-    private String m_paramGroup;
-
     /** Stores the value of the request parameter for the flags. */
     private String m_paramFlags;
+
+    /** Stores the value of the request parameter for the group name. */
+    private String m_paramGroup;
 
     /**
      * Public constructor.<p>
@@ -134,7 +134,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         String param = "";
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamGroup())) {
             param = Messages.get().getBundle(getLocale()).key(Messages.GUI_USERSELECTION_GROUP_BLOCK_1, getParamGroup());
-        } 
+        }
         html.append(key(Messages.GUI_USERSELECTION_INTRO_TITLE_1, new Object[] {param}));
         html.append("\n\t\t\t</td>");
         html.append("\t\t</tr>\n");
@@ -160,16 +160,6 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the Group name parameter value.<p>
-     *
-     * @return the Group name parameter value
-     */
-    public String getParamGroup() {
-
-        return m_paramGroup;
-    }
-
-    /**
      * Returns the flags parameter value.<p>
      *
      * @return the flags parameter value
@@ -180,13 +170,13 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     }
 
     /**
-     * Sets the group name parameter value.<p>
+     * Returns the Group name parameter value.<p>
      *
-     * @param groupName the group name parameter value to set
+     * @return the Group name parameter value
      */
-    public void setParamGroup(String groupName) {
+    public String getParamGroup() {
 
-        m_paramGroup = groupName;
+        return m_paramGroup;
     }
 
     /**
@@ -197,6 +187,16 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     public void setParamFlags(String flags) {
 
         m_paramFlags = flags;
+    }
+
+    /**
+     * Sets the group name parameter value.<p>
+     *
+     * @param groupName the group name parameter value to set
+     */
+    public void setParamGroup(String groupName) {
+
+        m_paramGroup = groupName;
     }
 
     /**
@@ -275,7 +275,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         // create column for login
         CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN);
         loginCol.setName(Messages.get().container(Messages.GUI_USERSELECTION_LIST_COLS_LOGIN_0));
-        loginCol.setWidth("35%");
+        loginCol.setWidth("60%");
         CmsListDefaultAction selectAction = new A_CmsListDefaultJsAction(LIST_ACTION_SELECT) {
 
             /**
@@ -297,7 +297,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         // create column for fullname
         CmsListColumnDefinition fullnameCol = new CmsListColumnDefinition(LIST_COLUMN_FULLNAME);
         fullnameCol.setName(Messages.get().container(Messages.GUI_USERSELECTION_LIST_COLS_FULLNAME_0));
-        fullnameCol.setWidth("65%");
+        fullnameCol.setWidth("40%");
         fullnameCol.setTextWrapping(true);
         // add it to the list definition
         metadata.addColumn(fullnameCol);

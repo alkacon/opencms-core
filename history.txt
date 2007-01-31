@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/01/30 10:33:28 $
- * Version: $Revision: 1.717.2.125 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.717.2.126 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ OpenCms 6.5.6 - xxx, 2007
   New CmsOrgUnitManager and CmsRoleManager classes, accessible through OpenCms.getXXXManager() methods
 ! WebDAV servlet to access OpenCms through WebDAV.
 * Fixed issue with damaged admin user info preventing OpenCms from starting (IOException: invalid stream header)
+! New user interfaces for organizational unit usage inside the OpenCms user management
 
 OpenCms 6.5.5 - 14. December, 2006
 * Improved logic in new dialog to decide if default .html suffix should be appended

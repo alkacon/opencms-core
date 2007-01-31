@@ -50,11 +50,17 @@ public class CmsGroupWidget extends A_CmsWidget {
     /** Configuration parameter to set the flags of the groups to display, optional. */
     public static final String CONFIGURATION_FLAGS = "flags";
 
+    /** Configuration parameter to set the organizational unit of the groups to display, optional. */
+    public static final String CONFIGURATION_OUFQN = "oufqn";
+
     /** Configuration parameter to set the user of the groups to display, optional. */
     public static final String CONFIGURATION_USER = "user";
 
     /** The the flags used in the popup window. */
     private Integer m_flags;
+
+    /** The the organizational unit used in the popup window. */
+    private String m_ouFqn;
 
     /** The the user used in the popup window. */
     private String m_userName;
@@ -78,6 +84,21 @@ public class CmsGroupWidget extends A_CmsWidget {
 
         m_flags = flags;
         m_userName = userName;
+        m_ouFqn = null;
+    }
+
+    /**
+     * Creates a new group selection widget with the parameters to configure the popup window behaviour.<p>
+     * 
+     * @param flags the group flags to restrict the group selection, can be <code>null</code>
+     * @param userName the user to restrict the group selection, can be <code>null</code>
+     * @param ouFqn the organizational unit to restrict the group selection, can be <code>null</code>
+     */
+    public CmsGroupWidget(Integer flags, String userName, String ouFqn) {
+
+        m_flags = flags;
+        m_userName = userName;
+        m_ouFqn = ouFqn;
     }
 
     /**
@@ -114,6 +135,15 @@ public class CmsGroupWidget extends A_CmsWidget {
             result.append(CONFIGURATION_USER);
             result.append("=");
             result.append(m_userName);
+        }
+        // append oufqn to configuration
+        if (m_ouFqn != null) {
+            if (result.length() > 0) {
+                result.append("|");
+            }
+            result.append(CONFIGURATION_OUFQN);
+            result.append("=");
+            result.append(m_ouFqn);
         }
         return result.toString();
     }
@@ -170,6 +200,12 @@ public class CmsGroupWidget extends A_CmsWidget {
         } else {
             buttonJs.append("null");
         }
+        buttonJs.append("', '");
+        if (m_ouFqn != null) {
+            buttonJs.append(m_ouFqn);
+        } else {
+            buttonJs.append("null");
+        }
         buttonJs.append("'");
         buttonJs.append(");");
 
@@ -195,6 +231,16 @@ public class CmsGroupWidget extends A_CmsWidget {
     public Integer getFlags() {
 
         return m_flags;
+    }
+
+    /**
+     * Returns the organizational unit fqn, or <code>null</code> if all.<p>
+     *
+     * @return the organizational unit fqn
+     */
+    public String getOufqn() {
+
+        return m_ouFqn;
     }
 
     /**
@@ -246,6 +292,16 @@ public class CmsGroupWidget extends A_CmsWidget {
                     user = user.substring(0, user.indexOf('|'));
                 }
                 m_userName = user;
+            }
+            int oufqnIndex = configuration.indexOf(CONFIGURATION_OUFQN);
+            if (oufqnIndex != -1) {
+                // user is given
+                String oufqn = configuration.substring(CONFIGURATION_OUFQN.length() + 1);
+                if (oufqn.indexOf('|') != -1) {
+                    // cut eventual following configuration values
+                    oufqn = oufqn.substring(0, oufqn.indexOf('|'));
+                }
+                m_ouFqn = oufqn;
             }
         }
         super.setConfiguration(configuration);

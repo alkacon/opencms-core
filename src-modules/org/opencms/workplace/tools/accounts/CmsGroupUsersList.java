@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupUsersList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.8.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -38,7 +39,10 @@ import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 
@@ -56,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,6 +74,9 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
 
     /** list id constant. */
     public static final String LIST_ID = "lgu";
+
+    /** list item detail id constant. */
+    public static final String LIST_DETAIL_ORGUNIT = "dou";
 
     /** list action id constant. */
     public static final String LIST_MACTION_REMOVE = "mr";
@@ -222,5 +229,99 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
         metadata.addColumn(stateCol);
         // keep the id
         m_removeActionIds.add(stateAction.getId());
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        // add user address details
+        CmsListItemDetails orgUnitDetails = new CmsListItemDetails(LIST_DETAIL_ORGUNIT);
+        orgUnitDetails.setAtColumn(LIST_COLUMN_LOGIN);
+        orgUnitDetails.setVisible(false);
+        orgUnitDetails.setHideAction(new CmsListIndependentAction(LIST_DETAIL_ORGUNIT) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                List users = getList().getAllContent();
+                Iterator itUsers = users.iterator();
+                while (itUsers.hasNext()) {
+                    CmsListItem item = (CmsListItem)itUsers.next();
+                    String userName = item.get(LIST_COLUMN_LOGIN).toString();
+                    try {
+                        CmsUser user = getCms().readUser(userName);
+                        if (!user.getOuFqn().equals(getParamOufqn())) {
+                            return true;
+                        }
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
+                return false;
+            }
+        });
+        orgUnitDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_ORGUNIT) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                List users = getList().getAllContent();
+                Iterator itUsers = users.iterator();
+                while (itUsers.hasNext()) {
+                    CmsListItem item = (CmsListItem)itUsers.next();
+                    String userName = item.get(LIST_COLUMN_LOGIN).toString();
+                    try {
+                        CmsUser user = getCms().readUser(userName);
+                        if (!user.getOuFqn().equals(getParamOufqn())) {
+                            return true;
+                        }
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
+                return false;
+            }
+        });
+        orgUnitDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_NAME_0));
+        orgUnitDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_HELP_0));
+        orgUnitDetails.setHideActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_NAME_0));
+        orgUnitDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_HELP_0));
+        orgUnitDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_ORGUNIT_NAME_0));
+        orgUnitDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_USERS_DETAIL_ORGUNIT_NAME_0)));
+        metadata.addItemDetails(orgUnitDetails);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        // get content
+        List users = getList().getAllContent();
+        Iterator itUsers = users.iterator();
+        while (itUsers.hasNext()) {
+            CmsListItem item = (CmsListItem)itUsers.next();
+            String userName = item.get(LIST_COLUMN_LOGIN).toString();
+            StringBuffer html = new StringBuffer(512);
+            try {
+                if (detailId.equals(LIST_DETAIL_ORGUNIT)) {
+                    CmsUser user = getCms().readUser(userName);
+                    // address
+                    html.append(user.getOuFqn());
+                } else {
+                    continue;
+                }
+            } catch (Exception e) {
+                // noop
+            }
+            item.set(detailId, html.toString());
+        }
     }
 }

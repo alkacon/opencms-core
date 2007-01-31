@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.18.4.2 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.18.4.3 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.18.4.2 $ 
+ * @version $Revision: 1.18.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,6 +90,9 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
     /** Stores the value of the request parameter for the user name. */
     private String m_paramUsername;
+    
+    /** Stores the value of the request parameter for the organizational unit. */
+    private String m_paramOufqn;
 
     /**
      * Public constructor.<p>
@@ -118,6 +121,16 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
         return m_paramUserid;
     }
+    
+    /**
+     * Returns the organizational unit parameter value.<p>
+     * 
+     * @return the organizational unit parameter value
+     */
+    public String getParamOufqn() {
+
+        return m_paramOufqn;
+    }
 
     /**
      * Returns the User name parameter value.<p>
@@ -139,6 +152,16 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         m_paramUserid = userId;
     }
 
+    /**
+     * Sets the user organizational unit value.<p>
+     * 
+     * @param ouFqn the organizational unit parameter value
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        m_paramOufqn = ouFqn;
+    }
+    
     /**
      * Sets the User name parameter value.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.35.4.8 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.35.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.35.4.8 $ 
+ * @version $Revision: 1.35.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -272,6 +272,18 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
+     * Returns the list metadata object for the given dialog.<p>
+     * 
+     * @param listDialogName the dialog class name
+     * 
+     * @return the list metadata object
+     */
+    public static CmsListMetadata getMetadata(String listDialogName) {
+
+        return (CmsListMetadata)m_metadatas.get(listDialogName);
+    }
+
+    /**
      * Returns the (internal use only) map of list objects.<p>
      * 
      * @param settings the wp settings for accessing the session 
@@ -350,6 +362,26 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 new Integer(getAction())));
         }
         refreshList();
+    }
+
+    /**
+     * Generates the dialog starting html code.<p>
+     * 
+     * @return html code
+     */
+    public String defaultActionHtml() {
+
+        if ((getList() != null) && getList().getAllContent().isEmpty()) {
+            // TODO: check the need for this
+            refreshList();
+        }
+        StringBuffer result = new StringBuffer(2048);
+        result.append(defaultActionHtmlStart());
+        result.append(customHtmlStart());
+        result.append(defaultActionHtmlContent());
+        result.append(customHtmlEnd());
+        result.append(defaultActionHtmlEnd());
+        return result.toString();
     }
 
     /**
@@ -739,26 +771,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Generates the dialog starting html code.<p>
-     * 
-     * @return html code
-     */
-    public String defaultActionHtml() {
-
-        if ((getList() != null) && getList().getAllContent().isEmpty()) {
-            // TODO: check the need for this
-            refreshList();
-        }
-        StringBuffer result = new StringBuffer(2048);
-        result.append(defaultActionHtmlStart());
-        result.append(customHtmlStart());
-        result.append(defaultActionHtmlContent());
-        result.append(customHtmlEnd());
-        result.append(defaultActionHtmlEnd());
-        return result.toString();
-    }
-
-    /**
      * Returns the html code for the default action content.<p>
      * 
      * @return html code
@@ -912,7 +924,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected synchronized CmsListMetadata getMetadata(String listDialogName, String listId) {
 
-        if ((m_metadatas.get(listDialogName) == null) || ((CmsListMetadata)m_metadatas.get(listDialogName)).isVolatile()) {
+        if ((m_metadatas.get(listDialogName) == null)
+            || ((CmsListMetadata)m_metadatas.get(listDialogName)).isVolatile()) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_METADATA_LIST_1, getListId()));
             }
@@ -932,17 +945,33 @@ public abstract class A_CmsListDialog extends CmsDialog {
         }
         return getMetadata(listDialogName);
     }
-    
+
     /**
-     * Returns the list metadata object for the given dialog.<p>
+     * Lazzy details initialization.<p>
      * 
-     * @param listDialogName the dialog class name
-     * 
-     * @return the list metadata object
+     * @param detailId the id of the detail column
      */
-    public static CmsListMetadata getMetadata(String listDialogName) {
-        
-        return (CmsListMetadata)m_metadatas.get(listDialogName);
+    protected void initializeDetail(String detailId) {
+
+        // if detail column visible
+        if (getList().getMetadata().getItemDetailDefinition(detailId).isVisible()) {
+            // if the list is not empty
+            if (getList().getTotalSize() > 0) {
+                // if the detail column has not been previously initialized
+                if (((CmsListItem)getList().getAllContent().get(0)).get(detailId) == null) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_START_DETAILS_LIST_2,
+                            getListId(),
+                            detailId));
+                    }
+                    fillDetails(detailId);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_DETAILS_LIST_2, getListId(), detailId));
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -1079,33 +1108,5 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected void validateParamaters() throws Exception {
 
         // valid by default
-    }
-
-    /**
-     * Lazzy details initialization.<p>
-     * 
-     * @param detailId the id of the detail column
-     */
-    private void initializeDetail(String detailId) {
-
-        // if detail column visible
-        if (getList().getMetadata().getItemDetailDefinition(detailId).isVisible()) {
-            // if the list is not empty
-            if (getList().getTotalSize() > 0) {
-                // if the detail column has not been previously initialized
-                if (((CmsListItem)getList().getAllContent().get(0)).get(detailId) == null) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_START_DETAILS_LIST_2,
-                            getListId(),
-                            detailId));
-                    }
-                    fillDetails(detailId);
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_DETAILS_LIST_2, getListId(), detailId));
-                    }
-                }
-            }
-        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowGroupUsersList.java,v $
- * Date   : $Date: 2006/10/11 10:40:24 $
- * Version: $Revision: 1.11.4.2 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.11.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.11.4.2 $ 
+ * @version $Revision: 1.11.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -219,6 +219,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
             CmsUser user = (CmsUser)itUsers.next();
             CmsListItem item = getList().newItem(user.getId().toString());
             item.set(LIST_COLUMN_LOGIN, user.getName());
+            item.set(LIST_COLUMN_NAME, user.getSimpleName());
             item.set(LIST_COLUMN_FULLNAME, user.getFullName());
             item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
             ret.add(item);

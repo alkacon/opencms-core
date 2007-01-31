@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.17.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
 import java.util.Map;
 
@@ -46,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,6 +76,52 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     }
 
     /**
+     * Returns the description of the parent ou.<p>
+     * 
+     * @return the description of the parent ou
+     */
+    public String getAssignedOu() {
+
+        try {
+            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getDescription()
+                + " ("
+                + getParamOufqn()
+                + ")";
+        } catch (CmsException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the simple name of the user object.<p>
+     * 
+     * @return the simple name of the user object
+     */
+    public String getName() {
+
+        return m_user.getSimpleName();
+    }
+
+    /**
+     * This method is only needed for displaying reasons.<p>
+     * 
+     * @param assignedOu
+     */
+    public void setAssignedOu(String assignedOu) {
+
+        // nothing will be done here, just to avoid warnings
+        assignedOu.length();
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#setName(java.lang.String)
+     */
+    public void setName(String name) {
+
+        m_user.setName(name);
+    }
+
+    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#createUser(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
      */
     protected CmsUser createUser(String name, String pwd, String desc, Map info) throws CmsException {
@@ -95,7 +142,7 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
      */
     protected String getListRootPath() {
 
-        return "/accounts/users";
+        return "/accounts/orgunit/users";
     }
 
     /**

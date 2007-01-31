@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.32.4.10 $
+ * Date   : $Date: 2007/01/31 14:23:18 $
+ * Version: $Revision: 1.32.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.10 $
+ * @version $Revision: 1.32.4.11 $
  * 
  * @since 6.0.0
  * 
@@ -216,6 +216,28 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public static boolean isSystemUser(int type) {
 
         return (type & 1) > 0;
+    }
+    
+    /**
+     * Returns <code>true</code> if this user is able to manage itselfs.<p> 
+     * 
+     * @return <code>true</code> if this user is able to manage itselfs 
+     */
+    public boolean isSelfManagement() {
+
+        return (getFlags() & I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT) == I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT;
+    }
+    
+    /**
+     * Sets the self management flag for this user to the given value.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setSelfManagement(boolean value) {
+
+        if (isSelfManagement() != value) {
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT);
+        }
     }
 
     /**
@@ -391,7 +413,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
             buf.append(" ");
         }
         buf.append("(");
-        buf.append(getName());
+        buf.append(getSimpleName());
         buf.append(")");
         return buf.toString();
     }
