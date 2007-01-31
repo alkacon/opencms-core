@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.16.4.1 $
+ * Date   : $Date: 2007/01/31 15:57:03 $
+ * Version: $Revision: 1.16.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16.4.1 $ 
+ * @version $Revision: 1.16.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,7 +77,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_LOGIN = "cl";
-    
+
     /** list column id constant. */
     public static final String LIST_COLUMN_NAME = "cn";
 
@@ -89,10 +89,10 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
 
     /** Stores the value of the request parameter for the user name. */
     private String m_paramGroupname;
-    
+
     /** Stores the value of the request parameter for the organizational unit fqn. */
     private String m_paramOufqn;
-    
+
     /**
      * Returns the organizational unit fqn parameter value.<p>
      * 
@@ -110,6 +110,9 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
      */
     public void setParamOufqn(String ouFqn) {
 
+        if (ouFqn == null) {
+            ouFqn = "";
+        }
         m_paramOufqn = ouFqn;
     }
 
@@ -127,13 +130,8 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         CmsMessageContainer listName,
         boolean searchable) {
 
-        super(
-            jsp,
-            listId,
-            listName,
-            LIST_COLUMN_LOGIN,
-            CmsListOrderEnum.ORDER_ASCENDING,
-            searchable ? LIST_COLUMN_NAME : null);
+        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, searchable ? LIST_COLUMN_NAME
+        : null);
     }
 
     /**
@@ -269,7 +267,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         setDefaultAction(nameCol);
         // add it to the list definition
         metadata.addColumn(nameCol);
-        
+
         // create column for fullname
         CmsListColumnDefinition fullnameCol = new CmsListColumnDefinition(LIST_COLUMN_FULLNAME);
         fullnameCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_FULLNAME_0));
@@ -285,14 +283,14 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
      * @param loginCol the login column
      */
     protected abstract void setDefaultAction(CmsListColumnDefinition loginCol);
-    
+
     /**
      * Sets the optional state change action column.<p>
      * 
      * @param metadata the list metadata object
      */
     protected abstract void setStateActionCol(CmsListMetadata metadata);
-    
+
     /**
      * Sets the needed icon action(s).<p>
      * 

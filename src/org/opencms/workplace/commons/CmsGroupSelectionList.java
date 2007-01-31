@@ -208,6 +208,9 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
      */
     public void setParamOufqn(String ouFqn) {
 
+        if (ouFqn == null) {
+            ouFqn = "";
+        }
         m_paramOufqn = ouFqn;
     }
 

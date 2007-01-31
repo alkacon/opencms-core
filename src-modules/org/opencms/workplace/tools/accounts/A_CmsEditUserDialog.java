@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.4.4.1 $
+ * Date   : $Date: 2007/01/31 15:57:03 $
+ * Version: $Revision: 1.4.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.1 $ 
+ * @version $Revision: 1.4.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -224,6 +224,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      */
     public void setParamOufqn(String ouFqn) {
 
+        if (ouFqn == null) {
+            ouFqn = "";
+        }
         m_paramOufqn = ouFqn;
     }
 
