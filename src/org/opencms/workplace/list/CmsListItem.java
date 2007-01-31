@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItem.java,v $
- * Date   : $Date: 2007/01/31 15:44:18 $
- * Version: $Revision: 1.9.8.2 $
+ * Date   : $Date: 2007/01/31 16:19:35 $
+ * Version: $Revision: 1.9.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.list;
 
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +41,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9.8.2 $ 
+ * @version $Revision: 1.9.8.3 $ 
  * 
  * @since 6.0.0 
  */

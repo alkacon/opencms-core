@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.18.4.1 $
+ * Date   : $Date: 2007/01/31 16:19:35 $
+ * Version: $Revision: 1.18.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18.4.1 $ 
+ * @version $Revision: 1.18.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,7 +103,7 @@ public class CmsEditGroupDialog extends A_CmsEditGroupDialog {
     /**
      * The method is just needed for displaying reasons.<p>
      * 
-     * @param assignedOu
+     * @param assignedOu nothing to do with this parameter
      */
     public void setAssignedOu(String assignedOu) {
 

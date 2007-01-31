@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRoleOverviewDialog.java,v $
- * Date   : $Date: 2007/01/31 15:57:03 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/31 16:19:35 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -161,7 +161,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
     /**
      * This method is needed only for displaying reasons.<p>
      * 
-     * @param dependency
+     * @param dependency nothing to do with this parameter
      */
     public void setDependency(String dependency) {
 
@@ -172,7 +172,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
     /**
      * This method is needed only for displaying reasons.<p>
      * 
-     * @param description
+     * @param description nothing to do with this parameter
      */
     public void setDescription(String description) {
 
@@ -183,7 +183,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
     /**
      * This method is needed only for displaying reasons.<p>
      * 
-     * @param name
+     * @param name nothing to do with this parameter
      */
     public void setName(String name) {
 

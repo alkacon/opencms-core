@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserRoleDialog.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/31 16:19:35 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
@@ -118,7 +118,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
     /**
      * This method is needed only for displaying reasons.<p>
      * 
-     * @param name
+     * @param name nothing to do with this parameter
      */
     public void setName(String name) {
 
